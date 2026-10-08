@@ -29,6 +29,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 . "$ROOT/scripts/lib/project-dir.sh"   # hf: the pinned HyperFrames CLI
 RP="$(node "$ROOT/scripts/lib/env.mjs" rp 2>/dev/null || echo reelplanning)"   # how people run reelplanning (RP_COMMAND)
 export HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1
+# where the fixed system places (a system Chrome, Homebrew's whisper-cli) are looked under: / by default; a test
+# seam (scripts/test/local-speed.spec.mjs points it at an empty folder: a machine with none of them)
+SYS="${REELPLANNING_SYSTEM_ROOT:-}"
 
 DRY=0; VOICE=""
 for a in "$@"; do case "$a" in
@@ -91,7 +94,7 @@ dry_browser() {
   for p in "${HYPERFRAMES_BROWSER_PATH:-}" "${PRODUCER_HEADLESS_SHELL_PATH:-}"; do [ -n "$p" ] && [ -e "$p" ] && { echo "$p"; return 0; }; done
   p="$(find "$HOME/.cache/puppeteer/chrome-headless-shell" "$HOME/.cache/hyperframes/chrome" -type f \( -name chrome-headless-shell -o -name chrome \) -perm -u+x 2>/dev/null | head -n 1)"
   [ -n "$p" ] && { echo "$p"; return 0; }
-  for p in "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" /usr/bin/google-chrome; do [ -e "$p" ] && { echo "$p"; return 0; }; done
+  for p in "$SYS/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" "$SYS/usr/bin/google-chrome"; do [ -e "$p" ] && { echo "$p"; return 0; }; done
   command -v google-chrome || command -v chromium
 }
 if [ "$DRY" = 1 ]; then
@@ -134,7 +137,7 @@ WHISPER_DIR="$HOME/.cache/hyperframes/whisper/whisper.cpp"
 whisper() {
   have whisper-cli && { command -v whisper-cli; return 0; }
   [ -n "${HYPERFRAMES_WHISPER_PATH:-}" ] && [ -x "$HYPERFRAMES_WHISPER_PATH" ] && { echo "$HYPERFRAMES_WHISPER_PATH"; return 0; }
-  for p in "$WHISPER_DIR/build/bin/whisper-cli" "$WHISPER_DIR/build/whisper-cli" /opt/homebrew/bin/whisper-cli; do [ -x "$p" ] && { echo "$p"; return 0; }; done
+  for p in "$WHISPER_DIR/build/bin/whisper-cli" "$WHISPER_DIR/build/whisper-cli" "$SYS/opt/homebrew/bin/whisper-cli"; do [ -x "$p" ] && { echo "$p"; return 0; }; done
   return 1
 }
 if [ "$NEED_WHISPER" != 1 ]; then :
