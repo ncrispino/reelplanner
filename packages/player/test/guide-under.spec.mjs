@@ -271,6 +271,11 @@ try {
     await gfr.waitForFunction((id) => { const e = document.getElementById(id); return e && Math.abs(e.getBoundingClientRect().top) < innerHeight * 0.6; }, d.name, { timeout: 20000 }).catch(() => null);
     const got = await p.evaluate(() => ({ panel: !document.querySelector("#rp").shadowRoot.querySelector(".dpanel").hidden, log: document.querySelector("#rp").detailsLog().at(-1) }));
     check("a part asked for before the guide is attached waits for it, then is read in the guide under the video (no part page loaded)", d.held && !got.panel && !parts.length && got.log?.name === d.name && got.log?.from === "chip", JSON.stringify({ ...d, ...got, parts }));
+    // measured once the small player has slid in and the guide has taken its room beside it, as the first look does: read
+    // while the page was still scrolling to the part (a loaded machine), the small player was not there yet (mini: 0)
+    await settledMini(p, true);
+    await gfr.waitForFunction(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rp-embed-right")) > 0, null, { timeout: 10000 }).catch(() => null);
+    await laidOut(p);
     const cl = await clearOf(p, gfr);
     check("at 1280 px too, the guide's column keeps clear of the small player", cl.col <= cl.mini - 16, JSON.stringify(cl));
     check("no page errors", !errs.length, errs.slice(0, 3).join(" | "));
