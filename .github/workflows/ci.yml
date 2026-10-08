@@ -33,9 +33,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           cache: npm
       - run: npm ci
+      # ffmpeg, as `reelplanning setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
+      # Without it the specs that need it say they skipped, and those paths would never run here.
+      - name: ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
       # the fast run's player specs open the player in headless Chromium (scripts/lib/static-server.mjs serves the pages)
       - name: Chromium for the player specs
         run: npx playwright-core install --with-deps chromium
@@ -59,7 +63,7 @@ jobs:
           fetch-depth: 0   # the diff from where the branch left the base, and the base's decision log
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           cache: npm
       - run: npm ci
       # reads the PR's text and labels from the event ($GITHUB_EVENT_PATH)
@@ -89,9 +93,13 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           cache: npm
       - run: npm ci
+      # ffmpeg, as `reelplanning setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
+      # Without it the specs that need it say they skipped, and those paths would never run here.
+      - name: ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
       - name: Chromium for the player specs
         run: npx playwright-core install --with-deps chromium
       # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
