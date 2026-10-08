@@ -107,3 +107,30 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
   rebuild one frame without a full build, and a clear line between what the small model may change in place and
   what must go back to the plan. Where to start: the player's annotation flow, `scripts/narrate.mjs` (one line at a
   time), `scripts/build.mjs`.
+
+- **Shorter videos: only what a decision needs, at the level you choose.** A plan video aims for 3 to 5 minutes
+  (`scripts/lib/length.mjs`; the samples here run 3:36 and 6:02), and part of that is context a reviewer may not
+  need. Some plans have a floor, a few minutes however tight, set by how much the task decides. Two halves:
+  1. *Leaner by default:* each scene earns its place by a decision it sets up, or by something the reviewer must
+     understand to make one; the rest goes to the page under the video, not the narration.
+  2. *Decisions at levels (progressive disclosure):* the approach, the parts and what is stored first; how each
+     part works next; the details last. A first pass shows only the top level, and the lower ones are settled by
+     the agent and listed, or opened on demand as a short video of their own. Someone happy to make only the big
+     decisions watches only those.
+  Where to start: the skill's storyboard rules (`skills/plan-to-video/`), the length budget, the plan map's
+  questions (`plan-map.json`), and the walkthrough's split between the choices it pauses on and the list at its
+  end, which already does this for the agent's own choices.
+- **Faster builds.** A video takes minutes to build, mostly the voice (local Kokoro takes minutes a line on a slow
+  machine; `narrate` already re-voices only the lines that changed) and the render (every frame captured in headless
+  Chrome). `build` prints each stage's time: collect those across real builds first, then cut the largest: render
+  scenes in parallel, render again only the scenes a rebuild changed (the plan diff knows which), and fresh eyes
+  before narration (above). Where to start: `scripts/build.mjs` (its stage times), `scripts/narrate.mjs`, the render
+  in `verify`.
+- **Cost against the alternatives.** A plan through reelplanning costs more time and tokens than plan mode or a text
+  plan: a storyboard, a script, frames, a voice and a render, then the checks. That is accepted for now: the
+  agent's build of the plan takes far longer, the review is a fraction of it, and time spent understanding a plan
+  before the code is well spent. The gap should still keep shrinking. Measure it first: the case-study kit already
+  times each stage of each arm (text, an HTML plan, reelplanning; `arm.sh <arm> stage`); add tokens and wall-clock
+  per plan, and report reelplanning's share of the whole build. The two items above are the main levers, with
+  fewer agent turns per video (a frame right the first time, not fixed after a check). Where to start:
+  `eval/case-studies/kit/arm.sh` and `provenance.sh`, and `build`'s stage times.
