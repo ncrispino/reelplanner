@@ -37,23 +37,41 @@ const WIDTHS = [SHOWN, SHOWN * 2];
 export const SIZES = `(min-width: ${Math.ceil(SHOWN / 0.92)}px) ${SHOWN}px, 92vw`;
 
 const ff = (args) => execFileSync("ffmpeg", ["-y", "-loglevel", "error", ...args], { stdio: "ignore" });
+const cw = (args) => execFileSync("cwebp", ["-quiet", ...args], { stdio: "ignore" });
 function dims(file) {
   const out = execFileSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", file], { encoding: "utf8" });
   const [w, h] = out.trim().split(",").map(Number); if (!(w > 0 && h > 0)) throw new Error(`no size for ${file}`); return [w, h];
 }
+/**
+ * What makes the WebP here: "ffmpeg" (its libwebp), else "cwebp" (libwebp's own tool, `brew install webp`: Homebrew's
+ * ffmpeg is built without libwebp), else null: no picture is made.
+ */
+let webpWith;
+export function webpEncoder() {
+  const out = (cmd, args) => { try { return execFileSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }); } catch { return null; } };
+  webpWith ??= /\blibwebp\b/.test(out("ffmpeg", ["-hide_banner", "-encoders"]) || "") ? "ffmpeg" : out("cwebp", ["-version"]) != null ? "cwebp" : null;
+  return webpWith;
+}
 // one WebP: lossless and lossy both made, the smaller kept (text stays exact wherever that costs nothing)
 function encode(src, out, w) {
-  const vf = w ? ["-vf", `scale=${w}:-2:flags=lanczos`] : [], ll = `${out}.ll.tmp.webp`, lq = `${out}.q.tmp.webp`;
+  const ll = `${out}.ll.tmp.webp`, lq = `${out}.q.tmp.webp`;
   try {
-    ff(["-i", src, ...vf, "-c:v", "libwebp", "-lossless", "1", "-compression_level", "6", ll]);
-    ff(["-i", src, ...vf, "-c:v", "libwebp", "-quality", "92", "-compression_level", "6", lq]);
+    if (webpEncoder() === "cwebp") {
+      const size = w ? ["-resize", String(w), "0"] : [];
+      cw(["-lossless", "-m", "6", ...size, src, "-o", ll]);
+      cw(["-q", "92", "-m", "6", ...size, src, "-o", lq]);
+    } else {
+      const vf = w ? ["-vf", `scale=${w}:-2:flags=lanczos`] : [];
+      ff(["-i", src, ...vf, "-c:v", "libwebp", "-lossless", "1", "-compression_level", "6", ll]);
+      ff(["-i", src, ...vf, "-c:v", "libwebp", "-quality", "92", "-compression_level", "6", lq]);
+    }
     renameSync(statSync(ll).size <= statSync(lq).size ? ll : lq, out);
   } finally { rmSync(ll, { force: true }); rmSync(lq, { force: true }); }
 }
 
 /**
  * A snapshot as the guide's picture: { src, srcset, sizes, width, height, full } (URLs relative to `pageDir`), its
- * files written into `picsDir` and their names added to `made`; null when the snapshot is not there or ffmpeg fails.
+ * files written into `picsDir` and their names added to `made`; null when the snapshot is not there or no WebP is made.
  */
 export function pictureOf(file, { picsDir, pageDir = join(picsDir, ".."), made = null, widths: want = WIDTHS } = {}) {
   if (!file || !existsSync(file)) return null;
