@@ -1,6 +1,6 @@
 // Where things are (this package, a Chromium, a dependency, the repo a path is in), worked out on the
 // machine it runs on rather than written down.
-import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, copyFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, copyFileSync, realpathSync } from "node:fs";
 import { join, resolve, dirname, basename } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -195,8 +195,11 @@ export function machineDir() { return resolve(process.env.REELPLANNING_HOME || j
  */
 export function hasRp(d) {
   const rp = join(d, ".reelplanning");
-  return existsSync(rp) && (resolve(rp) !== machineDir() || rpInitialized(rp));
+  return existsSync(rp) && (real(rp) !== real(machineDir()) || rpInitialized(rp));
 }
+// compared by where they really are: the working directory is the real path (macOS's /private/var/…), while
+// HOME can name it through a link (/var/…)
+const real = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
 
 // The same answers for the shell scripts:
 //   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp   (rp: the command people run, RP_COMMAND)
