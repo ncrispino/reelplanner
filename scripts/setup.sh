@@ -60,8 +60,9 @@ as_root() { if [ "$SUDO" = none ]; then return 1; fi; run $SUDO "$@"; }
 [ "$DRY" = 1 ] && echo "reelplanning setup --dry-run: nothing is changed"
 
 # ---- node
-if node -e 'process.exit(+process.versions.node.split(".")[0] >= 18 ? 0 : 1)'; then ok "node $(node -v)"
-else miss "node $(node -v) is too old" "reelplanning needs Node 18 or newer"; fi
+# 22.20, package.json's engines: HyperFrames needs 22, and the `skills` installer 22.20
+if node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 20) ? 0 : 1)'; then ok "node $(node -v)"
+else miss "node $(node -v) is too old" "reelplanning needs Node 22.20 or newer: https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"; fi
 
 # ---- ffmpeg: renders, and the review bundle's wav → mp3
 if have ffmpeg && have ffprobe; then ok "ffmpeg ($(command -v ffmpeg))"

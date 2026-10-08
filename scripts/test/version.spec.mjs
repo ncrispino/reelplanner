@@ -55,4 +55,21 @@ test("the hints people see say RP_COMMAND (--help, the skills check's fix, setup
     ...RP_FILES.map((f) => [f, readFileSync(join(ROOT, f), "utf8")])])
     assert.ok(!/npx -y reelplanning@/.test(text), `${what} shows npx -y reelplanning@…, and the package is not on npm`);
 });
+// The Node it needs, the same way: package.json's engines, what the CLI refuses below (scripts/lib/node-check.mjs),
+// what setup and the curl installer check, and what the docs tell people to install (they said 18 long after it was 22).
+test("the Node package.json's engines names is the one the CLI, setup, the installer and the docs say", () => {
+  const need = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node.replace(/^>=\s*/, "");
+  const [maj, min] = need.split(".").map(Number), short = `${maj}.${min}`;
+  for (const f of ["scripts/setup.sh", "scripts/release/install.sh"])
+    assert.ok(readFileSync(join(ROOT, f), "utf8").includes(`a > ${maj} || (a === ${maj} && b >= ${min})`), `${f} does not check Node ${short}`);
+  for (const f of ["README.md", "AGENTS.md", ".github/CONTRIBUTING.md", "docs/agents.md", "scripts/setup.sh", "scripts/release/install.sh", "eval/case-studies/kit/arm.sh"]) {
+    const said = [...readFileSync(join(ROOT, f), "utf8").matchAll(/\b[Nn]ode (\d+(?:\.\d+)?)(?:\+| or (?:later|newer))/g)].map((m) => m[1]);
+    assert.ok(said.length && said.every((v) => v === short), `${f} says Node ${said.join(", ") || "nothing"}, not ${short}`);
+  }
+  const as = (v) => spawnSync(process.execPath, ["--import", `data:text/javascript,Object.defineProperty(process.versions,"node",{value:"${v}"})`,
+    join(ROOT, "bin/reelplanning.mjs"), "--version"], { encoding: "utf8" });
+  const older = as(`${maj - 1}.99.0`), same = as(need);
+  assert.ok(older.status === 1 && older.stderr.includes(`needs Node ${need} or later`), `Node ${maj - 1}.99.0: ${older.status} ${older.stderr}`);
+  assert.ok(same.status === 0 && same.stdout.trim() === VERSION, `Node ${need}: ${same.status} ${same.stderr}`);
+});
 if (failed) process.exit(1);

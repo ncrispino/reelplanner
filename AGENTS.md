@@ -8,7 +8,7 @@ Codex and most other agents read this file; Claude Code reads it through `CLAUDE
 
 ## To use reelplanning in another repo
 
-reelplanning is not on npm yet. Install once per machine (Node 18+):
+reelplanning is not on npm yet. Install once per machine (Node 22.20+):
 
 ```bash
 npm i -g github:ncrispino/reelplanning                                # puts `reelplanning` and `reel` on PATH

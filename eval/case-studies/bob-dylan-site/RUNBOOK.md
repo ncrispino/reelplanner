@@ -39,7 +39,7 @@ walkthrough video, your second review, the fixes). Text and html take one to thr
 
 | What | Check | Install |
 |---|---|---|
-| Node 18 or later, npm | `node --version` | nodejs.org, or `brew install node` |
+| Node 22.20 or later, npm | `node --version` | nodejs.org, or `brew install node` |
 | git, with your GitHub login stored (the repo is private: npm uses git's stored credentials and cannot ask for a password) | `git ls-remote https://github.com/ncrispino/ReelPlanning HEAD` | macOS: the Xcode command-line tools; Linux: your package manager. For the login, a credential helper (`gh auth setup-git`, or macOS Keychain) or an SSH key |
 | Claude Code, and your account | `claude --version` | `npm i -g @anthropic-ai/claude-code`. You log in once per arm (each arm has its own config); the helper at the end uses your own |
 | Python 3.10 or later (ours) | `python3 --version` | macOS: `brew install python` (the system one is 3.9) |

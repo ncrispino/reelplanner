@@ -105,7 +105,7 @@ Each item: what to change, where, why, and how to tell it works. Pick one, open 
    whole. *Verify:* `wc -l skills/plan-to-video/SKILL.md`; a plan run still finds the loop's steps.
 
 6. **The `compatibility:` frontmatter.**
-   *What:* add `compatibility:` to `skills/plan-to-video/SKILL.md`'s frontmatter: Node 18+, ffmpeg, a headless
+   *What:* add `compatibility:` to `skills/plan-to-video/SKILL.md`'s frontmatter: Node 22.20+, ffmpeg, a headless
    Chrome, network for `setup`, tested with Claude Code, basic Codex. *Why:* agents and skill registries read it
    before loading the skill. *Verify:* the description stays under 1024 characters, the frontmatter still parses as YAML,
    and `npx skills add ./ --skill plan-to-video -g` still installs it.

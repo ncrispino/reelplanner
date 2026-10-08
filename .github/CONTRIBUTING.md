@@ -7,7 +7,7 @@ closes. A security problem goes to [SECURITY.md](SECURITY.md) instead. Everyone 
 
 ## Set up
 
-Node 18 or later. Fork the repo on GitHub, clone your fork, then in the clone:
+Node 22.20 or later. Fork the repo on GitHub, clone your fork, then in the clone:
 
 ```sh
 npm ci

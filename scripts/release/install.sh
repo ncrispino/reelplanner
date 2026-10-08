@@ -28,9 +28,11 @@ SOURCE="${REELPLANNING_SOURCE:-ncrispino/reelplanning}"
 GITHUB="${REELPLANNING_GITHUB:-github:ncrispino/reelplanning}"
 
 die() { printf '✗ %s\n' "$*" >&2; exit 1; }
-command -v node >/dev/null 2>&1 || die "node is required (18+): https://nodejs.org"
+command -v node >/dev/null 2>&1 || die "node is required (22.20+): https://nodejs.org/en/download"
 command -v npx >/dev/null 2>&1 || die "npx is required (it comes with npm)"
-node -e 'process.exit(+process.versions.node.split(".")[0] >= 18 ? 0 : 1)' || die "node 18 or newer is required (found $(node -v))"
+# 22.20, package.json's engines: HyperFrames needs 22, and `skills` (below) 22.20
+node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 20) ? 0 : 1)' \
+  || die "node 22.20 or newer is required (found $(node -v)): https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"
 
 AGENTS=""
 for a in ${SKILLS_AGENTS:-}; do AGENTS="$AGENTS -a $a"; done

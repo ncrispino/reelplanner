@@ -12,8 +12,8 @@ You answer on the video, and the agent updates the plan.
 
 ## Before you try
 
-- macOS (Homebrew) or Linux (apt), Node 18+, and Python 3.10+ for the local voice. Setup may ask for sudo.
-  Windows: not yet (WSL untested).
+- macOS (Homebrew) or Linux (apt), Node 22.20+ ([nodejs.org](https://nodejs.org/en/download); apt's own `nodejs`
+  is older), and Python 3.10+ for the local voice. Setup may ask for sudo. Windows: not yet (WSL untested).
 - About 1 GB in all: the package (about 64 MB, mostly reelplanning's own plans and the sample videos it ships
   with), then setup's headless Chrome and a one-time 840 MB of voice and caption models.
 - reelplanning sends none of your code anywhere; an optional [hosted voice](#the-voice) gets only the narration text.
