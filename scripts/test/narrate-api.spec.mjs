@@ -112,6 +112,10 @@ try {
   //    narration without it stops before anything is touched, saying both ways on ──
   const NOPY = join(tmp, "python-without-kokoro");
   writeFileSync(NOPY, "#!/bin/sh\nexit 1\n"); chmodSync(NOPY, 0o755);
+  // a whisper.cpp that is there (narrate only looks for it), so Kokoro alone is what is missing, whatever this machine has
+  const WHISPER = join(tmp, "whisper-cli");
+  writeFileSync(WHISPER, "#!/bin/sh\nexit 0\n"); chmodSync(WHISPER, 0o755);
+  const NO_KOKORO = { HYPERFRAMES_PYTHON: NOPY, HYPERFRAMES_WHISPER_PATH: WHISPER };
   setLines([LINES[0], "A line voiced with no local voice installed.", ...LINES.slice(2)]);
   const lv1 = await narrate([], { HYPERFRAMES_PYTHON: NOPY });
   ok("hosted narration with no Kokoro here: voiced as ever", lv1.code === 0 && speechReqs(lv1).length === 1 && transReqs(lv1).length === 1, lv1.out);
@@ -127,13 +131,13 @@ try {
   config({ tts: "kokoro" });
   const w0s = wavs();
   setLines([LINES[0], "A line for a voice that is not installed.", ...LINES.slice(2)]);
-  const lv2 = await narrate([], { HYPERFRAMES_PYTHON: NOPY });
+  const lv2 = await narrate([], NO_KOKORO);
   ok("local Kokoro named (config.json) and not installed: stops before anything is touched, saying exactly what to run either way",
     lv2.code === 1 && lv2.reqs.length === 0 && lv2.out.includes(`✗ narrate: Kokoro TTS is not installed, and narration here is local Kokoro (from .reelplanning/config.json's narration). ${LOCAL_HINT}`) && JSON.stringify(wavs()) === JSON.stringify(w0s), lv2.out);
-  const lv3 = await narrate(["--dry-run"], { HYPERFRAMES_PYTHON: NOPY });
+  const lv3 = await narrate(["--dry-run"], NO_KOKORO);
   ok("…a dry run only says so", lv3.code === 0 && lv3.out.includes(`△ Kokoro TTS is not installed, and narration here is local Kokoro`), lv3.out);
   config({});
-  const lv4 = await narrate([], { HYPERFRAMES_PYTHON: NOPY, ELEVENLABS_API_KEY: null });
+  const lv4 = await narrate([], { ...NO_KOKORO, ELEVENLABS_API_KEY: null });
   ok("the default (HyperFrames' engine, local Kokoro) and Kokoro not installed: the same, said as the default",
     heygenSet() || (lv4.code === 1 && lv4.out.includes(`✗ narrate: Kokoro TTS is not installed, and narration here is the local voice (the default: no hosted voice is set). ${LOCAL_HINT}`)), lv4.out);
   config({ tts: "openai", base_url: `${BASE}/openai/v1`, timings: "api", timings_api: "groq", timings_base_url: `${BASE}/groq/openai/v1`, concurrency: 3 });
@@ -234,16 +238,21 @@ try {
   ok("…its character alignment becomes the line's words; the raw PCM a wav", v8.words.map((w) => w.text).join(" ") === LINES[0] && v8.words[1].start === 0.15 && parseWav(readFileSync(join(P, "assets", "voice", "01.wav")))?.sampleRate === 24000, JSON.stringify(v8.words.slice(0, 3)));
 
   // ── openrouter: one key for the speech and the timings; its mp3 made a wav by ffmpeg ──
-  config({ tts: "openrouter", model: "hexgrad/kokoro-82m", base_url: `${BASE}/openrouter/api/v1`, timings_base_url: `${BASE}/openrouter/api/v1`, concurrency: 1 });
-  const r10 = await narrate([], { GROQ_API_KEY: null, OPENAI_API_KEY: null });
-  const or = speechReqs(r10), ort = transReqs(r10);
-  ok("openrouter: every line voiced at its /audio/speech, its Kokoro with the video's Kokoro voice, mp3 asked for, the one key",
-    r10.code === 0 && or.length === 5 && or.every((q) => q.path === "/openrouter/api/v1/audio/speech" && q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}` && q.json.model === "hexgrad/kokoro-82m" && q.json.voice === KV && q.json.response_format === "mp3" && q.json.speed === 1.25 && !("instructions" in q.json)), `${JSON.stringify(or[0]?.json)}\n${r10.out}`);
-  ok("…timed by its own transcriber, openai/whisper-1, with the same key (no Groq or OpenAI key set)",
-    ort.length === 5 && ort.every((q) => q.path === "/openrouter/api/v1/audio/transcriptions" && q.form.model === "openai/whisper-1" && q.form.response_format === "verbose_json" && q.form.granularity.join() === "word" && q.form.riff === "RIFF" && q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}`)
-    && json(".hyperframes/narration.json").model === "openrouter hexgrad/kokoro-82m + openrouter openai/whisper-1", JSON.stringify(ort[0]?.form));
-  const v10 = json("audio_meta.json").voices[0], w10 = parseWav(readFileSync(join(P, "assets", "voice", "01.wav")));
-  ok("…the mp3 a 24 kHz wav about as long as what was said, the line's own words timed", w10?.sampleRate === 24000 && Math.abs(v10.duration_s - LINES[0].split(" ").length * 0.3) < 0.15 && v10.words.map((w) => w.text).join(" ") === LINES[0], JSON.stringify(v10).slice(0, 300));
+  // (the fake API makes its mp3 with ffmpeg, and narrate makes it a wav with it: with no ffmpeg here, not checked)
+  const ffmpeg = (() => { try { execFileSync("ffmpeg", ["-version"], { stdio: "ignore" }); return true; } catch { return false; } })();
+  if (!ffmpeg) ok("openrouter: its mp3 made a wav (skipped: ffmpeg is not on PATH)", true);
+  else {
+    config({ tts: "openrouter", model: "hexgrad/kokoro-82m", base_url: `${BASE}/openrouter/api/v1`, timings_base_url: `${BASE}/openrouter/api/v1`, concurrency: 1 });
+    const r10 = await narrate([], { GROQ_API_KEY: null, OPENAI_API_KEY: null });
+    const or = speechReqs(r10), ort = transReqs(r10);
+    ok("openrouter: every line voiced at its /audio/speech, its Kokoro with the video's Kokoro voice, mp3 asked for, the one key",
+      r10.code === 0 && or.length === 5 && or.every((q) => q.path === "/openrouter/api/v1/audio/speech" && q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}` && q.json.model === "hexgrad/kokoro-82m" && q.json.voice === KV && q.json.response_format === "mp3" && q.json.speed === 1.25 && !("instructions" in q.json)), `${JSON.stringify(or[0]?.json)}\n${r10.out}`);
+    ok("…timed by its own transcriber, openai/whisper-1, with the same key (no Groq or OpenAI key set)",
+      ort.length === 5 && ort.every((q) => q.path === "/openrouter/api/v1/audio/transcriptions" && q.form.model === "openai/whisper-1" && q.form.response_format === "verbose_json" && q.form.granularity.join() === "word" && q.form.riff === "RIFF" && q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}`)
+      && json(".hyperframes/narration.json").model === "openrouter hexgrad/kokoro-82m + openrouter openai/whisper-1", JSON.stringify(ort[0]?.form));
+    const v10 = json("audio_meta.json").voices[0], w10 = parseWav(readFileSync(join(P, "assets", "voice", "01.wav")));
+    ok("…the mp3 a 24 kHz wav about as long as what was said, the line's own words timed", w10?.sampleRate === 24000 && Math.abs(v10.duration_s - LINES[0].split(" ").length * 0.3) < 0.15 && v10.words.map((w) => w.text).join(" ") === LINES[0], JSON.stringify(v10).slice(0, 300));
+  }
 
   // ── music: HyperFrames' engine, merged under the voices ──
   const MEDIA = join(tmp, "fake-media-engine.mjs");
@@ -297,10 +306,13 @@ writeFileSync(f("out"), JSON.stringify({ ...m, bgm: { path: "assets/bgm.mp3", vo
       === JSON.stringify([["Run", 0, 0.2], ["claude", 0.2, 0.527], ["dash", 0.527, 0.745], ["p", 0.745, 0.8], ["now.", 0.9, 1.1]]));
   ok("…and nothing heard is no timings, not made-up ones", alignWords("Hello there.", []).length === 0);
   // a server that answers mp3 whatever it was asked for: ffmpeg (which reelplanning needs anyway) makes it a wav
-  const mp3 = join(tmp, "t.mp3");
-  try { execFileSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "sine=frequency=440:duration=1", "-f", "mp3", mp3]); } catch { /* no ffmpeg: said below */ }
-  const fromMp3 = existsSync(mp3) ? toWav(readFileSync(mp3)) : null;
-  ok("toWav: audio that is not a wav goes through ffmpeg", fromMp3 && parseWav(fromMp3.wav)?.sampleRate === 24000 && Math.abs(fromMp3.duration_s - 1) < 0.1, existsSync(mp3) ? JSON.stringify(fromMp3?.duration_s) : "ffmpeg is not on PATH");
+  if (!ffmpeg) ok("toWav: audio that is not a wav goes through ffmpeg (skipped: ffmpeg is not on PATH)", true);
+  else {
+    const mp3 = join(tmp, "t.mp3");
+    execFileSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "sine=frequency=440:duration=1", "-f", "mp3", mp3]);
+    const fromMp3 = toWav(readFileSync(mp3));
+    ok("toWav: audio that is not a wav goes through ffmpeg", fromMp3 && parseWav(fromMp3.wav)?.sampleRate === 24000 && Math.abs(fromMp3.duration_s - 1) < 0.1, JSON.stringify(fromMp3?.duration_s));
+  }
 } finally {
   api.close();
   rmSync(tmp, { recursive: true, force: true });

@@ -67,14 +67,19 @@ try {
 
   // ── openrouter: one key for both, mp3 made a wav ──
   config({ timings_base_url: `${BASE}/openrouter/api/v1` });
-  const keep = join(tmp, "kept");
-  const r3 = await check(["--tts", "openrouter", "--model", "hexgrad/kokoro-82m", "--base-url", `${BASE}/openrouter/api/v1`, "--keep", keep], { GROQ_API_KEY: null, OPENAI_API_KEY: null });
-  const sp3 = r3.reqs.find((q) => q.path.endsWith("/audio/speech")), tr3 = r3.reqs.find((q) => q.path.endsWith("/transcriptions"));
-  ok("openrouter: its Kokoro speech as mp3, timed by its openai/whisper-1, one key for both", r3.code === 0 && sp3?.json.model === "hexgrad/kokoro-82m" && sp3.json.voice === "am_michael" && sp3.json.response_format === "mp3" && tr3?.form.model === "openai/whisper-1"
-    && [sp3, tr3].every((q) => q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}`) && /\(key OPENROUTER_API_KEY, the same\)/.test(r3.out) && /sent as audio\/mpeg, made a wav by ffmpeg/.test(r3.out) && /^✓ word timings: 9 words/m.test(r3.out), r3.out);
-  ok("…its cost, speech and timings", /^cost: about \$0\.0066 a minute of narration: speech from \$0\.62 per 1M characters, its DeepInfra route .*, timings \$0\.006 a minute$/m.test(r3.out), line(r3, "cost"));
-  const kj = existsSync(join(keep, "narration-check.json")) && JSON.parse(readFileSync(join(keep, "narration-check.json"), "utf8"));
-  ok("--keep: the wav and the word timings", parseWav(readFileSync(join(keep, "narration-check.wav")))?.sampleRate === 24000 && kj.words.length === 9 && kj.words[0].text === "Bob" && kj.model === "openrouter hexgrad/kokoro-82m + openrouter openai/whisper-1" && /^kept: .*narration-check\.wav/m.test(r3.out), JSON.stringify(kj).slice(0, 300));
+  // (the fake API makes its mp3 with ffmpeg, and the check makes it a wav with it: with no ffmpeg here, not checked)
+  const ffmpeg = spawnSync("ffmpeg", ["-version"], { stdio: "ignore" }).status === 0;
+  if (!ffmpeg) ok("openrouter: its mp3 made a wav, and --keep (skipped: ffmpeg is not on PATH)", true);
+  else {
+    const keep = join(tmp, "kept");
+    const r3 = await check(["--tts", "openrouter", "--model", "hexgrad/kokoro-82m", "--base-url", `${BASE}/openrouter/api/v1`, "--keep", keep], { GROQ_API_KEY: null, OPENAI_API_KEY: null });
+    const sp3 = r3.reqs.find((q) => q.path.endsWith("/audio/speech")), tr3 = r3.reqs.find((q) => q.path.endsWith("/transcriptions"));
+    ok("openrouter: its Kokoro speech as mp3, timed by its openai/whisper-1, one key for both", r3.code === 0 && sp3?.json.model === "hexgrad/kokoro-82m" && sp3.json.voice === "am_michael" && sp3.json.response_format === "mp3" && tr3?.form.model === "openai/whisper-1"
+      && [sp3, tr3].every((q) => q.headers.authorization === `Bearer ${KEYS.OPENROUTER_API_KEY}`) && /\(key OPENROUTER_API_KEY, the same\)/.test(r3.out) && /sent as audio\/mpeg, made a wav by ffmpeg/.test(r3.out) && /^✓ word timings: 9 words/m.test(r3.out), r3.out);
+    ok("…its cost, speech and timings", /^cost: about \$0\.0066 a minute of narration: speech from \$0\.62 per 1M characters, its DeepInfra route .*, timings \$0\.006 a minute$/m.test(r3.out), line(r3, "cost"));
+    const kj = existsSync(join(keep, "narration-check.json")) && JSON.parse(readFileSync(join(keep, "narration-check.json"), "utf8"));
+    ok("--keep: the wav and the word timings", parseWav(readFileSync(join(keep, "narration-check.wav")))?.sampleRate === 24000 && kj.words.length === 9 && kj.words[0].text === "Bob" && kj.model === "openrouter hexgrad/kokoro-82m + openrouter openai/whisper-1" && /^kept: .*narration-check\.wav/m.test(r3.out), JSON.stringify(kj).slice(0, 300));
+  }
 
   // ── a missing key ──
   const r4 = await check(["--tts", "deepinfra", "--base-url", `${BASE}/deepinfra/v1`], { DEEPINFRA_API_KEY: null });
