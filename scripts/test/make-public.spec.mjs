@@ -56,8 +56,9 @@ try {
     ok("one commit on main, nothing else: no other branch, no remote", dst("rev-list", "--count", "--all") === "1" && dst("symbolic-ref", "HEAD") === "refs/heads/main" && dst("remote") === "",
       dst("for-each-ref", "--format=%(refname)"));
     ok("the tag v<version> is on it, and only that tag", dst("for-each-ref", "--format=%(refname)", "refs/tags") === "refs/tags/v1.2.3" && dst("rev-parse", "v1.2.3^{commit}") === dst("rev-parse", "main"));
+    // (the instant, as seconds: a newer git, 2.50 among them, writes UTC's %aI as Z, an older one as +00:00)
     ok("its message is \"reelplanning <version>\", by --author, at --date",
-      dst("log", "-1", "--format=%B").trim() === "reelplanning 1.2.3" && dst("log", "-1", "--format=%an <%ae>|%cn <%ce>|%aI") === "Release Person <release@example.invalid>|Release Person <release@example.invalid>|2026-10-08T12:00:00+00:00",
+      dst("log", "-1", "--format=%B").trim() === "reelplanning 1.2.3" && dst("log", "-1", "--format=%an <%ae>|%cn <%ce>|%at") === `Release Person <release@example.invalid>|Release Person <release@example.invalid>|${Date.parse("2026-10-08T12:00:00Z") / 1000}`,
       dst("log", "-1", "--format=%an <%ae>|%cn <%ce>|%aI|%B"));
     const want = tree(src, tip), have = tree(dst, "main");
     const differ = [...new Set([...want.keys(), ...have.keys()])].filter((p) => want.get(p) !== have.get(p));
