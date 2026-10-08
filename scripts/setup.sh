@@ -75,6 +75,17 @@ elif have apt-get; then miss "ffmpeg: needs root and sudo is not available here"
 else miss "ffmpeg: no package manager this script knows" "install ffmpeg (with ffprobe) and put it on PATH"; fi
 [ "$DRY" = 0 ] && { have ffmpeg || [[ " ${MISSING[*]} " == *" ffmpeg"* ]] || miss "ffmpeg" "installed but still not on PATH"; }
 
+# ---- WebP: the guide's pictures, made with ffmpeg's libwebp or else libwebp's own cwebp (scripts/lib/guide/pictures.mjs).
+# Homebrew's ffmpeg is built without libwebp, so on a Mac the guide had no pictures; apt's ffmpeg has it.
+if have ffmpeg && ffmpeg -hide_banner -encoders 2>/dev/null | grep -qw libwebp; then ok "WebP (ffmpeg's libwebp)"
+elif have cwebp; then ok "WebP (cwebp)"
+elif [ "$OS" = Darwin ] && have brew; then run brew install webp || miss "webp" "brew install webp failed (the guide's pictures)"
+elif ! have ffmpeg; then :   # ffmpeg is missing (said above); apt's brings libwebp
+elif have apt-get && [ "$SUDO" != none ]; then
+  { as_root apt-get update && as_root apt-get install -y webp; } || miss "webp" "apt-get install webp failed (the guide's pictures)"
+elif have apt-get; then miss "webp: needs root and sudo is not available here" "run: sudo apt-get install -y webp (the guide's pictures)"
+else miss "webp: no package manager this script knows" "install cwebp, or an ffmpeg built with libwebp (the guide's pictures)"; fi
+
 # ---- unzip: HyperFrames unpacks its Chrome download with it. Without it (a minimal Debian, a fresh container)
 # `hyperframes browser ensure` downloads Chrome and then waits forever, so it comes first.
 if [ "$OS" = Linux ] && ! have unzip; then
