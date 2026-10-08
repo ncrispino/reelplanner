@@ -41,7 +41,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { ROOT, launchOpts } from "../lib/env.mjs";
+import { ROOT, launchOpts, chromiumEnv } from "../lib/env.mjs";
 import { pathToFileURL } from "node:url";
 import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample } from "../lib/plan-md.mjs";
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
@@ -54,7 +54,7 @@ import { forGuideOf, parseExample, parseChunk, withoutForGuide, scratchOf, since
 const tmp = mkdtempSync(join(tmpdir(), "reel-guide-"));
 const home = join(tmp, "home"); mkdirSync(home, { recursive: true });
 const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
-const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning") };
+const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning"), ...chromiumEnv() };   // (Playwright looks for its browser under HOME)
 const git = (...a) => execFileSync("git", a, { cwd: repo, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: repo, env, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const reel = (...a) => run("reel.mjs", ...a);
