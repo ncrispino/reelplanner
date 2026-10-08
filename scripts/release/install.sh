@@ -30,9 +30,11 @@ GITHUB="${REELPLANNING_GITHUB:-github:ncrispino/reelplanning}"
 die() { printf '✗ %s\n' "$*" >&2; exit 1; }
 command -v node >/dev/null 2>&1 || die "node is required (22.20+): https://nodejs.org/en/download"
 command -v npx >/dev/null 2>&1 || die "npx is required (it comes with npm)"
-# 22.20, package.json's engines: HyperFrames needs 22, and `skills` (below) 22.20
-node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 20) ? 0 : 1)' \
-  || die "node 22.20 or newer is required (found $(node -v)): https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"
+# 22.20, package.json's engines: what `skills` (below) asks for; HyperFrames needs 22. Below 22 nothing here works;
+# 22.0 to 22.19 is said, and the install goes on (skills ran on 22.12 when tried, and stopped on 22.0)
+nv=$(node -p 'const [a, b] = process.versions.node.split(".").map(Number); a > 22 || (a === 22 && b >= 20) ? "ok" : a === 22 ? "old" : "no"')
+[ "$nv" = no ] && die "node 22.20 or newer is required (found $(node -v)): https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"
+[ "$nv" = old ] && printf '△ node %s: `skills` asks for 22.20 or newer; if the next step fails, update Node: https://nodejs.org/en/download\n' "$(node -v)"
 
 AGENTS=""
 for a in ${SKILLS_AGENTS:-}; do AGENTS="$AGENTS -a $a"; done

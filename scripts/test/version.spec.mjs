@@ -55,8 +55,9 @@ test("the hints people see say RP_COMMAND (--help, the skills check's fix, setup
     ...RP_FILES.map((f) => [f, readFileSync(join(ROOT, f), "utf8")])])
     assert.ok(!/npx -y reelplanning@/.test(text), `${what} shows npx -y reelplanning@…, and the package is not on npm`);
 });
-// The Node it needs, the same way: package.json's engines, what the CLI refuses below (scripts/lib/node-check.mjs),
-// what setup and the curl installer check, and what the docs tell people to install (they said 18 long after it was 22).
+// The Node it needs, the same way: package.json's engines, what the CLI refuses (scripts/lib/node-check.mjs: an
+// older major), what setup and the curl installer check, and what the docs tell people to install (they said 18
+// long after it was 22).
 test("the Node package.json's engines names is the one the CLI, setup, the installer and the docs say", () => {
   const need = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node.replace(/^>=\s*/, "");
   const [maj, min] = need.split(".").map(Number), short = `${maj}.${min}`;
@@ -66,10 +67,11 @@ test("the Node package.json's engines names is the one the CLI, setup, the insta
     const said = [...readFileSync(join(ROOT, f), "utf8").matchAll(/\b[Nn]ode (\d+(?:\.\d+)?)(?:\+| or (?:later|newer))/g)].map((m) => m[1]);
     assert.ok(said.length && said.every((v) => v === short), `${f} says Node ${said.join(", ") || "nothing"}, not ${short}`);
   }
+  // the CLI refuses only an older major (below it nothing works); a 22 older than 22.20 runs, and setup says so
   const as = (v) => spawnSync(process.execPath, ["--import", `data:text/javascript,Object.defineProperty(process.versions,"node",{value:"${v}"})`,
     join(ROOT, "bin/reelplanning.mjs"), "--version"], { encoding: "utf8" });
-  const older = as(`${maj - 1}.99.0`), same = as(need);
+  const older = as(`${maj - 1}.99.0`);
   assert.ok(older.status === 1 && older.stderr.includes(`needs Node ${need} or later`), `Node ${maj - 1}.99.0: ${older.status} ${older.stderr}`);
-  assert.ok(same.status === 0 && same.stdout.trim() === VERSION, `Node ${need}: ${same.status} ${same.stderr}`);
+  for (const v of [`${maj}.0.0`, need]) { const r = as(v); assert.ok(r.status === 0 && r.stdout.trim() === VERSION && !r.stderr, `Node ${v}: ${r.status} ${r.stderr}`); }
 });
 if (failed) process.exit(1);
