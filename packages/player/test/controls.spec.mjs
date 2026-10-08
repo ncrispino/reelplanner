@@ -17,6 +17,11 @@ await p.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}`);
 await p.evaluate(() => { try { localStorage.clear(); } catch {} });
 await p.reload();
 await loaded(p);
+// the frame's size is final once the player knows where a question's band goes (detectBand, when the frames are
+// mounted): until then it keeps room for one under the frame, and the frame grows when it learns it needs none.
+// Measured before that, the timeline and the frame are their smaller size (band.spec and size.spec wait so too)
+const sized = async () => { await p.waitForFunction(() => document.querySelector("#rp")._bandIn !== undefined, null, { timeout: 15000 }); await frames(p); };
+await sized();
 const rp = p.locator("#rp");
 
 // ---- theme: one icon button whose state you can read — pressed in dark, and the tooltip names the other theme
@@ -107,6 +112,7 @@ const M = () => p.evaluate(() => { const r = document.querySelector("#rp").shado
 // the line also carries a transient confirmation for a few seconds after an act (the theme switch
 // above left one); clear it, because what step 5 is about is the standing line
 await p.evaluate(() => { const el = document.querySelector("#rp"); el._notice = null; el.updateStatus(); });
+await sized();   // the reload for mute (above) started the player again
 let m = await M();
 ok(m.stage.w > m.vw * 0.8, `the video is given the page's width — ${Math.round(m.stage.w)} of ${m.vw}`);
 ok(m.side.y >= m.stage.y + m.stage.h - 1, `the lists sit below the video, not in a fixed column beside it — they start at ${Math.round(m.side.y)}, the frame ends at ${Math.round(m.stage.y + m.stage.h)}`);
@@ -127,7 +133,7 @@ const sheet = await p.evaluate(() => { const el = document.querySelector("#rp"),
   const own = r.querySelector(".decision .ownbtn").getBoundingClientRect();
   return { onframe: d.classList.contains("onframe"), band: d.classList.contains("band"), layer: Math.abs(b.top - s.top) < 1 && Math.abs(b.height - s.height) < 1 && Math.abs(b.width - s.width) < 1, bg: getComputedStyle(d).backgroundColor, room: getComputedStyle(r.querySelector(".bandroom")).display, stageH: Math.round(s.height),
     q: r.querySelector(".decision .q").getBoundingClientRect().width > 1, opts: [...d.querySelectorAll(".opts .opt")].filter((o) => o.getBoundingClientRect().height > 0).length, cards: r.querySelectorAll(".hits .hit").length, own: own.top >= s.top && own.bottom <= s.bottom + 1 && own.height > 0 }; });
-ok(sheet.onframe && !sheet.band && sheet.layer && sheet.bg === "rgba(0, 0, 0, 0)" && sheet.room === "none" && !sheet.q && sheet.opts === 0 && sheet.cards === q1.options.length && sheet.own && sheet.stageH === Math.round(m.stage.h), `the options are not asked again, and nothing sits in a bar: the cards answer, your own words are a slot on the frame by them, and the frame is as tall as before — ${JSON.stringify(sheet)}`);
+ok(sheet.onframe && !sheet.band && sheet.layer && sheet.bg === "rgba(0, 0, 0, 0)" && sheet.room === "none" && !sheet.q && sheet.opts === 0 && sheet.cards === q1.options.length && sheet.own && sheet.stageH === Math.round(m.stage.h), `the options are not asked again, and nothing sits in a bar: the cards answer, your own words are a slot on the frame by them, and the frame is as tall as before — ${JSON.stringify(sheet)} (before: ${Math.round(m.stage.h)} px; ${q1.options.length} options)`);
 await rp.locator('[data-act="fold"]').click(); await until(p, () => document.querySelector("#rp").shadowRoot.querySelector(".decision").classList.contains("folded")); await still(p); await frames(p);
 const folded = await p.evaluate(() => { const el = document.querySelector("#rp"), r = el.shadowRoot, d = r.querySelector(".decision"), pill = d.querySelector(".hd");
   const b = pill.getBoundingClientRect(), s = r.querySelector(".stage").getBoundingClientRect();
