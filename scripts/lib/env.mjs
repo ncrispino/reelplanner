@@ -192,8 +192,24 @@ export function repoRoot(p = process.cwd()) {
     const up = dirname(d); if (up === d) break; d = up;
   }
   const at = existsSync(p) && statSync(p).isDirectory() ? resolve(p) : dirname(resolve(p));
-  try { return execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
+  let top; try { top = execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
   catch { return process.cwd(); }
+  // spelled as the caller spelled `p`, like the answers above: git names the real path
+  for (let d = at; ; d = dirname(d)) { if (realPath(d) === top) return d; if (dirname(d) === d) return top; }
+}
+
+/**
+ * Where `p` really is: the path git names (its top level) and the working directory has, whatever links the
+ * caller's spelling goes through (macOS's /var/… is /private/var/…; a linked home or projects folder). A path
+ * from the caller compares with theirs, or is made relative to them, through this, or `relative(top, p)` climbs
+ * out of the repo (`../../private/…`) and `git log -- <that>` finds nothing. A path not made yet: its nearest
+ * existing folder's real path, with the rest as given.
+ */
+export function realPath(p) {
+  const abs = resolve(p);
+  for (let d = abs, rest = []; ; rest.unshift(basename(d)), d = dirname(d)) {
+    try { return join(realpathSync(d), ...rest); } catch { if (dirname(d) === d) return abs; }
+  }
 }
 
 /**
@@ -211,11 +227,10 @@ export function machineDir() { return resolve(process.env.REELPLANNING_HOME || j
  */
 export function hasRp(d) {
   const rp = join(d, ".reelplanning");
-  return existsSync(rp) && (real(rp) !== real(machineDir()) || rpInitialized(rp));
+  // compared by where they really are: the working directory is the real path (macOS's /private/var/…), while
+  // HOME can name it through a link (/var/…)
+  return existsSync(rp) && (realPath(rp) !== realPath(machineDir()) || rpInitialized(rp));
 }
-// compared by where they really are: the working directory is the real path (macOS's /private/var/…), while
-// HOME can name it through a link (/var/…)
-const real = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
 
 // The same answers for the shell scripts:
 //   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp   (rp: the command people run, RP_COMMAND)

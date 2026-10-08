@@ -20,7 +20,7 @@ import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync, statSy
 import { join, dirname, basename, relative, sep } from "node:path";
 import { execFileSync } from "node:child_process";
 import { reviewId } from "./inbox.mjs";
-import { VERSION } from "./env.mjs";
+import { VERSION, realPath } from "./env.mjs";
 
 export const reviewsDir = (dir) => join(dir, "reviews");
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -192,7 +192,7 @@ export function approvalOf(planDir, ledger) {
   if (sha) try {
     const git = (...a) => execFileSync("git", ["-C", planDir, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 << 20 });
     const top = git("rev-parse", "--show-toplevel").trim();
-    const rel = relative(top, join(dirname(dirname(planDir)), "decisions.json")).split(sep).join("/");
+    const rel = relative(top, realPath(join(dirname(dirname(planDir)), "decisions.json"))).split(sep).join("/");
     const then = JSON.parse(git("show", `${sha}:${rel}`)), day = git("show", "-s", "--format=%cI", sha).trim().slice(0, 10);
     const old = Array.isArray(then) ? then : then?.decisions;
     if (Array.isArray(old)) return { ledger: old, by: "started", day, sha };
@@ -219,6 +219,7 @@ export const fixesIn = (review) => (review?.autonomy || []).filter((v) => v.verd
  *  `skip`: paths inside a folder that do not count (its renders/, say). */
 export function lastChanged(p, skip = []) {
   if (!existsSync(p)) return 0;
+  p = realPath(p);   // as git names it: an exclude spelled through a link (/var/… for /private/var/…) matches nothing
   const spec = ["--", p, ...skip.map((x) => `:(exclude)${join(p, x)}`)], git = (...a) => execFileSync("git", ["-C", dirname(p), ...a, ...spec], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
   try {
     if (git("status", "--porcelain")) return Date.now() / 1000;

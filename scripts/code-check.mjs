@@ -21,6 +21,7 @@ import { execFileSync } from "node:child_process";
 import { freshAgentHow } from "./lib/agents.mjs";
 import { isRule, specCites } from "./lib/ledger.mjs";
 import { callsTouched, callWords } from "./lib/call-lines.mjs";
+import { realPath } from "./lib/env.mjs";
 
 const argv = process.argv.slice(2);
 const dd = argv.indexOf("--");
@@ -34,7 +35,7 @@ const outDir = join(pd, "code-check"), briefPath = join(outDir, "brief.md"), fin
 
 const git = (...a) => execFileSync("git", ["-C", pd, ...a], { encoding: "utf8", maxBuffer: 64 << 20 });
 const repo = git("rev-parse", "--show-toplevel").trim();
-const rel = (p) => relative(repo, p) || ".";
+const rel = (p) => relative(repo, realPath(p)) || ".";   // git's top is the real path; `p` may name it through a link
 
 if (args.includes("--prompt")) {
   if (!existsSync(briefPath)) die(`no brief yet: run code-check ${rel(pd)} --base <ref> first`);
