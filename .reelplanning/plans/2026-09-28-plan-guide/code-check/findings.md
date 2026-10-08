@@ -1,0 +1,74 @@
+# Code check: 2026-09-28-plan-guide
+
+## Steps
+- Step 1 — ✓ carried by `scripts/guide.mjs`, `scripts/lib/guide/model.mjs`, `scripts/lib/guide/page.mjs`, `templates/guide/guide.js`, `templates/guide/guide.css`, `templates/guide/picture.html`, `scripts/finish-project.sh`, `scripts/build.mjs`, `.gitignore`
+- Step 2 — ✓ carried by `scripts/lib/plan-md.mjs` (`stepBlocks`, `blockFindings`, `blocksDue`), `scripts/reel.mjs` (`check`), `scripts/lib/guide/check.mjs`, `skills/plan-to-video/SKILL.md`
+- Step 3 — ✓ carried by `scripts/plan-map.mjs`, `scripts/check-details.mjs`, `packages/player/reelplanning-player.js` (`guidePart`, `guideUrl`, the plan text's "Open the full guide"), `scripts/bundle-player.mjs`, `scripts/build.mjs` (a missing scene picture is a △)
+- Step 4 — ✓ carried by `scripts/lib/review-scope.mjs` (`editsOf`, `scenesSaying`, "Edits to apply"), `scripts/reel.mjs` (`record` files kind `edit`), `scripts/revise-scope.mjs`, `packages/player/reelplanning-player.js` (`answerFromGuide`), `packages/player/guide-review.js`
+- Step 5 — ✗ nothing in the diff carries "sort real findings by what their author did, then see the answers" or "move a label onto its thing on a real frame while `frame-lint`'s verdict follows"; closest is `templates/guide/guide.js` (predict a run's ✓/✗ lines, sort files by kind). The rest of the step (Built side, categories, full diff, real runs, interface as built, choices, Plan | Built switch) is carried by `scripts/lib/guide/built.mjs` and `templates/guide/guide.js`.
+
+## Decisions
+- D-001 — ✓ holds: `skills/plan-to-video/SKILL.md` (the code check is a second agent; this check is that agent)
+- D-002 — ✓ holds: not touched by this diff
+- D-003 — ✓ holds: not touched by this diff
+- D-005 — ✓ holds: not touched by this diff
+- D-023 — ✓ holds: `scripts/lib/guide/built.mjs` (the guide shows the full diff; no video scene was changed to show code)
+- D-024 — ✓ holds: not touched by this diff
+- D-064 — ✓ holds: not touched by this diff
+- D-065 — ✓ holds: not touched by this diff
+- D-066 — ✓ holds: not touched by this diff
+- D-082 — ✓ holds: not touched by this diff
+- D-085 — ✓ holds: not touched by this diff
+- D-106 — ✓ holds: not touched by this diff
+- D-107 — ✓ holds: not touched by this diff
+- D-109 — ✓ holds: not touched by this diff
+- D-110 — ✓ holds: not touched by this diff
+- D-127 — ✓ holds: not touched by this diff (the guide's wording is plain)
+- D-128 — ✓ holds: not touched by this diff
+- D-129 — ✓ holds: not touched by this diff
+- D-142 — ✓ holds: `templates/guide/guide.css` (the darker coral, `--accent-text`, from the review page's tokens)
+- D-166 — ✓ holds: not touched by this diff
+- D-167 — ✓ holds: `scripts/lib/guide/page.mjs` (takes the token block of `templates/details/fresh.html`)
+- D-168 — ✓ holds: not touched by this diff
+- D-169 — ✓ holds: not touched by this diff
+- D-170 — ✓ holds: not touched by this diff
+- D-171 — ✓ holds: not touched by this diff
+- D-194 — ✓ holds: `scripts/check-details.mjs` (a guide part is marked `data-detail` like a detail); see the Unexplained line on it
+- D-195 — ✓ holds: `packages/player/reelplanning-player.js` (a part opens over the frame)
+- D-196 — ✓ holds: `scripts/check-details.mjs` (the corner chip only where the frame marks nothing)
+- D-197 — ✓ holds: not touched by this diff
+- D-198 — ✓ holds: not touched by this diff
+- D-199 — ✓ holds: not touched by this diff
+- D-200 — ✓ holds: not touched by this diff
+- D-201 — ✓ holds: not touched by this diff
+- D-202 — ✓ holds: not touched by this diff
+- D-213 — ✓ holds: `.gitignore`, `templates/gitignore` (guide/, index.html, parts.json and .cache ignored; the step fragment is committed)
+- D-215 — ✓ holds: not touched by this diff
+- D-216 — ✓ holds: not touched by this diff
+- D-217 — ✓ holds: not touched by this diff
+- D-218 — ✓ holds: not touched by this diff
+- D-219 — ✓ holds: not touched by this diff
+- D-221 — ✓ holds: not touched by this diff
+- D-222 — ✓ holds: not touched by this diff
+- D-223 — ✓ holds: not touched by this diff
+- D-224 — ✓ holds: `templates/guide/guide.js` (a Plan | Built switch on each step)
+- D-225 — ✓ holds: not touched by this diff
+- D-226 — ✓ holds: `packages/player/guide-review.js` (comment, suggest an edit, ask, on selected words)
+- D-227 — ✓ holds: not touched by this diff
+- D-228 — ✓ holds: `scripts/guide.mjs`, `scripts/bundle-player.mjs` (its own page, `guide/index.html`, a click from the part)
+- D-229 — ✓ holds: `scripts/lib/review-scope.mjs`, `scripts/reel.mjs` (the reviewer's words filed as an edit, applied exactly by the revise step per `skills/plan-to-video/SKILL.md`)
+- D-230 — ✓ holds: `scripts/lib/guide/model.mjs` (a plan with a `walkthrough.md` gets a Built side; a step with no entry says "Not built yet")
+- D-244 — ✓ holds: `scripts/lib/plan-md.mjs`, `scripts/lib/guide/model.mjs` (the guide is read from `plan.md`, never the other way)
+- D-246 — ✓ holds: `packages/player/reelplanning-player.js:2933` (the tab stays while a question is up)
+
+## Unexplained
+- `packages/player/reelplanning-player.js` — ✗ adds an explainer's Finish suggestions (`nextSuggestions`, `pickNext`, the `:next` record, new "Explain more" / "Plan this" wording, about 100 lines); no step or autonomy row of this plan asks for it. It looks like commit a20bfc5 (explain-first) merged in. Suggest: autonomy rows for it, or keep it out of this plan's diff.
+- `scripts/explain.mjs` — ✗ adds an "Open threads" section to `explain.md` and `next_more` / `next_plan` guidance to the storyboard template; no step, decision or autonomy row covers it. Suggest: same as above.
+- `scripts/plan-map.mjs` — ✗ writes `nextMore` / `nextPlan` and an `explainer.next` list into the plan map (`nextSuggestions`), besides the guide fields. Suggest: same as above.
+- `scripts/bundle-player.mjs` — ✗ writes `explainer.since` and `sinceSubjects` (the last three commit subjects) into a packed explainer's plan map, unrelated to the guide. Suggest: same as above.
+- `scripts/reel.mjs` — ✗ `new-plan --from` now titles the draft plan by what the reviewer picked at Finish, and `record` prints "what you want next" (`fromExplainer`, `recordExplainer`, `nextOf`); no row covers it. Suggest: same as above.
+- `skills/plan-to-video/SKILL.md` — ✗ documents Finish's suggestions, `- next_more:` / `- next_plan:` and the explainer's "Open threads"; no row covers it. Suggest: same as above.
+- `scripts/reel.mjs` — ✗ `retro` now writes placeholder Cases tables (with an invented trace) and "No interface: …" lines into the plans it generates, and adds "(all steps)" to their decisions in force; no step or row names it. Suggest: autonomy row "retro plans get placeholder blocks so they pass reel check, instead of failing it".
+- `scripts/lib/guide/check.mjs` — ✗ when `playwright-core` is not installed the check passes with "not opened in a browser" and skips the layer, network, 375 px and part checks, so the build gate can pass unchecked. Suggest: autonomy row "guide --check passes without a browser, instead of failing".
+- `scripts/lib/guide/built.mjs` — ✗ shows generated files (`plan-map.json`, images, `snapshots/` and so on) with counts only, cuts any line over 2,000 characters, gives no whole file over 1.5 MB, and groups files by folder when `walkthrough.md` has no categories; step 5 says the full diff is never cut. Suggest: an autonomy row for each.
+- `scripts/check-details.mjs` — ✗ a guide part whose frame marks nothing is only a △ even under `details_check: strict`, where an unmarked detail fails. Suggest: autonomy row "an unmarked guide part warns under strict, instead of failing".

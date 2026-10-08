@@ -1,0 +1,89 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .p18-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .p18-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .p18-lab { position:absolute; font:500 26px/1.2 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .p18-lab b { font-weight:500; color:var(--rp-coral-deep); }
+  .p18-h { position:absolute; font:400 46px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .p18-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .p18-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .p18-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .p18-t code, .p18-s code, .p18-h code, .p18-hl code, .p18-q code, .p18-opt code, .p18-ctx code, .p18-pin code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .p18-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .p18-u { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:4px; text-underline-offset:8px; }
+  .p18-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 8px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .p18-shot img { display:block; width:100%; height:100%; }
+  .p18-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .p18-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .p18-pin.hot { background:var(--rp-coral); }
+  .p18-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 30px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:26px; white-space:nowrap; }
+  .p18-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .p18-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .p18-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); padding:22px 26px; }
+  .p18-box .bt { font:600 34px/1.2 "Inter"; color:var(--rp-ink); }
+  .p18-box .bs { margin-top:8px; font:400 26px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .p18-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; padding:70px 28px 20px; }
+  .p18-slab .bar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .p18-slab .bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.7); white-space:nowrap; }
+  .p18-slab .ln { font:400 27px/42px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .p18-slab .x { color:var(--rp-syn-del); } .p18-slab .ok { color:var(--rp-syn-add); } .p18-slab .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .p18-arrow { position:absolute; overflow:visible; }
+  .p18-arrow path { fill:none; stroke:var(--rp-ink); stroke-width:3; }
+  .p18-arrow .hd { fill:var(--rp-ink); stroke:none; }
+  .p18-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .p18-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .p18-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .p18-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .p18-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.25 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .p18-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .p18-ctx { position:absolute; left:180px; top:80px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  table.p18-tb { position:absolute; border-collapse:collapse; font:400 27px/1.3 "Inter"; color:var(--rp-ink); background:var(--rp-paper); }
+  table.p18-tb th { text-align:left; font:600 24px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); padding:10px 14px; background:var(--rp-tile); border-bottom:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  table.p18-tb td { padding:10px 14px; vertical-align:top; border-top:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  table.p18-tb td:first-child { font-weight:700; }
+  table.p18-tb code { font-family:"JetBrains Mono"; font-size:0.86em; }
+  .p18-s5 { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .p18-s5 .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
+  .p18-s5 .t code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .p18-s5 .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .p18-s5 .d, .p18-s5 .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .p18-s5 .r { border-color:transparent; color:rgba(var(--rp-ink-rgb),0.76); }
+
+</style>
+
+<div id="root" data-composition-id="18-branch-q2-c" data-band="bottom" data-duration="5" data-width="1920" data-height="1080">
+
+  <div class="clip p18-bg" id="p18-bg" data-start="0" data-duration="5" data-track-index="0"></div>
+
+  <div class="clip p18-scene" id="p18-scene" data-start="0" data-duration="5" data-track-index="1">
+    <div class="p18-lab" id="p18-k" style="left:160px; top:110px; font-size:30px;"><b>If C · Over the frame, like a detail</b></div>
+    <div class="p18-box" id="p18-x0" style="left:740px; top:320px; width:440px; height:170px;"><div class="bt">the guide</div><div class="bs">over the paused video</div></div>
+    
+    <div class="p18-h" id="p18-line" style="left:740px; top:600px; width:1600px;">Close it to go back.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "18-branch-q2-c";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#p18-k", { opacity: 0 });
+  tl.to("#p18-k", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.10);
+  gsap.set("#p18-x0", { opacity: 0, y: 12 });
+  tl.to("#p18-x0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.30);
+  gsap.set("#p18-line", { opacity: 0, y: 12 });
+  tl.to("#p18-line", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.40);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

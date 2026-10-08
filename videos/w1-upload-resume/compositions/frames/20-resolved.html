@@ -1,0 +1,109 @@
+<template>
+<style>
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  #f20-resolved-ground { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+
+  /* ---- SHARED STAGE v2 ---- */
+  .f20-resolved-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f20-resolved-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f20-resolved-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f20-resolved-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f20-resolved-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f20-resolved-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f20-resolved-slot.dim { opacity:0.72; }
+  .f20-resolved-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f20-resolved-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f20-resolved-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f20-resolved-node.navy .l { color:var(--rp-on-ink); }
+  .f20-resolved-node.dim { opacity:0.72; }
+  .f20-resolved-node.navy.dim { opacity:1; }
+  .f20-resolved-node.active { border:3px solid var(--rp-coral); }
+  .f20-resolved-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f20-resolved-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f20-resolved-edges path.dim { opacity:0.35; }
+  .f20-resolved-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  .f20-resolved-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  .f20-resolved-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+  .f20-resolved-opt.rec { border:3px solid var(--rp-coral); }
+  .f20-resolved-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* ---- /SHARED STAGE ---- */
+
+  .f20-resolved-slot .d.ink { color:var(--rp-ink); }   /* deviation tag: ink, never coral */
+
+  #f20-resolved-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="20-resolved" data-duration="10" data-width="1920" data-height="1080">
+
+  <div class="clip" id="f20-resolved-ground" data-start="0" data-duration="10" data-track-index="0"></div>
+
+  <div class="f20-resolved-rail" id="f20-resolved-rail">
+    <div class="f20-resolved-slot" id="f20-resolved-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+    <div class="f20-resolved-slot" id="f20-resolved-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span><span class="d ink" data-plan-question="1" id="f20-resolved-q1">16 MB</span></div>
+    <div class="f20-resolved-slot" id="f20-resolved-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span><span class="d ink" data-plan-question="2" id="f20-resolved-q2">409</span></div>
+    <div class="f20-resolved-slot" id="f20-resolved-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span><span class="d ink" data-plan-question="3" id="f20-resolved-q3">deleted</span></div>
+    <div class="f20-resolved-slot" id="f20-resolved-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span><span class="d ink" data-plan-question="4" id="f20-resolved-q4">batched</span></div>
+    <div class="f20-resolved-slot" id="f20-resolved-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">SDK resume</span><span class="d ink">partial</span></div>
+  </div>
+
+  <div class="f20-resolved-node"      id="f20-resolved-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f20-resolved-node"      id="f20-resolved-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f20-resolved-node navy" id="f20-resolved-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+  <div class="f20-resolved-node"      id="f20-resolved-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+  <div class="f20-resolved-node"      id="f20-resolved-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+  <div class="f20-resolved-node"      id="f20-resolved-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+  <svg class="f20-resolved-edges" id="f20-resolved-edges" viewBox="0 0 1920 1080">
+    <path id="f20-resolved-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+    <path id="f20-resolved-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path id="f20-resolved-e-sdk-api"          d="M970 485 L1030 485" />
+    <path id="f20-resolved-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path id="f20-resolved-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+    <path id="f20-resolved-e-sweeper-blob"     d="M1680 645 L1640 645" />
+  </svg>
+
+  <div id="f20-resolved-note">AI-generated narration and visuals</div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var ID = "20-resolved";
+  var root = document.querySelector('[data-composition-id="' + ID + '"]');
+  if (!root || typeof gsap === "undefined") return;
+  var q = function (s) { return root.querySelector(s); };
+
+  var note = q("#f20-resolved-note");
+  var q2 = q("#f20-resolved-q2");
+  var q3 = q("#f20-resolved-q3");
+  var q4 = q("#f20-resolved-q4");
+
+  var tl = gsap.timeline({ paused: true });
+
+  // t=0 — the stage is done: six filled slots, six ink edges, no node lit, no coral.
+  // The carried tags (16 MB on slot 2, partial on slot 6) are already on and stay on.
+  tl.set([q2, q3, q4], { opacity: 0, y: 6 }, 0);
+
+  // the disclosure note is up for the whole hold
+  tl.fromTo(note, { opacity: 0 }, { opacity: 1, duration: 0.50, ease: "power2.out", immediateRender: false }, 0.10392422192151557);
+
+  // "with the four calls marked" — the remaining three calls land in turn
+  tl.fromTo(q2, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", immediateRender: false }, 1.215913396481732);
+  tl.fromTo(q3, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", immediateRender: false }, 1.4341542625169146);
+  tl.fromTo(q4, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", immediateRender: false }, 1.662787550744249);
+
+  // dead-still hold for the rest of the frame — the player pauses here for accept / flag
+  tl.to({}, { duration: 10 }, 0);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines[ID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,4 @@
+$ reelplanning check-sources .reelplanning/explainers/2026-09-29-experiment/video   (scene 3 says a number and names no source, under sources_check: strict)
+✗ scene 3 · says "3" with no `- source:` (sources_check: strict)
+✗ check-sources: 1 failure(s), 0 warning(s) · 3 scenes, 4 quoted pieces against 5 pinned sources
+exit 1

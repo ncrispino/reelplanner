@@ -1,0 +1,91 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f11-quiz-1-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f11-quiz-1-scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  /* ---- SHARED STAGE, rail only (positions are law). A question changes nothing about the chain. ---- */
+  .f11-quiz-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f11-quiz-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f11-quiz-1-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f11-quiz-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f11-quiz-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f11-quiz-1-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+  .f11-quiz-1-slot.dim { opacity:0.72; }
+  /* empty rail slots show only the dashed outline */
+  .f11-quiz-1-slot:not([data-filled]) .n, .f11-quiz-1-slot:not([data-filled]) .t { opacity:0; }
+
+  /* ---- QUIZ BEAT: the question owns the frame ---- */
+  .f11-quiz-1-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  /* centred in the space the chain used to occupy; its border is the frame's ONE coral */
+  .f11-quiz-1-q { position:absolute; left:690px; top:322px; width:1120px; height:176px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:3px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; padding:0 56px; }
+  .f11-quiz-1-q .l { font:400 42px/1.25 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+  .f11-quiz-1-chip { position:absolute; top:546px; width:360px; height:72px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; gap:14px; }
+  .f11-quiz-1-chip .k { font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f11-quiz-1-chip .l { font:400 30px/1.1 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="11-quiz-1" data-duration="5.855" data-width="1920" data-height="1080">
+  <div class="clip f11-quiz-1-bg" id="f11-quiz-1-bg" data-start="0" data-duration="5.855" data-track-index="0"></div>
+
+  <div class="clip f11-quiz-1-scene" id="f11-quiz-1-scene" data-start="0" data-duration="5.855" data-track-index="1">
+    <div class="f11-quiz-1-kicker" id="f11-quiz-1-kicker">✱ Quick check · Step 2</div>
+
+    <div class="f11-quiz-1-rail" id="f11-quiz-1-rail">
+      <div class="f11-quiz-1-slot dim" id="f11-quiz-1-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+      <div class="f11-quiz-1-slot" id="f11-quiz-1-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f11-quiz-1-slot" id="f11-quiz-1-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f11-quiz-1-slot" id="f11-quiz-1-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f11-quiz-1-slot" id="f11-quiz-1-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f11-quiz-1-slot" id="f11-quiz-1-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- the question card, centred in the space the chain used to occupy -->
+    <div class="f11-quiz-1-q" id="f11-quiz-1-q"><span class="l">A song names an album that does not exist. What happens?</span></div>
+
+    <!-- three chips, none marked: the player asks and reveals -->
+    <div class="f11-quiz-1-chip" id="f11-quiz-1-chip-a" data-plan-option="a" style="left:690px"><span class="k">A ·</span><span class="l">Empty link</span></div>
+    <div class="f11-quiz-1-chip" id="f11-quiz-1-chip-b" data-plan-option="b" style="left:1070px"><span class="k">B ·</span><span class="l">Build fails</span></div>
+    <div class="f11-quiz-1-chip" id="f11-quiz-1-chip-c" data-plan-option="c" style="left:1450px"><span class="k">C ·</span><span class="l">Skipped</span></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var card = q("f11-quiz-1-q");
+
+  var DUR = 5.355;            // voice duration
+  var E = "power3.out";
+  var tl = gsap.timeline({ paused: true });
+
+  // the rail is inherited and already in place at t=0; nothing on it moves for a question.
+  // 0.02 "Quick check" — kicker
+  tl.fromTo(q("f11-quiz-1-kicker"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 0.067);
+  // 0.95 "a song names an album" — the question card lands
+  tl.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 0.827);
+  // 2.64 "does not exist" — the card's border goes coral: the frame's one coral
+  tl.fromTo(card, { borderColor: "rgba(" + __RP["ink-rgb"] + ",0.12)" },
+                  { borderColor: __RP["coral"], duration: 0.5, ease: E }, 2.63);
+  // 3.14 "Empty link" — chip A
+  tl.fromTo(q("f11-quiz-1-chip-a"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 3.224);
+  // 3.82 "build fails" — chip B
+  tl.fromTo(q("f11-quiz-1-chip-b"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 3.925);
+  // 4.51 "song skipped" — chip C
+  tl.fromTo(q("f11-quiz-1-chip-c"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 4.518);
+
+  // held read to the end of the voice
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["11-quiz-1"] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,156 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f28-step-5-bench-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f28-step-5-bench-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f28-step-5-bench-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f28-step-5-bench-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f28-step-5-bench-chip.lit { color:var(--rp-coral-deep); }
+  .f28-step-5-bench-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f28-step-5-bench-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f28-step-5-bench-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f28-step-5-bench-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f28-step-5-bench-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f28-step-5-bench-lines path.ink { stroke:var(--rp-ink); }
+  .f28-step-5-bench-lines path.dashed { stroke-dasharray:10 10; }
+  .f28-step-5-bench-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f28-step-5-bench-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f28-step-5-bench-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f28-step-5-bench-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f28-step-5-bench-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f28-step-5-bench-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f28-step-5-bench-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f28-step-5-bench-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f28-step-5-bench-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f28-step-5-bench-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f28-step-5-bench-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f28-step-5-bench-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f28-step-5-bench-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f28-step-5-bench-slot.dec .n { top:13px; } .f28-step-5-bench-slot.dec .t { top:12px; }
+  .f28-step-5-bench-slot:not([data-filled]) .n, .f28-step-5-bench-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f28-step-5-bench-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f28-step-5-bench-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f28-step-5-bench-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f28-step-5-bench-opt.row .k { top:30px; } .f28-step-5-bench-opt.row .l { left:84px; top:22px; }
+  .f28-step-5-bench-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f28-step-5-bench-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f28-step-5-bench-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f28-step-5-bench-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f28-step-5-bench-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f28-step-5-bench-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f28-step-5-bench-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f28-step-5-bench-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f28-step-5-bench-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f28-step-5-bench-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f28-step-5-bench-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f28-step-5-bench-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f28-step-5-bench-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f28-step-5-bench-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f28-step-5-bench-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f28-step-5-bench-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f28-step-5-bench-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f28-step-5-bench-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f28-step-5-bench-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f28-step-5-bench-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f28-step-5-bench-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f28-step-5-bench-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f28-step-5-bench-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f28-step-5-bench-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f28-step-5-bench-box.center { justify-content:center; }
+  .f28-step-5-bench-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f28-step-5-bench-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f28-step-5-bench-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f28-step-5-bench-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f28-step-5-bench-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f28-step-5-bench-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f28-step-5-bench-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f28-step-5-bench-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f28-step-5-bench-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f28-step-5-bench-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f28-step-5-bench-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="28-step-5-bench" data-duration="18.36" data-width="1920" data-height="1080">
+
+  <div class="clip f28-step-5-bench-bg" id="f28-step-5-bench-bg" data-start="0" data-duration="18.36" data-track-index="0"></div>
+
+  <div class="clip f28-step-5-bench-scene" id="f28-step-5-bench-scene" data-start="0" data-duration="18.36" data-track-index="1">
+  <div class="f28-step-5-bench-kicker" id="f28-step-5-bench-kicker">Step 5 · Checked outside the loop</div>
+  <div class="f28-step-5-bench-spine" id="f28-step-5-bench-spine">
+    <div class="f28-step-5-bench-tick done" id="f28-step-5-bench-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f28-step-5-bench-tick done" id="f28-step-5-bench-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f28-step-5-bench-tick done" id="f28-step-5-bench-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f28-step-5-bench-tick done" id="f28-step-5-bench-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f28-step-5-bench-tick live" id="f28-step-5-bench-tick-5" data-plan-step="5" style="top:475px"></div>
+  </div>
+  <div id="f28-step-5-bench-ring">
+  <div class="f28-step-5-bench-box center" style="left:200px; top:270px; width:240px; height:100px">reviews</div>
+  <div class="f28-step-5-bench-box center" style="left:560px; top:270px; width:240px; height:100px">memory</div>
+  <div class="f28-step-5-bench-box center" style="left:560px; top:540px; width:240px; height:100px">retro</div>
+  <div class="f28-step-5-bench-box center" style="left:200px; top:540px; width:240px; height:100px">skill</div>
+  <svg class="f28-step-5-bench-lines" viewBox="0 0 1920 1080"><path id="f28-step-5-bench-r1" d="M440 320 L546 320" /><path id="f28-step-5-bench-r1h" class="headg" d="M560 320 L544 329 L544 311 Z" /><path id="f28-step-5-bench-r2" d="M680 370 L680 526" /><path id="f28-step-5-bench-r2h" class="headg" d="M680 540 L671 524 L689 524 Z" /><path id="f28-step-5-bench-r3" d="M560 590 L454 590" /><path id="f28-step-5-bench-r3h" class="headg" d="M440 590 L456 581 L456 599 Z" /><path id="f28-step-5-bench-r4" d="M320 540 L320 384" /><path id="f28-step-5-bench-r4h" class="headg" d="M320 370 L329 386 L311 386 Z" /></svg>
+  <div class="f28-step-5-bench-chip grey" style="left:200px; top:210px">the loop</div>
+  </div>
+  <div class="f28-step-5-bench-chip grey" id="f28-step-5-bench-ask" style="left:200px; top:720px">fewer questions = better?</div>
+  <div class="f28-step-5-bench-strike" id="f28-step-5-bench-x" style="left:196px; top:733px; width:410px"></div>
+  <div class="f28-step-5-bench-file" id="f28-step-5-bench-bench" style="left:980px; top:230px; width:860px; height:560px"><span class="fn">benchmark · Bob Dylan, same prompt</span><div class="rule"></div></div>
+  <div class="f28-step-5-bench-box center" id="f28-step-5-bench-b1" style="left:1020px; top:340px; width:380px; height:180px">old skill</div>
+  <div class="f28-step-5-bench-box center" id="f28-step-5-bench-b2" style="left:1420px; top:340px; width:380px; height:180px">new skill</div>
+  <div class="f28-step-5-bench-box paper center" id="f28-step-5-bench-b3" style="left:1020px; top:560px; width:380px; height:180px">text baseline</div>
+  <div class="f28-step-5-bench-box paper center" id="f28-step-5-bench-b4" style="left:1420px; top:560px; width:380px; height:180px">HTML baseline</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "28-step-5-bench";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f28-step-5-bench-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("ring"), 0.15);
+  pop(tl, $("ask"), 2.39, 8);
+  grow(tl, $("x"), 3.76);
+  pop(tl, $("bench"), 6.23);
+  pop(tl, $("b1"), 7.4);
+  pop(tl, $("b2"), 8.45);
+  pop(tl, $("b3"), 12.82);
+  pop(tl, $("b4"), 13.73);
+  lit(tl, $("bench"), 15.86);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 17.859);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

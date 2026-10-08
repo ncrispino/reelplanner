@@ -1,0 +1,122 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f21-branch-2b-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f21-branch-2b-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f21-branch-2b-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f21-branch-2b-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f21-branch-2b-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f21-branch-2b-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f21-branch-2b-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-slot .d.lit { color:var(--rp-coral-deep); }
+  .f21-branch-2b-slot:not([data-filled]) .n, .f21-branch-2b-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f21-branch-2b-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f21-branch-2b-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f21-branch-2b-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f21-branch-2b-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f21-branch-2b-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f21-branch-2b-node.dim { opacity:0.72; }
+  .f21-branch-2b-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f21-branch-2b-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f21-branch-2b-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f21-branch-2b-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f21-branch-2b-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f21-branch-2b-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f21-branch-2b-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f21-branch-2b-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f21-branch-2b-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  /* the player's question sheet, drawn as the page it is (a prototype of the player's own surface) */
+  .f21-branch-2b-q { position:absolute; font:400 48px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-qk { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f21-branch-2b-card { position:absolute; width:610px; height:130px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f21-branch-2b-card .k { position:absolute; left:24px; top:22px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f21-branch-2b-card .l { position:absolute; left:24px; top:62px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-card.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f21-branch-2b-card.ghost .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f21-branch-2b-box { position:absolute; left:24px; top:47px; width:36px; height:36px; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.55); background:var(--rp-paper); }
+  .f21-branch-2b-tickmark { position:absolute; left:7px; top:1px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); opacity:0; }
+  .f21-branch-2b-card .l.cb { left:84px; top:45px; }
+  .f21-branch-2b-btn { position:absolute; height:60px; padding:0 28px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  /* decision beats: three option cards, each carrying a small prototype of what that option does */
+  .f21-branch-2b-opt { position:absolute; top:300px; width:520px; height:330px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f21-branch-2b-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f21-branch-2b-opt .l { position:absolute; left:28px; top:70px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-fr { position:absolute; top:190px; height:84px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/82px "JetBrains Mono"; text-align:center; color:var(--rp-ink); white-space:nowrap; }
+  .f21-branch-2b-fr.q { background:var(--rp-paper); border-style:dashed; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f21-branch-2b-bar { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.25); }
+  .f21-branch-2b-mk { position:absolute; width:4px; height:28px; border-radius:2px; background:var(--rp-ink); }
+  .f21-branch-2b-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  .f21-branch-2b-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="21-branch-2b" data-duration="6" data-width="1920" data-height="1080">
+
+  <div class="clip f21-branch-2b-bg" data-start="0" data-duration="6" data-track-index="0"></div>
+
+  <div class="clip f21-branch-2b-scene" id="f21-branch-2b-scene" data-start="0" data-duration="6" data-track-index="1">
+
+
+  <div class="f21-branch-2b-rail" id="f21-branch-2b-rail">
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Up to 4 options</span></div>
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Pick all</span><span class="d" id="f21-branch-2b-tag-2" data-plan-question="1">One summary</span></div>
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">As many as needed</span></div>
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Type on the mark</span></div>
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Diagrams to follow</span></div>
+    <div class="f21-branch-2b-slot" id="f21-branch-2b-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">Video signals</span><span class="d lit" id="f21-branch-2b-tag-6" data-plan-question="2">Lost-me tap</span></div>
+  </div>
+
+  <div class="f21-branch-2b-hero" id="f21-branch-2b-hero" style="top:390px">Only what you press</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "21-branch-2b", P = "#f21-branch-2b-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f21-branch-2b-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f21-branch-2b-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f21-branch-2b-slot-" + n + " .n, #f21-branch-2b-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f21-branch-2b-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f21-branch-2b-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f21-branch-2b-rail", { opacity: 0.6 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
+  
+  
+  pop(tl, $("hero"), 0.900, 12);
+  tl.fromTo("#f21-branch-2b-tag-6", { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.33);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 5.499);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

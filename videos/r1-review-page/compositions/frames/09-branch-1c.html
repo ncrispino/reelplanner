@@ -1,0 +1,102 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f09-branch-1c-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f09-branch-1c-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  .f09-branch-1c-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the main column, now the whole frame: x 160..1860, the rail's 500px folded in ----
+     AFTER-LAYOUT, column-relative, written down rather than eyeballed:
+       video   0,  58  1700 x 420  -> x -1660, so 0..40 of it is all that is left on screen
+       sheet  60,  58  1640 x 420  <- FROM 0,268 1700 x 210 (frame 02's rect):
+                                      x -60, y +210, scaleX 1700/1640 = 1.0366, scaleY 210/420 = 0.5
+       q     103, 106              sibling span, travels x +60 y -190 (from 43, 296)
+       chips 103 / 579, 200        sibling spans, travel x +60 y -180 (from 43 / 519, 380)
+       edge   46,  58   3 x 420    the coral hairline on what is left of the video
+     The column clips, so the video leaves the frame instead of running off the page.
+     Column box is identical in 07/08/09 (160,230 1700x620) so the crossfades do not jump.       */
+  .f09-branch-1c-col { position:absolute; left:160px; top:230px; width:1700px; height:620px; overflow:hidden; }
+  .f09-branch-1c-r { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f09-branch-1c-r .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+  .f09-branch-1c-vid { position:absolute; left:0; top:58px; width:1700px; height:420px; border-radius:5px; background:var(--rp-data); overflow:hidden; }
+  .f09-branch-1c-vid .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+
+  .f09-branch-1c-tile { position:absolute; width:490px; height:120px; border-radius:8px;
+    background:rgba(var(--rp-on-ink-rgb),0.1); border:1px solid rgba(var(--rp-on-ink-rgb),0.22);
+    display:flex; align-items:center; justify-content:center;
+    font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-on-ink); }
+
+  /* the sheet CHANGES SIZE here, so it is a bare rect and its words are siblings that travel */
+  .f09-branch-1c-sheet { position:absolute; left:60px; top:58px; width:1640px; height:420px; border-radius:6px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); transform-origin:0 0; }
+  .f09-branch-1c-q { position:absolute; left:103px; top:106px; font:400 46px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f09-branch-1c-o { position:absolute; top:200px; width:432px; height:56px; border-radius:6px;
+    background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18);
+    display:flex; align-items:center; padding-left:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  /* the frame's ONE coral: the hairline on the sliver of video still in the room */
+  .f09-branch-1c-edge { position:absolute; left:46px; top:58px; width:3px; height:420px; background:var(--rp-coral); transform-origin:50% 0; }
+</style>
+
+<div id="root" data-composition-id="09-branch-1c" data-duration="6.836" data-width="1920" data-height="1080">
+  <div class="f09-branch-1c-bg"></div>
+  <div class="f09-branch-1c-kicker" id="f09-branch-1c-kicker">✱ If C · the video steps aside</div>
+
+  <div class="f09-branch-1c-lbl" style="left:160px;top:180px">The main column</div>
+
+  <div class="f09-branch-1c-col" id="f09-branch-1c-col" data-plan-component="page">
+    <div class="f09-branch-1c-r" style="left:0;top:0;width:1700px;height:44px"><span class="cap">Title</span></div>
+
+    <div class="f09-branch-1c-vid" id="f09-branch-1c-vid" data-plan-component="stage">
+      <span class="cap">The video</span>
+      <i class="f09-branch-1c-tile" style="left:58px;top:50px">Manifest</i>
+      <i class="f09-branch-1c-tile" style="left:605px;top:150px">Blob store</i>
+      <i class="f09-branch-1c-tile" style="left:1153px;top:150px">Sweeper</i>
+    </div>
+
+    <div class="f09-branch-1c-edge" id="f09-branch-1c-edge"></div>
+
+    <div class="f09-branch-1c-sheet" id="f09-branch-1c-sheet" data-plan-component="sheet"></div>
+    <span class="f09-branch-1c-q" id="f09-branch-1c-q">Where does the manifest live?</span>
+    <i class="f09-branch-1c-o" id="f09-branch-1c-o-1" style="left:103px">A · Postgres</i>
+    <i class="f09-branch-1c-o" id="f09-branch-1c-o-2" style="left:579px">B · S3 object</i>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 6.336, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f09-branch-1c-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.42, ease: E }, 0.047);
+  tl.fromTo("#f09-branch-1c-col", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: E, transformOrigin: "50% 40%" }, 0.047);
+
+  // "With C," — the video walks out of the column, 40px of it left against the edge
+  tl.fromTo("#f09-branch-1c-vid", { x: 0 }, { x: -1660, duration: 1.0, ease: E }, 0.268);
+
+  // "the question" — the sheet takes the column: the rect scales, the words travel on their own
+  tl.fromTo("#f09-branch-1c-sheet", { x: -60, y: 210, scaleX: 1.0366, scaleY: 0.5 },
+                                    { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 1.0, ease: E, transformOrigin: "0% 0%" }, 0.65);
+  tl.fromTo("#f09-branch-1c-q", { x: -60, y: 190 }, { x: 0, y: 0, duration: 1.0, ease: E }, 0.65);
+  tl.fromTo("#f09-branch-1c-o-1", { x: -60, y: 180 }, { x: 0, y: 0, duration: 1.0, ease: E }, 0.742);
+  tl.fromTo("#f09-branch-1c-o-2", { x: -60, y: 180 }, { x: 0, y: 0, duration: 1.0, ease: E }, 0.828);
+
+  // "the thing you are deciding about" — the one coral, on all that is left of it
+  tl.fromTo("#f09-branch-1c-edge", { opacity: 1, scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: E, transformOrigin: "50% 0%" }, 3.01);
+
+  // held read, 2.38s — "is not on screen while you decide" plays over the frame that shows it
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["09-branch-1c"] = tl;
+})();
+</script>
+</template>

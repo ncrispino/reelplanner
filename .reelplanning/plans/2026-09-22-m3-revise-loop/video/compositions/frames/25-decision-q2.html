@@ -1,0 +1,152 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f25-decision-q2-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f25-decision-q2-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f25-decision-q2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f25-decision-q2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f25-decision-q2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f25-decision-q2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f25-decision-q2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-slot:not([data-filled]) .n, .f25-decision-q2-slot:not([data-filled]) .t { opacity:0; }
+  .f25-decision-q2-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f25-decision-q2-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f25-decision-q2-slot.dec .n { top:13px; } .f25-decision-q2-slot.dec .t { top:12px; } .f25-decision-q2-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f25-decision-q2-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f25-decision-q2-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f25-decision-q2-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f25-decision-q2-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f25-decision-q2-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f25-decision-q2-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f25-decision-q2-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f25-decision-q2-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f25-decision-q2-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f25-decision-q2-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f25-decision-q2-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f25-decision-q2-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f25-decision-q2-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f25-decision-q2-chip.lit { color:var(--rp-coral-deep); }
+  .f25-decision-q2-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f25-decision-q2-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f25-decision-q2-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f25-decision-q2-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f25-decision-q2-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f25-decision-q2-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f25-decision-q2-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f25-decision-q2-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f25-decision-q2-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f25-decision-q2-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f25-decision-q2-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f25-decision-q2-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f25-decision-q2-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f25-decision-q2-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f25-decision-q2-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f25-decision-q2-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f25-decision-q2-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+</style>
+
+<div id="root" data-composition-id="25-decision-q2" data-duration="21.599" data-width="1920" data-height="1080">
+
+  <div class="clip f25-decision-q2-bg" data-start="0" data-duration="21.599" data-track-index="0"></div>
+
+  <div class="clip f25-decision-q2-scene" id="f25-decision-q2-scene" data-start="0" data-duration="21.599" data-track-index="1">
+  <div class="f25-decision-q2-kicker" id="f25-decision-q2-kicker">Choice 2 · Step 6</div>
+  <div class="f25-decision-q2-spine" id="f25-decision-q2-spine">
+    <div class="f25-decision-q2-tick" id="f25-decision-q2-tick-6" data-plan-step="6" style="top:35px"></div>
+    <div class="f25-decision-q2-tick" id="f25-decision-q2-tick-7" data-plan-step="7" style="top:145px"></div>
+    <div class="f25-decision-q2-tick" id="f25-decision-q2-tick-8" data-plan-step="8" style="top:255px"></div>
+    <div class="f25-decision-q2-tick" id="f25-decision-q2-tick-9" data-plan-step="9" style="top:365px"></div>
+    <div class="f25-decision-q2-tick" id="f25-decision-q2-tick-10" data-plan-step="10" style="top:475px"></div>
+  </div>
+  <div class="f25-decision-q2-hero" id="f25-decision-q2-q" style="left:200px; top:140px; font-size:60px; white-space:nowrap">What may a run nobody is watching do?</div>
+  <div class="f25-decision-q2-opt" id="f25-decision-q2-opt-a" data-plan-option="a" style="left:200px; top:260px; width:380px; height:430px"><span class="k">A</span><span class="l">As now</span>
+    <div class="f25-decision-q2-rule" style="top:136px; width:324px"></div>
+    <span class="r" style="top:166px"><b>shell:</b> any</span>
+    <span class="r" style="top:222px"><b>workers:</b> no</span>
+    <span class="r" style="top:278px"><b>fence:</b> none</span>
+    <div class="f25-decision-q2-rule" style="top:338px; width:324px"></div>
+    <span class="c" id="f25-decision-q2-cost-a" style="top:366px">cost: no fence</span>
+  </div>
+  <div class="f25-decision-q2-opt" id="f25-decision-q2-opt-b" data-plan-option="b" style="left:620px; top:260px; width:380px; height:430px"><span class="k">B</span><span class="l">Auto mode</span>
+    <div class="f25-decision-q2-rule" style="top:136px; width:324px"></div>
+    <span class="r" style="top:166px"><b>shell:</b> if approved</span>
+    <span class="r" style="top:222px"><b>workers:</b> yes</span>
+    <span class="r" style="top:278px"><b>fence:</b> sandbox</span>
+    <div class="f25-decision-q2-rule" style="top:338px; width:324px"></div>
+    <span class="c" id="f25-decision-q2-cost-b" style="top:366px">needs: auto mode</span>
+  </div>
+  <div class="f25-decision-q2-opt" id="f25-decision-q2-opt-c" data-plan-option="c" style="left:1040px; top:260px; width:380px; height:430px"><span class="k">C</span><span class="l">Everything</span>
+    <div class="f25-decision-q2-rule" style="top:136px; width:324px"></div>
+    <span class="r" style="top:166px"><b>shell:</b> any</span>
+    <span class="r" style="top:222px"><b>workers:</b> yes</span>
+    <span class="r" style="top:278px"><b>fence:</b> sandbox only</span>
+    <div class="f25-decision-q2-rule" style="top:338px; width:324px"></div>
+    <span class="c" id="f25-decision-q2-cost-c" style="top:366px">advised: container</span>
+  </div>
+  <div class="f25-decision-q2-opt" id="f25-decision-q2-opt-d" data-plan-option="d" style="left:1460px; top:260px; width:380px; height:430px"><span class="k">D</span><span class="l">A short list</span>
+    <div class="f25-decision-q2-rule" style="top:136px; width:324px"></div>
+    <span class="r" style="top:166px"><b>shell:</b> 4 commands</span>
+    <span class="r" style="top:222px"><b>workers:</b> no</span>
+    <span class="r" style="top:278px"><b>fence:</b> the list</span>
+    <div class="f25-decision-q2-rule" style="top:338px; width:324px"></div>
+    <span class="c" id="f25-decision-q2-cost-d" style="top:366px">cost: rest refused</span>
+  </div>
+  <div class="f25-decision-q2-chip lit" id="f25-decision-q2-rec" style="left:620px; top:712px">recommended</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "25-decision-q2";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f25-decision-q2-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f25-decision-q2-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f25-decision-q2-slot-" + n + " .n, #f25-decision-q2-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f25-decision-q2-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f25-decision-q2-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+
+  gsap.set("#f25-decision-q2-tick-6", { backgroundColor: C, borderColor: C });
+  pop(tl, $("q"), 0.3, 10);
+  gsap.set([$("cost-a"), $("cost-b"), $("cost-c"), $("cost-d")], { opacity: 0 });
+  pop(tl, $("opt-a"), 1.26, 12);
+  tl.to($("cost-a"), { opacity: 1, duration: 0.4 }, 2.46);
+  pop(tl, $("opt-b"), 3.44, 12);
+  tl.to($("cost-b"), { opacity: 1, duration: 0.4 }, 3.6);
+  pop(tl, $("opt-c"), 8.36, 12);
+  tl.to($("cost-c"), { opacity: 1, duration: 0.4 }, 10.33);
+  pop(tl, $("opt-d"), 11.3, 12);
+  tl.to($("cost-d"), { opacity: 1, duration: 0.4 }, 11.48);
+  tickDone(tl, 6, 14.21);
+  lit(tl, $("opt-b"), 14.21);
+  pop(tl, $("rec"), 14.51, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.098);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,24 @@
+# reelplanning in a shared repo (the plan-to-video skill's "Several people"): add these lines to the repo's
+# own .gitignore. A plan folder carries only its videos' text (BRIEF.md, STORYBOARD.md, SCRIPT.md, the
+# frames' HTML, plan-map.json); the built video (its voice, images, fonts and captures) never enters git's
+# history. A PR's built video goes, packed, on a branch of its own, video/pr-<n>, that is never merged and is
+# deleted when the PR closes. (.reelplanning/.gitignore, from `reel init`, already leaves out each video's
+# snapshots/, renders/ and voice, and every guide.) `reel pr-check` fails a PR that adds a voice file, an image
+# or a video under .reelplanning/plans/.
+.reelplanning/plans/*/*video/assets/
+.reelplanning/plans/*/*video/capture/
+.reelplanning/plans/*/*video/audio_meta.json
+.reelplanning/plans/*/*video/audio_engine_meta.json
+# an explainer (explain-first step 5, D-249): its text goes into git (explain.md, sources.json, the storyboard,
+# script and frames, its reviews), never a transcript or its built video (voice, images, captures)
+.reelplanning/explainers/*/video/assets/
+.reelplanning/explainers/*/video/capture/
+.reelplanning/explainers/*/video/audio_meta.json
+.reelplanning/explainers/*/video/audio_engine_meta.json
+# what each reviewed version was built from that nothing makes again (its screenshots and captured text), kept small
+# and committed so `reel rebuild` can build it again: never ignore these
+!.reelplanning/media/**
+!.reelplanning/**/versions/**
+
+# And in the repo's .gitattributes, so two branches' waiting memory lines are both kept when they merge:
+#   .reelplanning/you.pending.jsonl merge=union

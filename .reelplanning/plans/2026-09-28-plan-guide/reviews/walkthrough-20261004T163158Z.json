@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "project": "walkthrough-video",
+  "src": "2026-09-28-plan-guide--walkthrough/index.html",
+  "source": "conversation",
+  "by": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+  "said": "Ok can you just accept all these as is?",
+  "submittedAt": "2026-10-04T16:31:58.271Z",
+  "verdict": "approve",
+  "annotations": [],
+  "autonomy": [
+    {
+      "id": "d2",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "A step's picture is the system's parts as a row of names, the ones the step touches lit, and the step's own fragment where it has one; a case dropped on it does not light a path"
+    },
+    {
+      "id": "d1",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "A part the builder makes is `guide/<part>.html`, not `details/<part>.html` as step 3's interface wrote it; a page started from a template stays in `details/`"
+    },
+    {
+      "id": "a1",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "Each video has its own guide, `<video-dir>/guide/` (the full page, a part a file, `parts.json`); a plan folder builds each of its videos'; a plan with no video, `<plan-dir>/guide/index.html`"
+    },
+    {
+      "id": "a2",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "The page is prototype v5's flow made general: a rail (outline, Expand all, gaps), then What changed (Built), a section a step, a section a kind of change, every choice, the decisions in force and the rest of `plan.md`; each a column of beats beside a stage, one column under 900 px; a layer a `<details>` with its summary; Expand all opens every layer, both sides of each section, each thing under its beat"
+    },
+    {
+      "id": "a3",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "Things to do are made from the blocks and the real runs, never written for a plan: the first six cases dragged onto What happens, the longest trace (three beats or more) put in order, the numbers and ✓/✗ words of the first printing interface part filled in, each question's options predicted; on the Built side six files sorted into their kind and a real run's ✓/✗ lines filled in"
+    },
+    {
+      "id": "a4",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "An explainer's source kept outside the repo (a transcript) shows its path, hash and lines, not its text; `--outside` builds a copy with it, masked, for this machine"
+    },
+    {
+      "id": "a8",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "A scene opens a part with `- guide: <part>[#<place>]`: a detail whose page is `guide/<part>.html` in the plan map (`guide: true`); the player offers it only once `guide/index.html` answers, and lists each step's part under the plan text's \"Open:\""
+    },
+    {
+      "id": "a9",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "videos-that-make-sense's walkthrough: its seven prototype parts are the builder's now, same names (`- guide:` for `- detail:`, the frames' marks kept); their hand-built things to do go with them"
+    },
+    {
+      "id": "a10",
+      "verdict": "accept",
+      "planStep": 4,
+      "chose": "A suggested edit's step and block come from its place (\"step 1 · interface · …\"); its ledger entry is kind `edit`, the reviewer's words chosen and the plan's the other option, active"
+    },
+    {
+      "id": "a11",
+      "verdict": "accept",
+      "planStep": 4,
+      "chose": "An answer given on the guide goes into the plan video's record in this browser (`:decisions`, `via: \"guide\"`), the later kept; a part sends it to the player (`answer`)"
+    },
+    {
+      "id": "a12",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "walkthrough.md's Categories of change: `- **<name>** {<id>} (<paths>) (<commits>) (step N): <two lines>`, `Runs:` under it; a category claims a change of the plan's commits by its path and, where it names commits, only theirs; the first to claim it has it, and what none claims is \"Everything else\""
+    },
+    {
+      "id": "a13",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "On the Built side a file the build writes (a plan map, captions, snapshots, pictures, audio, a rendered page) is listed with its counts, not shown; a changed line over 2,000 characters shows its first 400 and how many more; a file over 1.5 MB has no whole text, its changes still shown"
+    },
+    {
+      "id": "a5",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "The blocks are required of a plan whose folder is dated 2026-09-30 or later; `reel check --blocks` holds any plan to them"
+    },
+    {
+      "id": "a6",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "An option has an example when its text has a value, a quote, a command or a number (or \"say\", \"e.g.\"), or a word of five letters or more of the question's \"Say …\" setup"
+    },
+    {
+      "id": "a7",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "\"Says the video again\" is a sentence of eight words or more of either video's narration found, letters and digits only, in the page's first layer (the beats, closed layers left out)"
+    },
+    {
+      "id": "a14",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "A scene's guide part whose frame marks nothing is a △ under `details_check: strict`, where an unmarked detail fails; the player shows the corner chip for it"
+    }
+  ],
+  "decisions": [],
+  "quizzes": [],
+  "questions": [],
+  "recorded": {
+    "reviewer": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "conversation",
+    "reelplanning": "0.2.0"
+  }
+}

@@ -1,0 +1,10 @@
+# reproducible, large: rebuilt by the pipeline from the committed sources
+# (the same set .reelplanning/.gitignore keeps out of every plan video)
+renders/
+snapshots/
+node_modules/
+assets/vendor/
+.hyperframes/frame-packets/
+.hyperframes/cues/
+# the voice, made again by `reelplanning build` from SCRIPT.md (D-305: no voice files or renders are committed)
+assets/voice/

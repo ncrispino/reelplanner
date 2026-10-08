@@ -1,0 +1,71 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v11-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v11-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v11-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v11-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v11-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v11-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v11-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v11-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v11-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v11-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v11-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v11-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v11-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v11-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v11-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v11-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v11-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v11-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v11-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v11-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v11-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v11-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v11-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v11-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v11-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v11-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v11-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v11-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v11-txt code, .v11-mrow code, .v11-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="11-step-3-folder" data-band="bottom" data-duration="8.149" data-width="1920" data-height="1080">
+  <div class="clip v11-bg" id="v11-bg" data-start="0" data-duration="8.149" data-track-index="0"></div>
+  <div class="clip v11-scene" id="v11-scene" data-start="0" data-duration="8.149" data-track-index="1">
+    <div class="v11-slab" id="v11-s1" data-artifact="the plan map's entry for a scene's part" data-detail="step-3" style="left:120px; top:70px; width:1000px; height:400px"><div class="v11-sbar"></div><div class="v11-sbt">plan-map.json · a scene's part</div><div class="v11-row" style="top:72px">{</div><div class="v11-row" style="top:116px">  &quot;name&quot;: &quot;what-changed&quot;,</div><div class="v11-row hot" style="top:160px">  &quot;src&quot;: &quot;guide/what-changed.html&quot;,</div><div class="v11-row" style="top:204px">  &quot;kind&quot;: &quot;guide&quot;,</div><div class="v11-row hot" style="top:248px">  &quot;guide&quot;: true,</div><div class="v11-row" style="top:292px">  &quot;frameIndex&quot;: 1</div><div class="v11-row" style="top:336px">}</div></div>
+    <div class="v11-slab" id="v11-s2" data-artifact=".gitignore's lines that keep the guide out" style="left:120px; top:510px; width:1000px; height:270px"><div class="v11-sbar"></div><div class="v11-sbt">.gitignore: the guide, never committed</div><div class="v11-row" style="top:72px">.reelplanning/plans/&#42;/&#42;video/guide/</div><div class="v11-row" style="top:116px">.reelplanning/explainers/&#42;/video/guide/</div><div class="v11-row" style="top:160px">.reelplanning/plans/&#42;/guide/index.html</div><div class="v11-row" style="top:204px">.reelplanning/plans/&#42;/guide/parts.json</div></div>
+    <div class="v11-ring" id="v11-rg" style="left:124px; top:576px; width:720px; height:196px"></div>
+    <div class="v11-card" id="v11-d1" data-call="d1" style="left:1180px; top:70px; width:620px; height:400px"><span class="i">off-plan change D1</span><span class="t" style="font-size:48px">A part is guide/&lt;part&gt;.html, not details/&lt;part&gt;.html</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "11-step-3-folder";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v11-s1", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v11-s2", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v11-rg", { opacity: 0, y: 12 });
+  gsap.set("#v11-d1", { opacity: 0, y: 12 });
+  tl.to("#v11-s1", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 0.12);
+  tl.to("#v11-s2", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 4.95);
+  tl.to("#v11-rg", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.95);
+  tl.to("#v11-d1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

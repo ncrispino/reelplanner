@@ -1,0 +1,76 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b06-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b06-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b06-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b06-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b06-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b06-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b06-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b06-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b06-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b06-ul.ink { background:var(--rp-ink); height:3px; }
+  .b06-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b06-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b06-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b06-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b06-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b06-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b06-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b06-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b06-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b06-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b06-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b06-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b06-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b06-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+</style>
+
+<div id="root" data-composition-id="06-quick-check-where-the-word-goes" data-band="bottom" data-duration="6.857" data-width="1920" data-height="1080">
+
+  <div class="clip b06-bg" id="b06-bg" data-start="0" data-duration="6.857" data-track-index="0"></div>
+
+  <div class="clip b06-scene" id="b06-scene" data-start="0" data-duration="6.857" data-track-index="1">
+    <div class="b06-view" id="b06-view"><div class="b06-cam" id="b06-cam"><div id="b06-case">
+    <img class="b06-shot" src="assets/shots/02-choice-label-after.jpg" alt="" style="left:192px; top:96px; width:1536px; height:720px">
+    </div></div></div>
+    <div class="b06-q" id="b06-q" data-question style="left:180px; top:330px; width:1560px">After step one: where does the word <i>label</i> go?</div>
+    <div class="b06-opt" id="b06-opt-a" data-option="a" style="left:180px; top:500px; width:500px; height:250px"><span class="k">A</span><span class="l">On the table’s label column</span></div>
+    <div class="b06-opt" id="b06-opt-b" data-option="b" style="left:710px; top:500px; width:500px; height:250px"><span class="k">B</span><span class="l">On a card beside the table</span></div>
+    <div class="b06-opt" id="b06-opt-c" data-option="c" style="left:1240px; top:500px; width:500px; height:250px"><span class="k">C</span><span class="l">In the scene’s heading</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "06-quick-check-where-the-word-goes";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b06-cam", { x: -795, y: -225, scale: 1.35 });
+  gsap.set("#b06-case", { opacity: 0.55, transformOrigin: "0 0" });
+  tl.to("#b06-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#b06-case", { opacity: 0.2, duration: 0.8, ease: "power2.out" }, 0.6);
+  gsap.set("#b06-q", { opacity: 0, x: -24 });
+  tl.to("#b06-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 0.5);
+  gsap.set("#b06-opt-a", { opacity: 0, y: 28 });
+  tl.to("#b06-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.04);
+  gsap.set("#b06-opt-b", { opacity: 0, y: 28 });
+  tl.to("#b06-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.16);
+  gsap.set("#b06-opt-c", { opacity: 0, y: 28 });
+  tl.to("#b06-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.28);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

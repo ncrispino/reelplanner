@@ -1,0 +1,116 @@
+<template>
+<div id="root" data-composition-id="07-branch-1b" data-width="1920" data-height="1080" data-duration="6.26">
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .clip { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+  .f07-branch-1b-ground { background: var(--rp-paper); }
+
+  /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+  .f07-branch-1b-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f07-branch-1b-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f07-branch-1b-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f07-branch-1b-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f07-branch-1b-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  /* the branch tag: sentence case, 26 px, the frame's one coral (#A5614A passes 4.5:1 on the tile); "Write-ahead" ends near x 336, "S3 object" starts near x 410 */
+  .f07-branch-1b-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f07-branch-1b-slot.dim { opacity:0.72; }
+  .f07-branch-1b-slot.empty .n, .f07-branch-1b-slot.empty .t { opacity:0; }
+  .f07-branch-1b-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f07-branch-1b-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f07-branch-1b-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f07-branch-1b-node.navy .l { color:var(--rp-on-ink); }
+  .f07-branch-1b-node.dim { opacity:0.72; }
+  .f07-branch-1b-node.navy.dim { opacity:1; }
+  .f07-branch-1b-node.active { border:3px solid var(--rp-coral); }
+  .f07-branch-1b-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f07-branch-1b-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f07-branch-1b-edges path.dim { opacity:0.35; }
+  .f07-branch-1b-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  .f07-branch-1b-edges path.off { opacity:0; }
+
+  /* the beat's one worked example: a 26 px mono chip 16 px under the Manifest node, left-aligned to its left edge (node bottom 380 → chip top 396);
+     its three words land on their spoken cues */
+  .f07-branch-1b-chip { position:absolute; left:1360px; top:396px; height:44px; box-sizing:border-box; padding:0 14px; display:flex; align-items:center; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-branch-1b-chip span { white-space:pre; }
+
+  /* ghost "+1 day" cost tag in the still-dashed slot 2: 26 px mono, ink at 72 % (not a second coral) */
+  .f07-branch-1b-ghost { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+</style>
+
+<!-- full-bleed cream ground on its own clip layer -->
+<div class="clip f07-branch-1b-ground" data-start="0" data-duration="6.26" data-track-index="0"></div>
+
+<div class="clip" id="f07-branch-1b-stage" data-start="0" data-duration="6.26" data-track-index="1">
+
+  <div class="f07-branch-1b-rail" id="f07-branch-1b-rail">
+    <div class="f07-branch-1b-slot" id="f07-branch-1b-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span><span class="d" id="f07-branch-1b-tag-s3">S3 object</span></div>
+    <div class="f07-branch-1b-slot empty" id="f07-branch-1b-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span><span class="f07-branch-1b-ghost" id="f07-branch-1b-ghost-day">+1 day</span></div>
+    <div class="f07-branch-1b-slot empty" id="f07-branch-1b-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f07-branch-1b-slot empty" id="f07-branch-1b-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+    <div class="f07-branch-1b-slot empty" id="f07-branch-1b-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+    <div class="f07-branch-1b-slot empty" id="f07-branch-1b-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <!-- nodes are a title, nothing else; the Manifest node stays navy in both branches (navy = where state lives) -->
+  <div class="f07-branch-1b-node dim"  id="f07-branch-1b-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f07-branch-1b-node"      id="f07-branch-1b-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f07-branch-1b-node navy" id="f07-branch-1b-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l" id="f07-branch-1b-manifest-label">Manifest store</span></div>
+  <div class="f07-branch-1b-node dim"  id="f07-branch-1b-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+  <div class="f07-branch-1b-node dim"  id="f07-branch-1b-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+  <div class="f07-branch-1b-node dim"  id="f07-branch-1b-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+  <!-- brownfield edge set for frames 5–7: the three edges that exist today, dim; api→manifest (added by step 1) in ink; the sweeper pair not yet in the frame -->
+  <svg class="f07-branch-1b-edges" id="f07-branch-1b-edges" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <path id="f07-branch-1b-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+    <path id="f07-branch-1b-e-api-blob"         class="dim" d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path id="f07-branch-1b-e-sdk-api"          class="dim" d="M970 485 L1030 485" />
+    <path id="f07-branch-1b-e-api-billing"      class="dim" d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path id="f07-branch-1b-e-sweeper-manifest" class="off" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+    <path id="f07-branch-1b-e-sweeper-blob"     class="off" d="M1680 645 L1640 645" />
+  </svg>
+
+  <!-- the worked example for this branch: one chip under Manifest, its words revealed on "write", "check", "retry" -->
+  <div class="f07-branch-1b-chip" id="f07-branch-1b-chip"><span id="f07-branch-1b-w1">write</span><span id="f07-branch-1b-w2"> · check</span><span id="f07-branch-1b-w3"> · retry</span></div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var D = 5.76;
+  var tl = gsap.timeline({ paused: true });
+
+  // --- landed stage state at t=0 (slot 1 filled, the three inherited edges dim, api->manifest in ink) ---
+  // Reveal pieces start hidden via fromTo, never CSS-hidden.
+
+  // Scene 1 — 0.24 "S3": slot 1 gains the sentence-case tag, the frame's one coral. The Manifest node stays navy.
+  tl.fromTo("#f07-branch-1b-tag-s3",
+    { opacity: 0, x: 10 },
+    { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.471);
+
+  // Scene 2 — "a write, a check, and a retry": the chip settles in under Manifest on "write" (1.78),
+  // then its second and third words land on "check" (2.32) and "retry" (3.16). power3 settle, no scale.
+  tl.fromTo("#f07-branch-1b-chip",
+    { opacity: 0, y: 8 },
+    { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.874);
+  tl.fromTo("#f07-branch-1b-w2", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 2.44);
+  tl.fromTo("#f07-branch-1b-w3", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 3.21);
+
+  // Scene 3 — "a day": ghost +1 day tag in the still-dashed slot 2; hold
+  tl.fromTo("#f07-branch-1b-ghost-day",
+    { opacity: 0, x: 8 },
+    { opacity: 0.72, x: 0, duration: 0.45, ease: "power3.out" }, 4.753);
+
+  // held read to the end of the frame
+  tl.to({}, { duration: 0.001 }, D - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["07-branch-1b"] = tl;
+})();
+</script>
+</div>
+</template>

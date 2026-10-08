@@ -1,0 +1,240 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-kerning: normal;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* full-bleed cream ground — a clip on the lowest track, never on #root */
+    .f01-hook-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--rp-paper);
+    }
+    .f01-hook-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* kicker — ✱ is ink in this project; the frame's one coral is the strike */
+    .f01-hook-kicker {
+      position: absolute;
+      left: 80px;
+      top: 80px;
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    .f01-hook-spike {
+      color: var(--rp-ink);
+      margin-right: 0.35em;
+    }
+
+    /* two number-lockups on one centred row, a single hairline between */
+    .f01-hook-lockups {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 330px;
+      height: 270px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .f01-hook-lockup {
+      width: 560px;
+      display: flex;
+      flex-direction: column;
+    }
+    .f01-hook-lockup-a {
+      align-items: flex-end;
+      padding-right: 120px;
+    }
+    .f01-hook-lockup-b {
+      align-items: flex-start;
+      padding-left: 120px;
+    }
+    .f01-hook-fig {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-size: 190px;
+      line-height: 0.95;
+      letter-spacing: -0.028em;
+      color: var(--rp-ink);
+      font-variant-numeric: lining-nums;
+      white-space: nowrap;
+    }
+    .f01-hook-unit {
+      margin-top: 30px;           /* clear vertical room between figure and unit */
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    .f01-hook-rule {
+      position: absolute;
+      left: 959px;
+      top: 0;
+      width: 1px;
+      height: 270px;
+      background: rgba(var(--rp-ink-rgb), 0.2);
+    }
+
+    /* the rejected method — a small mono line that takes the strike */
+    .f01-hook-hand {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 640px;
+      display: flex;
+      justify-content: center;
+    }
+    .f01-hook-hand-text {
+      position: relative;
+      display: inline-block;
+      padding: 0 8px;
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    .f01-hook-strike {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      margin-top: -2px;
+      height: 3px;
+      background: var(--rp-coral);
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-hook" data-duration="10.164" data-width="1920" data-height="1080">
+    <div class="clip f01-hook-bg" data-start="0" data-duration="10.164" data-track-index="0"></div>
+
+    <div class="clip f01-hook-stage" data-start="0" data-duration="10.164" data-track-index="1">
+      <div class="f01-hook-kicker" id="f01-hook-kicker"><span class="f01-hook-spike">✱</span>Part 1 of 3</div>
+
+      <div class="f01-hook-lockups" id="f01-hook-lockups">
+        <div class="f01-hook-rule" id="f01-hook-rule"></div>
+        <div class="f01-hook-lockup f01-hook-lockup-a">
+          <div class="f01-hook-fig" id="f01-hook-fig-40">40</div>
+          <div class="f01-hook-unit" id="f01-hook-unit-albums">albums</div>
+        </div>
+        <div class="f01-hook-lockup f01-hook-lockup-b">
+          <div class="f01-hook-fig" id="f01-hook-fig-600">600</div>
+          <div class="f01-hook-unit" id="f01-hook-unit-songs">songs</div>
+        </div>
+      </div>
+
+      <div class="f01-hook-hand" id="f01-hook-hand">
+        <span class="f01-hook-hand-text">by hand<span class="f01-hook-strike" id="f01-hook-strike"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var DUR = 9.664;
+      // Cue sheet (frame-relative seconds): each reveal lands on the START of the word that names it.
+      var CUE = {
+        bob: 0.06,
+        dylan: 0.21,
+        forty: 0.77,
+        albums: 1.62,
+        sixHundred: 2.65,
+        songs: 3.24,
+        website: 3.97,
+        by: 7.65,
+        wrong: 8.67
+      };
+
+      var tl = gsap.timeline({ paused: true });
+
+      // Scene 1 — the frame establishes on "Bob Dylan": kicker, then the centre hairline.
+      tl.fromTo("#f01-hook-kicker",
+        { opacity: 0, y: -12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+        CUE.bob);
+      tl.fromTo("#f01-hook-rule",
+        { scaleY: 0, transformOrigin: "50% 50%" },
+        { scaleY: 1, duration: 0.6, ease: "power3.out" },
+        CUE.dylan);
+
+      // Scene 2 — kinetic beats on the cue grid, each with its own entrance.
+      // "40": scale + blur slam.
+      tl.fromTo("#f01-hook-fig-40",
+        { opacity: 0, scale: 1.12, transformOrigin: "50% 50%" },
+        { opacity: 1, scale: 1, duration: 0.55, ease: "power3.out" },
+        CUE.forty);
+      // "albums": rise from below.
+      tl.fromTo("#f01-hook-unit-albums",
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        CUE.albums);
+      // "600": side snap from the right, resolving sharp.
+      tl.fromTo("#f01-hook-fig-600",
+        { opacity: 0, x: 96 },
+        { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" },
+        CUE.sixHundred);
+      // "songs": rise from below.
+      tl.fromTo("#f01-hook-unit-songs",
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        CUE.songs);
+
+      // Scene 3 — "A website about him is mostly a data problem": the numbers settle up and
+      // shrink a step, a slow macro move that makes room for the method line beneath.
+      tl.to("#f01-hook-lockups",
+        { y: -72, scale: 0.92, transformOrigin: "50% 50%", duration: 2.2, ease: "power2.inOut" },
+        CUE.website);
+
+      // Scene 4 — "by hand": the small mono line arrives.
+      tl.fromTo("#f01-hook-hand",
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        CUE.by);
+      // "wrong in a month": the one coral — a strike draws left to right through it.
+      tl.fromTo("#f01-hook-strike",
+        { scaleX: 0, transformOrigin: "0% 50%" },
+        { scaleX: 1, duration: 0.35, ease: "power3.out" },
+        CUE.wrong);
+
+      // Held read to the end of the voice; pins the timeline length to the frame duration.
+      tl.set({ v: 0 }, { v: 1 }, DUR);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["01-hook"] = tl;
+    })();
+  </script>
+</template>

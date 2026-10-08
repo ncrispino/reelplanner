@@ -1,0 +1,73 @@
+$ reel memory . misses   (this repo: what reviews let through and was changed later, 30 Sep 2026)
+[misses] 17 misses, let through by a review and changed later (9 recent: a call sharing a label with one pauses): D-021 superseded by D-194; D-041 superseded by D-219; D-056 superseded by D-063; D-083 superseded by D-219; D-084 superseded by D-219; D-108 superseded by D-143; D-133 superseded by D-221; D-206 superseded by D-246; D-214 superseded by D-221; D-220 superseded by D-221; D-228 superseded by D-264; A1 of close-the-lifecycle accepted, then changed; A3 of close-the-lifecycle accepted, then changed; A7 of videos-you-can-follow accepted, then changed; A10 of better-visuals accepted, then changed; step 6 of m3-revise-loop reworked (k3); step 2 of videos-you-can-follow reworked (k2).
+
+The evidence (.reelplanning: the ledger and every plan's reviews/):
+- recent · D-021 superseded by D-194 (details-in-the-frame: "A tab, the whole time")
+    let through by: question q1 of deep-dives (D-021: "Where does a detail open?" → Side panel)
+    kind: no tags; components player
+    shown by: details-in-the-frame (2026-09-27)
+- recent · D-041 superseded by D-219 (walkthroughs-that-help: "A short video of it running")
+    let through by: call A13 of close-the-lifecycle (D-041, accepted: "An accepted agent call warns a later plan in reel check that touches its part")
+    kind: no tags; components diff, revise
+    shown by: walkthroughs-that-help (2026-09-27)
+- older · D-056 superseded by D-063 (deep-dives: "Beside the stage when that costs it under 15 % of its width; otherwise in the record")
+    let through by: call A3 of deep-dives (D-056, accepted: "The plan text goes beside the stage (a 340 px column) when the stage loses under 10 % of its width for it; otherwise it is a section in the record, under Steps")
+    kind: no tags; components player
+    shown by: deep-dives (2026-09-23)
+- recent · D-083 superseded by D-219 (walkthroughs-that-help: "A short video of it running")
+    let through by: question q3 of m3-revise-loop (D-083: "How many quick checks does a video ask?" → One per step, plus wherever there is something to predict)
+    kind: no tags; components skill, cli, player, system-video, action
+    shown by: walkthroughs-that-help (2026-09-27)
+- recent · D-084 superseded by D-219 (walkthroughs-that-help: "A short video of it running")
+    let through by: question q4 of m3-revise-loop (D-084: "Does your own record also decide what stops?" → The tags, and your record)
+    kind: no tags; components skill, cli, player, system-video, action
+    shown by: walkthroughs-that-help (2026-09-27)
+- older · D-108 superseded by D-143 (answer-on-the-video: "The frame's cards are answered through transparent buttons the player lays over them in its own page, placed from each card's box in the frame (percent of the stage), with the hover and focus ring drawn by the player")
+    let through by: question q1 of answer-on-the-video (D-108: "Where do the answers the frame can't take go?" → i like the pricnicple of A, not messing w video, but we probably need it to be bigger. if we can design videos in a way where this bar is larger and more graceful in the video that might be best?)
+    kind: no tags; components player, skill
+    shown by: answer-on-the-video (2026-09-26)
+- recent · D-133 superseded by D-221 (walkthroughs-that-help: "Listed, not judged")
+    let through by: call A4 of videos-you-can-follow (D-133, accepted: "The system video says the plain words throughout, not only where it defines them ("Chapter 2 of 5", choices, labels, scenes, "Question 1" on the decision mock); to stay under eight minutes the headless-run scene lost two sentences, the review loop's scene its "a plan's review hasn't made that trip yet", and rule two its reopened-by-hand story")
+    kind: tags visible; components skill, finish, player, system-video
+    shown by: walkthroughs-that-help (2026-09-27)
+- recent · D-206 superseded by D-246 (plan-guide: "Opens its part of the guide")
+    let through by: call A5 of details-in-the-frame (D-206, accepted: "The button hides for as long as a question's box is up, an answered quick check counting down included, and comes back when it closes")
+    kind: tags visible; components player
+    shown by: plan-guide (2026-09-29)
+- recent · D-214 superseded by D-221 (walkthroughs-that-help: "Listed, not judged")
+    let through by: question conversation-1 of contributing (D-214: "When does a PR need a video?" → Choices or size only)
+    kind: no tags; components skill, cli
+    shown by: walkthroughs-that-help (2026-09-27)
+- recent · D-220 superseded by D-221 (walkthroughs-that-help: "Listed, not judged")
+    let through by: question q2 of walkthroughs-that-help (D-220: "Which choices make it pause?" → i dont like specifically saying 'five' i mean i think there's a lot that changes per plan i dont think being too specific is good)
+    kind: no tags; components skill, player, cli, fix-step, system-video
+    shown by: walkthroughs-that-help (2026-09-27)
+- recent · D-228 superseded by D-264 (plan-guide: "Under the video, on the same page: scrolling down reads the guide while the video shrinks to a small player that stays in view; the video is never replaced")
+    let through by: question q2 of plan-guide (D-228: "Where does the guide open from the video?" → Its own page, a click away)
+    kind: no tags; components player
+    shown by: plan-guide (2026-09-30)
+- older · A1 of close-the-lifecycle accepted in walkthrough-20260923T073957Z, then changed after review: the brief is short and points at the plan and the diff; the checker reads them itself, and its freshness comes from being a new subagent
+    let through by: call A1 of close-the-lifecycle (D-026)
+    kind: no tags; components diff
+    shown by: close-the-lifecycle (2026-09-23)
+- older · A3 of close-the-lifecycle accepted in walkthrough-20260923T073957Z, then changed after review: no diff is pasted in unless `--inline-diff` is given; the checker runs the diff command itself
+    let through by: call A3 of close-the-lifecycle (D-030)
+    kind: no tags; components diff
+    shown by: close-the-lifecycle (2026-09-23)
+- older · A7 of videos-you-can-follow accepted in walkthrough-20260926T043908Z, then changed after review: it also writes a `recap:` line for every earlier video the plan builds on, the two on the card included, each with its plan's title and what it gives, so the recap scene sums up all of them in a line each and a viewer who watches none still has the gist; it named only the ones past two for the recap. The owner, on quick check k2: why not summarize everything if there is a summary anyway
+    let through by: call A7 of videos-you-can-follow (D-136)
+    kind: tags visible; components finish, revise, system-video
+    shown by: videos-you-can-follow (2026-09-26)
+- older · A10 of better-visuals accepted in walkthrough-20260927T010310Z, then changed after review: the detail pages' templates take today's look too, `#B8552E` / `#D2693F` and `#9C4524` / `#E3A184` at text size, the three solid inks, coral only for the call and the part a comment is on, and in the player's panel the review page's faces, which the player posts to the page; `04b9826`
+    let through by: call A10 of better-visuals (D-180)
+    kind: no tags; components player
+    shown by: better-visuals (2026-09-27)
+- older · step 6 of m3-revise-loop reworked after the walkthrough's quick check k3 ("The run writes a file outside the repo with its file tool, not the shell. What happens?"): "oh i mean i think we'd expect the other tools to do this too then, not write outside repo? how about you add permissions to the filesystem tools then?"
+    let through by: question q2 of m3-revise-loop (D-082: "What may a run nobody is watching do?" → Auto mode, inside the sandbox)
+    kind: no tags; components skill, cli, player, system-video, action
+    shown by: m3-revise-loop (2026-09-24)
+- older · step 2 of videos-you-can-follow reworked after the walkthrough's quick check k2 ("This video builds on six earlier videos. Besides the system video, how many does its card list?"): "why woulndt it also juts summarize everything in this case? we can point to some higher priortiy to watch but why woulndt all be summarized if we do summary anyway?"
+    let through by: question q2 of videos-you-can-follow (D-128: "Where is "you watched it" kept?" → This browser, and your file)
+    kind: no tags; components revise, system-video
+    shown by: videos-you-can-follow (2026-09-26)
+exit 0

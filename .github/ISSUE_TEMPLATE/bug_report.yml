@@ -1,0 +1,59 @@
+name: Bug report
+description: Something in reelplanning did not work as the docs say.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting it. A security problem goes to the repository's **Security** tab, not here (.github/SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you ran or did, what you expected, and what you got instead. Paste the command's output.
+      placeholder: |
+        I ran `reelplanning reel check .reelplanning/plans/2026-10-04-done-flag` and expected …, but it printed …
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to make it happen again
+      description: The smallest steps that show it. A plan.md, a review.json or a video folder helps (attach it, or link a repo).
+      placeholder: |
+        1. `reel init . --name demo`
+        2. …
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: reelplanning version
+      description: "`reelplanning --version`, or the commit (`git rev-parse --short HEAD`) for a checkout"
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Which agent ran it
+      options:
+        - Claude Code
+        - Codex
+        - another agent (say which below)
+        - none (I ran the command myself)
+    validations:
+      required: true
+  - type: textarea
+    id: machine
+    attributes:
+      label: Machine
+      description: Your OS, `node --version`, and what `reelplanning setup --dry-run` prints.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: A pull request?
+      options:
+        - label: I'd like to fix it myself (.github/CONTRIBUTING.md says how; the PR says "Closes #" and this issue's number)

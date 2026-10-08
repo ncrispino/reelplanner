@@ -1,0 +1,10 @@
+# Several reviewers' memory lines waiting in the repo (the contributing plan, step 4): a merge keeps both
+# sides' lines; each moves only into the file of the reviewer it names.
+.reelplanning/you.pending.jsonl merge=union
+
+# GitHub's language bar counts the code: the project record, the example videos' compositions and the case-study
+# runs are HTML that would outweigh it several times over. (Not linguist-documentation: pr-check reads that as docs.)
+.reelplanning/** -linguist-detectable
+packages/player/.reelplanning/** -linguist-detectable
+videos/** -linguist-detectable
+eval/** -linguist-detectable

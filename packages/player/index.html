@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Plan Review Player</title>
+<link rel="icon" href="data:,">
+<style>
+  /* the page is the ground the paper frame sits on: a shade darker than the paper, in both themes */
+  /* the same tokens as the player's (reelplanning-player.js STYLE): three solid inks for text, and the
+     darker coral (D-142) only for what needs you */
+  :root { --ground: #F1EFE8; --paper: #FAF9F5; --ink: #141413; --ink-2: #3D3B37; --ink-3: #5C5953; --ink-rgb: 20,20,19; --accent: #B8552E; --accent-text: #9C4524; }
+  /* The player tells the page which theme it is in (its own chrome is inside a shadow root, so the
+     page has to be told). Without this a dark video sits in a cream hole. */
+  :root[data-rp-theme="dark"] { --ground: #0E0D0B; --paper: #141310; --ink: #F2EFE8; --ink-2: #CFCAC1; --ink-3: #A6A196; --ink-rgb: 242,239,232; --accent: #D2693F; --accent-text: #E3A184; }
+  :root { --ink-20: rgba(var(--ink-rgb),.2); --ink-12: rgba(var(--ink-rgb),.12); --ink-06: rgba(var(--ink-rgb),.06); color-scheme: light dark; }
+  /* the faces: the player declares them from packages/player/fonts/faces.json and names them in --rp-sans, --rp-serif, --rp-mono */
+  :root { --sans: var(--rp-sans, ui-sans-serif, system-ui, sans-serif); --serif: var(--rp-serif, Georgia, serif); --mono: var(--rp-mono, ui-monospace, monospace); }
+  body { margin: 0; padding: 0 24px; background: var(--ground); color: var(--ink); font: 15px/1.45 var(--sans); }
+  /* one 56 px bar: the title (and, on a bundled page, what to do here) on the left, the way to the other videos on the right */
+  header { position: relative; display: flex; align-items: center; gap: 16px; min-height: 56px; margin-bottom: 8px; }
+  header .ttl { flex: 1 1 auto; min-width: 0; }
+  h1 { margin: 0; font: 400 20px/1.3 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  button.lnk { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; margin-right: -10px; font: 13px/1 var(--sans); color: var(--ink-2); background: none; border: 0; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  button.lnk:hover, button.lnk[aria-expanded="true"] { background: var(--ink-06); color: var(--ink); }
+  button.lnk::after { content: ""; width: 5px; height: 5px; margin: -3px 0 0 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+  form { position: absolute; right: 0; top: 52px; z-index: 30; display: flex; gap: 8px; width: min(420px, 100%); padding: 12px; background: var(--paper); border-radius: 8px; box-shadow: 0 0 0 1px var(--ink-12), 0 12px 32px -12px rgba(20,20,19,.25); }
+  form[hidden] { display: none; }
+  input { flex: 1; min-width: 0; font: 13px/1.4 var(--mono); padding: 6px 8px; border: 1px solid var(--ink-20); border-radius: 6px; background: var(--paper); color: var(--ink); }
+  form button { font: inherit; padding: 6px 12px; border: 1px solid var(--ink-20); border-radius: 6px; background: var(--paper); color: var(--ink); cursor: pointer; }
+  /* the player sizes its stage to the height left under this bar */
+  reelplanning-player { display: block; --rp-above: 64px; }
+  /* on a phone the video runs edge to edge, so the page keeps no side padding of its own;
+     the player pads its own chrome, and the header keeps the gutter. */
+  @media (max-width: 600px) { body { padding: 0; } header { min-height: 44px; padding: 0 16px; margin-bottom: 0; gap: 8px; } h1 { font-size: 17px; } form { right: 16px; top: 44px; width: calc(100% - 32px); } reelplanning-player { --rp-above: 44px; } }
+  /* a detail open beside the player takes the right of the window; the header gives it that room */
+  html[data-rp-panel="beside"] header { padding-right: min(560px, 44vw); }
+</style>
+</head>
+<body>
+<header>
+  <div class="ttl"><h1 id="title"></h1></div>
+  <button class="lnk" id="switch" type="button">Open another…</button>
+  <form id="open" hidden onsubmit="location.search='?project='+encodeURIComponent(p.value);return false"><input id="p" placeholder="videos/l1-upload-resume" aria-label="Project folder" /><button>Open</button></form>
+</header>
+<reelplanning-player id="rp"></reelplanning-player>
+<script type="module">
+  import "./reelplanning-player.js";
+  const project = new URLSearchParams(location.search).get("project") || "videos/l1-upload-resume";
+  // dev-only: a video's review-page name (system, a plan's folder, <plan>--walkthrough; "Before you watch" links use it) opens its folder
+  if (!project.includes("/")) { const q = new URLSearchParams(location.search), w = /^(.+?)(--walkthrough)?$/.exec(project); q.set("project", project === "system" ? ".reelplanning/system-video" : `.reelplanning/plans/${w[1]}/${w[2] ? "walkthrough-video" : "video"}`); location.replace(`?${q}`); }
+  const slug = project.replace(/\/+$/, "").split("/").pop();
+  const title = document.getElementById("title"); title.textContent = slug; document.title = `${slug} · review`; // the slug until the plan map gives its title
+  document.getElementById("p").value = project;
+  document.getElementById("switch").addEventListener("click", () => { const f = document.getElementById("open"); f.hidden = !f.hidden; if (!f.hidden) document.getElementById("p").focus(); });
+  const rp = document.getElementById("rp");
+  // ?part=N opens the video at that part (a "Before you watch" row that names one)
+  { const part = new URLSearchParams(location.search).get("part"); if (part) rp.setAttribute("start-part", part); }
+  // ?t=<seconds> opens it at that moment (a word's meaning: "Play that scene")
+  { const t = new URLSearchParams(location.search).get("t"); if (t && Number(t) >= 0) rp.setAttribute("start-t", t); }
+  rp.setAttribute("runtime-src", "../../node_modules/@hyperframes/core/dist/hyperframe.runtime.iife.js"); // served from the repo root; offline-safe
+  const map = new URLSearchParams(location.search).get("map"); // test hook: an alternate plan-map
+  rp.setAttribute("plan-map", map ? `../../${map}` : `../../${project}/plan-map.json`);
+  rp.setAttribute("src", `../../${project}/index.html`);
+  rp.addEventListener("plan", (e) => { if (e.detail?.title) { title.textContent = e.detail.title; document.title = `${e.detail.title} · review`; } });
+  rp.addEventListener("annotations", (e) => console.log("annotations", e.detail));
+</script>
+</body>
+</html>

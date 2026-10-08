@@ -1,0 +1,148 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m20-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m20-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .m20-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m20-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m20-h { position:absolute; font:400 72px/1.05 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .m20-big { position:absolute; font:400 50px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-side { position:absolute; font:400 30px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.78); white-space:nowrap; }
+  .m20-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .m20-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m20-t code, .m20-s code, .m20-row3 code, .m20-frow code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m20-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 30px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:26px; white-space:nowrap; }
+  .m20-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m20-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m20-pin.hot { background:var(--rp-coral); }
+  .m20-pin em { font-style:normal; }
+  .m20-card, .m20-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .m20-tile { background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.3); }
+  .m20-quote { position:absolute; left:48px; top:44px; right:48px; font:400 36px/1.5 "Inter"; color:var(--rp-ink); }
+  .m20-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:9px; }
+  .m20-cl { position:absolute; left:36px; top:32px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m20-cl code { font-family:"JetBrains Mono"; }
+  .m20-ct { position:absolute; left:36px; top:92px; right:36px; font:400 48px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .m20-cs { position:absolute; left:36px; bottom:36px; height:48px; padding:0 18px; font:400 28px/44px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:24px; box-sizing:border-box; white-space:nowrap; }
+  .m20-cc { position:absolute; left:36px; top:90px; font:400 30px/1.55 "JetBrains Mono"; color:var(--rp-ink); white-space:pre; }
+  .m20-dh { position:absolute; left:36px; font:400 38px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-dt { position:absolute; left:36px; right:30px; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m20-dm { position:absolute; left:36px; right:30px; font:400 28px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m20-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m20-bar { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m20-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.7); white-space:nowrap; }
+  .m20-code { position:absolute; font:400 30px/1.45 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m20-code .d { color:rgba(var(--rp-slab-ink-rgb),0.82); }
+  .m20-code .ok { color:var(--rp-syn-add); }
+  .m20-code .w { color:var(--rp-syn-num); }
+  .m20-code .x { color:var(--rp-syn-del); }
+  .m20-hair { position:absolute; height:2px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .m20-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m20-strk.ink { background:var(--rp-ink); }
+  .m20-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m20-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:12px; }
+  .m20-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m20-row3, .m20-row2 { position:absolute; width:1600px; height:88px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m20-row3 .k, .m20-row2 .k { position:absolute; left:0; top:26px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-row3 .v, .m20-row2 .v { position:absolute; left:560px; top:30px; font:400 32px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m20-row2 { height:120px; }
+  .m20-row2 .k { top:40px; font-size:48px; }
+  .m20-row2 .v { left:720px; top:46px; }
+  .m20-ask { position:absolute; width:760px; height:80px; box-sizing:border-box; padding:0 28px; font:400 32px/76px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.35); border-radius:12px; white-space:nowrap; background:var(--rp-paper); }
+  .m20-thead, .m20-trow { position:absolute; width:1600px; }
+  .m20-thead span { position:absolute; top:0; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m20-trow { height:130px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m20-trow span { position:absolute; top:40px; white-space:nowrap; }
+  .m20-trow .c1 { font:400 44px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .m20-trow .c2 { font:400 32px/1.3 "Inter"; color:var(--rp-ink); }
+  .m20-trow .c3 { font:400 30px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m20-trow .c4 { font:400 30px/1.35 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m20-thead .c1, .m20-trow .c1 { left:0; } .m20-thead .c2, .m20-trow .c2 { left:400px; } .m20-thead .c3, .m20-trow .c3 { left:960px; } .m20-thead .c4, .m20-trow .c4 { left:1480px; }
+  .m20-bubble { position:absolute; height:72px; padding:0 30px; box-sizing:border-box; font:400 34px/70px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:36px 36px 36px 8px; white-space:nowrap; }
+  .m20-rk { position:absolute; left:32px; top:36px; height:48px; padding:0 18px; box-sizing:border-box; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; }
+  .m20-rt { position:absolute; left:290px; top:34px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-rl { position:absolute; left:760px; top:44px; font:400 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m20-rs { position:absolute; left:930px; top:44px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m20-btn { position:absolute; height:84px; box-sizing:border-box; font:500 36px/84px "Inter"; text-align:center; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:10px; white-space:nowrap; }
+  .m20-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); line-height:80px; }
+  .m20-frow { position:absolute; width:680px; height:120px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m20-frow .k { position:absolute; left:0; top:26px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m20-frow .v { position:absolute; left:0; top:66px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-ctx { position:absolute; left:180px; top:80px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m20-q code, .m20-opt code { font-family:"JetBrains Mono"; font-size:0.8em; }
+  .m20-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m20-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m20-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m20-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 48px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m20-opt .c { position:absolute; left:30px; top:200px; right:26px; font:400 28px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .m20-ring { position:absolute; box-sizing:border-box; border-radius:14px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m20-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m20-st { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m20-st .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m20-st .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-st .d, .m20-st .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .m20-st .r { border-color:transparent; padding-right:0; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m20-struck { text-decoration:line-through; text-decoration-thickness:5px; text-decoration-color:var(--rp-ink); color:rgba(var(--rp-ink-rgb),0.85); }
+  .m20-arr { position:absolute; font:400 28px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .m20-dim { color:rgba(var(--rp-ink-rgb),0.7); }
+</style>
+
+<div id="root" data-composition-id="20-step-5-honest" data-band="bottom" data-duration="19.7" data-width="1920" data-height="1080">
+
+  <div class="clip m20-bg" id="m20-bg" data-start="0" data-duration="19.7" data-track-index="0"></div>
+
+  <div class="clip m20-scene" id="m20-scene" data-start="0" data-duration="19.7" data-track-index="1">
+    <div class="m20-kick" id="m20-kick"  style="left:160px; top:70px">Step 5 · Honest</div>
+    <div class="m20-slab" id="m20-s0" data-artifact="STORYBOARD.md" style="left:160px; top:130px; width:1100px; height:250px"><div class="m20-bar"></div><div class="m20-bt">STORYBOARD.md · the video’s scenes</div><div class="m20-code" style="left:32px; top:70px">## Frame 5 — Where a review waits
+- source: scripts/lib/inbox.mjs:50-80</div></div>
+    <div class="m20-plan" id="m20-plan"  style="left:1100px; top:134px">planned</div>
+    <div class="m20-pin" id="m20-pin"  style="left:192px; top:316px"><em data-gloss="source">↑ where its facts come from: lines 50–80</em></div>
+    <div class="m20-slab" id="m20-s1" data-artifact="check-sources" style="left:160px; top:420px; width:1100px; height:270px"><div class="m20-bar"></div><div class="m20-bt">terminal</div><div class="m20-code" style="left:32px; top:70px">$ reelplanning check-sources …/video
+<span class="x">✗ fails</span>  scene 5 · quoted line not in its source
+<span class="w">△ warns</span>  scene 3 · “three times”: no source</div></div>
+    <div class="m20-lab" id="m20-lab"  style="left:160px; top:740px">fresh eyes</div>
+    <div class="m20-chip" id="m20-e0"  style="left:400px; top:726px">newcomer</div>
+    <div class="m20-chip" id="m20-e1"  style="left:610px; top:726px">designer</div>
+    <div class="m20-chip hot" id="m20-e2"  style="left:820px; top:726px">fact check: a third agent</div>
+    <div class="m20-s" id="m20-e2t"  style="left:1250px; top:734px; width:760px">reads the narration against the sources</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "20-step-5-honest";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m20-kick", { opacity: 0, y: 12 });
+  tl.to("#m20-kick", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.10);
+  gsap.set("#m20-s0", { opacity: 0, y: 12 });
+  tl.to("#m20-s0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.35);
+  gsap.set("#m20-plan", { opacity: 0, y: 12 });
+  tl.to("#m20-plan", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.35);
+  gsap.set("#m20-pin", { opacity: 0, y: 12 });
+  tl.to("#m20-pin", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.00);
+  gsap.set("#m20-s1", { opacity: 0, y: 12 });
+  tl.to("#m20-s1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.09);
+  gsap.set("#m20-lab", { opacity: 0, y: 12 });
+  tl.to("#m20-lab", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.04);
+  gsap.set("#m20-e0", { opacity: 0, y: 12 });
+  tl.to("#m20-e0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.49);
+  gsap.set("#m20-e1", { opacity: 0, y: 12 });
+  tl.to("#m20-e1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.81);
+  gsap.set("#m20-e2", { opacity: 0, y: 12 });
+  tl.to("#m20-e2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.41);
+  gsap.set("#m20-e2t", { opacity: 0, y: 12 });
+  tl.to("#m20-e2t", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.13);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

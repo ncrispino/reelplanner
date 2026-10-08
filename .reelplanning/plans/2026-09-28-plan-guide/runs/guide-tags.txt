@@ -1,0 +1,14 @@
+$ grep -n -B1 "^- guide:" .reelplanning/plans/2026-09-28-plan-guide/walkthrough-video/STORYBOARD.md | head -12   (the storyboard's lines that give a scene its part of the guide)
+44-- chapter_start: What landed
+45:- guide: what-changed
+--
+58-- plan_step: 1
+59:- guide: builder
+--
+72-- plan_step: 1
+73:- guide: page
+--
+85-- plan_step: 1
+86:- guide: step-1
+--
+exit 0

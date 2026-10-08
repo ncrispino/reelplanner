@@ -1,0 +1,144 @@
+<template>
+<style>
+  /* ---- fonts (local WOFF2, staged with the project) ---- */
+  @font-face { font-family:"EB Garamond";  src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");   font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond";  src:url("assets/fonts/EBGaramond-700.woff2") format("woff2");   font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter";        src:url("assets/fonts/Inter-400.woff2") format("woff2");        font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter";        src:url("assets/fonts/Inter-700.woff2") format("woff2");        font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f09-autonomy-2-ground { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f09-autonomy-2-stage  { position:absolute; left:0; top:0; width:1920px; height:1080px; perspective:1600px; }
+
+  /* ---- SHARED STAGE v2 (positions and sizes are law) ---- */
+  .f09-autonomy-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f09-autonomy-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f09-autonomy-2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f09-autonomy-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-autonomy-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-autonomy-2-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }  /* autonomy beat: the deviation tag is INK — the one coral is the lit node */
+  .f09-autonomy-2-slot.dim { opacity:0.72; }
+  .f09-autonomy-2-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f09-autonomy-2-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f09-autonomy-2-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f09-autonomy-2-node.navy .l { color:var(--rp-on-ink); }
+  .f09-autonomy-2-node.dim { opacity:0.72; }
+  .f09-autonomy-2-node.navy.dim { opacity:1; }
+  .f09-autonomy-2-node.active { border:3px solid var(--rp-coral); }
+  .f09-autonomy-2-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f09-autonomy-2-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f09-autonomy-2-edges path.dim { opacity:0.35; }
+  .f09-autonomy-2-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  .f09-autonomy-2-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  .f09-autonomy-2-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; margin-top:22px; }
+  .f09-autonomy-2-opt.rec { border:3px solid var(--rp-coral); }
+  .f09-autonomy-2-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* ---- autonomy beat additions ---- */
+  .f09-autonomy-2-opt.chose { border:2px solid var(--rp-ink); }                 /* the choice is already made: ink, never coral */
+  .f09-autonomy-2-opt.alt { border:1px solid rgba(var(--rp-ink-rgb),0.2); }        /* the road not taken: hairline, ink-55% */
+  .f09-autonomy-2-opt.alt .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f09-autonomy-2-opt.alt .k { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f09-autonomy-2-lit { position:absolute; left:-1px; top:-1px; right:-1px; bottom:-1px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile-2); border:1px solid rgba(var(--rp-ink-rgb),0.3); opacity:0; }
+  .f09-autonomy-2-ring { position:absolute; left:-1px; top:-1px; right:-1px; bottom:-1px; box-sizing:border-box; border-radius:13px; border:3px solid var(--rp-coral); opacity:0; }
+  .f09-autonomy-2-chip { position:absolute; box-sizing:border-box; height:36px; padding:0 14px; display:flex; align-items:center; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+  .f09-autonomy-2-check { position:absolute; left:700px; top:872px; width:1160px; text-align:center; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.55); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="09-autonomy-2" data-duration="15.839" data-width="1920" data-height="1080">
+
+  <div class="clip f09-autonomy-2-ground" data-start="0" data-duration="15.839" data-track-index="0"></div>
+
+  <div class="clip f09-autonomy-2-stage" data-start="0" data-duration="15.839" data-track-index="1">
+
+    <div class="f09-autonomy-2-rail" id="f09-autonomy-2-rail">
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span><span class="d">16 MB</span></div>
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-3" data-plan-step="3" data-filled style="top:220px"><i class="f09-autonomy-2-lit" id="f09-autonomy-2-lit-3"></i><span class="n">3</span><span class="t">Resume endpoint</span></div>
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+      <div class="f09-autonomy-2-slot" id="f09-autonomy-2-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+    </div>
+
+    <div class="f09-autonomy-2-node"      id="f09-autonomy-2-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+    <div class="f09-autonomy-2-node"      id="f09-autonomy-2-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><i class="f09-autonomy-2-ring" id="f09-autonomy-2-ring-api"></i><span class="l">Upload API</span></div>
+    <div class="f09-autonomy-2-node navy" id="f09-autonomy-2-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+    <div class="f09-autonomy-2-node"      id="f09-autonomy-2-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+    <div class="f09-autonomy-2-node"      id="f09-autonomy-2-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+    <div class="f09-autonomy-2-node"      id="f09-autonomy-2-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+    <svg class="f09-autonomy-2-edges" id="f09-autonomy-2-edges" viewBox="0 0 1920 1080">
+      <path id="f09-autonomy-2-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+      <path id="f09-autonomy-2-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+      <path id="f09-autonomy-2-e-sdk-api"          d="M970 485 L1030 485" />
+      <path id="f09-autonomy-2-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+      <path id="f09-autonomy-2-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+      <path id="f09-autonomy-2-e-sweeper-blob"     d="M1680 645 L1640 645" />
+    </svg>
+
+    <!-- worked-example chips (one 26px mono chip, 16px under its node) -->
+    <div class="f09-autonomy-2-chip" id="f09-autonomy-2-chip-api-1"      style="left:1030px; top:556px">missing parts</div>
+    <div class="f09-autonomy-2-chip" id="f09-autonomy-2-chip-api-2"      style="left:1030px; top:604px">state, not syntax</div>
+    <div class="f09-autonomy-2-chip" id="f09-autonomy-2-chip-manifest-1" style="left:1360px; top:396px">part bitmap</div>
+
+    <!-- autonomy beat: the choice already made, and the road not taken -->
+    <div class="f09-autonomy-2-opt chose" id="f09-autonomy-2-opt-a" data-plan-option="a" style="left:700px"><span class="k">Chose &#183;</span><span class="l">409 conflict</span></div>
+    <div class="f09-autonomy-2-opt alt"   id="f09-autonomy-2-opt-b" data-plan-option="b" style="left:1320px"><span class="k">Instead of &#183;</span><span class="l">400</span></div>
+
+    <div class="f09-autonomy-2-check" id="f09-autonomy-2-check">src/upload/complete.ts</div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+  (function () {
+    var root = document.querySelector('[data-composition-id="09-autonomy-2"]');
+    var q = function (sel) { return root.querySelector(sel); };
+
+    var tl = gsap.timeline({ paused: true });
+
+    var otherSlots = ["1", "2", "4", "5", "6"].map(function (i) { return q("#f09-autonomy-2-slot-" + i); });
+    var otherNodes = ["sdk", "blob", "billing", "sweeper"].map(function (k) { return q("#f09-autonomy-2-node-" + k); });
+
+    /* 0.01s — "Complete": step 3 takes the light; the rest of the rail steps back */
+    tl.fromTo(q("#f09-autonomy-2-lit-3"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power3.out" }, 0.07);
+    tl.to(otherSlots, { opacity: 0.72, duration: 0.6, ease: "power2.out" }, 0.07);
+
+    /* 0.52 / 0.95s — "returns" / "409": card A arrives from the left wing, label on its word */
+    tl.fromTo(q("#f09-autonomy-2-opt-a"),
+      { opacity: 0, x: -90, rotationY: 10, scale: 0.94 },
+      { opacity: 1, x: 0, rotationY: 0, scale: 1, duration: 0.95, ease: "power3.out" }, 0.53);
+    tl.fromTo(q("#f09-autonomy-2-opt-a .l"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.97);
+
+    /* 2.28s — "missing": the condition that trips the code, under the API */
+    tl.fromTo(q("#f09-autonomy-2-chip-api-1"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.32);
+
+    /* 5.24s — "I picked 409": the Upload API takes the frame's ONE coral, and keeps it to the end */
+    tl.fromTo(q("#f09-autonomy-2-ring-api"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power3.out" }, 5.41);
+    tl.to(otherNodes, { opacity: 0.72, duration: 0.6, ease: "power2.out" }, 5.41);
+
+    /* 7.50s — "conflict": why a 4-0-9 and not a 4-0-0 */
+    tl.fromTo(q("#f09-autonomy-2-chip-api-2"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 7.72);
+
+    /* 9.62s — "bitmap": what the client can ask the manifest for */
+    tl.fromTo(q("#f09-autonomy-2-chip-manifest-1"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 9.93);
+
+    /* 11.01s — "400": card B arrives from the right wing, ink-55% */
+    tl.fromTo(q("#f09-autonomy-2-opt-b"),
+      { opacity: 0, x: 90, rotationY: -10, scale: 0.94 },
+      { opacity: 1, x: 0, rotationY: 0, scale: 1, duration: 0.95, ease: "power3.out" }, 11.45);
+    tl.fromTo(q("#f09-autonomy-2-opt-b .l"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 11.78);
+
+    /* 13.69s — "Accept, or flag": where to go look */
+    tl.fromTo(q("#f09-autonomy-2-check"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 14.32);
+
+    /* held read to the end, both cards up */
+    tl.to({}, { duration: 14.89 }, 0);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["09-autonomy-2"] = tl;
+  })();
+</script>
+</template>

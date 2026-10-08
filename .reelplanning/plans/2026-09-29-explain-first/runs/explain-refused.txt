@@ -1,0 +1,4 @@
+$ reelplanning explain "x" no-such-thing   (a source it cannot pin)
+✗ explain: could not pin a source:
+  no-such-thing: "no-such-thing" is none of: a path, a commit or a range (a..b), worktree, since:<date>, pr:<n>, ci:<run-id>, this-session, a decision (D-233)
+exit 1

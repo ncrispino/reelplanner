@@ -1,0 +1,24 @@
+{
+  "name": "reelplanning",
+  "displayName": "reelplanning",
+  "description": "Review your coding agent's implementation plans as short narrated videos that stop at each open choice; your answers become a decision log in the repo, and a walkthrough video shows what the agent decided on its own.",
+  "version": "0.2.0",
+  "author": {
+    "name": "ncrispino",
+    "url": "https://github.com/ncrispino"
+  },
+  "homepage": "https://github.com/ncrispino/reelplanning",
+  "repository": "https://github.com/ncrispino/reelplanning",
+  "license": "Apache-2.0",
+  "keywords": [
+    "plan-review",
+    "implementation-plan",
+    "code-review",
+    "video",
+    "explainer",
+    "decision-log",
+    "hyperframes",
+    "agent-skill"
+  ],
+  "skills": "./skills/"
+}

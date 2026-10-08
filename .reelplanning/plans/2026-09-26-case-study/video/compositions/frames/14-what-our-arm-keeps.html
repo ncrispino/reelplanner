@@ -1,0 +1,97 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .c14-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .c14-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .c14-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .c14-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .c14-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .c14-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .c14-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .c14-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .c14-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .c14-ul.ink { background:var(--rp-ink); height:3px; }
+  .c14-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .c14-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .c14-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .c14-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .c14-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .c14-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .c14-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .c14-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .c14-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .c14-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .c14-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .c14-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .c14-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .c14-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .c14-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .c14-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .c14-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .c14-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/46px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .c14-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .c14-chip code, .c14-name code, .c14-small code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .c14-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .c14-line.hot { background:var(--rp-coral); }
+  .c14-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .c14-kick { position:absolute; left:120px; top:70px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .c14-kick b { color:var(--rp-coral-deep); font-weight:500; }
+
+  .c14-pn { position:absolute; left:120px; font:400 38px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .c14-pl { position:absolute; left:620px; font:400 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .c14-rule { position:absolute; left:120px; width:1680px; height:1px; background:rgba(var(--rp-ink-rgb),0.2); }
+  
+</style>
+
+<div id="root" data-composition-id="14-what-our-arm-keeps" data-band="bottom" data-duration="22.4" data-width="1920" data-height="1080">
+
+  <div class="clip c14-bg" id="c14-bg" data-start="0" data-duration="22.4" data-track-index="0"></div>
+
+  <div class="clip c14-scene" id="c14-scene" data-start="0" data-duration="22.4" data-track-index="1">
+    <div class="c14-lab" style="left:120px; top:60px">what our arm keeps · seven earlier plans</div>
+    <div class="c14-view" id="c14-view">
+    <div id="c14-r0" style="position:absolute; left:0; top:130px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">close the lifecycle</div><div class="c14-pl" style="top:40px">a second agent checks the code; the system video catches up</div></div>
+    <div id="c14-r1" style="position:absolute; left:0; top:232px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">fewer, better stops</div><div class="c14-pl" style="top:40px">at a step's fifth choice, the builder asks you</div></div>
+    <div id="c14-r2" style="position:absolute; left:0; top:334px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">the revise loop</div><div class="c14-pl" style="top:40px">a quick check per step</div></div>
+    <div id="c14-r3" style="position:absolute; left:0; top:436px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">videos you can follow</div><div class="c14-pl" style="top:40px">plain words on screen</div></div>
+    <div id="c14-r4" style="position:absolute; left:0; top:538px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">memory</div><div class="c14-pl" style="top:40px">a retro is judged against this run</div></div>
+    <div id="c14-r5" style="position:absolute; left:0; top:640px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">deep dives</div><div class="c14-pl" style="top:40px">a page beside the video, from a template</div></div>
+    <div id="c14-r6" style="position:absolute; left:0; top:742px; width:1920px; height:100px"><div class="c14-rule" style="top:0"></div><div class="c14-pn" style="top:34px">better visuals</div><div class="c14-pl" style="top:40px">scenes show the real thing</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "14-what-our-arm-keeps";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#c14-r0", { opacity: 0, y: 12 });
+  tl.to("#c14-r0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.78);
+  gsap.set("#c14-r1", { opacity: 0, y: 12 });
+  tl.to("#c14-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.38);
+  gsap.set("#c14-r2", { opacity: 0, y: 12 });
+  tl.to("#c14-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.32);
+  gsap.set("#c14-r3", { opacity: 0, y: 12 });
+  tl.to("#c14-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.68);
+  gsap.set("#c14-r4", { opacity: 0, y: 12 });
+  tl.to("#c14-r4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.4);
+  gsap.set("#c14-r5", { opacity: 0, y: 12 });
+  tl.to("#c14-r5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.52);
+  gsap.set("#c14-r6", { opacity: 0, y: 12 });
+  tl.to("#c14-r6", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 19.93);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

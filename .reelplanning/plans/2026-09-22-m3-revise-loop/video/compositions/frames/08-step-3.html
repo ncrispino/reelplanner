@@ -1,0 +1,157 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f08-step-3-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f08-step-3-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f08-step-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f08-step-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f08-step-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f08-step-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f08-step-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-slot:not([data-filled]) .n, .f08-step-3-slot:not([data-filled]) .t { opacity:0; }
+  .f08-step-3-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f08-step-3-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f08-step-3-slot.dec .n { top:13px; } .f08-step-3-slot.dec .t { top:12px; } .f08-step-3-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f08-step-3-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f08-step-3-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f08-step-3-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f08-step-3-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f08-step-3-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f08-step-3-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f08-step-3-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f08-step-3-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f08-step-3-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f08-step-3-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f08-step-3-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f08-step-3-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f08-step-3-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f08-step-3-chip.lit { color:var(--rp-coral-deep); }
+  .f08-step-3-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f08-step-3-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f08-step-3-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f08-step-3-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f08-step-3-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f08-step-3-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f08-step-3-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f08-step-3-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f08-step-3-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f08-step-3-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f08-step-3-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f08-step-3-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f08-step-3-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f08-step-3-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f08-step-3-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f08-step-3-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f08-step-3-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+</style>
+
+<div id="root" data-composition-id="08-step-3" data-duration="21.961" data-width="1920" data-height="1080">
+
+  <div class="clip f08-step-3-bg" data-start="0" data-duration="21.961" data-track-index="0"></div>
+
+  <div class="clip f08-step-3-scene" id="f08-step-3-scene" data-start="0" data-duration="21.961" data-track-index="1">
+  <div class="f08-step-3-kicker" id="f08-step-3-kicker">Step 3 · Finish reaches the session</div>
+  <div class="f08-step-3-chip grey" id="f08-step-3-needs" style="left:870px; top:82px">needs step 2</div>
+  <div class="f08-step-3-spine" id="f08-step-3-spine">
+    <div class="f08-step-3-tick" id="f08-step-3-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f08-step-3-tick" id="f08-step-3-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f08-step-3-tick" id="f08-step-3-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f08-step-3-tick" id="f08-step-3-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f08-step-3-tick" id="f08-step-3-tick-5" data-plan-step="5" style="top:475px"></div>
+  </div>
+  <div class="f08-step-3-node" id="f08-step-3-hosted" data-plan-component="player" style="left:200px; top:200px; width:400px; height:96px"><span class="l">The hosted page</span></div>
+  <div class="f08-step-3-node" id="f08-step-3-local" data-plan-component="player" style="left:200px; top:400px; width:400px; height:96px"><span class="l">The local page</span></div>
+  <div class="f08-step-3-chip" id="f08-step-3-only" style="left:200px; top:312px">Claude only</div>
+  <div class="f08-step-3-chip" id="f08-step-3-any" style="left:200px; top:512px">any agent</div>
+  <div class="f08-step-3-node" id="f08-step-3-server" data-plan-component="cli" style="left:700px; top:400px; width:400px; height:96px"><span class="l">The review server</span></div>
+  <div class="f08-step-3-node" id="f08-step-3-main" data-plan-component="skill" style="left:1260px; top:250px; width:520px; height:130px"><span class="l" style="font-size:36px">The main session</span></div>
+  <div class="f08-step-3-chip grey" id="f08-step-3-hook" style="left:820px; top:196px">its hook</div>
+  <div class="f08-step-3-chip grey" id="f08-step-3-none" style="left:700px; top:512px">no session open</div>
+  <div class="f08-step-3-sheet" id="f08-step-3-run" style="left:1260px; top:470px; width:520px; height:260px; border:2px dashed rgba(var(--rp-ink-rgb),0.4); box-shadow:none">
+    <div class="f08-step-3-t30" style="left:32px; top:28px; font-size:34px">A fresh, headless run</div>
+    <div style="position:absolute; left:32px; top:88px; width:456px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+    <div class="f08-step-3-mono" id="f08-step-3-c1" style="left:32px; top:112px; font-size:28px">claude -p</div>
+    <div class="f08-step-3-mono" id="f08-step-3-c2" style="left:32px; top:160px; font-size:28px">codex exec</div>
+    <div class="f08-step-3-mono" id="f08-step-3-c3" style="left:32px; top:208px; font-size:28px">opencode run</div>
+  </div>
+  <div class="f08-step-3-sheet" id="f08-step-3-mem" style="left:200px; top:772px; width:1580px; height:80px; background:var(--rp-tile)">
+    <div class="f08-step-3-mono" style="left:32px; top:27px; font-weight:700">.reelplanning/</div>
+    <div class="f08-step-3-mono grey" style="left:330px; top:27px">plans · reviews · decisions · videos</div>
+    <div class="f08-step-3-mono grey" style="left:1548px; top:27px; transform:translateX(-100%)">the memory</div>
+  </div>
+  <svg class="f08-step-3-edges" id="f08-step-3-edges" viewBox="0 0 1920 1080">
+    <path id="f08-step-3-e1" d="M600 248 C900 248 1000 290 1246 290" /><path class="head" id="f08-step-3-h1" d="M1260 290 L1247 280.9 L1247 299.1 Z" />
+    <path id="f08-step-3-e2" d="M600 448 L686 448" /><path class="head" id="f08-step-3-h2" d="M700 448 L687 438.9 L687 457.1 Z" />
+    <path id="f08-step-3-e3" d="M1100 430 C1180 430 1180 350 1246 350" /><path class="head" id="f08-step-3-h3" d="M1260 350 L1247 340.9 L1247 359.1 Z" />
+    <path id="f08-step-3-e4" d="M1100 470 C1180 470 1180 560 1246 560" style="stroke-dasharray:10 10; opacity:0.7" /><path class="head" id="f08-step-3-h4" d="M1260 560 L1247 550.9 L1247 569.1 Z" />
+  </svg>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "08-step-3";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f08-step-3-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f08-step-3-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f08-step-3-slot-" + n + " .n, #f08-step-3-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f08-step-3-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f08-step-3-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  gsap.set("#f08-step-3-tick-1", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  gsap.set("#f08-step-3-tick-2", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  tickOn(tl, 3, 0.1);
+  pop(tl, $("needs"), 0.63, 6);
+  gsap.set(["#f08-step-3-h1", "#f08-step-3-h2", "#f08-step-3-h3", "#f08-step-3-h4", "#f08-step-3-e1", "#f08-step-3-e2", "#f08-step-3-e3", "#f08-step-3-e4"], { opacity: 0 });
+  pop(tl, $("hosted"), 2.32, 12);
+  pop(tl, $("local"), 2.4699999999999998, 12);
+  tickDone(tl, 3, 2.99);
+  pop(tl, $("main"), 2.99, 12);
+  lit(tl, $("main"), 2.99);
+  tl.set("#f08-step-3-e1", { opacity: 1 }, 4.9); draw(tl, "e1", 4.9, 0.5); tl.to("#f08-step-3-h1", { opacity: 1, duration: 0.1 }, 5.3500000000000005);
+  pop(tl, $("only"), 6.26, 8);
+  pop(tl, $("hook"), 6.92, 8);
+  tl.set(["#f08-step-3-e2", "#f08-step-3-e3"], { opacity: 1 }, 7.63);
+  draw(tl, "e2", 7.63, 0.3); tl.to("#f08-step-3-h2", { opacity: 1, duration: 0.1 }, 7.88);
+  pop(tl, $("server"), 8.98, 8);
+  pop(tl, $("any"), 7.93, 8);
+  draw(tl, "e3", 9.280000000000001, 0.4); tl.to("#f08-step-3-h3", { opacity: 1, duration: 0.1 }, 9.63);
+  tl.set("#f08-step-3-e4", { opacity: 0.7 }, 11.82); draw(tl, "e4", 11.82, 0.5); tl.to("#f08-step-3-h4", { opacity: 0.7, duration: 0.1 }, 12.27);
+  pop(tl, $("none"), 11.82, 8);
+  pop(tl, $("run"), 13.6, 12);
+  gsap.set([$("c1"), $("c2"), $("c3")], { opacity: 0 });
+  tl.to($("c1"), { opacity: 1, duration: 0.3 }, 14.56);
+  tl.to($("c2"), { opacity: 1, duration: 0.3 }, 15.69);
+  tl.to($("c3"), { opacity: 1, duration: 0.3 }, 16.77);
+  pop(tl, $("mem"), 18.72, 10);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.460);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

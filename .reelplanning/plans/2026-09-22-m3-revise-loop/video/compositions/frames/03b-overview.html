@@ -1,0 +1,142 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f03b-overview-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f03b-overview-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f03b-overview-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f03b-overview-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f03b-overview-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f03b-overview-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f03b-overview-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-slot:not([data-filled]) .n, .f03b-overview-slot:not([data-filled]) .t { opacity:0; }
+  .f03b-overview-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f03b-overview-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f03b-overview-slot.dec .n { top:13px; } .f03b-overview-slot.dec .t { top:12px; } .f03b-overview-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f03b-overview-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f03b-overview-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f03b-overview-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f03b-overview-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f03b-overview-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f03b-overview-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f03b-overview-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f03b-overview-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f03b-overview-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f03b-overview-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f03b-overview-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f03b-overview-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f03b-overview-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f03b-overview-chip.lit { color:var(--rp-coral-deep); }
+  .f03b-overview-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f03b-overview-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03b-overview-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03b-overview-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f03b-overview-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f03b-overview-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f03b-overview-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f03b-overview-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f03b-overview-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f03b-overview-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f03b-overview-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03b-overview-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f03b-overview-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f03b-overview-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f03b-overview-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f03b-overview-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f03b-overview-lane { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f03b-overview-lane .n { position:absolute; left:32px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f03b-overview-lane .t { position:absolute; left:84px; font:500 40px/1.2 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
+  .f03b-overview-st { position:absolute; width:180px; height:70px; border-radius:10px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); display:flex; align-items:center; justify-content:center; font:500 30px/1 "Inter"; color:var(--rp-ink); }
+  .f03b-overview-ind { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; transform:translateX(-100%); }
+</style>
+
+<div id="root" data-composition-id="03b-overview" data-duration="15.93" data-width="1920" data-height="1080">
+
+  <div class="clip f03b-overview-bg" data-start="0" data-duration="15.93" data-track-index="0"></div>
+
+  <div class="clip f03b-overview-scene" id="f03b-overview-scene" data-start="0" data-duration="15.93" data-track-index="1">
+  <div class="f03b-overview-kicker" id="f03b-overview-kicker">What changes · 3 tracks</div>
+  <div class="f03b-overview-lane" id="f03b-overview-lane1" style="left:200px; top:190px; width:1520px; height:130px"><span class="n" style="top:50px">1</span><span class="t" style="top:41px">Cheaper rebuilds</span></div>
+  <div class="f03b-overview-lane" id="f03b-overview-lane2" style="left:200px; top:350px; width:1520px; height:130px"><span class="n" style="top:50px">2</span><span class="t" style="top:41px">A loop that runs itself</span></div>
+  <div class="f03b-overview-lane" id="f03b-overview-lane3" style="left:200px; top:510px; width:1520px; height:130px"><span class="n" style="top:50px">3</span><span class="t" style="top:41px">A reviewable system video</span></div>
+  <div class="f03b-overview-st" id="f03b-overview-st1" data-plan-step="1" style="left:940px; top:220px">Step 1</div>
+  <div class="f03b-overview-st" id="f03b-overview-st2" data-plan-step="2" style="left:940px; top:380px">Step 2</div>
+  <div class="f03b-overview-st" id="f03b-overview-st3" data-plan-step="3" style="left:1240px; top:380px">Step 3</div>
+  <div class="f03b-overview-st" id="f03b-overview-st4" data-plan-step="4" style="left:940px; top:540px">Step 4</div>
+  <div class="f03b-overview-mono grey" id="f03b-overview-needs" style="left:1146px; top:366px">needs</div>
+  <div class="f03b-overview-ind" id="f03b-overview-ind1" style="left:1688px; top:242px">independent</div>
+  <div class="f03b-overview-ind" id="f03b-overview-ind2" style="left:1688px; top:402px">independent</div>
+  <div class="f03b-overview-ind" id="f03b-overview-ind3" style="left:1688px; top:562px">independent</div>
+  <div class="f03b-overview-lane" id="f03b-overview-bar" style="left:200px; top:690px; width:1520px; height:120px"><span class="n" style="top:45px">+</span><span class="t" style="top:36px">Proof on real reviews</span></div>
+  <div class="f03b-overview-st" id="f03b-overview-st5" data-plan-step="5" style="left:940px; top:715px">Step 5</div>
+  <div class="f03b-overview-ind" id="f03b-overview-need5" style="left:1688px; top:737px">needs 1–4</div>
+  <svg class="f03b-overview-edges" id="f03b-overview-edges" viewBox="0 0 1920 1080">
+    <path id="f03b-overview-e23" d="M1120 415 L1226 415" /><path class="head" id="f03b-overview-h23" d="M1240 415 L1227 405.9 L1227 424.1 Z" />
+    <path id="f03b-overview-br" d="M1720 255 L1780 255 L1780 750 L1734 750" /><path class="head" id="f03b-overview-hbr" d="M1720 750 L1733 740.9 L1733 759.1 Z" />
+    <path id="f03b-overview-b2" d="M1720 415 L1780 415" />
+    <path id="f03b-overview-b3" d="M1720 575 L1780 575" />
+  </svg>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "03b-overview";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f03b-overview-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f03b-overview-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f03b-overview-slot-" + n + " .n, #f03b-overview-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f03b-overview-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f03b-overview-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  gsap.set([$("h23"), $("hbr")], { opacity: 0 });
+  gsap.set([$("e23"), $("br"), $("b2"), $("b3")], { opacity: 0 });
+  pop(tl, $("lane1"), 2.02, 12);
+  pop(tl, $("st1"), 3.93, 8);
+  pop(tl, $("lane2"), 4.39, 12);
+  pop(tl, $("st2"), 5.75, 8);
+  tl.set($("e23"), { opacity: 1 }, 6); draw(tl, "e23", 6, 0.4); tl.to($("h23"), { opacity: 1, duration: 0.1 }, 6.35);
+  pop(tl, $("needs"), 6.15, 6);
+  pop(tl, $("st3"), 6.19, 8);
+  pop(tl, $("lane3"), 6.84, 12);
+  pop(tl, $("st4"), 8.67, 8);
+  tl.fromTo([$("ind1"), $("ind2"), $("ind3")], { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.12, ease: "power3.out" }, 9.3);
+  tl.set([$("br"), $("b2"), $("b3")], { opacity: 1 }, 11.15);
+  draw(tl, "br", 11.15, 0.7); draw(tl, "b2", 11.15, 0.3); draw(tl, "b3", 11.15, 0.3);
+  tl.to($("hbr"), { opacity: 1, duration: 0.1 }, 11.8);
+  pop(tl, $("bar"), 10.85, 12);
+  pop(tl, $("st5"), 11.450000000000001, 8);
+  pop(tl, $("need5"), 11.73, 6);
+  lit(tl, $("bar"), 12.94);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 15.429);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

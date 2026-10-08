@@ -1,0 +1,105 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k02b-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k02b-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k02b-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k02b-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k02b-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k02b-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k02b-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k02b-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k02b-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k02b-ul.ink { background:var(--rp-ink); height:3px; }
+  .k02b-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k02b-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k02b-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k02b-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k02b-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k02b-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k02b-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k02b-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k02b-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k02b-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k02b-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k02b-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k02b-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k02b-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k02b-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k02b-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k02b-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k02b-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k02b-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k02b-chip code, .k02b-name code, .k02b-small code, .k02b-lab code, .k02b-kick code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k02b-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k02b-line.hot { background:var(--rp-coral); }
+  .k02b-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k02b-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k02b-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k02b-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k02b-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .k02b-shot img { display:block; }
+  .k02b-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k02b-rg.hot { border-color:var(--rp-coral); }
+  .k02b-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k02b-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k02b-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k02b-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k02b-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k02b-ctl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k02b-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k02b-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k02b-card { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k02b-card i { position:absolute; left:14px; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k02b-bar { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.55); border-radius:4px 4px 0 0; }
+  .k02b-bar.hot { background:var(--rp-coral); }
+  .k02b-mk { position:absolute; font:700 40px/1 "Inter"; color:var(--rp-ink); }
+
+  .k02b-r { position:absolute; left:140px; width:1640px; height:130px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .k02b-r .t { position:absolute; left:0; top:40px; font:400 44px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k02b-r .d { position:absolute; left:760px; top:46px; font:400 32px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.85); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="02b-after-your-review" data-band="bottom" data-duration="13.129" data-width="1920" data-height="1080">
+
+  <div class="clip k02b-bg" id="k02b-bg" data-start="0" data-duration="13.129" data-track-index="0"></div>
+
+  <div class="clip k02b-scene" id="k02b-scene" data-start="0" data-duration="13.129" data-track-index="1">
+    <div class="k02b-kick" id="k02b-k">your second review</div>
+    <div class="k02b-r" id="k02b-r0" style="top:150px"><span class="t">four questions</span><span class="d">decided · your picks</span></div>
+    <div class="k02b-r" id="k02b-r1" style="top:300px"><span class="t">backend changes</span><span class="d">steps 1 to 3</span></div>
+    <div class="k02b-r" id="k02b-r2" style="top:450px"><span class="t">what dropping the video means</span><span class="d">step 6</span></div>
+    <div class="k02b-r" id="k02b-r3" style="top:600px"><span class="t">a bit shorter</span><span class="d">step 7</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "02b-after-your-review";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k02b-k", { opacity: 0, y: 12 });
+  tl.to("#k02b-k", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.1);
+  gsap.set("#k02b-r0", { opacity: 0, y: 12 });
+  tl.to("#k02b-r0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.55);
+  gsap.set("#k02b-r1", { opacity: 0, y: 12 });
+  tl.to("#k02b-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.16);
+  gsap.set("#k02b-r2", { opacity: 0, y: 12 });
+  tl.to("#k02b-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.56);
+  gsap.set("#k02b-r3", { opacity: 0, y: 12 });
+  tl.to("#k02b-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.39);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

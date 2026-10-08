@@ -1,0 +1,110 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f17-step-3-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f17-step-3-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f17-step-3-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-kicker b { color:var(--rp-coral); font-weight:500; }
+  .f17-step-3-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f17-step-3-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f17-step-3-chip.lbl { letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); background:transparent; }
+  .f17-step-3-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-num { position:absolute; font:400 150px/1 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-num.xl { font-size:230px; }
+  .f17-step-3-unit { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-mid { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-mid.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f17-step-3-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f17-step-3-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f17-step-3-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f17-step-3-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f17-step-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f17-step-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f17-step-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f17-step-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-slot .d { position:absolute; right:-46px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f17-step-3-slot.dim { opacity:0.55; }
+  .f17-step-3-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f17-step-3-card.chose { border:2px solid var(--rp-ink); }
+  .f17-step-3-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f17-step-3-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f17-step-3-card .l { display:block; margin-top:18px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f17-step-3-card .s { display:block; margin-top:22px; font:500 30px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f17-step-3-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f17-step-3-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f17-step-3-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f17-step-3-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f17-step-3-term { position:absolute; box-sizing:border-box; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f17-step-3-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f17-step-3-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f17-step-3-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f17-step-3-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f17-step-3-file { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f17-step-3-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f17-step-3-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-file .row.dim { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f17-step-3-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f17-step-3-tile.dim { opacity:0.5; }
+  .f17-step-3-tile .id { position:absolute; left:26px; top:28px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-tile .mono { position:absolute; left:26px; top:26px; font:500 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-tile .t { position:absolute; left:120px; top:25px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-tile .t.at0 { left:26px; }
+  .f17-step-3-tile .t2 { position:absolute; left:26px; font:500 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-tile .d { position:absolute; right:26px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-pill { position:absolute; box-sizing:border-box; height:70px; padding:0 26px; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.35); font:500 32px/66px "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f17-step-3-pill.ink { background:var(--rp-ink); color:var(--rp-paper); border-color:var(--rp-ink); }
+  .f17-step-3-sq { position:absolute; box-sizing:border-box; width:80px; height:80px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.55); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f17-step-3-sq.sm { width:40px; height:40px; border-radius:6px; }
+  .f17-step-3-hl { position:absolute; box-sizing:border-box; border-radius:10px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f17-step-3-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:3px solid var(--rp-ink); }
+  .f17-step-3-strike { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f17-step-3-note { position:absolute; right:80px; top:830px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="17-step-3" data-band="bottom" data-duration="9.58" data-width="1920" data-height="1080">
+
+  <div class="clip f17-step-3-bg" id="f17-step-3-bg" data-start="0" data-duration="9.58" data-track-index="0"></div>
+
+  <div class="clip f17-step-3-scene" id="f17-step-3-scene" data-start="0" data-duration="9.58" data-track-index="1">
+  <div class="f17-step-3-kicker" id="f17-step-3-kicker">Step 3 · Your memory</div>
+  <div class="f17-step-3-spine" id="f17-step-3-spine"><div class="f17-step-3-tick done" id="f17-step-3-tick-1" data-plan-step="1" style="top:35px"></div><div class="f17-step-3-tick done" id="f17-step-3-tick-2" data-plan-step="2" style="top:145px"></div><div class="f17-step-3-tick live" id="f17-step-3-tick-3" data-plan-step="3" style="top:255px"></div><div class="f17-step-3-tick" id="f17-step-3-tick-4" data-plan-step="4" style="top:365px"></div><div class="f17-step-3-tick" id="f17-step-3-tick-5" data-plan-step="5" style="top:475px"></div></div>
+  <div class="f17-step-3-term" id="f17-step-3-rec" style="left:200px; top:170px; width:1640px; height:200px"><div class="bar"></div><span class="cmd">reel record …</span><span class="ln" id="f17-step-3-rec-l0" style="top:88px">✓ …/walkthrough-20260924T192645Z.json, by noreply@anthropic.com (reelplanning 0.1.0)</span><span class="ln" id="f17-step-3-rec-l1" style="top:140px">✓ your memory: a summary of this review added to ~/.reelplanning/you.jsonl (reel memory --you)</span></div>
+  <div class="f17-step-3-hl" id="f17-step-3-sh" style="left:214px; top:298px; width:1612px; height:54px"></div>
+  <div class="f17-step-3-term" id="f17-step-3-you" style="left:200px; top:430px; width:1640px; height:200px"><div class="bar"></div><span class="cmd">reel memory --you</span><span class="ln" id="f17-step-3-you-l0" style="top:88px">[rewinds]     Rewound or slowed on 1 step in 1 review.</span><span class="ln" id="f17-step-3-you-l1" style="top:140px">[checks]      0 of 1 quick check answered wrong.</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "17-step-3";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f17-step-3-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("rec"), 1.53, 10);
+  lit(tl, $("sh"), 2.28);
+  pop(tl, $("you"), 6.44, 10);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 8.580);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

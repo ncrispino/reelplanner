@@ -1,0 +1,231 @@
+{
+  "annotations": [
+    {
+      "about": "Answered in their own words: A plan adds a 20-second scene to the system video, which is already at its target. What else must the plan do?",
+      "comment": "ideally shorten it a bit but maybe not too crazy",
+      "frame": {
+        "compositionId": "34-qc-a-scene-added",
+        "index": 31,
+        "title": "Quick check: a longer system video"
+      },
+      "id": "amuk85lesoaf0",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 7
+      },
+      "t": 305.51
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [
+      "walkthrough video"
+    ],
+    "termsOpened": 1,
+    "walked": 5,
+    "watchedPct": 97,
+    "wrongChecks": 5
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-27T19:35:37.510Z",
+      "id": "q1",
+      "label": "Listed, not judged",
+      "option": "b",
+      "planStep": 2,
+      "question": "What does Approve make of a choice on the list?",
+      "recommended": true,
+      "t": 92.858
+    },
+    {
+      "decidedAt": "2026-09-27T19:35:57.874Z",
+      "id": "q2",
+      "label": "Where there's something to predict",
+      "option": "a",
+      "planStep": 3,
+      "question": "Does the walkthrough test you?",
+      "recommended": true,
+      "t": 132.66
+    },
+    {
+      "decidedAt": "2026-09-27T19:38:05.106Z",
+      "id": "q3",
+      "label": "Only a choice you'd notice",
+      "option": "b",
+      "planStep": 4,
+      "question": "Does a small pull request's choice need the video?",
+      "recommended": true,
+      "t": 186.508
+    },
+    {
+      "decidedAt": "2026-09-27T19:39:37.154Z",
+      "id": "q4",
+      "label": "One row, a Plan | Built switch",
+      "option": "a",
+      "planStep": 5,
+      "question": "How do the plan and what was built sit together?",
+      "recommended": true,
+      "t": 236.594
+    }
+  ],
+  "exportedAt": "2026-09-27T19:41:45.577Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T19:37:31.041Z",
+      "correct": false,
+      "id": "k1",
+      "t": 156.129,
+      "walked": true
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T19:38:56.821Z",
+      "correct": false,
+      "id": "k2",
+      "note": "ok but arent there big bckend changes important too?",
+      "t": 204.999,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T19:39:47.726Z",
+      "correct": false,
+      "id": "k3",
+      "note": "ah ok i see",
+      "t": 258.728,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T19:40:24.445Z",
+      "correct": false,
+      "id": "k4",
+      "t": 281.235,
+      "walked": true
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T19:40:55.324Z",
+      "correct": false,
+      "id": "k5",
+      "note": "wdym dropps the video. again this dkind of thing is not explained well how ma i supposed to get more information about this???",
+      "t": 298.451,
+      "walked": true
+    },
+    {
+      "answer": "own",
+      "answeredAt": "2026-09-27T19:41:41.667Z",
+      "correct": null,
+      "id": "k6",
+      "own": "ideally shorten it a bit but maybe not too crazy",
+      "t": 305.512
+    }
+  ],
+  "src": "2026-09-27-walkthroughs-that-help/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 0.852,
+        "id": "ch5"
+      }
+    ],
+    "completion": 0.973,
+    "details": [],
+    "durationSeconds": 317.56,
+    "firstPlayAt": "2026-09-27T19:31:19.523Z",
+    "maxTimeReached": 308.87,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

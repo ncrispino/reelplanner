@@ -1,0 +1,146 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f02-answered-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f02-answered-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f02-answered-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f02-answered-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-answered-chip.lit { color:var(--rp-coral-deep); }
+  .f02-answered-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f02-answered-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-answered-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-answered-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f02-answered-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f02-answered-lines path.ink { stroke:var(--rp-ink); }
+  .f02-answered-lines path.dashed { stroke-dasharray:10 10; }
+  .f02-answered-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f02-answered-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f02-answered-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f02-answered-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f02-answered-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f02-answered-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f02-answered-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f02-answered-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f02-answered-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f02-answered-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f02-answered-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f02-answered-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f02-answered-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-answered-slot.dec .n { top:13px; } .f02-answered-slot.dec .t { top:12px; }
+  .f02-answered-slot:not([data-filled]) .n, .f02-answered-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f02-answered-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-answered-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f02-answered-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f02-answered-opt.row .k { top:30px; } .f02-answered-opt.row .l { left:84px; top:22px; }
+  .f02-answered-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f02-answered-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-answered-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f02-answered-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-answered-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f02-answered-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-answered-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f02-answered-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f02-answered-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-answered-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f02-answered-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-answered-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f02-answered-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f02-answered-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f02-answered-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f02-answered-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f02-answered-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f02-answered-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f02-answered-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f02-answered-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f02-answered-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f02-answered-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f02-answered-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f02-answered-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f02-answered-box.center { justify-content:center; }
+  .f02-answered-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f02-answered-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-answered-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f02-answered-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f02-answered-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f02-answered-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f02-answered-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f02-answered-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-answered-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f02-answered-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f02-answered-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="02-answered" data-duration="17.53" data-width="1920" data-height="1080">
+
+  <div class="clip f02-answered-bg" id="f02-answered-bg" data-start="0" data-duration="17.53" data-track-index="0"></div>
+
+  <div class="clip f02-answered-scene" id="f02-answered-scene" data-start="0" data-duration="17.53" data-track-index="1">
+  <div class="f02-answered-kicker" id="f02-answered-kicker">What the reviews say</div>
+  <div class="f02-answered-chip grey" id="f02-answered-ql" style="left:200px; top:180px">Questions · 16</div>
+  <div id="f02-answered-sqs"><div class="f02-answered-sq on" id="f02-answered-sq0" style="left:200px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq1" style="left:280px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq2" style="left:360px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq3" style="left:440px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq4" style="left:520px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq5" style="left:600px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq6" style="left:680px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq7" style="left:760px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq8" style="left:840px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq9" style="left:920px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq10" style="left:1000px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq11" style="left:1080px; top:236px"></div><div class="f02-answered-sq on" id="f02-answered-sq12" style="left:1160px; top:236px"></div><div class="f02-answered-sq" id="f02-answered-sq13" style="left:1240px; top:236px"></div><div class="f02-answered-sq" id="f02-answered-sq14" style="left:1320px; top:236px"></div><div class="f02-answered-sq" id="f02-answered-sq15" style="left:1400px; top:236px"></div></div>
+  <div class="f02-answered-chip grey" id="f02-answered-rec" style="left:200px; top:324px">recommended · 13</div>
+  <div class="f02-answered-chip" id="f02-answered-r1" style="left:1240px; top:324px">too abstract · D-022</div>
+  <div class="f02-answered-chip" id="f02-answered-r2" style="left:1240px; top:374px">framed wrong · D-023</div>
+  <div class="f02-answered-chip" id="f02-answered-r3" style="left:1240px; top:424px">a condition · D-003</div>
+  <div class="f02-answered-chip grey" id="f02-answered-cl" style="left:200px; top:584px">Calls · 91</div>
+  <div id="f02-answered-tks"><div class="f02-answered-tk on" style="left:200px; top:640px"></div><div class="f02-answered-tk on" style="left:214px; top:640px"></div><div class="f02-answered-tk on" style="left:228px; top:640px"></div><div class="f02-answered-tk on" style="left:242px; top:640px"></div><div class="f02-answered-tk on" style="left:256px; top:640px"></div><div class="f02-answered-tk on" style="left:270px; top:640px"></div><div class="f02-answered-tk on" style="left:284px; top:640px"></div><div class="f02-answered-tk on" style="left:298px; top:640px"></div><div class="f02-answered-tk on" style="left:312px; top:640px"></div><div class="f02-answered-tk on" style="left:326px; top:640px"></div><div class="f02-answered-tk on" style="left:340px; top:640px"></div><div class="f02-answered-tk on" style="left:354px; top:640px"></div><div class="f02-answered-tk on" style="left:368px; top:640px"></div><div class="f02-answered-tk on" style="left:382px; top:640px"></div><div class="f02-answered-tk on" style="left:396px; top:640px"></div><div class="f02-answered-tk on" style="left:410px; top:640px"></div><div class="f02-answered-tk on" style="left:424px; top:640px"></div><div class="f02-answered-tk on" style="left:438px; top:640px"></div><div class="f02-answered-tk on" style="left:452px; top:640px"></div><div class="f02-answered-tk on" style="left:466px; top:640px"></div><div class="f02-answered-tk on" style="left:480px; top:640px"></div><div class="f02-answered-tk on" style="left:494px; top:640px"></div><div class="f02-answered-tk on" style="left:508px; top:640px"></div><div class="f02-answered-tk on" style="left:522px; top:640px"></div><div class="f02-answered-tk on" style="left:536px; top:640px"></div><div class="f02-answered-tk on" style="left:550px; top:640px"></div><div class="f02-answered-tk on" style="left:564px; top:640px"></div><div class="f02-answered-tk on" style="left:578px; top:640px"></div><div class="f02-answered-tk on" style="left:592px; top:640px"></div><div class="f02-answered-tk on" style="left:606px; top:640px"></div><div class="f02-answered-tk on" style="left:620px; top:640px"></div><div class="f02-answered-tk on" style="left:634px; top:640px"></div><div class="f02-answered-tk on" style="left:648px; top:640px"></div><div class="f02-answered-tk on" style="left:662px; top:640px"></div><div class="f02-answered-tk on" style="left:676px; top:640px"></div><div class="f02-answered-tk on" style="left:690px; top:640px"></div><div class="f02-answered-tk on" style="left:704px; top:640px"></div><div class="f02-answered-tk on" style="left:718px; top:640px"></div><div class="f02-answered-tk on" style="left:732px; top:640px"></div><div class="f02-answered-tk on" style="left:746px; top:640px"></div><div class="f02-answered-tk on" style="left:760px; top:640px"></div><div class="f02-answered-tk on" style="left:774px; top:640px"></div><div class="f02-answered-tk on" style="left:788px; top:640px"></div><div class="f02-answered-tk on" style="left:802px; top:640px"></div><div class="f02-answered-tk on" style="left:816px; top:640px"></div><div class="f02-answered-tk on" style="left:830px; top:640px"></div><div class="f02-answered-tk on" style="left:844px; top:640px"></div><div class="f02-answered-tk on" style="left:858px; top:640px"></div><div class="f02-answered-tk on" style="left:872px; top:640px"></div><div class="f02-answered-tk on" style="left:886px; top:640px"></div><div class="f02-answered-tk on" style="left:900px; top:640px"></div><div class="f02-answered-tk on" style="left:914px; top:640px"></div><div class="f02-answered-tk on" style="left:928px; top:640px"></div><div class="f02-answered-tk on" style="left:942px; top:640px"></div><div class="f02-answered-tk on" style="left:956px; top:640px"></div><div class="f02-answered-tk on" style="left:970px; top:640px"></div><div class="f02-answered-tk on" style="left:984px; top:640px"></div><div class="f02-answered-tk on" style="left:998px; top:640px"></div><div class="f02-answered-tk on" style="left:1012px; top:640px"></div><div class="f02-answered-tk on" style="left:1026px; top:640px"></div><div class="f02-answered-tk on" style="left:1040px; top:640px"></div><div class="f02-answered-tk on" style="left:1054px; top:640px"></div><div class="f02-answered-tk on" style="left:1068px; top:640px"></div><div class="f02-answered-tk on" style="left:1082px; top:640px"></div><div class="f02-answered-tk on" style="left:1096px; top:640px"></div><div class="f02-answered-tk on" style="left:1110px; top:640px"></div><div class="f02-answered-tk on" style="left:1124px; top:640px"></div><div class="f02-answered-tk on" style="left:1138px; top:640px"></div><div class="f02-answered-tk on" style="left:1152px; top:640px"></div><div class="f02-answered-tk on" style="left:1166px; top:640px"></div><div class="f02-answered-tk on" style="left:1180px; top:640px"></div><div class="f02-answered-tk on" style="left:1194px; top:640px"></div><div class="f02-answered-tk on" style="left:1208px; top:640px"></div><div class="f02-answered-tk on" style="left:1222px; top:640px"></div><div class="f02-answered-tk on" style="left:1236px; top:640px"></div><div class="f02-answered-tk on" style="left:1250px; top:640px"></div><div class="f02-answered-tk on" style="left:1264px; top:640px"></div><div class="f02-answered-tk on" style="left:1278px; top:640px"></div><div class="f02-answered-tk on" style="left:1292px; top:640px"></div><div class="f02-answered-tk on" style="left:1306px; top:640px"></div><div class="f02-answered-tk on" style="left:1320px; top:640px"></div><div class="f02-answered-tk on" style="left:1334px; top:640px"></div><div class="f02-answered-tk on" style="left:1348px; top:640px"></div><div class="f02-answered-tk on" style="left:1362px; top:640px"></div><div class="f02-answered-tk on" style="left:1376px; top:640px"></div><div class="f02-answered-tk" style="left:1390px; top:640px"></div><div class="f02-answered-tk" style="left:1404px; top:640px"></div><div class="f02-answered-tk" style="left:1418px; top:640px"></div><div class="f02-answered-tk" style="left:1432px; top:640px"></div><div class="f02-answered-tk" style="left:1446px; top:640px"></div><div class="f02-answered-tk" style="left:1460px; top:640px"></div></div>
+  <div class="f02-answered-big" id="f02-answered-count" style="left:200px; top:756px">85 of 91 accepted</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "02-answered";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f02-answered-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("ql"), 1.47);
+  fade(tl, $("sqs"), 1.47);
+  pop(tl, $("rec"), 4.66);
+  lit(tl, $("sq13"), 6.75);
+  lit(tl, $("sq14"), 6.75);
+  lit(tl, $("sq15"), 6.75);
+  pop(tl, $("r1"), 8.58, 8);
+  pop(tl, $("r2"), 10.13, 8);
+  pop(tl, $("r3"), 12.36, 8);
+  pop(tl, $("cl"), 11.28);
+  fade(tl, $("tks"), 11.28);
+  pop(tl, $("count"), 14.6);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 17.029);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

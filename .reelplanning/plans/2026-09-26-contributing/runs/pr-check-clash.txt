@@ -1,0 +1,9 @@
+$ reel pr-check . --base origin/main --body-file ../pr.md --labels ""   (the port branch, whose first decision is D-001, as main's is)
+· under the line: a normal code review, no video (3 line(s) of 300, box not ticked, no `needs-video`)
+· size: 3 changed line(s) in 1 file(s), not counting the project record, docs
+· seen in the diff, not a reason by itself: a new flag: `--port`
+· lands on main: 2026-09-27-port: plan.md, walkthrough.md
+· stays in the PR: 2026-09-27-port/reviews/plan-20260927T110000Z (id:sam); 2026-09-27-port/reviews/walkthrough-20260927T120000Z (id:sam)
+✗ an id names a different entry than on origin/main: D-001 (here 2026-09-27-port: 8790; on origin/main 2026-09-27-cache: In the repo). Rebase on origin/main and run `reel renumber` (D-171)
+✗ repo against origin/main: 1 problem(s), 0 waiting
+exit 1

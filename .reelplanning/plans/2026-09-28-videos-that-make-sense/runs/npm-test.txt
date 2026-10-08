@@ -1,0 +1,169 @@
+$ npm test
+
+> reelplanning@0.2.0 test
+> node scripts/test/run.mjs
+
+fast run: 31 specs, 4 at a time (npm run test:full for everything)
+
+✓ packages/player/test/access.spec.mjs             52.6 s  74 checks
+✓ packages/player/test/size.spec.mjs               63.1 s  55 checks
+✓ packages/player/test/band.spec.mjs               65.6 s  43 checks
+✗ packages/player/test/answer-on-frame.spec.mjs    82.0 s  103 checks — exit 1
+✓ packages/player/test/controls.spec.mjs           18.7 s  39 checks
+✓ packages/player/test/quiz.spec.mjs               33.0 s  16 checks
+✓ packages/player/test/player.spec.mjs              7.0 s  10 checks
+✓ packages/player/test/decisions.spec.mjs           9.8 s  7 checks
+✓ scripts/test/loop.spec.mjs                       19.7 s  88 checks
+✓ scripts/test/version.spec.mjs                     0.8 s  4 checks
+✓ scripts/test/case-study.spec.mjs                  3.9 s  32 checks
+✓ scripts/test/numerals.spec.mjs                    0.1 s  1 check
+✓ scripts/test/hyperframes-skills.spec.mjs          0.2 s  5 checks
+✓ scripts/test/details.spec.mjs                    50.9 s  51 checks
+✓ scripts/test/system-review.spec.mjs               2.1 s  27 checks
+✓ packages/player/test/ask.spec.mjs                23.4 s  20 checks
+✓ scripts/test/retime.spec.mjs                      0.6 s  9 checks
+✓ packages/player/test/frame-room.spec.mjs         27.9 s  16 checks
+✓ scripts/test/lifecycle.spec.mjs                  13.8 s  61 checks
+✓ scripts/test/names.spec.mjs                       3.2 s  36 checks
+✓ scripts/test/review-data.spec.mjs                 1.6 s  19 checks
+✓ scripts/test/terms.spec.mjs                       6.6 s  62 checks
+✓ scripts/test/narrate.spec.mjs                    12.0 s  45 checks
+✓ scripts/test/bundle-shared.spec.mjs               1.3 s  12 checks
+✓ scripts/test/stage-presence.spec.mjs              0.2 s  11 checks
+✓ scripts/test/build.spec.mjs                      12.8 s  22 checks
+✓ scripts/test/reviews.spec.mjs                     6.7 s  51 checks
+✓ scripts/test/visuals.spec.mjs                     3.8 s  44 checks
+✓ scripts/test/fresh-eyes.spec.mjs                  2.7 s  31 checks
+✓ scripts/test/memory.spec.mjs                      8.4 s  74 checks
+✓ scripts/test/contributing.spec.mjs                7.7 s  53 checks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ packages/player/test/answer-on-frame.spec.mjs — exit 1  (its temp folder is kept: /tmp/rp-test-answer-on-frame-1gqrRT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ plan-map lifts explained_at, by frame number or composition id, as the frame's start — k1 52.95, k2 100.947
+✓ one that names no frame is left out, with a warning, as is one with none; the frames do not carry it
+✓ plan-map carries a quick check's question_more, option_a_more and option_b_why — [{"id":"a","label":"B is picked, and the video plays on","more":"More on A."},{"id":"b","label":"B is ticked, and the player waits for Confirm","why":"Why B is not it."},{"id":"c","label":"Nothing: a pick-all question is still answered in the sheet"}]
+✓ and a choice's question_more and option_b_more; the frames do not carry them
+  · plan-map: 4 checks, 0.4 s
+✓ the pointer over a card rings it in coral — {"hover":true,"ring":"rgb(184, 85, 46) 0px 0px 0px 3px","cursor":"pointer"}
+✓ Tab reaches the cards, and the focused card is ringed — {"id":"a","ring":"rgb(184, 85, 46) 0px 0px 0px 3px, rgba(184, 85, 46, 0.28) 0px 0px 0px 7px","visible":true}
+✓ hovering and focusing answer nothing
+✓ check k1: answered in the frame — no bar, a clear layer the frame's size over it, the captions out of its way — {"home":"main","layer":true,"bg":"rgba(0, 0, 0, 0)"}
+✓ check k1: the frame asks it; its cards answer it (matched by data-option), and nothing of it is asked again — {"hits":["a","b","c"],"opts":0}
+✓ check k1: your own words are a slot by the cards, and Show the frame is in the frame's top-right corner — {"own":{"text":"Answer in my own words O","l":750,"t":526,"r":1049,"b":574.875,"inWindow":true},"fold":{"text":"Show the frame","l":1211.65625,"t":15.265625,"r":1341.71875,"b":46.484375,"inWindow":true}}
+✓ check k1: the other chips sit under the cards, Back to where this was explained among them — [["Show the frame",15],["Answer in my own words O",526],["Back to where this was explained",535]]
+✓ check k1: nothing cut, every control inside the window — []
+✓ check k1: clear buttons, not links — {"border":"1px","h":31,"size":13.58}
+✓ check k1: "Full question" is by the question — ["q"]
+✓ check k1: a video answered on its frames keeps no room for a bar under them
+✓ check k1: a click on card A answers it, and the answer shows on the frame
+✓ check k1: the answer is on the cards — the right one (B) and yours (A) marked, each with its why (no room by these cards: the verdicts on their tags, the words behind "Read why in full"), and no line of feedback elsewhere — []
+✓ check k1: the right card is marked by more than colour — a tick by "The answer", a cross by yours, its ring ink, not the coral — {"tick":"\"✓ \"","cross":"\"✕ \"","ring":"rgb(20, 20, 19) 0px 0px 0px 4px","accent":"184, 85, 46"}
+✓ check k1: "Expected something else?" is on the card you picked, under its why — {"dis":{"l":750,"t":571,"r":1231},"card":{"l":749.828125,"r":1301.5,"b":282.953125}}
+✓ check k1: answered, nothing cut and every control in the window — []
+✓ check k1: the video keeps its size before, during and after — 1358×764, 1358×764, answered 1358×764, 1358×764
+✓ check k2: answered in the frame — no bar, a clear layer the frame's size over it, the captions out of its way — {"home":"main","layer":true,"bg":"rgba(0, 0, 0, 0)"}
+✓ check k2: the frame asks it; its cards answer it (matched by data-option), and nothing of it is asked again — {"hits":["a","b","c"],"opts":0}
+✓ check k2: your own words are a slot by the cards, and Show the frame is in the frame's top-right corner — {"own":{"text":"Answer in my own words O","l":750,"t":526,"r":1049,"b":574.875,"inWindow":true},"fold":{"text":"Show the frame","l":1211.65625,"t":15.265625,"r":1341.71875,"b":46.484375,"inWindow":true}}
+✓ check k2: the other chips sit under the cards, Back to where this was explained among them — [["Show the frame",15],["Answer in my own words O",526],["Back to where this was explained",535]]
+✓ check k2: nothing cut, every control inside the window — []
+✓ check k2: clear buttons, not links — {"border":"1px","h":31,"size":13.58}
+✓ check k2: "Full question" is by the question — ["q"]
+✓ check k2: a video answered on its frames keeps no room for a bar under them
+✓ check k2: a click on card B answers it, and the answer shows on the frame
+✓ check k2: the answer is on the cards — the right one (A) and yours (B) marked, each with its why (no room by these cards: the verdicts on their tags, the words behind "Read why in full"), and no line of feedback elsewhere — []
+✓ check k2: the right card is marked by more than colour — a tick by "The answer", a cross by yours, its ring ink, not the coral — {"tick":"\"✓ \"","cross":"\"✕ \"","ring":"rgb(20, 20, 19) 0px 0px 0px 4px","accent":"184, 85, 46"}
+✓ check k2: "Expected something else?" is on the card you picked, under its why — {"dis":{"l":750,"t":571,"r":1231},"card":{"l":749.828125,"r":1301.5,"b":396.109375}}
+✓ check k2: answered, nothing cut and every control in the window — []
+✓ check k2: the video keeps its size before, during and after — 1358×764, 1358×764, answered 1358×764, 1358×764
+✓ choice q1: answered in the frame — no bar, a clear layer the frame's size over it, the captions out of its way — {"home":"main","layer":true,"bg":"rgba(0, 0, 0, 0)"}
+✓ choice q1: the frame asks it; its cards answer it (matched by data-option), and nothing of it is asked again — {"hits":["a","b","c"],"opts":0}
+✓ choice q1: your own words are a slot by the cards, and Show the frame is in the frame's top-right corner — {"own":{"text":"Answer in my own words O","l":142,"t":611,"r":441,"b":659.875,"inWindow":true},"fold":{"text":"Show the frame","l":1211.65625,"t":15.265625,"r":1341.71875,"b":46.484375,"inWindow":true}}
+✓ choice q1: the other chips sit under the cards — [["Show the frame",15],["Answer in my own words O",611],["Explain this more ?",620],["Add a note",618]]
+✓ choice q1: nothing cut, every control inside the window — []
+✓ choice q1: clear buttons, not links — {"border":"1px","h":31,"size":13.58}
+✓ choice q1: "Full question" is by the question — ["a","b","c","q"]
+✓ choice q1: a video answered on its frames keeps no room for a bar under them
+✓ choice q1: matched by data-option — data-option
+✓ choice q1: a click on card C answers it — c
+✓ choice q1: the video keeps its size before, during and after — 1358×764, 1358×764, 1358×764
+✓ and one size for the whole video (frame) — 1358×764
+✓ two quick checks and the choice on this plan's video answered by clicks — 2 checks, 1 choice
+✓ two comments and a mark with words before the send — the strip should say which key is which | drop this one | this box
+✓ the review is sent from the Finish panel — 1 post
+✓ right after the send, nothing is offered to send again
+✓ "change" opens the choice's options under it, the given one pressed — [{"id":"q1:a","on":"false"},{"id":"q1:b","on":"false"},{"id":"q1:c","on":"true"}]
+✓ a pick there changes the answer in place, and the video stays where it was — {"option":"a","t":40,"was":40}
+✓ and the record offers it as "Send the change" — "Your review changed after it was sent.Send the change"
+✓ a mark's row names its words as the mark's — {"ph":"Words for this mark","label":"The words on this mark — edit them here"}
+✓ "Send the change" sends a second review — 2 posts
+✓ the export carries the changed answer — a
+✓ the quick check's note
+✓ the comment's and the mark's new words, and not the removed comment
+✓ sent, the offer goes
+✓ played into again, the card of the answer given in the record is the one marked — a
+  · plan: 57 checks, 28.9 s
+✓ call a1: the band is under the frame, in the room kept for it, grown up over the frame as its words need — 110 px, the frame 644 (an eighth of it)
+✓ call a1: the question in its own words, at reading size (15 px, the serif), nothing else of it repeated, no sideways scroll — "The kept narration is the project's own committed assets/voi"
+✓ call a1: clear buttons, not links — {"border":"1px","h":26,"size":13}
+✓ call a1: what it holds fits in it, nothing scrolled out of sight
+✓ call a1: Accept and Flag are in the band, with the keys — ["AAccept","BFlag for discussion"]
+✓ call a1: Show the frame is there
+✓ call a1: on the paper, with the coral dot (light) — {"bg":"rgb(250, 249, 245)","dot":"rgb(184, 85, 46)"}
+✓ call a1: accept in the band records it — accept
+✓ call a1: the video keeps its size before, during and after — 1144×644, 1144×644, 1144×644
+✓ group group-63: the band is under the frame, in the room kept for it — 80 px, the frame 644 (an eighth of it)
+✓ group group-63: the question in its own words, at reading size (15 px, the serif), nothing else of it repeated, no sideways scroll — "2 more choices from this chapter."
+✓ group group-63: clear buttons, not links — {"border":"1px","h":26,"size":13}
+✓ group group-63: what it holds fits in it, nothing scrolled out of sight
+✓ group group-63: Accept all and a Flag per call are in the band — {"opts":["AAccept all"],"flags":["Flag A21","Flag A23"]}
+✓ group group-63: Show the frame is there
+✓ group group-63: on the paper, with the coral dot (light) — {"bg":"rgb(250, 249, 245)","dot":"rgb(184, 85, 46)"}
+✓ group group-63: one call flagged in the band, Accept all takes the rest
+✓ group group-63: the video keeps its size before, during and after — 1144×644, 1144×644, 1144×644
+✓ and one size for the whole video (under) — 1144×644
+✓ a call's verdict switched in the record, both ways, without going back to the video — a21 → accept, a1 → flag
+✓ the flag's note on its step follows the verdict: gone from the one accepted, added to the one flagged
+  · walk: 21 checks, 13.6 s
+✓ a pick-all question: its cards in the frame, Confirm in the band waiting for a tick — {"text":"Tick at least one ↵","disabled":true}
+✓ each click ticks its card and the question waits — {"ticked":["a","b"],"confirm":{"text":"Confirm 2 picks ↵","disabled":false}}
+✓ a second click unticks, and Confirm sends the picks — ["a"]
+✓ with cards on the frame, the keys still answer — q2: b
+  · pick-all: 4 checks, 9.7 s
+✓ a quick check: "More" on the card that has more to say (A), none on the others before an answer, "Full question" by its heading — ["a","q"]
+✓ "More" on A, before the answer: its fuller words and nothing that gives the answer away — "AIt stops, and names streakThe build refuses to finish, and says which word it c…"
+✓ and it answers nothing
+✗ its chip again puts it away
+✗ a hover does not open it at once
+✓ held on the card a moment, it opens by the card — "AIt stops, and names streakThe build refuses to fi…"
+✗ the pointer gone, it goes
+✓ "Full question": the question in full, with its question_more — "Quick check 1 · step 1The glossary has a row for streak, and no beat of the syst…"
+✓ Esc puts it away
+✓ answered: each card's own why on it (option_b_why, option_c_why), the right one's from its explain — [["a","The answerStep one makes the s"],["b","Your answer · not quite, it is"],["c","Plan videos lean on the system"]]
+✓ and "More" on a card now says why — "CIt builds; plan videos explain itPlan videos lean on the sy…"
+✓ a choice: "More" on each card — ["a","b","q"]
+✓ B has no option_b_more: its "More" is its why — "BToday's words, explainedOne name everywhere; the explanatio…"
+✓ the heading, hovered a moment: the whole question — "Question 1 · step 1Which words does the viewer see: plain ne…"
+✓ O opens your own words in the frame, under the cards, inside the frame — {"open":true,"focus":true,"t":674,"b":749.71875,"l":142,"r":1302,"sh":763.984375}
+✓ Enter answers with them — own
+✓ and the video kept its size throughout — 1358×764
+  · more: 17 checks, 14.7 s
+✓ 1440px: the answer-in-the-frame walkthrough has quick checks with a walk-through — k1
+✓ 1440px k1, answered wrong: "Walk me through it" is open, clear of the heading ("17 stop in 3 steps, + 1 off-plan change. Pauses?"), of the cards and of every control — {"shown":true,"heading":"17 stop in 3 steps, + 1 off-plan change. Pauses?","onHeading":false,"onCards":[],"onCtrls":[],"inWindow":true,"words":true}
+  · walk-me-1440: 2 checks, 6.4 s
+✓ 200%: k1 answered wrong on the frame, nothing over a card's words (the whys ["inside","inside"]) — []
+  · words-200: 1 checks, 6.6 s
+
+unsharded: 106 checks in 7 units (plan-map, plan, walk, pick-all, more, walk-me-1440, words-200)
+
+✗ 3 failed:
+its chip again puts it away
+a hover does not open it at once
+the pointer gone, it goes
+
+✗ 1 of 31 failed: packages/player/test/answer-on-frame.spec.mjs in 139.2 s (the slowest, packages/player/test/answer-on-frame.spec.mjs, 82.0 s)
+
+real	2m19.491s
+user	1m50.387s
+sys	0m37.046s
+exit 1

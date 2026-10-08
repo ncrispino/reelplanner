@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "src": "../../videos/w1-upload-resume/index.html",
+  "project": "w1-upload-resume",
+  "exportedAt": "2026-09-22T16:39:45.678Z",
+  "watch": {
+    "firstPlayAt": "2026-09-22T16:39:27.603Z",
+    "maxTimeReached": 157.13,
+    "durationSeconds": 198.81,
+    "completion": 0.79,
+    "chapters": [
+      {
+        "id": "ch1",
+        "completion": 1
+      },
+      {
+        "id": "ch2",
+        "completion": 1
+      },
+      {
+        "id": "ch3",
+        "completion": 0.386
+      }
+    ]
+  },
+  "decisions": [],
+  "quizzes": [
+    {
+      "id": "k1",
+      "answer": "b",
+      "correct": true,
+      "t": 57.294,
+      "answeredAt": "2026-09-22T16:39:35.904Z"
+    },
+    {
+      "id": "k2",
+      "answer": "a",
+      "correct": false,
+      "t": 126.708,
+      "answeredAt": "2026-09-22T16:39:41.287Z"
+    }
+  ],
+  "autonomy": [
+    {
+      "id": "a1",
+      "verdict": "flag",
+      "t": 50.553,
+      "planStep": 2,
+      "chose": "16 MB default part size",
+      "judgedAt": "2026-09-22T16:39:28.739Z"
+    },
+    {
+      "id": "a2",
+      "verdict": "accept",
+      "t": 93.961,
+      "planStep": 3,
+      "chose": "complete returns 409 when parts are missing",
+      "judgedAt": "2026-09-22T16:39:30.537Z"
+    },
+    {
+      "id": "a3",
+      "verdict": "accept",
+      "t": 118.964,
+      "planStep": 4,
+      "chose": "delete the old charge path",
+      "judgedAt": "2026-09-22T16:39:32.305Z"
+    },
+    {
+      "id": "a4",
+      "verdict": "accept",
+      "t": 156.846,
+      "planStep": 5,
+      "chose": "sweep in batches of 500 with a 200 ms pause",
+      "judgedAt": "2026-09-22T16:39:34.137Z"
+    }
+  ],
+  "knowledgeLevel": null,
+  "annotations": [
+    {
+      "id": "amucwg06b5b3f",
+      "kind": "flag",
+      "comment": "Flagged: 16 MB default part size",
+      "t": 50.53,
+      "frame": {
+        "index": 4,
+        "compositionId": "04-autonomy-1",
+        "title": "Why 16 megabytes"
+      },
+      "plan": {
+        "step": 2,
+        "questions": [],
+        "component": null
+      }
+    },
+    {
+      "id": "amucwgd0a5da5",
+      "kind": "note",
+      "comment": "16 MB parts change the retry cost on mobile — worth a number before this lands",
+      "about": "",
+      "t": 60,
+      "frame": {
+        "index": 6,
+        "compositionId": "06-closer-1",
+        "title": "Next: steps 3 and 4"
+      },
+      "plan": {
+        "step": null,
+        "questions": [],
+        "component": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bob Dylan Interactive — Implementation Plan</title>
+<style>
+  :root{
+    --bg: #faf7f0;
+    --bg-alt: #f0ead9;
+    --paper: #ffffff;
+    --ink: #201a12;
+    --ink-dim: #5c5142;
+    --line: #ddd2ba;
+    --accent: #a8321f;
+    --accent-ink: #ffffff;
+    --accent-soft: #f4ded6;
+    --gold: #97741c;
+    --gold-soft: #f1e6c8;
+    --green: #2f5d3a;
+    --green-soft: #dfe9df;
+    --code-bg: #1e1912;
+    --code-ink: #f1e9d6;
+    --shadow: 0 2px 10px rgba(32,26,18,0.08);
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #14110c;
+      --bg-alt: #1c1712;
+      --paper: #221c15;
+      --ink: #f1e9d6;
+      --ink-dim: #b9ac93;
+      --line: #3a3122;
+      --accent: #e0623f;
+      --accent-ink: #14110c;
+      --accent-soft: #3a231d;
+      --gold: #e0b84a;
+      --gold-soft: #3a3018;
+      --green: #7fbf8f;
+      --green-soft: #1e2b21;
+      --shadow: 0 2px 14px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #14110c;
+    --bg-alt: #1c1712;
+    --paper: #221c15;
+    --ink: #f1e9d6;
+    --ink-dim: #b9ac93;
+    --line: #3a3122;
+    --accent: #e0623f;
+    --accent-ink: #14110c;
+    --accent-soft: #3a231d;
+    --gold: #e0b84a;
+    --gold-soft: #3a3018;
+    --green: #7fbf8f;
+    --green-soft: #1e2b21;
+    --shadow: 0 2px 14px rgba(0,0,0,0.4);
+  }
+  *{ box-sizing: border-box; }
+  html{ -webkit-text-size-adjust: 100%; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  h1,h2,h3,h4{
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+  a{ color: var(--accent); }
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background: linear-gradient(180deg, var(--bg-alt), var(--bg));
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0 18px;
+  }
+  .eyebrow{
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+  .hero h1{ font-size: 30px; margin-top: 6px; }
+  .hero p.lede{ color: var(--ink-dim); font-size: 15px; max-width: 62ch; }
+  .badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 14px; }
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size: 11.5px; font-weight:600;
+    padding: 5px 10px; border-radius: 999px;
+    background: var(--paper); border:1px solid var(--line); color: var(--ink-dim);
+  }
+  .badge b{ color: var(--ink); font-weight:700; }
+
+  /* ---------- Sticky quick nav ---------- */
+  .quicknav{
+    position: sticky; top:0; z-index: 20;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: 8px 0;
+  }
+  .quicknav-scroll{
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 16px;
+  }
+  .quicknav-scroll::-webkit-scrollbar{ display:none; }
+  .quicknav a{
+    flex: 0 0 auto;
+    text-decoration:none;
+    font-size: 12.5px; font-weight:600;
+    color: var(--ink);
+    background: var(--paper);
+    border:1px solid var(--line);
+    padding: 7px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* ---------- Sections ---------- */
+  section{ padding: 34px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  .section-num{
+    display:inline-block; font-size:12px; font-weight:700; color: var(--accent);
+    background: var(--accent-soft); padding: 2px 8px; border-radius:6px; margin-bottom:8px;
+  }
+  section h2{ font-size: 22px; }
+  section > p.deck{ color: var(--ink-dim); font-size: 14.5px; max-width: 65ch; margin-top:2px;}
+
+  .card{
+    background: var(--paper); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 16px; box-shadow: var(--shadow);
+  }
+  .grid{ display:grid; gap:12px; }
+  @media (min-width: 620px){ .grid-2{ grid-template-columns: 1fr 1fr; } }
+
+  ul.tight{ margin:8px 0; padding-left:20px; }
+  ul.tight li{ margin-bottom:6px; font-size:14.5px; }
+  .principles li strong{ color:var(--ink); }
+
+  /* ---------- Pills / eras strip ---------- */
+  .eras-strip{ display:flex; gap:8px; overflow-x:auto; padding: 4px 2px 12px; -webkit-overflow-scrolling: touch;}
+  .era-chip{
+    flex:0 0 auto; min-width: 140px;
+    background: var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:10px 12px;
+  }
+  .era-chip .yr{ font-size:11px; color:var(--accent); font-weight:700; }
+  .era-chip .nm{ font-size:13.5px; font-weight:700; margin-top:2px;}
+  .era-chip .ds{ font-size:12px; color:var(--ink-dim); margin-top:4px; }
+
+  /* ---------- Diagrams ---------- */
+  .diagram-card{
+    background: var(--paper); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 12px; box-shadow: var(--shadow);
+  }
+  .diagram-card svg{ width:100%; height:auto; display:block; }
+  .diagram-caption{ font-size:12.5px; color:var(--ink-dim); margin-top:8px; }
+  .legend{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; font-size:12px; color:var(--ink-dim); }
+  .legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+  /* ---------- Timeline (milestones) ---------- */
+  .timeline{ position:relative; margin-top:18px; padding-left: 22px; }
+  .timeline::before{
+    content:""; position:absolute; left:6px; top:4px; bottom:4px; width:2px;
+    background: var(--line);
+  }
+  .tl-item{ position:relative; margin-bottom: 18px; }
+  .tl-item::before{
+    content:""; position:absolute; left:-22px; top:4px; width:12px; height:12px;
+    border-radius:50%; background: var(--accent); border:3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .tl-item .phase-tag{ font-size:11px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.05em;}
+  .tl-item h3{ font-size:16.5px; margin:2px 0 4px; }
+  .tl-item .when{ font-size:12px; color:var(--ink-dim); margin-bottom:6px; }
+  .tl-item details{ margin-top:6px; }
+  .tl-item summary{ cursor:pointer; font-size:13px; font-weight:600; color:var(--accent); }
+  .tl-item .details-body{ font-size:13.5px; color:var(--ink-dim); margin-top:6px; }
+  .tl-item .details-body ul{ margin:4px 0 0; padding-left:18px; }
+
+  /* ---------- Phone mockups ---------- */
+  .phones-scroll{
+    display:flex; gap:16px; overflow-x:auto; padding: 10px 2px 14px;
+    -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
+  }
+  .phone-block{ flex: 0 0 auto; scroll-snap-align: center; width: 230px; }
+  .phone{
+    width: 230px; height: 470px; background:#111; border-radius: 32px;
+    padding: 10px; box-shadow: var(--shadow); position:relative;
+  }
+  .phone .notch{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:70px; height:16px; background:#111; border-radius:0 0 10px 10px; z-index:2;
+  }
+  .phone .screen{
+    width:100%; height:100%; background: var(--bg-alt); border-radius:22px;
+    overflow:hidden; position:relative; display:flex; flex-direction:column;
+    font-size:11px;
+  }
+  .phone .topbar{
+    background: var(--paper); padding:16px 10px 8px; border-bottom:1px solid var(--line);
+    font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .phone .topbar span.sub{ font-weight:400; font-size:10px; color:var(--ink-dim); }
+  .phone .content{ flex:1; overflow:hidden; padding:10px; }
+  .phone .caption{ font-size:12.5px; color:var(--ink-dim); margin-top:10px; text-align:center; }
+
+  .mock-era-row{ display:flex; gap:6px; overflow:hidden; margin-bottom:8px; }
+  .mock-era-pill{
+    flex:0 0 auto; font-size:9.5px; font-weight:700; padding:4px 8px; border-radius:999px;
+    background: var(--accent-soft); color: var(--accent); white-space:nowrap;
+  }
+  .mock-era-pill.active{ background: var(--accent); color: var(--accent-ink); }
+  .mock-album-card{
+    background: var(--paper); border:1px solid var(--line); border-radius:8px;
+    padding:8px; margin-bottom:7px; display:flex; gap:8px; align-items:center;
+  }
+  .mock-cover{ width:36px; height:36px; border-radius:5px; flex:0 0 auto;
+    background: linear-gradient(135deg, var(--gold), var(--accent)); }
+  .mock-album-card .t{ font-weight:700; font-size:11.5px; }
+  .mock-album-card .s{ font-size:9.5px; color:var(--ink-dim); }
+
+  .mock-sheet{
+    position:absolute; left:0; right:0; bottom:0; top:38%;
+    background: var(--paper); border-radius:16px 16px 0 0; box-shadow: 0 -4px 14px rgba(0,0,0,0.15);
+    padding:12px; display:flex; flex-direction:column;
+  }
+  .mock-sheet .handle{ width:34px; height:4px; background:var(--line); border-radius:2px; margin: 0 auto 8px; }
+  .mock-lyric{ font-style:italic; font-size:11px; border-left:2px solid var(--accent); padding-left:8px; color:var(--ink-dim); margin:6px 0; }
+  .mock-tag-row{ display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
+  .mock-tag{ font-size:9px; background:var(--green-soft); color:var(--green); padding:3px 7px; border-radius:999px; font-weight:700; }
+
+  .mock-web{ width:100%; height:100%; }
+
+  /* ---------- Code ---------- */
+  pre{
+    background: var(--code-bg); color: var(--code-ink);
+    padding: 14px; border-radius: 10px; overflow-x:auto;
+    font-size: 12.5px; line-height:1.55;
+    -webkit-overflow-scrolling: touch;
+  }
+  code{ font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace; }
+  .code-label{ font-size:12px; font-weight:700; color:var(--ink-dim); margin: 18px 0 6px; text-transform:uppercase; letter-spacing:.04em; }
+  .code-label:first-of-type{ margin-top:4px; }
+
+  /* ---------- File tree ---------- */
+  .tree{ font-size:13px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .tree div{ white-space:pre; font-family:"SF Mono", Menlo, Consolas, monospace; font-size:12.5px; }
+  .tree .c{ color: var(--ink-dim); font-family: -apple-system, sans-serif; }
+
+  /* ---------- Risk table ---------- */
+  table.risks{ width:100%; border-collapse: collapse; font-size:13.5px; }
+  table.risks th{ text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-dim); padding:8px 10px; border-bottom:2px solid var(--line); }
+  table.risks td{ padding:10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .pill-lvl{ font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:999px; white-space:nowrap; display:inline-block; }
+  .lvl-high{ background: var(--accent-soft); color: var(--accent); }
+  .lvl-med{ background: var(--gold-soft); color: var(--gold); }
+  .lvl-low{ background: var(--green-soft); color: var(--green); }
+
+  @media (max-width: 640px){
+    table.risks thead{ display:none; }
+    table.risks, table.risks tbody, table.risks tr, table.risks td{ display:block; width:100%; }
+    table.risks tr{ background:var(--paper); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; padding:10px 4px; box-shadow: var(--shadow); }
+    table.risks td{ border:none; padding:6px 10px; }
+    table.risks td::before{ content: attr(data-label); display:block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-dim); margin-bottom:2px; }
+  }
+
+  footer{ padding: 30px 0 10px; text-align:center; }
+  footer p{ font-size:13px; color:var(--ink-dim); }
+  .cta{
+    display:inline-block; margin-top:10px; background: var(--accent); color: var(--accent-ink);
+    padding:12px 22px; border-radius:999px; font-weight:700; font-size:14px; text-decoration:none;
+  }
+
+  ::selection{ background: var(--accent-soft); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Implementation Plan · Draft v1</div>
+    <h1>Bob Dylan, Interactively</h1>
+    <p class="lede">A plan for a mobile-first site where you explore Dylan's eras, albums, and songs the way a fan would trace them on a wall of index cards and string — by <em>connection</em>, not just chronology.</p>
+    <div class="badges">
+      <span class="badge">Output: <b>static HTML/CSS/JS, no build step</b></span>
+      <span class="badge">Priority: <b>phone-first</b></span>
+      <span class="badge">Scope: <b>curated, ~10 eras / 70 songs</b></span>
+      <span class="badge">Status: <b>ready for build</b></span>
+    </div>
+  </div>
+</div>
+
+<nav class="quicknav">
+  <div class="quicknav-scroll">
+    <a href="#overview">Overview</a>
+    <a href="#concept">Concept</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#dataflow">Data Flow</a>
+    <a href="#milestones">Milestones</a>
+    <a href="#screens">Screens</a>
+    <a href="#code">Key Code</a>
+    <a href="#files">File Structure</a>
+    <a href="#risks">Risks</a>
+    <a href="#open">Open Questions</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 1. OVERVIEW -->
+  <section id="overview">
+    <span class="section-num">01</span>
+    <h2>Overview &amp; Goals</h2>
+    <p class="deck">What "more engaging than Wikipedia" actually means, and the principles that keep the build honest about scope.</p>
+    <div class="card">
+      <ul class="tight principles">
+        <li><strong>Explore by connection, not just by scrolling.</strong> The hook of Dylan's career is how everything reconnects — a 1963 protest song becomes a 1979 gospel reworking becomes a 2020 callback. The site's signature feature is a <em>connections web</em>, not another long-form article.</li>
+        <li><strong>Three altitudes, always reachable in one tap:</strong> Era → Album → Song. You should never be more than a couple of taps from "play this in my head" context: what it sounded like, why it mattered, what it led to.</li>
+        <li><strong>Phone is the primary device.</strong> Desktop gets a wider layout; it does not get a different app. Every interaction is designed thumb-first (swipe, tap, bottom sheets) and only enhanced for larger screens.</li>
+        <li><strong>Curated over exhaustive.</strong> Dylan has 40+ studio albums and 600+ songs. A site that tries to model all of it will ship nothing. v1 covers ~10 eras, ~24 albums, ~70 songs, and ~120 hand-picked connections — enough for the web view to feel alive, not enough to become a maintenance project.</li>
+        <li><strong>No backend.</strong> Everything is static files + a JS data object, so it can be hosted anywhere (GitHub Pages, Netlify, a single S3 bucket) with zero server cost or moving parts.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2. CONCEPT -->
+  <section id="concept">
+    <span class="section-num">02</span>
+    <h2>The Exploration Model</h2>
+    <p class="deck">Ten eras anchor the timeline. Each one opens into albums, each album into songs, and every song can pull you sideways into the connections web instead of just forward in time.</p>
+
+    <div class="eras-strip">
+      <div class="era-chip"><div class="yr">1961–64</div><div class="nm">Greenwich Village</div><div class="ds">Folk revival, Guthrie's shadow</div></div>
+      <div class="era-chip"><div class="yr">1965–66</div><div class="nm">Going Electric</div><div class="ds">Newport boos, the "Judas" tour</div></div>
+      <div class="era-chip"><div class="yr">1967–68</div><div class="nm">Basement Tapes</div><div class="ds">Woodstock, motorcycle crash</div></div>
+      <div class="era-chip"><div class="yr">1969–74</div><div class="nm">Nashville &amp; Divorce</div><div class="ds">Country turn, Blood on the Tracks</div></div>
+      <div class="era-chip"><div class="yr">1979–81</div><div class="nm">Gospel Years</div><div class="ds">Born-again trilogy</div></div>
+      <div class="era-chip"><div class="yr">1982–88</div><div class="nm">Wilderness</div><div class="ds">Uneven 80s, Live Aid</div></div>
+      <div class="era-chip"><div class="yr">1988–96</div><div class="nm">Never Ending Tour</div><div class="ds">Touring becomes the identity</div></div>
+      <div class="era-chip"><div class="yr">1997–2006</div><div class="nm">Time Out of Mind</div><div class="ds">Late-career renaissance</div></div>
+      <div class="era-chip"><div class="yr">2006–2019</div><div class="nm">Elder Statesman</div><div class="ds">Sinatra covers, Nobel Prize</div></div>
+      <div class="era-chip"><div class="yr">2020–</div><div class="nm">Rough &amp; Rowdy Ways</div><div class="ds">JFK epic, still recording</div></div>
+    </div>
+
+    <div class="card">
+      <ul class="tight">
+        <li><strong>Timeline (home):</strong> the spine. Swipe/scroll through eras.</li>
+        <li><strong>Era view:</strong> what was happening in Dylan's life + the albums released in that window.</li>
+        <li><strong>Album view:</strong> cover, year, one-paragraph context, track list.</li>
+        <li><strong>Song detail:</strong> lyric excerpt, one fact, and its <em>connections</em> — covers, callbacks, influences.</li>
+        <li><strong>Connections web:</strong> tap any song's connections and see a small node graph — the same song can appear here even when it's nowhere near it on the timeline.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. ARCHITECTURE -->
+  <section id="architecture">
+    <span class="section-num">03</span>
+    <h2>Architecture</h2>
+    <p class="deck">A static site with one data module, one small app shell, and five view renderers. No framework, no bundler — plain ES modules the implementer can open and read top to bottom.</p>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 380 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#a8321f"></path>
+          </marker>
+          <marker id="arrow-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#2f5d3a"></path>
+          </marker>
+        </defs>
+        <!-- data layer -->
+        <rect x="70" y="10" width="240" height="52" rx="10" fill="#f1e6c8" stroke="#97741c" stroke-width="1.5"/>
+        <text x="190" y="32" text-anchor="middle" font-size="13" font-weight="700" fill="#3a2f10" font-family="Georgia,serif">data.js</text>
+        <text x="190" y="49" text-anchor="middle" font-size="10.5" fill="#5c5142">eras · albums · songs · edges</text>
+
+        <path d="M190,62 L190,90" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow)"/>
+
+        <!-- app state / router -->
+        <rect x="55" y="92" width="270" height="56" rx="10" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.5"/>
+        <text x="190" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#201a12" font-family="Georgia,serif">App State + Router</text>
+        <text x="190" y="133" text-anchor="middle" font-size="10.5" fill="#5c5142">store.js — reads/writes location.hash</text>
+
+        <path d="M190,148 L190,176" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow)"/>
+
+        <!-- view renderer label -->
+        <text x="190" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#5c5142" letter-spacing="0.04em">VIEW RENDERERS</text>
+
+        <!-- 5 view boxes -->
+        <g font-family="Georgia,serif">
+          <rect x="15" y="202" width="105" height="46" rx="8" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3"/>
+          <text x="67" y="222" text-anchor="middle" font-size="11" font-weight="700" fill="#201a12">Timeline</text>
+          <text x="67" y="236" text-anchor="middle" font-size="9" fill="#5c5142">timeline.js</text>
+
+          <rect x="137" y="202" width="105" height="46" rx="8" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3"/>
+          <text x="189" y="222" text-anchor="middle" font-size="11" font-weight="700" fill="#201a12">Era / Album</text>
+          <text x="189" y="236" text-anchor="middle" font-size="9" fill="#5c5142">detail.js</text>
+
+          <rect x="259" y="202" width="105" height="46" rx="8" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3"/>
+          <text x="311" y="222" text-anchor="middle" font-size="11" font-weight="700" fill="#201a12">Song Sheet</text>
+          <text x="311" y="236" text-anchor="middle" font-size="9" fill="#5c5142">detail.js</text>
+
+          <rect x="76" y="260" width="105" height="46" rx="8" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3"/>
+          <text x="128" y="280" text-anchor="middle" font-size="11" font-weight="700" fill="#201a12">Connections</text>
+          <text x="128" y="294" text-anchor="middle" font-size="9" fill="#5c5142">web.js</text>
+
+          <rect x="198" y="260" width="105" height="46" rx="8" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3"/>
+          <text x="250" y="280" text-anchor="middle" font-size="11" font-weight="700" fill="#201a12">Search</text>
+          <text x="250" y="294" text-anchor="middle" font-size="9" fill="#5c5142">search.js</text>
+        </g>
+
+        <path d="M190,306 L190,334" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow)"/>
+
+        <!-- DOM / user -->
+        <rect x="70" y="336" width="240" height="52" rx="10" fill="#f4ded6" stroke="#a8321f" stroke-width="1.5"/>
+        <text x="190" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#201a12" font-family="Georgia,serif">DOM (phone screen)</text>
+        <text x="190" y="375" text-anchor="middle" font-size="10.5" fill="#5c5142">tap · swipe · scroll</text>
+
+        <!-- feedback loop back to state -->
+        <path d="M70,362 C20,362 20,120 55,118" stroke="#2f5d3a" stroke-width="2" fill="none" marker-end="url(#arrow-g)"/>
+        <text x="8" y="245" font-size="10" fill="#2f5d3a" font-weight="700" transform="rotate(-90 30,245)">user events update state</text>
+
+        <!-- shared utils box -->
+        <rect x="55" y="410" width="270" height="96" rx="10" fill="#ffffff" stroke="#ddd2ba" stroke-width="1.3" stroke-dasharray="4 3"/>
+        <text x="190" y="430" text-anchor="middle" font-size="11" font-weight="700" fill="#5c5142" letter-spacing="0.03em">SHARED UTILITIES</text>
+        <text x="190" y="450" text-anchor="middle" font-size="10" fill="#5c5142">render(el, html) — tiny DOM diff-free helper</text>
+        <text x="190" y="466" text-anchor="middle" font-size="10" fill="#5c5142">layoutGraph(nodes, edges) — force-ish layout</text>
+        <text x="190" y="482" text-anchor="middle" font-size="10" fill="#5c5142">a11y.js — focus trap, aria helpers</text>
+        <path d="M190,410 L190,392" stroke="#ddd2ba" stroke-width="1.3" stroke-dasharray="3 3"/>
+        <text x="190" y="500" text-anchor="middle" font-size="9.5" fill="#97741c">imported by all five renderers</text>
+
+        <rect x="55" y="522" width="270" height="70" rx="10" fill="#dfe9df" stroke="#2f5d3a" stroke-width="1.3"/>
+        <text x="190" y="544" text-anchor="middle" font-size="11" font-weight="700" fill="#1d3623" letter-spacing="0.03em">styles.css</text>
+        <text x="190" y="562" text-anchor="middle" font-size="10" fill="#2f5d3a">mobile-first, CSS vars for era palettes,</text>
+        <text x="190" y="576" text-anchor="middle" font-size="10" fill="#2f5d3a">scroll-snap + bottom-sheet primitives</text>
+      </svg>
+      <div class="diagram-caption">Flat file set, one-way data flow down, one feedback path up. No view ever talks to another view directly — everything routes through the store.</div>
+      <div class="legend">
+        <span><i style="background:#f1e6c8;border:1px solid #97741c"></i> data</span>
+        <span><i style="background:#ffffff;border:1px solid #ddd2ba"></i> logic / views</span>
+        <span><i style="background:#f4ded6;border:1px solid #a8321f"></i> user surface</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. DATA FLOW -->
+  <section id="dataflow">
+    <span class="section-num">04</span>
+    <h2>Data Flow</h2>
+    <p class="deck">What happens, in order, from page load to a tap on a connection node.</p>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 380 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data flow diagram">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#a8321f"></path>
+          </marker>
+        </defs>
+        <g font-family="Georgia,serif">
+          <!-- step boxes -->
+          <rect x="20" y="8" width="340" height="50" rx="10" fill="#ffffff" stroke="#ddd2ba"/>
+          <circle cx="42" cy="33" r="13" fill="#a8321f"/><text x="42" y="37" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">1</text>
+          <text x="62" y="29" font-size="11.5" font-weight="700" fill="#201a12">Page loads</text>
+          <text x="62" y="44" font-size="10" fill="#5c5142">data.js parsed into one in-memory store object</text>
+
+          <path d="M190,58 L190,78" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="20" y="80" width="340" height="50" rx="10" fill="#ffffff" stroke="#ddd2ba"/>
+          <circle cx="42" cy="105" r="13" fill="#a8321f"/><text x="42" y="109" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">2</text>
+          <text x="62" y="101" font-size="11.5" font-weight="700" fill="#201a12">Router reads location.hash</text>
+          <text x="62" y="116" font-size="10" fill="#5c5142">e.g. #/song/tangled-up-in-blue</text>
+
+          <path d="M190,130 L190,150" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="20" y="152" width="340" height="50" rx="10" fill="#ffffff" stroke="#ddd2ba"/>
+          <circle cx="42" cy="177" r="13" fill="#a8321f"/><text x="42" y="181" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">3</text>
+          <text x="62" y="173" font-size="11.5" font-weight="700" fill="#201a12">Store resolves the route</text>
+          <text x="62" y="188" font-size="10" fill="#5c5142">looks up song + its edges[] by id</text>
+
+          <path d="M190,202 L190,222" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="20" y="224" width="340" height="50" rx="10" fill="#ffffff" stroke="#ddd2ba"/>
+          <circle cx="42" cy="249" r="13" fill="#a8321f"/><text x="42" y="253" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">4</text>
+          <text x="62" y="245" font-size="11.5" font-weight="700" fill="#201a12">Matching renderer runs</text>
+          <text x="62" y="260" font-size="10" fill="#5c5142">detail.js builds the song-sheet HTML string</text>
+
+          <path d="M190,274 L190,294" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="20" y="296" width="340" height="50" rx="10" fill="#ffffff" stroke="#ddd2ba"/>
+          <circle cx="42" cy="321" r="13" fill="#a8321f"/><text x="42" y="325" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">5</text>
+          <text x="62" y="317" font-size="11.5" font-weight="700" fill="#201a12">DOM updates</text>
+          <text x="62" y="332" font-size="10" fill="#5c5142">bottom sheet slides up (phone) or side panel (desktop)</text>
+
+          <path d="M190,346 L190,366" stroke="#a8321f" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <rect x="20" y="368" width="340" height="50" rx="10" fill="#f4ded6" stroke="#a8321f"/>
+          <circle cx="42" cy="393" r="13" fill="#a8321f"/><text x="42" y="397" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">6</text>
+          <text x="62" y="389" font-size="11.5" font-weight="700" fill="#201a12">User taps a connection node</text>
+          <text x="62" y="404" font-size="10" fill="#5c5142">e.g. the 1975 live version, or a cover</text>
+
+          <!-- loop back arrow -->
+          <path d="M20,393 C-40,393 -40,105 20,105" stroke="#2f5d3a" stroke-width="2" fill="none" marker-end="url(#arrow2)" transform="translate(4,0)"/>
+          <path d="M24,393 C-16,393 -16,105 24,105" stroke="#2f5d3a" stroke-width="2" fill="none" marker-end="url(#arrow2)"/>
+          <text x="10" y="250" font-size="9.5" fill="#2f5d3a" font-weight="700" transform="rotate(-90 10,250)">sets a new hash → loops to step 2</text>
+
+          <rect x="20" y="440" width="340" height="60" rx="10" fill="#f1e6c8" stroke="#97741c" stroke-dasharray="4 3"/>
+          <text x="190" y="462" text-anchor="middle" font-size="11" font-weight="700" fill="#3a2f10">No network calls, ever</text>
+          <text x="190" y="480" text-anchor="middle" font-size="10" fill="#5c5142">data.js ships inline; the only outbound links</text>
+          <text x="190" y="494" text-anchor="middle" font-size="10" fill="#5c5142">are optional "listen on Spotify/YouTube" buttons</text>
+        </g>
+      </svg>
+      <div class="diagram-caption">The whole app is this loop. Steps 2–6 repeat on every tap; nothing is ever fetched over the network mid-session.</div>
+    </div>
+  </section>
+
+  <!-- 5. MILESTONES -->
+  <section id="milestones">
+    <span class="section-num">05</span>
+    <h2>Milestones</h2>
+    <p class="deck">A 3-week build, front-loaded with content risk. Tap a phase to see its deliverables.</p>
+
+    <ol class="timeline" style="list-style:none; padding-left:22px; margin:18px 0 0;">
+      <li class="tl-item">
+        <div class="phase-tag">Phase 0 · Research</div>
+        <h3>Content model &amp; source list</h3>
+        <div class="when">Days 1–2</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Final list of 10 eras, ~24 albums, ~70 songs, ~120 connections</li>
+              <li>Fact sources logged per era (official site, AllMusic, Rolling Stone, Heylin's biography)</li>
+              <li>Decide connection <em>types</em>: cover, live-rework, self-callback, influence-from, cultural-reference</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 1 · Data</div>
+        <h3>Schema + pilot data</h3>
+        <div class="when">Day 3</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li><code>data.js</code> schema finalized (see Key Code)</li>
+              <li>2 eras fully populated end-to-end as a pilot, to validate the schema against real content</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 2 · Shell</div>
+        <h3>App shell, router, timeline view</h3>
+        <div class="when">Days 4–5</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Hash router, store, base layout (mobile + desktop breakpoint)</li>
+              <li>Horizontal/vertical era timeline with scroll-snap</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 3 · Detail views</div>
+        <h3>Era, album, and song views</h3>
+        <div class="when">Days 6–8</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Era page (context + album grid)</li>
+              <li>Album page (cover, blurb, track list)</li>
+              <li>Song bottom sheet (lyric excerpt, fact, "listen" link, connection tags)</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 4 · Signature feature</div>
+        <h3>Connections web</h3>
+        <div class="when">Days 9–11</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>SVG node graph, capped to 1-hop-from-selection on phone</li>
+              <li>Tap-to-recenter interaction, tap node → opens that song's sheet</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 5 · Content fill</div>
+        <h3>Full data entry</h3>
+        <div class="when">Days 12–13</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Remaining 8 eras written and entered</li>
+              <li>Search index built from the same data (no separate content)</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 6 · Polish</div>
+        <h3>Motion, empty states, search UI</h3>
+        <div class="when">Day 14</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Transitions respect <code>prefers-reduced-motion</code></li>
+              <li>Search box + results list, empty/no-result states</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 7 · QA</div>
+        <h3>Mobile devices + accessibility pass</h3>
+        <div class="when">Day 15</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Real-device test: iOS Safari, Android Chrome</li>
+              <li>VoiceOver/TalkBack pass on song sheet + connections web</li>
+              <li>Lighthouse mobile score check (perf, a11y, best practices)</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+      <li class="tl-item">
+        <div class="phase-tag">Phase 8 · Ship</div>
+        <h3>Launch</h3>
+        <div class="when">Day 16</div>
+        <details>
+          <summary>Deliverables</summary>
+          <div class="details-body">
+            <ul>
+              <li>Deploy to static host (GitHub Pages / Netlify)</li>
+              <li>Final proofread pass on all copy</li>
+            </ul>
+          </div>
+        </details>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 6. SCREENS -->
+  <section id="screens">
+    <span class="section-num">06</span>
+    <h2>Screens (Mockups)</h2>
+    <p class="deck">Swipe through the four core phone screens. Desktop reuses the same components in a wider two-column layout.</p>
+
+    <div class="phones-scroll">
+
+      <!-- Screen 1: Home / Timeline -->
+      <div class="phone-block">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="topbar">Bob Dylan <span class="sub">Explore</span></div>
+            <div class="content">
+              <div class="mock-era-row">
+                <div class="mock-era-pill">'61–64</div>
+                <div class="mock-era-pill active">'65–66</div>
+                <div class="mock-era-pill">'67–68</div>
+                <div class="mock-era-pill">'69–74</div>
+              </div>
+              <div class="mock-album-card"><div class="mock-cover"></div><div><div class="t">Bringing It All Back Home</div><div class="s">1965 · folk meets electric</div></div></div>
+              <div class="mock-album-card"><div class="mock-cover"></div><div><div class="t">Highway 61 Revisited</div><div class="s">1965 · "Like a Rolling Stone"</div></div></div>
+              <div class="mock-album-card"><div class="mock-cover"></div><div><div class="t">Blonde on Blonde</div><div class="s">1966 · the "thin wild mercury"</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Home: swipe eras, tap an album</div>
+      </div>
+
+      <!-- Screen 2: Song sheet -->
+      <div class="phone-block">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen" style="position:relative;">
+            <div class="topbar" style="opacity:.5">Highway 61 Revisited</div>
+            <div class="mock-sheet">
+              <div class="handle"></div>
+              <div style="font-weight:700; font-size:13px;">Like a Rolling Stone</div>
+              <div style="font-size:10px; color:var(--ink-dim); margin-top:2px;">1965 · Highway 61 Revisited</div>
+              <div class="mock-lyric">"How does it feel, to be on your own..."</div>
+              <div class="mock-tag-row">
+                <div class="mock-tag">12 covers</div>
+                <div class="mock-tag">1966 live rework</div>
+                <div class="mock-tag">Rolling Stone #1</div>
+              </div>
+              <div style="margin-top:auto; font-size:10px; color:var(--accent); font-weight:700;">→ Open connections web</div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Song sheet: bottom sheet on phone, side panel on desktop</div>
+      </div>
+
+      <!-- Screen 3: Connections web -->
+      <div class="phone-block">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="topbar">Connections <span class="sub">1 hop</span></div>
+            <div class="content">
+              <svg class="mock-web" viewBox="0 0 190 340" xmlns="http://www.w3.org/2000/svg">
+                <line x1="95" y1="120" x2="40" y2="60" stroke="#ddd2ba" stroke-width="1.5"/>
+                <line x1="95" y1="120" x2="150" y2="55" stroke="#ddd2ba" stroke-width="1.5"/>
+                <line x1="95" y1="120" x2="35" y2="190" stroke="#ddd2ba" stroke-width="1.5"/>
+                <line x1="95" y1="120" x2="155" y2="200" stroke="#ddd2ba" stroke-width="1.5"/>
+                <line x1="95" y1="120" x2="95" y2="250" stroke="#ddd2ba" stroke-width="1.5"/>
+                <circle cx="95" cy="120" r="22" fill="#a8321f"/>
+                <text x="95" y="124" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">Rolling Stone</text>
+                <circle cx="40" cy="60" r="15" fill="#fff" stroke="#ddd2ba" stroke-width="1.5"/>
+                <text x="40" y="63" text-anchor="middle" font-size="6.5" fill="#201a12">Hendrix cover</text>
+                <circle cx="150" cy="55" r="15" fill="#fff" stroke="#ddd2ba" stroke-width="1.5"/>
+                <text x="150" y="58" text-anchor="middle" font-size="6.5" fill="#201a12">Newport '65</text>
+                <circle cx="35" cy="190" r="15" fill="#fff" stroke="#ddd2ba" stroke-width="1.5"/>
+                <text x="35" y="193" text-anchor="middle" font-size="6.5" fill="#201a12">"Judas!" bootleg</text>
+                <circle cx="155" cy="200" r="15" fill="#fff" stroke="#ddd2ba" stroke-width="1.5"/>
+                <text x="155" y="203" text-anchor="middle" font-size="6.5" fill="#201a12">MTV Unplugged</text>
+                <circle cx="95" cy="250" r="15" fill="#fff" stroke="#ddd2ba" stroke-width="1.5"/>
+                <text x="95" y="253" text-anchor="middle" font-size="6.5" fill="#201a12">2016 Nobel speech</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Connections web: tap any node to recenter and open its sheet</div>
+      </div>
+
+      <!-- Screen 4: Search -->
+      <div class="phone-block">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="topbar">Search</div>
+            <div class="content">
+              <div style="background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11px; color:var(--ink-dim); margin-bottom:10px;">"tambourine"</div>
+              <div class="mock-album-card"><div class="mock-cover"></div><div><div class="t">Mr. Tambourine Man</div><div class="s">song · Bringing It All Back Home</div></div></div>
+              <div class="mock-album-card"><div class="mock-cover"></div><div><div class="t">The Byrds (cover)</div><div class="s">connection · 1965 #1 hit</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">Search spans songs, albums, and connections in one index</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 7. KEY CODE -->
+  <section id="code">
+    <span class="section-num">07</span>
+    <h2>Key Code</h2>
+    <p class="deck">The four pieces that carry the most design intent. Everything else (CSS layout, small view helpers) is straightforward once these are right.</p>
+
+    <div class="code-label">1 · data.js schema (the whole app hangs off this shape)</div>
+    <pre><code>export const eras = [
+  { id: "electric-65-66", label: "Going Electric",
+    range: [1965, 1966],
+    blurb: "Newport '65, the world tour, the 'Judas' shout." }
+  // ...9 more
+];
+
+export const albums = [
+  { id: "highway-61", eraId: "electric-65-66",
+    title: "Highway 61 Revisited", year: 1965,
+    blurb: "Six minutes of electric snarl that changed radio." }
+  // ...
+];
+
+export const songs = [
+  { id: "like-a-rolling-stone", albumId: "highway-61",
+    title: "Like a Rolling Stone",
+    lyricExcerpt: "How does it feel, to be on your own...",
+    fact: "Rolling Stone's #1 song of all time (2004, 2011 lists).",
+    listen: { spotify: "...", youtube: "..." } }
+  // ...
+];
+
+// Connections are edges, kept separate from songs so the
+// graph layer never has to walk nested objects.
+export const edges = [
+  { from: "like-a-rolling-stone", to: "hendrix-cover",
+    type: "cover", label: "Jimi Hendrix, 1967" },
+  { from: "like-a-rolling-stone", to: "newport-65",
+    type: "cultural-moment", label: "Newport Folk Festival '65" }
+  // ...
+];</code></pre>
+
+    <div class="code-label">2 · router.js — the whole app's control flow</div>
+    <pre><code>import { render } from "./util/dom.js";
+import * as views from "./views/index.js";
+
+const routes = [
+  [/^#\/$/,                    views.timeline],
+  [/^#\/era\/([\w-]+)$/,       views.era],
+  [/^#\/album\/([\w-]+)$/,     views.album],
+  [/^#\/song\/([\w-]+)$/,      views.song],
+  [/^#\/web\/([\w-]+)$/,       views.connectionsWeb],
+  [/^#\/search$/,              views.search],
+];
+
+function resolve() {
+  const hash = location.hash || "#/";
+  for (const [pattern, view] of routes) {
+    const match = hash.match(pattern);
+    if (match) {
+      render(document.getElementById("app"), view(...match.slice(1)));
+      return;
+    }
+  }
+  render(document.getElementById("app"), views.notFound());
+}
+
+window.addEventListener("hashchange", resolve);
+window.addEventListener("DOMContentLoaded", resolve);</code></pre>
+
+    <div class="code-label">3 · graph layout — cheap, deterministic, no physics library</div>
+    <pre><code>// Places 1 center node + up to 6 neighbors on a circle.
+// Deliberately not a full force simulation: with &le;7 nodes
+// visible at once, a fixed radial layout is faster, more
+// predictable to test, and never jitters on a slow phone.
+export function layoutGraph(centerId, edges, radius = 110) {
+  const neighbors = edges.filter(e => e.from === centerId || e.to === centerId);
+  const step = (Math.PI * 2) / Math.max(neighbors.length, 1);
+
+  return {
+    center: { id: centerId, x: 0, y: 0 },
+    nodes: neighbors.map((e, i) => ({
+      id: e.from === centerId ? e.to : e.from,
+      type: e.type,
+      x: Math.cos(i * step) * radius,
+      y: Math.sin(i * step) * radius,
+    })),
+  };
+}</code></pre>
+
+    <div class="code-label">4 · phone-first bottom sheet + scroll-snap timeline (CSS)</div>
+    <pre><code>.timeline-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+}
+.timeline-track > .era-card {
+  flex: 0 0 85%;
+  scroll-snap-align: center;
+}
+
+.song-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  transform: translateY(0);
+  transition: transform 200ms ease-out;
+}
+@media (min-width: 780px) {
+  .song-sheet {           /* becomes a side panel on desktop */
+    inset: 0 0 0 auto;
+    width: 380px;
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .song-sheet { transition: none; }
+}</code></pre>
+  </section>
+
+  <!-- 8. FILE STRUCTURE -->
+  <section id="files">
+    <span class="section-num">08</span>
+    <h2>Proposed File Structure</h2>
+    <p class="deck">Flat and shallow on purpose — the implementer should be able to hold the whole tree in their head.</p>
+    <div class="tree">
+<div>/                          <span class="c"># static root, deployable as-is</span></div>
+<div>├─ index.html              <span class="c"># shell + #app mount point</span></div>
+<div>├─ styles.css              <span class="c"># all CSS, mobile-first</span></div>
+<div>├─ /js</div>
+<div>│  ├─ app.js               <span class="c"># bootstraps router</span></div>
+<div>│  ├─ router.js</div>
+<div>│  ├─ store.js</div>
+<div>│  ├─ data.js              <span class="c"># eras/albums/songs/edges</span></div>
+<div>│  ├─ /views</div>
+<div>│  │  ├─ timeline.js</div>
+<div>│  │  ├─ detail.js         <span class="c"># era + album + song</span></div>
+<div>│  │  ├─ web.js            <span class="c"># connections graph</span></div>
+<div>│  │  └─ search.js</div>
+<div>│  └─ /util</div>
+<div>│     ├─ dom.js            <span class="c"># render() helper</span></div>
+<div>│     ├─ graph-layout.js</div>
+<div>│     └─ a11y.js</div>
+<div>└─ /assets</div>
+<div>   └─ covers/              <span class="c"># CSS-gradient placeholders v1;</span></div>
+<div>                           <span class="c"># swap for licensed art later</span></div>
+    </div>
+  </section>
+
+  <!-- 9. RISKS -->
+  <section id="risks">
+    <span class="section-num">09</span>
+    <h2>Risks</h2>
+    <p class="deck">Ranked by what's most likely to derail the build or embarrass the launch.</p>
+    <table class="risks">
+      <thead>
+        <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Risk"><strong>Album art / audio copyright.</strong> Can't legally host cover images or stream tracks.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-high">High</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-high">High</span></td>
+          <td data-label="Mitigation">v1 ships CSS-generated gradient "covers" per album (palette keyed to era). Audio is link-out only, to official Spotify/YouTube. Lyrics limited to short excerpts (fair use), never full text.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Scope creep.</strong> "Just add one more album/song" compounds fast across 600+ real songs.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-high">High</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Mitigation">Hard cap for v1: 10 eras / 24 albums / 70 songs / 120 edges, fixed before Phase 1 starts. Data schema is designed to extend later without a rewrite.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Factual accuracy.</strong> Dylan's history is contested and dates/quotes are easy to get subtly wrong.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Mitigation">Every era/album fact cross-checked against 2 sources minimum during Phase 0; sources logged next to the data, not just in someone's head.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Connections graph performance</strong> on low-end phones if node/edge count grows.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Mitigation">Fixed radial layout (not a physics simulation), capped at 1-hop/≤7 visible nodes per screen. Tested on a mid-tier Android device, not just desktop DevTools throttling.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Accessibility gaps</strong> in the bottom sheet and graph (focus trap, contrast, motion).</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Mitigation"><code>prefers-reduced-motion</code> respected everywhere; focus trapped inside open sheets; graph nodes reachable and operable via keyboard, not tap-only. Verified with VoiceOver + TalkBack in Phase 7.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Browser quirks</strong> — iOS Safari scroll-snap and hash-routing edge cases.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-med">Med</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-low">Low</span></td>
+          <td data-label="Mitigation">Real-device test pass in Phase 7 on iOS Safari + Android Chrome specifically, not just desktop emulation.</td>
+        </tr>
+        <tr>
+          <td data-label="Risk"><strong>Link rot</strong> on outbound Spotify/YouTube "listen" links.</td>
+          <td data-label="Likelihood"><span class="pill-lvl lvl-low">Low</span></td>
+          <td data-label="Impact"><span class="pill-lvl lvl-low">Low</span></td>
+          <td data-label="Mitigation">All links live in <code>data.js</code> in one place, so a broken link is a one-line fix, not a hunt through markup.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 10. OPEN QUESTIONS -->
+  <section id="open">
+    <span class="section-num">10</span>
+    <h2>Open Questions</h2>
+    <p class="deck">Decisions worth 30 seconds of your input before Phase 1 starts — everything else in this plan can proceed without them.</p>
+    <div class="card">
+      <ul class="tight">
+        <li><strong>Hosting target?</strong> Assuming GitHub Pages or Netlify (free, static, matches the no-backend approach) unless you have a preference.</li>
+        <li><strong>Embed Spotify/YouTube players inline, or link out?</strong> Plan assumes link-out (simpler, no iframe/consent complexity, no autoplay policy fights on mobile).</li>
+        <li><strong>Exact era/album/song list?</strong> The 10 eras above are a reasonable spine; final album/song picks happen in Phase 0 and are worth a quick sanity check from you first.</li>
+        <li><strong>Any songs/eras you'd consider non-negotiable?</strong> (e.g. "Blowin' in the Wind," the Newport '65 moment) — good to flag before the curation pass so nothing obvious gets cut for space.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Plan reviewed on a phone, ready to hand to the implementer as-is.</p>
+    <p style="margin-top:16px; font-size:12px;">Reviewed by the plan's owner · Draft v1</p>
+  </div>
+</footer>
+
+</body>
+</html>

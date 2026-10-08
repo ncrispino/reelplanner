@@ -1,0 +1,130 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "ok but its infeasible to hsow all file changes, and we often need to explain it in a way thats easier tounderstand. like waht if we change 10 files, how do you expect to do here",
+      "frame": {
+        "compositionId": "05a-what-the-real-thing-means",
+        "index": 3,
+        "title": "What “the real thing” means"
+      },
+      "id": "amuiqsq5iov6h",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 37.1
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 1,
+    "walked": 0,
+    "watchedPct": 99,
+    "wrongChecks": 0
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-26T18:51:37.551Z",
+      "id": "q1",
+      "label": "The brief picks",
+      "option": "b",
+      "planStep": 1,
+      "question": "Which scenes must show the real thing?",
+      "recommended": false,
+      "t": 114.522
+    },
+    {
+      "decidedAt": "2026-09-26T18:53:09.154Z",
+      "id": "q2",
+      "label": "Today's, fixes only",
+      "option": "c",
+      "planStep": 3,
+      "question": "Which look should the review page take?",
+      "recommended": false,
+      "t": 249.797
+    }
+  ],
+  "exportedAt": "2026-09-26T18:53:19.135Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-26-better-visuals/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 0.883,
+        "id": "ch6"
+      }
+    ],
+    "completion": 0.988,
+    "details": [],
+    "durationSeconds": 296.76,
+    "firstPlayAt": "2026-09-26T18:53:09.166Z",
+    "maxTimeReached": 293.1,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

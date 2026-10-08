@@ -1,0 +1,8 @@
+$ reel pr-check . --base origin/main --body-file ../pr.md --labels ""   (a scratch repo: 301 lines of code, 500 of tests, 200 of docs, a lock file and a new dependency)
+· over the line (304 lines)
+· size: 304 changed line(s) in 2 file(s), not counting docs, generated, tests
+· seen in the diff, not a reason by itself: a new dependency: `right`
+· ids: none new; none names another entry
+△ needs a video (304 lines): the contributor brings one, or a maintainer's agent makes a walkthrough from the diff (the skill's "Several people"), or a maintainer adds `no-video`
+△ repo against origin/main: 0 problem(s), 1 waiting
+exit 0

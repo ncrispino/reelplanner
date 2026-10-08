@@ -1,0 +1,210 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f07-step-1-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f07-step-1-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f07-step-1-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f07-step-1-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f07-step-1-chip.lit { color:var(--rp-coral-deep); }
+  .f07-step-1-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f07-step-1-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f07-step-1-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f07-step-1-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f07-step-1-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f07-step-1-lines path.ink { stroke:var(--rp-ink); }
+  .f07-step-1-lines path.head { fill:var(--rp-ink); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f07-step-1-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f07-step-1-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f07-step-1-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f07-step-1-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): four slots */
+  .f07-step-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f07-step-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f07-step-1-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f07-step-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f07-step-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-slot .d, .f07-step-1-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f07-step-1-slot.dec .n { top:13px; } .f07-step-1-slot.dec .t { top:12px; }
+  .f07-step-1-slot.live { outline-color:var(--rp-coral); }
+  /* option cards (quick checks, decisions) */
+  .f07-step-1-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f07-step-1-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f07-step-1-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f07-step-1-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f07-step-1-opt.row .k { top:30px; } .f07-step-1-opt.row .l { left:84px; top:22px; }
+  /* list rows (resolved plan) */
+  .f07-step-1-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f07-step-1-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f07-step-1-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f07-step-1-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f07-step-1-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+
+  /* ---- MOCKS: the review player drawn as it is (prototype content, exempt from the chrome's type floor) ---- */
+  .f07-step-1-mock { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f07-step-1-mock-in { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; }
+  .f07-step-1-mock-k { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-sub { position:absolute; left:200px; top:222px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f07-step-1-mock-tick { position:absolute; left:80px; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f07-step-1-mock-tick.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f07-step-1-mock-card { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f07-step-1-mock-card.b2 { border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .f07-step-1-mock-card .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f07-step-1-mock-card .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-card .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-card .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f07-step-1-mock-card .rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f07-step-1-mock-card .box { position:absolute; left:28px; top:130px; width:56px; height:56px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.45); }
+  .f07-step-1-mock-ring { position:absolute; border-radius:18px; border:5px solid var(--rp-ink); }
+  .f07-step-1-mock-edge { position:absolute; border-radius:12px; border:3px solid rgba(var(--rp-ink-rgb),0.4); }
+  .f07-step-1-mock-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; justify-content:center; font:500 32px/1.15 "Inter"; color:var(--rp-ink); }
+  .f07-step-1-mock-big { position:absolute; font:400 60px/1.08 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  /* the question sheet, as .decision.sheet draws it (the player's px × 1.73, the stage's 1920 frame) */
+  .f07-step-1-mock-sheet { position:absolute; left:0; top:415px; width:1920px; height:665px; background:var(--rp-paper); box-shadow:0 -8px 30px rgba(var(--rp-shadow-rgb),0.16); }
+  .f07-step-1-mock-sheet .hk { position:absolute; left:41px; top:34px; font:500 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f07-step-1-mock-sheet .fold { position:absolute; right:41px; top:34px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f07-step-1-mock-sheet .sq { position:absolute; left:41px; top:74px; font:400 38px/1.3 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-sheet .row { position:absolute; width:898px; border-top:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f07-step-1-mock-sheet .key { position:absolute; left:0; top:18px; width:36px; height:36px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 20px/34px "JetBrains Mono"; text-align:center; color:rgba(var(--rp-ink-rgb),0.64); }
+  .f07-step-1-mock-sheet .key.rec { border-color:rgba(var(--rp-ink-rgb),0.6); color:var(--rp-ink); }
+  .f07-step-1-mock-sheet .key.on { background:var(--rp-ink); border-color:var(--rp-ink); color:var(--rp-paper); }
+  .f07-step-1-mock-sheet .lab { position:absolute; left:58px; top:16px; font:500 26px/1.35 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-sheet .lab i { font-style:normal; font-size:20px; color:rgba(var(--rp-ink-rgb),0.64); margin-left:12px; }
+  .f07-step-1-mock-sheet .why { position:absolute; left:58px; top:54px; width:820px; font:400 22px/1.45 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); }
+  .f07-step-1-mock-sheet .ft { position:absolute; left:41px; top:600px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f07-step-1-mock-kbd { display:inline-block; min-width:26px; height:28px; padding:0 5px; margin-left:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:5px; font:500 17px/27px "JetBrains Mono"; text-align:center; color:rgba(var(--rp-ink-rgb),0.64); vertical-align:1px; }
+  .f07-step-1-mock-sheet .nf { position:absolute; left:760px; right:41px; top:600px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.2); padding-bottom:8px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.5); white-space:nowrap; }
+  /* the thin strip under the stage (screen px) */
+  .f07-step-1-mock-strip { position:absolute; height:58px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; gap:30px; padding:0 22px; box-sizing:border-box; font:500 22px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-si { display:inline-flex; align-items:center; }
+  .f07-step-1-mock-si.dim { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f07-step-1-mock-si .f07-step-1-mock-kbd { margin-left:8px; }
+  .f07-step-1-mock-field { display:inline-block; width:150px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.3); color:rgba(var(--rp-ink-rgb),0.5); padding-bottom:4px; }
+  /* the record panel (screen px) */
+  .f07-step-1-mock-rec { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f07-step-1-mock-rec .hd { position:absolute; left:0; right:0; top:0; height:70px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f07-step-1-mock-rec .ht { position:absolute; left:36px; top:20px; font:700 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-rec .ht span { font-weight:400; font-size:24px; color:rgba(var(--rp-ink-rgb),0.64); margin-left:10px; }
+  .f07-step-1-mock-rec .h4 { position:absolute; font:700 28px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-rec .h4 span { font-weight:400; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f07-step-1-mock-rec .sm { position:absolute; font:400 22px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f07-step-1-mock-rec .tm { position:absolute; font:500 22px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f07-step-1-mock-rec .sq { position:absolute; font:400 30px/1.2 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-rec .tx { position:absolute; font:500 28px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-step-1-mock-rec .ln { position:absolute; font:400 22px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.3); text-underline-offset:4px; white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; border-radius:4px; }
+  .f07-step-1-mock-rec .rule { position:absolute; left:36px; right:36px; height:1px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f07-step-1-mock-pill { position:absolute; height:44px; padding:0 16px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.3); font:500 24px/42px "Inter"; color:var(--rp-ink); white-space:nowrap; box-sizing:border-box; }
+  .f07-step-1-mock-pick { position:absolute; height:48px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f07-step-1-mock-btn { position:absolute; height:48px; padding:0 18px; border-radius:6px; background:var(--rp-ink); color:var(--rp-paper); font:500 24px/48px "Inter"; white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f07-step-1-hl { position:absolute; border-radius:10px; border:3px solid var(--rp-coral); }
+  .f07-step-1-uline { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f07-step-1-dash { position:absolute; border:3px dashed var(--rp-coral); border-radius:12px; }
+
+</style>
+
+<div id="root" data-composition-id="07-step-1" data-duration="20.937" data-width="1920" data-height="1080">
+
+  <div class="clip f07-step-1-bg" id="f07-step-1-bg" data-start="0" data-duration="20.937" data-track-index="0"></div>
+
+  <div class="clip f07-step-1-scene" id="f07-step-1-scene" data-start="0" data-duration="20.937" data-track-index="1">
+  <div class="f07-step-1-kicker" id="f07-step-1-kicker">Step 1 · Click an option on the frame</div>
+  <div class="f07-step-1-spine" id="f07-step-1-spine">
+    <div class="f07-step-1-tick live" id="f07-step-1-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f07-step-1-tick" id="f07-step-1-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f07-step-1-tick" id="f07-step-1-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f07-step-1-tick" id="f07-step-1-tick-4" data-plan-step="4" style="top:365px"></div>
+  </div>
+  <div class="f07-step-1-mock" id="f07-step-1-stage" style="left:200px; top:150px; width:1200px; height:675px">
+    <div class="f07-step-1-mock-in" style="transform:scale(0.625)">
+      <div class="f07-step-1-mock-k">Choice 2 · Step 6</div>
+      <div class="f07-step-1-mock-tick on" style="top:185px"></div>
+      <div class="f07-step-1-mock-tick" style="top:295px"></div>
+      <div class="f07-step-1-mock-tick" style="top:405px"></div>
+      <div class="f07-step-1-mock-tick" style="top:515px"></div>
+      <div class="f07-step-1-mock-tick" style="top:625px"></div>
+      <div class="f07-step-1-mock-q">What may a run nobody is watching do?</div>
+      <div class="f07-step-1-mock-card" style="left:200px; top:260px; width:380px; height:430px"><span class="k">A</span><span class="l">As now</span>
+        <div class="rule" style="top:136px; width:324px"></div>
+        <span class="r" data-layout-allow-overlap style="top:166px"><b data-layout-allow-overlap>shell:</b> any</span><span class="r" data-layout-allow-overlap style="top:222px"><b data-layout-allow-overlap>workers:</b> no</span><span class="r" data-layout-allow-overlap style="top:278px"><b data-layout-allow-overlap>fence:</b> none</span>
+        <div class="rule" style="top:338px; width:324px"></div><span class="r" data-layout-allow-overlap style="top:366px; color:rgba(var(--rp-ink-rgb),0.72)">cost: no fence</span>
+      </div>
+      <div class="f07-step-1-mock-card b2" style="left:620px; top:260px; width:380px; height:430px"><span class="k">B</span><span class="l">Auto mode</span>
+        <div class="rule" style="top:136px; width:324px"></div>
+        <span class="r" data-layout-allow-overlap style="top:166px"><b data-layout-allow-overlap>shell:</b> if approved</span><span class="r" data-layout-allow-overlap style="top:222px"><b data-layout-allow-overlap>workers:</b> yes</span><span class="r" data-layout-allow-overlap style="top:278px"><b data-layout-allow-overlap>fence:</b> sandbox</span>
+        <div class="rule" style="top:338px; width:324px"></div><span class="r" data-layout-allow-overlap style="top:366px; color:rgba(var(--rp-ink-rgb),0.72)">needs: auto mode</span>
+      </div>
+      <div class="f07-step-1-mock-card" style="left:1040px; top:260px; width:380px; height:430px"><span class="k">C</span><span class="l">Everything</span>
+        <div class="rule" style="top:136px; width:324px"></div>
+        <span class="r" data-layout-allow-overlap style="top:166px"><b data-layout-allow-overlap>shell:</b> any</span><span class="r" data-layout-allow-overlap style="top:222px"><b data-layout-allow-overlap>workers:</b> yes</span><span class="r" data-layout-allow-overlap style="top:278px"><b data-layout-allow-overlap>fence:</b> sandbox only</span>
+        <div class="rule" style="top:338px; width:324px"></div><span class="r" data-layout-allow-overlap style="top:366px; color:rgba(var(--rp-ink-rgb),0.72)">advised: container</span>
+      </div>
+      <div class="f07-step-1-mock-card" style="left:1460px; top:260px; width:380px; height:430px"><span class="k">D</span><span class="l">A short list</span>
+        <div class="rule" style="top:136px; width:324px"></div>
+        <span class="r" data-layout-allow-overlap style="top:166px"><b data-layout-allow-overlap>shell:</b> 4 commands</span><span class="r" data-layout-allow-overlap style="top:222px"><b data-layout-allow-overlap>workers:</b> no</span><span class="r" data-layout-allow-overlap style="top:278px"><b data-layout-allow-overlap>fence:</b> the list</span>
+        <div class="rule" style="top:338px; width:324px"></div><span class="r" data-layout-allow-overlap style="top:366px; color:rgba(var(--rp-ink-rgb),0.72)">cost: rest refused</span>
+      </div>
+      <div class="f07-step-1-mock-edge" id="f07-step-1-edge-0" style="left:196px; top:256px; width:388px; height:438px"></div>
+      <div class="f07-step-1-mock-edge" id="f07-step-1-edge-1" style="left:616px; top:256px; width:388px; height:438px"></div>
+      <div class="f07-step-1-mock-edge" id="f07-step-1-edge-2" style="left:1036px; top:256px; width:388px; height:438px"></div>
+      <div class="f07-step-1-mock-edge" id="f07-step-1-edge-3" style="left:1456px; top:256px; width:388px; height:438px"></div>
+      <div class="f07-step-1-mock-ring" id="f07-step-1-focus" style="left:1026px; top:246px; width:398px; height:448px; border-style:dashed"></div>
+      <div class="f07-step-1-dash" id="f07-step-1-pick" style="left:612px; top:252px; width:396px; height:446px; border-style:solid; border-width:8px; border-radius:16px"></div>
+    </div>
+  </div>
+  <div class="f07-step-1-chip" id="f07-step-1-yours" style="left:588px; top:595px">your answer</div>
+  <svg class="f07-step-1-lines" viewBox="0 0 1920 1080"><path id="f07-step-1-lead" d="M801 581 L801 790 L1440 790" /></svg>
+  <div class="f07-step-1-chip" id="f07-step-1-key" style="left:1450px; top:330px">click = key B</div>
+  <div class="f07-step-1-chip grey" id="f07-step-1-quiz" style="left:1450px; top:390px">quick checks too</div>
+  <div class="f07-step-1-chip" id="f07-step-1-code" style="left:1450px; top:772px">data-option="b"</div>
+  <div class="f07-step-1-chip grey" id="f07-step-1-dec" style="left:1450px; top:830px">decided · D-085</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "07-step-1";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f07-step-1-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("stage"), 0.25, 10);
+  fade(tl, $("edge-0"), 3.02);
+  fade(tl, $("edge-1"), 3.10);
+  fade(tl, $("edge-2"), 3.18);
+  fade(tl, $("edge-3"), 3.26);
+  fade(tl, $("focus"), 4.88);
+  fade(tl, $("focus"), 6.30, 0, 0.3);
+  fade(tl, $("pick"), 6.30, null, 0.3);
+  pop(tl, $("yours"), 6.60, 8);
+  pop(tl, $("key"), 8.18, 8);
+  pop(tl, $("quiz"), 9.06, 8);
+  draw(tl, "lead", 17.63, 0.6);
+  pop(tl, $("code"), 18.86, 8);
+  pop(tl, $("dec"), 19.59, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 20.786);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

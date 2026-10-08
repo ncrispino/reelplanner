@@ -1,0 +1,112 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f21-decision-3-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f21-decision-3-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  /* ---- rail: GONE (§18 v9). This beat is a decision, its kicker already names the step, and two
+       readable mini phones want the whole width the rail used to take. ---- */
+
+  .f21-decision-3-q { position:absolute; left:160px; top:180px; width:1500px; font:400 52px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); opacity:0; }
+
+  /* ---- the two options: each a mini phone, the layout that option produces ----
+       the mock IS the device — a plate around a portrait phone is 500 px of empty paper, which is
+       the fault §18 raises against the rail. The group is the column (780, the same x grid as
+       frames 06 and 14); the phone is 261 x 480 at top 320, label at +496, one-line cost at +534
+       ends y 888, clear of 900. */
+  .f21-decision-3-opt { position:absolute; top:320px; width:780px; height:480px; opacity:0; }
+  .f21-decision-3-opt .k { position:absolute; left:0; top:-46px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f21-decision-3-opt .l { position:absolute; left:0; top:496px; width:780px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); }
+  .f21-decision-3-opt .c { position:absolute; left:0; top:534px; width:780px; font:400 26px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* the phone: 261 x 480, the same device as frames 22/23 (404 x 744) at 0.645, so the winning
+     mock and its consequence are one phone */
+  .f21-decision-3-mini { position:absolute; left:0; top:0; width:261px; height:480px; border-radius:24px;
+    background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.28); overflow:hidden;
+    box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f21-decision-3-vid { position:absolute; border-radius:5px; background:var(--rp-data); }
+  .f21-decision-3-tile { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .f21-decision-3-bar { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.16); }
+  .f21-decision-3-lip { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-paper);
+    border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none; }
+  .f21-decision-3-handle { position:absolute; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.45); }
+  .f21-decision-3-tab { position:absolute; font:500 15px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+  .f21-decision-3-tab.sel { color:var(--rp-ink); }
+  .f21-decision-3-ul { position:absolute; height:2px; border-radius:1px; background:var(--rp-ink); }
+
+  /* the frame's ONE coral: the recommended phone's ring */
+  .f21-decision-3-rec { position:absolute; left:-3px; top:-3px; width:267px; height:486px; border-radius:27px; border:3px solid var(--rp-coral); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="21-decision-3" data-duration="16.351" data-width="1920" data-height="1080">
+  <div class="f21-decision-3-bg"></div>
+  <div class="f21-decision-3-kicker" id="f21-decision-3-kicker">✱ Your call · step 6</div>
+
+  <div class="f21-decision-3-q" id="f21-decision-3-q">On a phone, what happens to the rail?</div>
+
+  <!-- A · one sheet: the video keeps the whole device, the sheet waits at the bottom edge -->
+  <div class="f21-decision-3-opt" id="f21-decision-3-opt-a" data-plan-option="a" style="left:160px">
+    <span class="k">A</span>
+    <i class="f21-decision-3-mini">
+      <i class="f21-decision-3-vid" style="left:8px;top:8px;width:241px;height:460px"></i>
+      <i class="f21-decision-3-lip" style="left:8px;top:434px;width:241px;height:34px"></i>
+      <i class="f21-decision-3-handle" style="left:97px;top:447px;width:62px"></i>
+    </i>
+    <i class="f21-decision-3-rec" id="f21-decision-3-rec"></i>
+    <span class="l">One sheet you pull up</span>
+    <span class="c">everything is one pull away</span>
+  </div>
+
+  <!-- B · tabs: the strip is permanent, so the video is permanently shorter -->
+  <div class="f21-decision-3-opt" id="f21-decision-3-opt-b" data-plan-option="b" style="left:1100px">
+    <span class="k">B</span>
+    <i class="f21-decision-3-mini">
+      <i class="f21-decision-3-vid" style="left:8px;top:8px;width:241px;height:270px"></i>
+      <span class="f21-decision-3-tab sel" style="left:8px;top:294px">Steps</span>
+      <span class="f21-decision-3-tab" style="left:65px;top:294px">Decisions</span>
+      <span class="f21-decision-3-tab" style="left:158px;top:294px">Comments</span>
+      <i class="f21-decision-3-ul" style="left:8px;top:312px;width:45px"></i>
+      <i class="f21-decision-3-tile" style="left:8px;top:322px;width:241px;height:146px"></i>
+      <i class="f21-decision-3-bar" style="left:24px;top:348px;width:197px"></i>
+      <i class="f21-decision-3-bar" style="left:24px;top:377px;width:157px"></i>
+      <i class="f21-decision-3-bar" style="left:24px;top:406px;width:178px"></i>
+    </i>
+    <span class="l">Tabs under the video</span>
+    <span class="c">always costs the video that strip</span>
+  </div>
+</div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 15.851, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f21-decision-3-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.062);
+  // "on a phone" — the question the fork asks
+  tl.fromTo("#f21-decision-3-q", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55, ease: E }, 0.304);
+
+  // each mock arrives on the letter that names it
+  tl.fromTo("#f21-decision-3-opt-a", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 2.302);
+  tl.fromTo("#f21-decision-3-opt-b", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 5.264);
+
+  // "I recommend" — the one coral, and the only signal
+  tl.fromTo("#f21-decision-3-rec", { opacity: 0 }, { opacity: 0.82, duration: 0.5, ease: E }, 8.261);
+  // "watching, not browsing" — the recommendation brightens once to full, and stays
+  tl.to("#f21-decision-3-rec", { opacity: 1, duration: 0.45, ease: E }, 10.474);
+
+  // held read, 4.71s
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["21-decision-3"] = tl;
+})();
+</script>
+</template>

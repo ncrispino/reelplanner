@@ -1,0 +1,194 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .s01-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .s01-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .s01-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .s01-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .s01-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .s01-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .s01-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .s01-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s01-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .s01-ul.ink { background:var(--rp-ink); height:3px; }
+  .s01-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s01-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .s01-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .s01-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s01-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .s01-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .s01-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .s01-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .s01-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .s01-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s01-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s01-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .s01-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s01-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .s01-lab { background:var(--rp-paper); padding:6px 12px; margin:-6px -12px; border-radius:6px; z-index:5; }
+  .s01-img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .s01-img.s01-dk { display:none; }
+  :root[data-theme="dark"] .s01-img.s01-lt { display:none; }
+  :root[data-theme="dark"] .s01-img.s01-dk { display:block; }
+  .s01-scr { position:absolute; border-radius:8px; overflow:hidden; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s01-wp { position:absolute; overflow:hidden; }
+  .s01-wi { position:absolute; left:0; top:0; }
+  .s01-gp { position:absolute; padding:0 0.42em; font-family:"Inter"; font-weight:400; font-style:normal; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; box-shadow:0 2px 8px rgba(var(--rp-shadow-rgb),0.18); }
+  .s01-gp.slab { background:var(--rp-slab-ink); color:var(--rp-slab); }
+  .s01-gp.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s01-gu { position:absolute; background:var(--rp-ink); transform-origin:0 50%; border-radius:2px; }
+  .s01-gu.slab { background:var(--rp-slab-ink); }
+  .s01-gu.hot { background:var(--rp-coral); }
+  .s01-ring2 { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .s01-term { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .s01-tbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .s01-tdot { position:absolute; top:20px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .s01-ttl { position:absolute; left:110px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s01-cmd { position:absolute; font:400 28px/46px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s01-cmd .g { color:rgba(var(--rp-slab-ink-rgb),0.6); font-weight:700; margin-right:0.6em; }
+  .s01-out { position:absolute; font:400 27px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s01-out .ln { display:block; position:relative; }
+  .s01-out .ok { color:var(--rp-syn-add); } .s01-out .warn { color:var(--rp-syn-num); } .s01-out .err { color:var(--rp-syn-del); } .s01-out .dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .s01-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s01-hl { position:absolute; background:rgba(var(--rp-coral-rgb),0.22); border-left:5px solid var(--rp-coral); transform-origin:0 50%; }
+  .s01-page { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .s01-md { position:absolute; font:400 27px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .s01-md .ln { display:block; position:relative; }
+  .s01-md .h { font-weight:700; }
+  .s01-md .mu { color:rgba(var(--rp-ink-rgb),0.62); }
+  .s01-bar { display:inline-block; height:12px; border-radius:6px; background:rgba(var(--rp-ink-rgb),0.16); vertical-align:middle; }
+  .s01-strike { position:absolute; left:0; height:3px; top:50%; background:var(--rp-ink); transform-origin:0 50%; }
+  .s01-chip { position:absolute; padding:0 18px; font:400 30px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:28px; white-space:nowrap; }
+  .s01-chip.hot { border:3px solid var(--rp-coral); }
+  .s01-say { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+
+  .s01-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .s01-h { position:absolute; font:400 48px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s01-hl { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s01-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .s01-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .s01-t code, .s01-s code, .s01-node code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .s01-node { position:absolute; box-sizing:border-box; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 18px; border-radius:12px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:500 30px/1.2 "Inter"; color:var(--rp-ink); }
+  .s01-node.hot { border:4px solid var(--rp-coral); }
+  .s01-node.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .s01-node .sub { display:block; font:400 24px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); margin-top:6px; }
+  .s01-arrow { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.5); border-radius:2px; }
+  .s01-arrow.v { width:4px; height:auto; }
+  .s01-arrow.hot { background:var(--rp-coral); }
+  .s01-arrow i { position:absolute; right:-6px; top:-6px; width:0; height:0; border-left:14px solid rgba(var(--rp-ink-rgb),0.5); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  .s01-arrow.v i { right:auto; top:auto; left:-6px; bottom:-10px; border-left:8px solid transparent; border-right:8px solid transparent; border-top:14px solid rgba(var(--rp-ink-rgb),0.5); border-bottom:0; }
+  .s01-arrow.hot i { border-left-color:var(--rp-coral); }
+  .s01-arrow.v.hot i { border-left-color:transparent; border-top-color:var(--rp-coral); }
+  .s01-tag { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:500 28px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:8px; white-space:nowrap; }
+  .s01-tag.ink { background:var(--rp-ink); }
+  .s01-tag.ghost { background:var(--rp-paper); color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.45); line-height:44px; }
+  .s01-fence { position:absolute; box-sizing:border-box; border:3px dashed var(--rp-coral); border-radius:16px; }
+  .s01-crop { position:absolute; overflow:hidden; border-radius:8px; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s01-crop img { position:absolute; display:block; }
+  .s01-crop img.s01-dk { display:none; }
+  :root[data-theme="dark"] .s01-crop img.s01-lt { display:none; }
+  :root[data-theme="dark"] .s01-crop img.s01-dk { display:block; }
+  .s01-gut { color:rgba(var(--rp-ink-rgb),0.45); display:inline-block; width:3.2em; text-align:right; margin-right:1.1em; }
+  .s01-agent { position:absolute; height:46px; padding:0 18px; box-sizing:border-box; font:500 25px/42px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:23px; white-space:nowrap; z-index:6; }
+  .s01-agent::before { content:""; display:inline-block; width:10px; height:10px; margin-right:10px; border-radius:50%; background:var(--rp-ink); vertical-align:2px; }
+
+  .s01-pg { position:absolute; left:100px; top:58px; width:1720px; height:836px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .s01-ln { position:absolute; left:130px; font:400 26px/38px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .s01-ln.h { font-weight:700; }
+  .s01-ln.gap { color:rgba(var(--rp-ink-rgb),0.5); }
+  .s01-ln.q b { font-weight:700; }
+</style>
+
+<div id="root" data-composition-id="01-long-plan" data-band="bottom" data-duration="18.175" data-width="1920" data-height="1080">
+
+  <div class="clip s01-bg" id="s01-bg" data-start="0" data-duration="18.175" data-track-index="0"></div>
+
+  <div class="clip s01-scene" id="s01-scene" data-start="0" data-duration="18.175" data-track-index="1">
+    <div class="s01-lab" id="s01-lab" style="left:100px; top:14px;">plan.md · a plan like this one, as the agent wrote it · 803 lines</div>
+    <div class="s01-view" id="s01-view"><div class="s01-cam" id="s01-cam">
+    <div data-artifact=".reelplanning/plans/2026-09-28-plan-guide/plan.md">
+    <div class="s01-pg" id="s01-pg"></div>
+    <div class="s01-ln h" id="s01-l0" style="top:80px"><span class="s01-gut">1</span># The plan guide: the video first, and a full page behind it you can read, check and edit</div>
+    <div class="s01-ln h" id="s01-l1" style="top:130px"><span class="s01-gut">3</span>## The problem</div>
+    <div class="s01-ln gap" id="s01-l2" style="top:180px"><span class="s01-gut"></span>⋮  272 lines: what we have, and what changes</div>
+    <div class="s01-ln h step" id="s01-l3" style="top:260px"><span class="s01-gut">278</span>### Step 1 — The guide: a page for each plan, built from plan.md (question 1)</div>
+    <div class="s01-ln h step" id="s01-l4" style="top:310px"><span class="s01-gut">380</span>### Step 2 — Complete, and checked: every step's cases, interface, example and decisions</div>
+    <div class="s01-ln h step" id="s01-l5" style="top:360px"><span class="s01-gut">488</span>### Step 3 — The video and the guide point at each other (question 2)</div>
+    <div class="s01-ln h step" id="s01-l6" style="top:410px"><span class="s01-gut">543</span>### Step 4 — Edit the plan on the guide: comments, and edits the agent applies exactly (question 3)</div>
+    <div class="s01-ln h step" id="s01-l7" style="top:460px"><span class="s01-gut">617</span>### Step 5 — After the build, and which plans get a guide (question 4)</div>
+    <div class="s01-ln gap" id="s01-l8" style="top:510px"><span class="s01-gut"></span>⋮  each step: its cases, its interface, an example, 60 to 110 lines</div>
+    <div class="s01-ln h" id="s01-l9" style="top:560px"><span class="s01-gut">696</span>## Open questions for the reviewer</div>
+    <div class="s01-ln q" id="s01-l10" style="top:610px"><span class="s01-gut">698</span>1. <b>Which is the source: plan.md, or the guide?</b> (step 1)</div>
+    <div class="s01-ln q" id="s01-l11" style="top:660px"><span class="s01-gut">713</span>2. <b>Where does the guide open from the video?</b> (step 3)</div>
+    <div class="s01-ln q" id="s01-l12" style="top:710px"><span class="s01-gut">727</span>3. <b>What does an edit on the guide do?</b> (step 4)</div>
+    <div class="s01-ln q" id="s01-l13" style="top:760px"><span class="s01-gut">740</span>4. <b>How much guide does each plan get?</b> (step 5)</div>
+    <div class="s01-ln gap" id="s01-l14" style="top:810px"><span class="s01-gut">803</span></div>
+    <em class="s01-gp" id="s01-pstep" data-gloss="### Step 1" style="left:304.2px; top:219.2px; font-size:24px; line-height:34.8px">step</em><i class="s01-gu" id="s01-pstepu" style="left:304.2px; top:297px; width:92px; height:3.429px"></i>
+    </div>
+    </div></div>
+    <div class="s01-tag" id="s01-none" style="left:1060px; top:558px">4 questions, at line 696 of 803</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "01-long-plan";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#s01-cam", { x: 63.2, y: 96, scale: 1.18 });
+  gsap.set("#s01-lab", { opacity: 0 });
+  tl.to("#s01-lab", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.11);
+  gsap.set("#s01-pg", { opacity: 0 });
+  tl.to("#s01-pg", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.11);
+  gsap.set("#s01-l0", { opacity: 0, y: 12 });
+  tl.to("#s01-l0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.26);
+  gsap.set("#s01-l1", { opacity: 0, y: 12 });
+  tl.to("#s01-l1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.38);
+  gsap.set("#s01-l2", { opacity: 0, y: 12 });
+  tl.to("#s01-l2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.5);
+  gsap.set("#s01-l3", { opacity: 0, y: 12 });
+  tl.to("#s01-l3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.76);
+  gsap.set("#s01-l4", { opacity: 0, y: 12 });
+  tl.to("#s01-l4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.92);
+  gsap.set("#s01-l5", { opacity: 0, y: 12 });
+  tl.to("#s01-l5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.08);
+  gsap.set("#s01-l6", { opacity: 0, y: 12 });
+  tl.to("#s01-l6", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.23);
+  gsap.set("#s01-l7", { opacity: 0, y: 12 });
+  tl.to("#s01-l7", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.39);
+  gsap.set("#s01-pstep", { opacity: 0, y: 8 });
+  gsap.set("#s01-pstepu", { scaleX: 0 });
+  tl.to("#s01-pstep", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.32);
+  tl.to("#s01-pstepu", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 5.43);
+  gsap.set("#s01-l8", { opacity: 0, y: 12 });
+  tl.to("#s01-l8", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.0);
+  gsap.set("#s01-l14", { opacity: 0, y: 12 });
+  tl.to("#s01-l14", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.0);
+  tl.to("#s01-cam", { x: 0, y: 0, scale: 1, duration: 1.1, ease: "power2.inOut" }, 6.99);
+  gsap.set("#s01-l9", { opacity: 0, y: 12 });
+  tl.to("#s01-l9", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.28);
+  gsap.set("#s01-l10", { opacity: 0, y: 12 });
+  tl.to("#s01-l10", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.44);
+  gsap.set("#s01-l11", { opacity: 0, y: 12 });
+  tl.to("#s01-l11", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.6);
+  gsap.set("#s01-l12", { opacity: 0, y: 12 });
+  tl.to("#s01-l12", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.76);
+  gsap.set("#s01-l13", { opacity: 0, y: 12 });
+  tl.to("#s01-l13", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.92);
+  gsap.set("#s01-none", { opacity: 0, y: 12 });
+  tl.to("#s01-none", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.55);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

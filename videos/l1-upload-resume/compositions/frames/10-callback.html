@@ -1,0 +1,169 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+    .clip { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    #f10-callback-ground { background: #FAF9F5; }
+    #f10-callback-content { overflow: hidden; }
+
+    /* ---------- SHARED STAGE (frames 03–12) — geometry law: rail x80 w540, six slots y=170+112*i h96; diagram nodes at fixed boxes ---------- */
+    .f10-callback-rail { position:absolute; left:80px; top:170px; width:540px; height:660px; }
+    .f10-callback-slot { position:absolute; left:0; width:540px; height:96px; border-radius:12px;
+                border:1px dashed rgba(20,20,19,0.18); }
+    .f10-callback-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE;
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f10-callback-slot .n { position:absolute; left:22px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; }
+    .f10-callback-slot .t { position:absolute; left:78px; top:29px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; }
+    .f10-callback-slot.dim { opacity:0.72; }
+    .f10-callback-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12);
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f10-callback-node .l { position:absolute; left:20px; top:20px; font:500 28px/1.2 "Inter"; color:#141413; }
+    .f10-callback-node .s { position:absolute; left:20px; top:58px; font:500 18px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(20,20,19,0.62); }
+    .f10-callback-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); }
+    .f10-callback-node.navy .l { color:#FAF9F5; } .f10-callback-node.navy .s { color:rgba(250,249,245,0.7); }
+    .f10-callback-node.dim { opacity:0.72; }
+    .f10-callback-node.active { border:2px solid #CC785C; }
+    .f10-callback-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f10-callback-edges path { fill:none; stroke:#141413; stroke-width:2; stroke-linecap:round; }
+    .f10-callback-edges path.dim { opacity:0.35; }
+    .f10-callback-edges path.active { stroke:#CC785C; stroke-width:3; }
+    /* this frame: the whole stage is a dimmed callback — every edge rests at 0.72 (contrast gate) */
+    .f10-callback-edges path.rest { opacity:0.72; }
+
+    /* ---------- PROGRESS BAR (the hook's bar, returned above the diagram) ---------- */
+    .f10-callback-pct { position:absolute; left:700px; top:58px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; font-variant-numeric: tabular-nums; }
+    .f10-callback-tag { position:absolute; left:800px; top:50px; height:38px; padding:0 14px; display:flex; align-items:center; gap:10px;
+                border-radius:6px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12);
+                font:500 22px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; }
+    .f10-callback-tag svg { width:18px; height:18px; display:block; }
+    .f10-callback-track { position:absolute; left:700px; top:108px; width:780px; height:6px; border-radius:3px; background:rgba(20,20,19,0.12); overflow:hidden; }
+    .f10-callback-fill { position:absolute; left:0; top:0; width:100%; height:100%; background:#141413; border-radius:3px; }
+    .f10-callback-tick { position:absolute; left:1401px; top:98px; width:2px; height:26px; border-radius:1px; background:#141413; }
+
+    /* ---------- ×1 billed — number-lockup, right of the bar ---------- */
+    .f10-callback-once { position:absolute; left:1526px; top:0; width:314px; height:160px; }
+    .f10-callback-spike { position:absolute; left:0; top:36px; width:44px; height:44px; }
+    .f10-callback-spike svg { width:44px; height:44px; display:block; }
+    .f10-callback-figure { position:absolute; left:60px; top:-8px; font:400 130px/0.95 "EB Garamond"; letter-spacing:-0.025em; color:#141413; white-space:nowrap; font-variant-numeric: lining-nums; }
+    .f10-callback-unit { position:absolute; left:66px; top:150px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; white-space:nowrap; }
+  </style>
+
+  <div id="root" data-composition-id="10-callback" data-width="1920" data-height="1080" data-duration="6.879">
+    <div id="f10-callback-ground" class="clip" data-start="0" data-duration="6.879" data-track-index="0"></div>
+
+    <div id="f10-callback-content" class="clip" data-start="0" data-duration="6.879" data-track-index="1">
+
+      <!-- RAIL: the full plan, every slot filled, dimmed (this is a callback, not a step) -->
+      <div class="f10-callback-rail" id="f10-callback-rail">
+        <div class="f10-callback-slot dim" id="f10-callback-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead manifest</span></div>
+        <div class="f10-callback-slot dim" id="f10-callback-slot-2" data-plan-step="2" data-filled style="top:112px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f10-callback-slot dim" id="f10-callback-slot-3" data-plan-step="3" data-filled style="top:224px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f10-callback-slot dim" id="f10-callback-slot-4" data-plan-step="4" data-filled style="top:336px"><span class="n">4</span><span class="t">Billing on complete</span></div>
+        <div class="f10-callback-slot dim" id="f10-callback-slot-5" data-plan-step="5" data-filled style="top:448px"><span class="n">5</span><span class="t">Sweeper</span></div>
+        <div class="f10-callback-slot dim" id="f10-callback-slot-6" data-plan-step="6" data-filled style="top:560px"><span class="n">6</span><span class="t">SDK resume</span></div>
+      </div>
+
+      <!-- DIAGRAM: six nodes, fixed boxes, all dimmed -->
+      <div class="f10-callback-node dim" id="f10-callback-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:380px; width:240px; height:100px"><span class="l">Client SDK</span><span class="s">packages/sdk</span></div>
+      <div class="f10-callback-node dim" id="f10-callback-node-api"      data-plan-component="api"      style="left:1000px; top:380px; width:240px; height:100px"><span class="l">Upload API</span><span class="s">src/upload</span></div>
+      <div class="f10-callback-node navy dim" id="f10-callback-node-manifest" data-plan-component="manifest" style="left:1300px; top:200px; width:260px; height:150px"><span class="l">Manifest store</span><span class="s">upload_manifests</span></div>
+      <div class="f10-callback-node dim" id="f10-callback-node-blob"     data-plan-component="blob"     style="left:1300px; top:540px; width:260px; height:100px"><span class="l">Blob store</span><span class="s">src/blob</span></div>
+      <div class="f10-callback-node dim" id="f10-callback-node-billing"  data-plan-component="billing"  style="left:1620px; top:200px; width:220px; height:100px"><span class="l">Billing hook</span><span class="s">src/billing</span></div>
+      <div class="f10-callback-node dim" id="f10-callback-node-sweeper"  data-plan-component="sweeper"  style="left:1620px; top:540px; width:220px; height:100px"><span class="l">Sweeper</span><span class="s">src/jobs</span></div>
+
+      <!-- EDGES: all six, resting at 0.72; sdk→api→blob lift briefly on "resumes", api→billing lifts on "fires once" -->
+      <svg class="f10-callback-edges" id="f10-callback-edges" viewBox="0 0 1920 1080">
+        <path class="rest" id="f10-callback-e-api-manifest"     d="M1240 405 L1270 405 L1270 275 L1300 275" />
+        <path class="rest" id="f10-callback-e-api-blob"         d="M1240 455 L1270 455 L1270 590 L1300 590" />
+        <path class="rest" id="f10-callback-e-sdk-api"          d="M940 430 L1000 430" />
+        <path class="rest" id="f10-callback-e-api-billing"      d="M1120 380 L1120 160 L1730 160 L1730 200" />
+        <path class="rest" id="f10-callback-e-sweeper-manifest" d="M1730 540 L1730 380 L1590 380 L1590 275 L1560 275" />
+        <path class="rest" id="f10-callback-e-sweeper-blob"     d="M1620 590 L1560 590" />
+      </svg>
+
+      <!-- PROGRESS BAR — foreground subject -->
+      <div class="f10-callback-pct" id="f10-callback-pct">0%</div>
+      <div class="f10-callback-tag" id="f10-callback-tag">
+        <span>manifest</span>
+        <svg viewBox="0 0 18 18" aria-hidden="true"><polyline points="3,9.5 7.2,13.5 15,4.5" fill="none" stroke="#141413" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f10-callback-track" id="f10-callback-track"><div class="f10-callback-fill" id="f10-callback-fill"></div></div>
+      <div class="f10-callback-tick" id="f10-callback-tick"></div>
+
+      <!-- ×1 billed — the number-lockup; the ✱ is this frame's one coral -->
+      <div class="f10-callback-once" id="f10-callback-once">
+        <div class="f10-callback-spike" id="f10-callback-spike">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <g stroke="#CC785C" stroke-width="7" stroke-linecap="round" fill="none">
+              <line x1="22" y1="5" x2="22" y2="39"/>
+              <line x1="7.3" y1="13.5" x2="36.7" y2="30.5"/>
+              <line x1="7.3" y1="30.5" x2="36.7" y2="13.5"/>
+            </g>
+          </svg>
+        </div>
+        <div class="f10-callback-figure" id="f10-callback-figure">×1</div>
+        <div class="f10-callback-unit" id="f10-callback-unit">billed</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["10-callback"] = tl;
+
+      var pct = document.getElementById("f10-callback-pct");
+      var fill = document.getElementById("f10-callback-fill");
+      var track = document.getElementById("f10-callback-track");
+      var tick = document.getElementById("f10-callback-tick");
+      var tag = document.getElementById("f10-callback-tag");
+      var figure = document.getElementById("f10-callback-figure");
+      var spike = document.getElementById("f10-callback-spike");
+      var unit = document.getElementById("f10-callback-unit");
+      var resumePath = [
+        document.getElementById("f10-callback-e-sdk-api"),
+        document.getElementById("f10-callback-e-api-blob")
+      ];
+      var billingEdge = document.getElementById("f10-callback-e-api-billing");
+
+      var counter = { v: 0 };
+      function paint() { pct.textContent = Math.round(counter.v) + "%"; }
+
+      /* rest states (seek-safe — everything else is authored via fromTo) */
+      gsap.set(fill, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(tick, { opacity: 0 });
+      gsap.set(tag, { opacity: 0 });
+      gsap.set([figure, spike, unit], { opacity: 0 });
+
+      /* ---- Scene 1 (0.0–2.2s): the hook's bar returns, fills to 90% and dies on "ninety percent" ---- */
+      tl.fromTo([track, pct], { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.0);
+      tl.fromTo(fill, { scaleX: 0 }, { scaleX: 0.9, duration: 1.25, ease: "none" }, 0.4);            /* linear: it stops mid-stride — the crash */
+      tl.fromTo(counter, { v: 0 }, { v: 90, duration: 1.25, ease: "none", onUpdate: paint }, 0.4);
+      tl.fromTo(tick, { opacity: 0, scaleY: 0, transformOrigin: "center center" }, { opacity: 1, scaleY: 1, duration: 0.22, ease: "power3.out" }, 1.65);
+      tl.fromTo(tag, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 1.85);
+
+      /* ---- Scene 2 (2.2–4.8s): "resumes from ninety" — the same fill continues 90 → 100, no reset; sdk→api→blob lift in ink ---- */
+      tl.to(resumePath, { opacity: 1, duration: 0.3, ease: "power3.out" }, 2.3);
+      tl.fromTo(fill, { scaleX: 0.9 }, { scaleX: 1, duration: 1.0, ease: "power3.out" }, 2.35);
+      tl.fromTo(counter, { v: 90 }, { v: 100, duration: 1.0, ease: "power3.out", onUpdate: paint }, 2.35);
+      tl.to(resumePath, { opacity: 0.72, duration: 0.6, ease: "power3.out" }, 3.75);
+
+      /* ---- Scene 3 (4.8s → hold): "fires once" — ×1 billed spring-pops right of the bar; the coral ✱ is the one coral ---- */
+      tl.to(billingEdge, { opacity: 1, duration: 0.4, ease: "power3.out" }, 4.85);
+      tl.fromTo(figure, { opacity: 0, scale: 0.72, transformOrigin: "left center" }, { opacity: 1, scale: 1, duration: 0.55, ease: "power3.out" }, 4.85);
+      tl.fromTo(spike, { opacity: 0, scale: 0.2, transformOrigin: "center center" }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 4.95);
+      tl.fromTo(unit, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.15);
+
+      /* hold to the frame's full duration (6.379s) */
+      tl.to({}, { duration: 0.001 }, 6.379);
+    })();
+  </script>
+</template>

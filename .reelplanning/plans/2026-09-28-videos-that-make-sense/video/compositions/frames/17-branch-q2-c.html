@@ -1,0 +1,106 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m17-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m17-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .m17-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .m17-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .m17-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m17-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .m17-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m17-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .m17-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .m17-ul.ink { background:var(--rp-ink); height:3px; }
+  .m17-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m17-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m17-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m17-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m17-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m17-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m17-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m17-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .m17-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .m17-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m17-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m17-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .m17-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .m17-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .m17-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m17-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m17-h { position:absolute; font:400 44px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m17-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m17-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m17-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m17-t code, .m17-s code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m17-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .m17-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m17-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .m17-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .m17-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .m17-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .m17-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m17-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m17-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .m17-shot img { display:block; position:absolute; left:0; top:0; }
+  .m17-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:8px; }
+  .m17-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m17-pin.hot { background:var(--rp-coral); }
+  .m17-slab2 { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m17-bar2 { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m17-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m17-code { position:absolute; font:400 28px/1.3 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m17-code .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .m17-code .ok { color:var(--rp-syn-add); }
+  .m17-code .w { color:var(--rp-syn-num); }
+  .m17-code .x { color:var(--rp-syn-del); }
+  .m17-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m17-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .m17-btn { position:absolute; height:44px; padding:0 16px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m17-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); line-height:40px; }
+  .m17-cap { position:absolute; box-sizing:border-box; padding:14px 30px; border-radius:10px; background:var(--rp-slab); font:700 40px/1.25 "Inter"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .m17-cap .ul { text-decoration:underline dotted; text-decoration-thickness:4px; text-underline-offset:8px; }
+
+</style>
+
+<div id="root" data-composition-id="17-branch-q2-c" data-band="bottom" data-duration="5" data-width="1920" data-height="1080">
+
+  <div class="clip m17-bg" id="m17-bg" data-start="0" data-duration="5" data-track-index="0"></div>
+
+  <div class="clip m17-scene" id="m17-scene" data-start="0" data-duration="5" data-track-index="1">
+    <div class="m17-kick" id="m17-k">Question 2 · <b>If C · and a plain line a scene</b></div>
+    <div class="m17-view" id="m17-view">
+    <div class="m17-shot" id="m17-sh" data-artifact="scene 10 of the walkthroughs-that-help plan video, its last moment" style="left:120px; top:160px; width:900px; height:366.667px"><img src="assets/shots/scene-10.jpg" alt="" style="width:1073.333px; left:-91.667px; top:-150px"></div>
+    <div class="m17-lab" id="m17-pw" style="left:120px; top:560px;">in plain words</div>
+    <div class="m17-t" id="m17-pt" style="left:120px; top:610px; width:1200px">A change to a saved file still has something to predict: what the file looks like after it.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "17-branch-q2-c";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m17-sh", { opacity: 0 });
+  tl.to("#m17-sh", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+  gsap.set("#m17-pw", { opacity: 0 });
+  tl.to("#m17-pw", { opacity: 1, duration: 0.4, ease: "power2.out" }, 1);
+  gsap.set("#m17-pt", { opacity: 0 });
+  tl.to("#m17-pt", { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.3);
+  gsap.set("#m17-k", { opacity: 0, y: 12 });
+  tl.to("#m17-k", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.1);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

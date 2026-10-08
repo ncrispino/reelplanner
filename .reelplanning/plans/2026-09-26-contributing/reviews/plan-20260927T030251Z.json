@@ -1,0 +1,208 @@
+{
+  "annotations": [],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 3,
+    "termsLookedUp": [
+      "maintainer",
+      "tag",
+      "pull request"
+    ],
+    "termsOpened": 2,
+    "walked": 1,
+    "watchedPct": 100,
+    "wrongChecks": 1
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-27T02:57:55.225Z",
+      "id": "q1",
+      "label": "Asked; the maintainer can make it",
+      "option": "b",
+      "planStep": 1,
+      "question": "How much does a PR ask of its contributor?",
+      "recommended": true,
+      "t": 111.181
+    },
+    {
+      "decidedAt": "2026-09-27T03:00:21.268Z",
+      "id": "q2",
+      "label": "The last answer",
+      "option": "a",
+      "planStep": 2,
+      "question": "When the maintainer disagrees with an answer from the contributor's plan, what does the decision log keep?",
+      "recommended": true,
+      "t": 172.883
+    },
+    {
+      "decidedAt": "2026-09-27T03:01:29.658Z",
+      "id": "q3",
+      "label": "CI's, and a code check",
+      "option": "b",
+      "planStep": 3,
+      "question": "How much does the maintainer check before trusting a contributor's video?",
+      "recommended": true,
+      "t": 245.318
+    }
+  ],
+  "exportedAt": "2026-09-27T03:02:51.847Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T02:57:32.065Z",
+      "correct": true,
+      "id": "k1",
+      "t": 78.925
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T02:58:36.720Z",
+      "correct": false,
+      "id": "k2",
+      "note": "i think it might be cleaner this way. bc what if the pr has poor accept/reject and they behave differently, we might end up with a lot of slop instead of more targeted, the point is the pr shoulndt add slop, it should appear very clean",
+      "t": 154.494,
+      "walked": true
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-27T03:00:46.244Z",
+      "correct": true,
+      "id": "k3",
+      "note": "but isnt it heavy to carry each video with the branch",
+      "t": 211.142
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T03:02:04.085Z",
+      "correct": true,
+      "id": "k4",
+      "t": 285.69
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T03:02:23.065Z",
+      "correct": true,
+      "id": "k5",
+      "note": "eh but maybe a merge requires full suite i guess like isnt that the point so we know it doesnt break",
+      "t": 305.935
+    }
+  ],
+  "src": "2026-09-26-contributing/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 313.99,
+    "firstPlayAt": "2026-09-27T02:56:45.776Z",
+    "maxTimeReached": 313.99,
+    "moments": [
+      {
+        "frameIndex": 10,
+        "from": 136,
+        "kind": "rewind",
+        "planStep": 1,
+        "t": 122.24
+      },
+      {
+        "frameIndex": 9,
+        "from": 131.33,
+        "kind": "rewind",
+        "planStep": 1,
+        "t": 113.76
+      },
+      {
+        "frameIndex": 12,
+        "from": 190.53,
+        "kind": "rewind",
+        "planStep": 2,
+        "t": 128.86
+      }
+    ]
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

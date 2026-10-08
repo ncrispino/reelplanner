@@ -1,0 +1,84 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .q4-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .q4-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .q4-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .q4-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .q4-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .q4-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .q4-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .q4-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .q4-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .q4-ul.ink { background:var(--rp-ink); height:3px; }
+  .q4-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .q4-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .q4-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .q4-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .q4-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .q4-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .q4-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .q4-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .q4-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .q4-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .q4-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .q4-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .q4-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .q4-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+.q4-fr { position:absolute; left:100px; top:110px; width:1100px; height:400px; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:3px solid rgba(var(--rp-ink-rgb),0.28); }
+  .q4-row { position:absolute; left:160px; width:980px; height:70px; box-sizing:border-box; border-bottom:2px solid rgba(var(--rp-ink-rgb),0.2); font:400 40px/70px "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .q4-pt { position:absolute; left:820px; top:300px; width:0; height:0; border-left:26px solid transparent; border-right:26px solid transparent; border-bottom:60px solid var(--rp-ink); transform:rotate(-30deg); }
+  .q4-ps { position:absolute; left:1300px; top:220px; font:500 48px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="30-check-mark" data-band="bottom" data-duration="6.88" data-width="1920" data-height="1080">
+
+  <div class="clip q4-bg" id="q4-bg" data-start="0" data-duration="6.88" data-track-index="0"></div>
+
+  <div class="clip q4-scene" id="q4-scene" data-start="0" data-duration="6.88" data-track-index="1">
+    <div class="q4-view" id="q4-view"><div class="q4-cam" id="q4-cam"><div id="q4-case">
+    <div class="q4-fr" id="q4-fr"></div>
+    <div class="q4-row" id="q4-r0" style="top:160px">Case · Example · What happens</div>
+    <div class="q4-row" id="q4-r1" style="top:250px">a review sent twice · 2 sends · 1 run</div>
+    <div class="q4-row" id="q4-r2" style="top:340px">no session waiting · 11 pm · headless run</div>
+    <div class="q4-pt" id="q4-pt"></div>
+    <div class="q4-ps" id="q4-ps">❚❚ paused</div>
+    </div></div></div>
+    <div class="q4-q" id="q4-q" data-question style="left:180px; top:300px; width:1560px">You pause on a scene with a table, and move your pointer over it. How do you know the table leads to the guide?</div>
+    <div class="q4-opt" id="q4-opt-a" data-option="a" style="left:180px; top:480px; width:500px; height:280px"><span class="k">A</span><span class="l">A black tab is drawn on it</span></div>
+    <div class="q4-opt" id="q4-opt-b" data-option="b" style="left:710px; top:480px; width:500px; height:280px"><span class="k">B</span><span class="l">A thin ring, and “More in the guide”</span></div>
+    <div class="q4-opt" id="q4-opt-c" data-option="c" style="left:1240px; top:480px; width:500px; height:280px"><span class="k">C</span><span class="l">Nothing: you open Terms</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "30-check-mark";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#q4-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#q4-case", { opacity: 1, transformOrigin: "0 0" });
+  tl.to("#q4-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#q4-case", { scale: 0.6, x: 40, y: 0, opacity: 0.92, duration: 1, ease: "power3.inOut" }, 1);
+  gsap.set("#q4-q", { opacity: 0, x: -24 });
+  tl.to("#q4-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.1);
+  gsap.set("#q4-opt-a", { opacity: 0, y: 28 });
+  tl.to("#q4-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.02);
+  gsap.set("#q4-opt-b", { opacity: 0, y: 28 });
+  tl.to("#q4-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.14);
+  gsap.set("#q4-opt-c", { opacity: 0, y: 28 });
+  tl.to("#q4-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.26);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

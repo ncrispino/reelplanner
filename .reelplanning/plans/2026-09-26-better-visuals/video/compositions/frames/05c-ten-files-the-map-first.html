@@ -1,0 +1,155 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b05c-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b05c-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b05c-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b05c-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b05c-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b05c-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b05c-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b05c-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b05c-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b05c-ul.ink { background:var(--rp-ink); height:3px; }
+  .b05c-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b05c-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b05c-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b05c-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b05c-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b05c-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b05c-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b05c-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b05c-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b05c-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b05c-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b05c-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b05c-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b05c-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b05c-plain { position:absolute; left:1060px; font:400 28px/52px "Inter"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .b05c-plain::before { content:"\00B7  "; color:rgba(var(--rp-slab-ink-rgb),0.55); }
+  .b05c-plain.hot { color:var(--rp-slab); background:var(--rp-coral); border-radius:6px; padding:0 14px; margin-left:-14px; line-height:44px; margin-top:4px; }
+  .b05c-plain.hot::before { content:""; }
+  .b05c-mark { position:absolute; left:68px; width:6px; height:40px; border-radius:3px; background:var(--rp-coral); transform-origin:50% 50%; }
+
+</style>
+
+<div id="root" data-composition-id="05c-ten-files-the-map-first" data-band="bottom" data-duration="17" data-width="1920" data-height="1080">
+
+  <div class="clip b05c-bg" id="b05c-bg" data-start="0" data-duration="17" data-track-index="0"></div>
+
+  <div class="clip b05c-scene" id="b05c-scene" data-start="0" data-duration="17" data-track-index="1">
+    <div class="b05c-lab" id="b05c-anchor" style="left:60px; top:34px">a change across nine files · its map</div>
+    <div class="b05c-view" id="b05c-view"><div class="b05c-cam" id="b05c-cam">
+    <div data-artifact="git show --stat 6d9e961">
+    <div class="b05c-slab" id="b05c-slab" style="left:60px; top:90px; width:1800px; height:668px"></div>
+    <div class="b05c-sbar" id="b05c-sbar" style="left:60px; top:90px; width:1800px; height:50px"></div>
+    <div class="b05c-sbt" style="left:88px; top:103px">~/ReelPlanning · the terms check</div>
+    <div class="b05c-row" id="b05c-cmd" style="left:96px; top:162px"><span class="g">$</span><span id="b05c-ct"></span><i class="b05c-caret" id="b05c-ck"></i></div>
+    <div class="b05c-row" id="b05c-r0" style="left:96px; top:214px; line-height:52px">.reelplanning/glossary.md           |   9 +-</div>
+    <div class="b05c-row" id="b05c-r1" style="left:96px; top:266px; line-height:52px">.../system-video/STORYBOARD.md      |   1 +</div>
+    <div class="b05c-row" id="b05c-r2" style="left:96px; top:318px; line-height:52px">scripts/build.mjs                   |   6 +-</div>
+    <div class="b05c-row" id="b05c-r3" style="left:96px; top:370px; line-height:52px">scripts/check-terms.mjs             |  92 ++++++</div>
+    <div class="b05c-row" id="b05c-r4" style="left:96px; top:422px; line-height:52px">scripts/lib/terms.mjs               | 196 ++++++++++++</div>
+    <div class="b05c-row" id="b05c-r5" style="left:96px; top:474px; line-height:52px">scripts/test/build.spec.mjs         |  18 +-</div>
+    <div class="b05c-row" id="b05c-r6" style="left:96px; top:526px; line-height:52px">scripts/test/terms.spec.mjs         | 105 ++++++</div>
+    <div class="b05c-row" id="b05c-r7" style="left:96px; top:578px; line-height:52px">templates/reelplanning/glossary.md  |   9 +</div>
+    <div class="b05c-row" id="b05c-r8" style="left:96px; top:630px; line-height:52px">templates/reelplanning/jargon.txt   |  25 ++</div>
+    <div class="b05c-row" id="b05c-sum" style="left:96px; top:682px; line-height:52px">9 files changed, 456 insertions(+), 5 deletions(-)</div>
+    </div>
+    <div class="b05c-plain" id="b05c-p0" style="top:214px">plain meanings for the words that lost you</div>
+    <div class="b05c-plain" id="b05c-p1" style="top:266px">lists the words it explains</div>
+    <div class="b05c-plain" id="b05c-p2" style="top:318px">runs the check before the voice</div>
+    <div class="b05c-plain hot" id="b05c-p3" style="top:370px">the check itself (new)</div>
+    <div class="b05c-plain" id="b05c-p4" style="top:422px">finds the words, said and on screen</div>
+    <div class="b05c-plain" id="b05c-p5" style="top:474px">one more stage in the build's test</div>
+    <div class="b05c-plain" id="b05c-p6" style="top:526px">the check's tests</div>
+    <div class="b05c-plain" id="b05c-p7" style="top:578px">the same meanings, for new repos</div>
+    <div class="b05c-plain" id="b05c-p8" style="top:630px">words a newcomer may not know</div>
+    <div class="b05c-mark" id="b05c-mk" style="top:376px"></div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05c-ten-files-the-map-first";
+
+  var ct = document.getElementById("b05c-ct"), text = "git show --stat=56 --format= 6d9e961", d = { t: 0 };
+  function typ() { ct.textContent = text.slice(0, Math.round(d.t * text.length)); }
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b05c-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#b05c-r0", { opacity: 0 });
+  gsap.set("#b05c-p0", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r1", { opacity: 0 });
+  gsap.set("#b05c-p1", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r2", { opacity: 0 });
+  gsap.set("#b05c-p2", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r3", { opacity: 0 });
+  gsap.set("#b05c-p3", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r4", { opacity: 0 });
+  gsap.set("#b05c-p4", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r5", { opacity: 0 });
+  gsap.set("#b05c-p5", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r6", { opacity: 0 });
+  gsap.set("#b05c-p6", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r7", { opacity: 0 });
+  gsap.set("#b05c-p7", { opacity: 0, x: 16 });
+  gsap.set("#b05c-r8", { opacity: 0 });
+  gsap.set("#b05c-p8", { opacity: 0, x: 16 });
+  gsap.set("#b05c-sum", { opacity: 0 });
+  gsap.set("#b05c-mk", { scaleY: 0 });
+  tl.to(d, { t: 1, duration: 1.3, ease: "none", onUpdate: typ }, 4.15);
+  tl.set("#b05c-ck", { opacity: 0 }, 5.55);
+  tl.to("#b05c-r0", { opacity: 1, duration: 0.1, ease: "none" }, 6.26);
+  tl.to("#b05c-r1", { opacity: 1, duration: 0.1, ease: "none" }, 6.32);
+  tl.to("#b05c-r2", { opacity: 1, duration: 0.1, ease: "none" }, 6.38);
+  tl.to("#b05c-r3", { opacity: 1, duration: 0.1, ease: "none" }, 6.44);
+  tl.to("#b05c-r4", { opacity: 1, duration: 0.1, ease: "none" }, 6.5);
+  tl.to("#b05c-r5", { opacity: 1, duration: 0.1, ease: "none" }, 6.56);
+  tl.to("#b05c-r6", { opacity: 1, duration: 0.1, ease: "none" }, 6.62);
+  tl.to("#b05c-r7", { opacity: 1, duration: 0.1, ease: "none" }, 6.68);
+  tl.to("#b05c-r8", { opacity: 1, duration: 0.1, ease: "none" }, 6.74);
+  tl.to("#b05c-sum", { opacity: 1, duration: 0.1, ease: "none" }, 6.86);
+  tl.to("#b05c-p0", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 9.81);
+  tl.to("#b05c-p1", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 9.98);
+  tl.to("#b05c-p2", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.15);
+  tl.to("#b05c-p3", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.32);
+  tl.to("#b05c-p4", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.49);
+  tl.to("#b05c-p5", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.66);
+  tl.to("#b05c-p6", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.83);
+  tl.to("#b05c-p7", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 11);
+  tl.to("#b05c-p8", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 11.17);
+  tl.to("#b05c-r0", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p0", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r1", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p1", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r2", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p2", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r4", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p4", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r5", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p5", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r6", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p6", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r7", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p7", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-r8", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-p8", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-sum", { opacity: 0.35, duration: 0.4, ease: "power2.out" }, 13.39);
+  tl.to("#b05c-mk", { scaleY: 1, duration: 0.35, ease: "power3.out" }, 13.39);
+  tl.to("#b05c-cam", { x: -74.64, y: 22.32, scale: 1.08, duration: 1.2, ease: "power2.inOut" }, 13.49);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,16 @@
+$ grep -n -A12 '"name": "step-1"' .reelplanning/plans/2026-09-28-plan-guide/walkthrough-video/plan-map.json | head -14   (what plan-map made of scene 4's `- guide: step-1`)
+1123:      "name": "step-1",
+1124-      "src": "guide/step-1.html",
+1125-      "title": "Step 1: the guide, a page a plan",
+1126-      "kind": "guide",
+1127-      "guide": true,
+1128-      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+1129-      "frameIndex": 4,
+1130-      "compositionId": "04-step-1-todo",
+1131-      "planStep": 1,
+1132-      "start": 41.877,
+1133-      "end": 61.525,
+1134-      "autonomy": null
+1135-    },
+--
+exit 0

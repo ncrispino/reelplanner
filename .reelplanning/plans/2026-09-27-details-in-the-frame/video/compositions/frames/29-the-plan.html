@@ -1,0 +1,78 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k29-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k29-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k29-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k29-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k29-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k29-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k29-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k29-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k29-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k29-ul.ink { background:var(--rp-ink); height:3px; }
+  .k29-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k29-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k29-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k29-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k29-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k29-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k29-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k29-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k29-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k29-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k29-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k29-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k29-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k29-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k29-s { position:absolute; left:160px; width:1600px; height:150px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .k29-s .n { position:absolute; left:0; top:52px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k29-s .t { position:absolute; left:150px; top:42px; font:400 52px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k29-s .d, .k29-s .ch { position:absolute; right:0; top:46px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  
+</style>
+
+<div id="root" data-composition-id="29-the-plan" data-band="bottom" data-duration="16" data-width="1920" data-height="1080">
+
+  <div class="clip k29-bg" id="k29-bg" data-start="0" data-duration="16" data-track-index="0"></div>
+
+  <div class="clip k29-scene" id="k29-scene" data-start="0" data-duration="16" data-track-index="1">
+    <div class="k29-lab" id="k29-h" style="left:160px; top:80px">The plan · 4 steps, 3 questions</div>
+    <div class="k29-s" id="k29-s0" data-plan-step="1" style="top:140px"><span class="n">Step 1</span><span class="t">The frame marks it; checks hold it</span><span class="ch">data-detail · 3 rules</span></div>
+    <div class="k29-s" id="k29-s1" data-plan-step="2" style="top:300px"><span class="n">Step 2</span><span class="t">The thing is the button</span><span class="d">question 1</span></div>
+    <div class="k29-s" id="k29-s2" data-plan-step="3" style="top:460px"><span class="n">Step 3</span><span class="t">A click opens the page</span><span class="d">question 2</span></div>
+    <div class="k29-s" id="k29-s3" data-plan-step="4" style="top:620px"><span class="n">Step 4</span><span class="t">The chip, a fallback</span><span class="d">question 3</span></div>
+    <div class="k29-lab" id="k29-ask" style="left:160px; top:820px">draw a note · approve</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "29-the-plan";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k29-s0", { opacity: 0, y: 12 });
+  tl.to("#k29-s0", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+  gsap.set("#k29-s1", { opacity: 0, y: 12 });
+  tl.to("#k29-s1", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.25);
+  gsap.set("#k29-s2", { opacity: 0, y: 12 });
+  tl.to("#k29-s2", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.4);
+  gsap.set("#k29-s3", { opacity: 0, y: 12 });
+  tl.to("#k29-s3", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.55);
+  gsap.set("#k29-ask", { opacity: 0 });
+  tl.to("#k29-ask", { opacity: 1, duration: 0.4, ease: "power2.out" }, 9.37);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

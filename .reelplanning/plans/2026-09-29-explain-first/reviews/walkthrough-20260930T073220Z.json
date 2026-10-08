@@ -1,0 +1,202 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "10-step-5-check-sources",
+        "index": 10,
+        "title": "Step 5: every quote against its source"
+      },
+      "id": "amunsf6bgaxea",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 5
+      },
+      "t": 134.27
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "\"What you want next\" is the walkthrough's open-question box, asked on every explainer's Finish, kept as a note with `open: true` (changed after review: under Explain more and Plan this, the box follows this video's own suggestions, made at build time from its scenes, long sources and `explain.md`'s open threads and refined by what you did while watching; a pick fills the box to edit, or you write your own, and the review carries it as `next`)",
+      "id": "a9",
+      "judgedAt": "2026-09-30T07:32:06.157Z",
+      "planStep": 3,
+      "shownAt": "2026-09-30T07:32:04.066Z",
+      "t": 93.746,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An explainer's Finish offers Done first, comments or not; the missed-checks guard's \"Ask the agent to explain it again\" picks Explain more (changed after review: Done still comes first, and Explain more and Plan this each say what they would mean for this video, their first suggestion, in place of a fixed line; the guard's Explain more starts from the missed check's suggestion)",
+      "id": "a13",
+      "judgedAt": "2026-09-30T07:32:07.349Z",
+      "planStep": 3,
+      "shownAt": "2026-09-30T07:32:04.066Z",
+      "t": 93.746,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`new-plan --from` without `--plan` writes a draft: the title, the line, the problem quoting the review, and an empty step for the agent to write",
+      "id": "a12",
+      "judgedAt": "2026-09-30T07:32:17.526Z",
+      "planStep": 4,
+      "shownAt": "2026-09-30T07:32:16.306Z",
+      "t": 134.21,
+      "verdict": "accept"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [
+      "agent"
+    ],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 63,
+    "wrongChecks": 0
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-30T07:32:20.682Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "questions": [],
+  "quizzes": [],
+  "src": "2026-09-29-explain-first--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 0.001,
+        "id": "ch4"
+      },
+      {
+        "completion": 0,
+        "id": "ch5"
+      }
+    ],
+    "completion": 0.632,
+    "details": [
+      {
+        "from": "chip",
+        "name": "finish",
+        "openedAt": "2026-09-30T07:31:49.867Z",
+        "seconds": 12.3
+      }
+    ],
+    "durationSeconds": 212.53,
+    "firstPlayAt": "2026-09-30T07:31:35.209Z",
+    "maxTimeReached": 134.3,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T23:18:09.177Z",
+      "video": "2026-09-26-contributing--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    },
+    {
+      "seen": "2026-09-28T19:04:26.852Z",
+      "sent": "2026-09-28T19:05:42.926Z",
+      "video": "2026-09-28-plan-guide"
+    },
+    {
+      "seen": "2026-09-28T04:39:23.180Z",
+      "sent": "2026-09-28T04:40:05.234Z",
+      "video": "2026-09-28-videos-that-make-sense"
+    },
+    {
+      "seen": "2026-09-28T19:00:00.857Z",
+      "sent": "2026-09-28T19:01:34.163Z",
+      "video": "2026-09-28-videos-that-make-sense--walkthrough"
+    },
+    {
+      "seen": "2026-09-29T06:31:36.845Z",
+      "sent": "2026-09-29T06:32:45.512Z",
+      "video": "2026-09-29-explain-first"
+    },
+    {
+      "seen": "2026-09-29T17:23:02.101Z",
+      "sent": "2026-09-29T17:23:41.805Z",
+      "video": "2026-09-29-explain-first--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

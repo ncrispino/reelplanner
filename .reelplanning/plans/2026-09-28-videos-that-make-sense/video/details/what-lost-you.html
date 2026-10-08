@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  reelplanning detail · TABLE   (templates/details/table.html; kind: table)
+  For anything with more than four rows: every risk, every config value, the options side by side.
+  The reviewer sorts by any column and copies any cell. It stays a real table down to 480 px (the player's
+  panel is wider than that); narrower, with more than three columns, each row stacks: the anchorBy value,
+  the short values on one line, each after its column's name, and the longest value under them.
+
+  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanning detail new <video-dir> <name>
+  --kind table --data rows.json, which writes it for you). Nothing else in this file needs touching.
+    title     the page title (the player's panel header shows it)
+    intro     one sentence, 140 characters at most: what to look for (optional). The panel already shows
+              the title and why; never repeat them here
+    columns   [{ key, label, align?: "right", mono?: true }], in order
+    rows      [{ <key>: value, …, mark?: true, anchor?: "…" }]; numbers and "m:ss" sort as numbers
+              mark: the row the call is about (a coral edge: the page's one coral thing)
+    anchorBy  the column whose value names a row for a comment: "row: <value>" (default: the first column)
+    note      a line under the table: where the values come from (optional)
+  In JSON strings, write "<\/" for "</". Loads nothing from the network: keep it that way.
+-->
+<title>What lost you</title>
+<script id="rp-data" type="application/json">
+{
+ "title": "What lost you",
+ "intro": "Every phrase and frame the reviews show you didn't follow, with your words; the plain phrases had no meaning to click.",
+ "columns": [
+  {
+   "key": "what",
+   "label": "What"
+  },
+  {
+   "key": "kind",
+   "label": "Kind"
+  },
+  {
+   "key": "where",
+   "label": "Where",
+   "mono": true
+  },
+  {
+   "key": "words",
+   "label": "Your words, or what happened"
+  }
+ ],
+ "anchorBy": "what",
+ "rows": [
+  {
+   "what": "drops the video",
+   "kind": "phrase",
+   "where": "walkthroughs-that-help · round 2 · check k5",
+   "words": "“wdym dropps the video. again this dkind of thing is not explained well how ma i supposed to get more information about this???”",
+   "mark": true
+  },
+  {
+   "what": "the saved review file",
+   "kind": "phrase",
+   "where": "walkthroughs-that-help · round 3 · check k2",
+   "words": "The one quick check missed. The video showed a file name, never what is in it."
+  },
+  {
+   "what": "the real thing",
+   "kind": "phrase",
+   "where": "better-visuals · question 1",
+   "words": "“what is 'the real thing' mean? need mroe first”"
+  },
+  {
+   "what": "nothing to predict / the page looks the same",
+   "kind": "phrase",
+   "where": "walkthroughs-that-help · round 2 · check k2",
+   "words": "“ok but arent there big bckend changes important too?”"
+  },
+  {
+   "what": "what Approve makes of the listed choices",
+   "kind": "question",
+   "where": "walkthroughs-that-help · round 1 · question 4",
+   "words": "Explain this more."
+  },
+  {
+   "what": "who writes a detail page",
+   "kind": "question",
+   "where": "deep-dives · question 2",
+   "words": "“confused by this, need more information and examples”"
+  },
+  {
+   "what": "where the maintainer watches",
+   "kind": "question",
+   "where": "contributing · question 2",
+   "words": "“im again confused here bc will they need to rebuild the whole thing then?”"
+  },
+  {
+   "what": "this checkout's tooling",
+   "kind": "choice",
+   "where": "revise-loop walkthrough · choice A29",
+   "words": "“confused here, i guess this is about doing a local vs npx one?”"
+  },
+  {
+   "what": "step 6: grey lines for 'What changed', chips apart from their things, 'you approve, or not'",
+   "kind": "frame",
+   "where": "walkthroughs-that-help · scene 13",
+   "words": "“look in the image, things dont visually explained well”"
+  },
+  {
+   "what": "step 3: empty 'before · check · after' boxes",
+   "kind": "frame",
+   "where": "walkthroughs-that-help · scene 7",
+   "words": "Labels with nothing in them; the note beside them attached to nothing."
+  },
+  {
+   "what": "step 1: screenshots too small to read, the Open tab on a file name",
+   "kind": "frame",
+   "where": "walkthroughs-that-help · scene 5",
+   "words": "Code in the pictures about 10 px high."
+  },
+  {
+   "what": "maintainer, tag, pull request, walkthrough video",
+   "kind": "labelled words",
+   "where": "contributing, walkthroughs-that-help",
+   "words": "Looked up 4, 4, 3 and 2 times, and understood: a meaning was one click away."
+  }
+ ],
+ "note": "From the review records, .reelplanning/plans/*/reviews/*.json: the notes on quick checks, the answers in your own words, Explain this more, and confusion.termsLookedUp. In plan reviews, 24 of 64 quick checks were missed."
+}
+</script>
+<script>
+/* rp-theme: the player passes ?theme=dark (or #theme=dark); light by default. paper / ink / accent (hex) override one token.
+   In the player's panel (a frame) it sets data-framed: the panel's header already names the page, so the page's own is hidden.
+   There the player also posts the review page's faces (packages/player/fonts/faces.json) once the page is ready: a sandboxed
+   page cannot load the files itself, so they come as bytes, and --sans, --serif and --mono take their families. On its own
+   the page keeps the fallbacks in the token block. */
+(function () {
+  var q = new URLSearchParams(location.search.replace(/^\?/, "") + "&" + location.hash.replace(/^#/, "")), r = document.documentElement;
+  if (q.get("theme") === "dark") r.setAttribute("data-theme", "dark");
+  try { if (window.parent !== window) r.setAttribute("data-framed", ""); } catch (e) { r.setAttribute("data-framed", ""); }
+  ["paper", "ink", "accent"].forEach(function (k) {
+    var v = (q.get(k) || "").replace(/^#/, "");
+    if (!/^[0-9a-f]{6}$/i.test(v)) return;
+    r.style.setProperty("--" + k, "#" + v);
+    if (k === "ink") { var n = parseInt(v, 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].join(","); r.style.setProperty("--ink-rgb", c); r.style.setProperty("--ink-2", "rgba(" + c + ",.8)"); r.style.setProperty("--ink-3", "rgba(" + c + ",.66)"); }
+  });
+  if (window.parent === window || !window.FontFace || !document.fonts) return;
+  window.addEventListener("message", function (e) {
+    var m = e.data; if (e.source !== window.parent || !m || m.type !== "rp-player" || m.event !== "faces") return;
+    (m.faces || []).forEach(function (f) { try { var ff = new FontFace(String(f.family), f.data, f.descriptors || {}); document.fonts.add(ff); ff.load().catch(function () {}); } catch (x) {} });
+    ["sans", "serif", "mono"].forEach(function (k) { var v = m.roles && m.roles[k]; if (typeof v === "string" && !/[;{}<]/.test(v)) r.style.setProperty("--" + k, v); });
+  });
+})();
+</script>
+<style>
+/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+   (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
+   and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
+   is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */
+:root{--paper:#FAF9F5;--tile:#EFE9DE;--ink:#141413;--ink-2:#3D3B37;--ink-3:#5C5953;--ink-rgb:20,20,19;--accent:#B8552E;--accent-text:#9C4524;--hair:.12;--dim:.2;--tint:9%;color-scheme:light;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"EB Garamond",Georgia,"Times New Roman",serif}
+:root[data-theme="dark"]{--paper:#141310;--tile:#232120;--ink:#F2EFE8;--ink-2:#CFCAC1;--ink-3:#A6A196;--ink-rgb:242,239,232;--accent:#D2693F;--accent-text:#E3A184;--hair:.14;--dim:.3;--tint:14%;color-scheme:dark}
+:root{--ink-72:var(--ink-2);--ink-55:var(--ink-3);--ink-20:rgba(var(--ink-rgb),var(--dim));--ink-12:rgba(var(--ink-rgb),var(--hair));--ink-06:rgba(var(--ink-rgb),.06)}
+/* one calm page: content on paper, space and hairlines between groups (8 inside, 20 between, 32 between sections);
+   four type styles (body 15, secondary 13, data 12.5 mono, section head 17 serif); coral marks only what is yours or waiting on you: the call, and the part you comment on */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.55 var(--sans);padding:16px 20px 32px;max-width:980px;-webkit-font-smoothing:antialiased}
+.rp-head h1{font:400 22px/1.25 var(--serif);margin:4px 0 12px;letter-spacing:-.005em}
+:root[data-framed] .rp-head{display:none}
+.rp-intro{font-size:14px;line-height:1.5;color:var(--ink-72);max-width:68ch;margin:0 0 20px}
+.rp-sec{font:400 17px/1.3 var(--serif);margin:32px 0 12px}
+.rp-label{font:600 13px/1.45 var(--sans);margin:0 0 8px}
+.rp-quiet{font-size:13px;line-height:1.45;color:var(--ink-72)}
+.rp-num,.rp-mono{font-family:var(--mono);font-size:12.5px;line-height:1.6;font-variant-numeric:tabular-nums}
+.rp-note{font-size:13px;line-height:1.45;color:var(--ink-55);margin:20px 0 0;max-width:68ch}
+.rp-more{margin:32px 0 0;font-size:13px;line-height:1.45;color:var(--ink-72);max-width:68ch}
+.rp-more summary{cursor:pointer;width:max-content;max-width:100%}
+.rp-more summary:hover{color:var(--ink)}
+.rp-more>:not(summary){margin:8px 0 0}
+button{font:inherit;font-size:13px;line-height:1.45;color:var(--ink);background:none;border:1px solid var(--ink-20);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--ink-55)}
+button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--ink-55);outline-offset:2px}
+/* the bridge: an anchored part shows itself only on hover or focus; the one commented on keeps a coral edge */
+[data-anchor]{cursor:pointer;border-radius:2px}
+[data-anchor]:hover,[data-anchor]:focus-visible{outline:0;background:rgba(var(--ink-rgb),.04);box-shadow:inset 2px 0 0 var(--ink-20)}
+[data-anchor][data-rp-active]{outline:0;background:color-mix(in srgb,var(--accent) var(--tint),transparent);box-shadow:inset 2px 0 0 var(--accent)}
+.rp-copy{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;background:none;color:var(--ink-55);border-radius:4px;vertical-align:middle}
+.rp-copy:hover{color:var(--ink);background:var(--ink-06)}
+#rp-toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,8px);padding:4px 12px;border-radius:6px;background:var(--ink);color:var(--paper);font-size:13px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none}
+#rp-toast[data-on]{opacity:1;transform:translate(-50%,0)}
+
+/* wide: a plain table on paper, hairlines between rows, the column names sort */
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45}
+th{text-align:left;padding:0;border-bottom:1px solid var(--ink-20);white-space:nowrap;vertical-align:bottom}
+th button{display:inline-flex;align-items:baseline;gap:4px;border:0;border-radius:0;background:none;padding:4px 16px 8px 0;font-weight:600;color:var(--ink)}
+th button:hover{color:var(--ink-72)}
+th[data-align="right"]{text-align:right}
+th[data-align="right"] button{padding:4px 16px 8px 8px}
+th:first-child button{padding-left:8px}
+.dir{font-size:11px;color:var(--ink-55);min-width:1ch}
+td{padding:8px 16px 8px 0;border-bottom:1px solid var(--ink-12);vertical-align:top;position:relative}
+td:last-child,th:last-child button{padding-right:0}
+td[data-align="right"]{text-align:right;padding-left:8px}
+td[data-mono]{font:12.5px/1.6 var(--mono)}
+tr[data-anchor]:hover,tr[data-anchor]:focus-visible,tr[data-anchor][data-rp-active]{box-shadow:none}
+tr[data-anchor]:hover td:first-child,tr[data-anchor]:focus-visible td:first-child{box-shadow:inset 2px 0 0 var(--ink-20)}
+tr[data-mark] td:first-child,tr[data-mark]:hover td:first-child{box-shadow:inset 2px 0 0 var(--accent)}
+tr[data-anchor][data-rp-active] td:first-child{box-shadow:inset 2px 0 0 var(--accent)}
+td:first-child{padding-left:8px}
+td .rp-copy{position:absolute;right:0;top:6px;opacity:0;background:var(--paper)}
+td:hover .rp-copy,td .rp-copy:focus-visible{opacity:1}
+/* the sort line, for the stacked rows below */
+.sortline{display:none;flex-wrap:wrap;align-items:baseline;gap:0 4px;font-size:13px;color:var(--ink-55);margin:0 0 8px}
+.sortline button{border:0;padding:0;border-radius:0;color:var(--ink-72)}
+.sortline button:hover{color:var(--ink)}
+.sortline button[aria-pressed="true"]{background:none;color:var(--ink);font-weight:600}
+.sortline .sep{color:var(--ink-55)}
+/* a column's name inside its cell: only shown when the rows stack */
+td .lbl{display:none}
+/* narrow (a phone), more than three columns: each row stacks — the row's name, its short values on one
+   line, each after its column's name, and its longest value under them */
+@media (max-width:479px){
+  .wrap[data-stack] .sortline{display:flex}
+  .wrap[data-stack] thead{display:none}
+  .wrap[data-stack] table,.wrap[data-stack] tbody{display:block}
+  .wrap[data-stack] tr{display:flex;flex-wrap:wrap;align-items:baseline;padding:8px 0 8px 8px;border-bottom:1px solid var(--ink-12)}
+  .wrap[data-stack] tr:first-child{border-top:1px solid var(--ink-12)}
+  .wrap[data-stack] td{display:block;flex:1 0 100%;border:0;padding:0;text-align:left}
+  .wrap[data-stack] td:first-child{padding-left:0;box-shadow:none!important;font-size:15px;line-height:1.45}
+  .wrap[data-stack] tr[data-mark]{box-shadow:inset 2px 0 0 var(--accent)}
+  .wrap[data-stack] tr[data-anchor]:hover{box-shadow:inset 2px 0 0 var(--ink-20)}
+  .wrap[data-stack] tr[data-mark]:hover,.wrap[data-stack] tr[data-anchor][data-rp-active]{box-shadow:inset 2px 0 0 var(--accent)}
+  .wrap[data-stack] td[data-role="short"]{flex:0 1 auto;order:1;font:12.5px/1.6 var(--mono);color:var(--ink-55)}
+  .wrap[data-stack] td[data-role="short"]:not([data-first])::before{content:"·";padding:0 .6ch}
+  .wrap[data-stack] td[data-role="short"] .lbl{display:inline;margin-right:.5ch;font:13px/1.6 var(--sans);color:var(--ink-72)}
+  .wrap[data-stack] td[data-role="long"]{order:2;font-size:14px;line-height:1.45;color:var(--ink-72);margin-top:2px}
+  .wrap[data-stack] td[data-role="short"] .rp-copy{display:none}
+  .wrap[data-stack] td .rp-copy{top:-2px}
+}
+</style>
+</head>
+<body>
+<header class="rp-head"><h1 id="rp-title"></h1></header>
+<p class="rp-intro" id="rp-intro"></p>
+<main><div class="wrap" id="rp-wrap"><p class="sortline" id="rp-sort"></p><table><thead><tr id="rp-head"></tr></thead><tbody id="rp-rows"></tbody></table></div><p class="rp-note" id="rp-note"></p></main>
+<script>
+const D = JSON.parse(document.getElementById("rp-data").textContent);
+const h = (tag, a, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (k === "text") el.textContent = v; else if (k === "class") el.className = v; else el.setAttribute(k, v === true ? "" : v); } for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : String(c)); return el; };
+document.title = D.title || document.title;
+document.getElementById("rp-title").textContent = D.title || "";
+const intro = document.getElementById("rp-intro"); if (D.intro) intro.textContent = D.intro; else intro.remove();
+const copyText = (text, btn) => {
+  const done = () => { let t = document.getElementById("rp-toast"); if (!t) document.body.append(t = h("div", { id: "rp-toast", role: "status" })); t.textContent = "Copied"; t.setAttribute("data-on", ""); clearTimeout(t._h); t._h = setTimeout(() => t.removeAttribute("data-on"), 1200); };
+  const fallback = () => { const t = h("textarea", { style: "position:fixed;opacity:0" }); t.value = text; document.body.append(t); t.select(); try { document.execCommand("copy"); done(); } catch {} t.remove(); };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+};
+const COPY_ICON = '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 10.5V3.8C3 3.4 3.4 3 3.8 3h6.7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+const cols = D.columns || Object.keys((D.rows || [])[0] || {}).filter((k) => k !== "mark" && k !== "anchor").map((key) => ({ key, label: key }));
+const by = D.anchorBy || cols[0]?.key;
+// numbers, "1,200", "4:40" (m:ss) and "16 MB" sort by their number; anything else alphabetically
+const num = (v) => { if (typeof v === "number") return v; const s = String(v ?? "").trim(); const t = s.match(/^(\d+):(\d{2})(?::(\d{2}))?$/); if (t) return t[3] ? (+t[1] * 3600 + +t[2] * 60 + +t[3]) : (+t[1] * 60 + +t[2]); const n = parseFloat(s.replace(/,/g, "")); return /^-?[\d.,]+/.test(s) ? n : NaN; };
+let sortKey = null, sortDir = 1;
+const head = document.getElementById("rp-head"), body = document.getElementById("rp-rows"), sortLine = document.getElementById("rp-sort");
+// stacked rows (narrow, more than three columns): the longest column goes under the row's name, the rest on one line
+const avg = (k) => (D.rows || []).reduce((n, r) => n + String(r[k] ?? "").length, 0) / Math.max(1, (D.rows || []).length);
+const longKey = cols.filter((c) => c.key !== by).reduce((a, c) => (!a || avg(c.key) > avg(a.key) ? c : a), null)?.key;
+const firstShort = cols.find((c) => c.key !== by && c.key !== longKey)?.key;
+if (cols.length > 3) document.getElementById("rp-wrap").setAttribute("data-stack", "");
+const sortBy = (key) => { sortDir = sortKey === key ? -sortDir : 1; sortKey = key; draw(); };
+sortLine.append("Sort by ");
+cols.forEach((c, i) => {
+  const b = h("button", { type: "button", "data-no-anchor": true }, c.label, h("span", { class: "dir", "aria-hidden": "true" }));
+  b.addEventListener("click", () => sortBy(c.key));
+  head.append(h("th", { "data-align": c.align, scope: "col", "data-key": c.key }, b));
+  const s = h("button", { type: "button", "data-key": c.key, "aria-pressed": "false" }, c.label);
+  s.addEventListener("click", () => sortBy(c.key));
+  if (i) sortLine.append(h("span", { class: "sep", "aria-hidden": "true", text: "·" }));
+  sortLine.append(s);
+});
+function draw() {
+  const rows = [...(D.rows || [])];
+  if (sortKey) rows.sort((a, b) => { const x = num(a[sortKey]), y = num(b[sortKey]); return sortDir * (!isNaN(x) && !isNaN(y) ? x - y : String(a[sortKey] ?? "").localeCompare(String(b[sortKey] ?? ""))); });
+  for (const th of head.children) { th.querySelector(".dir").textContent = th.dataset.key === sortKey ? (sortDir > 0 ? "↑" : "↓") : ""; th.setAttribute("aria-sort", th.dataset.key === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none"); }
+  for (const b of sortLine.querySelectorAll("button")) { const on = b.dataset.key === sortKey; b.setAttribute("aria-pressed", String(on)); b.textContent = cols.find((c) => c.key === b.dataset.key).label + (on ? (sortDir > 0 ? " ↑" : " ↓") : ""); }
+  body.replaceChildren(...rows.map((r) => h("tr", { "data-anchor": r.anchor || `row: ${r[by]}`, "data-mark": !!r.mark, tabindex: 0 },
+    cols.map((c) => { const v = r[c.key] ?? ""; const cp = h("button", { type: "button", class: "rp-copy", "aria-label": `Copy ${c.label}` }); cp.innerHTML = COPY_ICON; cp.addEventListener("click", () => copyText(String(v), cp)); const role = c.key === by ? "name" : c.key === longKey ? "long" : "short"; return h("td", { "data-align": c.align, "data-mono": !!c.mono, "data-role": role, "data-first": c.key === firstShort }, role === "short" ? h("span", { class: "lbl" }, c.label) : null, String(v), cp); }))));
+}
+draw();
+const note = document.getElementById("rp-note"); if (D.note) note.textContent = D.note; else note.remove();
+</script>
+<script>
+/* rp-bridge v2: the same lines in every page of a guide (templates/details/). Keep it as it is.
+   Any element with data-anchor="<label>" can be noted on. A click on it posts {type:"rp-detail", event:"anchor",
+   anchor, text, rect} to the player; words selected inside it post {event:"select", anchor, text, rect, editable}
+   (the player opens its note box on the selection: a comment, a suggested edit where the words sit in a
+   data-editable element, or a question). On load it posts "ready", and its height as "size" when that changes. */
+(function () {
+  var post = function (m) { m.type = "rp-detail"; try { parent.postMessage(m, "*"); } catch (e) {} };
+  var CONTROL = "button,a,input,select,textarea,label,summary,[role=button],[data-no-anchor]";
+  var clean = function (t, n) { return String(t || "").replace(/\s+/g, " ").trim().slice(0, n); };
+  var box = function (r) { return { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }; };
+  var anchorOf = function (n) { var e = n && (n.nodeType === 1 ? n : n.parentElement); return e && e.closest ? e.closest("[data-anchor]") : null; };
+  var mark = function (el) { var was = document.querySelector("[data-rp-active]"); if (was) was.removeAttribute("data-rp-active"); el.setAttribute("data-rp-active", ""); };
+  var chosen = function () {
+    var s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+    var text = clean(String(s), 600), r = s.getRangeAt(0), el = anchorOf(r.commonAncestorContainer);
+    return text && el ? { el: el, text: text, rect: box(r.getBoundingClientRect()) } : null;
+  };
+  var send = function (el) { mark(el); post({ event: "anchor", anchor: el.getAttribute("data-anchor"), text: clean(el.innerText || el.textContent, 200), rect: box(el.getBoundingClientRect()) }); };
+  var said = "";
+  var select = function () {
+    var c = chosen(); if (!c) { said = ""; return; }
+    var key = c.text + "|" + c.rect.x + "|" + c.rect.y; if (key === said) return; said = key;
+    mark(c.el);
+    post({ event: "select", anchor: c.el.getAttribute("data-anchor"), text: c.text, rect: c.rect, editable: !!(c.el.closest && c.el.closest("[data-editable]")) });
+  };
+  document.addEventListener("click", function (e) {
+    if (chosen()) return;   // words selected are their own note (select), not a click
+    var el = e.target.closest && e.target.closest("[data-anchor]"); if (!el) return;
+    var c = e.target.closest(CONTROL); if (c && c !== el && el.contains(c)) return;   // a control inside it acts, it does not note
+    send(el);
+  });
+  document.addEventListener("mouseup", function () { setTimeout(select, 0); });
+  document.addEventListener("keyup", function (e) { if (e.shiftKey || e.key === "Shift") select(); });
+  var st = null; document.addEventListener("selectionchange", function () { clearTimeout(st); if (window.matchMedia && matchMedia("(pointer:coarse)").matches) st = setTimeout(select, 600); });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target.closest && e.target.closest("[data-anchor]");
+    if (el === e.target && e.key === "Enter" && !e.target.matches(CONTROL)) send(el);
+  });
+  var tall = 0, size = function () { var h = Math.ceil(document.documentElement.scrollHeight); if (h !== tall) { tall = h; post({ event: "size", height: h }); } };
+  var ready = function () { post({ event: "ready", title: document.title }); size(); if (window.ResizeObserver) new ResizeObserver(size).observe(document.body); };
+  if (document.readyState === "complete") ready(); else window.addEventListener("load", ready);
+})();
+</script>
+</body>
+</html>

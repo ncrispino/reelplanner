@@ -1,0 +1,106 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; font-weight:400; font-style:normal; src:url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family:"Inter"; font-weight:700; font-style:normal; src:url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family:"JetBrains Mono"; font-weight:400; font-style:normal; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family:"JetBrains Mono"; font-weight:700; font-style:normal; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; container-type:size; }
+  .f15-branch-2b-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f15-branch-2b-stage { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+
+  /* ---- the rail: the plan (geometry is law) ---- */
+  .f15-branch-2b-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f15-branch-2b-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f15-branch-2b-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f15-branch-2b-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f15-branch-2b-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f15-branch-2b-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f15-branch-2b-slot .d.ink { color:var(--rp-ink); }      /* the one coral is on the page, not the rail */
+  .f15-branch-2b-slot.empty .n, .f15-branch-2b-slot.empty .t { opacity:0; }
+
+  /* ---- section label over the pages ---- */
+  .f15-branch-2b-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the output IS pages, so it is drawn as pages (positions are law) ---- */
+  .f15-branch-2b-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f15-branch-2b-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  .f15-branch-2b-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f15-branch-2b-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* ---- the read, in words: no strip, nothing to link to ---- */
+  .f15-branch-2b-note { position:absolute; left:1348px; top:670px; width:372px; text-align:center; font:400 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="15-branch-2b" data-duration="5.7" data-width="1920" data-height="1080">
+  <div class="clip f15-branch-2b-bg" id="f15-branch-2b-bg" data-start="0" data-duration="5.7" data-track-index="0"></div>
+
+  <div class="clip f15-branch-2b-stage" id="f15-branch-2b-stage" data-start="0" data-duration="5.7" data-track-index="1">
+    <div class="f15-branch-2b-rail" id="f15-branch-2b-rail">
+      <div class="f15-branch-2b-slot" id="f15-branch-2b-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d ink" data-plan-question="1">10 albums</span></div>
+      <div class="f15-branch-2b-slot" id="f15-branch-2b-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f15-branch-2b-slot" id="f15-branch-2b-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d ink" id="f15-branch-2b-tag" data-plan-question="2">No timeline</span></div>
+      <div class="f15-branch-2b-slot empty" id="f15-branch-2b-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f15-branch-2b-slot empty" id="f15-branch-2b-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f15-branch-2b-slot empty" id="f15-branch-2b-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <div class="f15-branch-2b-lbl" style="left:1258px;top:300px">Pages</div>
+
+    <div class="f15-branch-2b-page" id="f15-branch-2b-page-album" style="left:1258px">
+      <h>Bringing It All Back Home</h>
+      <div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div>
+      <span class="cap" id="f15-branch-2b-cap-album">album</span>
+    </div>
+
+    <div class="f15-branch-2b-page" id="f15-branch-2b-page-era" style="left:1448px">
+      <h>Going Electric, 1965</h>
+      <div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div>
+      <span class="cap" id="f15-branch-2b-cap-era">era</span>
+    </div>
+
+    <div class="f15-branch-2b-page" id="f15-branch-2b-page-song" style="left:1638px">
+      <h>Like a Rolling Stone</h>
+      <div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div>
+      <span class="cap" id="f15-branch-2b-cap-song">song</span>
+    </div>
+
+    <div class="f15-branch-2b-note" id="f15-branch-2b-note">eras stand alone</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var id = "15-branch-2b", P = "f15-branch-2b-";
+  var q = function (s) { return document.getElementById(P + s); };
+  var INK = __RP["ink"], INK_RGB = __RP["ink-rgb"], CORAL = __RP["coral"];
+  var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+  // t=0 — the three page kinds arrive with the crossfade
+  tl.fromTo("." + P + "page", { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, immediateRender: true }, 0);
+
+  // 0.03 "Without" — slot 3 takes its tag
+  tl.fromTo(q("tag"), { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.5, immediateRender: true }, 0.07);
+
+  // 1.51 "three page kinds" — each page names itself, one after the other
+  tl.fromTo([q("cap-album"), q("cap-era"), q("cap-song")], { color: "rgba(" + INK_RGB + ",0.55)" },
+            { color: INK, duration: 0.4, stagger: 0.14, immediateRender: true }, 1.687);
+
+  // 2.74 "eras" — the era page takes the frame's ONE coral: it is the page that loses something
+  tl.fromTo(q("page-era"),
+            { borderColor: "rgba(" + INK_RGB + ",0.2)", borderWidth: 1, paddingTop: 14, paddingLeft: 14, paddingRight: 14 },
+            { borderColor: CORAL, borderWidth: 3, paddingTop: 12, paddingLeft: 12, paddingRight: 12, duration: 0.55, immediateRender: true }, 3.144);
+
+  // 2.98 "stand" — its neighbours step back; nothing reaches across to it
+  tl.to([q("page-album"), q("page-song")], { opacity: 0.72, duration: 0.5 }, 3.384);
+
+  // 3.55 — the settle, after "alone."
+  tl.fromTo(q("note"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: true }, 3.952);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines[id] = tl;
+})();
+</script>
+</template>

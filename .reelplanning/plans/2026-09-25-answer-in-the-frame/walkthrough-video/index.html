@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+  <head>
+<!-- The video's colour system, as tokens, so one attribute on <html> recolours the whole thing.
+
+     Dark mode is not an inversion. Each token keeps its MEANING across themes, and where a naive
+     flip would destroy the meaning, the value is chosen to preserve it instead:
+
+     · --rp-data is the one tile that differs from every other tile — the diagram's landmark, "where
+       state lives". In light it is the dark tile on cream. Inverting it would make it the same shade
+       as the dark ground and the landmark would vanish, so in dark it becomes the one LIGHT tile.
+       The eye still finds the store first, which is the whole reason the tile exists.
+     · --rp-slab is a photograph or a code window. Those are dark because that is what they are, not
+       because the page is light, so they do not move at all.
+     · --rp-shadow-rgb stays black in both. A shadow flipped light is a glow, and the anti-slop
+       checklist bans glows.
+     · --rp-coral is the same coral in both themes. It is the one accent and the reviewer's pen
+       colour; an accent that changes hue with the lights is not an identity.
+     · --rp-coral-deep is the same role in both — small coral TEXT that must clear 4.5:1 on its own
+       ground — which means a different value: it darkens on cream and lightens on charcoal.
+
+     The legacy --cap-* / --ink / --navy names that the captions layer emits are redefined here in
+     terms of these tokens, so captions follow the theme without that generated file being edited. -->
+<style id="rp-theme">
+  :root {
+    --rp-paper:#FAF9F5; --rp-tile:#EFE9DE; --rp-tile-2:#ECE3D4;
+    --rp-ink:#141413; --rp-on-ink:#FAF9F5; --rp-data:#181715;
+    --rp-coral:#CC785C; --rp-coral-deep:#A5614A;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:20,20,19; --rp-on-ink-rgb:250,249,245; --rp-tile-rgb:239,233,222;
+    --rp-coral-rgb:204,120,92; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:20,20,19;
+  }
+  :root[data-theme="dark"] {
+    --rp-paper:#141310; --rp-tile:#232120; --rp-tile-2:#2C2925;
+    --rp-ink:#F2EFE8; --rp-on-ink:#141413; --rp-data:#EFE9DE;
+    --rp-coral:#CC785C; --rp-coral-deep:#E3A184;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:242,239,232; --rp-on-ink-rgb:20,20,19; --rp-tile-rgb:35,33,32;
+    --rp-coral-rgb:204,120,92; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:0,0,0;
+  }
+  /* The generated captions layer speaks in these names, and its own stylesheet is parsed later in
+     the document, so a plain :root here would lose the cascade to it. :root:root outranks it on
+     specificity instead, which is what !important would buy without the shouting. */
+  :root:root {
+    --ink:var(--rp-ink); --cream:var(--rp-paper); --tile:var(--rp-tile); --tile-strong:var(--rp-tile-2);
+    --coral:var(--rp-coral); --navy:var(--rp-data); --navy-soft:var(--rp-slab); --navy-elev:var(--rp-slab-bar);
+    --cap-ink:var(--rp-ink); --cap-canvas:var(--rp-paper); --cap-accent:var(--rp-coral); --cap-accent-2:var(--rp-tile-2);
+  }
+  html, body { background:var(--rp-paper); }
+</style>
+<script>
+  // Frame timelines are built once, at load, and GSAP cannot interpolate through a var(). So the
+  // tween colours read the live token values here instead; switching theme rebuilds the composition.
+  window.__RP = new Proxy({}, { get: (_, k) =>
+    getComputedStyle(document.documentElement).getPropertyValue("--rp-" + String(k)).trim() });
+</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--rp-paper);
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--rp-paper);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="293.961"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="el-01-your-words"
+        class="scene"
+        data-composition-id="01-your-words"
+        data-composition-src="compositions/frames/01-your-words.html"
+        data-start="0"
+        data-duration="18.17"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-01-your-words-voice"
+        src="assets/voice/01.wav"
+        data-start="0"
+        data-duration="17.67"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-02-built"
+        class="scene"
+        data-composition-id="02-built"
+        data-composition-src="compositions/frames/02-built.html"
+        data-start="17.67"
+        data-duration="16.265"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-02-built-voice"
+        src="assets/voice/02.wav"
+        data-start="17.67"
+        data-duration="15.765"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-03-choice-label"
+        class="scene"
+        data-composition-id="03-choice-label"
+        data-composition-src="compositions/frames/03-choice-label.html"
+        data-start="33.435"
+        data-duration="18.377"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-03-choice-label-voice"
+        src="assets/voice/03.wav"
+        data-start="33.435"
+        data-duration="17.877"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-04-row-offplan-scene"
+        class="scene"
+        data-composition-id="04-row-offplan-scene"
+        data-composition-src="compositions/frames/04-row-offplan-scene.html"
+        data-start="51.312"
+        data-duration="20.873"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-04-row-offplan-scene-voice"
+        src="assets/voice/04.wav"
+        data-start="51.312"
+        data-duration="20.373"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-05-quiz-k1"
+        class="scene"
+        data-composition-id="05-quiz-k1"
+        data-composition-src="compositions/frames/05-quiz-k1.html"
+        data-start="71.685"
+        data-duration="8.073"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-05-quiz-k1-voice"
+        src="assets/voice/05.wav"
+        data-start="71.685"
+        data-duration="7.573"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-06-recap"
+        class="scene"
+        data-composition-id="06-recap"
+        data-composition-src="compositions/frames/06-recap.html"
+        data-start="79.25800000000001"
+        data-duration="8.052"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-06-recap-voice"
+        src="assets/voice/06.wav"
+        data-start="79.25800000000001"
+        data-duration="7.552"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-07-step-1"
+        class="scene"
+        data-composition-id="07-step-1"
+        data-composition-src="compositions/frames/07-step-1.html"
+        data-start="86.81"
+        data-duration="18.63"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-07-step-1-voice"
+        src="assets/voice/07.wav"
+        data-start="86.81"
+        data-duration="18.13"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-08-d108"
+        class="scene"
+        data-composition-id="08-d108"
+        data-composition-src="compositions/frames/08-d108.html"
+        data-start="104.94"
+        data-duration="15.433"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-08-d108-voice"
+        src="assets/voice/08.wav"
+        data-start="104.94"
+        data-duration="14.933"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-09-stop-step-1"
+        class="scene"
+        data-composition-id="09-stop-step-1"
+        data-composition-src="compositions/frames/09-stop-step-1.html"
+        data-start="119.87299999999999"
+        data-duration="32.51"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-09-stop-step-1-voice"
+        src="assets/voice/09.wav"
+        data-start="119.87299999999999"
+        data-duration="32.01"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-10-offplan-d1"
+        class="scene"
+        data-composition-id="10-offplan-d1"
+        data-composition-src="compositions/frames/10-offplan-d1.html"
+        data-start="151.88299999999998"
+        data-duration="19.8"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-10-offplan-d1-voice"
+        src="assets/voice/10.wav"
+        data-start="151.88299999999998"
+        data-duration="19.3"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-11-quiz-k2"
+        class="scene"
+        data-composition-id="11-quiz-k2"
+        data-composition-src="compositions/frames/11-quiz-k2.html"
+        data-start="171.183"
+        data-duration="6.815"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-11-quiz-k2-voice"
+        src="assets/voice/11.wav"
+        data-start="171.183"
+        data-duration="6.315"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-12-step-2"
+        class="scene"
+        data-composition-id="12-step-2"
+        data-composition-src="compositions/frames/12-step-2.html"
+        data-start="177.498"
+        data-duration="16.11"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-12-step-2-voice"
+        src="assets/voice/12.wav"
+        data-start="177.498"
+        data-duration="15.61"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-13-stop-step-2"
+        class="scene"
+        data-composition-id="13-stop-step-2"
+        data-composition-src="compositions/frames/13-stop-step-2.html"
+        data-start="193.108"
+        data-duration="23.05"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-13-stop-step-2-voice"
+        src="assets/voice/13.wav"
+        data-start="193.108"
+        data-duration="22.55"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-14-quiz-k3"
+        class="scene"
+        data-composition-id="14-quiz-k3"
+        data-composition-src="compositions/frames/14-quiz-k3.html"
+        data-start="215.65800000000002"
+        data-duration="6.431"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-14-quiz-k3-voice"
+        src="assets/voice/14.wav"
+        data-start="215.65800000000002"
+        data-duration="5.931"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-15-step-3"
+        class="scene"
+        data-composition-id="15-step-3"
+        data-composition-src="compositions/frames/15-step-3.html"
+        data-start="221.58900000000003"
+        data-duration="18.25"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-15-step-3-voice"
+        src="assets/voice/15.wav"
+        data-start="221.58900000000003"
+        data-duration="17.75"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-16-stop-step-3"
+        class="scene"
+        data-composition-id="16-stop-step-3"
+        data-composition-src="compositions/frames/16-stop-step-3.html"
+        data-start="239.33900000000003"
+        data-duration="17.33"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-16-stop-step-3-voice"
+        src="assets/voice/16.wav"
+        data-start="239.33900000000003"
+        data-duration="16.83"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-17-quiz-k4"
+        class="scene"
+        data-composition-id="17-quiz-k4"
+        data-composition-src="compositions/frames/17-quiz-k4.html"
+        data-start="256.16900000000004"
+        data-duration="5.193"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-17-quiz-k4-voice"
+        src="assets/voice/17.wav"
+        data-start="256.16900000000004"
+        data-duration="4.693"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-18-group-3"
+        class="scene"
+        data-composition-id="18-group-3"
+        data-composition-src="compositions/frames/18-group-3.html"
+        data-start="260.862"
+        data-duration="13.599"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-18-group-3-voice"
+        src="assets/voice/18.wav"
+        data-start="260.862"
+        data-duration="13.099"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-19-end"
+        class="scene"
+        data-composition-id="19-end"
+        data-composition-src="compositions/frames/19-end.html"
+        data-start="273.961"
+        data-duration="20"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-19-end-voice"
+        src="assets/voice/19.wav"
+        data-start="273.961"
+        data-duration="16.768"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <!-- captions -->
+      <div
+        id="el-captions"
+        class="scene"
+        data-composition-id="captions"
+        data-composition-src="compositions/captions.html"
+        data-start="0"
+        data-duration="293.961"
+        data-track-index="2"
+      ></div>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-your-words", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 17.67);
+        tl.fromTo("#el-02-built", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 17.67);
+        tl.to("#el-02-built", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 33.435);
+        tl.fromTo("#el-03-choice-label", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 33.435);
+        tl.to("#el-03-choice-label", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 51.312);
+        tl.fromTo("#el-04-row-offplan-scene", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 51.312);
+        tl.to("#el-04-row-offplan-scene", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 71.685);
+        tl.fromTo("#el-05-quiz-k1", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 71.685);
+        tl.to("#el-05-quiz-k1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 79.258);
+        tl.fromTo("#el-06-recap", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 79.258);
+        tl.to("#el-06-recap", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 86.81);
+        tl.fromTo("#el-07-step-1", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 86.81);
+        tl.to("#el-07-step-1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 104.94);
+        tl.fromTo("#el-08-d108", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 104.94);
+        tl.to("#el-08-d108", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 119.873);
+        tl.fromTo("#el-09-stop-step-1", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 119.873);
+        tl.to("#el-09-stop-step-1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 151.883);
+        tl.fromTo("#el-10-offplan-d1", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 151.883);
+        tl.to("#el-10-offplan-d1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 171.183);
+        tl.fromTo("#el-11-quiz-k2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 171.183);
+        tl.to("#el-11-quiz-k2", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 177.498);
+        tl.fromTo("#el-12-step-2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 177.498);
+        tl.to("#el-12-step-2", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 193.108);
+        tl.fromTo("#el-13-stop-step-2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 193.108);
+        tl.to("#el-13-stop-step-2", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 215.658);
+        tl.fromTo("#el-14-quiz-k3", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 215.658);
+        tl.to("#el-14-quiz-k3", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 221.589);
+        tl.fromTo("#el-15-step-3", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 221.589);
+        tl.to("#el-15-step-3", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 239.339);
+        tl.fromTo("#el-16-stop-step-3", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 239.339);
+        tl.to("#el-16-stop-step-3", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 256.169);
+        tl.fromTo("#el-17-quiz-k4", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 256.169);
+        tl.to("#el-17-quiz-k4", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 260.862);
+        tl.fromTo("#el-18-group-3", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 260.862);
+        tl.to("#el-18-group-3", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 273.961);
+        tl.fromTo("#el-19-end", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 273.961);
+        tl.to({}, { duration: 293.961 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
+    </script>
+  </body>
+</html>

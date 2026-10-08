@@ -1,0 +1,233 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "19-end",
+        "index": 19,
+        "title": "What ran, and the ask"
+      },
+      "id": "amujbcr9r4ked",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 290.43
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "`frame-lint` measures a marked thing from the frame's CSS (px `left`/`top`/`width`/`height`, insets, its parents'), padding counted unless `border-box`; a mark whose size or place the CSS does not say is a note, not a finding",
+      "id": "a1",
+      "judgedAt": "2026-09-27T04:14:08.082Z",
+      "planStep": 1,
+      "t": 72.099,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Two things marked with one name in a frame fail `frame-lint`",
+      "id": "a2",
+      "judgedAt": "2026-09-27T04:14:08.084Z",
+      "planStep": 1,
+      "t": 72.099,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"Landed\" is read from the frame as it plays: the thing and everything holding it shown, at full opacity (≥ 0.95); until then there is neither the button nor the chip",
+      "id": "a3",
+      "judgedAt": "2026-09-27T04:14:32.688Z",
+      "planStep": 2,
+      "t": 107.96,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The button hides for as long as a question's box is up, an answered quick check counting down included, and comes back when it closes",
+      "id": "a5",
+      "judgedAt": "2026-09-27T04:14:37.580Z",
+      "planStep": 2,
+      "t": 107.96,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The button stays in the picture's layer, and the tab order reaches it by a hop: Tab from Play goes to it, Tab from it to what follows Play, Shift+Tab back (`tabHop`)",
+      "id": "a4",
+      "judgedAt": "2026-09-27T04:18:17.728Z",
+      "planStep": 2,
+      "t": 126.136,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Every way in opens the page over the frame, the chip's and the plan text's too, grown from what was clicked (the chip, the thing; a list's opens without growing); the Terms and the band's long words keep the side panel",
+      "id": "a6",
+      "judgedAt": "2026-09-27T04:20:58.301Z",
+      "planStep": 3,
+      "t": 167.821,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The ink ring is on the thing's button while its page is open, under the page (which covers the frame, D-195): it shows as the page grows and shrinks, and focus is on it once closed",
+      "id": "a8",
+      "judgedAt": "2026-09-27T04:20:58.643Z",
+      "planStep": 3,
+      "t": 167.821,
+      "verdict": "accept"
+    },
+    {
+      "chose": "O is logged by the way the scene offers: `from: \"frame\"` where its thing is marked, `\"chip\"` where the chip shows; a comment's link to its page in the record counts as `\"list\"`",
+      "id": "a7",
+      "judgedAt": "2026-09-27T04:21:32.605Z",
+      "planStep": 3,
+      "t": 183.928,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Each own-words field grows with its words to a cap and then scrolls inside the same box: 3 lines for the two note fields under an answer (the note on an answer, \"Expected something else?\"), 4 for the others (your own answer, a call's own words, the comment line, the record's editor); a note field is as wide as its placeholder, never its words",
+      "id": "a9",
+      "judgedAt": "2026-09-27T04:22:33.561Z",
+      "planStep": null,
+      "t": 241.25,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Enter still saves (or keeps a note) and Shift+Enter starts a new line; what is saved keeps its line breaks, runs of spaces folded to one and three or more breaks to two (`keepLines`), and the record's quick-check note no longer folds them away",
+      "id": "a10",
+      "judgedAt": "2026-09-27T04:22:34.339Z",
+      "planStep": null,
+      "t": 241.25,
+      "verdict": "accept"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 2,
+    "watchedPct": 100,
+    "wrongChecks": 2
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-27T04:23:31.048Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T04:21:07.155Z",
+      "correct": false,
+      "id": "k2",
+      "t": 174.712,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T04:22:06.097Z",
+      "correct": false,
+      "id": "k3",
+      "t": 211.874,
+      "walked": true
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-27T04:22:48.126Z",
+      "correct": true,
+      "id": "k4",
+      "t": 264.696
+    }
+  ],
+  "src": "2026-09-27-details-in-the-frame--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 290.45,
+    "firstPlayAt": "2026-09-27T04:12:10.356Z",
+    "maxTimeReached": 290.43,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

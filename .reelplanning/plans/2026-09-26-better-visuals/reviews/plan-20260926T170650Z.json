@@ -1,0 +1,155 @@
+{
+  "annotations": [
+    {
+      "about": "Answered in their own words: Which scenes must show the real thing?",
+      "comment": "what is 'the real thing' mean? need mroe first",
+      "frame": {
+        "compositionId": "07-question-1-which-scenes-must-show-the",
+        "index": 7,
+        "title": "Question 1: which scenes must show the real thing?"
+      },
+      "id": "amuin0zzhcfky",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 1
+      },
+      "t": 90.21
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-26T17:02:29.164Z",
+      "id": "q1",
+      "label": "what is 'the real thing' mean? need mroe first",
+      "option": "own",
+      "own": true,
+      "planStep": 1,
+      "question": "Which scenes must show the real thing?",
+      "recommended": false,
+      "t": 90.208
+    },
+    {
+      "decidedAt": "2026-09-26T17:03:37.493Z",
+      "id": "q2",
+      "label": "Explain this more",
+      "option": "unclear",
+      "planStep": 3,
+      "question": "Which look should the review page take?",
+      "recommended": false,
+      "t": 175.587
+    },
+    {
+      "decidedAt": "2026-09-26T17:03:48.318Z",
+      "id": "q3",
+      "label": "A darker coral",
+      "option": "b",
+      "planStep": 3,
+      "question": "Which accent colour?",
+      "recommended": true,
+      "t": 206.403
+    }
+  ],
+  "exportedAt": "2026-09-26T17:06:50.912Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:01:35.297Z",
+      "correct": true,
+      "id": "k1",
+      "t": 74.827
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:03:00.149Z",
+      "correct": true,
+      "id": "k2",
+      "t": 139.649
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:03:20.983Z",
+      "correct": true,
+      "id": "k3",
+      "t": 161.166
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:06:44.464Z",
+      "correct": true,
+      "id": "k4",
+      "t": 244.059
+    }
+  ],
+  "src": "2026-09-26-better-visuals/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 252.61,
+    "firstPlayAt": "2026-09-26T17:00:03.299Z",
+    "maxTimeReached": 252.6,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "video": "2026-09-26-better-visuals"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

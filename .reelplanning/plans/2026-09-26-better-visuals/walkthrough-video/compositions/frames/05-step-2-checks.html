@@ -1,0 +1,101 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w05-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w05-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w05-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w05-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w05-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w05-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w05-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w05-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w05-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w05-ul.ink { background:var(--rp-ink); height:3px; }
+  .w05-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w05-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w05-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w05-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w05-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w05-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w05-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w05-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w05-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w05-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w05-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w05-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w05-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w05-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w05-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); overflow:hidden; }
+  .w05-tb { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:4px; transform-origin:50% 50%; }
+  .w05-ab { position:absolute; background:rgba(var(--rp-ink-rgb),0.12); }
+  .w05-ab span { position:absolute; left:14px; top:10px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .w05-line { position:absolute; height:0; border-top:3px dashed var(--rp-coral); }
+  .w05-n9 { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); }
+  .w05-cap { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="05-step-2-checks" data-band="bottom" data-duration="15.531" data-width="1920" data-height="1080">
+
+  <div class="clip w05-bg" id="w05-bg" data-start="0" data-duration="15.531" data-track-index="0"></div>
+
+  <div class="clip w05-scene" id="w05-scene" data-start="0" data-duration="15.531" data-track-index="1">
+    <div class="w05-lab" id="w05-h" style="left:90px; top:60px">step 2 · motion-language.md, the frame check</div>
+    <div class="w05-view" id="w05-view"><div class="w05-cam" id="w05-cam">
+    <div class="w05-cap" style="left:90px; top:126px">a frame, a table zooming in</div>
+    <div class="w05-fr" id="w05-fr" style="left:90px; top:170px; width:806.4px; height:453.6px">
+    <div class="w05-tb" id="w05-tb" style="left:100.8px; top:126px; width:604.8px; height:210px"></div>
+    <div class="w05-ab" style="left:0; top:396.9px; width:806.4px; height:56.7px"><span>answer bar</span></div>
+    </div>
+    <div class="w05-line" id="w05-ln" style="left:80px; top:548px; width:826.4px"></div>
+    <div class="w05-n9" id="w05-n9" style="left:912.4px; top:535px">900</div>
+    <div data-artifact="reelplanning frame-lint, a real run"><div class="w05-slab" style="left:960px; top:170px; width:890px; height:370px"></div><div class="w05-sbar" style="left:960px; top:170px; width:890px; height:50px"></div><div class="w05-sbt" style="left:988px; top:183px">reelplanning frame-lint</div><div class="w05-row" id="w05-cmd" style="left:996px; top:238px; line-height:46px"><span class="g">$</span><span id="w05-ct"></span><i class="w05-caret" id="w05-ck"></i></div><div class="w05-row" id="w05-o0" style="left:996px; top:284px; line-height:46px; ">✗ step-3-zoom.html</div><div class="w05-row" id="w05-o1" style="left:996px; top:330px; line-height:46px; ">  camera #s-table moves outside a view</div><div class="w05-row" id="w05-o2" style="left:996px; top:376px; line-height:46px; ">  clipped at 900 px — wrap it in one</div><div class="w05-row" id="w05-o3" style="left:996px; top:422px; line-height:46px; ">  so nothing reaches the lowest eighth</div><div class="w05-row" id="w05-o4" style="left:996px; top:468px; line-height:46px; ">1 frame(s) with findings</div></div>
+    <div class="w05-pin" id="w05-pb" style="left:110px; top:643.6px">answer bar</div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05-step-2-checks";
+
+  var ct = document.getElementById("w05-ct"), text = "reelplanning frame-lint step-3-zoom.html", d = { t: 0 };
+  function typ() { ct.textContent = text.slice(0, Math.round(d.t * text.length)); }
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w05-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#w05-h", { opacity: 0 });
+  gsap.set("#w05-ln", { opacity: 0 });
+  gsap.set("#w05-n9", { opacity: 0 });
+  gsap.set("#w05-pb", { opacity: 0, y: 6 });
+  gsap.set("#w05-o0", { opacity: 0 });
+  gsap.set("#w05-o1", { opacity: 0 });
+  gsap.set("#w05-o2", { opacity: 0 });
+  gsap.set("#w05-o3", { opacity: 0 });
+  gsap.set("#w05-o4", { opacity: 0 });
+  tl.to("#w05-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.2);
+  tl.to("#w05-ln", { opacity: 1, duration: 0.4, ease: "power2.out" }, 4.04);
+  tl.to("#w05-n9", { opacity: 1, duration: 0.4, ease: "power2.out" }, 4.04);
+  tl.to("#w05-tb", { scaleX: 1.12, scaleY: 1.9, duration: 1.4, ease: "power2.inOut" }, 6.5);
+  tl.to(d, { t: 1, duration: 1, ease: "none", onUpdate: typ }, 9.63);
+  tl.set("#w05-ck", { opacity: 0 }, 10.73);
+  tl.to("#w05-o0", { opacity: 1, duration: 0.1, ease: "none" }, 10.83);
+  tl.to("#w05-o1", { opacity: 1, duration: 0.1, ease: "none" }, 10.91);
+  tl.to("#w05-o2", { opacity: 1, duration: 0.1, ease: "none" }, 10.99);
+  tl.to("#w05-o3", { opacity: 1, duration: 0.1, ease: "none" }, 11.07);
+  tl.to("#w05-o4", { opacity: 1, duration: 0.1, ease: "none" }, 11.15);
+  tl.to("#w05-pb", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 12.91);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

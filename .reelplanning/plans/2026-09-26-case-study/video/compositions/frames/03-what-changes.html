@@ -1,0 +1,144 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .c03-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .c03-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .c03-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .c03-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .c03-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .c03-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .c03-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .c03-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .c03-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .c03-ul.ink { background:var(--rp-ink); height:3px; }
+  .c03-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .c03-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .c03-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .c03-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .c03-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .c03-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .c03-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .c03-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .c03-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .c03-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .c03-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .c03-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .c03-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .c03-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .c03-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .c03-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .c03-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .c03-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/46px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .c03-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .c03-chip code, .c03-name code, .c03-small code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .c03-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .c03-line.hot { background:var(--rp-coral); }
+  .c03-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .c03-kick { position:absolute; left:120px; top:70px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .c03-kick b { color:var(--rp-coral-deep); font-weight:500; }
+.c03-tag { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="03-what-changes" data-band="bottom" data-duration="15.2" data-width="1920" data-height="1080">
+
+  <div class="clip c03-bg" id="c03-bg" data-start="0" data-duration="15.2" data-track-index="0"></div>
+
+  <div class="clip c03-scene" id="c03-scene" data-start="0" data-duration="15.2" data-track-index="1">
+    <div class="c03-box" id="c03-b0" style="left:100px; top:200px; width:440px; height:470px"></div>
+    <div class="c03-tag" id="c03-t0" style="left:132px; top:236px">step 1</div>
+    <div class="c03-name" id="c03-n0" style="left:132px; top:282px">the kit</div>
+    <div class="c03-box" id="c03-b1" style="left:620px; top:200px; width:700px; height:470px"></div>
+    <div class="c03-tag" id="c03-t1" style="left:652px; top:236px">steps 2 · 3</div>
+    <div class="c03-name" id="c03-n1" style="left:652px; top:282px">three arms</div>
+    <div class="c03-box" id="c03-b2" style="left:1400px; top:200px; width:420px; height:470px"></div>
+    <div class="c03-tag" id="c03-t2" style="left:1432px; top:236px">step 4</div>
+    <div class="c03-name" id="c03-n2" style="left:1432px; top:282px">compared</div>
+    <div class="c03-small" id="c03-k0" style="left:132px; top:390px">template, sheets</div>
+    <div class="c03-small" id="c03-k1" style="left:132px; top:440px">score sheet, judge</div>
+    <div class="c03-small" id="c03-k2" style="left:132px; top:490px">one command</div>
+    <div class="c03-line" id="c03-l0" style="left:660px; top:422px; width:620px"></div>
+    <div class="c03-chip" id="c03-c0" style="left:660px; top:400px">text only</div>
+    <div class="c03-chip" id="c03-e0" style="left:1120px; top:400px">site</div>
+    <div class="c03-line" id="c03-l1" style="left:660px; top:502px; width:620px"></div>
+    <div class="c03-chip" id="c03-c1" style="left:660px; top:480px">HTML</div>
+    <div class="c03-chip" id="c03-e1" style="left:1120px; top:480px">site</div>
+    <div class="c03-line hot" id="c03-l2" style="left:660px; top:582px; width:620px"></div>
+    <div class="c03-chip" id="c03-c2" style="left:660px; top:560px">ours</div>
+    <div class="c03-chip" id="c03-e2" style="left:1120px; top:560px">site</div>
+    <div class="c03-pin" id="c03-pin" style="left:820px; top:625px">arm · prompt → a site you'd ship</div>
+    <div class="c03-small" id="c03-m0" style="left:1432px; top:390px">same measures</div>
+    <div class="c03-small" id="c03-m1" style="left:1432px; top:440px">judged blind</div>
+    <div class="c03-small" id="c03-m2" style="left:1432px; top:490px">a page</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "03-what-changes";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#c03-b0", { opacity: 0, y: 12 });
+  tl.to("#c03-b0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.76);
+  gsap.set("#c03-t0", { opacity: 0, y: 12 });
+  tl.to("#c03-t0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.86);
+  gsap.set("#c03-n0", { opacity: 0, y: 12 });
+  tl.to("#c03-n0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.96);
+  gsap.set("#c03-b1", { opacity: 0, y: 12 });
+  tl.to("#c03-b1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.18);
+  gsap.set("#c03-t1", { opacity: 0, y: 12 });
+  tl.to("#c03-t1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.28);
+  gsap.set("#c03-n1", { opacity: 0, y: 12 });
+  tl.to("#c03-n1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.38);
+  gsap.set("#c03-b2", { opacity: 0, y: 12 });
+  tl.to("#c03-b2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.99);
+  gsap.set("#c03-t2", { opacity: 0, y: 12 });
+  tl.to("#c03-t2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.09);
+  gsap.set("#c03-n2", { opacity: 0, y: 12 });
+  tl.to("#c03-n2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.19);
+  gsap.set("#c03-k0", { opacity: 0, y: 12 });
+  tl.to("#c03-k0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.36);
+  gsap.set("#c03-k1", { opacity: 0, y: 12 });
+  tl.to("#c03-k1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.56);
+  gsap.set("#c03-k2", { opacity: 0, y: 12 });
+  tl.to("#c03-k2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.76);
+  gsap.set("#c03-l0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#c03-l0", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 4.68);
+  gsap.set("#c03-c0", { opacity: 0, y: 12 });
+  tl.to("#c03-c0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.58);
+  gsap.set("#c03-e0", { opacity: 0, y: 12 });
+  tl.to("#c03-e0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.18);
+  gsap.set("#c03-l1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#c03-l1", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 4.88);
+  gsap.set("#c03-c1", { opacity: 0, y: 12 });
+  tl.to("#c03-c1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.78);
+  gsap.set("#c03-e1", { opacity: 0, y: 12 });
+  tl.to("#c03-e1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.38);
+  gsap.set("#c03-l2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#c03-l2", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 5.08);
+  gsap.set("#c03-c2", { opacity: 0, y: 12 });
+  tl.to("#c03-c2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.98);
+  gsap.set("#c03-e2", { opacity: 0, y: 12 });
+  tl.to("#c03-e2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.58);
+  gsap.set("#c03-pin", { opacity: 0, y: 12 });
+  tl.to("#c03-pin", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.3);
+  gsap.set("#c03-m0", { opacity: 0, y: 12 });
+  tl.to("#c03-m0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.59);
+  gsap.set("#c03-m1", { opacity: 0, y: 12 });
+  tl.to("#c03-m1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.79);
+  gsap.set("#c03-m2", { opacity: 0, y: 12 });
+  tl.to("#c03-m2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.99);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

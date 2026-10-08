@@ -1,0 +1,145 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f02-lines-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f02-lines-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f02-lines-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f02-lines-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f02-lines-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f02-lines-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f02-lines-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-slot:not([data-filled]) .n, .f02-lines-slot:not([data-filled]) .t { opacity:0; }
+  .f02-lines-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f02-lines-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f02-lines-slot.dec .n { top:13px; } .f02-lines-slot.dec .t { top:12px; } .f02-lines-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f02-lines-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f02-lines-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f02-lines-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f02-lines-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f02-lines-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f02-lines-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f02-lines-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f02-lines-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f02-lines-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f02-lines-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f02-lines-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f02-lines-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f02-lines-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-lines-chip.lit { color:var(--rp-coral-deep); }
+  .f02-lines-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f02-lines-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-lines-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-lines-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-lines-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-lines-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-lines-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f02-lines-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f02-lines-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f02-lines-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f02-lines-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-lines-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f02-lines-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f02-lines-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f02-lines-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-lines-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f02-lines-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+</style>
+
+<div id="root" data-composition-id="02-lines" data-duration="10.868" data-width="1920" data-height="1080">
+
+  <div class="clip f02-lines-bg" data-start="0" data-duration="10.868" data-track-index="0"></div>
+
+  <div class="clip f02-lines-scene" id="f02-lines-scene" data-start="0" data-duration="10.868" data-track-index="1">
+  <div class="f02-lines-kicker" id="f02-lines-kicker">System video · 2 frames rebuilt</div>
+  <div class="f02-lines-cell" id="f02-lines-g1" style="left:140px; top:200px; width:130px; height:80px">01</div>
+  <div class="f02-lines-cell" id="f02-lines-g2" style="left:286px; top:200px; width:130px; height:80px">02</div>
+  <div class="f02-lines-cell" id="f02-lines-g3" style="left:432px; top:200px; width:130px; height:80px">03</div>
+  <div class="f02-lines-cell" id="f02-lines-g4" style="left:578px; top:200px; width:130px; height:80px">04</div>
+  <div class="f02-lines-cell" id="f02-lines-g5" style="left:724px; top:200px; width:130px; height:80px">05</div>
+  <div class="f02-lines-cell" id="f02-lines-g6" style="left:870px; top:200px; width:130px; height:80px">06</div>
+  <div class="f02-lines-cell" id="f02-lines-g7" style="left:1016px; top:200px; width:130px; height:80px">07</div>
+  <div class="f02-lines-cell" id="f02-lines-g8" style="left:140px; top:296px; width:130px; height:80px">08</div>
+  <div class="f02-lines-cell" id="f02-lines-g9" style="left:286px; top:296px; width:130px; height:80px">09</div>
+  <div class="f02-lines-cell" id="f02-lines-g10" style="left:432px; top:296px; width:130px; height:80px">10</div>
+  <div class="f02-lines-cell" id="f02-lines-g11" style="left:578px; top:296px; width:130px; height:80px">11</div>
+  <div class="f02-lines-cell" id="f02-lines-g12" style="left:724px; top:296px; width:130px; height:80px">12</div>
+  <div class="f02-lines-cell" id="f02-lines-g13" style="left:870px; top:296px; width:130px; height:80px">13</div>
+  <div class="f02-lines-cell" id="f02-lines-g14" style="left:1016px; top:296px; width:130px; height:80px">14</div>
+  <div class="f02-lines-cell" id="f02-lines-g15" style="left:140px; top:392px; width:130px; height:80px">15</div>
+  <div class="f02-lines-cell" id="f02-lines-g16" style="left:286px; top:392px; width:130px; height:80px">16</div>
+  <div class="f02-lines-cell" id="f02-lines-g17" style="left:432px; top:392px; width:130px; height:80px">17</div>
+  <div class="f02-lines-cell" id="f02-lines-g18" style="left:578px; top:392px; width:130px; height:80px">18</div>
+  <div class="f02-lines-cell" id="f02-lines-g19" style="left:724px; top:392px; width:130px; height:80px">19</div>
+  <div class="f02-lines-cell" id="f02-lines-g20" style="left:870px; top:392px; width:130px; height:80px">20</div>
+  <div class="f02-lines-cell" id="f02-lines-g21" style="left:1016px; top:392px; width:130px; height:80px">21</div>
+  <div class="f02-lines-cell" id="f02-lines-g22" style="left:140px; top:488px; width:130px; height:80px">22</div>
+  <div class="f02-lines-cell" id="f02-lines-g23" style="left:286px; top:488px; width:130px; height:80px">23</div>
+  <div class="f02-lines-cell" id="f02-lines-g24" style="left:432px; top:488px; width:130px; height:80px">24</div>
+  <div class="f02-lines-cell" id="f02-lines-g25" style="left:578px; top:488px; width:130px; height:80px">25</div>
+  <div class="f02-lines-cell" id="f02-lines-g26" style="left:724px; top:488px; width:130px; height:80px">26</div>
+  <div class="f02-lines-cell" id="f02-lines-g27" style="left:870px; top:488px; width:130px; height:80px">27</div>
+  <div class="f02-lines-cell" id="f02-lines-g28" style="left:1016px; top:488px; width:130px; height:80px">28</div>
+  <div class="f02-lines-cell" id="f02-lines-g29" style="left:140px; top:584px; width:130px; height:80px">29</div>
+  <div class="f02-lines-cell" id="f02-lines-g30" style="left:286px; top:584px; width:130px; height:80px">30</div>
+  <div class="f02-lines-cell" id="f02-lines-g31" style="left:432px; top:584px; width:130px; height:80px">31</div>
+  <div class="f02-lines-cell" id="f02-lines-g32" style="left:578px; top:584px; width:130px; height:80px">32</div>
+  <div class="f02-lines-cell" id="f02-lines-g33" style="left:724px; top:584px; width:130px; height:80px">33</div>
+  <div class="f02-lines-cell" id="f02-lines-g34" style="left:870px; top:584px; width:130px; height:80px">34</div>
+  <div class="f02-lines-cell" id="f02-lines-g35" style="left:1016px; top:584px; width:130px; height:80px">35</div>
+  <div class="f02-lines-chip" id="f02-lines-ed" style="left:140px; top:700px">2 lines edited: 12, 27</div>
+  <div class="f02-lines-chip grey" id="f02-lines-same" style="left:140px; top:752px">33 came out the same</div>
+  <div class="f02-lines-hero" id="f02-lines-big" style="left:1300px; top:290px; font-size:170px">11 min</div>
+  <div class="f02-lines-chip" id="f02-lines-bigs" style="left:1306px; top:500px">35 lines narrated again</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "02-lines";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f02-lines-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f02-lines-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f02-lines-slot-" + n + " .n, #f02-lines-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f02-lines-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f02-lines-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  tl.fromTo(["#f02-lines-g1","#f02-lines-g2","#f02-lines-g3","#f02-lines-g4","#f02-lines-g5","#f02-lines-g6","#f02-lines-g7","#f02-lines-g8","#f02-lines-g9","#f02-lines-g10","#f02-lines-g11","#f02-lines-g12","#f02-lines-g13","#f02-lines-g14","#f02-lines-g15","#f02-lines-g16","#f02-lines-g17","#f02-lines-g18","#f02-lines-g19","#f02-lines-g20","#f02-lines-g21","#f02-lines-g22","#f02-lines-g23","#f02-lines-g24","#f02-lines-g25","#f02-lines-g26","#f02-lines-g27","#f02-lines-g28","#f02-lines-g29","#f02-lines-g30","#f02-lines-g31","#f02-lines-g32","#f02-lines-g33","#f02-lines-g34","#f02-lines-g35"], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.012, ease: "power3.out" }, 0.3);
+  gsap.set("#f02-lines-g12", { borderStyle: "solid", borderColor: "rgba(" + IR + ",0.5)" }); gsap.set("#f02-lines-g27", { borderStyle: "solid", borderColor: "rgba(" + IR + ",0.5)" });
+  pop(tl, $("ed"), 0.9, 8);
+  lit(tl, "#f02-lines-g12", 0.9); lit(tl, "#f02-lines-g27", 0.9);
+  tl.to(["#f02-lines-g1","#f02-lines-g2","#f02-lines-g3","#f02-lines-g4","#f02-lines-g5","#f02-lines-g6","#f02-lines-g7","#f02-lines-g8","#f02-lines-g9","#f02-lines-g10","#f02-lines-g11","#f02-lines-g12","#f02-lines-g13","#f02-lines-g14","#f02-lines-g15","#f02-lines-g16","#f02-lines-g17","#f02-lines-g18","#f02-lines-g19","#f02-lines-g20","#f02-lines-g21","#f02-lines-g22","#f02-lines-g23","#f02-lines-g24","#f02-lines-g25","#f02-lines-g26","#f02-lines-g27","#f02-lines-g28","#f02-lines-g29","#f02-lines-g30","#f02-lines-g31","#f02-lines-g32","#f02-lines-g33","#f02-lines-g34","#f02-lines-g35"], { backgroundColor: TILE, borderStyle: "solid", borderColor: "rgba(" + IR + ",0.12)", duration: 0.35, stagger: 0.02, ease: "power3.out" }, 4.89);
+  pop(tl, $("big"), 6.75, 14);
+  pop(tl, $("bigs"), 7.15, 8);
+  tl.to(["#f02-lines-g1","#f02-lines-g2","#f02-lines-g3","#f02-lines-g4","#f02-lines-g5","#f02-lines-g6","#f02-lines-g7","#f02-lines-g8","#f02-lines-g9","#f02-lines-g10","#f02-lines-g11","#f02-lines-g13","#f02-lines-g14","#f02-lines-g15","#f02-lines-g16","#f02-lines-g17","#f02-lines-g18","#f02-lines-g19","#f02-lines-g20","#f02-lines-g21","#f02-lines-g22","#f02-lines-g23","#f02-lines-g24","#f02-lines-g25","#f02-lines-g26","#f02-lines-g28","#f02-lines-g29","#f02-lines-g30","#f02-lines-g31","#f02-lines-g32","#f02-lines-g33","#f02-lines-g34","#f02-lines-g35"], { opacity: 0.32, duration: 0.5, ease: "power3.out" }, 9.11);
+  pop(tl, $("same"), 9.11, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 10.367);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

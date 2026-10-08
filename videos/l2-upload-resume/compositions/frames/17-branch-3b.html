@@ -1,0 +1,110 @@
+<template>
+<div id="root" data-composition-id="17-branch-3b" data-width="1920" data-height="1080" data-duration="5.62">
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .clip { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+  #f17-branch-3b-bg { background: var(--rp-paper); }
+
+  /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+  .f17-branch-3b-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f17-branch-3b-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f17-branch-3b-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f17-branch-3b-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f17-branch-3b-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-branch-3b-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f17-branch-3b-slot.dim { opacity:0.72; }
+  .f17-branch-3b-slot.empty .n, .f17-branch-3b-slot.empty .t { opacity:0; }
+  .f17-branch-3b-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f17-branch-3b-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f17-branch-3b-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f17-branch-3b-node.navy .l { color:var(--rp-on-ink); }
+  .f17-branch-3b-node.dim { opacity:0.72; }
+  .f17-branch-3b-node.navy.dim { opacity:1; }
+  .f17-branch-3b-node.active { border:3px solid var(--rp-coral); }
+  .f17-branch-3b-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f17-branch-3b-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f17-branch-3b-edges path.dim { opacity:0.35; }
+  .f17-branch-3b-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+
+  /* ---- per-frame state: worked-example chips, one per node, 16px under the node's bottom edge ----
+       nodes are a title only; the chip is 26px mono, ink on a tile with the hairline border, no fill change, no scale */
+  .f17-branch-3b-chip { position:absolute; height:38px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-branch-3b-chip.dim { opacity:0.72; }
+  #f17-branch-3b-chip-manifest { left:1360px; top:396px; }               /* under Manifest store (bottom 380), left-aligned; clear of the sweeper edge at x 1660 */
+  #f17-branch-3b-chip-blob     { left:1360px; top:716px; opacity:0; }    /* under Blob store (bottom 700), left-aligned */
+  #f17-branch-3b-chip-sweeper  { right:60px;  top:716px; opacity:0; }    /* under Sweeper (bottom 700), right-aligned to its right edge x 1860 */
+</style>
+
+<div class="clip" id="f17-branch-3b-bg" data-start="0" data-duration="5.62" data-track-index="0"></div>
+
+<div class="clip" id="f17-branch-3b-stage" data-start="0" data-duration="5.62" data-track-index="1">
+
+  <div class="f17-branch-3b-rail" id="f17-branch-3b-rail">
+    <div class="f17-branch-3b-slot dim" id="f17-branch-3b-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+    <div class="f17-branch-3b-slot dim" id="f17-branch-3b-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+    <div class="f17-branch-3b-slot dim" id="f17-branch-3b-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f17-branch-3b-slot dim" id="f17-branch-3b-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+    <div class="f17-branch-3b-slot" id="f17-branch-3b-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span><span class="d" id="f17-branch-3b-tag-7d">7 days</span></div>
+    <div class="f17-branch-3b-slot empty" id="f17-branch-3b-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <div class="f17-branch-3b-node dim"      id="f17-branch-3b-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f17-branch-3b-node dim"      id="f17-branch-3b-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f17-branch-3b-node navy dim" id="f17-branch-3b-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+  <div class="f17-branch-3b-node dim"      id="f17-branch-3b-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+  <div class="f17-branch-3b-node dim"      id="f17-branch-3b-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+  <div class="f17-branch-3b-node"          id="f17-branch-3b-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+  <!-- six edges exist by now (three brownfield + api→manifest from step 1 + the sweeper pair from step 5); all inherited, dim -->
+  <svg class="f17-branch-3b-edges" id="f17-branch-3b-edges" viewBox="0 0 1920 1080">
+    <path class="dim" id="f17-branch-3b-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+    <path class="dim" id="f17-branch-3b-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path class="dim" id="f17-branch-3b-e-sdk-api"          d="M970 485 L1030 485" />
+    <path class="dim" id="f17-branch-3b-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path class="dim" id="f17-branch-3b-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+    <path class="dim" id="f17-branch-3b-e-sweeper-blob"     d="M1680 645 L1640 645" />
+  </svg>
+
+  <!-- the record inherited from step 5: the abandoned manifest row, as a chip under Manifest store -->
+  <div class="f17-branch-3b-chip dim" id="f17-branch-3b-chip-manifest">2c91 · 26 h</div>
+
+  <!-- the beat's worked examples: the abandoned parts that stay (under Blob), the scan that grows (under Sweeper) -->
+  <div class="f17-branch-3b-chip" id="f17-branch-3b-chip-blob">2c91 · 3 parts</div>
+  <div class="f17-branch-3b-chip" id="f17-branch-3b-chip-sweeper">scan ×7</div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+  (function () {
+    var tl = gsap.timeline({ paused: true });
+    var q = function (id) { return document.getElementById(id); };
+
+    // cues (frame-relative, from .hyperframes/cues/17.md): Seven 0.06 · days 0.65 · week-long 1.12 · upload 1.72 · survives 2.13 · abandoned 2.94 · parts 3.41 · seven 3.87 · times 4.13 · longer 4.42
+
+    // Scene 1 — "Seven days": slot 5 gains the coral `7 days` tag (the one coral).
+    tl.fromTo(q("f17-branch-3b-tag-7d"), { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.073);
+
+    // Scene 2a — "a week-long upload survives": the SDK -> API edge lifts briefly to full ink, then settles back to dim.
+    tl.fromTo(q("f17-branch-3b-e-sdk-api"), { opacity: 0.35 }, { opacity: 1, duration: 0.25, ease: "power3.out" }, 1.14);
+    tl.to(q("f17-branch-3b-e-sdk-api"), { opacity: 0.35, duration: 0.5, ease: "power3.out" }, 2.132);
+
+    // Scene 2b — "abandoned parts stay": the `2c91 · 3 parts` chip settles in under Blob store (the parts are kept, not struck).
+    tl.fromTo(q("f17-branch-3b-chip-blob"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.878);
+
+    // Scene 3 — "seven times longer": the `scan ×7` chip settles in under the Sweeper; hold.
+    tl.fromTo(q("f17-branch-3b-chip-sweeper"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.008);
+
+    // Held read to the end of the frame.
+    tl.to({}, { duration: 0.001 }, 5.047);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["17-branch-3b"] = tl;
+  })();
+</script>
+</div>
+</template>

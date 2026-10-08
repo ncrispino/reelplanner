@@ -1,0 +1,4 @@
+$ reelplanning check-sources .reelplanning/explainers/2026-09-29-experiment/video   (scene 1's line retyped with a word left out)
+✗ scene 1 · quoted line not in src/app.mjs:1-4: "export function claim(rp, id, extra = {}) {"
+✗ check-sources: 1 failure(s), 0 warning(s) · 3 scenes, 5 quoted pieces against 5 pinned sources
+exit 1

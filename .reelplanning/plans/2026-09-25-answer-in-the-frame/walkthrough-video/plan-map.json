@@ -1,0 +1,2183 @@
+{
+  "project": "walkthrough-video",
+  "title": "Answer in the frame: what was built",
+  "planDir": ".reelplanning/plans/2026-09-25-answer-in-the-frame",
+  "totalSeconds": 293.961,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "What you asked for, and what was built",
+      "fromFrame": 1,
+      "toFrame": 6,
+      "start": 0,
+      "end": 86.81,
+      "linearSeconds": 86.81,
+      "watchedSeconds": 86.81,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 1: answer on the frame",
+      "fromFrame": 7,
+      "toFrame": 11,
+      "start": 86.81,
+      "end": 177.498,
+      "linearSeconds": 90.688,
+      "watchedSeconds": 90.688,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 2: More on each card",
+      "fromFrame": 12,
+      "toFrame": 14,
+      "start": 177.498,
+      "end": 221.589,
+      "linearSeconds": 44.091,
+      "watchedSeconds": 44.091,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 3: plain words you can click",
+      "fromFrame": 15,
+      "toFrame": 19,
+      "start": 221.589,
+      "end": 293.961,
+      "linearSeconds": 72.372,
+      "watchedSeconds": 72.372,
+      "decisions": []
+    }
+  ],
+  "levels": {
+    "new": 293.961,
+    "familiar": 286.409,
+    "owner": 286.409
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 5,
+      "planStep": null,
+      "question": "Seventeen choices stop, across three steps, and there is one off-plan change. How many times does the video pause for them?",
+      "questionMore": "Step one has nine choices that stop, step two five, step three three; the off-plan change is in step one.",
+      "options": [
+        {
+          "id": "a",
+          "label": "Once a step, plus once for the off-plan change",
+          "more": "Each step's choices share one pause, and the off-plan change has one of its own.",
+          "why": "Each step's choices share one scene, and the off-plan change pauses on a scene of its own: four pauses here."
+        },
+        {
+          "id": "b",
+          "label": "Once for each choice, and the off-plan change",
+          "more": "Every choice that stops, and the off-plan change, gets a pause of its own.",
+          "why": "A pause for each choice was how it worked before; now a step's choices share one scene."
+        },
+        {
+          "id": "c",
+          "label": "Once a step; the off-plan change joins its step",
+          "more": "The off-plan change shares its step's pause with the step's choices.",
+          "why": "An off-plan change never joins its step's scene; it always pauses on its own."
+        }
+      ],
+      "answer": "a",
+      "explain": "A step's choices that stop share one scene, so three steps pause three times, and the off-plan change pauses once more on its own.",
+      "at": 79.208,
+      "explainedAt": 51.312,
+      "explainedFrame": 4,
+      "walkMeThrough": "Step one has nine choices that stop, step two five, step three three: seventeen. Each step's choices share one scene, so that is three pauses. The off-plan change is in step one, but it always has a scene of its own: a fourth pause. The two choices without a label wait in one list and are not among the seventeen."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 11,
+      "planStep": 1,
+      "question": "On a phone, a quick check whose frame has a card for each option. Where are its Continue and your words?",
+      "questionMore": "The phone is 390 pixels wide; the frame shows three option cards.",
+      "options": [
+        {
+          "id": "a",
+          "label": "In the answer bar, below the frame",
+          "more": "The strip below the frame, as before this build.",
+          "why": "On a phone the frame is too small to write on, so the answer bar below it keeps Continue and your words; the cards still take the tap."
+        },
+        {
+          "id": "b",
+          "label": "On the frame, under the cards",
+          "more": "Drawn by the cards, as on a wide window.",
+          "why": "That is a wide window; on a phone the chips would cover a frame whose cards' words are eight pixels tall."
+        },
+        {
+          "id": "c",
+          "label": "In the side panel",
+          "more": "The panel beside the video, where a long read opens.",
+          "why": "The side panel opens only for a long read that does not fit, not for Continue."
+        }
+      ],
+      "answer": "a",
+      "explain": "On a phone the agent kept the answer bar below the frame, since chips and whys you could read would cover a frame under four hundred pixels wide.",
+      "at": 177.448,
+      "explainedAt": 151.883,
+      "explainedFrame": 10,
+      "walkMeThrough": "On a phone the frame is under four hundred pixels wide, and its cards' words are eight pixels tall. Chips and whys big enough to read would cover the frame, so the agent kept them in the answer bar below it: Continue, your words, the verdict. The cards themselves still take your tap and show More. That is the off-plan change you can accept or flag."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 14,
+      "planStep": 2,
+      "question": "A quick check, not answered yet. Card B has no extra words written for it. What does B show?",
+      "options": [
+        {
+          "id": "a",
+          "label": "No More, until you answer",
+          "more": "The card shows only its label for now.",
+          "why": "With no extra words of its own, B has nothing to show that would not give the answer away, so its More waits for your answer."
+        },
+        {
+          "id": "b",
+          "label": "More, with why B is right or wrong",
+          "more": "B's More gives the reason for B, right or wrong.",
+          "why": "That would give the answer away before you pick; a card's why shows only once you answer."
+        },
+        {
+          "id": "c",
+          "label": "More, with its label again",
+          "more": "B's More repeats B's short label.",
+          "why": "A More that repeats the label says nothing new, so the agent left it out."
+        }
+      ],
+      "answer": "a",
+      "explain": "Before an answer, More shows only an option's own extra words; with none, the card has no More until you answer, and then it shows its why.",
+      "at": 221.539,
+      "explainedAt": 193.108,
+      "explainedFrame": 13,
+      "walkMeThrough": "Card B has no extra words of its own. Its why would say whether B is right, so it cannot show before you answer. Repeating the label adds nothing. So B has no More until you answer; then its why appears under it."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 17,
+      "planStep": 3,
+      "question": "The video is playing, and you click the word label in the captions. What happens?",
+      "options": [
+        {
+          "id": "a",
+          "label": "It pauses and shows, by the word, what it means",
+          "more": "The video waits while you read the word's meaning beside it.",
+          "why": "A word clicked in the captions pauses the video and shows its meaning by the word, with where it is explained."
+        },
+        {
+          "id": "b",
+          "label": "The Terms panel opens; the video plays on",
+          "more": "The list of every word opens at the side, and the video keeps going.",
+          "why": "A click on one caption word opens that word, by it, and pauses; the Terms panel is the list of every word."
+        },
+        {
+          "id": "c",
+          "label": "Nothing: only the player's own words open",
+          "more": "The captions' words cannot be clicked; only the player's text can.",
+          "why": "Step three made the captions' glossary words clickable, dotted where they are said."
+        }
+      ],
+      "answer": "a",
+      "explain": "A word clicked in the captions pauses the video and shows, by the word, what it means, where it is explained, and a link to that scene.",
+      "at": 260.812,
+      "explainedAt": 221.589,
+      "explainedFrame": 15,
+      "walkMeThrough": "Label is a glossary word, so the captions show it dotted. Clicking it pauses the video, since you read it over the frame it was said on. Its meaning opens by the word, with where it is explained and a link that plays that scene. A word in the player's own text shows its meaning too, but leaves the video playing."
+    }
+  ],
+  "autonomy": [
+    {
+      "id": "d1",
+      "frameIndex": 10,
+      "planStep": 1,
+      "chose": "On a phone (and a frame under 620 px wide) the words stay in the answer bar under the frame; the cards still take the tap, carry the marks and their \"More\"",
+      "insteadOf": "everything on the frame there too, as the owner asked for every video with cards",
+      "why": "the frame is 390 × 219 px on a phone and its cards' own words are 8 px: chips and whys at a readable size would cover the frame; the bar under it is where a phone's words fit, and band.spec.mjs keeps it whole",
+      "check": "onframeRoom, answer-on-frame.spec.mjs (phone), band.spec.mjs (390 px)",
+      "at": 171.133
+    }
+  ],
+  "autonomyGroups": [
+    {
+      "id": "stop-9",
+      "stop": true,
+      "frameIndex": 9,
+      "planStep": 1,
+      "ids": [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "a19"
+      ],
+      "calls": [
+        {
+          "id": "a1",
+          "planStep": 1,
+          "chose": "The on-frame layer is the frame's box laid over it in the page, not a child of the frame, so what it holds may reach past the frame's edge (over the timeline, never the controls) rather than be cut",
+          "insteadOf": "inside the stage, clipped at its edge",
+          "why": "the owner's rule for the bar was that nothing is ever cut; a why on a low card at 1024 px needs a few pixels more than the frame has",
+          "check": "packages/player/reelplanning-player.js placeLayer, .main>.decision.sheet.onframe"
+        },
+        {
+          "id": "a2",
+          "planStep": 1,
+          "chose": "When the frame has no room under the cards, in this order: the row flows into the columns the whys leave free; the whys go inside their cards, under the cards' own words; the layer reaches over the timeline; last, each card keeps its verdict and \"Read why in full\" opens the side panel",
+          "insteadOf": "always under the cards (on the fewer-better-stops walkthrough at 1024 px that put Continue over \"Finish review\"); or always the side panel",
+          "why": "the why on the card is the point of the change; the side panel is the last resort, as the bar's cap was",
+          "check": "layoutFrame (tries, around), band.spec.mjs past the room"
+        },
+        {
+          "id": "a3",
+          "planStep": 1,
+          "chose": "A quick check's answer on its cards: \"Your answer · right\", \"Your answer · not quite, it is A\", \"The answer\", each with the card's own why; the right card falls back on `explain`; the card tags (\"your answer\", \"the answer\") give way to these",
+          "insteadOf": "the one feedback line (\"Not quite — it is A. …\") kept under the cards",
+          "why": "the owner asked for the feedback on the cards; one line would repeat what the cards now say",
+          "check": "cardWhys, .fwhy, answer-on-frame.spec.mjs"
+        },
+        {
+          "id": "a4",
+          "planStep": 1,
+          "chose": "The chips' row: left-aligned with the cards, what goes on (Confirm, Continue, Accept all) at its right, in the frame's reserved lowest eighth where the frame keeps one, moved up when a tall item (your own words open) needs it; \"Show the frame\" in the frame's top-right corner",
+          "insteadOf": "chips beside the cards; or Show the frame in the row",
+          "why": "the eighth is the one place every frame keeps empty; the corner is where the folded pill already waits",
+          "check": "layoutFrame (row), .decision.onframe .hd"
+        },
+        {
+          "id": "a5",
+          "planStep": 1,
+          "chose": "A choice's card is `data-call=\"a5\"` (the skill now asks for it), else an element inside the frame whose id ends in `-a5`, never the frame's root and never a card as large as the frame",
+          "insteadOf": "`data-call` only",
+          "why": "the fewer-better-stops walkthrough, the first video built under the new rules, names its cards `f07-stop-step-1-a2`; three of its five scenes of choices are answered on the frame this way",
+          "check": "callCardsIn, frameCallCards; SKILL.md \"Build a video\" 3"
+        },
+        {
+          "id": "a6",
+          "planStep": 1,
+          "chose": "Your own words: a dashed, card-like slot beside the cards where the frame has room there (14 % of its width, 180 px), else the first item under them; opened, it holds the box and the Save / Send as a change button, as tall as the words",
+          "insteadOf": "always under the cards",
+          "why": "every frame here fills its width with cards; the slot beside is for frames that leave room, as the owner described it",
+          "check": "layoutFrame (own), .decision.onframe .own"
+        },
+        {
+          "id": "a7",
+          "planStep": 1,
+          "chose": "A choice's Accept, Flag and own words hang under its card's right corner; where the next card is closer than the chips are tall, they sit inside the card's bottom-right corner (a card's words are at its left, its labels at its top right), unless that covers the card's own words: then they straddle the gap to the next card, clear of its words (**changed after the code check:** scene 17's first row's words ran under them)",
+          "insteadOf": "inside the top-right corner (it covered the cards' labels, \"you'll notice it · toss-up\")",
+          "why": "measured on the fewer-better-stops walkthrough's scenes 7 and 9",
+          "check": "layoutFrame (acts), stop.spec.mjs, group.spec.mjs"
+        },
+        {
+          "id": "a8",
+          "planStep": 1,
+          "chose": "A video whose every question has its cards on its frame keeps no room under the video (place \"frame\"), decided once when the frames mount; a video with any question without cards keeps the room it had, and its questions with cards are still answered on the frame",
+          "insteadOf": "never keeping room (a question without cards would then cover the frame's foot); or keeping it always",
+          "why": "the video never changes size once it plays; a mixed video pays for its older frames, a new one pays nothing",
+          "check": "detectBand (_cardsAll), placeBand"
+        },
+        {
+          "id": "a19",
+          "planStep": 1,
+          "chose": "A click on a choice's card (its ring, on a scene of the agent's choices) opens its \"More\", as the card's \"More\" chip does; it judges nothing: Accept, Flag and own words are the chips under it",
+          "insteadOf": "a click on the card accepting it, as a click on an option card answers",
+          "why": "a quick check's or a question's card is its answer, so the click answers; a choice's card is what the agent chose, and one click must not accept a choice the reviewer has only pointed at",
+          "check": "onClick (.hits .cring), openMore, stop.spec.mjs"
+        }
+      ],
+      "at": 151.833
+    },
+    {
+      "id": "stop-13",
+      "stop": true,
+      "frameIndex": 13,
+      "planStep": 2,
+      "ids": [
+        "a9",
+        "a10",
+        "a11",
+        "a12",
+        "a13"
+      ],
+      "calls": [
+        {
+          "id": "a9",
+          "planStep": 2,
+          "chose": "A card's \"More\" shows while the pointer is on the card, and always on a touch screen; \"Full question\" always shows",
+          "insteadOf": "\"More\" always on every card",
+          "why": "on the fewer-better-stops walkthrough an always-on \"More\" sat on each card's labels; the hover itself opens it too",
+          "check": ".hits .cmore (@media (hover:hover)), hoverMore"
+        },
+        {
+          "id": "a10",
+          "planStep": 2,
+          "chose": "Hover opens after 450 ms held on the card and closes 250 ms after the pointer leaves both the card and the popover; the chip toggles it at once",
+          "insteadOf": "opening at once on hover",
+          "why": "a pointer crossing the cards on its way to a chip should not flash popovers",
+          "check": "hoverMore, unhoverMore, answer-on-frame.spec.mjs section 11"
+        },
+        {
+          "id": "a11",
+          "planStep": 2,
+          "chose": "The heading is `data-question`, else the largest words above the cards (30 px or more in the frame); with neither, \"Full question\" is a chip in the row",
+          "insteadOf": "only `data-question`",
+          "why": "older frames have no marker; the headline is the largest words above the cards on every frame here",
+          "check": "frameHeading"
+        },
+        {
+          "id": "a12",
+          "planStep": 2,
+          "chose": "Before a quick check is answered, its \"More\" shows only `option_a_more`; a card without it has no \"More\" until the answer (no fallback before, since `explain` and the whys give the answer away)",
+          "insteadOf": "the option's label again",
+          "why": "an empty \"More\" is noise; after the answer the card's why is there",
+          "check": "moreHtml, answer-on-frame.spec.mjs section 11"
+        },
+        {
+          "id": "a13",
+          "planStep": 2,
+          "chose": "The plan map: `questionMore` on a decision and a quick check; `more` on their options; `why` on a quick check's options (from `- option_a_why:`); none of them on the frames",
+          "insteadOf": "new lists beside the options",
+          "why": "a choice's options already carry `why` (its reason); a quick check's did not, and the player reads options in one place",
+          "check": "scripts/plan-map.mjs, answer-on-frame.spec.mjs 0b"
+        }
+      ],
+      "at": 215.608
+    },
+    {
+      "id": "stop-16",
+      "stop": true,
+      "frameIndex": 16,
+      "planStep": 3,
+      "ids": [
+        "a14",
+        "a16",
+        "a18"
+      ],
+      "calls": [
+        {
+          "id": "a14",
+          "planStep": 3,
+          "chose": "The player's words for a glossary term come from the glossary's on-screen word first (\"grouped scene\"), then a table in the player (the task's \"the rest, in one list\" for a grouped beat); headings say \"The agent's choice A4\", \"Off-plan change D1\", \"The agent's choices · grouped scene · 2 choices\"",
+          "insteadOf": "the table first",
+          "why": "the glossary is the one list of what is said on screen (D-127); the table is for a repo whose glossary has no \"On screen\" column",
+          "check": "plain(), PLAIN, shown()"
+        },
+        {
+          "id": "a16",
+          "planStep": 3,
+          "chose": "A caption word is found under a click from the stage (the runtime's frame takes no pointer), dotted in the captions with a style the player adds to the frame's page, matched by any of the row's forms, a phrase and a plural too; the meaning shows just above the word and the video pauses",
+          "insteadOf": "underlining in the player's own captions",
+          "why": "the captions are the video's; the reviewer clicks what they read",
+          "check": "wireCaptions, termAtPoint, access.spec.mjs section 5"
+        },
+        {
+          "id": "a18",
+          "planStep": 3,
+          "chose": "A word clicked in the captions pauses the video; a word underlined in the player's own text (a question, a why, the record) shows its meaning and leaves the video as it is (**changed after the code check:** it paused for any word)",
+          "insteadOf": "pausing for every word",
+          "why": "a caption word is read on the frame it was said over, which goes on under it; the player's own text is read with the video already paused (a question waits) or beside it (the record), where a pause would stop the video for a word looked up in passing",
+          "check": "showTerm (rect), access.spec.mjs sections 3 and 5"
+        }
+      ],
+      "at": 256.119
+    },
+    {
+      "id": "group-18",
+      "frameIndex": 18,
+      "planStep": 3,
+      "ids": [
+        "a15",
+        "a17"
+      ],
+      "calls": [
+        {
+          "id": "a15",
+          "planStep": 3,
+          "chose": "A scene whose choices belong to no plan step leaves the step out of its heading (\"The agent's choices · 4 choices\")",
+          "insteadOf": "\"step ?\"",
+          "why": "the coordinator's note on the fewer-better-stops walkthrough's scene 17",
+          "check": "stepPart"
+        },
+        {
+          "id": "a17",
+          "planStep": 3,
+          "chose": "`termsLookedUp` counts a word whose card was opened (in the player's text, in the captions); opening the Terms panel counts toward `termsOpened` only, as it opens no one word",
+          "insteadOf": "counting every word the panel lists",
+          "why": "three look-ups of one word are a signal (D-124); a panel opened is not a word looked up",
+          "check": "lookedUp, confusion"
+        }
+      ],
+      "at": 273.911
+    }
+  ],
+  "watchedSeconds": 293.961,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Your words",
+      "compositionId": "01-your-words",
+      "type": "hook",
+      "durationSeconds": 17.67,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What you asked for, and what was built",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-9.09s.png",
+      "terms": [
+        "detail"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
+    },
+    {
+      "index": 2,
+      "title": "What was built",
+      "compositionId": "02-built",
+      "type": "pain_point",
+      "durationSeconds": 15.765,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 17.67,
+      "thumb": "snapshots/frame-01-at-25.8s.png",
+      "terms": [
+        "answer bar",
+        "chapter",
+        "step",
+        "answer band"
+      ],
+      "defines": [
+        "answer bar",
+        "chapter"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 2
+      }
+    },
+    {
+      "index": 3,
+      "title": "Twenty choices, and their labels",
+      "compositionId": "03-choice-label",
+      "type": "pain_point",
+      "durationSeconds": 17.877,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 33.435,
+      "thumb": "snapshots/frame-02-at-42.62s.png",
+      "terms": [
+        "choice",
+        "label",
+        "call",
+        "tag",
+        "step"
+      ],
+      "defines": [
+        "choice",
+        "label"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 3
+      }
+    },
+    {
+      "index": 4,
+      "title": "Which choices stop, and where they pause",
+      "compositionId": "04-row-offplan-scene",
+      "type": "pain_point",
+      "durationSeconds": 20.373,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 51.312,
+      "thumb": "snapshots/frame-03-at-61.75s.png",
+      "terms": [
+        "accepted in a row",
+        "off-plan change",
+        "scene",
+        "call",
+        "tag",
+        "deviation",
+        "beat",
+        "step",
+        "choice",
+        "label"
+      ],
+      "defines": [
+        "accepted in a row",
+        "off-plan change",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 4
+      }
+    },
+    {
+      "index": 5,
+      "title": "Quick check: how many pauses",
+      "compositionId": "05-quiz-k1",
+      "type": "social_proof",
+      "durationSeconds": 7.573,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Seventeen choices stop, across three steps, and there is one off-plan change. How many times does the video pause for them?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "a",
+      "explain": "A step's choices that stop share one scene, so three steps pause three times, and the off-plan change pauses once more on its own.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Once a step, plus once for the off-plan change",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Once for each choice, and the off-plan change",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Once a step; the off-plan change joins its step",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 71.685,
+      "thumb": "snapshots/frame-04-at-75.72s.png",
+      "terms": [
+        "call",
+        "deviation",
+        "beat",
+        "step",
+        "quick check",
+        "choice",
+        "off-plan change",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 5
+      }
+    },
+    {
+      "index": 6,
+      "title": "Kept from earlier plans",
+      "compositionId": "06-recap",
+      "type": "pain_point",
+      "durationSeconds": 7.552,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 79.258,
+      "thumb": "snapshots/frame-05-at-83.28s.png",
+      "terms": [
+        "side panel"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 6
+      }
+    },
+    {
+      "index": 7,
+      "title": "Step 1: the answer on the frame, before and now",
+      "compositionId": "07-step-1",
+      "type": "feature_showcase",
+      "durationSeconds": 18.13,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 1: answer on the frame",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 86.81,
+      "thumb": "snapshots/frame-06-at-96.13s.png",
+      "terms": [
+        "chapter",
+        "step",
+        "answer band",
+        "answer bar"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      }
+    },
+    {
+      "index": 8,
+      "title": "An older decision, replaced",
+      "compositionId": "08-d108",
+      "type": "feature_showcase",
+      "durationSeconds": 14.933,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 104.94,
+      "thumb": "snapshots/frame-07-at-112.66s.png",
+      "terms": [
+        "review",
+        "decision log"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 8
+      }
+    },
+    {
+      "index": 9,
+      "title": "Step 1's nine choices that stop, in one pause",
+      "compositionId": "09-stop-step-1",
+      "type": "cta",
+      "durationSeconds": 32.01,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 119.873,
+      "thumb": "snapshots/frame-08-at-136.13s.png",
+      "autonomyStop": [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "a19"
+      ],
+      "terms": [
+        "call",
+        "beat",
+        "step",
+        "quick check",
+        "side panel",
+        "choice",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 9
+      }
+    },
+    {
+      "index": 10,
+      "title": "The off-plan change: a phone keeps the bar",
+      "compositionId": "10-offplan-d1",
+      "type": "cta",
+      "durationSeconds": 19.3,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "d1",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 151.883,
+      "thumb": "snapshots/frame-09-at-161.78s.png",
+      "terms": [
+        "deviation",
+        "beat",
+        "answer band",
+        "answer bar",
+        "off-plan change",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 10
+      }
+    },
+    {
+      "index": 11,
+      "title": "Quick check: a quick check on a phone",
+      "compositionId": "11-quiz-k2",
+      "type": "social_proof",
+      "durationSeconds": 6.315,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "On a phone, a quick check whose frame has a card for each option. Where are its Continue and your words?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "a",
+      "explain": "On a phone the agent kept the answer bar below the frame, since chips and whys you could read would cover a frame under four hundred pixels wide.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "In the answer bar, below the frame",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "On the frame, under the cards",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "In the side panel",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 171.183,
+      "thumb": "snapshots/frame-10-at-174.59s.png",
+      "terms": [
+        "quick check",
+        "answer band",
+        "answer bar"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 11
+      }
+    },
+    {
+      "index": 12,
+      "title": "Step 2: More on each card, and the question in full",
+      "compositionId": "12-step-2",
+      "type": "feature_showcase",
+      "durationSeconds": 15.61,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: More on each card",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 177.498,
+      "thumb": "snapshots/frame-11-at-185.55s.png",
+      "terms": [
+        "chapter",
+        "step",
+        "quick check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 12
+      }
+    },
+    {
+      "index": 13,
+      "title": "Step 2's five choices that stop, in one pause",
+      "compositionId": "13-stop-step-2",
+      "type": "cta",
+      "durationSeconds": 22.55,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 193.108,
+      "thumb": "snapshots/frame-12-at-204.63s.png",
+      "autonomyStop": [
+        "a9",
+        "a10",
+        "a11",
+        "a12",
+        "a13"
+      ],
+      "terms": [
+        "call",
+        "beat",
+        "step",
+        "quick check",
+        "choice",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 13
+      }
+    },
+    {
+      "index": 14,
+      "title": "Quick check: More before an answer",
+      "compositionId": "14-quiz-k3",
+      "type": "social_proof",
+      "durationSeconds": 5.931,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A quick check, not answered yet. Card B has no extra words written for it. What does B show?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "a",
+      "explain": "Before an answer, More shows only an option's own extra words; with none, the card has no More until you answer, and then it shows its why.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "No More, until you answer",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "More, with why B is right or wrong",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "More, with its label again",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 215.658,
+      "thumb": "snapshots/frame-13-at-218.87s.png",
+      "terms": [
+        "quick check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 14
+      }
+    },
+    {
+      "index": 15,
+      "title": "Step 3: plain words, and a word you can click",
+      "compositionId": "15-step-3",
+      "type": "feature_showcase",
+      "durationSeconds": 17.75,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: plain words you can click",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 221.589,
+      "thumb": "snapshots/frame-14-at-230.71s.png",
+      "terms": [
+        "review",
+        "call",
+        "tag",
+        "beat",
+        "chapter",
+        "step",
+        "choice",
+        "label",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 15
+      }
+    },
+    {
+      "index": 16,
+      "title": "Step 3's three choices that stop, in one pause",
+      "compositionId": "16-stop-step-3",
+      "type": "cta",
+      "durationSeconds": 16.83,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 239.339,
+      "thumb": "snapshots/frame-15-at-248s.png",
+      "autonomyStop": [
+        "a14",
+        "a16",
+        "a18"
+      ],
+      "terms": [
+        "call",
+        "beat",
+        "step",
+        "choice",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 16
+      }
+    },
+    {
+      "index": 17,
+      "title": "Quick check: a word in the captions",
+      "compositionId": "17-quiz-k4",
+      "type": "social_proof",
+      "durationSeconds": 4.693,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The video is playing, and you click the word label in the captions. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "a",
+      "explain": "A word clicked in the captions pauses the video and shows, by the word, what it means, where it is explained, and a link to that scene.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It pauses and shows, by the word, what it means",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The Terms panel opens; the video plays on",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nothing: only the player's own words open",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 256.169,
+      "thumb": "snapshots/frame-16-at-258.77s.png",
+      "terms": [
+        "tag",
+        "beat",
+        "quick check",
+        "label",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 17
+      }
+    },
+    {
+      "index": 18,
+      "title": "The two choices that don't stop",
+      "compositionId": "18-group-3",
+      "type": "benefit_highlight",
+      "durationSeconds": 13.099,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "autonomyGroup": [
+        "a15",
+        "a17"
+      ],
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 260.862,
+      "thumb": "snapshots/frame-17-at-267.66s.png",
+      "terms": [
+        "call",
+        "tag",
+        "beat",
+        "step",
+        "choice",
+        "label",
+        "scene"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 18
+      }
+    },
+    {
+      "index": 19,
+      "title": "What ran; flag a choice, or accept",
+      "compositionId": "19-end",
+      "type": "cta",
+      "durationSeconds": 20,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 273.961,
+      "thumb": "snapshots/frame-18-at-283.96s.png",
+      "terms": [
+        "review",
+        "call",
+        "step",
+        "choice"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 19
+      }
+    }
+  ],
+  "decisions": [],
+  "details": [],
+  "plan": {
+    "title": "Answer in the frame",
+    "problem": "A direct ask from the owner, built without a plan video (the owner asked for the change itself):\n\n> \"on the cards i do want to be able to click somewhere on them or hover over them to see more details.\n> bc sometimes the answers arent explained fully. same with the question, option to see more thorough\n> question.\"\n\n> \"the main thing about wondering whats going on why we have a bar below the main video screen with the\n> place to see more about the question, and to give the text answers, cant we do more gracefully like\n> embed in the video itself just like how we click directly in it?\"\n\nToday the reviewer clicks a card on the frame to answer, but everything else happens in a bar under the\nframe (or in the frame's lowest eighth): the question again, your own words, a note, \"Explain this more\",\nthe quick check's feedback, Continue, \"Back to where this was explained\", \"Walk me through it\". The eye\ngoes from the card to the bar and back. And a card holds a short label: there is no way to read more on\nan option, or the question in full, without leaving the frame.\n\nAlso built here, because this plan owns the player's words: D-127's plain words on screen (choice for\ncall, label for tag, chapter for part, scene for beat, and the rest), and what the videos-you-can-follow\nplan needs from the player (a word in the captions can be clicked, where it is explained, what was\nlooked up and watched is sent).",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Answer on the frame, by its cards",
+        "text": "*Independent.*\n\nWhere the frame has a card for each option (`data-option`), or a card for each of the agent's choices\n(`data-call`), and is large enough to write on (not a phone), the question is answered on the frame:\n\n- The frame asks the question; the player does not ask it again.\n- Your own words are a dashed, card-like slot the player draws beside the cards (or under them where the\n  frame has no room beside); opened, it holds the box.\n- A quick check's answer is on the cards: yours and the right one marked, each card's why under it\n  (`- option_a_why:`, the right card's falling back on `explain`), \"Expected something else?\" on the card\n  you picked. Where the frame has no room under the cards, the why goes inside the card under its words,\n  or the chips flow into the columns the whys leave free; past all that, each card keeps its verdict and\n  \"Read why in full\" opens the side panel. Nothing is cut.\n- Continue, \"Back to where this was explained\", \"Walk me through it\", \"Explain this more\", a note and\n  Confirm are small chips under the cards, in the frame's reserved lowest eighth where it keeps one.\n  \"Show the frame\" sits in the frame's top-right corner, and folds the question to a pill there.\n- A stop scene: each choice's Accept, Flag and own words hang from its own card; a verdict rings the card.\n  The rest in one list: each Flag on its card, Accept all among the chips.\n- A frame without cards keeps the answer bar (a phone keeps it under the frame); it still never cuts text.\n  The video never changes size."
+      },
+      {
+        "n": 2,
+        "title": "More on each card, and the question in full",
+        "text": "*Independent.*\n\nHovering a card a moment, or its \"More\", opens a popover by the card with the fuller words; the click on\nthe card itself still answers. The heading's \"Full question\" (and a hover on the heading) shows the\nquestion as the plan map has it. The words come from new storyboard tags, `- question_more:`,\n`- option_a_more:` … and, for a quick check after it is answered, `- option_a_why:` …; before an answer\na quick check's \"More\" never gives the answer away. `plan-map` carries them; older videos fall back on a\nchoice's `why` and a quick check's `explain`. Frames mark the heading `data-question`."
+      },
+      {
+        "n": 3,
+        "title": "Plain words on screen, and a word you can click",
+        "text": "*Needs the videos-you-can-follow plan's glossary (`display`, `definedIn`).*\n\nThe player's own text says choice, label, chapter, scene, off-plan change, the rest in one list (D-127),\nfrom the glossary's on-screen word where it has one, else a table in the player. A glossary word in the\ncaptions is underlined; a click pauses the video and shows what it means by the word, with where it is\nexplained and a link that plays that scene (`?t=`). The review sends the words looked up and what this\nbrowser has watched; with every video on the card watched, the video starts without the newcomer scenes."
+      }
+    ]
+  },
+  "slug": "2026-09-25-answer-in-the-frame--walkthrough",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 1,
+      "partTitle": "Why a video",
+      "title": "reelplanning: the whole system",
+      "gives": "why a video, with the review player",
+      "seconds": 56.9,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-22-m3-revise-loop",
+      "title": "The loop, what's left: an agent runs it in the background, narration redoes only what changed, and the system video can change the system",
+      "gives": "decisions D-083, D-085, D-064, D-066, D-082, D-084: how many quick checks does a video ask?",
+      "seconds": 428.4,
+      "terms": [],
+      "found": true
+    },
+    {
+      "video": "2026-09-23-deep-dives",
+      "title": "Deep dives: the video opens into HTML where a video falls short",
+      "gives": "decisions D-021, D-024: where does a detail open?",
+      "seconds": 219.3,
+      "terms": [],
+      "found": true
+    }
+  ],
+  "terms": [
+    "chapter",
+    "answer bar",
+    "choice",
+    "label",
+    "accepted in a row",
+    "off-plan change",
+    "scene"
+  ],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns plan.md into a video via HyperFrames",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's command from config.json, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "scripts/reel.mjs; manages .reelplanning/; reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into plan.md; changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Implements plan.md and logs each call the plan did not cover into walkthrough.md, with tags; its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo from spec.md; rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once as reviews/<kind>-<time>.json with a .md of what to act on; never overwritten. The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Review loop, step 2: nobody waiting",
+        "start": 185.951,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Review loop, steps 5–6: rebuild, and you're told",
+        "start": 225.235,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover: one row in walkthrough.md. Labelled visible, hard-to-undo or close when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the ledger and reviews/, never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Next: chapter 2",
+        "start": 75.483,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Chapter 2 of 5",
+        "start": 79.483,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started by reel retro when reel status says one is due, and judged against a fixed benchmark",
+      "forms": [
+        "retro"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each choice",
+        "start": 26.069,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Build loop, step 6: this video catches up",
+        "start": 343.071,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold; started from a template in templates/details/",
+      "forms": [
+        "detail"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words from plan.md, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "check-details, run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    }
+  ],
+  "ids": {
+    "A1": {
+      "kind": "choice",
+      "gloss": "The on-frame layer is the frame's box laid over it in the page, not a child of…"
+    },
+    "A10": {
+      "kind": "choice",
+      "gloss": "Hover opens after 450 ms held on the card and closes 250 ms after the pointer…"
+    },
+    "A11": {
+      "kind": "choice",
+      "gloss": "The heading is `data-question`, else the largest words above the cards (30 px…"
+    },
+    "A12": {
+      "kind": "choice",
+      "gloss": "Before a quick check is answered, its \"More\" shows only `option_a_more`; a…"
+    },
+    "A13": {
+      "kind": "choice",
+      "gloss": "The plan map: `questionMore` on a decision and a quick check; `more` on their…"
+    },
+    "A14": {
+      "kind": "choice",
+      "gloss": "The player's words for a glossary term come from the glossary's on-screen word…"
+    },
+    "A15": {
+      "kind": "choice",
+      "gloss": "A scene whose choices belong to no plan step leaves the step out of its…"
+    },
+    "A16": {
+      "kind": "choice",
+      "gloss": "A caption word is found under a click from the stage (the runtime's frame…"
+    },
+    "A17": {
+      "kind": "choice",
+      "gloss": "`termsLookedUp` counts a word whose card was opened (in the player's text, in…"
+    },
+    "A18": {
+      "kind": "choice",
+      "gloss": "A word clicked in the captions pauses the video; a word underlined in the…"
+    },
+    "A19": {
+      "kind": "choice",
+      "gloss": "A click on a choice's card (its ring, on a scene of the agent's choices) opens…"
+    },
+    "A2": {
+      "kind": "choice",
+      "gloss": "When the frame has no room under the cards, in this order: the row flows into…"
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": "A quick check's answer on its cards: \"Your answer · right\", \"Your answer · not…"
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": "The chips' row: left-aligned with the cards, what goes on (Confirm, Continue…"
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": "A choice's card is `data-call=\"a5\"` (the skill now asks for it), else an…"
+    },
+    "A6": {
+      "kind": "choice",
+      "gloss": "Your own words: a dashed, card-like slot beside the cards where the frame has…"
+    },
+    "A7": {
+      "kind": "choice",
+      "gloss": "A choice's Accept, Flag and own words hang under its card's right corner…"
+    },
+    "A8": {
+      "kind": "choice",
+      "gloss": "A video whose every question has its cards on its frame keeps no room under…"
+    },
+    "A9": {
+      "kind": "choice",
+      "gloss": "A card's \"More\" shows while the pointer is on the card, and always on a touch…"
+    },
+    "D-108": {
+      "kind": "decision",
+      "gloss": "Where do the answers the frame can't take go? i like the pricnicple of A, not…"
+    },
+    "D-110": {
+      "kind": "decision",
+      "gloss": "A step reaches its fifth call during the build. What does the implementer do?…"
+    },
+    "D-127": {
+      "kind": "decision",
+      "gloss": "Which words does the viewer see: plain new ones, or today's, explained? Plain…"
+    },
+    "D1": {
+      "kind": "off-plan change",
+      "gloss": "On a phone (and a frame under 620 px wide) the words stay in the answer bar…"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "Seventeen choices stop, across three steps, and there is one off-plan change…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "On a phone, a quick check whose frame has a card for each option. Where are…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "A quick check, not answered yet. Card B has no extra words written for it…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "The video is playing, and you click the word label in the captions. What…"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": true,
+    "at": "2026-09-26T04:46:47.391Z",
+    "added": 0,
+    "edited": 1,
+    "restyled": 0,
+    "retimed": 0,
+    "same": 18,
+    "removed": [],
+    "changedFrames": [
+      19
+    ],
+    "restyledFrames": [],
+    "changedSeconds": 20,
+    "totalSeconds": 293.961
+  }
+}

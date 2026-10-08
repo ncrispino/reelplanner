@@ -1,0 +1,116 @@
+{
+  "name": "review-page",
+  "kind": "brownfield",
+  "stage": {
+    "kind": "layout",
+    "why": "This plan changes what a reviewer sees and can reach, so the artefact IS the page. A node graph would be a lie twice over — nothing here exchanges data at runtime, and the thing being decided is a layout. The stage is therefore a wireframe of the review page at a readable size, and every step visibly rearranges it. The reviewer watches the page they are watching it in get fixed. (style guide §18)",
+    "artifact": {
+      "id": "page",
+      "label": "The review page",
+      "regions": [
+        {
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "id": "stage",
+          "label": "The video"
+        },
+        {
+          "id": "transport",
+          "label": "Transport"
+        },
+        {
+          "id": "tools",
+          "label": "Mark · Wait · Note · Approve"
+        },
+        {
+          "id": "sheet",
+          "label": "The question"
+        },
+        {
+          "id": "rail",
+          "label": "Steps · Level · Decisions · Comments"
+        }
+      ]
+    },
+    "properties": [
+      {
+        "id": "phone",
+        "of": "page",
+        "shows": "the same wireframe at 430px, where the video must stay readable"
+      }
+    ],
+    "rail": {
+      "x": 80,
+      "y": 150,
+      "w": 500,
+      "slotH": 90,
+      "gap": 20,
+      "slots": 6
+    },
+    "template": "templates/reelplanning/theme/stages/layout.html"
+  },
+  "components": [
+    {
+      "id": "stage",
+      "name": "The video",
+      "role": "artifact-region",
+      "files": [
+        "reelplanning-player.js"
+      ]
+    },
+    {
+      "id": "sheet",
+      "name": "The question",
+      "role": "artifact-region",
+      "files": [
+        "reelplanning-player.js"
+      ]
+    },
+    {
+      "id": "rail",
+      "name": "The rail",
+      "role": "artifact-region",
+      "files": [
+        "reelplanning-player.js"
+      ]
+    },
+    {
+      "id": "composer",
+      "name": "Comments",
+      "role": "artifact-region",
+      "files": [
+        "reelplanning-player.js"
+      ]
+    },
+    {
+      "id": "status",
+      "name": "Status",
+      "role": "artifact-region",
+      "files": [
+        "reelplanning-player.js"
+      ]
+    },
+    {
+      "id": "page",
+      "name": "The page",
+      "role": "artifact",
+      "files": [
+        "index.html"
+      ]
+    }
+  ],
+  "pipelines": [],
+  "measured": {
+    "at": "2026-09-21",
+    "from": "packages/player/design/shots-now/",
+    "findings": [
+      "the decision sheet crops the frame it asks about: Blob store and Sweeper cut in half",
+      "1040px of video beside a fixed 320px rail of four equal-weight lists, and ~400px of dead space below",
+      "on a 430px phone the video is ~15% of the page and its caption is unreadable",
+      "the open question appears twice: in the sheet and in the rail",
+      "the status line carries six facts in one sentence"
+    ]
+  }
+}

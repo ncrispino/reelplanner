@@ -1,0 +1,149 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k32-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k32-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k32-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k32-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k32-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k32-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k32-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k32-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k32-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k32-ul.ink { background:var(--rp-ink); height:3px; }
+  .k32-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k32-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k32-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k32-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k32-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k32-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k32-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k32-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k32-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k32-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k32-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k32-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k32-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k32-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k32-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k32-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k32-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k32-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k32-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k32-chip code, .k32-name code, .k32-small code, .k32-lab code, .k32-kick code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k32-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k32-line.hot { background:var(--rp-coral); }
+  .k32-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k32-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k32-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k32-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k32-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .k32-shot img { display:block; }
+  .k32-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k32-rg.hot { border-color:var(--rp-coral); }
+  .k32-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k32-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k32-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k32-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k32-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k32-ctl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k32-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k32-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k32-card { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k32-card i { position:absolute; left:14px; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k32-bar { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.55); border-radius:4px 4px 0 0; }
+  .k32-bar.hot { background:var(--rp-coral); }
+  .k32-mk { position:absolute; font:700 40px/1 "Inter"; color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="32-step-6-the-system-video" data-band="bottom" data-duration="15.317" data-width="1920" data-height="1080">
+
+  <div class="clip k32-bg" id="k32-bg" data-start="0" data-duration="15.317" data-track-index="0"></div>
+
+  <div class="clip k32-scene" id="k32-scene" data-start="0" data-duration="15.317" data-track-index="1">
+    <div class="k32-view" id="k32-view">
+    <div id="k32-art" data-artifact="the system video's walkthrough chapter (its scenes and their lengths, from index.html)">
+    <div class="k32-bl" id="k32-h" style="left:160px; top:110px">system video · the walkthrough chapter</div>
+    <div class="k32-box" id="k32-b0" style="left:160px; top:170px; width:374px; height:150px"></div><div class="k32-small" id="k32-bt0" style="left:174px; top:190px; font-size:24px; white-space:normal; width:346px; line-height:1.2">What stops the walkthrough</div><div class="k32-bl" id="k32-bs0" style="left:174px; top:280px">19 s</div>
+    <div class="k32-box" id="k32-b1" style="left:544px; top:170px; width:326px; height:150px"></div><div class="k32-small" id="k32-bt1" style="left:558px; top:190px; font-size:24px; white-space:normal; width:298px; line-height:1.2">One stop per step</div><div class="k32-bl" id="k32-bs1" style="left:558px; top:280px">17 s</div>
+    <div class="k32-box" id="k32-b2" style="left:880px; top:170px; width:322px; height:150px"></div><div class="k32-small" id="k32-bt2" style="left:894px; top:190px; font-size:24px; white-space:normal; width:294px; line-height:1.2">Fixing what you flagged</div><div class="k32-bl" id="k32-bs2" style="left:894px; top:280px">17 s</div>
+    <div class="k32-box" id="k32-b3" style="left:1212px; top:170px; width:292px; height:150px"></div><div class="k32-small" id="k32-bt3" style="left:1226px; top:190px; font-size:24px; white-space:normal; width:264px; line-height:1.2">This video catches up</div><div class="k32-bl" id="k32-bs3" style="left:1226px; top:280px">15 s</div>
+    <div class="k32-box" id="k32-b4" style="left:1514px; top:170px; width:218px; height:150px"></div><div class="k32-small" id="k32-bt4" style="left:1528px; top:190px; font-size:24px; white-space:normal; width:190px; line-height:1.2">Quick check</div><div class="k32-bl" id="k32-bs4" style="left:1528px; top:280px">11 s</div>
+    </div>
+    <div class="k32-rg hot" id="k32-mg" style="left:152px; top:162px; width:726px; height:166px"></div><div class="k32-chip hot" id="k32-one" style="left:160px; top:350px">one scene · ≈ 20 s</div>
+    <div class="k32-line" id="k32-cap" style="left:160px; top:520px; width:1600px; opacity:0.5"></div><div class="k32-bl" id="k32-capl" style="left:1500px; top:460px">8:00 · a warning</div>
+    <div class="k32-bar" id="k32-now" style="left:160px; top:560px; width:1597px; height:20px; border-radius:4px"></div><div class="k32-bl" id="k32-nowl" style="left:160px; top:600px">7:59 today</div>
+    <div class="k32-bar hot" id="k32-new" style="left:160px; top:650px; width:1533px; height:20px; border-radius:4px"></div><div class="k32-bl" id="k32-newl" style="left:160px; top:690px">≈ 7:40</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "32-step-6-the-system-video";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k32-h", { opacity: 0 });
+  tl.to("#k32-h", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+  gsap.set("#k32-b0", { opacity: 0 });
+  tl.to("#k32-b0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.2);
+  gsap.set("#k32-bt0", { opacity: 0 });
+  tl.to("#k32-bt0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+  gsap.set("#k32-bs0", { opacity: 0 });
+  tl.to("#k32-bs0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+  gsap.set("#k32-b1", { opacity: 0 });
+  tl.to("#k32-b1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.32);
+  gsap.set("#k32-bt1", { opacity: 0 });
+  tl.to("#k32-bt1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.42);
+  gsap.set("#k32-bs1", { opacity: 0 });
+  tl.to("#k32-bs1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.42);
+  gsap.set("#k32-b2", { opacity: 0 });
+  tl.to("#k32-b2", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.44);
+  gsap.set("#k32-bt2", { opacity: 0 });
+  tl.to("#k32-bt2", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.54);
+  gsap.set("#k32-bs2", { opacity: 0 });
+  tl.to("#k32-bs2", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.54);
+  gsap.set("#k32-b3", { opacity: 0 });
+  tl.to("#k32-b3", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.56);
+  gsap.set("#k32-bt3", { opacity: 0 });
+  tl.to("#k32-bt3", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.66);
+  gsap.set("#k32-bs3", { opacity: 0 });
+  tl.to("#k32-bs3", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.66);
+  gsap.set("#k32-b4", { opacity: 0 });
+  tl.to("#k32-b4", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.68);
+  gsap.set("#k32-bt4", { opacity: 0 });
+  tl.to("#k32-bt4", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.78);
+  gsap.set("#k32-bs4", { opacity: 0 });
+  tl.to("#k32-bs4", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.78);
+  gsap.set("#k32-now", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k32-now", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 0.8);
+  gsap.set("#k32-nowl", { opacity: 0 });
+  tl.to("#k32-nowl", { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.2);
+  gsap.set("#k32-mg", { opacity: 0, scale: 1.04 });
+  tl.to("#k32-mg", { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 8.82);
+  gsap.set("#k32-one", { opacity: 0, y: 12 });
+  tl.to("#k32-one", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.12);
+  gsap.set("#k32-new", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k32-new", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 9.58);
+  gsap.set("#k32-newl", { opacity: 0 });
+  tl.to("#k32-newl", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.08);
+  gsap.set("#k32-cap", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k32-cap", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 11.76);
+  gsap.set("#k32-capl", { opacity: 0 });
+  tl.to("#k32-capl", { opacity: 1, duration: 0.3, ease: "power2.out" }, 12.06);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

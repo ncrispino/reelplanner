@@ -1,0 +1,77 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d16-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d16-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d16-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d16-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d16-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d16-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d16-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d16-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d16-ring.hot { border-color:var(--rp-coral); }
+  .d16-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d16-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d16-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d16-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d16-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d16-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d16-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d16-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d16-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d16-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d16-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d16-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d16-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d16-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d16-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d16-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d16-case { position:absolute; }
+  .d16-u { background-image:linear-gradient(var(--rp-coral),var(--rp-coral)); background-repeat:no-repeat; background-position:0 100%; background-size:0% 4px; padding-bottom:3px; }
+  .d16-x { background-image:linear-gradient(var(--rp-ink),var(--rp-ink)); background-repeat:no-repeat; background-position:0 55%; background-size:0% 3px; }
+  .d16-job { position:absolute; left:90px; width:760px; height:118px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d16-job .k { position:absolute; left:0; top:22px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .d16-job .t { position:absolute; left:0; top:66px; font:400 28px/1.1 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="16-step-5-ci" data-band="bottom" data-duration="16.64" data-width="1920" data-height="1080">
+
+  <div class="clip d16-bg" id="d16-bg" data-start="0" data-duration="16.64" data-track-index="0"></div>
+
+  <div class="clip d16-scene" id="d16-scene" data-start="0" data-duration="16.64" data-track-index="1">
+    <div class="d16-lab" id="d16-h" style="left:90px; top:60px">.github/workflows/ci.yml · 4 jobs</div>
+    <div data-artifact=".github/workflows/ci.yml, its four jobs"><div class="d16-job" id="d16-j0" style="top:150px"><span class="k">fast:</span><span class="t">every push · npm test</span></div><div class="d16-job" id="d16-j1" style="top:280px"><span class="k">pr-check:</span><span class="t">every pull request · with reel audit</span></div><div class="d16-job" id="d16-j2" style="top:410px"><span class="k">full:</span><span class="t">once a maintainer adds ready-to-merge</span></div><div class="d16-job" id="d16-j3" style="top:540px"><span class="k">video-branch:</span><span class="t">deleted when its pull request closes</span></div></div>
+    <div class="d16-slab" id="d16-yml" data-detail="ci" data-artifact=".github/workflows/ci.yml, the full job&#x27;s first lines" style="left:900px; top:150px; width:930px; height:500px"><div class="d16-sbar"></div><div class="d16-sbt">.github/workflows/ci.yml · lines 69–78</div><div class="d16-row" id="d16-yml-r0" style="top:62px; font-size:26px; line-height:42px">full:</div><div class="d16-row" id="d16-yml-r1" style="top:104px; font-size:26px; line-height:42px">  name: full suite</div><div class="d16-row" id="d16-yml-r2" style="top:146px; font-size:26px; line-height:42px">  runs-on: ubuntu-latest</div><div class="d16-row" id="d16-yml-r3" style="top:188px; font-size:26px; line-height:42px">  steps:</div><div class="d16-row" id="d16-yml-r4" style="top:230px; font-size:26px; line-height:42px">    - name: A maintainer's ready-to-merge</div><div class="d16-row" id="d16-yml-r5" style="top:272px; font-size:26px; line-height:42px">      if: ${{ !contains(github.event.pull_request</div><div class="d16-row" id="d16-yml-r6" style="top:314px; font-size:26px; line-height:42px">              .labels.&#42;.name, 'ready-to-merge') }}</div><div class="d16-row" id="d16-yml-r7" style="top:356px; font-size:26px; line-height:42px">      run: |</div><div class="d16-row" id="d16-yml-r8" style="top:398px; font-size:26px; line-height:42px">        echo "The full suite runs once a maintainer …"</div><div class="d16-row" id="d16-yml-r9" style="top:440px; font-size:26px; line-height:42px">        <span class="d16-u" id="d16-exit">exit 1</span></div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "16-step-5-ci";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d16-h", {"opacity": 0});
+  gsap.set("#d16-yml", {"opacity": 0});
+  gsap.set("#d16-j0", {"opacity": 0, "x": -20});
+  gsap.set("#d16-j1", {"opacity": 0, "x": -20});
+  gsap.set("#d16-j2", {"opacity": 0, "x": -20});
+  gsap.set("#d16-j3", {"opacity": 0, "x": -20});
+  tl.to("#d16-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d16-yml", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.4);
+  tl.to("#d16-j0", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 4.16);
+  tl.to("#d16-j1", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 6.19);
+  tl.to("#d16-j2", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 9.22);
+  tl.to("#d16-exit", { backgroundSize: "100% 4px", duration: 0.5, ease: "power2.out" }, 10.66);
+  tl.to("#d16-j3", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 12.28);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

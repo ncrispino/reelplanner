@@ -1,0 +1,119 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .f23-step-6-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f23-step-6-stage { position: absolute; inset: 0; }
+
+  /* ---- the rail: the plan (positions are law) ---- */
+  .f23-step-6-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f23-step-6-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f23-step-6-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f23-step-6-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f23-step-6-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-6-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f23-step-6-slot .d.ink { color:var(--rp-ink); }
+  .f23-step-6-slot.dim { opacity:0.72; }
+  /* the current step's fill: painted on cue over the dashed outline, landing identical to [data-filled] */
+  .f23-step-6-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+  .f23-step-6-slot .n, .f23-step-6-slot .t { z-index:1; }
+  /* anything that arrives on a spoken word starts hidden; the timeline writes the opacity back */
+  .f23-step-6-pre { opacity:0; }
+
+  /* ---- the pages the plan makes (this beat draws the pages only) ---- */
+  .f23-step-6-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f23-step-6-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  .f23-step-6-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f23-step-6-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* inherited from step 4 (Book-like) — the pages are set in a book face */
+  .f23-step-6-page.book h { font:600 15px/1.15 "EB Garamond"; letter-spacing:0; }
+  .f23-step-6-page.book .bar { height:4px; margin-bottom:9px; }
+  /* inherited from step 5 — search is a field on the page that gets it */
+  .f23-step-6-find { height:18px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.35); margin-bottom:10px; position:relative; }
+  .f23-step-6-find::after { content:""; position:absolute; left:6px; top:5px; width:7px; height:7px; border-radius:50%; border:1.5px solid rgba(var(--rp-ink-rgb),0.5); }
+
+  /* ---- step 6: hosting is a bar above the page row, not a box ---- */
+  .f23-step-6-host { position:absolute; left:1258px; width:552px; height:34px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 14px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f23-step-6-host span { display:inline-block; }
+  .f23-step-6-host .ar { margin:0 12px; }
+  .f23-step-6-host.lit { border:3px solid var(--rp-coral); padding:0 12px; color:var(--rp-ink); }  /* the frame's ONE coral */
+
+  /* ---- the cost of an album: one file in the files column ---- */
+  .f23-step-6-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="23-step-6" data-duration="8.159" data-width="1920" data-height="1080">
+  <div class="clip f23-step-6-bg" data-start="0" data-duration="8.159" data-track-index="0"></div>
+
+  <div class="clip f23-step-6-stage" id="f23-step-6-stage" data-start="0" data-duration="8.159" data-track-index="1">
+
+    <div class="f23-step-6-rail" id="f23-step-6-rail">
+      <div class="f23-step-6-slot dim" id="f23-step-6-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d ink" data-plan-question="1">10 albums</span></div>
+      <div class="f23-step-6-slot dim" id="f23-step-6-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f23-step-6-slot dim" id="f23-step-6-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d ink" data-plan-question="2">Timeline</span></div>
+      <div class="f23-step-6-slot dim" id="f23-step-6-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Design system</span><span class="d ink" data-plan-question="3">Book-like</span></div>
+      <div class="f23-step-6-slot dim" id="f23-step-6-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f23-step-6-slot" id="f23-step-6-slot-6" data-plan-step="6" style="top:550px"><div class="f23-step-6-fill" id="f23-step-6-fill-6"></div><span class="n f23-step-6-pre" id="f23-step-6-n6">6</span><span class="t f23-step-6-pre" id="f23-step-6-t6">Hosting</span></div>
+    </div>
+
+    <!-- PAGES: what the plan makes, carrying what steps 4 and 5 already changed -->
+    <div class="f23-step-6-page book" style="left:1258px"><h>Bringing It All Back Home</h><div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div><span class="cap">album</span></div>
+    <div class="f23-step-6-page book" style="left:1448px"><h>Going Electric, 1965</h><div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div><span class="cap">era</span></div>
+    <div class="f23-step-6-page book" style="left:1638px"><h>Like a Rolling Stone</h><div class="f23-step-6-find"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><span class="cap">song</span></div>
+
+    <!-- HOSTING: where the pages are served from -->
+    <div class="f23-step-6-host lit f23-step-6-pre" id="f23-step-6-host-main" style="top:300px"><span class="f23-step-6-pre" id="f23-step-6-host-main-src">main</span><span class="ar f23-step-6-pre" id="f23-step-6-host-main-ar">→</span><span class="f23-step-6-pre" id="f23-step-6-host-main-dst">deploy</span></div>
+    <div class="f23-step-6-host f23-step-6-pre" id="f23-step-6-host-pr" style="top:256px"><span class="f23-step-6-pre" id="f23-step-6-host-pr-src">pr</span><span class="ar f23-step-6-pre" id="f23-step-6-host-pr-ar">→</span><span class="f23-step-6-pre" id="f23-step-6-host-pr-dst">preview</span></div>
+
+    <!-- the cost of adding an album: one file -->
+    <div class="f23-step-6-file f23-step-6-pre" id="f23-step-6-file-albums" style="top:346px">albums/</div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["23-step-6"] = tl;
+
+  var out = "power3.out";
+
+  // 0.06 "Step" — rail slot 6 fills; 0.27 "six," — its index and title arrive
+  tl.fromTo(q("f23-step-6-fill-6"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: out }, 0.123);
+  tl.fromTo([q("f23-step-6-n6"), q("f23-step-6-t6")], { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.55, ease: out }, 0.269);
+
+  // 1.67 "main" — the host bar lands above the page row, carrying the frame's one coral
+  tl.fromTo(q("f23-step-6-host-main"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 1.767);
+  tl.fromTo(q("f23-step-6-host-main-src"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: out }, 1.767);
+
+  // 2.69 "builds" — the arrow crosses the bar
+  tl.fromTo(q("f23-step-6-host-main-ar"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.6, ease: out }, 2.721);
+  // 3.07 "deploys" — what the push ends in
+  tl.fromTo(q("f23-step-6-host-main-dst"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.6, ease: out }, 2.998);
+
+  // 4.02 "request" — the second, dimmer bar lands above it
+  tl.fromTo(q("f23-step-6-host-pr"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 4.154);
+  tl.fromTo(q("f23-step-6-host-pr-src"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: out }, 4.154);
+
+  // 4.46 "gets" — the arrow; 5.09 "preview" — the link it gets
+  tl.fromTo(q("f23-step-6-host-pr-ar"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.6, ease: out }, 4.633);
+  tl.fromTo(q("f23-step-6-host-pr-dst"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.6, ease: out }, 5.224);
+
+  // 6.19 "album" — one file in the files column is the whole cost
+  tl.fromTo(q("f23-step-6-file-albums"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 6.528);
+
+  // held read to 7.286
+  tl.to({}, { duration: 0.01 }, 7.64);
+})();
+</script>
+</template>

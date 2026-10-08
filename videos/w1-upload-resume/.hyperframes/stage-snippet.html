@@ -1,0 +1,59 @@
+<!-- SHARED STAGE v2 for l2-upload-resume frames 03–19. Paste into your <template>, replace every FID with
+     "f" + your frame_id (e.g. f04-step-1). Positions/sizes are LAW so the stage is pixel-identical across
+     frames; per frame you change only: which slots are filled, opacity/dim, which edges exist, which ONE
+     element is coral, and the small supporting elements your packet names. No sub-labels on nodes. -->
+<style>
+  .FID-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .FID-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(20,20,19,0.18); }
+  .FID-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE; box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+  .FID-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:#141413; }
+  .FID-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; white-space:nowrap; }
+  .FID-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:#A5614A; }  /* the choice tag: branch frames (the one coral, #A5614A) and the resolved frame (ink) */
+  .FID-slot.dim { opacity:0.72; }
+  .FID-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12); box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); display:flex; align-items:center; justify-content:center; }
+  .FID-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:#141413; text-align:center; padding:0 16px; }
+  .FID-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); } .FID-node.navy .l { color:#FAF9F5; }
+  .FID-node.dim { opacity:0.72; }
+  .FID-node.navy.dim { opacity:1; }  /* the navy tile is the map's landmark: it never dims, it never flips shade between frames */
+  .FID-node.active { border:3px solid #CC785C; }
+  .FID-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .FID-edges path { fill:none; stroke:#141413; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .FID-edges path.dim { opacity:0.35; }
+  .FID-edges path.active { stroke:#CC785C; stroke-width:4; }
+  /* decision beats: two option cards under the diagram; the recommended one carries the coral border */
+  .FID-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:#FAF9F5; border:1px solid rgba(20,20,19,0.2); display:flex; align-items:center; justify-content:center; }
+  .FID-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:#141413; text-align:center; }
+  .FID-opt.rec { border:3px solid #CC785C; }
+  .FID-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(20,20,19,0.55); }
+</style>
+
+<div class="FID-rail" id="FID-rail">
+  <div class="FID-slot" id="FID-slot-1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+  <div class="FID-slot" id="FID-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+  <div class="FID-slot" id="FID-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+  <div class="FID-slot" id="FID-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+  <div class="FID-slot" id="FID-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+  <div class="FID-slot" id="FID-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+</div>
+<!-- empty (not yet reached) slots: dashed outline only, .n/.t at opacity 0 -->
+
+<div class="FID-node"      id="FID-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+<div class="FID-node"      id="FID-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+<div class="FID-node navy" id="FID-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+<div class="FID-node"      id="FID-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+<div class="FID-node"      id="FID-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+<div class="FID-node"      id="FID-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+<!-- nodes are a title only. The worked example per beat is ONE 26 px mono chip 16 px under the node (left-aligned; right-aligned under the two rightmost nodes); at most two chips per node, 12 px apart. -->
+
+<svg class="FID-edges" id="FID-edges" viewBox="0 0 1920 1080">
+  <path id="FID-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+  <path id="FID-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+  <path id="FID-e-sdk-api"          d="M970 485 L1030 485" />
+  <path id="FID-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+  <path id="FID-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+  <path id="FID-e-sweeper-blob"     d="M1680 645 L1640 645" />
+</svg>
+
+<!-- decision beats only: -->
+<div class="FID-opt" id="FID-opt-a" data-plan-option="a" style="left:700px"><span class="k">A</span><span class="l">Postgres</span></div>
+<div class="FID-opt" id="FID-opt-b" data-plan-option="b" style="left:1320px"><span class="k">B</span><span class="l">S3 object</span></div>

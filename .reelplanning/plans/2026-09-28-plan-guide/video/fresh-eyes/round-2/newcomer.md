@@ -1,0 +1,31 @@
+# Fresh eyes: newcomer · round 2 · stamp 1d2cac6f5b75
+
+- N1 · scene 1 · "your words, after the last plan video": I couldn't tell whose words these quotes are or which plan's video "the last" one is — no name, date or link is given, and I have no prior review history to recognize them from. I guessed they're pulled from an earlier reviewer's (maybe "my") comments on some previous plan video in this project. It matters because the scene's whole argument — that video alone isn't enough — rests on these being real, attributable complaints, and as a newcomer I can't verify they exist or that they apply here.
+  - Answer: kept: the video is made for the owner who wrote them (BRIEF.md's audience), so "your words" is exact; plan.md quotes them in full under The problem
+
+- N2 · scene 5 · "videos that make sense": I couldn't tell what this plan/video is or why this one "works beside" it — it isn't in the "videos this one leans on" list, and the only other place it's named is a parenthetical inside the definition of "fresh eyes" ("the videos-that-make-sense plan"). I guessed it's an earlier, already-approved plan that also has some kind of guide, and that its own reviewers became the "two fresh agents." It matters because the scene claims the two plans are independent of each other, but without knowing what the other plan is, I can't judge whether that's actually true.
+  - Answer: fixed: the storyboard now carries a recap: line for 2026-09-28-videos-that-make-sense (with the before: line added in round 1), so it is on the leans-on list with what it did
+
+- N3 · scene 6 · "reel check" (the dim node in the diagram): it's shown only as an unlabeled, grayed-out box between plan.md and the guide, with no narration naming it and no definition available yet. I guessed it's some kind of validation step, given where it sits in the diagram. It matters because it isn't actually explained until scene 12, six scenes later — until then it just sits on screen as an open question.
+  - Answer: kept: the grey box is part of the real page, dimmed because step 1 is not about it; reel check is said and shown at scene 12, where it matters
+
+- N4 · scene 6 · "Yours 0": I couldn't tell what this small chip counts — "Yours" as opposed to whose, and 0 of what. I guessed it's a count of comments or edits I've personally made on the guide so far. It matters because if that number is meant to change as I interact with the page, I wouldn't know what to expect from it.
+  - Answer: kept: the real page's own counter; scene 20 says what you do on the guide (answers, notes, edits), which is what it counts
+
+- N5 · scene 7 · "data-anchor": this is shown as a bare attribute name inside the on-screen plan text ("the same data-anchor marks"), with no definition anywhere. I guessed it's some code-level tag used to link a note or comment to the exact piece of text or detail it's about. It matters because plan.md is supposed to be read and edited by reviewers, and unexplained code syntax undercuts that if I'm not a programmer.
+  - Answer: kept: it is plan.md's own text in the drawer, shown to make the point that the full step is a click away; the narration never asks the viewer to read it
+
+- N6 · scene 7 · "the shared review": I couldn't tell what makes a review "shared" — the glossary's "A review" is just one pass by one reviewer, filed once, with no mention of sharing. I guessed it means the guide and the video use one and the same review record, so a comment made on either lands in the same place. It matters because it's named as something step 3 needs ("step 3 for the shared review"), so not knowing what it is could hide a real requirement.
+  - Answer: kept: plan.md's own words in the drawer; scene 15 says what shared means (your notes on the guide go out with the same Send)
+
+- N7 · scene 7 · "question 3": the on-screen plan text says "What 'edit it' means is question 3," but by scene 7 the video hasn't asked its first question yet (Question 1 is scene 8, and the actual Question 3 doesn't appear until scene 21). I guessed it's a forward reference to this same video's later question. It matters because, watching in order, the reference points to nothing I've seen yet and reads like broken or leftover text.
+  - Answer: kept: plan.md's own text as written; its question 3 is scene 21, asked where its step is told
+
+- N8 · scene 12 · "reel check" and "reelplanning guide --check": I couldn't tell whether these are the same tool under two names or two separate commands — one seems to check plan.md's four blocks, the other the guide's detail pages, but nothing says whether "reel" and "reelplanning" are the same program. I guessed "reel" is a short alias for "reelplanning." It matters because running the wrong one wouldn't fix a failing check.
+  - Answer: kept: two commands, each shown running on its own line: reel check (the reel CLI, a glossary row) checks plan.md; reelplanning guide --check checks the built page
+
+- N9 · scene 12 · "An edit that overturns a decision": no rule or example distinguishes this from an ordinary suggested edit — one case row says such an edit is "not applied," and instead "the next version asks it as a question," but nothing on screen says what makes an edit count as "overturning" versus just changing wording. I guessed it means an edit that contradicts something already logged in decisions.md. It matters because it decides whether my edit takes effect immediately or gets held back for another round.
+  - Answer: kept: plan.md's own table row; scene 21's option B says an edit that overturns a decision comes back as a question, and the row's example names the decision
+
+- N10 · scene 14 · "each plan's row on the review page": this is shown with Plan / Built / Guide buttons on a row, implying a page that lists many plans at once, but the glossary only defines "The review player" as where you watch one video — nothing describes a page of rows, one per plan. I guessed this is some kind of project-wide list or dashboard, separate from the player. It matters because step 3's claim — that every plan's row gets a new Guide button — can't be checked against anything I've already been shown.
+  - Answer: kept: the review page's rows are the system video's part 3, on this video's Before you watch; scene 14 shows the row's switches

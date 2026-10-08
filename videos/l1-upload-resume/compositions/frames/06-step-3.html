@@ -1,0 +1,167 @@
+<template>
+  <style>
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+    .clip { position: absolute; inset: 0; }
+    .f06-step-3-ground { background: #FAF9F5; }
+
+    /* ===== SHARED STAGE (frames 03–12) — geometry law: rail x80 w540, six slots y=170+112*i h96; nodes fixed ===== */
+    .f06-step-3-rail { position:absolute; left:80px; top:170px; width:540px; height:660px; }
+    .f06-step-3-slot { position:absolute; left:0; width:540px; height:96px; border-radius:12px;
+                border:1px dashed rgba(20,20,19,0.18); }
+    .f06-step-3-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE;
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f06-step-3-slot .n { position:absolute; left:22px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; }
+    .f06-step-3-slot .t { position:absolute; left:78px; top:29px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; }
+    .f06-step-3-slot.dim { opacity:0.72; }
+    .f06-step-3-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12);
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f06-step-3-node .l { position:absolute; left:20px; top:20px; font:500 28px/1.2 "Inter"; color:#141413; }
+    .f06-step-3-node .s { position:absolute; left:20px; top:58px; font:500 18px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(20,20,19,0.62); }
+    .f06-step-3-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); }
+    .f06-step-3-node.navy .l { color:#FAF9F5; } .f06-step-3-node.navy .s { color:rgba(250,249,245,0.7); }
+    .f06-step-3-node.dim { opacity:0.72; }
+    .f06-step-3-node.active { border:2px solid #CC785C; }
+    .f06-step-3-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f06-step-3-edges path { fill:none; stroke:#141413; stroke-width:2; stroke-linecap:round; }
+    .f06-step-3-edges path.dim { opacity:0.35; }
+    .f06-step-3-edges path.active { stroke:#CC785C; stroke-width:3; }
+    /* ===== end shared stage ===== */
+
+    /* empty slots: outline only until reached */
+    .f06-step-3-slot.empty .n, .f06-step-3-slot.empty .t { opacity: 0; }
+    /* slot 3's filled skin, revealed on cue (sits under the .n/.t spans) */
+    .f06-step-3-slot-fill { position:absolute; inset:-1px; border-radius:12px; background:#EFE9DE;
+                border:1px solid rgba(20,20,19,0.12);
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); opacity:0; }
+    /* the coral signal on a node: a 2px ring on the node's own footprint */
+    .f06-step-3-ring { position:absolute; inset:-1px; border-radius:12px; border:2px solid #CC785C; opacity:0; pointer-events:none; }
+
+    /* manifest row (mono, cream on navy) inside the manifest node */
+    .f06-step-3-row { position:absolute; left:20px; top:95px; font:400 20px/1 "JetBrains Mono"; letter-spacing:-0.01em; color:#FAF9F5; white-space:nowrap; }
+
+    /* blob part boxes: six 32×32 hairline boxes, gap 12 */
+    .f06-step-3-parts { position:absolute; left:1300px; top:660px; width:260px; height:32px; }
+    .f06-step-3-part { position:absolute; top:0; width:32px; height:32px; border-radius:6px; border:1px solid rgba(20,20,19,0.2); box-sizing:border-box; }
+    .f06-step-3-part.on { background:#141413; border-color:#141413; }
+    .f06-step-3-part-fill { position:absolute; inset:-1px; border-radius:6px; background:#141413; opacity:0; }
+
+    /* the SDK ⇄ API exchange: request above the edge, reply + complete beneath it */
+    .f06-step-3-xline { position:absolute; left:790px; width:360px; text-align:center; font:400 22px/1.3 "JetBrains Mono"; letter-spacing:0.01em; color:#141413; white-space:nowrap; opacity:0; }
+    .f06-step-3-xline b { font-weight:700; }
+    #f06-step-3-get  { top:338px; }
+    #f06-step-3-reply { top:500px; letter-spacing:0.08em; }
+    #f06-step-3-post { top:548px; }
+    /* boxed digit (css-marker-patterns, rounded-rect circle mode) */
+    .f06-step-3-bitwrap { position:relative; display:inline-block; width:1ch; height:1.3em; vertical-align:top; }
+    .f06-step-3-bit { position:absolute; inset:0; overflow:hidden; }
+    .f06-step-3-bit .d { position:absolute; left:0; top:0; width:100%; }
+    .f06-step-3-bit .d1 { opacity:0; }
+    .f06-step-3-bitbox { position:absolute; inset:-2px -5px; border:2px solid #CC785C; border-radius:4px; opacity:0; pointer-events:none; }
+
+    /* "✓ closed" tag at the Blob node */
+    .f06-step-3-tag { position:absolute; left:1462px; top:502px; height:30px; padding:0 12px; border-radius:6px;
+                border:1px solid #CC785C; background:#FAF9F5; font:700 15px/30px "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:#CC785C; white-space:nowrap; opacity:0; }
+  </style>
+
+  <div id="root" data-composition-id="06-step-3" data-width="1920" data-height="1080" data-duration="9.588">
+    <div class="clip f06-step-3-ground" data-start="0" data-duration="9.588" data-track-index="0"></div>
+
+    <div class="clip" id="f06-step-3-stage" data-start="0" data-duration="9.588" data-track-index="1">
+
+      <!-- RAIL -->
+      <div class="f06-step-3-rail" id="f06-step-3-rail">
+        <div class="f06-step-3-slot dim" id="f06-step-3-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead manifest</span></div>
+        <div class="f06-step-3-slot dim" id="f06-step-3-slot-2" data-plan-step="2" data-filled style="top:112px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f06-step-3-slot empty" id="f06-step-3-slot-3" data-plan-step="3" style="top:224px"><div class="f06-step-3-slot-fill" id="f06-step-3-slot-3-fill"></div><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f06-step-3-slot empty" id="f06-step-3-slot-4" data-plan-step="4" style="top:336px"><span class="n">4</span><span class="t">Billing on complete</span></div>
+        <div class="f06-step-3-slot empty" id="f06-step-3-slot-5" data-plan-step="5" style="top:448px"><span class="n">5</span><span class="t">Sweeper</span></div>
+        <div class="f06-step-3-slot empty" id="f06-step-3-slot-6" data-plan-step="6" style="top:560px"><span class="n">6</span><span class="t">SDK resume</span></div>
+      </div>
+
+      <!-- DIAGRAM -->
+      <div class="f06-step-3-node dim" id="f06-step-3-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:380px; width:240px; height:100px"><span class="l">Client SDK</span><span class="s">packages/sdk</span><div class="f06-step-3-ring" id="f06-step-3-ring-sdk"></div></div>
+      <div class="f06-step-3-node dim" id="f06-step-3-node-api"      data-plan-component="api"      style="left:1000px; top:380px; width:240px; height:100px"><span class="l">Upload API</span><span class="s">src/upload</span></div>
+      <div class="f06-step-3-node navy dim" id="f06-step-3-node-manifest" data-plan-component="manifest" style="left:1300px; top:200px; width:260px; height:150px"><span class="l">Manifest store</span><span class="s">upload_manifests</span><span class="f06-step-3-row">7f3a · 2 GB · 111011</span></div>
+      <div class="f06-step-3-node dim" id="f06-step-3-node-blob"     data-plan-component="blob"     style="left:1300px; top:540px; width:260px; height:100px"><span class="l">Blob store</span><span class="s">src/blob</span></div>
+      <div class="f06-step-3-node dim" id="f06-step-3-node-billing"  data-plan-component="billing"  style="left:1620px; top:200px; width:220px; height:100px"><span class="l">Billing hook</span><span class="s">src/billing</span></div>
+      <div class="f06-step-3-node dim" id="f06-step-3-node-sweeper"  data-plan-component="sweeper"  style="left:1620px; top:540px; width:220px; height:100px"><span class="l">Sweeper</span><span class="s">src/jobs</span></div>
+
+      <!-- blob part boxes: 1,2,3,5,6 landed; 4 missing until complete -->
+      <div class="f06-step-3-parts" id="f06-step-3-parts">
+        <div class="f06-step-3-part on" style="left:0px"></div>
+        <div class="f06-step-3-part on" style="left:44px"></div>
+        <div class="f06-step-3-part on" style="left:88px"></div>
+        <div class="f06-step-3-part" id="f06-step-3-part-4" style="left:132px"><div class="f06-step-3-part-fill" id="f06-step-3-part-4-fill"></div></div>
+        <div class="f06-step-3-part on" style="left:176px"></div>
+        <div class="f06-step-3-part on" style="left:220px"></div>
+      </div>
+
+      <!-- EDGES -->
+      <svg class="f06-step-3-edges" id="f06-step-3-edges" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <path class="dim" id="f06-step-3-e-api-manifest" d="M1240 405 L1270 405 L1270 275 L1300 275" />
+        <path class="dim" id="f06-step-3-e-api-blob"     d="M1240 455 L1270 455 L1270 590 L1300 590" />
+        <path class="active" id="f06-step-3-e-sdk-api"   d="M940 430 L1000 430" />
+      </svg>
+
+      <!-- the exchange -->
+      <div class="f06-step-3-xline" id="f06-step-3-get"><b>GET</b> /uploads/7f3a</div>
+      <div class="f06-step-3-xline" id="f06-step-3-reply">111<span class="f06-step-3-bitwrap"><span class="f06-step-3-bit"><span class="d d0" id="f06-step-3-bit-0">0</span><span class="d d1" id="f06-step-3-bit-1">1</span></span><span class="f06-step-3-bitbox" id="f06-step-3-bitbox"></span></span>11</div>
+      <div class="f06-step-3-xline" id="f06-step-3-post"><b>POST</b> /complete</div>
+
+      <!-- closing tag at the Blob node -->
+      <div class="f06-step-3-tag" id="f06-step-3-tag">✓ closed</div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var q = function (id) { return document.getElementById(id); };
+      var edge = q("f06-step-3-e-sdk-api");
+      var len = 60;
+      try { len = edge.getTotalLength() || 60; } catch (e) {}
+      edge.style.strokeDasharray = String(len);
+      edge.style.strokeDashoffset = String(len);
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---- Scene 1 (0.0–1.2s): slot 3 fills on "Step three"; coral lands on the SDK node ---- */
+      tl.fromTo("#f06-step-3-slot-3-fill", { opacity: 0, scale: 0.985 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0.15);
+      tl.fromTo(["#f06-step-3-slot-3 .n", "#f06-step-3-slot-3 .t"], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.06 }, 0.25);
+      tl.fromTo("#f06-step-3-node-sdk", { opacity: 0.72 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.6);
+      tl.fromTo("#f06-step-3-ring-sdk", { opacity: 0, scale: 1.03 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 0.6);
+
+      /* ---- Scene 2 (1.2–5.2s): the coral hands off to the SDK → API edge (svg-path-draw); GET rides above; reply lands beneath ---- */
+      tl.to("#f06-step-3-ring-sdk", { opacity: 0, duration: 0.25, ease: "power1.out" }, 1.2);
+      tl.to(edge, { strokeDashoffset: 0, duration: 0.55, ease: "power2.out" }, 1.45);
+      tl.fromTo("#f06-step-3-get", { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 1.55);
+      tl.fromTo("#f06-step-3-node-api", { opacity: 0.72 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.9);
+      /* "which bits are set" — the server answers */
+      tl.fromTo("#f06-step-3-reply", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 3.2);
+      /* coral leaves the edge (edge stays as this frame's ink edge) and boxes the missing bit */
+      tl.to(edge, { stroke: "#141413", strokeWidth: 2, duration: 0.35, ease: "power1.out" }, 3.6);
+      tl.fromTo("#f06-step-3-bitbox", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 3.95);
+
+      /* ---- Scene 3 (5.2–9.0s): POST /complete types in; the 0 flips to 1; part 4 lands; Blob closes ---- */
+      tl.fromTo("#f06-step-3-post", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power1.out" }, 5.3);
+      tl.fromTo("#f06-step-3-post", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "steps(14)" }, 5.3);
+      tl.to("#f06-step-3-bit-0", { yPercent: -100, opacity: 0, duration: 0.4, ease: "power3.inOut" }, 6.35);
+      tl.fromTo("#f06-step-3-bit-1", { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: "power3.inOut" }, 6.35);
+      tl.fromTo("#f06-step-3-part-4-fill", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 6.5);
+      /* the box settles to ink so the closing tag can take the coral */
+      tl.to("#f06-step-3-bitbox", { borderColor: "rgba(20,20,19,0.3)", duration: 0.35, ease: "power1.out" }, 6.9);
+      tl.fromTo("#f06-step-3-node-blob", { opacity: 0.72 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 7.2);
+      tl.fromTo("#f06-step-3-tag", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.3);
+      /* hold to the end of the frame */
+      tl.to({}, { duration: 0.01 }, 9.07);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["06-step-3"] = tl;
+    })();
+  </script>
+</template>

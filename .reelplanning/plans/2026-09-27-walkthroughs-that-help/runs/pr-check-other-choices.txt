@@ -1,0 +1,9 @@
+$ reel pr-check . --base origin/main --body-file ../pr.md --labels ""   (a scratch repo: a 2-line PR, the template's two other choices filled in, not yet accepted)
+· other choices, a line each in the PR's text (2): "the list is its own storyboard line, instead of the grouped one"; "listed is recorded at Go on"
+· under the line: a normal code review, no video (2 line(s) of 300, box not ticked, no `needs-video`)
+· size: 2 changed line(s) in 1 file(s)
+· ids: none new; none names another entry
+· say what each other choice was chosen instead of ("…, instead of …"): "listed is recorded at Go on"
+△ waiting for a maintainer to accept the 2 other choices in the PR's text (tick "The other choices above are accepted")
+△ repo against origin/main: 0 problem(s), 1 waiting
+exit 0

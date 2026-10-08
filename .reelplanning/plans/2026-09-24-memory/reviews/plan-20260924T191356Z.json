@@ -1,0 +1,161 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "just note it is not necessary that we decrease text that is unnecessary constraint; i just mean we dont unnecessarily add text",
+      "frame": {
+        "compositionId": "31-resolved",
+        "index": 31,
+        "title": "The plan, resolved"
+      },
+      "id": "amufwu8ynhvmx",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2
+        ],
+        "step": null
+      },
+      "t": 363.6
+    },
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "31-resolved",
+        "index": 31,
+        "title": "The plan, resolved"
+      },
+      "id": "amufwuc0sz5tz",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2
+        ],
+        "step": null
+      },
+      "t": 363.6
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-24T19:11:25.655Z",
+      "id": "q1",
+      "label": "A file in your home folder",
+      "option": "a",
+      "planStep": 3,
+      "question": "Where does your memory across repos live?",
+      "recommended": true,
+      "t": 206.12
+    },
+    {
+      "decidedAt": "2026-09-24T19:13:06.739Z",
+      "id": "q2",
+      "label": "Every five plans, or when a signal repeats three times",
+      "option": "a",
+      "planStep": 5,
+      "question": "When does the tool suggest a retro?",
+      "recommended": true,
+      "t": 350.58
+    }
+  ],
+  "exportedAt": "2026-09-24T19:13:56.430Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T19:10:13.010Z",
+      "correct": true,
+      "id": "k1",
+      "t": 105.69
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T19:10:39.629Z",
+      "correct": true,
+      "id": "k2",
+      "t": 145.56
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-24T19:11:09.779Z",
+      "correct": false,
+      "id": "k3",
+      "t": 183.48
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T19:11:48.191Z",
+      "correct": false,
+      "id": "k4",
+      "t": 248.84
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T19:12:14.797Z",
+      "correct": true,
+      "id": "k5",
+      "t": 274.89
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-24T19:12:51.813Z",
+      "correct": true,
+      "id": "k6",
+      "t": 329.21
+    }
+  ],
+  "src": "2026-09-24-memory/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 363.61,
+    "firstPlayAt": "2026-09-24T19:05:58.432Z",
+    "maxTimeReached": 363.6,
+    "moments": [
+      {
+        "frameIndex": 27,
+        "from": 363.6,
+        "kind": "rewind",
+        "planStep": 5,
+        "t": 301.24
+      },
+      {
+        "frameIndex": 21,
+        "from": 301.27,
+        "kind": "rewind",
+        "planStep": 4,
+        "t": 239.15
+      }
+    ]
+  }
+}

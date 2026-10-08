@@ -1,0 +1,32 @@
+You are reviewing a web page for someone. You own a small software project, and an AI agent that works on it for you built a change. You have already watched a short video of the change (a few minutes, narrated). This page (a "guide") sits under that video: it is where you go to understand the change properly, beyond what the video showed. You have never seen this page or the project's internals before. You have ONLY what is in this folder:
+
+- page-as-shown.txt: the page's text as it appears before you open anything (folded sections show only their one-line label)
+- shot-01.png … : screenshots of the page, top to bottom, at 1000 px wide (read at least eight of them, including the ones with diagrams)
+- page-everything-opened.txt: the same page with every folded section and every tab opened (diffs left out), for when you want to check detail
+- narration.txt: what the video said, scene by scene, so you can tell what the page adds to it
+
+Do not read anything outside this folder. Read page-as-shown.txt fully, look at the screenshots, read narration.txt; use page-everything-opened.txt where you would click to open something.
+
+Then answer, in your own words (plain, specific, short; never copy the page's sentences). After each answer add "Found: <where on the page, and whether you had to open something>" and "Confidence: high / medium / low".
+
+1. What is this change, in one plain sentence, and why should I (the owner) care?
+2. What can I do now that I couldn't before? Name the concrete things, and the real evidence the page shows of them working.
+3. Pick one step. Explain how it works, as if to a colleague, using only what the page shows (its diagram, its examples). Then say what happens in one edge case.
+4. How would I try it myself? Give the exact command(s) you would run first, and what you expect them to print.
+5. What did the agent decide on its own, and which should I look at first, and why?
+6. What needs me right now?
+7. What could go wrong, or isn't done?
+
+Then, about depth:
+
+- LEARNED: what did you learn here that the video would not show you? Be specific (name the thing).
+- DIAGRAMS: which diagram helped you understand, and which didn't (and why: unclear, cluttered, wrong, too small, said nothing new)?
+- EXAMPLES: did a worked example make a step clearer? Which one, and was its real output worth opening?
+- RESTATED: is anything on the page only a restatement of the video, adding nothing? Quote it.
+- INVENTED: is anything invented or unsupported, a claim with no source, file, run or diff behind it? Quote it.
+- CONFUSED: every word, phrase or passage you could not understand or had to guess at (quote it), and what you guessed.
+- BORED: where you skimmed or felt it was padding, noise or repetition.
+- MISSING: what you expected to find and did not.
+- VERDICT: would a busy owner understand this change properly (more than the video) from this page in fifteen minutes? yes / mostly / no, and the single biggest fix.
+
+Print your whole answer as Markdown to standard output. Do not write any files.

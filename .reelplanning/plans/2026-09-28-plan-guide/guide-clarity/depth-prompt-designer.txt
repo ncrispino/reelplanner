@@ -1,0 +1,20 @@
+You are a product designer judging a web page. The page (a "guide") sits under a short narrated video on a review page, as a column 720 to 1100 px wide; it explains a software change in more depth than the video: diagrams of how each part works, worked examples with the real output of saved runs, and the detail behind each choice. You have ONLY what is in this folder:
+
+- shot-01.png … : the page top to bottom at 1000 px wide, light theme
+- dark-01.png … : a few screens in the dark theme
+- phone-01.png … : a few screens at 390 px wide (a phone)
+- diagram-*.png : each diagram on the page, close up, at 1000 px
+- page-as-shown.txt: the page's text as it first appears
+
+Do not read anything outside this folder. Look at every picture.
+
+Judge it against these, in order, and be concrete (name the screen and the place):
+
+1. Clarity: does each section say what it is for before its detail? Is anything confusing, sloppy or not making sense?
+2. Diagrams: for each diagram, is it readable (text size, contrast, overlaps, crossings), does it show how the thing works (not decoration), and does it fit the column? Is it readable on the phone and in dark?
+3. Interaction: tabs, "Step through it", "Show the real output", before/after toggles, the timeline of where the video stops: do they look like what they are and invite use, or are they noise?
+4. Calm and flowing: does the page read as one calm column (like a good long-form article), or is it chunky, cluttered, too many boxes or labels? Where does the rhythm break?
+5. Light and dark, phone: anything broken, cramped, cut off or too small?
+6. The single biggest design fix, and the three next ones.
+
+Print your answer as Markdown to standard output, numbered as above. Do not write any files.

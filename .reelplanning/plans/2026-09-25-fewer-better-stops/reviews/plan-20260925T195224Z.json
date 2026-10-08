@@ -1,0 +1,114 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "21-resolved",
+        "index": 21,
+        "title": "The plan, resolved"
+      },
+      "id": "amuhdnng2urpf",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2
+        ],
+        "step": null
+      },
+      "t": 219.2
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-25T19:51:43.266Z",
+      "id": "q1",
+      "label": "Nothing directly",
+      "option": "a",
+      "planStep": 2,
+      "question": "What may a miss with no tags stop?",
+      "recommended": true,
+      "t": 140.651
+    },
+    {
+      "decidedAt": "2026-09-25T19:52:20.301Z",
+      "id": "q2",
+      "label": "Asks before going on",
+      "option": "a",
+      "planStep": 3,
+      "question": "A step reaches its fifth call during the build. What does the implementer do?",
+      "recommended": true,
+      "t": 207.065
+    }
+  ],
+  "exportedAt": "2026-09-25T19:52:24.982Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-25T19:50:49.732Z",
+      "correct": false,
+      "id": "k1",
+      "t": 89.407
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-25T19:51:21.379Z",
+      "correct": false,
+      "id": "k2",
+      "t": 123.734
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T19:52:05.395Z",
+      "correct": false,
+      "id": "k3",
+      "t": 189.678
+    }
+  ],
+  "src": "2026-09-25-fewer-better-stops/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 0.852,
+        "id": "ch4"
+      }
+    ],
+    "completion": 0.957,
+    "details": [],
+    "durationSeconds": 231.71,
+    "firstPlayAt": "2026-09-25T19:49:33.059Z",
+    "maxTimeReached": 221.67,
+    "moments": [
+      {
+        "frameIndex": 6,
+        "from": 89.4,
+        "kind": "rewind",
+        "planStep": 1,
+        "t": 61.61
+      }
+    ]
+  },
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

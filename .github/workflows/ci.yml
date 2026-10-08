@@ -1,0 +1,124 @@
+# The tests, and the checks of a shared repo (the contributing plan, step 5; .github/CONTRIBUTING.md).
+#
+#   fast        every push to main and every push to a PR: `npm test`
+#   pr-check    every PR: `reel pr-check` (a linked issue, where config.json asks; the line for a video, no media,
+#               fresh videos, ids, tidy) and `reel audit` on each plan folder the PR adds that has a walkthrough.md (D-202)
+#   full        every PR: fails at once until a maintainer adds the `ready-to-merge` label, then runs
+#               `npm run test:full` and `reel pr-check --merge` on every push after it. This is the check to
+#               mark required in the repo's settings (Settings → Branches), so a PR merges only when the full
+#               suite passed on its last commit. It fails rather than being skipped without the label: GitHub
+#               counts a skipped required check as passed.
+#   video-branch  a PR closed, merged or not: deletes its video's branch, video/pr-<n> (D-215). A PR from a
+#               fork keeps its video's branch in the fork; the contributor deletes it there.
+# The system video is not rebuilt here: a maintainer rebuilds it on main after merges, once for every PR
+# merged since (it needs the voice engine and a browser; .github/CONTRIBUTING.md, "Before a merge").
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # edited: the PR's text changed (an issue linked after pr-check failed), so pr-check reads it again
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, closed]
+
+permissions:
+  contents: read
+
+jobs:
+  fast:
+    name: fast suite
+    if: github.event_name == 'push' || contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # the fast run's player specs open the player in headless Chromium (scripts/lib/static-server.mjs serves the pages)
+      - name: Chromium for the player specs
+        run: npx playwright-core install --with-deps chromium
+      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
+      # it for every user. No agent is on the runner, so name one: Codex reads ~/.agents/skills, where the pipeline reads them.
+      - name: HyperFrames' skills, at the pinned version
+        run: node bin/reelplanning.mjs hyperframes-skills
+        env:
+          REELPLANNING_SKILLS_AGENTS: codex
+      - name: The fast suite
+        run: npm test
+
+  pr-check:
+    name: reel pr-check
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}   # the PR's own last commit, not a merge with the base
+          fetch-depth: 0   # the diff from where the branch left the base, and the base's decision log
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # reads the PR's text and labels from the event ($GITHUB_EVENT_PATH)
+      - name: reel pr-check
+        run: node bin/reelplanning.mjs reel pr-check --base "origin/${{ github.base_ref }}"
+      - name: reel audit, on each plan folder the PR adds
+        run: |
+          status=0
+          for d in $(git diff --name-only --diff-filter=A "origin/${{ github.base_ref }}...HEAD" -- .reelplanning/plans | cut -d/ -f1-3 | sort -u); do
+            if [ -f "$d/walkthrough.md" ]; then node bin/reelplanning.mjs reel audit "$d" || status=1; fi
+          done
+          exit $status
+
+  full:
+    name: full suite
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: A maintainer's ready-to-merge
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'ready-to-merge') }}
+        run: |
+          echo "The full suite runs once a maintainer adds the ready-to-merge label (their review is done), and on every push after it."
+          exit 1
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Chromium for the player specs
+        run: npx playwright-core install --with-deps chromium
+      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
+      # it for every user. No agent is on the runner, so name one: Codex reads ~/.agents/skills, where the pipeline reads them.
+      - name: HyperFrames' skills, at the pinned version
+        run: node bin/reelplanning.mjs hyperframes-skills
+        env:
+          REELPLANNING_SKILLS_AGENTS: codex
+      - name: The full suite
+        run: npm run test:full
+      - name: reel pr-check --merge (nothing still waiting)
+        run: node bin/reelplanning.mjs reel pr-check --base "origin/${{ github.base_ref }}" --merge
+
+  video-branch:
+    name: delete the video's branch
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Delete video/pr-${{ github.event.pull_request.number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF: heads/video/pr-${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/${{ github.repository }}/git/ref/$REF" >/dev/null 2>&1; then
+            gh api --method DELETE "repos/${{ github.repository }}/git/refs/$REF" && echo "deleted video/pr-${{ github.event.pull_request.number }}"
+          else
+            echo "no video/pr-${{ github.event.pull_request.number }} branch: nothing to delete"
+          fi

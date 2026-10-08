@@ -1,0 +1,129 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f14-call-a16-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f14-call-a16-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f14-call-a16-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f14-call-a16-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f14-call-a16-chip.big { font:500 32px/1.2 "Inter"; border:2px solid var(--rp-ink); padding:14px 20px; }
+  .f14-call-a16-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-quote { position:absolute; font:italic 400 66px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f14-call-a16-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f14-call-a16-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f14-call-a16-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f14-call-a16-tick.ink { background:var(--rp-ink); border-color:var(--rp-ink); }
+  .f14-call-a16-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f14-call-a16-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f14-call-a16-slot.live { outline-color:var(--rp-coral); }
+  .f14-call-a16-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f14-call-a16-slot .t { position:absolute; left:76px; top:14px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-slot .d { position:absolute; left:76px; top:54px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-slot.plain .t { top:27px; }
+  .f14-call-a16-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f14-call-a16-card.chose { border:2px solid var(--rp-ink); }
+  .f14-call-a16-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f14-call-a16-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f14-call-a16-card .l { display:block; margin-top:18px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f14-call-a16-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f14-call-a16-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f14-call-a16-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f14-call-a16-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f14-call-a16-shot { position:absolute; border-radius:10px; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.06); background:var(--rp-paper); }
+  .f14-call-a16-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .f14-call-a16-hl { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .f14-call-a16-panel { position:absolute; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:var(--rp-paper); }
+  .f14-call-a16-panel .plab { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f14-call-a16-pcard { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f14-call-a16-pcard .k { position:absolute; left:24px; top:22px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f14-call-a16-hitbox { position:absolute; box-sizing:border-box; border-radius:16px; border:3px dashed rgba(var(--rp-ink-rgb),0.55); }
+  .f14-call-a16-hitbox.ring { border:5px solid var(--rp-coral); }
+  .f14-call-a16-row { position:absolute; box-sizing:border-box; height:96px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f14-call-a16-row .n { position:absolute; left:28px; top:32px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f14-call-a16-row .t { position:absolute; left:90px; top:32px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-row .t.nonum { left:32px; }
+  .f14-call-a16-row .v { position:absolute; right:30px; top:34px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-row.dim .t, .f14-call-a16-row.dim .n { color:rgba(var(--rp-ink-rgb),0.5); }
+  .f14-call-a16-mini { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.15); }
+  .f14-call-a16-mini.gap { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f14-call-a16-mini .k { position:absolute; left:20px; top:18px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f14-call-a16-fig { position:absolute; font:400 200px/0.95 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-unit { position:absolute; font:500 48px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-lab { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-rule { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.2); transform-origin:0 50%; }
+  .f14-call-a16-coralrule { position:absolute; height:3px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f14-call-a16-frame { position:absolute; box-sizing:border-box; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.45); background:var(--rp-paper); }
+  .f14-call-a16-block { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f14-call-a16-eighth { position:absolute; box-sizing:border-box; border:2px dashed rgba(var(--rp-ink-rgb),0.45); border-radius:0 0 8px 8px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f14-call-a16-eighth span { position:absolute; left:24px; top:14px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-code { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); padding:18px 24px; font:500 28px/1.2 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f14-call-a16-track { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f14-call-a16-marker { position:absolute; width:28px; height:28px; border-radius:50%; background:var(--rp-ink); }
+  .f14-call-a16-arrow { position:absolute; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-vtile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f14-call-a16-vtile .t { position:absolute; left:30px; top:36px; font:400 48px/1.05 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-vtile .d { position:absolute; left:30px; top:120px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-tally { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f14-call-a16-tally .n { position:absolute; left:34px; top:40px; font:400 96px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-tally .l { position:absolute; left:34px; top:170px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-ls { position:absolute; box-sizing:border-box; height:92px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f14-call-a16-ls .n { position:absolute; left:30px; top:32px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f14-call-a16-ls .t { position:absolute; left:96px; top:26px; font:500 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f14-call-a16-ls .d { position:absolute; right:30px; top:32px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f14-call-a16-ls .c { position:absolute; right:190px; top:32px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="14-call-a16" data-band="bottom" data-duration="7.156" data-width="1920" data-height="1080">
+
+  <div class="clip f14-call-a16-bg" id="f14-call-a16-bg" data-start="0" data-duration="7.16" data-track-index="0"></div>
+
+  <div class="clip f14-call-a16-scene" id="f14-call-a16-scene" data-start="0" data-duration="7.16" data-track-index="1">
+  <div class="f14-call-a16-kicker" id="f14-call-a16-kicker">Call A16 · Step 2</div>
+  <div class="f14-call-a16-spine" id="f14-call-a16-spine"><div class="f14-call-a16-tick" id="f14-call-a16-tick-1" data-plan-step="1" style="top:35px"></div><div class="f14-call-a16-tick ink" id="f14-call-a16-tick-2" data-plan-step="2" style="top:145px"></div><div class="f14-call-a16-tick" id="f14-call-a16-tick-3" data-plan-step="3" style="top:255px"></div><div class="f14-call-a16-tick" id="f14-call-a16-tick-4" data-plan-step="4" style="top:365px"></div><div class="f14-call-a16-tick" id="f14-call-a16-tick-5" data-plan-step="5" style="top:475px"></div></div>
+  <div class="f14-call-a16-card chose" id="f14-call-a16-chose" style="left:200px; top:170px; width:620px; height:250px"><span class="k">Chose</span><span class="l">Captions hidden while it is up</span></div>
+  <div class="f14-call-a16-card instead" id="f14-call-a16-instead" style="left:200px; top:450px; width:620px; height:210px"><span class="k">Instead of</span><span class="l">Captions left in place</span></div>
+  <div class="f14-call-a16-chip grey" id="f14-call-a16-check" style="left:210px; top:700px">player.js · syncBand</div>
+  <div class="f14-call-a16-row" id="f14-call-a16-r0" style="left:880px; top:190px; width:960px"><span class="t nonum">captions</span><span class="v">y 880–1040</span></div>
+  <div class="f14-call-a16-row" id="f14-call-a16-r1" style="left:880px; top:314px; width:960px"><span class="t nonum">band</span><span class="v">y 945–1080</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "14-call-a16";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f14-call-a16-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+  // the capture that matches the video's theme: dark when the ink is light
+  var dark = parseInt(String(__RP["ink-rgb"] || "0"), 10) > 128;
+  [].forEach(function (s) { var l = $(s + "-l"), d = $(s + "-d"); if (l) l.style.display = dark ? "none" : "block"; if (d) d.style.display = dark ? "block" : "none"; });
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("chose"), 2.28, 10);
+  pop(tl, $("instead"), 4.48, 10);
+  pop(tl, $("check"), 5.68, 10);
+  pop(tl, $("r0"), 0.30, 10);
+  pop(tl, $("r1"), 0.55, 10);
+  lit(tl, $("r1"), 2.58);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 6.510);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

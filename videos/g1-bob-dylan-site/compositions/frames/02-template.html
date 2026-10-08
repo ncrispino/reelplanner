@@ -1,0 +1,129 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; color: var(--rp-ink); -webkit-font-smoothing: antialiased; }
+
+  /* full-bleed cream ground (clip layer, never on #root) */
+  .f02-template-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+
+  /* ---- the prototype: a 900x560 page mock, centred ---- */
+  .f02-template-drift { position: absolute; left: 510px; top: 168px; width: 900px; height: 560px; }
+  .f02-template-page { position: absolute; inset: 0; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb),0.20); border-radius: 8px; box-shadow: 0 1px 3px rgba(var(--rp-shadow-rgb),0.08), 0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow: hidden; }
+
+  .f02-template-head { position: absolute; left: 0; right: 0; top: 0; height: 84px; border-bottom: 1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f02-template-title { position: absolute; left: 36px; top: 22px; font: 400 34px/1.1 "EB Garamond"; letter-spacing: -0.018em; color: var(--rp-ink); white-space: nowrap; }
+  .f02-template-nav { position: absolute; right: 36px; top: 32px; display: flex; gap: 30px; }
+  .f02-template-nav span { font: 400 18px/1 "Inter"; color: var(--rp-ink); white-space: nowrap; }
+
+  .f02-template-h2 { position: absolute; left: 36px; top: 108px; font: 400 30px/1.1 "EB Garamond"; letter-spacing: -0.012em; color: var(--rp-ink); }
+
+  .f02-template-wall { position: absolute; left: 36px; top: 166px; width: 828px; }
+  .f02-template-bar { height: 14px; margin-bottom: 10px; border-radius: 3px; background: rgba(var(--rp-ink-rgb),0.12); }
+
+  /* ---- three mono chips under the mock, each takes a level strike on cue ---- */
+  .f02-template-chips { position: absolute; left: 0; right: 0; top: 776px; display: flex; justify-content: center; gap: 44px; }
+  .f02-template-chip { position: relative; height: 48px; padding: 0 22px; border-radius: 9999px; background: var(--rp-tile); border: 1px solid rgba(var(--rp-ink-rgb),0.12); font: 500 26px/48px "JetBrains Mono"; letter-spacing: 0.02em; color: var(--rp-ink); white-space: nowrap; }
+  .f02-template-strike { position: absolute; left: 14px; right: 14px; top: 50%; height: 2px; margin-top: -1px; background: var(--rp-coral); border-radius: 1px; }
+</style>
+
+<div id="root" data-composition-id="02-template" data-duration="8.82" data-width="1920" data-height="1080">
+  <div class="clip f02-template-bg" data-start="0" data-duration="8.82" data-track-index="0"></div>
+
+  <div class="f02-template-drift" id="f02-template-drift">
+    <div class="f02-template-page" id="f02-template-page">
+      <div class="f02-template-head">
+        <div class="f02-template-title" id="f02-template-title">Bob Dylan</div>
+        <div class="f02-template-nav" id="f02-template-nav">
+          <span>Home</span><span>Biography</span><span>Albums</span><span>Songs</span><span>Contact</span>
+        </div>
+      </div>
+      <div class="f02-template-h2" id="f02-template-h2">Biography</div>
+      <div class="f02-template-wall" id="f02-template-wall">
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:98%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:97%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:99%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:96%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:98%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:99%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+        <div class="f02-template-bar" style="width:97%"></div>
+        <div class="f02-template-bar" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="f02-template-chips">
+    <div class="f02-template-chip" id="f02-template-chip-1">5 pages<div class="f02-template-strike" id="f02-template-strike-1"></div></div>
+    <div class="f02-template-chip" id="f02-template-chip-2">wall of text<div class="f02-template-strike" id="f02-template-strike-2"></div></div>
+    <div class="f02-template-chip" id="f02-template-chip-3">no links<div class="f02-template-strike" id="f02-template-strike-3"></div></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var D = 8.32;
+  var CORAL = __RP["coral"], INK = __RP["ink"];
+  var tl = gsap.timeline({ paused: true });
+  var q = function (s) { return document.querySelector(s); };
+  var qa = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  var drift  = q("#f02-template-drift");
+  var page   = q("#f02-template-page");
+  var title  = q("#f02-template-title");
+  var navW   = qa("#f02-template-nav span");
+  var h2     = q("#f02-template-h2");
+  var bars   = qa("#f02-template-wall .f02-template-bar");
+  var chips  = [q("#f02-template-chip-1"), q("#f02-template-chip-2"), q("#f02-template-chip-3")];
+  var strikes= [q("#f02-template-strike-1"), q("#f02-template-strike-2"), q("#f02-template-strike-3")];
+
+  // 0.05 "The obvious build" — the page box is the hero, visible at once
+  tl.fromTo(page, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.062);
+  // slow macro drift under the whole shot (transform-only, deterministic)
+
+  // 1.26 "template" — the template header lands
+  tl.fromTo(title, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.274);
+
+  // 2.18 "Five pages" — five nav words, one after another; chip 1 lands
+  tl.fromTo(navW, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.07 }, 2.204);
+  tl.fromTo(chips[0], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 2.204);
+  // 2.53 "pages" — strike 1 draws, coral
+  tl.fromTo(strikes[0], { scaleX: 0, backgroundColor: CORAL }, { scaleX: 1, backgroundColor: CORAL, duration: 0.4, ease: "power3.inOut", transformOrigin: "0% 50%" }, 2.542);
+
+  // 3.44 "biography" — the section heading
+  tl.fromTo(h2, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.46);
+
+  // 4.34 "one long wall of text" — the wall of grey bars cascades down to 5.39
+  tl.fromTo(bars, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.045 }, 4.382);
+  // 4.67 "wall" — chip 2 lands
+  tl.fromTo(chips[1], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4.738);
+  // 5.39 "text" — strike 2 draws coral; strike 1 settles to ink (one coral at a time)
+  tl.fromTo(strikes[0], { backgroundColor: CORAL }, { backgroundColor: INK, duration: 0.3, ease: "power2.out" }, 5.438);
+  tl.fromTo(strikes[1], { scaleX: 0, backgroundColor: CORAL }, { scaleX: 1, backgroundColor: CORAL, duration: 0.4, ease: "power3.inOut", transformOrigin: "0% 50%" }, 5.438);
+
+  // 5.89 "no" — chip 3 lands
+  tl.fromTo(chips[2], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.962);
+  // 6.27 "from" (after "link") — strike 3 draws coral; strike 2 settles to ink
+  tl.fromTo(strikes[1], { backgroundColor: CORAL }, { backgroundColor: INK, duration: 0.3, ease: "power2.out" }, 6.388);
+  tl.fromTo(strikes[2], { scaleX: 0, backgroundColor: CORAL }, { scaleX: 1, backgroundColor: CORAL, duration: 0.4, ease: "power3.inOut", transformOrigin: "0% 50%" }, 6.388);
+
+  // held read through "song … album … year" to the end; pin the timeline length to the voice duration
+  tl.to({}, { duration: 0.01 }, D - 0.01);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["02-template"] = tl;
+})();
+</script>
+</template>

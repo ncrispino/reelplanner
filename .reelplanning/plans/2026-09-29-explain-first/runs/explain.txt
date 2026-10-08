@@ -1,0 +1,11 @@
+$ reelplanning explain "what did the experiment show?" ~/runs/results.csv src dcd60fe..HEAD D-001 ~/.claude/session.jsonl --date 2026-09-29 --slug experiment   (a scratch repo: a table and a transcript in your home folder, a folder with a 240-line file, a range of commits, a decision)
+✓ .reelplanning/explainers/2026-09-29-experiment/ · 5 sources (table 1, files 2, text 1, sequence 1) · 2 need a guide part · pinned at 9fe2b88
+  `~/runs/results.csv` · table · 3 lines (outside the repo: its path and hash only, never its text)
+  `src` · files · 2 files, 244 lines at 9fe2b8811d32; a guide part for src/big.mjs
+  `dcd60fe..HEAD` · files · 1 file, 2 lines changed (dcd60fe190b3..9fe2b8811d32)
+  `D-001` · text · 3 lines
+  `~/.claude/session.jsonl` · sequence · 232 lines (outside the repo: its path and hash only, never its text); needs a guide part
+next: fill explain.md's "What it will cover", "What it leaves out" and "Open threads" from the sources, write video/STORYBOARD.md and
+SCRIPT.md (each scene that says a fact names its `- source:`), then `reelplanning build .reelplanning/explainers/2026-09-29-experiment/video`: it checks
+every quoted line against its source (check-sources), and fresh eyes look at it, with a fact check (a source here is far longer than the video).
+exit 0

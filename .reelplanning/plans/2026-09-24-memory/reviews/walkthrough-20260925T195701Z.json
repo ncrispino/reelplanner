@@ -1,0 +1,247 @@
+{
+  "annotations": [
+    {
+      "about": "On what the agent decided: Where your file cannot be written (a run fenced to the repo by D-082's sandbox, a read-only home), `reel record` records the review all the same and says, on its last line, that this one is not in your memory",
+      "comment": "we still wantt o write somewhere, just somewhere we can access i guess",
+      "frame": {
+        "compositionId": "20-call-a15",
+        "index": 20,
+        "title": "Call A15: recorded, even where your file cannot be written"
+      },
+      "id": "amuhdqs2qwj1a",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 3
+      },
+      "t": 174.47
+    },
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "33-end",
+        "index": 33,
+        "title": "What ran; flag a step, or accept"
+      },
+      "id": "amuhdtjmpyhp8",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 298.47
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The stamp is one `recorded` object in the filed review, { reviewer, via, reelplanning }, where `via` says whether the reviewer came from the page's viewer or git's user.email; the same review filed again with a different stamp (another person's intake, an upgrade) is still the same review, not a second file",
+      "id": "a5",
+      "judgedAt": "2026-09-25T19:53:01.015Z",
+      "planStep": 1,
+      "t": 44.88,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The version is the reelplanning that records the review (its package.json)",
+      "id": "a6",
+      "judgedAt": "2026-09-25T19:53:06.521Z",
+      "planStep": 1,
+      "t": 52.21,
+      "verdict": "accept"
+    },
+    {
+      "chose": "migrate-reviews files old reviews unstamped (stamp: false)",
+      "id": "a8",
+      "judgedAt": "2026-09-25T19:53:13.378Z",
+      "planStep": 1,
+      "t": 60.52,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The page's viewer is read from the row's `viewer` (a string, or `{ email }` / `{ name }`), else the export's; the player is not changed to send one",
+      "id": "a7",
+      "judgedAt": "2026-09-25T19:53:17.119Z",
+      "planStep": 1,
+      "t": 67.6,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The five lines' ids are words: recommended, own-words, rewinds, checks, misses (and flagged for yours across repos), so `reel memory own-words` says what it prints",
+      "id": "a1",
+      "judgedAt": "2026-09-25T19:53:43.320Z",
+      "planStep": 2,
+      "t": 99.51,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Why a question was answered in own words is read from the words and the options: 'unclear, asked for more', 'an option, with a condition', otherwise 'the question framed otherwise'; the words are always shown with it",
+      "id": "a2",
+      "judgedAt": "2026-09-25T19:53:47.643Z",
+      "planStep": 2,
+      "t": 108.17,
+      "verdict": "accept"
+    },
+    {
+      "chose": "'Rewound again after a revision' is the same step of the same plan's same video rewound or slowed in two different reviews of it; a rewind with no step is left out of the line",
+      "id": "a4",
+      "judgedAt": "2026-09-25T19:53:51.812Z",
+      "planStep": 2,
+      "t": 116.57,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A call counts once, by the first verdict it was given (a later round that re-judges it does not count again); plan questions count per review",
+      "id": "a3",
+      "judgedAt": "2026-09-25T19:53:54.379Z",
+      "planStep": 2,
+      "t": 121.09,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Your file (~/.reelplanning/you.jsonl) gets a summary only for a review recorded inside a git repo (the repo is named by its git top level), once per repo, plan and review, and `reel record` says so on one line each time ('a summary of this review added to …', 'already in …', or 'not in a git repo')",
+      "id": "a9",
+      "judgedAt": "2026-09-25T19:54:18.513Z",
+      "planStep": 3,
+      "t": 157.48,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Across repos (`reel memory --you`) the fifth line is `flagged`, the kinds of call flagged or answered in own words, by tag, instead of misses",
+      "id": "a10",
+      "judgedAt": "2026-09-25T19:54:23.399Z",
+      "planStep": 3,
+      "t": 165.26,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Where your file cannot be written (a run fenced to the repo by D-082's sandbox, a read-only home), `reel record` records the review all the same and says, on its last line, that this one is not in your memory",
+      "id": "a15",
+      "judgedAt": "2026-09-25T19:54:49.633Z",
+      "own": "we still wantt o write somewhere, just somewhere we can access i guess",
+      "planStep": 3,
+      "t": 174.47,
+      "verdict": "own"
+    },
+    {
+      "chose": "A miss is recent while the plan that showed it is one of the last five plan folders, retros not counted",
+      "id": "a11",
+      "judgedAt": "2026-09-25T19:55:09.041Z",
+      "planStep": 4,
+      "t": 205.76,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A call's kind is its tags and the components its step names; a recent miss stops a tagged call that shares a tag with it, or, when the miss has no tags (a plan question, or a call logged before tags), a component. An untagged call still never stops (D-084). Right now no miss has tags, so D-056 → D-063 (component player) stops every tagged player call: all 22 of answer-on-the-video's calls, and m3's step 6 stops 13 of this plan's 15",
+      "id": "a12",
+      "judgedAt": "2026-09-25T19:55:17.125Z",
+      "planStep": 4,
+      "t": 223,
+      "verdict": "accept"
+    },
+    {
+      "chose": "'A part reworked soon after' is read as a step whose walkthrough quick check the reviewer disagreed with in their own words (it worked otherwise than the plan they approved led them to expect, and was reworked), traced to that step's plan questions; a call accepted in review whose row later says '(changed after review: …)' counts as an accepted call reversed. Not read from git history",
+      "id": "d1",
+      "judgedAt": "2026-09-25T19:55:23.549Z",
+      "planStep": 4,
+      "t": 237.5,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A signal is one of: a question answered in own words for the same reason, a step rewound again after a revision, a quick check answered wrong on the same component, a miss of the same kind (tag, else component), a call flagged with the same tag; each counted over the plans since the last retro, and three of one makes a retro due",
+      "id": "a13",
+      "judgedAt": "2026-09-25T19:56:39.317Z",
+      "planStep": 5,
+      "t": 269.11,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`reel retro` names its folder <date>-retro (then -retro-2 …); its draft cites the active plan decisions on the skill as in force, so `reel check` passes it as written; the benchmark's parts are found by their files, in the repo or else in reelplanning's own checkout",
+      "id": "a14",
+      "judgedAt": "2026-09-25T19:56:42.233Z",
+      "planStep": 5,
+      "t": 275.4,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-25T19:57:01.252Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T19:53:28.437Z",
+      "correct": false,
+      "id": "k1",
+      "t": 75.34
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T19:54:02.124Z",
+      "correct": true,
+      "id": "k2",
+      "t": 128.89
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T19:54:53.874Z",
+      "correct": true,
+      "id": "k3",
+      "t": 180.42
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T19:56:18.445Z",
+      "correct": true,
+      "id": "k4",
+      "t": 245.33
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-25T19:56:45.429Z",
+      "correct": true,
+      "id": "k5",
+      "t": 280.35
+    }
+  ],
+  "src": "2026-09-24-memory--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 298.47,
+    "firstPlayAt": "2026-09-25T19:52:33.792Z",
+    "maxTimeReached": 298.47,
+    "moments": []
+  },
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

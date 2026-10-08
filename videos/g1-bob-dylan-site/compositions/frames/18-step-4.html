@@ -1,0 +1,202 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .f18-step-4-ground { position: absolute; inset: 0; background: var(--rp-paper); }
+
+  /* ---- shared stage: the rail (geometry is law) ---- */
+  .f18-step-4-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f18-step-4-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f18-step-4-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f18-step-4-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); z-index:1; }
+  .f18-step-4-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; z-index:1; }
+  .f18-step-4-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); z-index:1; }
+  .f18-step-4-slot .d.ink { color:var(--rp-ink); }
+  .f18-step-4-slot.dim { opacity:0.72; }
+  /* the current step's fill: painted on cue over the dashed outline, landing identical to [data-filled] */
+  .f18-step-4-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+
+  /* ---- shared stage: the section label above the pages stretch ---- */
+  .f18-step-4-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- shared stage: the output IS pages, so it is drawn as pages (lefts / top / size are law) ---- */
+  .f18-step-4-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f18-step-4-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  .f18-step-4-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f18-step-4-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* the frame's ONE coral, drawn as a ring so the page box never shifts when the coral hands off */
+  .f18-step-4-page .lit { position:absolute; inset:-1px; border-radius:6px; border:3px solid var(--rp-coral); opacity:0; pointer-events:none; }
+
+  /* ---- step 4 is a RESTYLE OF THE PAGES: the lines the restyle adds, all collapsed until their cue ---- */
+  .f18-step-4-page .bar.more { opacity:0; transform:scaleY(0); transform-origin:50% 0; }
+  /* the album's table of tracks: rows of rule + tick, no glyphs. Final geometry in CSS and out of
+     the flow, so it opens by scaling into the space the two lower bars vacate, never by reflow */
+  .f18-step-4-tracks { position:absolute; left:14px; top:82.5px; width:142px; height:64px; overflow:hidden; opacity:0; transform:scaleY(0); transform-origin:50% 0; }
+  .f18-step-4-trow { position:relative; height:15px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); opacity:0; }
+  .f18-step-4-trow i { position:absolute; top:5px; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.26); }
+  .f18-step-4-trow i.no { left:0; width:8px; }
+  .f18-step-4-trow i.ti { left:18px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f18-step-4-trow i.du { right:0; width:16px; background:rgba(var(--rp-ink-rgb),0.16); }
+  /* images in two sizes, each an absolute block on the page that gets it, parked where it lands */
+  .f18-step-4-img { position:absolute; left:14px; width:142px; opacity:0; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.12); transform:scaleY(0); transform-origin:50% 0; }
+  #f18-step-4-img-large { top:125.25px; height:46px; }
+  #f18-step-4-img-small { top:154.5px; height:34px; }
+
+  /* ---- the type tokens, under the pages, mono 26px ---- */
+  .f18-step-4-toks { position:absolute; left:1258px; top:700px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-step-4-toks span { display:inline-block; opacity:0; }
+</style>
+
+<div id="root" data-composition-id="18-step-4" data-duration="13.172" data-width="1920" data-height="1080">
+  <div class="clip f18-step-4-ground" id="f18-step-4-ground" data-start="0" data-duration="13.172" data-track-index="0"></div>
+
+  <div class="f18-step-4-rail" id="f18-step-4-rail">
+    <div class="f18-step-4-slot dim" id="f18-step-4-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d ink" data-plan-question="1">10 albums</span></div>
+    <div class="f18-step-4-slot dim" id="f18-step-4-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+    <div class="f18-step-4-slot dim" id="f18-step-4-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d ink" data-plan-question="2">Timeline</span></div>
+    <div class="f18-step-4-slot" id="f18-step-4-slot-4" data-plan-step="4" style="top:330px"><div class="f18-step-4-fill" id="f18-step-4-fill-4"></div><span class="n" id="f18-step-4-n-4">4</span><span class="t" id="f18-step-4-t-4">Design system</span></div>
+    <div class="f18-step-4-slot" id="f18-step-4-slot-5" data-plan-step="5" style="top:440px"><span class="n" style="opacity:0">5</span><span class="t" style="opacity:0">Search</span></div>
+    <div class="f18-step-4-slot" id="f18-step-4-slot-6" data-plan-step="6" style="top:550px"><span class="n" style="opacity:0">6</span><span class="t" style="opacity:0">Hosting</span></div>
+  </div>
+
+  <!-- PAGES ONLY. Step 4 changes what a page IS, so it is drawn on the page mocks themselves. -->
+  <div class="f18-step-4-lbl" id="f18-step-4-lbl" style="left:1258px;top:300px">Pages</div>
+
+  <div class="f18-step-4-page" id="f18-step-4-page-era" style="left:1258px">
+    <h id="f18-step-4-h-era">Going Electric, 1965</h>
+    <div class="bar" id="f18-step-4-eb-1" style="width:88%"></div>
+    <div class="bar" id="f18-step-4-eb-2" style="width:94%"></div>
+    <div class="bar" id="f18-step-4-eb-3" style="width:70%"></div>
+    <div class="bar" id="f18-step-4-eb-4" style="width:52%"></div>
+    <div class="bar more" id="f18-step-4-eb-5" style="width:62%"></div>
+    <div class="bar more" id="f18-step-4-eb-6" style="width:64%"></div>
+    <div class="bar more" id="f18-step-4-eb-7" style="width:56%"></div>
+    <div class="f18-step-4-img" id="f18-step-4-img-large"></div>
+    <span class="cap">era</span>
+    <div class="lit" id="f18-step-4-lit-era"></div>
+  </div>
+
+  <div class="f18-step-4-page" id="f18-step-4-page-album" style="left:1448px">
+    <h id="f18-step-4-h-album">Bringing It All Back Home</h>
+    <div class="bar" id="f18-step-4-ab-1" style="width:92%"></div>
+    <div class="bar" id="f18-step-4-ab-2" style="width:78%"></div>
+    <div class="bar" id="f18-step-4-ab-3" style="width:86%"></div>
+    <div class="bar" id="f18-step-4-ab-4" style="width:40%"></div>
+    <div class="f18-step-4-tracks" id="f18-step-4-tracks">
+      <div class="f18-step-4-trow" id="f18-step-4-tr-1"><i class="no"></i><i class="ti" style="width:64%"></i><i class="du"></i></div>
+      <div class="f18-step-4-trow" id="f18-step-4-tr-2"><i class="no"></i><i class="ti" style="width:52%"></i><i class="du"></i></div>
+      <div class="f18-step-4-trow" id="f18-step-4-tr-3"><i class="no"></i><i class="ti" style="width:60%"></i><i class="du"></i></div>
+      <div class="f18-step-4-trow" id="f18-step-4-tr-4"><i class="no"></i><i class="ti" style="width:44%"></i><i class="du"></i></div>
+    </div>
+    <div class="f18-step-4-img" id="f18-step-4-img-small" style="width:52px"></div>
+    <span class="cap">album</span>
+    <div class="lit" id="f18-step-4-lit-album"></div>
+  </div>
+
+  <div class="f18-step-4-page" id="f18-step-4-page-song" style="left:1638px">
+    <h id="f18-step-4-h-song">Like a Rolling Stone</h>
+    <div class="bar" style="width:64%"></div>
+    <div class="bar" style="width:64%"></div>
+    <div class="bar" style="width:64%"></div>
+    <div class="bar" style="width:64%"></div>
+    <span class="cap">song</span>
+  </div>
+
+  <div class="f18-step-4-toks" id="f18-step-4-toks"><span id="f18-step-4-tok-serif">serif</span><span id="f18-step-4-tok-sans"> · sans</span><span id="f18-step-4-tok-img"> · two image sizes</span></div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var INK = __RP["ink"], CORAL_TEXT = __RP["coral-deep"];
+  var out = "power3.out", io = "power3.inOut";
+
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["18-step-4"] = tl;
+
+  var pageAlbum = q("f18-step-4-page-album"), pageEra = q("f18-step-4-page-era"), pageSong = q("f18-step-4-page-song");
+  var ringAlbum = q("f18-step-4-lit-album"), ringEra = q("f18-step-4-lit-era");
+  var heads = [q("f18-step-4-h-album"), q("f18-step-4-h-era"), q("f18-step-4-h-song")];
+
+  // the pages are carried context: on stage from the first frame, held back at 0.72
+  tl.set([pageAlbum, pageEra, pageSong], { opacity: 0.72 }, 0);
+
+  // 0.04 "Step" — rail slot 4 fills; 0.34 "four" — its index and title arrive
+  tl.fromTo(q("f18-step-4-fill-4"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: out }, 0.12);
+  tl.fromTo([q("f18-step-4-n-4"), q("f18-step-4-t-4")], { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: out, stagger: 0.06 }, 0.364);
+
+  // 0.78 "design" — the pages come to full presence: they are what the design system acts on
+  tl.to([pageAlbum, pageEra, pageSong], { opacity: 1, duration: 0.5, ease: out, stagger: 0.06 }, 0.806);
+
+  // 1.77 "Two kinds of page" — the song page steps out; two kinds are left in play
+  tl.to(pageSong, { opacity: 0.35, duration: 0.6, ease: out }, 1.902);
+
+  // 2.98 "biography" — the era page takes the coral
+  tl.fromTo(ringEra, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: out }, 3.134);
+
+  // 4.84 "narrow" — its measure pulls in to a single reading column
+  tl.to(q("f18-step-4-eb-1"), { scaleX: 64 / 88, transformOrigin: "0 50%", duration: 0.55, ease: io }, 5.02);
+  tl.to(q("f18-step-4-eb-2"), { scaleX: 60 / 94, transformOrigin: "0 50%", duration: 0.55, ease: io }, 5.067);
+  tl.to(q("f18-step-4-eb-3"), { scaleX: 64 / 70, transformOrigin: "0 50%", duration: 0.55, ease: io }, 5.113);
+  tl.to(q("f18-step-4-eb-4"), { scaleX: 58 / 52, transformOrigin: "0 50%", duration: 0.55, ease: io }, 5.16);
+  // 5.47 "column." — the same text, now longer: the column runs on
+  tl.fromTo([q("f18-step-4-eb-5"), q("f18-step-4-eb-6"), q("f18-step-4-eb-7")],
+        { scaleY: 0, opacity: 0, transformOrigin: "50% 0" },
+        { scaleY: 1, opacity: 1, duration: 0.45, ease: out, stagger: 0.08, immediateRender: true }, 5.508);
+
+  // 5.93 "And" — the era page hands the coral back, clear before the album takes it
+  tl.to(ringEra, { opacity: 0, duration: 0.29, ease: "power2.inOut" }, 6.161);
+  // 6.22 "album" — the album page takes the coral
+  tl.fromTo(ringAlbum, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: out }, 6.396);
+
+  // 7.64 "full width" — a reference page, so its measure runs the full column
+  tl.to(q("f18-step-4-ab-1"), { scaleX: 100 / 92, transformOrigin: "0 50%", duration: 0.5, ease: io }, 7.87);
+  tl.to(q("f18-step-4-ab-2"), { scaleX: 100 / 78, transformOrigin: "0 50%", duration: 0.5, ease: io }, 7.946);
+  tl.to(q("f18-step-4-ab-3"), { scaleX: 96 / 86, transformOrigin: "0 50%", duration: 0.5, ease: io }, 8.023);
+  tl.to(q("f18-step-4-ab-4"), { scaleX: 72 / 40, transformOrigin: "0 50%", duration: 0.5, ease: io }, 8.099);
+
+  // 8.30 "table" — the lower prose collapses and a table opens in its place
+  tl.to([q("f18-step-4-ab-3"), q("f18-step-4-ab-4")], { scaleY: 0, opacity: 0, transformOrigin: "0 50%", duration: 0.45, ease: io }, 8.564);
+  tl.fromTo(q("f18-step-4-tracks"), { scaleY: 0, opacity: 0, transformOrigin: "50% 0" },
+        { scaleY: 1, opacity: 1, duration: 0.5, ease: out, immediateRender: true }, 8.564);
+  // 8.78 "tracks." — the rows land
+  tl.to([q("f18-step-4-tr-1"), q("f18-step-4-tr-2"), q("f18-step-4-tr-3"), q("f18-step-4-tr-4")],
+        { opacity: 1, duration: 0.4, ease: out, stagger: 0.07 }, 9.036);
+
+  // 9.48 "One" — the album hands the coral back, clear before the type token takes it
+  tl.to(ringAlbum, { opacity: 0, duration: 0.29, ease: "power2.inOut" }, 9.8);
+
+  // 9.78 "serif" — every heading switches to serif, on the pages themselves
+  tl.set(heads, { fontFamily: '"EB Garamond"', letterSpacing: 0 }, 10.044);
+  tl.fromTo(heads, { opacity: 0.3 }, { opacity: 1, duration: 0.45, ease: out, stagger: 0.06 }, 10.044);
+  tl.fromTo(q("f18-step-4-tok-serif"), { opacity: 0, y: 8, color: CORAL_TEXT },
+                                       { opacity: 1, y: 0, color: CORAL_TEXT, duration: 0.4, ease: out }, 10.044);
+
+  // 10.40 "sans" — the coral moves on, one lit at a time
+  tl.to(q("f18-step-4-tok-serif"), { color: INK, duration: 0.3, ease: out }, 10.559);
+  tl.fromTo(q("f18-step-4-tok-sans"), { opacity: 0, y: 8, color: CORAL_TEXT },
+                                      { opacity: 1, y: 0, color: CORAL_TEXT, duration: 0.4, ease: out }, 10.72);
+
+  // 11.19 "images" — the coral moves on again
+  tl.to(q("f18-step-4-tok-sans"), { color: INK, duration: 0.3, ease: out }, 11.358);
+  tl.fromTo(q("f18-step-4-tok-img"), { opacity: 0, y: 8, color: CORAL_TEXT },
+                                     { opacity: 1, y: 0, color: CORAL_TEXT, duration: 0.4, ease: out }, 11.508);
+  // 11.44 "two" / 11.66 "sizes" — the two sizes, each on the page that takes it
+  tl.fromTo(q("f18-step-4-img-large"), { scaleY: 0, opacity: 0, transformOrigin: "50% 0" },
+        { scaleY: 1, opacity: 1, duration: 0.5, ease: out, immediateRender: true }, 11.84);
+  tl.fromTo(q("f18-step-4-img-small"), { scaleY: 0, opacity: 0, transformOrigin: "50% 0" },
+        { scaleY: 1, opacity: 1, duration: 0.5, ease: out, immediateRender: true }, 12.066);
+
+  // held read to 12.224
+  tl.to({}, { duration: 0.01 }, 12.657);
+})();
+</script>
+</template>

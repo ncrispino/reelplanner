@@ -1,0 +1,74 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v12-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v12-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v12-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v12-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v12-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v12-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v12-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v12-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v12-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v12-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v12-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v12-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v12-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v12-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v12-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v12-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v12-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v12-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v12-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v12-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v12-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v12-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v12-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v12-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v12-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-txt code, .v12-mrow code, .v12-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="12-qc-edit-rebuild" data-band="bottom" data-duration="10.5" data-width="1920" data-height="1080">
+  <div class="clip v12-bg" id="v12-bg" data-start="0" data-duration="10.5" data-track-index="0"></div>
+  <div class="clip v12-scene" id="v12-scene" data-start="0" data-duration="10.5" data-track-index="1">
+    <div class="v12-lab" id="v12-lab" style="left:120px; top:110px">quick check</div>
+    <div class="v12-q" id="v12-q" data-question style="top:160px">You suggest an edit to a case that no scene shows. What does the revise rebuild?</div>
+    <div class="v12-opt" id="v12-o0" data-option="a" style="left:120px"><span class="k">A</span><span class="l">Every scene</span></div>
+    <div class="v12-opt" id="v12-o1" data-option="b" style="left:690px"><span class="k">B</span><span class="l">The guide only</span></div>
+    <div class="v12-opt" id="v12-o2" data-option="c" style="left:1260px"><span class="k">C</span><span class="l">Its step's scenes</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "12-qc-edit-rebuild";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v12-lab", { opacity: 0, y: 12 });
+  gsap.set("#v12-q", { opacity: 0, y: 12 });
+  gsap.set("#v12-o0", { opacity: 0, y: 12 });
+  gsap.set("#v12-o1", { opacity: 0, y: 12 });
+  gsap.set("#v12-o2", { opacity: 0, y: 12 });
+  tl.to("#v12-lab", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.10);
+  tl.to("#v12-q", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.20);
+  tl.to("#v12-o0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.20);
+  tl.to("#v12-o1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.45);
+  tl.to("#v12-o2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.70);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

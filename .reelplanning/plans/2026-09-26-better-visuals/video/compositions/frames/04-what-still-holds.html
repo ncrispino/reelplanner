@@ -1,0 +1,114 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b04-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b04-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b04-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b04-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b04-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b04-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b04-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b04-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b04-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b04-ul.ink { background:var(--rp-ink); height:3px; }
+  .b04-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b04-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b04-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b04-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b04-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b04-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b04-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b04-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b04-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b04-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b04-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b04-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b04-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b04-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b04-w { position:absolute; left:150px; width:1340px; height:150px; overflow:hidden; }
+  .b04-in { position:absolute; left:0; top:0; width:1340px; height:150px; }
+  .b04-eh { position:absolute; left:0; top:10px; font:400 34px/1.15 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .b04-eh .id { font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); margin-right:16px; }
+  .b04-ec { position:absolute; left:0; top:74px; width:1290px; font:400 27px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.78); white-space:nowrap; }
+  .b04-rl { position:absolute; left:150px; width:1620px; height:1px; background:rgba(var(--rp-ink-rgb),0.16); transform-origin:0 50%; }
+
+</style>
+
+<div id="root" data-composition-id="04-what-still-holds" data-band="bottom" data-duration="11.4" data-width="1920" data-height="1080">
+
+  <div class="clip b04-bg" id="b04-bg" data-start="0" data-duration="11.4" data-track-index="0"></div>
+
+  <div class="clip b04-scene" id="b04-scene" data-start="0" data-duration="11.4" data-track-index="1">
+    <div class="b04-view" id="b04-view"><div class="b04-cam" id="b04-cam">
+    <div class="b04-doc" id="b04-doc" style="left:100px; top:40px; width:1720px; height:830px"></div>
+    <div class="b04-lab" id="b04-file" style="left:150px; top:84px">decisions.md · four that still hold</div>
+    <div class="b04-w" id="b04-w0" style="top:150px"><div class="b04-in" id="b04-in0"><div class="b04-eh"><span class="id">Decision D-127</span>Which words does the viewer see: plain new ones, or today's, explained?</div><div class="b04-ec">Chosen: Plain words on screen — choice (not call), label (not tag), chapter, scene …</div></div></div>
+    <div class="b04-rl" id="b04-r0" style="top:310px"></div>
+    <div class="b04-pin" id="b04-p0" style="left:1510px; top:170px">plain words</div>
+    <div class="b04-w" id="b04-w1" style="top:326px"><div class="b04-in" id="b04-in1"><div class="b04-eh"><span class="id">Decision D-108</span>Where do the answers the frame can't take go?</div><div class="b04-ec">Where: 2026-09-24-answer-on-the-video, step 2 (The sheet stops repeating the question)</div></div></div>
+    <div class="b04-rl" id="b04-r1" style="top:486px"></div>
+    <div class="b04-pin" id="b04-p1" style="left:1510px; top:346px">on the frame's cards</div>
+    <div class="b04-w" id="b04-w2" style="top:502px"><div class="b04-in" id="b04-in2"><div class="b04-eh"><span class="id">Decision D-083</span>How many quick checks does a video ask?</div><div class="b04-ec">Chosen: One per step, plus wherever there is something to predict</div></div></div>
+    <div class="b04-rl" id="b04-r2" style="top:662px"></div>
+    <div class="b04-pin" id="b04-p2" style="left:1510px; top:522px">a check per step</div>
+    <div class="b04-w" id="b04-w3" style="top:678px"><div class="b04-in" id="b04-in3"><div class="b04-eh"><span class="id">Decision D-003</span>When does the system video update?</div><div class="b04-ec">Where: 2026-09-22-close-the-lifecycle, step 6 (Keep the system video current)</div></div></div>
+    <div class="b04-rl" id="b04-r3" style="top:838px"></div>
+    <div class="b04-pin" id="b04-p3" style="left:1510px; top:698px">kept current</div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "04-what-still-holds";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b04-cam", { x: -57.6, y: -27, scale: 1.06 });
+  gsap.set("#b04-w0", { x: -1340 });
+  gsap.set("#b04-in0", { x: 1340 });
+  gsap.set("#b04-r0", { scaleX: 0 });
+  gsap.set("#b04-p0", { opacity: 0, x: 24 });
+  gsap.set("#b04-w1", { x: -1340 });
+  gsap.set("#b04-in1", { x: 1340 });
+  gsap.set("#b04-r1", { scaleX: 0 });
+  gsap.set("#b04-p1", { opacity: 0, x: 24 });
+  gsap.set("#b04-w2", { x: -1340 });
+  gsap.set("#b04-in2", { x: 1340 });
+  gsap.set("#b04-r2", { scaleX: 0 });
+  gsap.set("#b04-p2", { opacity: 0, x: 24 });
+  gsap.set("#b04-w3", { x: -1340 });
+  gsap.set("#b04-in3", { x: 1340 });
+  gsap.set("#b04-r3", { scaleX: 0 });
+  gsap.set("#b04-p3", { opacity: 0, x: 24 });
+  tl.to("#b04-cam", { x: 0, y: 0, scale: 1, duration: 3, ease: "sine.inOut" }, 0.1);
+  tl.to("#b04-w0", { x: 0, duration: 0.6, ease: "power2.out" }, 2.69);
+  tl.to("#b04-in0", { x: 0, duration: 0.6, ease: "power2.out" }, 2.69);
+  tl.to("#b04-r0", { scaleX: 1, duration: 0.5, ease: "power1.out" }, 2.89);
+  tl.to("#b04-p0", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 2.99);
+  tl.to("#b04-w1", { x: 0, duration: 0.6, ease: "power2.out" }, 5.17);
+  tl.to("#b04-in1", { x: 0, duration: 0.6, ease: "power2.out" }, 5.17);
+  tl.to("#b04-r1", { scaleX: 1, duration: 0.5, ease: "power1.out" }, 5.37);
+  tl.to("#b04-p1", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 5.47);
+  tl.to("#b04-w2", { x: 0, duration: 0.6, ease: "power2.out" }, 6.69);
+  tl.to("#b04-in2", { x: 0, duration: 0.6, ease: "power2.out" }, 6.69);
+  tl.to("#b04-r2", { scaleX: 1, duration: 0.5, ease: "power1.out" }, 6.89);
+  tl.to("#b04-p2", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 6.99);
+  tl.to("#b04-w3", { x: 0, duration: 0.6, ease: "power2.out" }, 8.78);
+  tl.to("#b04-in3", { x: 0, duration: 0.6, ease: "power2.out" }, 8.78);
+  tl.to("#b04-r3", { scaleX: 1, duration: 0.5, ease: "power1.out" }, 8.98);
+  tl.to("#b04-p3", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 9.08);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

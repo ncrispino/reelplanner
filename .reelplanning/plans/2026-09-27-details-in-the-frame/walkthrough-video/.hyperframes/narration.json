@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "6a5aac4574e36e3d2173",
+      "text": "Two choices in step three stop. Choice A6: every way in opens the page over the frame, from the corner chip or the plan text beside the video too, never the side panel it used to open in, beside the video. Choice A8: the ink ring stays on the thing while its page is open, rather than for a few seconds after it closes.",
+      "sha256": "0fca04c2c850b35426cef8c043ec6c3c32204a24be17aab38c6d3b42e80813d9",
+      "duration_s": 18.752
+    },
+    "11": {
+      "key": "04acba94248697fefe43",
+      "text": "Quick check. A stop scene's choice cards are up, and the diff they are about is marked behind them. You click the diff. What happens?",
+      "sha256": "05b0e9822bcc1bfb1b298e5b2abb7465ffe5f9435eadf86b5a19c10b2a10092d",
+      "duration_s": 6.891
+    },
+    "12": {
+      "key": "d14abf9f3610f7a4fedb",
+      "text": "One choice in step three doesn't stop. Choice A7: the O key is logged as opened from the frame, or from the chip, by whichever way in the scene shows.",
+      "sha256": "a0429d18d02f7ecc25ff72f230c1bfbefcbf40a83d229fee3f5db7236666de5d",
+      "duration_s": 9.216
+    },
+    "13": {
+      "key": "d3f17444e0301380d426",
+      "text": "Step four. As you decided in decision D-196, the corner chip is now the fallback. A scene that marks its thing has no chip. One that marks nothing, as every older video does, keeps it: here, scene nine of the deep-dives walkthrough. On a phone, a marked thing under forty-four pixels tall on screen gets the chip too. The plan text's Open row stays.",
+      "sha256": "6fece4e2c01666ab7da60c93d2196f9019949ca1973e674fbce499a1be5fef1f",
+      "duration_s": 20.501
+    },
+    "14": {
+      "key": "995c51343ca3357bb3a0",
+      "text": "Quick check. The video is paused at one minute five when you click a marked table. Its page opens, and you press Escape. What happens?",
+      "sha256": "f87b1afe2688785c35b4ad70d5a46cc8f71d23558e6fc041d90ac3e6f0b66997",
+      "duration_s": 7.445
+    },
+    "15": {
+      "key": "6f111535267747eeee51",
+      "text": "You also asked for one thing: your own words should wrap. Every own-words field was one line, so three hundred characters ran off to the side. Now each is a text box that wraps, grows to three or four lines, then scrolls inside the same box. Enter saves, and Shift and Enter starts a new line.",
+      "sha256": "9ff4677cb9e668f2e1c26ff4771b3f5838a1631d516005fba6542e542122c9eb",
+      "duration_s": 16.917
+    },
+    "16": {
+      "key": "b626d28a483c668cee6c",
+      "text": "Both choices here stop. Choice A9: a field grows to three lines under an answer and four elsewhere, then scrolls. Choice A10: Enter still saves, Shift and Enter starts a new line, and the line breaks are kept.",
+      "sha256": "4f8ffba39899c4f0910808f2693dce43a6a04146b16a0fcb9a5c3e2245f8d9d9",
+      "duration_s": 12.459
+    },
+    "17": {
+      "key": "e84bc2a51921b86a4bc6",
+      "text": "A second agent checked the code against the plan: all four steps and twenty-four decisions hold. It found two changes with no row: your own-words fix, now choices A9 and A10, and another commit's change to a test, which is not this plan's. The walkthrough check passes.",
+      "sha256": "518a2ad5c3f20adc5c306c0914cb019ca4c6a266d1c014dce711e677b572769f",
+      "duration_s": 15.851
+    },
+    "18": {
+      "key": "8e0f8713567abe9b2e62",
+      "text": "Quick check. On a phone, a scene's marked code line shows a hundred and sixty pixels wide and thirty tall. How does its page open?",
+      "sha256": "8cc9ef94a6d7f75e15b7d966bc19826c975ba6c1ebdd0ea7fe69643c84c2889d",
+      "duration_s": 7.595
+    },
+    "19": {
+      "key": "0117623994f1487eb944",
+      "text": "Every test ran and passed, fifty-seven new checks among them. One is for a bug this video found: the details check read the words `data-detail` in scene three's real run as a mark; now only a mark on an element counts. The whole path was also run end to end on a real video. Not done: no other video marks its things yet; each gets its marks when it is next rebuilt. Flag a choice, or accept the build.",
+      "sha256": "86d6946e13b78d78b2ad50d793f6a27ff67ae625d72157e486657be1c1128de7",
+      "duration_s": 22.699
+    },
+    "01": {
+      "key": "962a2fa7f49fcd46db10",
+      "text": "The details-in-the-frame plan is built: its four steps, the numbered parts of the plan, and one thing you asked for along the way. It changed fourteen files, so here is its map, one line a place. Most of it is the review player, the page where you watch a video and answer it; then the two checks, the rules for writing a scene, one stretch of a video, and the tests.",
+      "sha256": "c1d6027c19ed9fb81b64c81637523c245d8ec9acf95e1af9e3a305f466b38db6",
+      "duration_s": 19.456
+    },
+    "02": {
+      "key": "69a460470825e1e301fc",
+      "text": "Step one. A detail is a page a scene opens, for what the video cannot show. Now the frame marks the one thing that page explains, with `data-detail` on it: here, the eight-line block in the deep-dives walkthrough. The storyboard still says which page a scene has; the frame only says where.",
+      "sha256": "09021537b136bd390a23a4a32617bfb370eae99dfbce78b7a3bc0be027a8963c",
+      "duration_s": 17.216
+    },
+    "03": {
+      "key": "864c636df98d67ec189e",
+      "text": "Checks hold the mark. The frame check fails a marked thing that reaches the lowest eighth, where you answer; one under a hundred and twenty by forty-four pixels; and one still moving in its scene's last three seconds. Here the block was made taller, so the frame check fails it. The details check, which opens every page a video has, fails a mark its scene does not have. Click the run to see every rule the checks hold a mark to.",
+      "sha256": "2cbdd92d6943eb8977556890258e2d8653abe30bc7ebb60f7eb1ba30db2ae55f",
+      "duration_s": 22.229
+    },
+    "04": {
+      "key": "1fc07cfd0f0475238bd8",
+      "text": "Two choices in step one don't stop: choices the agent made on its own, where the plan said nothing. Choice A1: the frame check measures a mark from the frame's own CSS. Choice A2: two things marked with one name fail.",
+      "sha256": "ff4fb9fe8c1d1d5cf2d2cb7b25bfe35ad14652051d81b31efc75793050691a79",
+      "duration_s": 13.248
+    },
+    "05": {
+      "key": "f0d673b0e190ab8e1a09",
+      "text": "Step two. On the review page, the player lays a clear button over the marked thing, with a tab on its top edge, Open and the page's title, the whole time it can be clicked. Under your pointer it rings in coral and says why you would open it. Tab reaches it after Play, and Enter or O opens it. Click the button in the picture to read the code that decides when it shows.",
+      "sha256": "0f68dfb56b440f25f0d65c710a6fb8e3990e80ca252d8a57f40b9b00248770bd",
+      "duration_s": 19.776
+    },
+    "06": {
+      "key": "4cb1d872284fd682d5a8",
+      "text": "Two choices in step two stop. Choice A3: the button comes only once the thing has landed, fully shown, not from the scene's start. Choice A5: it hides for as long as a question's box is up, an answered one included, so a click on the thing does nothing until the box closes.",
+      "sha256": "48f6bfcccacb252dc782b17dba724179fd764a5fad99d1df6147788f3eb6977a",
+      "duration_s": 16.085
+    },
+    "07": {
+      "key": "6b635feb765b62edc786",
+      "text": "Quick check, a question that asks you to predict. A marked table slides in and comes to rest two seconds before its scene ends. What does the frame check do?",
+      "sha256": "917285e4e60bbf3de97839fc13d9c38a55d45e1852b36baf217e2687757fba16",
+      "duration_s": 8.491
+    },
+    "08": {
+      "key": "73f211d302bd05c2ec11",
+      "text": "One choice in step two doesn't stop. Choice A4: the button stays in the picture's own layer, so it moves with a zoomed picture, and Tab reaches it by a hop after Play.",
+      "sha256": "0e9a012519a038012c1053898d86175c612b363493d96439df9af77be6ee2116",
+      "duration_s": 9.685
+    },
+    "09": {
+      "key": "cc86899e3512f7f01c6c",
+      "text": "Step three. A click pauses the video and opens the page over the frame, in the video's own box, grown out of the thing, as you decided in decision D-195. While it is open the thing keeps an ink ring. Escape or the cross closes it: the video plays on if it was playing, and stays paused if it was not, and focus goes back to the thing. The record notes where each page was opened from: the frame, the chip or the list.",
+      "sha256": "d9a739f72a786af548609d8ec7683b5ed61d0475ece058778f3ccab29d2084c1",
+      "duration_s": 22.933
+    }
+  }
+}

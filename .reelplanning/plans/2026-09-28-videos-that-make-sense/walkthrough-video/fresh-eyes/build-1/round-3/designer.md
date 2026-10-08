@@ -1,0 +1,8 @@
+# Fresh eyes: designer · round 3 · stamp 636b396fde0f
+
+- G1 · scene 7 · "nobody waiting: with your review" / "the session's answer: where from": the narration says the session-answered case first ("the session waiting on the page answered in seconds, and said where from") and the nobody-waiting case second ("with none waiting, the question goes with your review"), but the picture puts the nobody-waiting Q&A above the session-answered one, top to bottom — breaks rule 2 (reading order should follow narration order); swap the two Q&A blocks so session-answered sits above nobody-waiting.
+  - Answer: kept: as round 2's G2: the picture is the page as it is, newest first
+- G2 · scene 9 · "you approve, or not": the question "next plan: drop the walkthrough video?" sits in the black status bar and the decision "you approve, or not" sits alone in a separate chip off to the side — this is the exact bad pattern rule 4 names ("you approve, or not" alone); breaks rule 4; fix by combining them into one line, e.g. "Drop the walkthrough video after each build? Approve or not."
+  - Answer: kept: as rounds 1 and 2: the frame the owner sent, the rules' bad example, labelled so
+- G3 · scene 9 · "plan video · stays" / "code check · stays": these two chips are stacked in a column on the right, apart from the rows they name — "Plan video" already labels its own row on the left, and "Code check" has no visible row in the frame at all; breaks rule 3 ("never a column of chips apart from the things they name"); fix by putting each qualifier beside its own row, or showing the code-check row it refers to.
+  - Answer: kept: as G2, part of the example frame

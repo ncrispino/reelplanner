@@ -1,0 +1,93 @@
+$ cat .reelplanning/explainers/2026-09-29-experiment/sources.json   (what explain pinned, in the scratch repo)
+{
+  "question": "what did the experiment show?",
+  "title": "What did the experiment show",
+  "created": "2026-09-29",
+  "commit": "9fe2b8811d32",
+  "guideLines": 200,
+  "sources": [
+    {
+      "id": "~/runs/results.csv",
+      "form": "outside",
+      "shape": "table",
+      "path": "~/runs/results.csv",
+      "size": {
+        "lines": 3
+      },
+      "hash": "a0b867121427bf33",
+      "guide": false
+    },
+    {
+      "id": "src",
+      "form": "path",
+      "shape": "files",
+      "commit": "9fe2b8811d32",
+      "dirty": false,
+      "files": [
+        {
+          "path": "src/app.mjs",
+          "hash": "cd9fdf8e75196e27",
+          "lines": 4,
+          "shape": "text"
+        },
+        {
+          "path": "src/big.mjs",
+          "hash": "1a224b61a99180b7",
+          "lines": 240,
+          "shape": "text"
+        }
+      ],
+      "size": {
+        "lines": 244,
+        "files": 2
+      },
+      "hash": "fbabc7dfd242e917",
+      "guide": true,
+      "parts": [
+        "src/big.mjs"
+      ]
+    },
+    {
+      "id": "dcd60fe..HEAD",
+      "form": "git",
+      "shape": "files",
+      "range": "dcd60fe190b3..9fe2b8811d32",
+      "commit": "9fe2b8811d32",
+      "files": [
+        {
+          "path": "README.md"
+        }
+      ],
+      "size": {
+        "lines": 2,
+        "files": 1,
+        "commits": 1
+      },
+      "hash": "5909728cea2a2f16",
+      "guide": false
+    },
+    {
+      "id": "D-001",
+      "form": "decision",
+      "shape": "text",
+      "size": {
+        "lines": 3
+      },
+      "hash": "9f1f85afdbccfc99",
+      "guide": false,
+      "said": "D-001: Where do reviews go? → The inbox"
+    },
+    {
+      "id": "~/.claude/session.jsonl",
+      "form": "outside",
+      "shape": "sequence",
+      "path": "~/.claude/session.jsonl",
+      "size": {
+        "lines": 232
+      },
+      "hash": "59aa2c72b822b7fc",
+      "guide": true
+    }
+  ]
+}
+exit 0

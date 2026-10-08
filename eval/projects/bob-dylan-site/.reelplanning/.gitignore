@@ -1,0 +1,16 @@
+# reproducible, small: recomputed by revise-scope.mjs from annotations.json + plan.md each run,
+# not itself a record of anything (decisions.json and plan.resolved.md are the record)
+plans/*/revise-scope.json
+plans/*/walkthrough-scope.json
+
+# reproducible, large: rebuilt by the pipeline from the committed sources
+plans/*/video/renders/
+plans/*/video/snapshots/
+plans/*/video/node_modules/
+plans/*/video/assets/vendor/
+plans/*/video/.hyperframes/frame-packets/
+plans/*/walkthrough-video/renders/
+plans/*/walkthrough-video/snapshots/
+plans/*/walkthrough-video/node_modules/
+plans/*/walkthrough-video/assets/vendor/
+plans/*/walkthrough-video/.hyperframes/frame-packets/

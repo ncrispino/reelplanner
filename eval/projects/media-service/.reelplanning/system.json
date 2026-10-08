@@ -1,0 +1,26 @@
+{
+  "name": "media-service",
+  "kind": "brownfield",
+  "components": [
+    { "id": "sdk",      "name": "Client SDK",     "kind": "client",  "files": ["packages/sdk/"],                 "aliases": ["SDK", "client"],                 "stage": { "x": 700,  "y": 430, "w": 270, "h": 110 } },
+    { "id": "api",      "name": "Upload API",     "kind": "service", "files": ["src/upload/"],                   "aliases": ["API", "upload handlers"],        "stage": { "x": 1030, "y": 430, "w": 270, "h": 110 } },
+    { "id": "manifest", "name": "Manifest store", "kind": "store",   "files": ["migrations/", "src/upload/manifest.ts"], "aliases": ["manifest", "upload manifest"], "stage": { "x": 1360, "y": 230, "w": 280, "h": 150, "navy": true } },
+    { "id": "blob",     "name": "Blob store",     "kind": "external","files": ["src/blob/"],                     "aliases": ["S3", "object storage"],          "stage": { "x": 1360, "y": 590, "w": 280, "h": 110 } },
+    { "id": "billing",  "name": "Billing",        "kind": "service", "files": ["src/billing/"],                  "aliases": ["billing hook", "charge"],        "stage": { "x": 1680, "y": 230, "w": 180, "h": 150 } },
+    { "id": "sweeper",  "name": "Sweeper",        "kind": "job",     "files": ["src/jobs/"],                     "aliases": ["sweep", "cron job"],             "stage": { "x": 1680, "y": 590, "w": 180, "h": 110 } }
+  ],
+  "edges": [
+    { "from": "api",     "to": "manifest", "path": "M1300 460 L1330 460 L1330 305 L1360 305" },
+    { "from": "api",     "to": "blob",     "path": "M1300 510 L1330 510 L1330 645 L1360 645" },
+    { "from": "sdk",     "to": "api",      "path": "M970 485 L1030 485" },
+    { "from": "api",     "to": "billing",  "path": "M1165 430 L1165 180 L1770 180 L1770 230" },
+    { "from": "sweeper", "to": "manifest", "path": "M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" },
+    { "from": "sweeper", "to": "blob",     "path": "M1680 645 L1640 645" }
+  ],
+  "pipelines": [
+    { "id": "upload",  "name": "An upload, start to charge", "edges": ["sdk-api", "api-manifest", "api-blob", "api-billing"] },
+    { "id": "resume",  "name": "A resume after a disconnect", "edges": ["sdk-api", "api-manifest", "api-blob"] },
+    { "id": "sweep",   "name": "The hourly sweep",            "edges": ["sweeper-manifest", "sweeper-blob"] }
+  ],
+  "stage": { "rail": { "x": 80, "y": 150, "w": 500, "slotH": 90, "gap": 20, "slots": 6 } }
+}

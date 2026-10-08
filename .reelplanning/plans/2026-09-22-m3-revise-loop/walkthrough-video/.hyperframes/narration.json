@@ -1,0 +1,494 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "80a39b97bfda1bba7350",
+      "text": "The notification fires once the page is up and its address is known, rather than when verify passes. Verify knows no address, and runs again while findings are fixed.",
+      "sha256": "ea11187a23b28ad1cc3917b837f0452c31e67a7c8c69f1b05e370e522638aefd",
+      "duration_s": 9.856
+    },
+    "11": {
+      "key": "a5b93266458320f9488f",
+      "text": "Step three needs step two. Send on the local page posts the review to the review server, into its inbox. A waiting session takes it; with none, the server starts claude dash p; with no server, the next session does.",
+      "sha256": "ae116ffb21dcf4e3ed15b43f86647f27f186c1dbcddc0b2d9ba25841f4a96fcc",
+      "duration_s": 12.864
+    },
+    "12": {
+      "key": "e84703649d805a40dd76",
+      "text": "The inbox is gitignored, not committed. A review is untrusted until intake checks it, and a committed one would let a push look like a new review.",
+      "sha256": "5e3e22810a8f7632e6f0be30cde7d3ee84337735526919bc76714a05f33a6a1d",
+      "duration_s": 8.256
+    },
+    "13": {
+      "key": "bb5f0be808512e547952",
+      "text": "A session counts as waiting while its heartbeat file is under ten seconds old and its process lives, rather than a lock file. A killed session's heartbeat just ages out.",
+      "sha256": "4afc6df0f859d3da25148b1cd69a845d1f80faf650bb698feb89a06616cc1e3a",
+      "duration_s": 9.365
+    },
+    "14": {
+      "key": "91647c1397c01c9cef3f",
+      "text": "With a session waiting, the server leaves it the review, then looks again after fifteen seconds. Still unclaimed, it starts the headless run, so a dying session strands nothing.",
+      "sha256": "a394a4c465f17af31afa9d3b77bd783c79a4b48ec68ed6aa28b6c0b65e9f8ef0",
+      "duration_s": 9.429
+    },
+    "15": {
+      "key": "82f242b20c63ae4c9a8d",
+      "text": "Next, part three: the rules around the server, and one deviation.",
+      "sha256": "0a0cfa639511f5d1c5d95e90672217bba83db942c1a34ef0b76a8f933b0f884a",
+      "duration_s": 3.669
+    },
+    "16": {
+      "key": "96c417b4af44239de67f",
+      "text": "Part three of five. Send reaches a session. Now the rules around it.",
+      "sha256": "ea9354b279b40d1780df62ebbadebb60868e7dad8edbdd37bd1c1697cd485f6a",
+      "duration_s": 3.947
+    },
+    "17": {
+      "key": "ebb198c9217d6d5445f0",
+      "text": "Each review is handled once: whoever creates its claim file first wins, rather than a lock in the server's memory. The file survives a restart, and the loser does nothing.",
+      "sha256": "13a6d9dcc8d063b1b72241e6155e8bb448eea2d29b7914143f987d7f98b42a44",
+      "duration_s": 9.963
+    },
+    "18": {
+      "key": "4956a2e4b55cb45d1f13",
+      "text": "The endpoint takes only JSON, from this machine's own address, with no foreign origin, up to five megabytes. It can start an agent, so another tab's page must not reach it.",
+      "sha256": "39bde9a569289a7016e6171dadfb1308433f653abb4bad974bfb35b60ad37e14",
+      "duration_s": 10.304
+    },
+    "19": {
+      "key": "82176250cd31073eb2d2",
+      "text": "The setting was claude dash p, with no permission flags, since how much a headless run may do is your call. The real run showed the cost: a bare claude dash p is denied every edit, so the flags are in now.",
+      "sha256": "db81bbfc92339e2eeb3d75f4871233164ad4177ff6f38df1fb817b75d945d34d",
+      "duration_s": 12.181
+    },
+    "20": {
+      "key": "367b4182cbc4571e036d",
+      "text": "The page posts only when the review server marked it as its own and answered; otherwise the download stays. The Finish panel's three lines are there to try.",
+      "sha256": "d101f16a87ac5e590ffe5604a20b644bf9eca4675f7130580567b84805e69372",
+      "duration_s": 8.704
+    },
+    "21": {
+      "key": "7048aea7144cc489804e",
+      "text": "One deviation, said plainly: step three's hook for the hosted page is not built. The skill tells the agent to register one where its harness allows, and to check submitted rows at session start.",
+      "sha256": "7d0c535953d28a333c202f315a4da976a4dd3c2241e85b87c9b915170bfbb7d7",
+      "duration_s": 11.008
+    },
+    "22": {
+      "key": "be0a548991428fa55a73",
+      "text": "Quick check. You press Send twice on the same review. How many runs start?",
+      "sha256": "419829e8171c5f715d8416ddce6fe48388894e004b66e68e5a0fda401cddc208",
+      "duration_s": 3.819
+    },
+    "23": {
+      "key": "3a7c9c5a197a5e9d29a8",
+      "text": "Next, part four: the system video, and playing just the changes.",
+      "sha256": "cc17c084afdda8d0c5ca9d01ba0b04a17a432ee6e2bbdf5d7058c6349ff3eba6",
+      "duration_s": 3.605
+    },
+    "24": {
+      "key": "f50103bc4a18a156e6b2",
+      "text": "Part four of five. The loop is reported. Now the system video.",
+      "sha256": "dfd74aeba2c0823c3de2bd5f63c12b70778e442697017e804a2ffb237403f1f8",
+      "duration_s": 3.627
+    },
+    "25": {
+      "key": "f6c92a8f2e0c5ef23506",
+      "text": "Step four. A system-video review now goes through intake like a plan's. A real comment on frame eight was filed with that frame's spec section and its four parts, and sorted as: fix the video.",
+      "sha256": "99fce0f8cbbd6d793f48fe7386b79ef47b8f723a61f81e3c4a1e6f160d7106e0",
+      "duration_s": 11.264
+    },
+    "26": {
+      "key": "684368888c83a53e3205",
+      "text": "Intake checks a system-video review, rather than believing its path: the folder, a storyboard marked system, and every mark on that video's own frames.",
+      "sha256": "b7e5ade3a9ffac1c36c892657e9f9c1f9a05ed1445de2c4185883a3db6bcec73",
+      "duration_s": 8.576
+    },
+    "27": {
+      "key": "66f5e4d911e661bb4392",
+      "text": "The first sort is a keyword hint, rather than a model call: rewinds mean fix the video; a choice word, or two parts or more, means a plan. I decide each.",
+      "sha256": "c902afc0558f3c67cd8662c8aec0a4f5b28f0e1f8a94e2bbefadabcb4e9b0aab",
+      "duration_s": 9.067
+    },
+    "28": {
+      "key": "e57fa18cb7b4a1d2f16f",
+      "text": "A small change is shown in a one-step plan with its own walkthrough, rather than a walkthrough with no plan: the ledger and the library hang off a plan folder.",
+      "sha256": "b98654d7f3799eeea93bccc05c62a05a3a0b0d32b480f8ad51d756fdf2191607",
+      "duration_s": 8.469
+    },
+    "29": {
+      "key": "4f6550a2b5edaa449944",
+      "text": "Not in the plan: you asked for it in the review. After a rebuild, the player plays just the changes, with one button for the whole video. A seek to an unchanged beat still plays it.",
+      "sha256": "15eb90d82aab671bc688a6b6796c32469eb57cc950960c7a021d96fbbcc0538b",
+      "duration_s": 10.027
+    },
+    "30": {
+      "key": "a502385573eed1659e7f",
+      "text": "Just the changes is on for any revision you have not already sent a review of, rather than only after a sent round: a reviewer who downloaded still wants the changes.",
+      "sha256": "ddaab28081075bb8711b881fcba39a5b31d89ebcfa3a8032f250d2b160e790f7",
+      "duration_s": 9.216
+    },
+    "31": {
+      "key": "4f968e673343c2672131",
+      "text": "Next, the last part: step five, the code check, and what is still to come.",
+      "sha256": "afdbb411156ea7c916a51c61eba6b671aaa8f6ce70dd073bfde9fad636455e18",
+      "duration_s": 3.819
+    },
+    "32": {
+      "key": "466a17ac97f6f0b02a34",
+      "text": "Part five of five. Four steps are reported. Now step five, and the checks.",
+      "sha256": "db7b01cafbd1713706747c105d46a9e092df781538607e4e9cf987c12ad7f177",
+      "duration_s": 4.267
+    },
+    "33": {
+      "key": "134f1243aa81323505b5",
+      "text": "Step five needs all four. The Action is gone, with its template and install. A real review, with no session open, started claude dash p: nine minutes thirteen from Finish to the notification. The second is your Finish on this one.",
+      "sha256": "b6ea849c9d25c7799bea30848112d2708d66e8902d5d305c9825dc91daac014f",
+      "duration_s": 13.611
+    },
+    "34": {
+      "key": "bd49212083a5488be1d8",
+      "text": "Said plainly: the workers made sixty calls the plan did not, five times the dozen the rules allow. The plan left too much open: where narration is kept, who wins a review, how a system review is filed.",
+      "sha256": "9255c0446f037a496cd0123070fc692cac491c8a56f43121fd9e126c9101a79e",
+      "duration_s": 11.883
+    },
+    "35": {
+      "key": "1f07f2c0ad94dbbeef2a",
+      "text": "A fresh agent checked the code against the plan: two step gaps, and five real problems. Four were bugs, each now fixed with a test; one: a second system-video review would overwrite the first. The findings and answers are one click away.",
+      "sha256": "6ef725776dcced72b1598f5aa6f8749c57c9ba16b7f900fc67e17bbd8bb80f76",
+      "duration_s": 13.781
+    },
+    "36": {
+      "key": "c2ca9e4b09ed1a69895d",
+      "text": "Quick check. Two system-video reviews arrive back to back. What happens to the first one's answers?",
+      "sha256": "60ed15a77f4d8d3c972e7f2e28fe4ef6f5afe10b875f266d36602576b8fe3a2e",
+      "duration_s": 5.355
+    },
+    "37": {
+      "key": "1fdda94611b637789b22",
+      "text": "What ran: this plan's five spec files pass; the full suite was not run again. A real post woke a waiting session, and a real review, with no session open, started claude dash p.",
+      "sha256": "1f0bea9cea0e59f905eafe5d84e254852dd54d1eaf6a596d027794c460bdffd8",
+      "duration_s": 10.773
+    },
+    "38": {
+      "key": "bf6cc75929cfc6aef51c",
+      "text": "Still to come: the second timed review, which is your Finish on this video. Re-timing the frames took three and a half of the nine minutes, by hand, and is not fixed. Flag a call, or accept.",
+      "sha256": "7dc8ffb17dccf42ab3dd2b08065a9cb5dc13fbe6e4c2e6f6f8d5cdd6ab567433",
+      "duration_s": 10.475
+    },
+    "39": {
+      "key": "51c53fb0820ee680334e",
+      "text": "Round two. Your review of round one asked what a run nobody is watching may do, and the plan grew five steps: six to ten.",
+      "sha256": "143cfc704f14d0625479998d78c3529fb908c88a5195ee6051afa81d552b2fdf",
+      "duration_s": 7.189
+    },
+    "40": {
+      "key": "a4bbb06e9bdd80d127e6",
+      "text": "You decided four questions. A run nobody is watching runs in auto mode, inside the sandbox. A quick check per step, plus wherever there is something to predict. Tagged calls stop, and your record decides which tags fade. And the text and the files are trimmed.",
+      "sha256": "6d95c935cca3c0e5d22b21cbb5ec3faa476efb302c649e451c7cbea10f6d5d76",
+      "duration_s": 15.168
+    },
+    "41": {
+      "key": "46f9aa1606c715499e6f",
+      "text": "Steps six to nine are built, in four commits, and step ten waits for the next plan. The build made sixteen calls the plan did not, and four deviations. Twelve calls and every deviation stop for you; the other four calls share a sheet at the end of their part.",
+      "sha256": "52233b6b01b65e9a1ef9093aeeeca09439311842ac111b2837150a58540faf43",
+      "duration_s": 14.613
+    },
+    "42": {
+      "key": "26abac6a7540c6ea257d",
+      "text": "Next, part seven: step six, the run nobody is watching.",
+      "sha256": "46345dc1189974706348e614917488b7a40542d2e0c6ed4f32c38876e76bc1a1",
+      "duration_s": 3.2
+    },
+    "43": {
+      "key": "dfe090f2224144f43ef0",
+      "text": "Part seven: step six, what a run nobody is watching may do.",
+      "sha256": "389bf7dc10265fc70cf6e81465d46a81103d290cfd8469a05932318dee5221eb",
+      "duration_s": 3.584
+    },
+    "44": {
+      "key": "9ca3d8d599f5146c05a6",
+      "text": "Step six. The run nobody is watching is Claude Code in auto mode, in its sandbox: a classifier approves each action, and anything that would prompt is refused. Shell writes stay in the repo, and since your review, a hook keeps the file tools there too. Tried for real: a write in the repo went through; writes to the temp folder, to your home folder, and from a subagent were refused.",
+      "sha256": "81db2af02993873064bc60131f5f1dca12141d38acf7e8db16833cc0d15c02f0",
+      "duration_s": 20.715
+    },
+    "45": {
+      "key": "8480445b5c9003c69688",
+      "text": "Quick check. The run writes a file outside the repo with its file tool, not the shell. What happens?",
+      "sha256": "ff1b3593f7563b1680d972070442adc837b76e013ce1641cb566460497b61ee0",
+      "duration_s": 5.355
+    },
+    "46": {
+      "key": "8ee75dbdca7a18e32f2e",
+      "text": "You decided each limit the proof found. The file tools, at your request, are now fenced too, by that hook. Git commit runs outside the sandbox, so commits stay signed. Where the strict sandbox cannot start, no run starts, and a review waits for a session. Codex and opencode commands skip that check; the reference's Other agents section says what is Claude Code's alone.",
+      "sha256": "825bcbed608a1d721854d54af3878d4def89f0923cf2e7466091012fb0121a78",
+      "duration_s": 20.629
+    },
+    "47": {
+      "key": "d006de83648387a37726",
+      "text": "One deviation, said plainly: the proof ran on a weaker sandbox than the one that ships. This container runs as root, where the strict sandbox leaves the run no working shell. The shipped setting is untested on a normal machine.",
+      "sha256": "8b7d784c291907a46b1ec61cef65a45745ba2a83d30ba70cec10916ca1dee920",
+      "duration_s": 12.907
+    },
+    "48": {
+      "key": "b6fec28381a39c8617d0",
+      "text": "The sandbox settings sit inline in the command, rather than in a committed Claude settings file: only the run nobody is watching is fenced, not every session in the repo.",
+      "sha256": "c947d9f4a4b8b12f4832e7173aab7ec1f26d382a42182d8994218942abe730ef",
+      "duration_s": 9.579
+    },
+    "49": {
+      "key": "36f86f84b28d30ecc906",
+      "text": "Where the sandbox cannot run, such as native Windows or Linux without bubblewrap, there is no headless run at all, rather than one that runs unfenced with a warning. As you asked, that is now said: in a note in the README, and in one line when the review server starts: unattended runs are off on this machine, and why.",
+      "sha256": "45e94d25934c69b247fbd8989bb57da9c2bc7880e1eeba919628b341850dde5a",
+      "duration_s": 17.643
+    },
+    "50": {
+      "key": "c852221fae0f9237f355",
+      "text": "Nothing runs outside the fence, rather than letting the classifier approve a retry outside it. Otherwise the fence is only advice. The one exception is now git commit, so signed commits work: your answer, built since.",
+      "sha256": "39e57e979fdec202d48ac98b23701f656f1162f1b776d1bd19228a78436d3ca9",
+      "duration_s": 12.565
+    },
+    "51": {
+      "key": "da202fafaa06609e2b12",
+      "text": "The review server tells you when the run it started ends: ready, or stopped, with its log. Before, the run notified itself, but a sandboxed run cannot reach the server: the first real one sent a dead link.",
+      "sha256": "92f83decf950748b51683f5e0b2a805d63cb36941d3d67cc78c06579ecfc163c",
+      "duration_s": 11.84
+    },
+    "52": {
+      "key": "fec627dc90eb968d5ddc",
+      "text": "A small deviation: the note names Codex's equivalent as its workspace-write sandbox, not the plan's full-auto flag, which is deprecated and prints a warning. Like the plan's, it is untested. Codex's own auto and approval modes wait, as you said, until a Codex agent works on this.",
+      "sha256": "0f3218593b76001c85ad09e02c33cbbd922a80bc5396158d8c972721718a2c3d",
+      "duration_s": 17.045
+    },
+    "53": {
+      "key": "83449fde6cf1f17fe626",
+      "text": "And one more: no list of allowed hosts, rather than the plan's network to named hosts. In auto mode the classifier reviews each host a command names; a list needs upkeep. The sandbox's network was not tested here.",
+      "sha256": "8efb401f8c5eb98055b8c2c2351fd9c5a96362d024bbd28b9562f55dedca68c2",
+      "duration_s": 12.928
+    },
+    "54": {
+      "key": "c930830b7cbc2ce23a8d",
+      "text": "Next, part eight: more quick checks, and fewer stops.",
+      "sha256": "ed5e68bfbbcb1681be820b0f37041a21758c1c6eecb36fbcf089c4e732af6f6d",
+      "duration_s": 2.88
+    },
+    "55": {
+      "key": "4d76bfacd8c6a2edc179",
+      "text": "Part eight: step seven, more quick checks, and step eight, fewer stops.",
+      "sha256": "5c2e4c659795a5017bc19b0282de451e4a3ddb8b4a34363c50aaccc64ccd77bb",
+      "duration_s": 3.627
+    },
+    "56": {
+      "key": "462b0d155b9283ebab17",
+      "text": "Step seven is about quick checks. Every step gets at least one, plus one wherever you could guess wrong. Answer one wrong, and the player asks how you expected it to work; your words reach me as a comment on that step. Your answer at step six did just that: you expected the file tools kept in the repo, so now they are.",
+      "sha256": "5b6559cb42fdfc18fa53b42e8534a00a0c4d0ceca7c8cbdc1665341f931ff312",
+      "duration_s": 17.408
+    },
+    "57": {
+      "key": "6ad901304fb6872cfcc0",
+      "text": "Quick check. You answer a check wrong, and type how you expected it to work. What happens to your words?",
+      "sha256": "b526b609114800eb4eb359d910f19732c93470ecb15dab234647d5fd29c51699",
+      "duration_s": 5.205
+    },
+    "58": {
+      "key": "a313c755c800518dce0f",
+      "text": "Step eight. Each call now carries tags: visible, hard to undo, close, or deviation. A deviation always stops. An untagged call never does: it joins one sheet at the end of its part. A tagged call stops, and your record in the ledger decides which tags fade.",
+      "sha256": "8f8a8d39b8f971b39d960ae482d8397be11e8bc01ae50978219ae4a486267ed9",
+      "duration_s": 15.872
+    },
+    "59": {
+      "key": "125db2962a6a1bce5752",
+      "text": "Quick check. Your last ten calls tagged visible were all accepted. The next call is tagged only visible. What happens to it?",
+      "sha256": "fc2f368cc23dbfd20b2617768b8c8a27a2f8ee037719f686986fbe0b38f45967",
+      "duration_s": 6.912
+    },
+    "60": {
+      "key": "883d00ae24221fc5addd",
+      "text": "The ledger now keeps every verdict, flags and your own words included, and a new verdict on a call replaces its earlier accept, rather than keeping only accepted calls. The stop rule needs the flags.",
+      "sha256": "e95586cf52d6c9ed6fee0a1668aab5086c134cc7bad1f5f5e0cb45089e5660b4",
+      "duration_s": 11.691
+    },
+    "61": {
+      "key": "9c7175045b11bcba634e",
+      "text": "On the grouped sheet, each call has its own Flag, and one Accept all, with no box for your own words, rather than words and a key per call. Accept all takes only the calls you have not flagged: flag A21, press Accept all, and A23 is accepted while A21 stays flagged. A comment still works.",
+      "sha256": "a69d4ac494eac6dfeeb23c777ca46a0af03a69c7402a25c59ac7fc443742dd0e",
+      "duration_s": 17.984
+    },
+    "62": {
+      "key": "f25de927267491746b97",
+      "text": "Quick check. On that sheet you flag A21, then press Accept all. What happens to A21?",
+      "sha256": "cce4583c8d91e1b234d847090cd7fa8cb47471908cfdff473afaf27cfb62f062",
+      "duration_s": 5.483
+    },
+    "63": {
+      "key": "23fefd9ef59348cff89c",
+      "text": "Two more calls from step eight don't stop: where a call's tags are written, and how a run of accepts is counted. They share one sheet.",
+      "sha256": "d758e08938199f17e15a486528989662db2f0531cdeedcd7740f78fc3ef88e7a",
+      "duration_s": 6.912
+    },
+    "64": {
+      "key": "73c4f3aa7122fd4a852f",
+      "text": "Next, part nine: step nine, less scaffolding.",
+      "sha256": "07be9455b5411f5ec922e0322e6e1634dc25108b9f29c2f9d081330c89c3944b",
+      "duration_s": 2.56
+    },
+    "65": {
+      "key": "e49a10a8bcc643e70739",
+      "text": "Part nine: step nine, less scaffolding.",
+      "sha256": "969a11f462e186f10d6a1dcf28e71766eb0eb6f422d61bf96b5544d1064ea62e",
+      "duration_s": 2.24
+    },
+    "66": {
+      "key": "25ae5fec96b8fd258993",
+      "text": "Step nine trims the text and the files. The skill and the style guide are each about half as long, with the history moved to design notes. One command, build, runs narration through verify. And each review gets its own file, named by its time: a second review goes beside the first, never over it.",
+      "sha256": "6230289978acd7900def5827af8a1d4259734db9171587820c2c579c98a542ca",
+      "duration_s": 17.259
+    },
+    "67": {
+      "key": "c5500ef3c637256e7375",
+      "text": "Quick check. You send a second review of the same plan. Where is it filed?",
+      "sha256": "eeb0742d38676b7bb8d9a52eebd6e3b35ab636be4b68e70163bad212692bed9a",
+      "duration_s": 3.84
+    },
+    "68": {
+      "key": "32188085a93a55945006",
+      "text": "Reviews are filed by kind and time, each with a short note beside it, and a migrate command moved all six plans to that layout, rather than reading both layouts. Other repos get the same path.",
+      "sha256": "67e97079d23f591a9941c255bb558f4c443e1fa75140b52448578dfb965e0af2",
+      "duration_s": 11.605
+    },
+    "69": {
+      "key": "9b54c99de462168c5a21",
+      "text": "The resolve-plan and resolve-walkthrough commands are deleted, rather than kept, since the resolved copies are gone. The two scope commands stay, printing JSON: the sorting is still used.",
+      "sha256": "daa0c1952b3f8b4add13752f5d852376177a5b39fb8a1f9670cc5c512c83b6c3",
+      "duration_s": 10.859
+    },
+    "70": {
+      "key": "9addd62083c2d5571be4",
+      "text": "This repo's instructions for agents tell one working here to run this checkout's own tooling, rather than the published version. You asked if that is local against npx: yes, and both work. Outside this repo, the published package; inside it, this checkout's tools, so a plan here is built with the code it changes. No change.",
+      "sha256": "4b7923e928e11b5d255ee42143444358cf4934619e68174896576c91ea9a8fb9",
+      "duration_s": 18.24
+    },
+    "71": {
+      "key": "4427418aa4438e306674",
+      "text": "A detail's kind is now a free word, and a kind with no template starts from the blank page, rather than a closed list of seven. The kinds were a starting point, not a rule.",
+      "sha256": "021ae01ab12c890e1fced0f9ee2526468b1ec103cecfda8fffde0f0f44553a63",
+      "duration_s": 9.899
+    },
+    "72": {
+      "key": "e7c3fa1bbe62e2464559",
+      "text": "Two details on one beat now warn, instead of failing the build, and the last one opens. A second detail is a slip, not a broken page. The code check found this call; it is logged now.",
+      "sha256": "14e7e63b091e54b188f66bb6415a77afe1cf497256c7a713478ee61e15b34385",
+      "duration_s": 10.645
+    },
+    "73": {
+      "key": "429eba325bbea15fb9a9",
+      "text": "And detail new with no kind starts from the blank page, rather than requiring a template. The guide still says to start from a template when one fits.",
+      "sha256": "ece010d0843e64d35e26da7ac1fbc18872726f937a41c14e1c64fc626268272a",
+      "duration_s": 8.363
+    },
+    "74": {
+      "key": "cd3c0108805bd1b5919b",
+      "text": "Two more from step nine don't stop: what build retimes against before a commit, and one budget for on-screen words. They share one sheet.",
+      "sha256": "3ab250406a63ff6444dec685b7a6d7a8f5efd18f8ce78b72a1c44589bff5a230",
+      "duration_s": 7.637
+    },
+    "75": {
+      "key": "f9a951fcf6393f1bcb1f",
+      "text": "Next, the last part: the code check, and what is not done.",
+      "sha256": "9532f8a4957e42c5dfdecacf8504bc3db71a02c699c6f106be4b5579ace5b79d",
+      "duration_s": 3.072
+    },
+    "76": {
+      "key": "6752bf966ff7c97bf819",
+      "text": "Part ten, the last: what the code check found in round two, and what is not done.",
+      "sha256": "3f14630d9d8882eeb2a0a7d8c907fdaa8b43851856e2c0c5541c84e38508d007",
+      "duration_s": 4.331
+    },
+    "77": {
+      "key": "8dbc05feccf8c970adb8",
+      "text": "A fresh agent checked round two. Steps one to four and seven to nine carried, and all eleven decisions hold. It found three step gaps, two calls I had not logged, now A31 and A32, and one bug in migrate-reviews, now fixed with a test.",
+      "sha256": "7912cd53893b57d94daee7c0e2a9e12bc7fe19e02b8be670323a692e0dcc1a70",
+      "duration_s": 14.848
+    },
+    "78": {
+      "key": "95ffe0012eb2c85f6e6d",
+      "text": "One deviation carried from step five: only the system video's review has been through a headless run. A review of a plan's walkthrough has not; the next one you send from the local page will be it.",
+      "sha256": "dd59940f9fda2f8dc726fbc12ecbcf61125c8c00c70687310a74cc4ff74533ea",
+      "duration_s": 10.923
+    },
+    "79": {
+      "key": "037bf7dd231a78234b89",
+      "text": "Not done. Step ten waits for the next plan, the Bob Dylan site redone from scratch. The strict sandbox is untested on a normal machine. The new hook fences Claude Code's own file tools, not an MCP server that writes files. Codex and opencode have not run; only a stand-in has. And a headless run uses the published tool, older than this code.",
+      "sha256": "9c9e20a9bd631887df1b5eccf3710c84635cc7770a5b745a430604c76c9df897",
+      "duration_s": 20.501
+    },
+    "80": {
+      "key": "dc76b5bcb28e1dd65dca",
+      "text": "Asked in your review: what accepting means now. Approve with comments, and they go into the plan or the fix, with no new video. Request changes, as you did, and the fixes are made, the beats they touch rebuilt, and shown again: these beats. And three errors in your review's summary are fixed.",
+      "sha256": "41e0a2f546e8b903d8475df5b5f544c8a0fe9f8b016a9da9973cb9051fd43d89",
+      "duration_s": 15.829
+    },
+    "81": {
+      "key": "4495d0f4f9e0392f379d",
+      "text": "Round two is built: steps six to nine, with the full test suite passing, and step ten waits for the next plan. Twelve calls and four deviations stop for you, and four calls sit on two sheets. Flag a call, or accept.",
+      "sha256": "28742a360f1468f8e38d8632623e3be1fd523474228fc5f1253be59e139f7c20",
+      "duration_s": 12.629
+    },
+    "01": {
+      "key": "56784a99b53becf6abdd",
+      "text": "What landed, by track. Cheap rebuilds: step one, done. The loop runs itself: steps two and three, done, with one deviation. A reviewable system video: step four, done. Step five is half done: the Action is removed, and one of two real reviews is proven.",
+      "sha256": "cbec441eac63cf5b94a9c6c1dfb1832cf810e831cdc85d13553f0cdb8b62535b",
+      "duration_s": 14.933
+    },
+    "02": {
+      "key": "70689956797e9a746aec",
+      "text": "Step one is a new command, narrate. Each line's audio and timings are kept under a key of its text, voice, speed and model; only changed lines are voiced. One edited line took thirty-two seconds, not six hundred seventy-five.",
+      "sha256": "2f5fd62f6da5cf23149602b1326b0d5bd1ab7de981f76c43c8975c9cc80c0bbd",
+      "duration_s": 13.568
+    },
+    "03": {
+      "key": "41a893aa1d2a57424cbc",
+      "text": "The kept audio is the committed voice files, indexed by a committed record, rather than a gitignored cache. A cloud session starts from a fresh clone, where that cache is empty.",
+      "sha256": "827853ac4802b03955e8a2c8c3c52c852c1c8b9eafb04796b097f8ae6e71ec80",
+      "duration_s": 9.6
+    },
+    "04": {
+      "key": "53f19b778ba89612ef8a",
+      "text": "The key's model is the voice model plus the whisper model, rather than the HyperFrames version. An upgrade that keeps the same voice should not re-narrate every video.",
+      "sha256": "77637063b49c6004505b378adebd123a72880d0e610f84305c6b15ae10c01a05",
+      "duration_s": 8.896
+    },
+    "05": {
+      "key": "c4212c08f08a4e4c8dc3",
+      "text": "A video narrated before the record existed is adopted from git, rather than narrated again: the commit that wrote its voice files says what they were made from.",
+      "sha256": "12693b5dcec22a775ecb6d6e6ff85395440eb91d3e21823f65d41f76e3ae98d3",
+      "duration_s": 8.853
+    },
+    "06": {
+      "key": "21b58154968640cc734f",
+      "text": "The cost prints first: lines to narrate, and about how long. It counts lines already edited, not only the frames spec-diff names. The runs behind the estimate are one click away.",
+      "sha256": "ba6af202d28806952f7584443061d36a3a03eed2c792c89ffe1c7cb635f677ce",
+      "duration_s": 10.304
+    },
+    "07": {
+      "key": "7313b7ea85ad88f5f76e",
+      "text": "Next, part two: the loop runs itself.",
+      "sha256": "ef28b357153b4269e439e07325bb4ba03796ce8d1ad0318fe57254757aff528c",
+      "duration_s": 2.219
+    },
+    "08": {
+      "key": "4ee3775a0131691d07f4",
+      "text": "Part two of five. Rebuilds are reported. Now the loop runs itself.",
+      "sha256": "13483a93448a6f277ed63bf6636fb69fd6ffece792af15d4853a8aa3d257c429",
+      "duration_s": 3.861
+    },
+    "09": {
+      "key": "33d7c37e7e67252b4f23",
+      "text": "Step two. The main session hands every long job to a background worker and stays free. When a review page is up, reelplanning sends a notification saying what waits: here, seventeen calls to accept or flag.",
+      "sha256": "0b9dc2e6ae39138c87b6e7e7584ec469a9bb9bc536956992a62c9587871c679f",
+      "duration_s": 12.373
+    }
+  }
+}

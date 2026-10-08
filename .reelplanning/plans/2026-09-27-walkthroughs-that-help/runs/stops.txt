@@ -1,0 +1,22 @@
+$ reel stops .reelplanning/plans/2026-09-27-walkthroughs-that-help   (this repo, on this plan's own walkthrough.md)
+A1   step 1          listed  no label: on the list at the end
+A2   step 2          listed  close: on the list at the end  [close]
+A3   step 2          pauses  you'd notice it: its scene shows it running  [visible]
+A4   step 2          listed  close: on the list at the end  [close]
+A5   step 3          pauses  you'd notice it: its scene shows it running  [visible, close]
+A6   step 4          pauses  you'd notice it: its scene shows it running  [visible, close]
+A7   step 5          listed  close: on the list at the end  [close]
+A8   step 5          pauses  you'd notice it: its scene shows it running  [visible, close]
+A9   ask videos list pauses  you'd notice it: its scene shows it running  [visible]
+A10  step 6          listed  no label: on the list at the end
+
+The beats, by step, then each ask outside the steps (each line is one pause, in the scene that shows it running):
+  step 2           - autonomy: a3
+  step 3           - autonomy: a5
+  step 4           - autonomy: a6
+  step 5           - autonomy: a8
+  ask videos list  - autonomy: a9
+  the end          - autonomy_list: a1, a2, a4, a7, a10   (the list: one line each, each with its own Flag; Approve takes the rest, listed, not judged)
+
+5 call(s) pause, in 5 stop beat(s) (one per step or ask); 0 off-plan change(s), each on its own beat; 5 on the list. The video pauses 5 time(s) for what you'd notice or can't easily undo, and once at the end for the list. An off-plan change said only in prose still pauses.
+exit 0

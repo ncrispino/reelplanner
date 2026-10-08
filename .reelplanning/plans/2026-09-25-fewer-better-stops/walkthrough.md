@@ -1,0 +1,197 @@
+# Walkthrough: The right calls stop, and the walkthrough stays short
+
+**Status:** implemented on branch `claude/clever-knuth-b5gtcf`, not committed · **Plan:** `plan.md` (the owner's review, `reviews/plan-20260925T195224Z.md`, folded into its steps) · **Started from:** `c2f7fd2` · **Question 1:** A, a miss with no tags stops nothing directly (D-109) · **Question 2:** A, at a step's fifth call the implementer asks before going on (D-110) · **Also:** the answer band reads in full (the owner's feedback, outside the plan's steps)
+
+## What was done, per step
+
+First the owner's review was folded into `plan.md`'s steps as text (no new plan video): step 1 says a
+deviation keeps its own beat, with memory's step 4 as the example (A11 and A12 share a beat, D1 has its
+own: two pauses); step 2 says a call that shares no tag with a miss is judged by its own tags alone, with
+the owner's quick check as the example; step 3 says `reel audit` counts the whole walkthrough and warns
+past 12 even when no step reaches five ("16 calls; step 1 has 4"), and carries D-110.
+
+### Step 1 — The calls that stop in a step share one beat ✅
+
+- **The rule and the beats.** `scripts/lib/autonomy.mjs` `beatsByStep` sorts a walkthrough's calls into
+  beats by step: the calls of a step that stop on one stop beat, each deviation on its own, the rest on
+  the grouped beat. `reel stops` (`scripts/reel.mjs`) prints them as the storyboard lines to write, and
+  how many pauses they make (A1). On the two walkthroughs the plan names: answer-on-the-video's 23
+  pauses become 5 (four stop beats of 4, 8, 4 and 6 calls, and D1), memory's 14 become 6 (five stop
+  beats and D1), as the plan said.
+- **The plan map.** `scripts/plan-map.mjs` reads `- autonomy: a3, a4, a5` as one stop beat, an
+  `autonomyGroups` entry with `stop: true` whose calls' words are their rows in `walkthrough.md` (A2); one
+  id is a call's own beat, as before, now also taking its words from its row where the beat has none (m1).
+- **The player.** `packages/player/reelplanning-player.js` `askStop`, `stopRows`, `judgeInStop`,
+  `openOwnFor`, `stopDone`: the video pauses once at the beat's end; the band lists each call (its id, what
+  it chose, "— instead of …") with its own Accept, Flag and own words (A4), no Accept all; A and B judge
+  the first call still waiting, O opens own words for it (A5); the video goes on at the last verdict. Each
+  verdict is the per-call record a call's own beat makes (the record, the flag's note on its step, the
+  export, the timeline's mark). Met again, each can still be changed (m3). The review page's to-do line
+  and the notification count a stop beat's calls one by one (m4, m7).
+- **The skill.** `skills/plan-to-video/SKILL.md` (the tag table, Implement step 5) and
+  `skills/plan-to-video/references/style-guide.md` §8 replace "a call that stops gets its own beat" with
+  one stop beat per step, a clause a call, and a deviation on a beat of its own ("a step with two calls
+  that stop and a deviation pauses twice"). `docs/project-dir.md` says what `reel stops` prints.
+
+### Step 2 — A miss stops calls of its own kind ✅ (one deviation)
+
+`scripts/lib/autonomy.mjs` `missFor` matches a recent miss to a call by a shared tag only: a miss with no
+tags stops nothing directly (D-109), and `stopFor` no longer reads a call's components. `stopFor` returns
+the rule that decided (`deviation`, `miss`, `streak`, `faded`, `untagged`), and `reel stops` says it in
+words (A3). On memory's walkthrough, A11 and A12 used to stop for "a miss: D1 of memory accepted, then
+changed (component system-video)"; they now stop for their tags' streaks (`close` and `visible` at 0 of
+10), so they still stop, for the reason the plan gives. Memory's A12 row was not rewritten (D1).
+
+### Step 3 — Too many calls in one step is asked, not made ✅
+
+- `reel audit` (`scripts/reel.mjs`, `scripts/lib/autonomy.mjs` `callLoad`, `MANY_CALLS`) warns past 12
+  calls in the whole walkthrough, naming the busiest step, and still passes: memory's walkthrough now says
+  "△ 16 calls; step 1 has 4" (m2).
+- `skills/plan-to-video/SKILL.md`: the plan writer asks a step's biggest call as a question when the step
+  is expected to need five or more (A new plan, step 3), and the implementer stops at a step's fifth call
+  and puts the question in `plan.md` (D-110, Implement step 1). This build kept to it: no step reached a
+  fifth call (step 1 has four, A1, A2, A4, A5; step 2 two, A3 and D1; step 3 none).
+
+### The answer band reads in full (the owner's feedback) ✅
+
+The owner's screenshots: a quick check's question cut to "Doe…" (the whole of it only on hover), and after
+the answer, its explanation clipped under a scroll bar and the note field cut ("Say how it should work —
+Ent"). In `packages/player/reelplanning-player.js` (`fitBand`, `readBand`, the `.decision.band` CSS):
+nothing in the band is cut, clamped or scrolled. The words stay on the kicker's line while they fit it, and
+the band keeps the reserved eighth; longer, they take a line of their own and wrap, and the band grows up
+over the frame (A6), the video keeping its size, to 40% of the frame, 60% of a phone's screen (A7; 45% until 9929eb5). Past
+that, the band keeps an answered check's verdict and hands the rest to the side panel ("Read it in full").
+Controls wrap to rows of their own; a note field is as wide as its words and takes a full row in use (A9).
+A stop beat's list reads as rows of id, words and buttons, closing up past the cap (A8). The same holds
+under the video (older videos) and on a phone.
+
+Measured by `packages/player/test/band.spec.mjs` (the band's height in px, and what was cut, clamped,
+scrolled or outside it), before → after:
+
+| case | 1440 × 1000 | 1024 × 768 | 390 × 844 |
+|---|---|---|---|
+| the longest question (fewer-better-stops k1, in the frame) | 95 px, 0 cut → 95 px, 0 cut | 72 px, 2 cut → 91 px, 0 cut | 247 px, 2 cut → 261 px, 0 cut |
+| the owner's question (memory k4) | 95 px, 0 cut → 95 px, 0 cut | 72 px, 2 cut → 91 px, 0 cut | 247 px, 2 cut → 261 px, 0 cut |
+| its feedback, answered | 95 px, 1 cut → 95 px, 0 cut | 72 px, 5 cut → 145 px, 0 cut | 329 px, 1 cut → 338 px, 0 cut |
+| the longest feedback (revise-loop walkthrough k3, under the frame) | 80 px, 4 cut → 111 px, 0 cut | 72 px, 7 cut → 163 px, 0 cut | 329 px, 3 cut → 295 px, 0 cut |
+| the longest call (answer-on-the-video A19) | 95 px, 2 cut → 136 px, 0 cut | 72 px, 2 cut → 128 px, 0 cut | 246 px, 2 cut → 238 px, 0 cut |
+| a stop beat of 2 calls | 95 px, 0 cut → 206 px, 0 cut | 72 px, 0 cut → 100 px, 0 cut | 173 px, 0 cut → 302 px, 0 cut |
+| a stop beat of 8 calls | 95 px, 0 cut → 181 px, 0 cut | 72 px, 0 cut → 217 px, 0 cut | 277 px, 0 cut → 632 px, 0 cut |
+| an explanation past the cap | 95 px, 3 cut → 95 px, 0 cut | 72 px, 7 cut → 126 px, 0 cut | 329 px, 3 cut → 295 px, 0 cut |
+| a short question (revise-loop q4) | not measured → 80 px, 0 cut | not measured → 107 px, 0 cut | — |
+
+"Cut" counts what the spec found: words ending in "…" or clamped, the band scrolling, a field's words
+cut, a control outside the band. Before, the stop beats were plain grouped beats (no rows to measure) and
+the explanation 20 times as long had no "Read it in full"; the phone's band was taller only because its
+words were clamped to 2 and 4 lines inside a scrolling band. The short question keeps the eighth at 1440
+(80 px); at 1024 it takes 107 px because its controls need a second row once the band also carries "Walk
+me through it", another worker's button (without it, the shorter "Add a note" fits the row, m5).
+
+## Tests
+
+`npm test`, every spec in it, run one by one (about 25 minutes): all pass. `answer-on-frame.spec.mjs`
+failed once in that run on "address already in use" (another worker was running the same spec on its
+port, 8891) and passed on its own afterwards (all checks). `band.spec.mjs`, `stop.spec.mjs`,
+`lifecycle.spec.mjs`, `memory.spec.mjs` and `loop.spec.mjs` also passed on their own after the last
+change to the code they test.
+
+New: `packages/player/test/stop.spec.mjs` (a stop beat, in the plan map and the player: one pause, a row
+per call with its own Accept, Flag and own words, the keys, going on at the last verdict, the record and
+export, met again) and `packages/player/test/band.spec.mjs` (the band reads in full, the table above).
+Extended: `scripts/test/lifecycle.spec.mjs` (`reel stops` prints the beats by step, a deviation on its own;
+`reel audit` warns at 14 calls with no step at five, and passes), `scripts/test/memory.spec.mjs` (a miss
+with no tags stops nothing; the owner's quick check; the rule `stopFor` returns),
+`scripts/test/loop.spec.mjs` (the notification counts a stop beat's calls), and
+`packages/player/test/answer-on-frame.spec.mjs` (the band may grow over the frame, to 40% of it, as its
+words need, instead of being exactly the eighth).
+
+## Not done
+
+- **The walkthrough video** is not built (not asked for yet).
+- **Memory's call A12** is not rewritten, and D-122 stays active in the ledger (D1).
+- **The walkthrough videos already built keep their beats.** Answer-on-the-video's (waiting for review)
+  and memory's (reviewed since this plan was written) still give each call its own beat; they get one pause
+  per step when rebuilt with the `- autonomy: <ids>` lines `reel stops` prints (23 pauses to 5, 14 to 6).
+
+## Choices the plan did not specify (autonomy)
+
+| id | Step | Chose | Instead of | Why | Check |
+|---|---|---|---|---|---|
+| A1 | 1 | `reel stops` prints the beats as the storyboard lines to write, by step (`- autonomy: a5, a6, a8`, then each deviation's `- autonomy: d1`, then the step's grouped calls), and counts the pauses for what stops as stop beats plus deviations, leaving the grouped beats out because they fall once per part, not per step | a table of calls per beat; or a count that adds the grouped beats | the storyboard writer copies the line as it is; counted this way the plan's own numbers come out (23 pauses become 5, 14 become 6) | scripts/reel.mjs `stops`, scripts/lib/autonomy.mjs `beatsByStep` |
+| A2 | 1 | A stop beat of several calls is carried in `plan-map.json` as an `autonomyGroups` entry with `stop: true` (id `stop-<frame>`); a beat with one id stays an `autonomy` entry, as before [close] | a new `autonomyStops` list | the record, the timeline, the review's export, `walkthrough-scope` and the review page's count already read a group's calls one by one; a new list would have to be taught to each | scripts/plan-map.mjs, scripts/lib/review-scope.mjs (unchanged) |
+| A3 | 2 | `reel stops` names the rule in its words, as before: "a deviation always stops", "tag close: 3 of 10 accepted in a row" (a streak short of ten), "a miss: … (tag close)", "no tag"; `stopFor` also returns it as `rule` [close] | a column naming the rule by a label | the words already tell the rules apart, and the specs and the skill read them | scripts/lib/autonomy.mjs `stopFor`, scripts/reel.mjs `stops` |
+| A4 | 1 | On a stop beat each call's row has "Own words" beside its Accept and Flag, as a call's own beat has "Answer in my own words": the band's own box opens for that call, and the words are its verdict, a change the agent makes [visible, close] | Accept and Flag only, as the plan's words say ("each with its own Accept and Flag") | a call on its own beat offers own words today, and 7 calls so far were answered that way; a shared beat without it would take that away | packages/player/reelplanning-player.js `stopRows`, `openOwnFor`, `answerOwn` |
+| A5 | 1 | The keys on a stop beat: A accepts and B flags the first call still waiting, O opens own words for it; that row carries the key caps. The video goes on at the last verdict, at once | A and B acting on a call picked first with the arrow keys; or a countdown after the last verdict | the reviewer can go down the list with A and B alone; a call's own beat goes on at once after its verdict too | packages/player/reelplanning-player.js `onKey`, `stopWaiting`, `judgeInStop` |
+| D1 | 2 | Memory's call A12 is not rewritten: its row stays as it is, and its ledger entry (D-122, "a miss with no tags stops calls on its component") stays active though D-109 now says otherwise [deviation] | changing A12's row before its review, as the plan says | memory's walkthrough has been reviewed since this plan was written (A12 accepted, as D-122), and its `walkthrough.md` is another worker's; D-122 is superseded by D-109 when the owner says so (by hand in the ledger, or a `## Supersedes` line in a plan) | .reelplanning/decisions.json (D-122, D-109) |
+
+The answer band (the owner's feedback, outside the plan's steps; its calls do not count toward a step's five):
+
+| id | Step | Chose | Instead of | Why | Check |
+|---|---|---|---|---|---|
+| A6 | band | The words stay on the kicker's line while they fit it unwrapped, and the band keeps the reserved eighth; when they do not fit, they take a line of their own under the kicker and "Show the frame", wrapping, and the band grows up over the frame; a stop beat's list and a phone always take the second layout [visible] | the words always on a line of their own (the band then always taller than the eighth) | the owner asked to keep the eighth for the short case; whether the words fit is measured, not guessed from their length | packages/player/reelplanning-player.js `fitBand`, `.decision.band.tall` |
+| A7 | band | The cap is 40% of the frame's height, in the frame and under it (under it, 22.5% of the room's width, the frame being 16:9); on a phone, where the band is in the page's flow under the frame, 60% of the screen's height (**changed after the build:** 45% at first; 9929eb5 raised it because a two-line explanation went to the side panel on a phone). Past it the band keeps an answered check's verdict ("Right.", "Not quite — it is B.") and says "… too long to show here. Read it in full"; the side panel shows the words, the band stays up beside it, and an answered one's countdown stops while it is open [visible, close] | the words opening in the panel by themselves; the question folding while the panel is open, as for a detail | the owner named about 40%; on a phone the frame is 219 px high, so 40% of it would hold two lines; a panel that opens by itself takes the page from under the reviewer, and folding an answered question drops it | packages/player/reelplanning-player.js `fitBand`, `readBand`, `detailUrl`, `openDetail` |
+| A8 | band | A stop beat's list: one row per call, its id in mono, what it chose then "— instead of …" in grey, its Accept, Flag and Own words at the right (under the words when the band is under 760 px wide). Past the cap the rows close up to each call's id and its buttons, several to a line; on a phone, one row per call, all shown, the page scrolling (8 calls: 670 px) [visible, close] | a list of ids with the words in each button's tooltip, as the grouped beat has | the plan says the band lists what each chose and instead of what; a tooltip is what the owner asked to be rid of; on a phone 24 buttons 44 px high do not fit 45% of the screen | packages/player/reelplanning-player.js `stopRows`, `.decision.band .crow` |
+| A9 | band | A note field (a choice's note, a quick check's "Expected something else?") is as wide as its words, measured, so it moves to a line of its own rather than cutting them; in use (focused, or holding words) it takes a full row after the controls. Own words take a full row too, and their box grows with the words [visible] | a fixed width that shrinks with the line (what cut "Say how it should work — Ent") | the owner's screenshot; a row of its own only while in use keeps the short case within the eighth | packages/player/reelplanning-player.js `fitBand`, `.decision.band :is(.note,.disagree.on)` |
+
+### Smaller calls (logged, not beaten in the video)
+
+| # | Step | Chose | Instead of | Why | Check |
+|---|---|---|---|---|---|
+| m1 | 1 | A beat with one id takes what it does not say (`- chose:`, `- instead_of:`, `- why:`, `- check:`) from its row in `walkthrough.md` | only the beat's own lines | the skill's tag table now says a call's words are its row | scripts/plan-map.mjs |
+| m2 | 3 | The count takes calls and deviations (not the smaller `m` rows); on a tie the busiest step is the lowest-numbered | counting the smaller rows too | the owner's quick check counts memory's 16 (15 calls and D1) | scripts/lib/autonomy.mjs `callLoad` |
+| m3 | 1 | A stop beat met again with every verdict given shows what was given ("You accepted 2, flagged 1."); each can still be changed there, and Continue goes on, as the grouped beat does | closing it at once | the same as the grouped beat met again | packages/player/reelplanning-player.js `askStop`, `stopDone` |
+| m4 | 1 | The review page's to-do line for a walkthrough with stop beats says "a step's calls together: accept or flag each" | the old line, "at each of the n calls … the video stops" | it is no longer true of such a video | scripts/bundle-player.mjs |
+| m5 | band | In the band the note's placeholder is "Add a note" (was "A note on your answer"), the sheet's is unchanged | the longer words | measured to its words, the field fits the controls' line at 1024 px with the shorter ones | packages/player/reelplanning-player.js `placeCard` |
+| m6 | band | Reading the band's words in full is not logged as a detail opened | logging it as one | it is the band's own words, not a page the video points to (D-005 sends what the reviewer opened) | packages/player/reelplanning-player.js `endDetail`, `detailsLog` |
+| m7 | 1 | The notification's line ("5 calls to accept or flag") counts a stop beat's calls and a grouped beat's one by one | counting the beats with one id only, as it did (it already missed grouped calls) | most calls are on stop beats now; the line would have said "1 call" for memory's walkthrough | scripts/lib/notify.mjs `waitingLine` |
+
+## Decisions in force
+
+- **D-109** (this plan, question 1: a miss with no tags stops nothing directly) held: `missFor` matches by a shared tag only (`scripts/lib/autonomy.mjs`); `scripts/test/memory.spec.mjs` checks the owner's quick check (a `close` miss, a `visible` call with its ten: no stop). It contradicts **D-122** (memory's A12, accepted), which stays active in the ledger: D1.
+- **D-110** (this plan, question 2: at a step's fifth call the implementer asks) held: `skills/plan-to-video/SKILL.md` (Implement, step 1), and this build kept to it (no step reached five).
+- **D-084** held: the streak of ten and a flag resetting it are unchanged (`acceptedRun`, `STREAK`, `scripts/lib/autonomy.mjs`); only the misses' exception to it is narrowed (D-109).
+- **D-108** held: the answer band holds a call's Accept and Flag, and now a stop beat's list of calls, each with its own (`askStop`, `packages/player/reelplanning-player.js`); the band is never over a frame's content while its words fit the reserved eighth, and grows over the frame only as far as they need, to 40% of it.
+- **D-083** held: quick checks, one per step, unchanged; their band reads in full (`fitBand`).
+- **D-001** held: the code check is a second agent (below); step 3's warning is `reel audit`'s count (`scripts/reel.mjs`).
+- **D-106**, **D-107** held: untouched (`scripts/lib/memory.mjs` is another worker's and this change does not edit it; `reel stops` reads its `findMisses` as before).
+- **D-005** held: a rewind is still sent; reading the band's words in full is not logged as a detail opened (m6, `endDetail`, `packages/player/reelplanning-player.js`).
+- **D-021** held: the band's words in full open in the same side panel as a detail (`readBand`, `openDetail`, `packages/player/reelplanning-player.js`).
+- **D-024**, **D-064**, **D-066**, **D-082**, **D-085** held: detail templates, the loop's background agent, the one setting, auto mode in the sandbox and the scaffolding are untouched (`templates/details/`, `scripts/review.mjs`, `scripts/lib/sandbox.mjs` unchanged); a stop beat asks nothing new of a frame (D-085: one tag, `- autonomy:` with several ids).
+- Decided after this walkthrough (in conversation, 2026-10-05), so not part of its build: **D-309** (the walkthroughs
+  open at the release accepted as they are; an accepted walkthrough is settled history) holds: `reel audit` prints
+  an accepted walkthrough's rule breaks, D-110's among them, as △ notes and passes it (`audit`, `scripts/reel.mjs`;
+  `scripts/test/lifecycle.spec.mjs` checks both cases).
+
+## Code check
+
+A fresh headless agent (`claude -p` with exactly the `code-check --prompt` text; tools: Read, Grep, Glob and
+read-only `git diff`/`git show`/`git log`) read `code-check/brief.md`. It could not write, so it returned
+the findings as text, saved as is in `code-check/findings.md`. The change is not committed, so the brief was
+made against a snapshot commit of the working tree's files, made with a scratch index on no branch
+(`ce41f97`): `code-check --base c2f7fd2 --head ce41f97 -- <the paths this change touched>`. Those paths are
+shared with two other pieces of work in the same working tree, which the diff therefore carries too.
+
+**Steps 3 ✓ / 0 ✗, Decisions 15 ✓ / 0 ✗, Unexplained 7 ✗.** None is this plan's; each, by its key:
+
+- `packages/player/reelplanning-player.js` — the Terms panel, "Before you watch", "Walk me through it", the
+  confusion guard and `confusion()` are the plan `2026-09-25-videos-you-can-follow`, which another worker is
+  building in the same working tree; this plan's part of the file is `askStop`, `stopRows`, `judgeInStop`,
+  `openOwnFor`, `stopDone`, `fitBand`, `readBand`, the band's CSS and the lines A4–A9 and m3, m5, m6 name.
+  Not a row here.
+- `scripts/plan-map.mjs:12,146` — `addAccess` and `scripts/lib/terms.mjs` are the same other plan's; the
+  module is on disk, untracked, and so not in the snapshot (only this change's paths went into it). This
+  plan's part is the stop beat (A2) and m1.
+- `scripts/bundle-player.mjs:268,304` — the "Watched" mark is the same other plan's; this plan's line is the
+  to-do line for stop beats (m4).
+- `package.json:51` — `terms.spec.mjs` and `access.spec.mjs` are the other plan's tests (on disk, untracked);
+  this plan adds `stop.spec.mjs` and `band.spec.mjs` (## Tests).
+- `skills/plan-to-video/SKILL.md` and `skills/plan-to-video/references/style-guide.md` — `before:`, `terms:`,
+  `- defines:`, `- walk_me_through:` and `check-terms` are the other plan's; this plan's lines are the stop
+  beat (Implement step 5, the tag table, §8) and the five-call rule (A new plan step 3, Implement step 1).
+- `scripts/reel.mjs` (`record()`, `memory()`) and `scripts/test/memory.spec.mjs` — the pending memory file is
+  memory's A15, fixed after its review and committed as `7e5bd45` between this plan's start and now. That
+  commit also carried this plan's `stops` and `audit` changes to `scripts/reel.mjs`, which were in the working
+  tree when it was made; this plan's part of `memory.spec.mjs` is the four `stopFor` checks (D-109, A3).
+- `.reelplanning/plans/2026-09-25-fewer-better-stops/walkthrough.md:92` — the placeholder was this report
+  unfinished at the snapshot; ## Tests now says what ran. The imports and test files the checker found missing
+  are on disk (the other plan's, untracked), and `npm test` ran through them.

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  reelplanning detail · EXPLORE   (templates/details/explore.html; kind: explore)
+  The frame's diagram, but live: click a part to see what goes in and what comes out; step through a
+  run yourself and watch the state fill in (a manifest row, part 1 to part 90).
+
+  Fill: edit the JSON in <script id="rp-data"> below; nothing else needs touching unless the steps are
+  easier to generate than to list (then fill SLOT: STEPS).
+    title    the page title
+    intro    one sentence, 140 characters at most: what to click, what to step through (optional)
+    parts    [{ id, label, x, y, in, out, note? }]: the boxes. x, y are grid cells (0, 1, 2 …), not pixels.
+             in / out: what goes into it and what comes out, one line each. At most six parts.
+    edges    [{ from, to, label? }]: arrows between part ids
+    state    { title, columns: ["Part", "Status"] }: the table the steps fill in (optional)
+    steps    [{ text, on?: [part or edge ids], hot?: "<id>", rows?: [["1", "sent"], …] }]
+             text: what happens at this step, one sentence. on: what is busy (an ink stroke). hot: the one
+             thing that matters here (a 3 px ink stroke, dashed on an arrow: a failure, the moment of the call). rows: the WHOLE state table
+             at this step, not a change to it. An edge id is "from>to".
+  SLOT: STEPS: define window.rpSteps = (data) => [ …steps ] to generate them (90 parts is a loop, not a
+  list); it replaces "steps".
+  Comments land on "part: <label>", "step <n>" and "row: <first cell>". A click on a part only inspects
+  it; the comment is from its readout (a click there, its Comment cue, or words selected in it), so
+  looking around never opens a comment box. In JSON strings, write "<\/" for "</". Loads nothing from
+  the network: keep it that way.
+-->
+<title>Explore</title>
+<script id="rp-data" type="application/json">
+{
+  "title": "Step through a resumable upload",
+  "intro": "Click a part for what goes in and out; step through 12 parts, dropped at part 7, and watch the manifest fill in.",
+  "parts": [
+    { "id": "client", "label": "Browser", "x": 0, "y": 0, "in": "the file, cut into 16 MB parts", "out": "one part at a time, with its number and checksum", "note": "Keeps nothing between reloads: on resume it asks the manifest what is done." },
+    { "id": "api", "label": "Upload API", "x": 1, "y": 0, "in": "a part and its number", "out": "the bytes to storage; 'part n done' to the manifest", "note": "Rejects a part whose checksum does not match." },
+    { "id": "store", "label": "Object storage", "x": 2, "y": 0, "in": "the part's bytes", "out": "nothing until the last part: then one object", "note": "Stitches the parts in order once every one is there." },
+    { "id": "manifest", "label": "Manifest", "x": 1, "y": 1, "in": "'part n done'", "out": "the parts already done, when the browser resumes", "note": "One row per upload; the upload id is the file's hash." }
+  ],
+  "edges": [
+    { "from": "client", "to": "api", "label": "part n" },
+    { "from": "api", "to": "store", "label": "bytes" },
+    { "from": "api", "to": "manifest", "label": "n done" },
+    { "from": "manifest", "to": "client", "label": "done so far" }
+  ],
+  "state": { "title": "Manifest row · upload 7f3a", "columns": ["Part", "Status"] },
+  "total": 12,
+  "dropAt": 7
+}
+</script>
+<script>
+/* rp-theme: the player passes ?theme=dark (or #theme=dark); light by default. paper / ink / accent (hex) override one token.
+   In the player's panel (a frame) it sets data-framed: the panel's header already names the page, so the page's own is hidden.
+   There the player also posts the review page's faces (packages/player/fonts/faces.json) once the page is ready: a sandboxed
+   page cannot load the files itself, so they come as bytes, and --sans, --serif and --mono take their families. On its own
+   the page keeps the fallbacks in the token block. */
+(function () {
+  var q = new URLSearchParams(location.search.replace(/^\?/, "") + "&" + location.hash.replace(/^#/, "")), r = document.documentElement;
+  if (q.get("theme") === "dark") r.setAttribute("data-theme", "dark");
+  try { if (window.parent !== window) r.setAttribute("data-framed", ""); } catch (e) { r.setAttribute("data-framed", ""); }
+  ["paper", "ink", "accent"].forEach(function (k) {
+    var v = (q.get(k) || "").replace(/^#/, "");
+    if (!/^[0-9a-f]{6}$/i.test(v)) return;
+    r.style.setProperty("--" + k, "#" + v);
+    if (k === "ink") { var n = parseInt(v, 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].join(","); r.style.setProperty("--ink-rgb", c); r.style.setProperty("--ink-2", "rgba(" + c + ",.8)"); r.style.setProperty("--ink-3", "rgba(" + c + ",.66)"); }
+  });
+  if (window.parent === window || !window.FontFace || !document.fonts) return;
+  window.addEventListener("message", function (e) {
+    var m = e.data; if (e.source !== window.parent || !m || m.type !== "rp-player" || m.event !== "faces") return;
+    (m.faces || []).forEach(function (f) { try { var ff = new FontFace(String(f.family), f.data, f.descriptors || {}); document.fonts.add(ff); ff.load().catch(function () {}); } catch (x) {} });
+    ["sans", "serif", "mono"].forEach(function (k) { var v = m.roles && m.roles[k]; if (typeof v === "string" && !/[;{}<]/.test(v)) r.style.setProperty("--" + k, v); });
+  });
+})();
+</script>
+<style>
+/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+   (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
+   and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
+   is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */
+:root{--paper:#FAF9F5;--tile:#EFE9DE;--ink:#141413;--ink-2:#3D3B37;--ink-3:#5C5953;--ink-rgb:20,20,19;--accent:#B8552E;--accent-text:#9C4524;--hair:.12;--dim:.2;--tint:9%;color-scheme:light;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"EB Garamond",Georgia,"Times New Roman",serif}
+:root[data-theme="dark"]{--paper:#141310;--tile:#232120;--ink:#F2EFE8;--ink-2:#CFCAC1;--ink-3:#A6A196;--ink-rgb:242,239,232;--accent:#D2693F;--accent-text:#E3A184;--hair:.14;--dim:.3;--tint:14%;color-scheme:dark}
+:root{--ink-72:var(--ink-2);--ink-55:var(--ink-3);--ink-20:rgba(var(--ink-rgb),var(--dim));--ink-12:rgba(var(--ink-rgb),var(--hair));--ink-06:rgba(var(--ink-rgb),.06)}
+/* one calm page: content on paper, space and hairlines between groups (8 inside, 20 between, 32 between sections);
+   four type styles (body 15, secondary 13, data 12.5 mono, section head 17 serif); coral marks only what is yours or waiting on you: the call, and the part you comment on */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.55 var(--sans);padding:16px 20px 32px;max-width:980px;-webkit-font-smoothing:antialiased}
+.rp-head h1{font:400 22px/1.25 var(--serif);margin:4px 0 12px;letter-spacing:-.005em}
+:root[data-framed] .rp-head{display:none}
+.rp-intro{font-size:14px;line-height:1.5;color:var(--ink-72);max-width:68ch;margin:0 0 20px}
+.rp-sec{font:400 17px/1.3 var(--serif);margin:32px 0 12px}
+.rp-label{font:600 13px/1.45 var(--sans);margin:0 0 8px}
+.rp-quiet{font-size:13px;line-height:1.45;color:var(--ink-72)}
+.rp-num,.rp-mono{font-family:var(--mono);font-size:12.5px;line-height:1.6;font-variant-numeric:tabular-nums}
+.rp-note{font-size:13px;line-height:1.45;color:var(--ink-55);margin:20px 0 0;max-width:68ch}
+.rp-more{margin:32px 0 0;font-size:13px;line-height:1.45;color:var(--ink-72);max-width:68ch}
+.rp-more summary{cursor:pointer;width:max-content;max-width:100%}
+.rp-more summary:hover{color:var(--ink)}
+.rp-more>:not(summary){margin:8px 0 0}
+button{font:inherit;font-size:13px;line-height:1.45;color:var(--ink);background:none;border:1px solid var(--ink-20);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--ink-55)}
+button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--ink-55);outline-offset:2px}
+/* the bridge: an anchored part shows itself only on hover or focus; the one commented on keeps a coral edge */
+[data-anchor]{cursor:pointer;border-radius:2px}
+[data-anchor]:hover,[data-anchor]:focus-visible{outline:0;background:rgba(var(--ink-rgb),.04);box-shadow:inset 2px 0 0 var(--ink-20)}
+[data-anchor][data-rp-active]{outline:0;background:color-mix(in srgb,var(--accent) var(--tint),transparent);box-shadow:inset 2px 0 0 var(--accent)}
+.rp-copy{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;background:none;color:var(--ink-55);border-radius:4px;vertical-align:middle}
+.rp-copy:hover{color:var(--ink);background:var(--ink-06)}
+#rp-toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,8px);padding:4px 12px;border-radius:6px;background:var(--ink);color:var(--paper);font-size:13px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none}
+#rp-toast[data-on]{opacity:1;transform:translate(-50%,0)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin:0 0 20px}
+@media (min-width:760px){.stage{grid-template-columns:minmax(0,1.5fr) minmax(220px,1fr)}}
+/* the diagram sits on the page: no box. On is an ink stroke, hot a 3 px one, dashed on an arrow
+   (coral is for what is yours or waiting on you, not for what is happening; A24); a part shows a comment by its stroke */
+.diagram{overflow-x:auto}
+.diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.part{cursor:pointer}
+.part:focus-visible{outline:0}
+.part rect{fill:var(--paper);stroke:var(--ink-20);stroke-width:1.5;transition:stroke .15s}
+.part text{fill:var(--ink-72);font:500 14px var(--sans)}
+.part:hover rect,.part:focus-visible rect{stroke:var(--ink-55)}
+.part[data-on] rect{stroke:var(--ink)}
+.part[data-on] text,.part[data-sel] text{fill:var(--ink)}
+.part[data-sel] rect{stroke:var(--ink);stroke-width:2;fill:var(--ink-06)}
+.part[data-hot] rect{stroke:var(--ink);stroke-width:3}
+.edge line{stroke:var(--ink-20);stroke-width:1.5;marker-end:url(#arr)}
+.edge text{fill:var(--ink-55);font:12px var(--mono);paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}
+.edge[data-on] line{stroke:var(--ink);marker-end:url(#arr-on)}
+.edge[data-on] text{fill:var(--ink)}
+.edge[data-hot] line{stroke:var(--ink);stroke-width:3;stroke-dasharray:7 5;marker-end:url(#arr-hot)}
+/* what the selected part takes in and gives out: no card. The readout is what you comment on (the
+   part itself only inspects); its cue is drawn by CSS so it stays out of the words the comment quotes */
+.readout [data-anchor]{margin:0 -8px;padding:4px 8px 8px;border-radius:6px}
+.readout .cm{margin:8px 0 0;line-height:1}
+.readout .cm::before{content:attr(data-cue);display:inline-block;font-size:13px;line-height:1.45;color:var(--ink-72);border:1px solid var(--ink-20);border-radius:6px;padding:2px 10px}
+.readout [data-anchor]:hover .cm::before,.readout [data-anchor]:focus-visible .cm::before{border-color:var(--ink-55);color:var(--ink)}
+.readout [data-anchor][data-rp-active] .cm::before{border-color:var(--accent);color:var(--accent-text)}
+.readout h2{font:600 15px/1.45 var(--sans);margin:0 0 8px}
+.readout dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px}
+.readout dt{font:600 13px/1.6 var(--sans);color:var(--ink-55)}
+.readout dd{margin:0;font-size:14px;line-height:1.5}
+.readout .hint{font-size:13px;line-height:1.45;color:var(--ink-55);margin:0}
+.readout .nt{font-size:13px;line-height:1.45;color:var(--ink-72);margin:8px 0 0}
+/* the steps: one row of controls, the sentence under it */
+#steps{border-top:1px solid var(--ink-12);padding-top:20px}
+.stepper{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.stepper button{width:28px;height:28px;padding:0;font-size:16px;line-height:1}
+.stepper .c{font-size:13px;color:var(--ink-72);white-space:nowrap;min-width:11ch;margin:0 4px;font-variant-numeric:tabular-nums}
+.stepper input{flex:1 1 auto;min-width:0;accent-color:var(--ink)}
+.steptext{margin:0 0 20px;min-height:4.65em;max-width:68ch}
+/* the state the steps fill in: no box, no inner scroll; a row that is new at this step is tinted */
+.state table{border-collapse:collapse;width:100%;font:12.5px/1.6 var(--mono)}
+.state th{text-align:left;font:600 13px/1.45 var(--sans);color:var(--ink-72);padding:0 12px 4px 8px;border-bottom:1px solid var(--ink-20)}
+.state td{padding:4px 12px 4px 8px;border-bottom:1px solid var(--ink-12);vertical-align:top}
+.state tr[data-new] td{background:rgba(var(--ink-rgb),calc(var(--hair) * .5))}
+.state tr[data-anchor]:hover,.state tr[data-anchor][data-rp-active]{box-shadow:none}
+.state tr[data-anchor]:hover td:first-child{box-shadow:inset 2px 0 0 var(--ink-20)}
+.state tr[data-anchor][data-rp-active] td:first-child{box-shadow:inset 2px 0 0 var(--accent)}
+.state .empty{color:var(--ink-55);font:13px var(--sans)}
+</style>
+</head>
+<body>
+<header class="rp-head"><h1 id="rp-title"></h1></header>
+<p class="rp-intro" id="rp-intro"></p>
+<div class="stage"><div class="diagram" id="diagram"></div><div class="readout" id="card" aria-live="polite"></div></div>
+<div id="steps">
+  <div class="stepper"><button type="button" id="prev" aria-label="Previous step">‹</button><button type="button" id="next" aria-label="Next step">›</button><span class="c" id="count"></span><input type="range" id="scrub" min="1" value="1" aria-label="Step"></div>
+  <p class="steptext" id="steptext" tabindex="0"></p>
+</div>
+<section class="state" id="state"><p class="rp-label" id="state-t"></p><div class="wrap"><table><thead><tr id="state-h"></tr></thead><tbody id="state-b"></tbody></table></div></section>
+<script>
+/* ── SLOT: STEPS (optional): generate the steps instead of listing them in the JSON ───────────── */
+window.rpSteps = (d) => {
+  const steps = [{ text: `The browser cuts the file into ${d.total} parts and asks the manifest what is already done: nothing.`, on: ["client", "manifest", "manifest>client"], rows: [] }];
+  const rows = [];
+  for (let n = 1; n <= d.total; n++) {
+    if (n === d.dropAt) {
+      steps.push({ text: `Part ${n} is on its way when the connection drops.`, on: ["client"], hot: "client>api", rows: rows.map((r) => [...r]).concat([[String(n), "lost"]]) });
+      steps.push({ text: `The browser reconnects and asks the manifest: parts 1–${n - 1} are done, so it resends from part ${n}, not from part 1.`, on: ["manifest", "client"], hot: "manifest>client", rows: rows.map((r) => [...r]) });
+    }
+    rows.push([String(n), "done"]);
+    steps.push({ text: `Part ${n} goes to storage, and the manifest records it.`, on: ["client", "api", "store", "manifest", "client>api", "api>store", "api>manifest"], rows: rows.map((r) => [...r]) });
+  }
+  steps.push({ text: `All ${d.total} parts are in: storage stitches them into one object.`, on: ["store"], rows: rows.map((r) => [...r]).concat([["all", "stitched"]]) });
+  return steps;
+};
+</script>
+<script>
+const D = JSON.parse(document.getElementById("rp-data").textContent);
+const h = (tag, a, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (k === "text") el.textContent = v; else if (k === "class") el.className = v; else el.setAttribute(k, v === true ? "" : v); } for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : String(c)); return el; };
+document.title = D.title || document.title;
+document.getElementById("rp-title").textContent = D.title || "";
+const intro = document.getElementById("rp-intro"); if (D.intro) intro.textContent = D.intro; else intro.remove();
+const copyText = (text, btn) => {
+  const done = () => { let t = document.getElementById("rp-toast"); if (!t) document.body.append(t = h("div", { id: "rp-toast", role: "status" })); t.textContent = "Copied"; t.setAttribute("data-on", ""); clearTimeout(t._h); t._h = setTimeout(() => t.removeAttribute("data-on"), 1200); };
+  const fallback = () => { const t = h("textarea", { style: "position:fixed;opacity:0" }); t.value = text; document.body.append(t); t.select(); try { document.execCommand("copy"); done(); } catch {} t.remove(); };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+};
+const COPY_ICON = '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 10.5V3.8C3 3.4 3.4 3 3.8 3h6.7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+const NS = "http://www.w3.org/2000/svg";
+const s = (tag, a, ...kids) => { const el = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(a || {})) if (v != null && v !== false) el.setAttribute(k, v === true ? "" : v); for (const c of kids.flat()) if (c != null) el.append(c.nodeType ? c : String(c)); return el; };
+const parts = D.parts || [], edges = D.edges || [], W = 150, H = 54, CX = 220, CY = 120, PAD = 24;
+const cx = (p) => PAD + p.x * CX + W / 2, cy = (p) => PAD + p.y * CY + H / 2;
+const byId = Object.fromEntries(parts.map((p) => [p.id, p]));
+const cols = Math.max(0, ...parts.map((p) => p.x)) + 1, rows = Math.max(0, ...parts.map((p) => p.y)) + 1;
+const vw = PAD * 2 + (cols - 1) * CX + W, vh = PAD * 2 + (rows - 1) * CY + H;
+const arrow = (id, color) => s("marker", { id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, s("path", { d: "M0,0 L10,5 L0,10 z", style: `fill:${color}` }));
+// where the line from a box's centre towards (tx, ty) leaves the box
+const exit = (p, tx, ty) => { const x = cx(p), y = cy(p), dx = tx - x, dy = ty - y, k = Math.min(Math.abs((W / 2 + 4) / (dx || 1e-9)), Math.abs((H / 2 + 4) / (dy || 1e-9))); return [x + dx * k, y + dy * k]; };
+const svg = s("svg", { viewBox: `0 0 ${vw} ${vh}`, width: vw, role: "img", "aria-label": D.title || "diagram" },
+  s("defs", null, arrow("arr", "var(--ink-20)"), arrow("arr-on", "var(--ink)"), arrow("arr-hot", "var(--ink)")));
+const edgeEls = {}, partEls = {};
+for (const e of edges) {
+  const a = byId[e.from], b = byId[e.to]; if (!a || !b) continue;
+  // two arrows between the same pair would overlap: nudge each off the centre line
+  const twin = edges.some((o) => o.from === e.to && o.to === e.from), off = twin ? 7 : 0;
+  const [x1, y1] = exit(a, cx(b), cy(b)), [x2, y2] = exit(b, cx(a), cy(a)), len = Math.hypot(x2 - x1, y2 - y1) || 1, nx = -(y2 - y1) / len * off, ny = (x2 - x1) / len * off;
+  // the label sits above a level arrow, beside a steep one, and off to one side of a slanted one
+  const ux = -(y2 - y1) / len, uy = (x2 - x1) / len, flat = Math.abs(y2 - y1) < 2, steep = Math.abs(x2 - x1) < 2;
+  const lx = (x1 + x2) / 2 + nx + (flat ? 0 : steep ? 8 : ux * 14), ly = (y1 + y2) / 2 + ny + (flat ? -7 : steep ? 4 : uy * 14 + 4);
+  const g = s("g", { class: "edge" }, s("line", { x1: x1 + nx, y1: y1 + ny, x2: x2 + nx, y2: y2 + ny }), e.label ? s("text", { x: lx, y: ly, "text-anchor": flat ? "middle" : steep ? "start" : ux > 0 ? "start" : "end" }, e.label) : null);
+  edgeEls[`${e.from}>${e.to}`] = g; svg.append(g);
+}
+let sel = null;
+for (const p of parts) {
+  // a part inspects: it is not anchored, so a click on it never opens a comment (its readout is)
+  const g = s("g", { class: "part", tabindex: 0, role: "button", "aria-label": `${p.label}: what goes in and out` },
+    s("rect", { x: PAD + p.x * CX, y: PAD + p.y * CY, width: W, height: H, rx: 8 }),
+    s("text", { x: cx(p), y: cy(p) + 5, "text-anchor": "middle" }, p.label));
+  g.addEventListener("click", () => select(p.id)); g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(p.id); } });
+  partEls[p.id] = g; svg.append(g);
+}
+document.getElementById("diagram").append(svg);
+const card = document.getElementById("card");
+function select(id) {
+  sel = id; const p = byId[id];
+  for (const [k, g] of Object.entries(partEls)) g.toggleAttribute("data-sel", k === id);
+  // the readout is the anchor: a click on it (or its Comment cue), Enter on it, or words selected in it
+  const rd = h("div", { "data-anchor": `part: ${p.label}`, tabindex: 0, title: "Comment on this part (or select words in it)" },
+    h("h2", { text: p.label }), h("dl", null, h("dt", { text: "In" }), h("dd", { text: p.in || "–" }), h("dt", { text: "Out" }), h("dd", { text: p.out || "–" })), p.note ? h("p", { class: "nt", text: p.note }) : null,
+    h("p", { class: "cm", "data-cue": "Comment on this part", "aria-hidden": "true" }));
+  card.replaceChildren(rd);
+}
+if (!D.intro) card.append(h("p", { class: "hint", text: "Click a part to see what goes in and what comes out." }));   // the intro says it otherwise
+// the steps: listed in the JSON, or generated by SLOT: STEPS
+const steps = typeof window.rpSteps === "function" ? window.rpSteps(D) : (D.steps || []);
+const scrub = document.getElementById("scrub"), stext = document.getElementById("steptext");
+let at = 0, prevRows = [];
+function go(i) {
+  at = Math.max(0, Math.min(steps.length - 1, i)); const st = steps[at] || {};
+  for (const [k, g] of Object.entries({ ...partEls, ...edgeEls })) { g.toggleAttribute("data-on", (st.on || []).includes(k)); g.toggleAttribute("data-hot", st.hot === k); }
+  stext.textContent = st.text || ""; stext.toggleAttribute("data-hot", !!st.hot); stext.setAttribute("data-anchor", `step ${at + 1}`);
+  scrub.value = at + 1; document.getElementById("count").textContent = `Step ${at + 1} of ${steps.length}`;
+  document.getElementById("prev").disabled = at === 0; document.getElementById("next").disabled = at === steps.length - 1;
+  if (D.state) {
+    const rows = st.rows || [], had = new Set(prevRows.map((r) => r.join("\u0001")));
+    document.getElementById("state-b").replaceChildren(...(rows.length ? rows.map((r) => h("tr", { "data-anchor": `row: ${r[0]}`, "data-new": !had.has(r.join("\u0001")) }, r.map((c) => h("td", { text: c })))) : [h("tr", null, h("td", { class: "empty", colspan: (D.state.columns || []).length || 1, text: "Empty" }))]));
+    prevRows = rows;
+  }
+}
+if (steps.length) {
+  scrub.max = steps.length;
+  scrub.addEventListener("input", () => go(scrub.value - 1));
+  document.getElementById("prev").addEventListener("click", () => go(at - 1));
+  document.getElementById("next").addEventListener("click", () => go(at + 1));
+  document.addEventListener("keydown", (e) => { if (e.target.matches("input")) return; if (e.key === "ArrowRight") go(at + 1); if (e.key === "ArrowLeft") go(at - 1); });
+} else document.getElementById("steps").remove();
+if (D.state) { document.getElementById("state-t").textContent = D.state.title || "State"; document.getElementById("state-h").append(...(D.state.columns || []).map((c) => h("th", { text: c }))); }
+else document.getElementById("state").remove();
+if (steps.length) go(0);
+</script>
+<script>
+/* rp-bridge v2: the same lines in every page of a guide (templates/details/). Keep it as it is.
+   Any element with data-anchor="<label>" can be noted on. A click on it posts {type:"rp-detail", event:"anchor",
+   anchor, text, rect} to the player; words selected inside it post {event:"select", anchor, text, rect, editable}
+   (the player opens its note box on the selection: a comment, a suggested edit where the words sit in a
+   data-editable element, or a question). On load it posts "ready", and its height as "size" when that changes. */
+(function () {
+  var post = function (m) { m.type = "rp-detail"; try { parent.postMessage(m, "*"); } catch (e) {} };
+  var CONTROL = "button,a,input,select,textarea,label,summary,[role=button],[data-no-anchor]";
+  var clean = function (t, n) { return String(t || "").replace(/\s+/g, " ").trim().slice(0, n); };
+  var box = function (r) { return { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }; };
+  var anchorOf = function (n) { var e = n && (n.nodeType === 1 ? n : n.parentElement); return e && e.closest ? e.closest("[data-anchor]") : null; };
+  var mark = function (el) { var was = document.querySelector("[data-rp-active]"); if (was) was.removeAttribute("data-rp-active"); el.setAttribute("data-rp-active", ""); };
+  var chosen = function () {
+    var s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+    var text = clean(String(s), 600), r = s.getRangeAt(0), el = anchorOf(r.commonAncestorContainer);
+    return text && el ? { el: el, text: text, rect: box(r.getBoundingClientRect()) } : null;
+  };
+  var send = function (el) { mark(el); post({ event: "anchor", anchor: el.getAttribute("data-anchor"), text: clean(el.innerText || el.textContent, 200), rect: box(el.getBoundingClientRect()) }); };
+  var said = "";
+  var select = function () {
+    var c = chosen(); if (!c) { said = ""; return; }
+    var key = c.text + "|" + c.rect.x + "|" + c.rect.y; if (key === said) return; said = key;
+    mark(c.el);
+    post({ event: "select", anchor: c.el.getAttribute("data-anchor"), text: c.text, rect: c.rect, editable: !!(c.el.closest && c.el.closest("[data-editable]")) });
+  };
+  document.addEventListener("click", function (e) {
+    if (chosen()) return;   // words selected are their own note (select), not a click
+    var el = e.target.closest && e.target.closest("[data-anchor]"); if (!el) return;
+    var c = e.target.closest(CONTROL); if (c && c !== el && el.contains(c)) return;   // a control inside it acts, it does not note
+    send(el);
+  });
+  document.addEventListener("mouseup", function () { setTimeout(select, 0); });
+  document.addEventListener("keyup", function (e) { if (e.shiftKey || e.key === "Shift") select(); });
+  var st = null; document.addEventListener("selectionchange", function () { clearTimeout(st); if (window.matchMedia && matchMedia("(pointer:coarse)").matches) st = setTimeout(select, 600); });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target.closest && e.target.closest("[data-anchor]");
+    if (el === e.target && e.key === "Enter" && !e.target.matches(CONTROL)) send(el);
+  });
+  var tall = 0, size = function () { var h = Math.ceil(document.documentElement.scrollHeight); if (h !== tall) { tall = h; post({ event: "size", height: h }); } };
+  var ready = function () { post({ event: "ready", title: document.title }); size(); if (window.ResizeObserver) new ResizeObserver(size).observe(document.body); };
+  if (document.readyState === "complete") ready(); else window.addEventListener("load", ready);
+})();
+</script>
+</body>
+</html>

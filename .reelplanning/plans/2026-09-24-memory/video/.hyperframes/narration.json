@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "0ac72594b4338e19e731",
+      "text": "They are left as they are. Step two: reel status ends with at most five lines, worked out each time from the ledger and the reviews. How often a recommendation was taken; the own-words answers, and why; the steps rewound; the quick checks answered wrong; and the misses.",
+      "sha256": "b18df72d0634a4cb8c1ac744713af3d2861aff5b4098bdb0954bf43556d8ced0",
+      "duration_s": 15.211
+    },
+    "11": {
+      "key": "ba5bfd9905af6f34a995",
+      "text": "Each line has an id. Reel memory m three opens its evidence: deep dives, step four, rewound in one review, rewritten, and rewound again in the next. The status stays short, and the evidence is one command away. The skill reads it before writing a plan, and when tagging calls.",
+      "sha256": "415657c4bd85ada99b2a4553189297b6f1467c3fe80b52addc201e4daf96a0d8",
+      "duration_s": 16.64
+    },
+    "12": {
+      "key": "5ef606dc7c90a808882d",
+      "text": "Quick check. You want the words you wrote on decision twenty-three. Where do you find them?",
+      "sha256": "9eba12a623a277822d8a2cad4eb3d57c4b5eacc1683cbd5a4b3d1b8b26102f2d",
+      "duration_s": 4.245
+    },
+    "13": {
+      "key": "39d3fd8e6026da0d8dc3",
+      "text": "In reel memory m two, worked out from the reviews; nothing new is stored. Next, part three: your memory, across repos.",
+      "sha256": "f102d74bd8dd3a57828c963f1b2a9da142ea9bc98d2cd9c43693c0bf7ce9725c",
+      "duration_s": 6.848
+    },
+    "14": {
+      "key": "eb110d207de47c1d1b90",
+      "text": "Part three of five: step three, and the first question.",
+      "sha256": "b4756958dc0341e853a8375ef359e5342f99481278b4b401c4df2606f6d40924",
+      "duration_s": 3.029
+    },
+    "15": {
+      "key": "d5f7e6a512fa656a3990",
+      "text": "Step three needs step one. When a review is recorded, a short summary of it goes into a file of your own, outside any repo: the verdict, your own-words answers and their reasons, the rewinds, the wrong quick checks, the kinds of call you flagged. Reel memory dash dash you works out the same few lines across every repo you review in: your taste, not one repo's facts.",
+      "sha256": "eb469114a4fa3477c7f11f96fb3c7f8c9906bbb7f7048049c595015996725845",
+      "duration_s": 20.245
+    },
+    "16": {
+      "key": "98166c0a42a8f45166a3",
+      "text": "Quick check. You review a plan in another repo. What reaches your own file?",
+      "sha256": "bb4a59d2699d28b0fd2d298464c58d045809542430839707a7b85d61e7e6d253",
+      "duration_s": 3.925
+    },
+    "17": {
+      "key": "1132255dc05f90d65aa2",
+      "text": "Only the short summary; the review stays in its repo. So where does that file live? A: a file in your home folder, one line per review, that any agent reads through reel memory. B: Claude's own memory: nothing new to keep, but only Claude reads it. C: not yet: this repo's memory first, yours in a later plan. I recommend A: it works under any agent, and it is the same kind of record the repo keeps. Where should it live?",
+      "sha256": "fbf4c0786226c29103a58800bb8a67742321e5fd16b7721644c1cd869f0bc690",
+      "duration_s": 21.845
+    },
+    "18": {
+      "key": "1e1a7a4a370b9628dc22",
+      "text": "With C, step three leaves this plan, and memory is this repo's alone until a later plan.",
+      "sha256": "c3ad0c8070fe178403806f800c21d799887c3c8087bef0d4029bef7f092a2816",
+      "duration_s": 4.992
+    },
+    "19": {
+      "key": "22ca9755a6d83a2d59b1",
+      "text": "Next, part four: what counts as a miss, and what it makes stop.",
+      "sha256": "eaf3a6c43208e4dd7f0d46b7716441284fab961e59093d0e7782182e409bfaa3",
+      "duration_s": 3.307
+    },
+    "20": {
+      "key": "49708ed049ec83c8a1a6",
+      "text": "Part four of five: step four, misses.",
+      "sha256": "7329d49f3bcaa1a8474702ffc6aa5907f4128cd07c890883847f0ca4ae850c7a",
+      "duration_s": 2.219
+    },
+    "21": {
+      "key": "6cbee1c4005e48ced27c",
+      "text": "Step four needs step two. A miss is something a later plan, a fix, or a system-video review changed that an earlier review let through. A decision superseded: fifty-six by sixty-three. An accepted call reversed: the file tools. A part reworked soon after. Reel memory traces each miss to the question or call that passed it, and its kind: a call's tags, or a question's topic.",
+      "sha256": "aaf59a55699f0786d9b2b438869a5c910bf2d6d6944aa25c80f25e90ad9cdafc",
+      "duration_s": 21.035
+    },
+    "22": {
+      "key": "1990c7bf394ee55ed15d",
+      "text": "Quick check. Which of these counts as a miss?",
+      "sha256": "802b6f7e3d2abab406569a361e6bf75e2f2ee11173f0004d8c9b8bea410c85f2",
+      "duration_s": 2.048
+    },
+    "23": {
+      "key": "2dc90f8c0fcdc653abe6",
+      "text": "An accepted call, reversed later. The others are signals, not misses. A miss changes what stops: a call of its kind stops the walkthrough again, whatever its streak of accepts. That is one exception to decision eighty-four's rule. And the next plan that touches that part asks that kind of question.",
+      "sha256": "7645175a604f20daaca82c862b4fd2c7100d4281a8c0be164e50cd0150ce1cfc",
+      "duration_s": 16.491
+    },
+    "24": {
+      "key": "89cb7121d18975b8c3a3",
+      "text": "Quick check. You have accepted ten hard-to-undo calls running. Then one is reversed after its review. Does the next hard-to-undo call stop?",
+      "sha256": "b5ffc691add648b5d2a701fd8a7af476d2bff16ede0d3f563dc7a3d4265228f6",
+      "duration_s": 7.936
+    },
+    "25": {
+      "key": "9c4c64cccc7b7a177d40",
+      "text": "It stops: the miss brings its kind back, with no flag needed. Next, part five: the retro, and the second question.",
+      "sha256": "d8824ee1c1cb7637657d3abb7f781e579c12265f9ad3d7b34d9619380d496f12",
+      "duration_s": 6.549
+    },
+    "26": {
+      "key": "3a5dd3cf2362e62576a9",
+      "text": "Part five of five: step five, and the second question.",
+      "sha256": "4b13b538081ce9998df9379bed0b692cf70a445ffbee1c12faa0949a377ed3b3",
+      "duration_s": 3.051
+    },
+    "27": {
+      "key": "700a847c20633d514c93",
+      "text": "Step five needs steps two to four. Reel status suggests a retro when one is due, and reel retro starts it: a plan of skill edits that the evidence supports, each citing its evidence. It must cut at least as many words as it adds, and you review it like any plan.",
+      "sha256": "fc0bfa27f9e98e9dbc543c6b90b79dc4875c0dae187e473959dd980a9fbee9da",
+      "duration_s": 15.061
+    },
+    "28": {
+      "key": "0cf608c91a1fb70fc223",
+      "text": "Its own numbers can't judge it: the tool could ask less, and count that as success. So before a retro is accepted, the benchmark runs with the old skill and the new: the Bob Dylan example, redone from the same prompt, next to its text and HTML baselines. The yardstick sits outside the loop.",
+      "sha256": "319c0089d7aafc78c8f01cc4cf8b9b1f491faa482074a4275a19ff2edf450d6e",
+      "duration_s": 16.789
+    },
+    "29": {
+      "key": "ef6da9bcd2456fb193bb",
+      "text": "Quick check. After a retro, the next plans ask fewer questions, and fewer answers come in your own words. Is the retro accepted on that?",
+      "sha256": "0bdf85fdd74e1379eae9f377413fa0db538bf621caaad73a272fa0134347ee15",
+      "duration_s": 7.851
+    },
+    "30": {
+      "key": "0c5d9f47df305f9ee601",
+      "text": "No: the benchmark judges it, and then you do. Question two: when does the tool suggest a retro? A: every five plans, or when a signal repeats three times, whichever comes first. B: only when a signal repeats three times. C: never; you ask for one. I recommend A: a schedule catches slow drift that no single signal shows, and you still decide. When should it suggest one?",
+      "sha256": "fc5466057b07242634e9dd9febc1782bf458be4b369daf40816f94e7e5831aa5",
+      "duration_s": 20.565
+    },
+    "31": {
+      "key": "e08f788a03200a6f070d",
+      "text": "That is the plan: four changes in five steps, and two questions. Answer them, draw on any step to leave a note, or approve. The narration and visuals are AI-generated.",
+      "sha256": "61adad951dd274075bbabf9f563a918ce881080712b1e480362ec087fbbbfa77",
+      "duration_s": 9.984
+    },
+    "01": {
+      "key": "7b4177fc264bed5c595d",
+      "text": "Every plan starts from nothing. Fourteen reviews sit in this repo, and no plan reads them.",
+      "sha256": "d7a826a7563bc1168c0582095a4bec3d5f583ad06f62a6296cd4733a76d7d848",
+      "duration_s": 5.184
+    },
+    "02": {
+      "key": "5ff1592666dd6269a9f4",
+      "text": "Here is what they say. Sixteen questions: every answer you picked from the list was the recommended one. Three you answered in your own words: the options were too abstract, the question was framed wrong, or you accepted with a condition. And you accepted eighty-five of the agent's ninety-one calls.",
+      "sha256": "073df3b6769f60797a0bbdb83c686aeb997471a7bf825e26a1921589d23eb364",
+      "duration_s": 16.427
+    },
+    "03": {
+      "key": "8f871984d5381c32c619",
+      "text": "Some things got past a review and changed later. Decision fifty-six was accepted, then superseded by sixty-three the same day. The file tools call was accepted, then reversed after quick check three. Step four of the deep-dives plan was rewound, rewritten, and rewound again. Each is a question that should have been asked, or a call that should have stopped.",
+      "sha256": "7712762faaa94fd1c3bb566e480babc10dccd8641b571580aa02381a8d780478",
+      "duration_s": 19.52
+    },
+    "04": {
+      "key": "118c65e87b5120dd60ca",
+      "text": "The aim is the right questions, not fewer. Four changes. Every review records who reviewed it and with which skill: step one. Memory, worked out on demand, for this repo and for you: steps two and three. Misses decide what stops: step four. And a retro you start: step five.",
+      "sha256": "ef44b5383e2ab98df80a7a15c3e53b13d8eba90523e9f328b0891071b38b8ebf",
+      "duration_s": 15.296
+    },
+    "05": {
+      "key": "094c37040969662fe561",
+      "text": "Step one stands alone. Steps two and three build on its record; step two works without it while there is one reviewer. Step four needs step two, and the retro needs two, three and four.",
+      "sha256": "d50c252585aab7049ec1ff585e680e26daa38e54412d3a1475f5635d0d508600",
+      "duration_s": 10.581
+    },
+    "06": {
+      "key": "807d88233a157699ed01",
+      "text": "Next, part two: the record, and this repo's memory.",
+      "sha256": "a13607616fc8b6520dc21e56d30e33c1f9d963f28a824b92e254cd8d353581ed",
+      "duration_s": 2.859
+    },
+    "07": {
+      "key": "63c1a8e75d3d2574c23e",
+      "text": "Part two of five: steps one and two.",
+      "sha256": "7d703de239731fbfc6bee8db90ce5f6a10a2d15516cb46e17c7f28c6a59e7300",
+      "duration_s": 2.133
+    },
+    "08": {
+      "key": "fd434de3ad4a8631b50c",
+      "text": "Step one: when a review is recorded, intake adds who reviewed it, from git's user email or the page's viewer, and the reelplanning version that built the video. Without the version, a change to the skill looks like a change in the plans. Without the reviewer, one person's taste looks like what works.",
+      "sha256": "9d92720ff19d63d51c38d7883c49247ee4b32642f1263e130d47b171bc30418e",
+      "duration_s": 16.235
+    },
+    "09": {
+      "key": "ae5874208cf690b3a41f",
+      "text": "Quick check. Fourteen reviews were recorded before step one. What happens to them?",
+      "sha256": "53cb81f3b6970b027ca1a265249d168813d1e54298e24509fb2738deae42727c",
+      "duration_s": 4.352
+    }
+  }
+}

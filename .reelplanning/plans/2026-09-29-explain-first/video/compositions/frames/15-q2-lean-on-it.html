@@ -1,0 +1,136 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m15-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m15-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .m15-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m15-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m15-h { position:absolute; font:400 72px/1.05 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .m15-big { position:absolute; font:400 50px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-side { position:absolute; font:400 30px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.78); white-space:nowrap; }
+  .m15-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .m15-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m15-t code, .m15-s code, .m15-row3 code, .m15-frow code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m15-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 30px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:26px; white-space:nowrap; }
+  .m15-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m15-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m15-pin.hot { background:var(--rp-coral); }
+  .m15-pin em { font-style:normal; }
+  .m15-card, .m15-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .m15-tile { background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.3); }
+  .m15-quote { position:absolute; left:48px; top:44px; right:48px; font:400 36px/1.5 "Inter"; color:var(--rp-ink); }
+  .m15-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:9px; }
+  .m15-cl { position:absolute; left:36px; top:32px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m15-cl code { font-family:"JetBrains Mono"; }
+  .m15-ct { position:absolute; left:36px; top:92px; right:36px; font:400 48px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .m15-cs { position:absolute; left:36px; bottom:36px; height:48px; padding:0 18px; font:400 28px/44px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:24px; box-sizing:border-box; white-space:nowrap; }
+  .m15-cc { position:absolute; left:36px; top:90px; font:400 30px/1.55 "JetBrains Mono"; color:var(--rp-ink); white-space:pre; }
+  .m15-dh { position:absolute; left:36px; font:400 38px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-dt { position:absolute; left:36px; right:30px; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m15-dm { position:absolute; left:36px; right:30px; font:400 28px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m15-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m15-bar { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m15-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.7); white-space:nowrap; }
+  .m15-code { position:absolute; font:400 30px/1.45 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m15-code .d { color:rgba(var(--rp-slab-ink-rgb),0.82); }
+  .m15-code .ok { color:var(--rp-syn-add); }
+  .m15-code .w { color:var(--rp-syn-num); }
+  .m15-code .x { color:var(--rp-syn-del); }
+  .m15-hair { position:absolute; height:2px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .m15-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m15-strk.ink { background:var(--rp-ink); }
+  .m15-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m15-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:12px; }
+  .m15-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m15-row3, .m15-row2 { position:absolute; width:1600px; height:88px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m15-row3 .k, .m15-row2 .k { position:absolute; left:0; top:26px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-row3 .v, .m15-row2 .v { position:absolute; left:560px; top:30px; font:400 32px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m15-row2 { height:120px; }
+  .m15-row2 .k { top:40px; font-size:48px; }
+  .m15-row2 .v { left:720px; top:46px; }
+  .m15-ask { position:absolute; width:760px; height:80px; box-sizing:border-box; padding:0 28px; font:400 32px/76px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.35); border-radius:12px; white-space:nowrap; background:var(--rp-paper); }
+  .m15-thead, .m15-trow { position:absolute; width:1600px; }
+  .m15-thead span { position:absolute; top:0; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m15-trow { height:130px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m15-trow span { position:absolute; top:40px; white-space:nowrap; }
+  .m15-trow .c1 { font:400 44px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .m15-trow .c2 { font:400 32px/1.3 "Inter"; color:var(--rp-ink); }
+  .m15-trow .c3 { font:400 30px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m15-trow .c4 { font:400 30px/1.35 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m15-thead .c1, .m15-trow .c1 { left:0; } .m15-thead .c2, .m15-trow .c2 { left:400px; } .m15-thead .c3, .m15-trow .c3 { left:960px; } .m15-thead .c4, .m15-trow .c4 { left:1480px; }
+  .m15-bubble { position:absolute; height:72px; padding:0 30px; box-sizing:border-box; font:400 34px/70px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:36px 36px 36px 8px; white-space:nowrap; }
+  .m15-rk { position:absolute; left:32px; top:36px; height:48px; padding:0 18px; box-sizing:border-box; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; }
+  .m15-rt { position:absolute; left:290px; top:34px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-rl { position:absolute; left:760px; top:44px; font:400 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m15-rs { position:absolute; left:930px; top:44px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m15-btn { position:absolute; height:84px; box-sizing:border-box; font:500 36px/84px "Inter"; text-align:center; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:10px; white-space:nowrap; }
+  .m15-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); line-height:80px; }
+  .m15-frow { position:absolute; width:680px; height:120px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m15-frow .k { position:absolute; left:0; top:26px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m15-frow .v { position:absolute; left:0; top:66px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-ctx { position:absolute; left:180px; top:80px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m15-q code, .m15-opt code { font-family:"JetBrains Mono"; font-size:0.8em; }
+  .m15-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m15-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m15-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m15-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 48px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m15-opt .c { position:absolute; left:30px; top:200px; right:26px; font:400 28px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .m15-ring { position:absolute; box-sizing:border-box; border-radius:14px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m15-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m15-st { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m15-st .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m15-st .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m15-st .d, .m15-st .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .m15-st .r { border-color:transparent; padding-right:0; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m15-struck { text-decoration:line-through; text-decoration-thickness:5px; text-decoration-color:var(--rp-ink); color:rgba(var(--rp-ink-rgb),0.85); }
+  .m15-arr { position:absolute; font:400 28px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .m15-dim { color:rgba(var(--rp-ink-rgb),0.7); }
+</style>
+
+<div id="root" data-composition-id="15-q2-lean-on-it" data-band="bottom" data-duration="17.673" data-width="1920" data-height="1080">
+
+  <div class="clip m15-bg" id="m15-bg" data-start="0" data-duration="17.673" data-track-index="0"></div>
+
+  <div class="clip m15-scene" id="m15-scene" data-start="0" data-duration="17.673" data-track-index="1">
+    <div class="m15-ctx" id="m15-ctx"  style="left:180px; top:80px">question 2 · you watched the explainer, then pressed Plan this</div>
+    <div class="m15-q" id="m15-q" data-question style="left:180px; top:150px; width:1560px">After Plan this, how far does the plan lean on the explainer?</div>
+    <div class="m15-opt" id="m15-opt-a" data-option="a" data-plan-option="a" style="left:180px; top:380px; width:500px; height:360px"><span class="k">A</span> <span class="l">Lean on it</span> <span class="c">Before you watch, and two lines</span></div>
+    <div class="m15-opt" id="m15-opt-b" data-option="b" data-plan-option="b" style="left:710px; top:380px; width:500px; height:360px"><span class="k">B</span> <span class="l">A recap chapter</span> <span class="c">about 40 s of its scenes</span></div>
+    <div class="m15-opt" id="m15-opt-c" data-option="c" data-plan-option="c" style="left:1240px; top:380px; width:500px; height:360px"><span class="k">C</span> <span class="l">Stand alone</span> <span class="c">explained again: about a minute</span></div>
+    <div class="m15-ring" id="m15-ring" style="left:174px; top:374px; width:512px; height:372px"></div>
+    <div class="m15-rec" id="m15-recl" style="left:180px; top:336px">recommended</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "15-q2-lean-on-it";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m15-ctx", { opacity: 0, y: 12 });
+  tl.to("#m15-ctx", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.10);
+  gsap.set("#m15-q", { opacity: 0, x: -24 });
+  tl.to("#m15-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 0.3);
+  gsap.set("#m15-opt-a", { opacity: 0, y: 28 });
+  tl.to("#m15-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 3.06);
+  gsap.set("#m15-opt-b", { opacity: 0, y: 28 });
+  tl.to("#m15-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 6.48);
+  gsap.set("#m15-opt-c", { opacity: 0, y: 28 });
+  tl.to("#m15-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 10.40);
+  gsap.set("#m15-ring", { opacity: 0, scale: 1.03 });
+  gsap.set("#m15-recl", { opacity: 0, y: 8 });
+  tl.to("#m15-ring", { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 13.97);
+  tl.to("#m15-recl", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 13.97);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

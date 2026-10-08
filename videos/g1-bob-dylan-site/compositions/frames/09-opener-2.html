@@ -1,0 +1,95 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f09-opener-2-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f09-opener-2-scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  /* ---- SHARED STAGE, rail only (positions are law). No chain on a part boundary. ---- */
+  .f09-opener-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f09-opener-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f09-opener-2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f09-opener-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-opener-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+  .f09-opener-2-slot.dim { opacity:0.72; }
+
+  /* slots 2 and 3 lift on cue: a fill layer with the filled look, drawn over the dashed outline */
+  .f09-opener-2-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  /* the slots this part does not touch show only the dashed outline */
+  #f09-opener-2-slot-4 .n, #f09-opener-2-slot-4 .t,
+  #f09-opener-2-slot-5 .n, #f09-opener-2-slot-5 .t,
+  #f09-opener-2-slot-6 .n, #f09-opener-2-slot-6 .t { opacity:0; }
+
+  /* supporting: the part kicker, top left */
+  .f09-opener-2-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+
+  /* the frame's ONE coral: the line that says what this part runs on, centred in the space the chain used to occupy */
+  .f09-opener-2-reads { position:absolute; left:660px; top:438px; width:1180px; text-align:center; font:500 44px/1.1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-coral); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="09-opener-2" data-duration="5.892" data-width="1920" data-height="1080">
+  <div class="clip f09-opener-2-bg" id="f09-opener-2-bg" data-start="0" data-duration="5.892" data-track-index="0"></div>
+
+  <div class="clip f09-opener-2-scene" id="f09-opener-2-scene" data-start="0" data-duration="5.892" data-track-index="1">
+    <div class="f09-opener-2-kicker" id="f09-opener-2-kicker">PART 2 OF 3</div>
+
+    <div class="f09-opener-2-rail" id="f09-opener-2-rail">
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-2" data-plan-step="2" style="top:110px"><div class="f09-opener-2-fill" id="f09-opener-2-fill-2"></div><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-3" data-plan-step="3" style="top:220px"><div class="f09-opener-2-fill" id="f09-opener-2-fill-3"></div><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f09-opener-2-slot" id="f09-opener-2-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <div class="f09-opener-2-reads" id="f09-opener-2-reads">reads from those files</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var kicker = q("f09-opener-2-kicker");
+  var slot1  = q("f09-opener-2-slot-1");
+  var slot2  = q("f09-opener-2-slot-2");
+  var slot3  = q("f09-opener-2-slot-3");
+  var fill2  = q("f09-opener-2-fill-2");
+  var fill3  = q("f09-opener-2-fill-3");
+  var reads  = q("f09-opener-2-reads");
+
+  var DUR = 4.992;            // voice duration
+  var E = "power3.out";
+  var tl = gsap.timeline({ paused: true });
+
+  // slot 1 is inherited from part 1 and already in place at t=0.
+  // 0.04 "Part" — the kicker
+  tl.fromTo(kicker, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 0.08);
+
+  // "Part 2 of 3" — this part's two steps lift out of the dashed rail as they are counted
+  tl.fromTo(fill2, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: E }, 0.342);
+  tl.fromTo(slot2.querySelector(".n"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.342);
+  tl.fromTo(slot2.querySelector(".t"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.436);
+  tl.fromTo(fill3, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: E }, 0.741);
+  tl.fromTo(slot3.querySelector(".n"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.741);
+  tl.fromTo(slot3.querySelector(".t"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 1.33);
+
+  // 2.16 "banked" — step 1 settles back: done, and no longer the subject
+  tl.fromTo(slot1, { opacity: 1 }, { opacity: 0.72, duration: 0.4, ease: E }, 2.2);
+
+  // 3.52 "reads from those files"
+  tl.fromTo(reads, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 3.68);
+
+  // held read to the end of the voice
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["09-opener-2"] = tl;
+})();
+</script>
+</template>

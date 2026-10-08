@@ -1,0 +1,696 @@
+/* The guide's page. One calm column that reads top to bottom: a question a section, its answer in a sentence, then the
+   real thing (a picture of it running, a command, its output), then the detail folded away. It sits under the video on
+   the review page (D-264), so it reads well from about 720 px to 1100 px wide, and on a phone. No tables of counts, no cards in a grid: paper,
+   a serif for what you read first, a sans for the rest, hairlines between groups. Tokens are the review page's
+   (templates/details: paper, three inks, coral only for what is yours or waiting on you, D-142, D-167); light and dark. */
+:root{--tile-2:color-mix(in srgb,var(--tile) 60%,var(--paper));--add-bg:#E4F0E2;--add-ink:#1F5E30;--del-bg:#F8E3E1;--del-ink:#8E2A2A;
+  --ok:#2F7A45;--bad:#B0283C;--warn:#94600F;--term:#1D1C19;--term-ink:#EEEAE1;--term-dim:#A29C90;--term-ok:#8BD3A0;--term-bad:#F3919C;--term-warn:#E9C27A;
+  --syn-kw:#6B4A7B;--syn-str:#2C6A55;--syn-com:#77736A;--syn-num:#94600F;--syn-fn:#35597F;--drop:#35597F;--drop-soft:#E3EAF3;
+  --measure:760px;--pad:clamp(16px,4vw,40px)}
+:root[data-theme="dark"]{--add-bg:#15271A;--add-ink:#9BD8AE;--del-bg:#321A1C;--del-ink:#F3A3AC;--ok:#6FC58D;--bad:#F07F8E;--warn:#E5AA52;--term:#0B0A09;
+  --syn-kw:#C9A8DB;--syn-str:#7EC4A9;--syn-com:#8D887E;--syn-num:#E5AA52;--syn-fn:#8DB0D8;--drop:#8DB0D8;--drop-soft:#1C2633}
+body{padding:0;max-width:none;font:17px/1.65 var(--sans);background:var(--paper);color:var(--ink)}
+[hidden]{display:none!important}
+code{font:500 .88em/1.4 var(--mono);font-size:min(.88em,15px);background:var(--ink-06);padding:1px 4px;border-radius:4px;overflow-wrap:anywhere}
+pre code{overflow-wrap:normal}
+a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--ink-20)}
+a:hover{text-decoration-color:currentColor}
+.q3{color:var(--ink-3);font-size:15px}
+.t{font:500 13px/1 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.nA{color:var(--add-ink)}.nD{color:var(--del-ink)}
+.n{font:500 13px/1 var(--mono);color:var(--ink-3);margin-left:4px}
+.grow{flex:1}
+h1,h2,h3,h4{text-wrap:balance}
+button.lk{border:0;padding:0;background:none;color:var(--ink-2);font:500 13px/1.3 var(--sans);text-decoration:underline;text-decoration-color:var(--ink-20);text-underline-offset:3px;border-radius:2px;cursor:pointer}
+button.lk:hover{color:var(--ink);text-decoration-color:currentColor}
+
+/* the top line (the full page): which guide, your notes, open everything, back to the video */
+.gbar{display:flex;align-items:center;gap:16px;min-height:48px;padding:0 var(--pad);background:color-mix(in srgb,var(--paper) 94%,transparent);box-shadow:0 1px 0 var(--ink-12);z-index:30}
+:root:not([data-embedded]) .gbar{position:sticky;top:0;backdrop-filter:blur(8px)}
+.gbar .gk{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.gbar .gt{font:400 20px/1.2 var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gbar .back{flex:none;display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;background:var(--ink);color:var(--paper);font:500 13px/1 var(--sans);text-decoration:none}
+.gbar .back .t{color:inherit;opacity:.75}
+.gbar .lk{flex:none}
+.partbar{display:flex;justify-content:flex-end;padding:10px var(--pad) 0}
+
+/* the column */
+.doc{max-width:calc(var(--measure) + 2 * var(--pad));margin:0 auto;padding:0 var(--pad) 96px}
+.doc.part{padding-bottom:40px}
+.kicker{margin:0 0 6px;font:600 13px/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.lab{margin:18px 0 6px;font:600 13px/1.4 var(--sans);color:var(--ink-3)}
+.lab2{font-weight:600;color:var(--ink-3);margin-right:4px}
+.say{font-size:20px;line-height:1.6;color:var(--ink-2);margin:0 0 20px;max-width:64ch}
+:not(section).ref{font:500 12px/1 var(--mono);color:var(--ink-3)}
+ul.plain{padding-left:20px;margin:8px 0 16px}
+ul.plain li{margin:6px 0;color:var(--ink-2)}
+
+/* 1. what this is */
+.hero{padding:clamp(36px,7vw,72px) 0 8px}
+.hero h1{margin:0;font:400 40px/1.1 var(--serif);letter-spacing:-.01em}
+.hero .promise{margin:12px 0 0;font:400 26px/1.3 var(--serif);color:var(--ink-2);max-width:32ch}
+.hero .status{margin:22px 0 0;font-size:17px;color:var(--ink-2)}
+.hero .status b{color:var(--accent-text);font-weight:600}
+figure.asked{margin:34px 0 0;padding:0 0 0 20px;box-shadow:inset 2px 0 0 var(--ink-20)}
+figure.asked figcaption{font:600 13px/1.4 var(--sans);color:var(--ink-3);margin:0 0 6px}
+figure.asked blockquote{margin:0;padding:0;box-shadow:none;font:italic 400 20px/1.5 var(--serif);color:var(--ink);max-width:60ch}
+figure.asked details.more{margin-top:8px}
+.hero .lead{margin:22px 0 0;color:var(--ink-2);max-width:64ch}
+nav.toc{margin:40px 0 0;padding:18px 0 0;box-shadow:0 -1px 0 var(--ink-12)}
+nav.toc .lab{margin:0 0 8px}
+nav.toc ol{margin:0;padding:0 0 0 22px;columns:2 260px;column-gap:32px}
+nav.toc li{margin:0 0 6px;break-inside:avoid;color:var(--ink-3);font-size:15px}
+nav.toc a{color:var(--ink);text-decoration:none;box-shadow:0 1px 0 var(--ink-20)}
+nav.toc a:hover{box-shadow:0 1px 0 var(--ink)}
+.howto{margin:28px 0 0;font-size:15px;color:var(--ink-3)}
+
+/* each question's section */
+section.q{margin:72px 0 0;padding:28px 0 0;box-shadow:0 -1px 0 var(--ink-12);scroll-margin-top:60px}
+section.q>h2{margin:0 0 12px;font:400 26px/1.2 var(--serif);letter-spacing:-.005em}
+.doc.part section.q{margin-top:18px;box-shadow:none;padding-top:0}
+
+/* 2. a step: what it lets you do, and the real thing */
+section.step{margin:44px 0 0;scroll-margin-top:60px}
+section.step>h3,section.cat>h3,section.question>h3{margin:0 0 8px;font:400 20px/1.3 var(--serif)}
+section.step .say{font-size:17px;margin-bottom:14px}
+figure.shot{margin:18px 0 8px}
+figure.shot img{display:block;width:100%;height:auto;border-radius:10px;box-shadow:0 0 0 1px var(--ink-12),0 10px 30px -18px rgba(0,0,0,.35);background:var(--tile)}
+figure.shot figcaption{margin:8px 0 0}
+.wmrow{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0}
+a.wm,button.wm,span.wm{display:inline-flex;align-items:baseline;gap:6px;font:500 15px/1.4 var(--sans);color:var(--ink-2);text-decoration:none;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+a.wm::before,button.wm::before{content:"▶";font-size:10px;color:var(--ink);transform:translateY(-1px)}
+a.wm .wl,button.wm .wl{color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-20);text-underline-offset:3px}
+a.wm:hover .wl,button.wm:hover .wl{text-decoration-color:currentColor}
+a.wm .ws,button.wm .ws{color:var(--ink-3);font-size:13px}
+a.wm.gone::before{content:"·"}a.wm.gone .wl{text-decoration:none;color:var(--ink-3)}
+span.wm.off{color:var(--ink-3);font-size:13px}
+/* a phone: "Watch this moment" on its line, then the time and the scene under
+   it, full width; never a two-column grid of broken words ("In the / video") */
+@media (max-width:600px){a.wm,button.wm{display:flex;flex-wrap:wrap;width:100%;row-gap:2px}a.wm .ws,button.wm .ws{flex:1 1 100%;padding-left:16px}}
+.ex{margin:14px 0;padding:14px 18px;border-radius:10px;background:var(--tile-2)}
+.ex .lab{margin-top:0}
+.ex p{margin:6px 0}
+.proof{margin:16px 0 8px}
+.proof .lab{margin-top:0}
+.refs{margin:14px 0 0;font-size:15px;color:var(--ink-3)}
+.refs a{color:var(--ink-2)}
+
+/* the real thing: a run, as it ran; a command to copy */
+pre.term{margin:0;background:var(--term);color:var(--term-ink);padding:14px 16px;border-radius:10px;font:13.5px/1.6 var(--mono);overflow:auto;white-space:pre;font-variant-ligatures:none;max-height:520px}
+pre.term .okc{color:var(--term-ok)}pre.term .badc{color:var(--term-bad)}pre.term .warnc{color:var(--term-warn)}pre.term .dim{color:var(--term-dim)}pre.term .cmd{color:#F7F3EA;font-weight:600}
+pre.term.planned{border:1px dashed #6d675c}
+.run{margin:0}
+.run pre.term,.proof pre.term{white-space:pre-wrap;overflow-wrap:anywhere}
+.runm{margin:6px 0 0;font-size:13px;color:var(--ink-3)}
+.pl{display:inline-block;font:500 12px/1 var(--sans);padding:3px 6px;border-radius:4px;border:1px dashed var(--ink-20);color:var(--ink-3);vertical-align:1px}
+.cgroup{margin:26px 0 0}
+.cgroup>.lab{margin:0 0 8px;color:var(--ink-2);font-size:15px}
+.cmd{margin:0 0 16px}
+.cmdline{display:flex;align-items:center;gap:10px;background:var(--term);border-radius:8px;padding:8px 8px 8px 14px}
+.cmdline code{flex:1;min-width:0;background:none;padding:0;color:var(--term-ink);font:500 13.5px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.cmdline .copy{flex:none;border:1px solid rgba(255,255,255,.22);color:var(--term-ink);background:none;border-radius:6px;padding:3px 10px;font:500 13px/1.4 var(--sans)}
+.cmdline .copy:hover{border-color:rgba(255,255,255,.5)}
+.cmdw{margin:6px 0 0;font-size:15px;color:var(--ink-2)}
+
+/* 4. the agent's choices */
+ol.calls{list-style:none;margin:8px 0 0;padding:0}
+li.call{margin:0 0 22px;padding:2px 0 2px 18px;box-shadow:inset 2px 0 0 var(--ink-20);scroll-margin-top:60px}
+li.call p{margin:4px 0;color:var(--ink-2)}
+li.call .why{display:inline-block;margin:0 0 4px;font:600 12px/1.4 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+li.call .chose{font-size:17px;color:var(--ink);font-weight:500}
+li.call .meta{font-size:13px;color:var(--ink-3)}
+ol.calls.small li.call .chose{font-size:15px}
+.decs{margin:8px 0 0}
+details.dec>summary .dq{color:var(--ink-2)}
+details.dec>summary .da{display:block;color:var(--ink);font-weight:500;margin-top:2px}
+.led p{margin:6px 0}
+.lm{font-size:13px;color:var(--ink-3)}
+.ifl{margin:0 0 14px;color:var(--ink-2)}
+.ifl p{margin:4px 0}
+
+/* 5. what needs you: a question to predict, then answer */
+section.question{margin:30px 0 0;padding:18px 20px;border-radius:12px;box-shadow:0 0 0 1px var(--ink-12);scroll-margin-top:60px}
+section.question.done{padding:14px 0;box-shadow:none;border-top:1px solid var(--ink-12);border-radius:0;margin-top:10px}
+section.question h4{margin:0 0 6px;font:400 20px/1.3 var(--serif)}
+.opts{display:grid;gap:8px;margin:12px 0 0}
+.opt{display:block;text-align:left;border:1px solid var(--ink-20);border-radius:8px;background:var(--paper);padding:10px 12px;font:15px/1.4 var(--sans);color:var(--ink);cursor:pointer}
+.opt b{font:600 13px/1 var(--mono);margin-right:6px;color:var(--ink-3)}
+.opt .rec{font:600 12px/1 var(--sans);color:var(--ink-3);margin-left:6px}
+.opt:hover{border-color:var(--ink-3)}
+.opt[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.opt.right{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}.opt.wrong{border-color:var(--bad)}
+.world .ow{margin:12px 0 0;padding:12px 14px;border-radius:8px;background:var(--tile-2)}
+.world .ow p{margin:0}
+.recw{margin:12px 0 0;color:var(--ink-2)}
+.verdict{margin:10px 0 0;font:600 15px/1.4 var(--sans)}.verdict.good{color:var(--ok)}.verdict.meh{color:var(--warn)}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:12px}
+.row button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);padding:6px 12px}
+.predict{margin:18px 0 8px;padding:14px 18px;border-radius:10px;box-shadow:0 0 0 1px var(--ink-12)}
+.predict .lab{margin-top:0}
+.predict>p{margin:4px 0}
+.predict .verdict{font-weight:500;color:var(--ink-2)}
+
+/* 6. not done, what the files don't say */
+.nd ul{padding-left:20px}.nd li{margin:8px 0;color:var(--ink-2)}
+.cc{margin:24px 0 0}.cc p{color:var(--ink-2)}
+.thin{margin:12px 0;padding:10px 14px;border:1px dashed var(--ink-20);border-radius:8px;font-size:15px;color:var(--ink-2)}
+.thin-k{font-weight:600;color:var(--ink-3);margin-right:6px}
+.thinlist{margin:30px 0 0;padding:16px 18px;border:1px dashed var(--ink-20);border-radius:10px}
+.thinlist .lab{margin-top:0;color:var(--ink-2)}
+.thinlist .q3{margin:0}
+
+/* 7. the code */
+section.cat{margin:34px 0 0;scroll-margin-top:60px}
+section.cat .say{font-size:17px;margin-bottom:6px}
+section.cat .meta{margin:0 0 6px;font-size:15px;color:var(--ink-3)}
+section.cat .meta a.wm{font-size:15px}
+ol.commits{padding-left:22px}ol.commits li{margin:6px 0;color:var(--ink-2)}
+
+/* a fold: what you get by opening it, then it */
+details.more{margin:10px 0 0}
+details.more>summary{list-style:none;display:inline-flex;align-items:baseline;gap:8px;cursor:pointer;font:500 15px/1.45 var(--sans);color:var(--ink-2);padding:3px 0;border-radius:4px;max-width:100%}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"";flex:none;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg) translate(-1px,-1px);transition:transform .15s}
+details.more[open]>summary::before{transform:rotate(45deg) translate(-2px,-1px)}
+details.more>summary:hover{color:var(--ink)}
+details.more>.fbody{margin:8px 0 14px;padding:2px 0 2px 16px;box-shadow:inset 1px 0 0 var(--ink-12)}
+details.more.code>.fbody{padding-left:0;box-shadow:none}
+details.more.grp>.fbody>details.more{margin-top:6px}
+details.case>summary .cn{color:var(--ink)}
+details.case .trace p{margin:4px 0}
+details.case .trace .lab{margin:4px 0}
+ol.beats-t{margin:4px 0 8px;padding-left:22px}ol.beats-t li{margin:4px 0;color:var(--ink-2)}
+details.ip>summary{display:flex;flex-wrap:wrap}
+details.ip .il{white-space:pre-wrap;word-break:break-word}
+details.ip .im{color:var(--ink-3);font-weight:400}
+.subs{border-collapse:collapse;margin:6px 0}.subs td{padding:4px 10px 4px 0;vertical-align:top;color:var(--ink-2)}
+.flags{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 8px}
+ul.ment li{color:var(--ink-2);margin:4px 0}
+.ib{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.ibl{padding:6px 0;border-bottom:1px solid var(--ink-12);display:grid;gap:2px}
+.ibl code{background:none;padding:0;white-space:pre-wrap;word-break:break-word}
+.ibl.new{box-shadow:inset 3px 0 0 var(--add-ink);padding-left:10px}.ibl.gone{box-shadow:inset 3px 0 0 var(--del-ink);padding-left:10px}
+.mdh{font:600 15px/1.4 var(--sans);margin:18px 0 6px}
+.fbody p,.fbody li{color:var(--ink-2)}
+.fbody blockquote,.hero blockquote{margin:10px 0;padding-left:14px;box-shadow:inset 2px 0 0 var(--ink-20);color:var(--ink-2)}
+pre.code{background:var(--ink-06);padding:12px 14px;border-radius:8px;overflow:auto;font:13.5px/1.6 var(--mono);white-space:pre}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+table.mdt{border-collapse:collapse;font-size:15px;margin:0 0 12px;min-width:100%}
+table.mdt th{text-align:left;font:600 13px/1.3 var(--sans);color:var(--ink-3);padding:6px 8px;border-bottom:1px solid var(--ink-20)}
+table.mdt td{padding:7px 8px;border-bottom:1px solid var(--ink-12);vertical-align:top;color:var(--ink-2)}
+
+/* the diff: every file, its changes with lines around them, or the whole file */
+.dv{margin:6px 0 0}
+.dv-top{position:sticky;top:48px;z-index:3;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 0;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);box-shadow:0 1px 0 var(--ink-12)}
+:root[data-embedded] .dv-top,.doc.part .dv-top{top:0}
+.dv-top .c{font-size:13px;color:var(--ink-3)}
+.dv-top button,.fh button{font:500 13px/1.3 var(--sans);border:1px solid var(--ink-20);border-radius:6px;padding:3px 9px;background:none;color:var(--ink-2)}
+.dv-files{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 0 14px;font:13px/1.4 var(--mono)}
+.dv-files button{border:0;padding:0;background:none;color:var(--ink-2);font:inherit;text-decoration:underline;text-decoration-color:var(--ink-20);text-underline-offset:3px}
+.file{margin:0 0 22px;scroll-margin-top:100px}
+.fh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:6px 0 8px}
+.fh .path{font:600 13px/1.3 var(--mono);word-break:break-all}
+.fh .meta{font:12px/1.3 var(--mono);color:var(--ink-3)}
+.seg2{display:inline-flex;padding:2px;border-radius:7px;background:var(--ink-06)}
+.seg2 button{border:0;border-radius:5px;padding:3px 9px;font:500 12px/1.3 var(--sans);color:var(--ink-2);background:none}
+.seg2 button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 0 0 1px var(--ink-20)}
+.fbody2{border-radius:8px;background:var(--paper);box-shadow:0 0 0 1px var(--ink-12);overflow:auto}
+.wnote{margin:0;padding:6px 12px;font-size:13px;color:var(--ink-3);background:var(--ink-06)}
+.csub{padding:6px 12px;font:500 12px/1.3 var(--mono);color:var(--ink-3);background:var(--ink-06)}
+.hk{padding:3px 12px;font:12px/1.4 var(--mono);color:var(--ink-3);background:color-mix(in srgb,var(--drop-soft) 55%,var(--paper));white-space:pre}
+.lines{display:table;min-width:100%;font:13px/1.6 var(--mono);tab-size:4;font-variant-ligatures:none}
+.L{display:table-row}
+.L>span{display:table-cell}
+.L[data-anchor]{border-radius:0;box-shadow:none;cursor:auto}
+.L[data-anchor]:hover{background:none;box-shadow:none}
+.L .o,.L .n{width:1%;min-width:46px;padding:0 8px;text-align:right;color:var(--ink-3);user-select:none;-webkit-user-select:none;font-size:12px;white-space:nowrap;opacity:.75;margin:0}
+.L .n{cursor:pointer}
+.L .n:hover{opacity:1;color:var(--accent-text)}
+.L .c{padding:0 14px 0 8px;white-space:pre;color:var(--ink-2);cursor:text}
+.L.a .c{background:var(--add-bg);color:var(--add-ink)}.L.d .c{background:var(--del-bg);color:var(--del-ink)}
+.L.a .o,.L.a .n{background:color-mix(in srgb,var(--add-bg) 70%,var(--paper))}.L.d .o,.L.d .n{background:color-mix(in srgb,var(--del-bg) 70%,var(--paper))}
+.L .c::before{content:attr(data-s);display:inline-block;width:1.4ch;color:var(--ink-3)}
+.L.m .n{box-shadow:inset -3px 0 0 var(--add-ink);opacity:1;color:var(--add-ink)}
+.L.m .c{background:color-mix(in srgb,var(--add-bg) 65%,var(--paper))}
+.L[data-rp-active] .n,.L.noted .n{color:var(--accent-text);opacity:1;box-shadow:inset -3px 0 0 var(--accent)}
+.L[data-rp-active] .c{background:color-mix(in srgb,var(--accent) var(--tint),transparent)}
+.L.q .n{box-shadow:inset -3px 0 0 var(--drop);opacity:1;color:var(--drop)}
+.L.q .c{background:var(--drop-soft)}
+.L.hit .c,ol.entries li.hit{outline:2px solid var(--drop);outline-offset:-2px}
+.tk{color:var(--syn-kw)}.ts{color:var(--syn-str)}.tc{color:var(--syn-com);font-style:italic}.tn{color:var(--syn-num)}.th{color:var(--syn-fn);font-weight:600}
+.cut{color:var(--ink-3);font-style:italic}
+.genf{padding:10px 12px;font-size:13px;color:var(--ink-3)}
+
+/* an explainer's sources, whole */
+.whole .lines{background:var(--paper);border-radius:8px;box-shadow:0 0 0 1px var(--ink-12);overflow:auto;display:block;max-height:640px}
+.find,.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 10px}
+.find input,.filters input{min-height:32px;border:1px solid var(--ink-20);border-radius:7px;background:var(--paper);color:var(--ink);padding:0 10px;font:15px var(--sans);flex:1 1 200px}
+ol.entries{margin:0;padding:0;list-style:none;font:13px/1.55 var(--mono);background:var(--paper);border-radius:8px;box-shadow:0 0 0 1px var(--ink-12);max-height:640px;overflow:auto}
+ol.entries li{display:grid;grid-template-columns:52px minmax(0,1fr);border-bottom:1px solid var(--ink-12)}
+ol.entries li .n{padding:3px 8px;text-align:right;color:var(--ink-3);margin:0}
+ol.entries li .c{padding:3px 10px;white-space:pre-wrap;word-break:break-word;color:var(--ink-2)}
+ol.entries li.err .c{color:var(--bad)}
+ol.entries li[data-q] .c{background:var(--drop-soft)}
+table.dt{border-collapse:collapse;font-size:13px;min-width:100%}
+table.dt th{text-align:left;border-bottom:1px solid var(--ink-20);padding:0}
+table.dt th button{border:0;background:none;font:600 13px/1.3 var(--sans);color:var(--ink-3);padding:6px 8px;width:100%;text-align:left}
+table.dt td{padding:6px 8px;border-bottom:1px solid var(--ink-12);vertical-align:top;color:var(--ink-2)}
+
+/* how the page was made */
+footer.src{margin:80px 0 0;padding:22px 0 0;box-shadow:0 -1px 0 var(--ink-12);font-size:15px;color:var(--ink-3)}
+footer.src h2{font:600 15px/1.4 var(--sans);margin:0 0 8px;color:var(--ink-2)}
+footer.src p{margin:6px 0}
+ul.gaps{font-size:13px;color:var(--ink-3);padding-left:18px}
+
+@media (max-width:600px){
+  .gbar{gap:10px}.gbar .gk{display:none}.gbar .gt{font-size:17px}.gbar .yours{display:none}
+  .say{font-size:17px}
+  .hero h1{font-size:40px}.hero .promise{font-size:20px}
+  figure.asked blockquote{font-size:20px}
+  section.step>h3,section.cat>h3,section.question>h3{font-size:20px}
+  section.q{margin-top:56px}
+  section.question{padding:14px}
+  .ib{grid-template-columns:minmax(0,1fr)}
+  .dv-top{position:static}
+}
+@media (prefers-reduced-motion:reduce){details.more>summary::before{transition:none}}
+@media print{.gbar,.partbar{display:none}details.more>.fbody{display:block}}
+
+/* in short, and the words the page uses */
+.inshort{margin:30px 0 0;padding:18px 22px;border-radius:12px;background:var(--tile-2)}
+.inshort .lab{margin:0 0 10px}
+.inshort dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:10px 20px}
+.inshort dt{font:600 15px/1.55 var(--sans);color:var(--ink)}
+.inshort dd{margin:0;color:var(--ink-2);font-size:15px}
+.inshort ul{margin:0;padding-left:18px}.inshort li{margin:0 0 2px}
+.inshort a{color:var(--ink)}
+@media (max-width:600px){.inshort dl{grid-template-columns:minmax(0,1fr);gap:2px}.inshort dd{margin-bottom:10px}}
+dl.words{margin:4px 0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 18px;font-size:15px}
+dl.words dt{font-weight:600;color:var(--ink)}dl.words dd{margin:0;color:var(--ink-2)}
+@media (max-width:600px){dl.words{grid-template-columns:minmax(0,1fr);gap:2px}dl.words dd{margin-bottom:8px}}
+.hero .summary{margin:14px 0 0;font-size:20px;color:var(--ink);max-width:60ch}
+.cmdw .src{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:10px;font:500 12px/1.5 var(--sans);color:var(--ink-3);box-shadow:0 0 0 1px var(--ink-12)}
+.cmdw .src.ran{color:var(--ok);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 40%,transparent)}
+.inshort dt a{text-decoration:none}.inshort dt a:hover{text-decoration:underline}
+/* under the review page's player (?embed=1): no bar above, so a part lands at the top */
+:root[data-embedded] section.q,:root[data-embedded] section.step,:root[data-embedded] section.cat,:root[data-embedded] section.question,:root[data-embedded] li.call{scroll-margin-top:8px}
+
+/* the words with a special meaning: marked where each first appears, its meaning in a card; the list folded to a line */
+.gw{text-decoration:underline dotted var(--ink-3);text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help;border-radius:2px}
+.gw:hover,.gw[aria-expanded="true"]{text-decoration-color:var(--ink);background:var(--ink-06)}
+.gw:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gtip{position:absolute;z-index:60;padding:12px 14px;border-radius:10px;background:var(--paper);box-shadow:0 0 0 1px var(--ink-12),0 12px 32px -12px rgba(0,0,0,.35);font:15px/1.5 var(--sans);color:var(--ink-2)}
+.gtip p{margin:0 0 8px}.gtip b{color:var(--ink);font-weight:600;margin-right:2px}
+.gtip a{font-size:13px;color:var(--ink-3)}
+details.words-list{margin-top:18px}
+details.words-list>summary{display:block;font:400 15px/1.5 var(--sans);color:var(--ink-3);padding-left:0}
+details.words-list>summary::before{display:none}
+details.words-list>summary .show,details.words-list>summary .hide{margin-left:4px;color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--ink-20);text-underline-offset:3px;font-weight:500}
+details.words-list>summary:hover .show,details.words-list>summary:hover .hide{color:var(--ink);text-decoration-color:currentColor}
+details.words-list[open]>summary .show,details.words-list:not([open])>summary .hide{display:none}
+/* In short: what you can do, each a phrase and its step */
+.inshort ul.can li{margin:0 0 4px}
+.inshort ul.can li.untold{color:var(--ink-3)}
+.inshort a.stepref{margin-left:2px;font-size:13px;color:var(--ink-3)}
+.say.can{color:var(--ink);margin-bottom:8px}
+.lead2{margin:0 0 20px;color:var(--ink-2);max-width:64ch}
+.hero .lead .lab2{color:var(--ink-2);margin-right:0}
+.hero .lead a.more-l{margin-left:4px;font-size:15px;color:var(--ink-3);white-space:nowrap}
+.hero .lead a.more-l::after{content:" →"}
+.cmdline .cmt{color:var(--term-dim);font-weight:400}
+details.dec.gone>summary .da{color:var(--ink-3);font-weight:400}
+details.dec .was{font-weight:600;color:var(--ink-3)}
+
+/* ── how it works (D-265): diagrams drawn when the page was built, as SVG in the page's own inks ─────────────── */
+figure.dg{margin:18px 0 22px;padding:0}
+.dg-title{font:600 15px/1.4 var(--sans);color:var(--ink-2);margin:0 0 10px}
+.dg-box{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0}
+.dg-v{display:block}.dg-vn{display:none}
+@media (max-width:600px){.dg-vw{display:none}.dg-vn{display:block}}
+.dg-svg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--sans);margin:0 auto}
+.dg-svg text{user-select:text;-webkit-user-select:text}
+.dg-n>rect{fill:var(--paper);stroke:var(--ink-20);stroke-width:1.3;transition:stroke .15s,opacity .2s}
+.dg-n.k-file>rect{fill:var(--tile-2)}
+.dg-n.k-step>rect{fill:var(--tile-2)}
+.dg-n.k-person>rect{stroke:var(--ink-3)}
+.dg-n.k-check>rect,.dg-n.k-store>rect{fill:var(--paper)}
+.dg-n .dg-sx{fill:none;stroke:var(--ink-20);stroke-width:1.3}
+.dg-t{fill:var(--ink);font-weight:500}.dg-t.mono{font-family:var(--mono);font-weight:500}
+.dg-dot{fill:var(--ink-2)}.dg-ring{fill:none;stroke:var(--ink-2);stroke-width:1.5}
+.dg-l{fill:none;stroke:var(--ink-3);stroke-width:1.4;transition:opacity .2s}
+.dg-e.dash .dg-l{stroke-dasharray:5 4}
+.dg-ah{fill:var(--ink-3)}
+.dg-stop{stroke:var(--bad);stroke-width:2;fill:none}
+.dg-el{fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:6px;stroke-linejoin:round}
+.dg-lb{fill:var(--paper);fill-opacity:.94}
+.dg-note .dg-lb{display:none}
+.dg-num{font:600 13px var(--sans);fill:var(--ink-3)}
+.dg-life{stroke:var(--ink-12);stroke-dasharray:3 4}
+.dg-note rect{fill:var(--tile-2);stroke:none}
+.dg-n.has-link{cursor:pointer}
+.dg-n.has-link:hover>rect,.dg-n.has-link:focus-visible>rect{stroke:var(--ink);stroke-width:1.8}
+.dg-n:focus-visible{outline:none}
+figure.dg.stepping :is(.dg-e,.dg-la,.dg-n):not(.on),figure.dg.hovering :is(.dg-e,.dg-la,.dg-n):not(.on){opacity:.35}
+figure.dg .dg-e.on .dg-l{stroke:var(--ink);stroke-width:2.2}figure.dg .dg-e.on .dg-ah{fill:var(--ink)}figure.dg .dg-la.on .dg-el{fill:var(--ink);font-weight:500}
+figure.dg .dg-n.on>rect{stroke:var(--ink);stroke-width:2}
+.dg-step{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:8px 0 0}
+.dg-ctl{display:inline-flex;align-items:center;gap:8px}
+.dg-ctl button:not(.lk){min-width:32px;height:28px;border:1px solid var(--ink-20);border-radius:6px;background:var(--paper);color:var(--ink);font:500 15px/1 var(--sans);cursor:pointer}
+.dg-ctl button:not(.lk):hover{border-color:var(--ink-3)}
+.dg-count{font:500 13px/1 var(--mono);color:var(--ink-3);min-width:52px;text-align:center}
+.dg-now{flex-basis:100%;margin:2px 0 0;min-height:1.5em;color:var(--ink);font-size:15px}
+.dg-note{margin:6px 0 0;font-size:13px;color:var(--ink-3);max-width:70ch}
+.dg-seg{margin:0 0 10px}
+.dg-seg button .q3{font-size:12px}
+details.dg-alt{margin-top:4px}details.dg-alt>summary{font-size:13px;color:var(--ink-3)}
+ol.dg-words{margin:4px 0;padding-left:22px}ol.dg-words li{margin:3px 0;color:var(--ink-2);font-size:15px}
+.dg-ref{font-style:italic}
+.overview{margin:8px 0 10px;padding:4px 0 2px}
+.overview>.lab{margin-top:0}
+.how{margin:22px 0 8px}
+.how>.lab{margin:0 0 2px}
+section.cat figure.dg{margin:10px 0 6px}
+section.cat figure.dg .dg-title{font-size:13px;color:var(--ink-3)}
+
+/* worked examples: a tab a case, the output a click away */
+.exs{margin:18px 0 10px}
+.exs>.lab{margin:0 0 8px}
+.ex-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 2px}
+.ex-tabs [role=tab]{border:1px solid var(--ink-12);background:none;border-radius:999px;padding:5px 12px;font:500 13px/1.35 var(--sans);color:var(--ink-2);cursor:pointer;text-align:left}
+.ex-tabs [role=tab]:hover{border-color:var(--ink-20);color:var(--ink)}
+.ex-tabs [role=tab][aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.ex-p{margin:10px 0 0;padding:4px 0 4px 16px;box-shadow:inset 2px 0 0 var(--ink-12)}
+.ex-name{margin:0 0 4px;font-weight:600;color:var(--ink)}
+.ex-k{margin:12px 0 4px;font:600 13px/1.4 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.ex-p>p,.ex-p li{color:var(--ink-2)}
+.ex-p p{margin:4px 0}
+ul.ex-edges{margin:4px 0;padding-left:20px}ul.ex-edges li{margin:4px 0}
+.ex-show{margin:12px 0 4px;border:1px solid var(--ink-20);background:var(--paper);color:var(--ink);border-radius:7px;padding:5px 12px;font:500 13px/1.4 var(--sans);cursor:pointer}
+.ex-show:hover{border-color:var(--ink-3)}
+.ex-predict{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--tile-2)}
+.ex-predict .ex-k{margin-top:0}
+.ex-out{margin:8px 0 0}
+.ex-out pre.term{white-space:pre-wrap;overflow-wrap:anywhere}
+.ex-ba{margin:10px 0 0}.ex-bav{margin:8px 0 0}
+body.all .ex-p[hidden],body.all .ex-out[hidden],body.all .ex-bav[hidden]{display:block!important}
+body.all .ex-tabs{display:none}
+
+/* the depth: why it works so, what else, what breaks it, limits, files and commands */
+.depth{margin:14px 0 6px}
+.depth-intro p{color:var(--ink-2)}
+details.dp>summary{font-weight:600;color:var(--ink)}
+details.dp>.fbody p,details.dp>.fbody li{color:var(--ink-2)}
+a.fl{text-decoration:none}a.fl code{box-shadow:inset 0 -1px 0 var(--ink-20)}a.fl:hover code{box-shadow:inset 0 -1px 0 var(--ink)}
+a.fl.gone{pointer-events:none}
+.xl{display:flex;flex-wrap:wrap;gap:4px 18px;margin:6px 0 0;font-size:15px}
+.xl-f{color:var(--ink-3)}
+
+/* where the video stops for you: its timeline */
+.tl{margin:18px 0 22px}
+.tl>.lab{margin:0 0 10px}
+.tl-bar{position:relative;height:6px;border-radius:3px;background:var(--ink-06);margin:0 0 12px}
+.tl-m{position:absolute;top:-3px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--paper);box-shadow:0 0 0 2px var(--ink-3)}
+.tl-m.k-choices,.tl-m.k-question{box-shadow:0 0 0 2px var(--accent)}
+.tl-m.k-check{border-radius:2px;transform:rotate(45deg)}
+ol.tl-list{list-style:none;margin:0;padding:0}
+.tl-i{display:grid;grid-template-columns:48px minmax(0,1fr);gap:0 12px;padding:7px 0;border-top:1px solid var(--ink-12)}
+.tl-i:first-child{border-top:0}
+.tl-t{font:500 13px/1.6 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.tl-w{color:var(--ink-2)}
+.tl-i .wm{grid-column:2;font-size:13px}
+/* the commits, day by day */
+ol.ctl{list-style:none;margin:6px 0;padding:0}
+.ctl-d{margin:0 0 12px}
+.ctl-date{margin:0 0 4px;font:600 13px/1.4 var(--sans);color:var(--ink-3)}
+.ctl-d>ol{list-style:none;margin:0;padding:0 0 0 14px;box-shadow:inset 1px 0 0 var(--ink-12)}
+.ctl-d>ol>li{margin:4px 0;color:var(--ink-2)}
+.ctl-parts{display:inline-flex;flex-wrap:wrap;gap:4px;margin-left:8px;vertical-align:1px}
+.ctl-parts a{font:500 12px/1.5 var(--sans);padding:0 7px;border-radius:9px;box-shadow:0 0 0 1px var(--ink-12);text-decoration:none;color:var(--ink-3)}
+.ctl-parts a:hover{color:var(--ink);box-shadow:0 0 0 1px var(--ink-20)}
+
+/* a real control to step through a diagram; the timeline's legend; the step's own "why" in the
+   flow, the rest in one fold */
+button.dg-go{display:inline-flex;align-items:baseline;gap:6px;border:1px solid var(--ink-20);background:var(--paper);color:var(--ink);border-radius:7px;padding:4px 11px;font:500 13px/1.4 var(--sans);cursor:pointer}
+button.dg-go:hover{border-color:var(--ink-3)}
+button.dg-go span[aria-hidden]{font-size:10px}
+button.dg-go .q3{font-size:13px}
+figure.dg .dg-title{text-align:left}
+.tl-leg{display:flex;flex-wrap:wrap;gap:4px 16px;margin:-4px 0 10px;font-size:13px;color:var(--ink-3)}
+.tl-leg span{display:inline-flex;align-items:center;gap:6px}
+.tl-leg .tl-m{position:static;margin:0;width:9px;height:9px;display:inline-block}
+.why{margin:14px 0 6px}.why>.lab{margin:0 0 4px}.why p{color:var(--ink-2)}
+details.more-step{margin-top:14px}
+details.more-step>summary{font-weight:500;color:var(--ink)}
+details.more-step>summary .q3{font-weight:400;font-size:13px}
+.depth-more .dp{margin:4px 0 14px}
+.dp-h{margin:10px 0 4px;font:600 15px/1.4 var(--sans);color:var(--ink)}
+.depth-more p,.depth-more li{color:var(--ink-2)}
+.dg-foot{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:8px 0 0}
+.dg-foot .dg-step{margin:0;display:contents}
+.dg-foot .dg-now{order:9}
+.dg-foot details.dg-alt{margin:0}
+details.dg-more{margin:12px 0 4px}details.dg-more>summary{color:var(--ink-2)}
+
+/* ── one type scale, one measure, calm panels ──────────────────────────────────────────────────────────────────── */
+/* one type scale: 12 / 13 / 15 / 17 / 20 / 26 / 40; body 17/1.65, code 15, a terminal 13.5. A heading inside a
+   step (how it works, the examples, why it works so) is 17/600, never smaller than what it heads */
+.how>.lab,.exs>.lab,.why>.lab,.proof>.lab,.overview>.lab,.cc>.lab,.tl>.lab,.cgroup>.lab,.thinlist .lab,.dp-h,.mdh,.dg-title,
+section.cat figure.dg .dg-title{margin:28px 0 8px;font:600 17px/1.4 var(--sans);color:var(--ink);letter-spacing:0}
+.exs>.lab .q3,.how>.lab .q3{font-weight:400;font-size:15px}
+/* one measure: prose at 66ch; figures, terminals, examples and diagrams the column's full width */
+main :is(p,li,blockquote,dd){max-width:66ch}
+main :is(figure,pre,.cmdline,.dg-box,.ex-p,.tl) :is(p,li){max-width:none}
+main :is(.ex-p,.inshort) :is(p,li,dd){max-width:66ch}
+
+/* hovering a place a note can be left on never repaints it (a terminal kept its ink, the review's hover rule took
+   its background): its own paint stays, and a thin mark in the gutter says where you are */
+@property --a-bg{syntax:"*";inherits:false}
+@property --a-sh{syntax:"*";inherits:false}
+pre.term{--a-bg:var(--term)}pre.code{--a-bg:var(--ink-06)}.ex-p{--a-bg:var(--ex-bg)}
+li.call{--a-sh:inset 2px 0 0 var(--ink-20)}.ibl.new{--a-sh:inset 3px 0 0 var(--add-ink)}.ibl.gone{--a-sh:inset 3px 0 0 var(--del-ink)}
+.fbody blockquote,.hero blockquote{--a-sh:inset 2px 0 0 var(--ink-20)}
+#app [data-anchor]:not(.L):not([data-rp-active]):is(:hover,:focus-visible){background:var(--a-bg,transparent);box-shadow:var(--a-sh,0 0 transparent)}
+#app :is(p,li,dd,blockquote,pre,summary,h3,h4,.cmd,.led,.ifl,.tl)[data-anchor]:not([data-rp-active]):hover:not(:has([data-anchor]:hover)){box-shadow:var(--a-sh,0 0 transparent),-10px 0 0 -8px var(--ink-20)}
+/* a place landed on sits below the window's top, and is lit lightly, the light fading */
+[data-anchor],section.step,section.cat,section.q,.exs,.how,figure.dg{scroll-margin-top:32px}
+:root:not([data-embedded]) :is([data-anchor],section.step,section.cat,section.q,.exs,.how,figure.dg){scroll-margin-top:72px}
+:root .rp-embed-lit,:root .rp-lit{outline:0;border-radius:6px;animation:rp-land 2.4s ease-out both}
+@keyframes rp-land{0%,35%{background-color:color-mix(in srgb,var(--accent) 6%,transparent);box-shadow:inset 3px 0 0 var(--accent)}100%{background-color:transparent;box-shadow:inset 3px 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){:root .rp-embed-lit,:root .rp-lit{animation:none;box-shadow:inset 3px 0 0 var(--accent)}}
+
+/* dark: a terminal a step off the page with a hairline edge; a picture toned down, with an edge (until it has a
+   dark picture of its own: .has-dark on its figure, pictures.css) */
+:root[data-theme="dark"]{--term:#1E1C19}
+:root[data-theme="dark"] pre.term,:root[data-theme="dark"] .cmdline{box-shadow:0 0 0 1px rgba(var(--ink-rgb),.10)}
+:root[data-theme="dark"] pre.term{--a-sh:0 0 0 1px rgba(var(--ink-rgb),.10)}
+:root[data-theme="dark"] figure.shot:not(.has-dark) img{filter:brightness(.86) contrast(.95);box-shadow:0 0 0 1px var(--ink-12)}
+
+/* a worked example: a soft panel, room between its parts, the same input block every time */
+:root{--ex-bg:rgba(var(--ink-rgb),.03)}
+:root[data-theme="dark"]{--ex-bg:rgba(var(--ink-rgb),.045)}
+.ex-p{margin:12px 0 0;padding:16px 20px 18px;border-radius:10px;background:var(--ex-bg);box-shadow:none}
+.ex-p>.ex-k:first-child,.ex-p>.ex-name+.ex-k,.ex-predict>.ex-k:first-child{margin-top:0}
+.ex-k,.ex-p .ex-k{margin:22px 0 8px;font:600 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.ex-p .runm{margin-top:8px}
+.ex-name{margin:0 0 12px;font:600 17px/1.4 var(--sans)}
+.ex-in{display:flex;align-items:flex-start;gap:10px;margin:0;padding:10px 10px 10px 14px;border-radius:8px;background:var(--paper);box-shadow:0 0 0 1px var(--ink-12)}
+.ex-in pre{flex:1;min-width:0;margin:0;overflow-x:auto;font:500 13.5px/1.55 var(--mono);color:var(--ink);white-space:pre;background:none;padding:0}
+.ex-in .ex-txt{flex:1;min-width:0;color:var(--ink);font-size:15px}.ex-in .ex-txt p{margin:0}
+.ex-in .copy{flex:none;border:1px solid var(--ink-20);color:var(--ink-2);background:none;border-radius:6px;padding:2px 10px;font:500 13px/1.4 var(--sans);cursor:pointer}
+.ex-in .copy:hover{border-color:var(--ink-3);color:var(--ink)}
+.ex-predict{margin:20px 0 0;padding:12px 16px;background:var(--paper);box-shadow:0 0 0 1px var(--ink-12)}
+.ex-out .ex-k{margin-top:22px}
+/* the cases' tabs, every one in sight: they wrap to a second row where the column is short of room (a strip scrolled
+   sideways would cut its last tab at the edge with nothing to say there was more) */
+.ex-tabs{flex-wrap:wrap;gap:6px}
+.ex-tabs [role=tab]{min-height:32px;padding:5px 12px;font:500 13px/1.3 var(--sans);white-space:nowrap}
+@media (max-width:600px){
+  .ex-tabs [role=tab]{white-space:normal;max-width:100%}
+  .ex-p{padding:14px 14px 16px}
+}
+
+/* one control to step through a diagram, ‹ | 1 / 9 | ›; the stage in words in a row under the drawing */
+.dg-foot{align-items:center}
+.dg-sc{display:inline-flex;align-items:stretch;height:32px;border-radius:8px;box-shadow:0 0 0 1px var(--ink-20);background:var(--paper);overflow:hidden}
+.dg-sc button{border:0;background:none;color:var(--ink);font:500 13px/1 var(--sans);font-variant-numeric:tabular-nums;padding:0 12px;cursor:pointer;white-space:nowrap}
+.dg-sc button+button{box-shadow:inset 1px 0 0 var(--ink-12)}
+.dg-sc button[data-dgstep="prev"],.dg-sc button[data-dgstep="next"]{width:34px;padding:0;font-size:17px}
+.dg-sc button:hover:not(:disabled){background:var(--ink-06)}
+.dg-sc button:disabled{color:var(--ink-20);cursor:default}
+.dg-sc .dg-mid{min-width:108px}
+.dg-sc .dg-mid .q3{font-size:13px;margin-left:4px}
+figure.dg.stepping .dg-sc .dg-mid{cursor:default}
+figure.dg.stepping .dg-sc .dg-mid:hover{background:none}
+button.dg-all{font-size:13px}
+.dg-now{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.dg-v{position:relative}
+/* a node that opens something: a small ↗ after its words, never an underline */
+.dg-lk{fill:var(--ink-3);font-size:.8em;font-weight:500}
+.dg-n.has-link:hover .dg-lk,.dg-n.has-link:focus-visible .dg-lk{fill:var(--ink)}
+/* on a phone a diagram fits the column where it reads at 85 % or more (guide.js picks the drawing); failing
+   that it scrolls sideways under a fade, with a way to open it larger */
+.dg-box{padding:4px 0}
+.dg-box.dg-scroll{position:relative}
+.dg-box.dg-scroll .dg-v{overflow-x:auto;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.dg-box.dg-scroll.at-end .dg-v{-webkit-mask-image:none;mask-image:none}
+/* said plainly, not only faded: the drawing goes on past the column's edge */
+.dg-box.dg-scroll:not(.at-end)::after{content:"The drawing goes on to the right: swipe it, or Open larger";display:block;margin:6px 0 0;font:12px/1.4 var(--sans);color:var(--ink-3);text-align:right}
+.dg-big{display:none}
+figure.dg.dg-scrolls .dg-big{display:inline-flex}
+button.dg-big{align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:0;box-shadow:0 0 0 1px var(--ink-20);background:var(--paper);color:var(--ink);font:500 13px/1 var(--sans);cursor:pointer}
+.dg-lbx{position:fixed;inset:0;z-index:90;background:color-mix(in srgb,var(--paper) 96%,transparent);overflow:auto;padding:56px 24px 24px}
+.dg-lbx svg{display:block;margin:0 auto;max-width:none!important;width:auto;height:auto}
+.dg-lbx .x{position:fixed;top:12px;right:12px;height:32px;padding:0 12px;border-radius:8px;border:0;background:var(--ink);color:var(--paper);font:500 13px/1 var(--sans);cursor:pointer}
+/* the diagram's own title is the heading (no "How it works" over it) */
+figure.dg .dg-title{margin-top:28px}
+.how>figure.dg:first-child .dg-title,.overview>figure.dg:first-child .dg-title{margin-top:8px}
+
+/* a step tag never wraps alone; "More on this step" stays one line */
+.inshort a.stepref{white-space:nowrap}
+details.more-step>summary{flex-wrap:wrap;row-gap:0}
+details.more-step>summary .ms{white-space:nowrap}
+details.more-step>summary .q3{flex:1 1 16em;min-width:0}
+
+/* under the video the review page's band above the guide already names it: the guide's title is not said twice */
+html.rp-embed .hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html.rp-embed .hero .promise{margin-top:4px;color:var(--ink)}
+.dg-sc .dg-count{font:inherit;min-width:0;color:inherit;text-align:center}
+@media (max-width:600px){.dg-sc .dg-mid{min-width:0}.dg-sc .dg-mid .q3{display:none}}
+
+/* ── diagrams' stages, commands, headings, leads ───────────────────────────────────────────────────────────────── */
+/* the stage in words has a row of its own under the drawing, never over it: every stage's sentence is in the row, one
+   shown, so the row is as tall as the longest (two lines at least) and nothing moves as you step; its number is on the
+   lit line in the drawing */
+.dg-cap{display:grid;margin:10px 0 0;min-height:calc(2 * 1.5em);font:15px/1.5 var(--sans);color:var(--ink)}
+.dg-cap>p{grid-area:1/1;margin:0;max-width:none;visibility:hidden;display:flex;gap:10px;align-items:baseline}
+.dg-cap>p.on{visibility:visible}
+.dg-cap>p.dg-c0{color:var(--ink-3)}
+.dg-cap code{font-size:13px}
+.dg-no{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--paper);font:600 12px/1 var(--sans);font-variant-numeric:tabular-nums;transform:translateY(-1px)}
+.dg-mk circle{fill:var(--ink);stroke:var(--paper);stroke-width:2}
+.dg-mk text{fill:var(--paper);font:600 13px var(--sans);font-variant-numeric:tabular-nums;pointer-events:none}
+.dg-foot{margin-top:10px}
+/* the control keeps its width: "Step through · n stages" and "2 / n" held in one place, "Show it all" there from
+   the start, off until you step */
+.dg-sc .dg-count{display:inline-grid}
+.dg-sc .dg-count>span{grid-area:1/1;text-align:center}
+figure.dg:not(.stepping) .dg-cb,figure.dg.stepping .dg-ca{visibility:hidden}
+button.lk.dg-all:disabled{color:var(--ink-3);opacity:.55;text-decoration-color:transparent;cursor:default}
+/* dark: the stages not lit dimmed less (a node stays readable); the picture's lightbox keeps an edge */
+:root[data-theme="dark"] :is(figure.dg.stepping,figure.dg.hovering) :is(.dg-e,.dg-la,.dg-n):not(.on){opacity:.5}
+.lb .lb-img{box-shadow:0 0 0 1px rgba(255,255,255,.16),0 24px 70px rgba(0,0,0,.55)}
+.dg-lbx svg{padding:12px;border-radius:10px;box-shadow:0 0 0 1px var(--ink-12)}
+/* a phone's drawing never below 85 % (guide.js), else it scrolls under a fade with "Open larger" */
+@media (max-width:600px){.dg-box.dg-scroll+.dg-cap,.dg-box.dg-scroll~.dg-cap{margin-top:6px}}
+
+/* a command to copy: the command and its Copy in two columns; it wraps, each line after the first under the command,
+   not under its "$"; where something still runs past the edge, it scrolls under a fade */
+.ex-in,.cmdline{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:12px}
+.ex-in pre,.cmdline code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;padding-left:2ch;text-indent:-2ch;overflow-x:auto}
+.ex-in pre{font:500 13px/1.6 var(--mono)}
+.cmdline code{font:500 13px/1.6 var(--mono);padding-top:3px;padding-bottom:3px}
+.ex-in .ex-txt{text-indent:0}
+.ex-in .ps,.cmdline .ps{color:var(--ink-3);user-select:none;-webkit-user-select:none}
+.cmdline .ps{color:var(--term-dim)}
+.ex-in .copy,.cmdline .copy{align-self:start}
+.ex-in pre.ovf,.cmdline code.ovf{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+/* code that holds a command keeps its spaces as written */
+code{white-space:pre-wrap}
+pre code{white-space:inherit}
+/* a flag, or any short hyphenated word in code, whole on one line (never "--" at a line's end and "check" on the next) */
+code .nw{white-space:nowrap}
+
+/* the heading scale: a section 32 serif; a step (and a part of the code) 26 serif with 48 px above; a heading inside
+   it 15/600 in the reading ink with 28 px above, so it never outweighs the step's own */
+section.q>h2{font:400 32px/1.15 var(--serif);letter-spacing:-.01em;margin-bottom:14px}
+section.step{margin-top:48px}
+section.cat{margin-top:48px}
+section.step>h3,section.cat>h3{margin:0 0 10px;font:400 26px/1.25 var(--serif);letter-spacing:-.005em}
+.how>.lab,.exs>.lab,.why>.lab,.proof>.lab,.overview>.lab,.cc>.lab,.tl>.lab,.cgroup>.lab,.thinlist .lab,.dp-h,.mdh,.dg-title,
+section.cat figure.dg .dg-title,figure.dg .dg-title{margin:28px 0 8px;font:600 15px/1.4 var(--sans);color:var(--ink-2);letter-spacing:0}
+.how>figure.dg:first-child .dg-title,.overview>figure.dg:first-child .dg-title{margin-top:8px}
+.exs>.lab .q3,.how>.lab .q3{font-size:15px}
+@media (max-width:600px){section.q>h2{font-size:28px}section.step>h3,section.cat>h3{font-size:24px}}
+
+/* a section's lead: two sentences at 20 px (guide.js cuts it there), the rest the body's size */
+.say-more{margin:-8px 0 20px;color:var(--ink-2)}
+
+/* one measure: the words at 680 px at most, leads too; in a panel (an example, In short) the panel's width */
+:root{--text-measure:680px}
+main :is(p,li,blockquote,dd),.say,.lead2,.hero .lead,.hero .summary{max-width:var(--text-measure)}
+main :is(.ex-p,.ex-predict,.inshort,figure,pre,.cmdline,.dg-box,.tl,.dg-cap) :is(p,li,dd){max-width:none}
+
+/* an example's parts: one label style, its footnote whole, the scratch repo a chip leading it */
+.ex-p>.ex-name{margin:0 0 16px}
+.ex-p>.ex-k:first-child,.ex-p>.ex-name+.ex-k{margin-top:0}
+.ex-k,.ex-p .ex-k{font:600 12px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.ex-p .runm{font-size:13px;color:var(--ink-3)}
+.runm .src,.ex-foot .src{display:inline-block;padding:1px 7px;border-radius:10px;font:500 12px/1.5 var(--sans);color:var(--ink-3);box-shadow:0 0 0 1px var(--ink-12);vertical-align:1px}
+.ex-foot{margin:8px 0 0}
+
+/* mono in two sizes: 15 in running text, 13 everywhere else (terminals, commands, the code, small text) */
+code{font-size:clamp(13px,(1em - 15px) * 100,15px)}
+pre.term,pre.code,.lines,ol.entries,.dv-files{font-size:13px}
+.L .o,.L .n,.fh .meta,.fh .path,.csub,.hk,:not(section).ref,.opt b,.tl-t,.t,.n,.dg-count{font-size:13px}
+pre.term code,pre.code code,.ex-in pre code{font-size:inherit}
+
+/* where the video stops: each choice a line of its own, its words a link underlined only on hover, its id a small
+   chip at the end */
+.tl-w .tl-c{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:3px 0 0}
+.tl-w .tl-c:first-of-type{margin-top:4px}
+.tl-w a{text-decoration:none;color:var(--ink)}
+.tl-w a:is(:hover,:focus-visible){text-decoration:underline;text-decoration-color:currentColor}
+.tl-w .tl-c .ref{flex:none;padding:1px 6px;border-radius:9px;box-shadow:0 0 0 1px var(--ink-12);font-size:12px;line-height:1.4;font-family:var(--sans);color:var(--ink-3)}
+.tl-i{grid-template-columns:52px minmax(0,1fr)}
+
+/* "More on this step" on a phone: its label, then what it holds on a line under it (two at most) */
+@media (max-width:600px){
+  details.more-step>summary{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px}
+  details.more-step>summary::before{grid-row:1;align-self:center}
+  details.more-step>summary .q3{grid-column:2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
+
+/* what changed since your review (lib/guide/revised.mjs): as quiet as the player's mark on a changed scene, a short coral
+   bar (D-266: quiet marks), its words in the third ink; "What changed" folded under it; the words taken out struck through
+   and the new underlined, so neither depends on its colour */
+.chg{display:inline-flex;align-items:center;gap:6px;margin-left:8px;font:500 13px/1.3 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink-3);white-space:nowrap}
+.kicker .chg{margin-left:4px}
+.lab .chg{font-weight:500}
+.chg-k{display:inline-block;flex:none;width:14px;height:2px;border-radius:1px;background:var(--accent);opacity:.75;vertical-align:middle}
+.chg-in{display:inline-flex;align-items:center;margin-left:4px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+details.more.chgd{margin:4px 0 8px}
+details.more.chgd>summary{font-size:14px;color:var(--ink-3)}
+details.more.chgd>.fbody{box-shadow:inset 1px 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}
+.wd{margin:4px 0 6px;max-width:68ch;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.65;color:var(--ink-2)}
+.wd del{background:var(--del-bg);color:var(--del-ink);text-decoration:line-through;text-decoration-thickness:1px;border-radius:2px}
+.wd ins{background:var(--add-bg);color:var(--add-ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;border-radius:2px}
+.wd-gap{color:var(--ink-3)}
+.wd-key{margin:0 0 8px;font-size:13px}
+.wd-key del,.wd-gone del{background:var(--del-bg);color:var(--del-ink);text-decoration-thickness:1px}
+.wd-key ins{background:var(--add-bg);color:var(--add-ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+ul.asked{list-style:none;padding:0;margin:4px 0 10px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+ul.asked .lab2{color:var(--ink-2);font-weight:500}
+ul.asked li{margin:0 0 10px}
+ul.asked p{margin:0}
+blockquote.said{margin:4px 0 0;padding:0 0 0 12px;box-shadow:inset 2px 0 0 var(--ink-20);font:italic 400 17px/1.5 var(--serif);color:var(--ink);max-width:60ch;overflow-wrap:anywhere}
+.chg-left{margin:14px 0 0}
+.chg-left .lab{margin-bottom:2px}
+/* the top: what changed, and "Show only the changes" */
+.revised{margin:22px 0 0;padding:2px 0 2px 16px;box-shadow:inset 2px 0 0 color-mix(in srgb,var(--accent) 55%,transparent);font-size:16px}
+.revised p{margin:0 0 8px;max-width:64ch}
+.revised .rv-what{color:var(--ink-2)}
+.revised .rv-what b{font-weight:600;color:var(--ink)}
+.revised .rv-what .chg-k{margin:0 8px 3px 0}
+.revised .rv-from{font-size:13px}
+.rv-only{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--ink-20);border-radius:6px;background:none;color:var(--ink);font:500 14px/1 var(--sans);cursor:pointer}
+.rv-only::before{content:"";width:6px;height:6px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor}
+.rv-only:hover{background:var(--ink-06)}
+.rv-only[aria-pressed="true"]::before{background:var(--accent);box-shadow:none}
+.only-chg .unchg>:not(h2,h3,h4,.kicker){display:none!important}
+.only-chg section.q.unchg{margin-top:28px;padding-top:14px}
+.only-chg section.step.unchg{margin-top:18px}
+.only-chg .unchg>:is(h2,h3,h4){color:var(--ink-3)}
+.only-chg .unchg>:is(h2,h3,h4)::after{content:" · unchanged";font:500 13px/1 var(--sans);color:var(--ink-3)}
+@media (max-width:600px){.chg{white-space:normal}.kicker .chg{display:flex;margin:4px 0 0}}
+.wd-v a.wm,.wd-v button.wm{margin-right:14px}

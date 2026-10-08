@@ -1,0 +1,21 @@
+$ grep -n -A2 "^  [a-z-]*:$" .github/workflows/ci.yml   (this repo: the workflow's four jobs, and when each runs)
+18:  push:
+19-    branches: [main]
+20-  pull_request:
+--
+27:  fast:
+28-    name: fast suite
+29-    if: github.event_name == 'push' || contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action)
+--
+44:  pr-check:
+45-    name: reel pr-check
+46-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+--
+69:  full:
+70-    name: full suite
+71-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+--
+95:  video-branch:
+96-    name: delete the video's branch
+97-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+exit 0

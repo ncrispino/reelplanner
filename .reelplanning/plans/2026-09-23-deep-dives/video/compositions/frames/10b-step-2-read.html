@@ -1,0 +1,200 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f10b-step-2-read-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f10b-step-2-read-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f10b-step-2-read-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f10b-step-2-read-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f10b-step-2-read-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f10b-step-2-read-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f10b-step-2-read-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-slot .d.lit { color:var(--rp-coral-deep); }
+  .f10b-step-2-read-slot:not([data-filled]) .n, .f10b-step-2-read-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f10b-step-2-read-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f10b-step-2-read-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f10b-step-2-read-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f10b-step-2-read-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f10b-step-2-read-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f10b-step-2-read-node.dim { opacity:0.72; }
+  .f10b-step-2-read-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f10b-step-2-read-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f10b-step-2-read-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f10b-step-2-read-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f10b-step-2-read-chip.lit { color:var(--rp-coral-deep); }
+  .f10b-step-2-read-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f10b-step-2-read-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f10b-step-2-read-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f10b-step-2-read-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f10b-step-2-read-conn { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f10b-step-2-read-conn path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; }
+  .f10b-step-2-read-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  /* ---- prototypes of the player's own surfaces (§16): small text inside a depicted page is the page's own ---- */
+  .f10b-step-2-read-mockscreen { position:absolute; left:0; top:0; background:var(--rp-tile); overflow:hidden; }
+  .f10b-step-2-read-mockbar { position:absolute; left:0; height:70px; border-top:1px solid rgba(var(--rp-ink-rgb),0.15); background:var(--rp-paper); }
+  .f10b-step-2-read-mocktrack { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f10b-step-2-read-mockfill { position:absolute; height:4px; border-radius:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f10b-step-2-read-mockstat { position:absolute; font:500 24px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-mockk { position:absolute; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f10b-step-2-read-mockh { position:absolute; font:400 52px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-mocks { position:absolute; font:400 28px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-mockfile { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); white-space:nowrap; }
+  .f10b-step-2-read-mockcode { position:absolute; left:0; height:44px; font:400 24px/44px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; box-shadow:inset 5px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f10b-step-2-read-mockcode .ln { display:inline-block; width:56px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f10b-step-2-read-mockcode.sel { background:var(--rp-tile-2); box-shadow:inset 5px 0 0 var(--rp-ink); }
+  .f10b-step-2-read-mockcode.del { color:rgba(var(--rp-ink-rgb),0.5); text-decoration:line-through; text-decoration-color:rgba(var(--rp-ink-rgb),0.35); }
+  .f10b-step-2-read-mockcode.add { background:var(--rp-tile-2); }
+  .f10b-step-2-read-mockrow { position:absolute; left:0; height:36px; font:400 20px/36px "Inter"; color:var(--rp-ink); white-space:nowrap; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f10b-step-2-read-mockrow .lv { position:absolute; right:18px; font:500 18px/36px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f10b-step-2-read-mockbtn { position:absolute; height:48px; padding:0 20px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f10b-step-2-read-mockbar2 { position:absolute; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f10b-step-2-read-mocknote { position:absolute; height:52px; padding:0 18px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/50px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f10b-step-2-read-mocktab { position:absolute; top:0; height:48px; padding:0 22px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none; border-radius:8px 8px 0 0; font:500 22px/46px "Inter"; color:rgba(var(--rp-ink-rgb),0.6); background:var(--rp-tile); white-space:nowrap; }
+  .f10b-step-2-read-mocktab.on { background:var(--rp-paper); color:var(--rp-ink); }
+  /* option cards (decision beats): each carries a small prototype of what that option does */
+  .f10b-step-2-read-opt { position:absolute; top:190px; height:500px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f10b-step-2-read-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f10b-step-2-read-opt .l { position:absolute; left:28px; top:66px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-opt .c { position:absolute; left:28px; top:440px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-mini { position:absolute; left:28px; top:140px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-paper); overflow:hidden; }
+
+  /* revise v6 additions: decided tags on rail slots (§14), part cells, headers over mocks */
+  .f10b-step-2-read-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f10b-step-2-read-slot.dec .n { top:13px; } .f10b-step-2-read-slot.dec .t { top:12px; } .f10b-step-2-read-slot.dec .dd { opacity:1; }
+  .f10b-step-2-read-hdr { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-cap { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f10b-step-2-read-mockcell { position:absolute; width:74px; height:60px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 22px/58px "JetBrains Mono"; text-align:center; color:var(--rp-ink); background:var(--rp-paper); }
+  .f10b-step-2-read-mockcell.on { background:var(--rp-tile-2); border-color:rgba(var(--rp-ink-rgb),0.45); }
+  .f10b-step-2-read-big { position:absolute; font:400 88px/1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-t30 { position:absolute; font:400 30px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-mocklvl { position:absolute; height:36px; padding:0 12px; border-radius:18px; border:1px solid rgba(var(--rp-ink-rgb),0.35); font:500 20px/34px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f10b-step-2-read-hl { background:var(--rp-tile-2); border-radius:3px; padding:0 2px; }
+  .f10b-step-2-read-sect { position:absolute; left:0; border-radius:8px; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f10b-step-2-read-row { position:absolute; left:0; height:66px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f10b-step-2-read-st { position:absolute; right:28px; top:20px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="10b-step-2-read" data-duration="15.241" data-width="1920" data-height="1080">
+
+  <div class="clip f10b-step-2-read-bg" data-start="0" data-duration="15.241" data-track-index="0"></div>
+
+  <div class="clip f10b-step-2-read-scene" id="f10b-step-2-read-scene" data-start="0" data-duration="15.241" data-track-index="1">
+
+  <div class="f10b-step-2-read-kicker" id="f10b-step-2-read-kicker">Step 2 · Kinds of detail</div>
+  <div class="f10b-step-2-read-spine" id="f10b-step-2-read-spine">
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-1" data-plan-step="1" data-done style="top:35px"></div>
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-5" data-plan-step="5" style="top:475px"></div>
+    <div class="f10b-step-2-read-tick" id="f10b-step-2-read-tick-6" data-plan-step="6" style="top:585px"></div>
+  </div>
+  <div class="f10b-step-2-read-hdr" id="f10b-step-2-read-h1" style="left:200px; top:196px">Table</div>
+  <div class="f10b-step-2-read-hdr" id="f10b-step-2-read-h2" style="left:754px; top:196px">Code</div>
+  <div class="f10b-step-2-read-hdr" id="f10b-step-2-read-h3" style="left:1308px; top:196px">Plan text</div>
+  <div class="f10b-step-2-read-page" id="f10b-step-2-read-k1" style="left:200px; top:240px; width:532px; height:418px">
+    <div style="position:absolute; left:0; top:0; width:560px; height:440px; transform:scale(0.95); transform-origin:0 0">
+      <div class="f10b-step-2-read-mockk" style="left:28px; top:24px">risks · sorted by level</div>
+      <div style="position:absolute; left:0; top:62px; width:560px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:74px; width:504px; height:44px; line-height:44px; font-size:24px; font-weight:700">Risk<span class="lv" style="line-height:44px; font-size:22px">level</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:118px; width:504px; height:44px; line-height:44px; font-size:24px">Two charges<span class="lv" style="line-height:44px; font-size:22px">high</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:162px; width:504px; height:44px; line-height:44px; font-size:24px">Part under 5 MB<span class="lv" style="line-height:44px; font-size:22px">high</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:206px; width:504px; height:44px; line-height:44px; font-size:24px">Crash mid-complete<span class="lv" style="line-height:44px; font-size:22px">med</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:250px; width:504px; height:44px; line-height:44px; font-size:24px">Sweeper hits live part<span class="lv" style="line-height:44px; font-size:22px">med</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:294px; width:504px; height:44px; line-height:44px; font-size:24px">NoSuchUpload retry<span class="lv" style="line-height:44px; font-size:22px">med</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:338px; width:504px; height:44px; line-height:44px; font-size:24px">Lost manifest row<span class="lv" style="line-height:44px; font-size:22px">low</span></div>
+      <div class="f10b-step-2-read-mockrow" style="left:28px; top:382px; width:504px; height:44px; line-height:44px; font-size:24px">Wrong upload resumed<span class="lv" style="line-height:44px; font-size:22px">low</span></div>
+
+    </div>
+  </div>
+  <div class="f10b-step-2-read-page" id="f10b-step-2-read-k2" style="left:754px; top:240px; width:532px; height:418px">
+    <div style="position:absolute; left:0; top:0; width:560px; height:440px; transform:scale(0.95); transform-origin:0 0">
+      <div class="f10b-step-2-read-mockfile" style="left:24px; top:24px">src/upload/parts.ts</div>
+      <div style="position:absolute; left:0; top:62px; width:560px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:80px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">12</span>// default part size</div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:128px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">13</span>const MB = 1024 * 1024;</div>
+      <div class="f10b-step-2-read-mockcode sel" style="left:0px; top:176px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">14</span>export const PART_SIZE = 16 * MB;</div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:224px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">15</span>export const MIN_PART = 5 * MB;</div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:272px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">16</span>export function partsFor(size) {</div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:320px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">17</span>  return Math.ceil(size / PART_SIZE);</div>
+      <div class="f10b-step-2-read-mockcode" style="left:0px; top:368px; width:560px; font-size:21px; height:48px; line-height:48px"><span class="ln">18</span>}</div>
+    </div>
+  </div>
+  <div class="f10b-step-2-read-page" id="f10b-step-2-read-k3" style="left:1308px; top:240px; width:532px; height:418px">
+    <div style="position:absolute; left:0; top:0; width:560px; height:440px; transform:scale(0.95); transform-origin:0 0">
+      <div class="f10b-step-2-read-mockfile" style="left:24px; top:24px">plan.md</div>
+      <div style="position:absolute; left:250px; top:14px; width:286px; height:40px; border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:6px"></div>
+      <div class="f10b-step-2-read-mockfile" style="left:264px; top:24px; color:var(--rp-ink)">things</div><div class="f10b-step-2-read-mockfile" style="left:400px; top:24px">3 matches</div>
+      <div style="position:absolute; left:0; top:62px; width:560px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+      <div class="f10b-step-2-read-mocks" style="left:28px; top:88px; width:504px; white-space:normal; font:700 27px/1.3 Inter; color:var(--rp-ink)">Step 2 — Kinds of detail, most of them <span class="f10b-step-2-read-hl">things</span> to try</div>
+      <div class="f10b-step-2-read-mocks" style="left:28px; top:190px; width:504px; white-space:normal; font:400 24px/1.5 Inter; color:var(--rp-ink)">A detail is there because the video could not do something, so most details are <span class="f10b-step-2-read-hl">things</span> you do, not <span class="f10b-step-2-read-hl">things</span> you read.</div>
+    </div>
+  </div>
+  <div class="f10b-step-2-read-cap" id="f10b-step-2-read-c2" style="left:754px; top:686px; color:var(--rp-ink)">only when justified</div>
+  <div class="f10b-step-2-read-chip lit" id="f10b-step-2-read-dec" style="left:200px; top:770px">decided · D-004</div>
+  <div class="f10b-step-2-read-sub" id="f10b-step-2-read-decs" style="left:470px; top:775px">a pick-all summary may carry one</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "10b-step-2-read", P = "#f10b-step-2-read-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f10b-step-2-read-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f10b-step-2-read-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f10b-step-2-read-slot-" + n + " .n, #f10b-step-2-read-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f10b-step-2-read-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f10b-step-2-read-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  // swap one status text for another (both sit in the same place)
+  var swap = function (tl, a, b, at) { tl.to($(a), { opacity: 0, duration: 0.25 }, at); tl.fromTo($(b), { opacity: 0 }, { opacity: 1, duration: 0.25 }, at + 0.1); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+
+  gsap.set("#f10b-step-2-read-tick-2", { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("h1"), 1.76, 8);
+  pop(tl, $("k1"), 1.76, 16);
+  pop(tl, $("h2"), 5, 8);
+  pop(tl, $("k2"), 5, 16);
+  pop(tl, $("c2"), 7.62, 8);
+  pop(tl, $("h3"), 8.56, 8);
+  pop(tl, $("k3"), 8.56, 16);
+  pop(tl, $("dec"), 10.84, 8);
+  pop(tl, $("decs"), 11.04, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 14.74);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

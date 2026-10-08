@@ -1,0 +1,7 @@
+$ node -p "JSON.stringify(require('./.reelplanning/plans/2026-09-27-details-in-the-frame/reviews/walkthrough-20260927T042331Z.json').autonomy[0], ['id', 'verdict', 'shownAt', 'judgedAt'], 2)"   (this repo: one answer of a walkthrough review filed on 27 Sep, before step 6)
+{
+  "id": "a1",
+  "verdict": "accept",
+  "judgedAt": "2026-09-27T04:14:08.082Z"
+}
+exit 0

@@ -1,0 +1,161 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .f12-step-3-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f12-step-3-stage { position: absolute; inset: 0; }
+
+  /* ---- the rail: the plan (shared stage; geometry is law) ---- */
+  .f12-step-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f12-step-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f12-step-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f12-step-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f12-step-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f12-step-3-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+  .f12-step-3-slot.dim { opacity:0.72; }
+  .f12-step-3-slot.empty .n, .f12-step-3-slot.empty .t { opacity:0; }
+  /* the current step's fill: painted on cue over the dashed outline, landing identical to [data-filled] */
+  .f12-step-3-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+  .f12-step-3-slot .n, .f12-step-3-slot .t { z-index:1; }
+
+  /* ---- section label above the pages stretch ---- */
+  .f12-step-3-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the output IS pages, so it is drawn as pages ---- */
+  .f12-step-3-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f12-step-3-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  .f12-step-3-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f12-step-3-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* the frame's ONE coral: drawn as an overlay ring so nothing reflows when it lands */
+  .f12-step-3-page .lit { position:absolute; inset:-1px; border-radius:6px; border:3px solid var(--rp-coral); opacity:0; pointer-events:none; }
+
+  /* ---- the timeline: a year strip across the era page ---- */
+  .f12-step-3-years { position:absolute; left:14px; top:130px; width:144px; height:22px; }
+  .f12-step-3-years .axis { position:absolute; left:0; top:14px; width:144px; height:2px; background:rgba(var(--rp-ink-rgb),0.28); transform-origin:left center; }
+  .f12-step-3-years .tk { position:absolute; top:4px; width:2px; height:12px; background:rgba(var(--rp-ink-rgb),0.45); transform-origin:bottom center; }
+
+  /* ---- supporting tags (JetBrains Mono, 26 px) ---- */
+  .f12-step-3-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f12-step-3-chip .w { display:inline-block; opacity:0; }
+  .f12-step-3-ghost { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+  .f12-step-3-strike { position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:var(--rp-ink); transform-origin:left center; }
+</style>
+
+<div id="root" data-composition-id="12-step-3" data-duration="17.417" data-width="1920" data-height="1080">
+  <div class="clip f12-step-3-bg" data-start="0" data-duration="17.417" data-track-index="0"></div>
+
+  <div class="clip f12-step-3-stage" id="f12-step-3-stage" data-start="0" data-duration="17.417" data-track-index="1">
+
+    <div class="f12-step-3-rail" id="f12-step-3-rail">
+      <div class="f12-step-3-slot dim" id="f12-step-3-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+      <div class="f12-step-3-slot dim" id="f12-step-3-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f12-step-3-slot" id="f12-step-3-slot-3" data-plan-step="3" style="top:220px"><div class="f12-step-3-fill" id="f12-step-3-fill-3"></div><span class="n" id="f12-step-3-n3">3</span><span class="t" id="f12-step-3-t3">Site generator</span></div>
+      <div class="f12-step-3-slot empty" id="f12-step-3-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f12-step-3-slot empty" id="f12-step-3-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f12-step-3-slot empty" id="f12-step-3-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- PAGES ONLY: this step is about what pages exist, so the pages are the subject. -->
+    <div class="f12-step-3-lbl" id="f12-step-3-lbl-pages" style="left:1258px;top:300px;opacity:0">Pages</div>
+
+    <div class="f12-step-3-page" id="f12-step-3-page-era" style="left:1258px;opacity:0">
+      <h>Going Electric, 1965</h>
+      <div class="bar" style="width:88%"></div>
+      <div class="bar" style="width:94%"></div>
+      <div class="bar" style="width:70%"></div>
+      <div class="bar" style="width:52%"></div>
+      <div class="f12-step-3-years" id="f12-step-3-years">
+        <div class="axis" id="f12-step-3-axis"></div>
+        <span class="tk" style="left:0px"></span>
+        <span class="tk" style="left:35px"></span>
+        <span class="tk" style="left:70px"></span>
+        <span class="tk" style="left:106px"></span>
+        <span class="tk" style="left:142px"></span>
+      </div>
+      <span class="cap">era</span>
+      <div class="lit" id="f12-step-3-lit-era"></div>
+    </div>
+
+    <div class="f12-step-3-page" id="f12-step-3-page-album" style="left:1448px;opacity:0">
+      <h>Bringing It All Back Home</h>
+      <div class="bar" style="width:92%"></div>
+      <div class="bar" style="width:78%"></div>
+      <div class="bar" style="width:86%"></div>
+      <div class="bar" style="width:40%"></div>
+      <span class="cap">album</span>
+    </div>
+
+    <div class="f12-step-3-page" id="f12-step-3-page-song" style="left:1638px;opacity:0">
+      <h>Like a Rolling Stone</h>
+      <div class="bar" style="width:64%"></div>
+      <div class="bar" style="width:64%"></div>
+      <div class="bar" style="width:64%"></div>
+      <div class="bar" style="width:64%"></div>
+      <span class="cap">song</span>
+    </div>
+
+    <!-- supporting tags, under the page row -->
+    <div class="f12-step-3-chip" id="f12-step-3-html" style="left:1258px; top:704px"><span class="w" id="f12-step-3-w-plain">plain HTML</span><span class="w" id="f12-step-3-w-nojs"> · no JS</span></div>
+    <div class="f12-step-3-chip" id="f12-step-3-astro" style="left:1258px; top:756px; opacity:0">Astro</div>
+    <div class="f12-step-3-ghost" id="f12-step-3-next" style="left:1400px; top:756px">Next.js<div class="f12-step-3-strike" id="f12-step-3-strike"></div></div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["12-step-3"] = tl;
+
+  var out = "power3.out";
+
+  // starting states (seek-safe)
+  tl.set(q("f12-step-3-strike"), { scaleX: 0 }, 0);
+  tl.set(q("f12-step-3-axis"), { scaleX: 0 }, 0);
+  tl.set(q("f12-step-3-years").querySelectorAll(".tk"), { opacity: 0, scaleY: 0 }, 0);
+
+  // 0.05 "Step" — rail slot 3 fills; 0.32 "three" — its index; 0.75 "generator" — its title
+  tl.fromTo(q("f12-step-3-fill-3"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: out }, 0.102);
+  tl.fromTo(q("f12-step-3-n3"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 0.34);
+  tl.fromTo(q("f12-step-3-t3"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: out }, 0.788);
+
+  // 3.18 "pages" — the label for the stretch this step produces
+  tl.fromTo(q("f12-step-3-lbl-pages"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: out }, 3.208);
+
+  // 4.23 "era" · 4.96 "album" · 6.05 "song" — one page lands on the word that names its kind
+  tl.fromTo(q("f12-step-3-page-era"),   { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 4.339);
+  tl.fromTo(q("f12-step-3-page-album"), { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 5.05);
+  tl.fromTo(q("f12-step-3-page-song"),  { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: out }, 6.027);
+
+  // 6.43 "timeline" — the year strip draws across the era page, and that page takes the frame's one coral
+  tl.to(q("f12-step-3-axis"), { scaleX: 1, duration: 0.6, ease: out }, 6.728);
+  tl.to(q("f12-step-3-years").querySelectorAll(".tk"), { opacity: 1, scaleY: 1, duration: 0.4, ease: out, stagger: 0.07 }, 6.909);
+  tl.fromTo(q("f12-step-3-lit-era"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: out }, 6.728);
+
+  // 8.07 "plain" (whisper: "playing") · 9.90 "no [JavaScript]" — the chip fills word by word
+  tl.fromTo(q("f12-step-3-w-plain"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 8.508);
+  tl.fromTo(q("f12-step-3-w-nojs"),  { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 10.375);
+
+  // 11.87 "Astro" — the chosen generator
+  tl.fromTo(q("f12-step-3-astro"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 12.558);
+
+  // 12.56 "Next" — the rejected one appears light; 14.00 "ship" — a level ink line draws through it
+  tl.fromTo(q("f12-step-3-next"), { opacity: 0, y: 8 }, { opacity: 0.72, y: 0, duration: 0.45, ease: out }, 13.3);
+  tl.fromTo(q("f12-step-3-strike"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 14.77);
+
+  // 15.27 "does not need" — the rejected option settles back
+  tl.to(q("f12-step-3-next"), { opacity: 0.42, duration: 0.5, ease: out }, 16.108);
+
+  // held read to 16.012
+  tl.to({}, { duration: 0.01 }, 16.904);
+})();
+</script>
+</template>

@@ -1,0 +1,136 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "23-resolved",
+        "index": 23,
+        "title": "The plan, resolved"
+      },
+      "id": "amuhgvyl1smf3",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2,
+          3
+        ],
+        "step": null
+      },
+      "t": 239.27
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsOpened": 2,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-25T21:19:45.632Z",
+      "id": "q1",
+      "label": "Plain words on screen",
+      "note": "yes do A and in general we want simple language too in our plasn i think thats a good aspect, dont make more complicated than it needs to be",
+      "option": "a",
+      "planStep": 1,
+      "question": "Which words does the viewer see: plain new ones, or today's, explained?",
+      "recommended": true,
+      "t": 100.345
+    },
+    {
+      "decidedAt": "2026-09-25T21:20:20.063Z",
+      "id": "q2",
+      "label": "This browser, and your file",
+      "option": "a",
+      "planStep": 2,
+      "question": "Where is \"you watched it\" kept?",
+      "recommended": true,
+      "t": 148.212
+    },
+    {
+      "decidedAt": "2026-09-25T21:20:48.186Z",
+      "id": "q3",
+      "label": "Never; it is recorded",
+      "option": "a",
+      "planStep": 3,
+      "question": "Can approving ever be blocked when you answered checks wrong?",
+      "recommended": true,
+      "t": 191.62
+    }
+  ],
+  "exportedAt": "2026-09-25T21:22:52.019Z",
+  "knowledgeLevel": null,
+  "project": ".",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-25T21:19:10.246Z",
+      "correct": true,
+      "id": "k1",
+      "t": 87.118
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-25T21:20:04.948Z",
+      "correct": true,
+      "id": "k2",
+      "t": 133.172
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-25T21:20:33.208Z",
+      "correct": true,
+      "id": "k3",
+      "t": 175.705
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-25T21:22:08.137Z",
+      "correct": true,
+      "id": "k4",
+      "t": 223.572
+    }
+  ],
+  "src": "2026-09-25-videos-you-can-follow/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 239.27,
+    "firstPlayAt": "2026-09-25T21:11:04.622Z",
+    "maxTimeReached": 239.27,
+    "moments": []
+  },
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

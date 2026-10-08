@@ -1,0 +1,115 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f05-call-a6-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f05-call-a6-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f05-call-a6-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-kicker b { color:var(--rp-coral); font-weight:500; }
+  .f05-call-a6-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f05-call-a6-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f05-call-a6-chip.lbl { letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); background:transparent; }
+  .f05-call-a6-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-num { position:absolute; font:400 150px/1 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-num.xl { font-size:230px; }
+  .f05-call-a6-unit { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-call-a6-mid { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-mid.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-call-a6-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f05-call-a6-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f05-call-a6-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f05-call-a6-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f05-call-a6-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f05-call-a6-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f05-call-a6-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f05-call-a6-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-slot .d { position:absolute; right:-46px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f05-call-a6-slot.dim { opacity:0.55; }
+  .f05-call-a6-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f05-call-a6-card.chose { border:2px solid var(--rp-ink); }
+  .f05-call-a6-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f05-call-a6-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-call-a6-card .l { display:block; margin-top:18px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f05-call-a6-card .s { display:block; margin-top:22px; font:500 30px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f05-call-a6-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-call-a6-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f05-call-a6-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-call-a6-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f05-call-a6-term { position:absolute; box-sizing:border-box; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f05-call-a6-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f05-call-a6-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f05-call-a6-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f05-call-a6-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f05-call-a6-file { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f05-call-a6-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f05-call-a6-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-file .row.dim { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f05-call-a6-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f05-call-a6-tile.dim { opacity:0.5; }
+  .f05-call-a6-tile .id { position:absolute; left:26px; top:28px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-tile .mono { position:absolute; left:26px; top:26px; font:500 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-tile .t { position:absolute; left:120px; top:25px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-call-a6-tile .t.at0 { left:26px; }
+  .f05-call-a6-tile .t2 { position:absolute; left:26px; font:500 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-call-a6-tile .d { position:absolute; right:26px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-call-a6-pill { position:absolute; box-sizing:border-box; height:70px; padding:0 26px; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.35); font:500 32px/66px "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f05-call-a6-pill.ink { background:var(--rp-ink); color:var(--rp-paper); border-color:var(--rp-ink); }
+  .f05-call-a6-sq { position:absolute; box-sizing:border-box; width:80px; height:80px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.55); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f05-call-a6-sq.sm { width:40px; height:40px; border-radius:6px; }
+  .f05-call-a6-hl { position:absolute; box-sizing:border-box; border-radius:10px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f05-call-a6-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:3px solid var(--rp-ink); }
+  .f05-call-a6-strike { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f05-call-a6-note { position:absolute; right:80px; top:830px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="05-call-a6" data-band="bottom" data-duration="7.83" data-width="1920" data-height="1080">
+
+  <div class="clip f05-call-a6-bg" id="f05-call-a6-bg" data-start="0" data-duration="7.83" data-track-index="0"></div>
+
+  <div class="clip f05-call-a6-scene" id="f05-call-a6-scene" data-start="0" data-duration="7.83" data-track-index="1">
+  <div class="f05-call-a6-kicker" id="f05-call-a6-kicker">Call A6 · Step 1</div>
+  <div class="f05-call-a6-spine" id="f05-call-a6-spine"><div class="f05-call-a6-tick live" id="f05-call-a6-tick-1" data-plan-step="1" style="top:35px"></div><div class="f05-call-a6-tick" id="f05-call-a6-tick-2" data-plan-step="2" style="top:145px"></div><div class="f05-call-a6-tick" id="f05-call-a6-tick-3" data-plan-step="3" style="top:255px"></div><div class="f05-call-a6-tick" id="f05-call-a6-tick-4" data-plan-step="4" style="top:365px"></div><div class="f05-call-a6-tick" id="f05-call-a6-tick-5" data-plan-step="5" style="top:475px"></div></div>
+  <div class="f05-call-a6-card chose" id="f05-call-a6-chose" style="left:200px; top:170px; width:640px; height:230px"><span class="k">Chose</span><span class="l">The version that records it</span></div>
+  <div class="f05-call-a6-card instead" id="f05-call-a6-instead" style="left:200px; top:430px; width:640px; height:200px"><span class="k">Instead of</span><span class="l">The version that built the video</span></div>
+  <div class="f05-call-a6-chip grey" id="f05-call-a6-check" style="left:210px; top:670px">reviews.mjs<br>recordedBy · VERSION</div>
+  <div class="f05-call-a6-file" id="f05-call-a6-meta" style="left:920px; top:170px; width:920px; height:300px"><span class="fn">video/meta.json (the plan video)</span><div class="rule"></div><span class="row" id="f05-call-a6-meta-r0" style="top:96px">"id": "video",</span><span class="row" id="f05-call-a6-meta-r1" style="top:148px">"name": "video",</span><span class="row" id="f05-call-a6-meta-r2" style="top:200px">"createdAt": "2026-09-24T08:34:32.134Z"</span></div>
+  <div class="f05-call-a6-chip " id="f05-call-a6-nov" style="left:930px; top:510px">no version here</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05-call-a6";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f05-call-a6-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("chose"), 1.41, 10);
+  pop(tl, $("instead"), 4.43, 10);
+  pop(tl, $("meta"), 4.43, 10);
+  pop(tl, $("check"), 5.33, 8);
+  pop(tl, $("nov"), 5.40, 8);
+  lit(tl, $("nov"), 5.60);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 6.830);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

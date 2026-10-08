@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  reelplanning detail · TRY IT   (templates/details/try.html; kind: try)
+  A working prototype in a frame: the choice becomes things the reviewer has used, not pictures. Two or
+  three variants side by side as tabs (three home pages; a before and an after), each one clickable.
+
+  Fill three slots; nothing else needs touching:
+    1. The JSON in <script id="rp-data"> below:
+         title    the page title
+         intro    one sentence, 140 characters at most: what to compare (optional). The panel already shows
+                  the title and why; never repeat them here
+         tryThis  ["Press Drop the connection half way", …]: what to do, in order, listed under the frame (optional)
+         address  a caption under the frame: what the prototype is a copy of (not a URL that loads anything)
+    2. SLOT: VARIANTS (in <body>): one <section class="variant" data-label="A · …"> per variant, holding
+       its markup. The first is shown first. Give the parts a reviewer may comment on
+       data-anchor="<name>" (a region: "progress", "timeline"); a button inside an anchored region
+       still works as a button and does not open a comment.
+    3. SLOT: BEHAVIOUR: the script that makes the variants work. Plain DOM code, no libraries. Scope each
+       variant by its section (document.querySelectorAll(".variant")).
+  The frame is the page's one bordered surface: inside it, no cards or boxes of your own; space and hairlines.
+  Style the prototype with the tokens (var(--paper), var(--ink), var(--accent), var(--tile), var(--ink-20) …)
+  so it follows the player's theme. Images: inline SVG or data: URIs only. Loads nothing from the network.
+-->
+<title>Try it</title>
+<script id="rp-data" type="application/json">
+{
+  "title": "Drop the connection: before and after",
+  "intro": "The same 1.4 GB upload, today and with resumable parts: drop the connection at any point in each.",
+  "tryThis": ["Press Start, then Drop the connection before it finishes.", "Switch to After and do the same.", "Drop it twice in a row."],
+  "address": "app / upload"
+}
+</script>
+<script>
+/* rp-theme: the player passes ?theme=dark (or #theme=dark); light by default. paper / ink / accent (hex) override one token.
+   In the player's panel (a frame) it sets data-framed: the panel's header already names the page, so the page's own is hidden.
+   There the player also posts the review page's faces (packages/player/fonts/faces.json) once the page is ready: a sandboxed
+   page cannot load the files itself, so they come as bytes, and --sans, --serif and --mono take their families. On its own
+   the page keeps the fallbacks in the token block. */
+(function () {
+  var q = new URLSearchParams(location.search.replace(/^\?/, "") + "&" + location.hash.replace(/^#/, "")), r = document.documentElement;
+  if (q.get("theme") === "dark") r.setAttribute("data-theme", "dark");
+  try { if (window.parent !== window) r.setAttribute("data-framed", ""); } catch (e) { r.setAttribute("data-framed", ""); }
+  ["paper", "ink", "accent"].forEach(function (k) {
+    var v = (q.get(k) || "").replace(/^#/, "");
+    if (!/^[0-9a-f]{6}$/i.test(v)) return;
+    r.style.setProperty("--" + k, "#" + v);
+    if (k === "ink") { var n = parseInt(v, 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].join(","); r.style.setProperty("--ink-rgb", c); r.style.setProperty("--ink-2", "rgba(" + c + ",.8)"); r.style.setProperty("--ink-3", "rgba(" + c + ",.66)"); }
+  });
+  if (window.parent === window || !window.FontFace || !document.fonts) return;
+  window.addEventListener("message", function (e) {
+    var m = e.data; if (e.source !== window.parent || !m || m.type !== "rp-player" || m.event !== "faces") return;
+    (m.faces || []).forEach(function (f) { try { var ff = new FontFace(String(f.family), f.data, f.descriptors || {}); document.fonts.add(ff); ff.load().catch(function () {}); } catch (x) {} });
+    ["sans", "serif", "mono"].forEach(function (k) { var v = m.roles && m.roles[k]; if (typeof v === "string" && !/[;{}<]/.test(v)) r.style.setProperty("--" + k, v); });
+  });
+})();
+</script>
+<style>
+/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+   (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
+   and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
+   is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */
+:root{--paper:#FAF9F5;--tile:#EFE9DE;--ink:#141413;--ink-2:#3D3B37;--ink-3:#5C5953;--ink-rgb:20,20,19;--accent:#B8552E;--accent-text:#9C4524;--hair:.12;--dim:.2;--tint:9%;color-scheme:light;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"EB Garamond",Georgia,"Times New Roman",serif}
+:root[data-theme="dark"]{--paper:#141310;--tile:#232120;--ink:#F2EFE8;--ink-2:#CFCAC1;--ink-3:#A6A196;--ink-rgb:242,239,232;--accent:#D2693F;--accent-text:#E3A184;--hair:.14;--dim:.3;--tint:14%;color-scheme:dark}
+:root{--ink-72:var(--ink-2);--ink-55:var(--ink-3);--ink-20:rgba(var(--ink-rgb),var(--dim));--ink-12:rgba(var(--ink-rgb),var(--hair));--ink-06:rgba(var(--ink-rgb),.06)}
+/* one calm page: content on paper, space and hairlines between groups (8 inside, 20 between, 32 between sections);
+   four type styles (body 15, secondary 13, data 12.5 mono, section head 17 serif); coral marks only what is yours or waiting on you: the call, and the part you comment on */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.55 var(--sans);padding:16px 20px 32px;max-width:980px;-webkit-font-smoothing:antialiased}
+.rp-head h1{font:400 22px/1.25 var(--serif);margin:4px 0 12px;letter-spacing:-.005em}
+:root[data-framed] .rp-head{display:none}
+.rp-intro{font-size:14px;line-height:1.5;color:var(--ink-72);max-width:68ch;margin:0 0 20px}
+.rp-sec{font:400 17px/1.3 var(--serif);margin:32px 0 12px}
+.rp-label{font:600 13px/1.45 var(--sans);margin:0 0 8px}
+.rp-quiet{font-size:13px;line-height:1.45;color:var(--ink-72)}
+.rp-num,.rp-mono{font-family:var(--mono);font-size:12.5px;line-height:1.6;font-variant-numeric:tabular-nums}
+.rp-note{font-size:13px;line-height:1.45;color:var(--ink-55);margin:20px 0 0;max-width:68ch}
+.rp-more{margin:32px 0 0;font-size:13px;line-height:1.45;color:var(--ink-72);max-width:68ch}
+.rp-more summary{cursor:pointer;width:max-content;max-width:100%}
+.rp-more summary:hover{color:var(--ink)}
+.rp-more>:not(summary){margin:8px 0 0}
+button{font:inherit;font-size:13px;line-height:1.45;color:var(--ink);background:none;border:1px solid var(--ink-20);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--ink-55)}
+button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--ink-55);outline-offset:2px}
+/* the bridge: an anchored part shows itself only on hover or focus; the one commented on keeps a coral edge */
+[data-anchor]{cursor:pointer;border-radius:2px}
+[data-anchor]:hover,[data-anchor]:focus-visible{outline:0;background:rgba(var(--ink-rgb),.04);box-shadow:inset 2px 0 0 var(--ink-20)}
+[data-anchor][data-rp-active]{outline:0;background:color-mix(in srgb,var(--accent) var(--tint),transparent);box-shadow:inset 2px 0 0 var(--accent)}
+.rp-copy{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;background:none;color:var(--ink-55);border-radius:4px;vertical-align:middle}
+.rp-copy:hover{color:var(--ink);background:var(--ink-06)}
+#rp-toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,8px);padding:4px 12px;border-radius:6px;background:var(--ink);color:var(--paper);font-size:13px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none}
+#rp-toast[data-on]{opacity:1;transform:translate(-50%,0)}
+
+/* the variants as underline tabs, then the frame (the page's one bordered surface), then what to try */
+.bar{display:flex;align-items:flex-end;gap:12px;margin:0 0 12px;border-bottom:1px solid var(--ink-12)}
+.tabs{display:flex;flex-wrap:wrap;gap:0 20px}
+.tabs button{border:0;border-radius:0;background:none;padding:4px 0 8px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:14px;color:var(--ink-72)}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+.vp{margin-left:auto;display:flex;gap:12px;padding:0 0 8px}
+.vp button,.vp button[aria-pressed]{border:0;border-radius:0;padding:0;background:none;color:var(--ink-55)}
+.vp button[aria-pressed="true"]{color:var(--ink)}
+.frame{border:1px solid var(--ink-20);border-radius:6px;overflow:hidden;background:var(--paper);margin:0 auto;transition:max-width .2s}
+.frame[data-vp="phone"]{max-width:390px}
+.addr{font:12.5px/1.6 var(--mono);color:var(--ink-55);margin:8px 0 0}
+.variant{padding:20px}
+.variant[hidden]{display:none}
+#try-l{margin:32px 0 8px}
+.try{margin:0;padding:0 0 0 20px;font-size:14px;line-height:1.5;color:var(--ink-72);max-width:68ch}
+.try li{margin:4px 0}
+
+/* ── SLOT: VARIANT STYLES (the prototype's own look; use the tokens) ─────────────────────────── */
+.upl{max-width:520px}
+.upl h2{font:500 16px/1.3 var(--sans);margin:0 0 4px}
+.upl .meta{font-size:13px;color:var(--ink-55);margin:0 0 14px}
+.upl .track{height:12px;border-radius:6px;background:var(--ink-12);overflow:hidden}
+.upl .fill{height:100%;width:0;background:var(--ink);border-radius:6px}
+.upl[data-state="lost"] .fill{background:repeating-linear-gradient(135deg,var(--ink-3) 0 4px,transparent 4px 8px)}   /* a state, so no coral (A24): hatched, and the status says it */
+.upl .row{display:flex;justify-content:space-between;font:12px/1.4 var(--mono);color:var(--ink-72);margin:6px 0 0}
+.upl .status{min-height:3em;margin:12px 0;font-size:14px}
+.upl .controls{display:flex;gap:8px;flex-wrap:wrap;padding:2px}
+</style>
+</head>
+<body>
+<header class="rp-head"><h1 id="rp-title"></h1></header>
+<p class="rp-intro" id="rp-intro"></p>
+<div class="bar"><div class="tabs" role="tablist" id="tabs"></div><div class="vp" id="vp"><button type="button" data-vp="desktop" aria-pressed="true">Desktop</button><button type="button" data-vp="phone" aria-pressed="false">Phone</button></div></div>
+<div class="frame" id="frame">
+<div id="variants">
+<!-- ── SLOT: VARIANTS ─────────────────────────────────────────────────────────────────────────── -->
+<section class="variant" data-label="Before · today" data-resume="false">
+  <div class="upl">
+    <h2>holiday-footage.mov</h2><p class="meta">1.4 GB · one request</p>
+    <div data-anchor="progress"><div class="track"><div class="fill"></div></div><p class="row"><span class="pct">0 %</span><span class="parts">&nbsp;</span></p></div>
+    <p class="status" data-anchor="status line">Ready to upload.</p>
+    <div class="controls" data-anchor="controls"><button type="button" class="go">Start</button><button type="button" class="drop" disabled>Drop the connection</button></div>
+  </div>
+</section>
+<section class="variant" data-label="After · resumable parts" data-resume="true">
+  <div class="upl">
+    <h2>holiday-footage.mov</h2><p class="meta">1.4 GB · 90 parts of 16 MB</p>
+    <div data-anchor="progress"><div class="track"><div class="fill"></div></div><p class="row"><span class="pct">0 %</span><span class="parts">part 0 of 90</span></p></div>
+    <p class="status" data-anchor="status line">Ready to upload.</p>
+    <div class="controls" data-anchor="controls"><button type="button" class="go">Start</button><button type="button" class="drop" disabled>Drop the connection</button></div>
+  </div>
+</section>
+<!-- ── end SLOT: VARIANTS ─────────────────────────────────────────────────────────────────────── -->
+</div></div>
+<p class="addr" id="addr"></p>
+<p class="rp-label" id="try-l">Things to try</p><ol class="try" id="try"></ol>
+<script>
+/* ── SLOT: BEHAVIOUR (makes the variants work; plain DOM, no libraries) ─────────────────────── */
+for (const v of document.querySelectorAll(".variant")) {
+  const u = v.querySelector(".upl"), resume = v.dataset.resume === "true", $ = (s) => v.querySelector(s);
+  let done = 0, timer = null;
+  const show = () => { $(".fill").style.width = `${done / 90 * 100}%`; $(".pct").textContent = `${Math.round(done / 90 * 100)} %`; if (resume) $(".parts").textContent = `part ${done} of 90`; };
+  const run = () => { clearInterval(timer); u.dataset.state = "up"; $(".drop").disabled = false; $(".go").disabled = true; $(".status").textContent = resume && done ? `Resuming: the manifest has parts 1–${done}, sending ${done + 1} onward.` : "Uploading…";
+    timer = setInterval(() => { done++; show(); if (done >= 90) { clearInterval(timer); u.dataset.state = "done"; $(".drop").disabled = true; $(".go").disabled = false; $(".go").textContent = "Start again"; $(".status").textContent = "Uploaded."; done = 0; } }, 45); };
+  $(".go").addEventListener("click", run);
+  $(".drop").addEventListener("click", () => {
+    clearInterval(timer); u.dataset.state = "lost"; $(".drop").disabled = true;
+    const at = Math.round(done / 90 * 100);
+    if (resume) { $(".status").textContent = `Connection lost at ${at} %. Parts 1–${done} are safe; reconnecting…`; setTimeout(run, 1200); }
+    else { $(".status").textContent = `Connection lost at ${at} %. The upload failed: start again from 0 %.`; done = 0; setTimeout(show, 900); $(".go").disabled = false; $(".go").textContent = "Start again"; }
+  });
+}
+</script>
+<script>
+const D = JSON.parse(document.getElementById("rp-data").textContent);
+const h = (tag, a, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (k === "text") el.textContent = v; else if (k === "class") el.className = v; else el.setAttribute(k, v === true ? "" : v); } for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : String(c)); return el; };
+document.title = D.title || document.title;
+document.getElementById("rp-title").textContent = D.title || "";
+const intro = document.getElementById("rp-intro"); if (D.intro) intro.textContent = D.intro; else intro.remove();
+const copyText = (text, btn) => {
+  const done = () => { let t = document.getElementById("rp-toast"); if (!t) document.body.append(t = h("div", { id: "rp-toast", role: "status" })); t.textContent = "Copied"; t.setAttribute("data-on", ""); clearTimeout(t._h); t._h = setTimeout(() => t.removeAttribute("data-on"), 1200); };
+  const fallback = () => { const t = h("textarea", { style: "position:fixed;opacity:0" }); t.value = text; document.body.append(t); t.select(); try { document.execCommand("copy"); done(); } catch {} t.remove(); };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+};
+const COPY_ICON = '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M3 10.5V3.8C3 3.4 3.4 3 3.8 3h6.7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
+const tryList = document.getElementById("try");
+if ((D.tryThis || []).length) tryList.append(...D.tryThis.map((t) => h("li", { text: t }))); else { tryList.remove(); document.getElementById("try-l").remove(); }
+const addr = document.getElementById("addr"); if (D.address) addr.textContent = D.address; else addr.remove();
+const vs = [...document.querySelectorAll(".variant")], tabs = document.getElementById("tabs");
+const pick = (i) => vs.forEach((v, j) => { v.hidden = j !== i; tabs.children[j].setAttribute("aria-selected", String(j === i)); });
+vs.forEach((v, i) => { const b = h("button", { type: "button", role: "tab", text: v.dataset.label || `Variant ${i + 1}` }); b.addEventListener("click", () => pick(i)); tabs.append(b); });
+if (vs.length < 2) tabs.remove();
+pick(0);
+document.querySelectorAll("#vp button").forEach((b) => b.addEventListener("click", () => { document.getElementById("frame").dataset.vp = b.dataset.vp; document.querySelectorAll("#vp button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
+</script>
+<script>
+/* rp-bridge v2: the same lines in every page of a guide (templates/details/). Keep it as it is.
+   Any element with data-anchor="<label>" can be noted on. A click on it posts {type:"rp-detail", event:"anchor",
+   anchor, text, rect} to the player; words selected inside it post {event:"select", anchor, text, rect, editable}
+   (the player opens its note box on the selection: a comment, a suggested edit where the words sit in a
+   data-editable element, or a question). On load it posts "ready", and its height as "size" when that changes. */
+(function () {
+  var post = function (m) { m.type = "rp-detail"; try { parent.postMessage(m, "*"); } catch (e) {} };
+  var CONTROL = "button,a,input,select,textarea,label,summary,[role=button],[data-no-anchor]";
+  var clean = function (t, n) { return String(t || "").replace(/\s+/g, " ").trim().slice(0, n); };
+  var box = function (r) { return { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }; };
+  var anchorOf = function (n) { var e = n && (n.nodeType === 1 ? n : n.parentElement); return e && e.closest ? e.closest("[data-anchor]") : null; };
+  var mark = function (el) { var was = document.querySelector("[data-rp-active]"); if (was) was.removeAttribute("data-rp-active"); el.setAttribute("data-rp-active", ""); };
+  var chosen = function () {
+    var s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+    var text = clean(String(s), 600), r = s.getRangeAt(0), el = anchorOf(r.commonAncestorContainer);
+    return text && el ? { el: el, text: text, rect: box(r.getBoundingClientRect()) } : null;
+  };
+  var send = function (el) { mark(el); post({ event: "anchor", anchor: el.getAttribute("data-anchor"), text: clean(el.innerText || el.textContent, 200), rect: box(el.getBoundingClientRect()) }); };
+  var said = "";
+  var select = function () {
+    var c = chosen(); if (!c) { said = ""; return; }
+    var key = c.text + "|" + c.rect.x + "|" + c.rect.y; if (key === said) return; said = key;
+    mark(c.el);
+    post({ event: "select", anchor: c.el.getAttribute("data-anchor"), text: c.text, rect: c.rect, editable: !!(c.el.closest && c.el.closest("[data-editable]")) });
+  };
+  document.addEventListener("click", function (e) {
+    if (chosen()) return;   // words selected are their own note (select), not a click
+    var el = e.target.closest && e.target.closest("[data-anchor]"); if (!el) return;
+    var c = e.target.closest(CONTROL); if (c && c !== el && el.contains(c)) return;   // a control inside it acts, it does not note
+    send(el);
+  });
+  document.addEventListener("mouseup", function () { setTimeout(select, 0); });
+  document.addEventListener("keyup", function (e) { if (e.shiftKey || e.key === "Shift") select(); });
+  var st = null; document.addEventListener("selectionchange", function () { clearTimeout(st); if (window.matchMedia && matchMedia("(pointer:coarse)").matches) st = setTimeout(select, 600); });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target.closest && e.target.closest("[data-anchor]");
+    if (el === e.target && e.key === "Enter" && !e.target.matches(CONTROL)) send(el);
+  });
+  var tall = 0, size = function () { var h = Math.ceil(document.documentElement.scrollHeight); if (h !== tall) { tall = h; post({ event: "size", height: h }); } };
+  var ready = function () { post({ event: "ready", title: document.title }); size(); if (window.ResizeObserver) new ResizeObserver(size).observe(document.body); };
+  if (document.readyState === "complete") ready(); else window.addEventListener("load", ready);
+})();
+</script>
+</body>
+</html>

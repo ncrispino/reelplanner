@@ -1,0 +1,243 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b01-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b01-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b01-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b01-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b01-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b01-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b01-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b01-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b01-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b01-ul.ink { background:var(--rp-ink); height:3px; }
+  .b01-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b01-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b01-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b01-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b01-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b01-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b01-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b01-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b01-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b01-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b01-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b01-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b01-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b01-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b01-t { position:absolute; width:420px; height:193.2px; overflow:hidden; border-radius:4px; }
+  .b01-t img { display:block; width:420px; height:193.2px; }
+  .b01-tin { position:absolute; left:0; top:0; width:420px; height:193.2px; }
+  .b01-fr { position:absolute; width:420px; height:193.2px; box-sizing:border-box; border:1px solid rgba(var(--rp-ink-rgb),0.24); border-radius:4px; }
+  .b01-hs { position:absolute; height:1.2px; background:rgba(var(--rp-ink-rgb),0.8); transform-origin:0 50%; }
+  .b01-wp { position:absolute; padding:0 3.2px; font:400 7.8px/11px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:2px; white-space:nowrap; }
+  .b01-wu { position:absolute; background:var(--rp-coral); transform-origin:0 50%; }
+  .b01-wb { position:absolute; box-sizing:border-box; border:1.4px solid var(--rp-coral); border-radius:2px; }
+  .b01-num { position:absolute; top:712px; font:400 110px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .b01-num .u { font:500 28px/1 "JetBrains Mono"; letter-spacing:0.04em; margin-left:18px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+</style>
+
+<div id="root" data-composition-id="01-twelve-scenes-one-layout" data-band="bottom" data-duration="16.7" data-width="1920" data-height="1080">
+
+  <div class="clip b01-bg" id="b01-bg" data-start="0" data-duration="16.7" data-track-index="0"></div>
+
+  <div class="clip b01-scene" id="b01-scene" data-start="0" data-duration="16.7" data-track-index="1">
+    <div class="b01-view" id="b01-view"><div class="b01-cam" id="b01-cam">
+    <div class="b01-t" id="b01-t0" style="left:90px; top:60px"><div class="b01-tin" id="b01-ti0"><img src="assets/shots/wall-01.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr0" style="left:90px; top:60px"></div>
+    <div class="b01-hs" id="b01-hs0" style="left:106px; top:89px; width:110px"></div>
+    <div class="b01-t" id="b01-t1" style="left:530px; top:60px"><div class="b01-tin" id="b01-ti1"><img src="assets/shots/wall-02.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr1" style="left:530px; top:60px"></div>
+    <div class="b01-hs" id="b01-hs1" style="left:546px; top:89px; width:110px"></div>
+    <div class="b01-t" id="b01-t2" style="left:970px; top:60px"><div class="b01-tin" id="b01-ti2"><img src="assets/shots/wall-03.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr2" style="left:970px; top:60px"></div>
+    <div class="b01-hs" id="b01-hs2" style="left:986px; top:89px; width:110px"></div>
+    <div class="b01-t" id="b01-t3" style="left:1410px; top:60px"><div class="b01-tin" id="b01-ti3"><img src="assets/shots/wall-04.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr3" style="left:1410px; top:60px"></div>
+    <div class="b01-hs" id="b01-hs3" style="left:1426px; top:89px; width:110px"></div>
+    <div class="b01-t" id="b01-t4" style="left:90px; top:273px"><div class="b01-tin" id="b01-ti4"><img src="assets/shots/wall-05.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr4" style="left:90px; top:273px"></div>
+    <div class="b01-hs" id="b01-hs4" style="left:106px; top:302px; width:110px"></div>
+    <div class="b01-t" id="b01-t5" style="left:530px; top:273px"><div class="b01-tin" id="b01-ti5"><img src="assets/shots/wall-06.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr5" style="left:530px; top:273px"></div>
+    <div class="b01-hs" id="b01-hs5" style="left:546px; top:302px; width:110px"></div>
+    <div class="b01-t" id="b01-t6" style="left:970px; top:273px"><div class="b01-tin" id="b01-ti6"><img src="assets/shots/wall-07.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr6" style="left:970px; top:273px"></div>
+    <div class="b01-hs" id="b01-hs6" style="left:986px; top:302px; width:110px"></div>
+    <div class="b01-t" id="b01-t7" style="left:1410px; top:273px"><div class="b01-tin" id="b01-ti7"><img src="assets/shots/wall-08.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr7" style="left:1410px; top:273px"></div>
+    <div class="b01-hs" id="b01-hs7" style="left:1426px; top:302px; width:110px"></div>
+    <div class="b01-t" id="b01-t8" style="left:90px; top:486px"><div class="b01-tin" id="b01-ti8"><img src="assets/shots/wall-09.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr8" style="left:90px; top:486px"></div>
+    <div class="b01-hs" id="b01-hs8" style="left:106px; top:515px; width:110px"></div>
+    <div class="b01-t" id="b01-t9" style="left:530px; top:486px"><div class="b01-tin" id="b01-ti9"><img src="assets/shots/wall-10.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr9" style="left:530px; top:486px"></div>
+    <div class="b01-hs" id="b01-hs9" style="left:546px; top:515px; width:110px"></div>
+    <div class="b01-t" id="b01-t10" style="left:970px; top:486px"><div class="b01-tin" id="b01-ti10"><img src="assets/shots/wall-11.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr10" style="left:970px; top:486px"></div>
+    <div class="b01-hs" id="b01-hs10" style="left:986px; top:515px; width:110px"></div>
+    <div class="b01-t" id="b01-t11" style="left:1410px; top:486px"><div class="b01-tin" id="b01-ti11"><img src="assets/shots/wall-12.jpg" alt=""></div></div>
+    <div class="b01-fr" id="b01-fr11" style="left:1410px; top:486px"></div>
+    <div class="b01-hs" id="b01-hs11" style="left:1426px; top:515px; width:110px"></div>
+    <div class="b01-wu" id="b01-u1" style="left:546.8px; top:88px; width:126px; height:1.6px"></div>
+    <div class="b01-wp" id="b01-p1" style="left:546.8px; top:62.8px">small heading</div>
+    <div class="b01-wu" id="b01-u2" style="left:539.8px; top:99.2px; width:1.6px; height:60.2px; transform-origin:50% 0"></div>
+    <div class="b01-wp" id="b01-p2" style="left:544px; top:165px">step ticks</div>
+    <div class="b01-wb" id="b01-u3" style="left:784.8px; top:90.1px; width:149.8px; height:51.8px"></div>
+    <div class="b01-wp" id="b01-p3" style="left:787.6px; top:145.4px">thin boxes</div>
+    </div></div>
+    <div class="b01-num" id="b01-n1" style="left:90px"><span id="b01-v1">0</span><span class="u">pop-ins</span></div>
+    <div class="b01-num" id="b01-n2" style="left:720px"><span id="b01-v2">0</span> <span style="font-size:64px">of 561</span><span class="u">cuts are one fade</span></div>
+    <div class="b01-lab" id="b01-src" style="left:1420px; top:760px">111 scenes · 4 videos</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "01-twelve-scenes-one-layout";
+
+  var v1 = document.getElementById("b01-v1"), v2 = document.getElementById("b01-v2"), c1 = { v: 0 }, c2 = { v: 0 };
+  function s1() { v1.textContent = String(Math.round(c1.v)); } function s2() { v2.textContent = String(Math.round(c2.v)); }
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b01-cam", { x: -76.8, y: 39.6, scale: 1.08 });
+  gsap.set("#b01-t0", { x: -420 });
+  gsap.set("#b01-ti0", { x: 420 });
+  gsap.set("#b01-fr0", { opacity: 0 });
+  gsap.set("#b01-hs0", { scaleX: 0 });
+  gsap.set("#b01-t1", { x: -420 });
+  gsap.set("#b01-ti1", { x: 420 });
+  gsap.set("#b01-fr1", { opacity: 0 });
+  gsap.set("#b01-hs1", { scaleX: 0 });
+  gsap.set("#b01-t2", { x: -420 });
+  gsap.set("#b01-ti2", { x: 420 });
+  gsap.set("#b01-fr2", { opacity: 0 });
+  gsap.set("#b01-hs2", { scaleX: 0 });
+  gsap.set("#b01-t3", { x: -420 });
+  gsap.set("#b01-ti3", { x: 420 });
+  gsap.set("#b01-fr3", { opacity: 0 });
+  gsap.set("#b01-hs3", { scaleX: 0 });
+  gsap.set("#b01-t4", { x: -420 });
+  gsap.set("#b01-ti4", { x: 420 });
+  gsap.set("#b01-fr4", { opacity: 0 });
+  gsap.set("#b01-hs4", { scaleX: 0 });
+  gsap.set("#b01-t5", { x: -420 });
+  gsap.set("#b01-ti5", { x: 420 });
+  gsap.set("#b01-fr5", { opacity: 0 });
+  gsap.set("#b01-hs5", { scaleX: 0 });
+  gsap.set("#b01-t6", { x: -420 });
+  gsap.set("#b01-ti6", { x: 420 });
+  gsap.set("#b01-fr6", { opacity: 0 });
+  gsap.set("#b01-hs6", { scaleX: 0 });
+  gsap.set("#b01-t7", { x: -420 });
+  gsap.set("#b01-ti7", { x: 420 });
+  gsap.set("#b01-fr7", { opacity: 0 });
+  gsap.set("#b01-hs7", { scaleX: 0 });
+  gsap.set("#b01-t8", { x: -420 });
+  gsap.set("#b01-ti8", { x: 420 });
+  gsap.set("#b01-fr8", { opacity: 0 });
+  gsap.set("#b01-hs8", { scaleX: 0 });
+  gsap.set("#b01-t9", { x: -420 });
+  gsap.set("#b01-ti9", { x: 420 });
+  gsap.set("#b01-fr9", { opacity: 0 });
+  gsap.set("#b01-hs9", { scaleX: 0 });
+  gsap.set("#b01-t10", { x: -420 });
+  gsap.set("#b01-ti10", { x: 420 });
+  gsap.set("#b01-fr10", { opacity: 0 });
+  gsap.set("#b01-hs10", { scaleX: 0 });
+  gsap.set("#b01-t11", { x: -420 });
+  gsap.set("#b01-ti11", { x: 420 });
+  gsap.set("#b01-fr11", { opacity: 0 });
+  gsap.set("#b01-hs11", { scaleX: 0 });
+  gsap.set("#b01-p1", { opacity: 0, y: 3 });
+  gsap.set("#b01-p2", { opacity: 0, y: 3 });
+  gsap.set("#b01-p3", { opacity: 0, y: 3 });
+  gsap.set("#b01-u1", { scaleX: 0 });
+  gsap.set("#b01-u2", { scaleY: 0 });
+  gsap.set("#b01-u3", { opacity: 0, scale: 1.08 });
+  gsap.set("#b01-n1", { opacity: 0, y: 20 });
+  gsap.set("#b01-n2", { opacity: 0, y: 20 });
+  gsap.set("#b01-src", { opacity: 0, y: 20 });
+  tl.to("#b01-t0", { x: 0, duration: 0.5, ease: "power2.out" }, 0.05);
+  tl.to("#b01-ti0", { x: 0, duration: 0.5, ease: "power2.out" }, 0.05);
+  tl.to("#b01-fr0", { opacity: 1, duration: 0.3, ease: "none" }, 0.05);
+  tl.to("#b01-t1", { x: 0, duration: 0.5, ease: "power2.out" }, 0.12);
+  tl.to("#b01-ti1", { x: 0, duration: 0.5, ease: "power2.out" }, 0.12);
+  tl.to("#b01-fr1", { opacity: 1, duration: 0.3, ease: "none" }, 0.12);
+  tl.to("#b01-t2", { x: 0, duration: 0.5, ease: "power2.out" }, 0.19);
+  tl.to("#b01-ti2", { x: 0, duration: 0.5, ease: "power2.out" }, 0.19);
+  tl.to("#b01-fr2", { opacity: 1, duration: 0.3, ease: "none" }, 0.19);
+  tl.to("#b01-t3", { x: 0, duration: 0.5, ease: "power2.out" }, 0.26);
+  tl.to("#b01-ti3", { x: 0, duration: 0.5, ease: "power2.out" }, 0.26);
+  tl.to("#b01-fr3", { opacity: 1, duration: 0.3, ease: "none" }, 0.26);
+  tl.to("#b01-t4", { x: 0, duration: 0.5, ease: "power2.out" }, 0.33);
+  tl.to("#b01-ti4", { x: 0, duration: 0.5, ease: "power2.out" }, 0.33);
+  tl.to("#b01-fr4", { opacity: 1, duration: 0.3, ease: "none" }, 0.33);
+  tl.to("#b01-t5", { x: 0, duration: 0.5, ease: "power2.out" }, 0.4);
+  tl.to("#b01-ti5", { x: 0, duration: 0.5, ease: "power2.out" }, 0.4);
+  tl.to("#b01-fr5", { opacity: 1, duration: 0.3, ease: "none" }, 0.4);
+  tl.to("#b01-t6", { x: 0, duration: 0.5, ease: "power2.out" }, 0.47);
+  tl.to("#b01-ti6", { x: 0, duration: 0.5, ease: "power2.out" }, 0.47);
+  tl.to("#b01-fr6", { opacity: 1, duration: 0.3, ease: "none" }, 0.47);
+  tl.to("#b01-t7", { x: 0, duration: 0.5, ease: "power2.out" }, 0.54);
+  tl.to("#b01-ti7", { x: 0, duration: 0.5, ease: "power2.out" }, 0.54);
+  tl.to("#b01-fr7", { opacity: 1, duration: 0.3, ease: "none" }, 0.54);
+  tl.to("#b01-t8", { x: 0, duration: 0.5, ease: "power2.out" }, 0.61);
+  tl.to("#b01-ti8", { x: 0, duration: 0.5, ease: "power2.out" }, 0.61);
+  tl.to("#b01-fr8", { opacity: 1, duration: 0.3, ease: "none" }, 0.61);
+  tl.to("#b01-t9", { x: 0, duration: 0.5, ease: "power2.out" }, 0.68);
+  tl.to("#b01-ti9", { x: 0, duration: 0.5, ease: "power2.out" }, 0.68);
+  tl.to("#b01-fr9", { opacity: 1, duration: 0.3, ease: "none" }, 0.68);
+  tl.to("#b01-t10", { x: 0, duration: 0.5, ease: "power2.out" }, 0.75);
+  tl.to("#b01-ti10", { x: 0, duration: 0.5, ease: "power2.out" }, 0.75);
+  tl.to("#b01-fr10", { opacity: 1, duration: 0.3, ease: "none" }, 0.75);
+  tl.to("#b01-t11", { x: 0, duration: 0.5, ease: "power2.out" }, 0.82);
+  tl.to("#b01-ti11", { x: 0, duration: 0.5, ease: "power2.out" }, 0.82);
+  tl.to("#b01-fr11", { opacity: 1, duration: 0.3, ease: "none" }, 0.82);
+  tl.to("#b01-cam", { x: 0, y: 0, scale: 1, duration: 1.6, ease: "sine.inOut" }, 0.45);
+  tl.to("#b01-cam", { x: -1704, y: -126, scale: 3.6, duration: 1.3, ease: "power3.inOut" }, 5.25);
+  tl.to("#b01-u1", { scaleX: 1, duration: 0.4, ease: "power2.out" }, 7.36);
+  tl.to("#b01-p1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 7.36);
+  tl.to("#b01-u1", { opacity: 0, duration: 0.2, ease: "none" }, 8.07);
+  tl.to("#b01-u2", { scaleY: 1, duration: 0.4, ease: "power2.out" }, 8.17);
+  tl.to("#b01-p2", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 8.17);
+  tl.to("#b01-u2", { opacity: 0, duration: 0.2, ease: "none" }, 9.3);
+  tl.to("#b01-u3", { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 9.4);
+  tl.to("#b01-p3", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.4);
+  tl.to("#b01-u3", { opacity: 0, duration: 0.3, ease: "none" }, 9.99);
+  tl.to("#b01-p1", { opacity: 0, duration: 0.3, ease: "none" }, 9.99);
+  tl.to("#b01-p2", { opacity: 0, duration: 0.3, ease: "none" }, 9.99);
+  tl.to("#b01-p3", { opacity: 0, duration: 0.3, ease: "none" }, 9.99);
+  tl.to("#b01-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 9.99);
+  tl.to("#b01-hs0", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.19);
+  tl.to("#b01-hs1", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.24);
+  tl.to("#b01-hs2", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.29);
+  tl.to("#b01-hs3", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.34);
+  tl.to("#b01-hs4", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.39);
+  tl.to("#b01-hs5", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.44);
+  tl.to("#b01-hs6", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.49);
+  tl.to("#b01-hs7", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.54);
+  tl.to("#b01-hs8", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.59);
+  tl.to("#b01-hs9", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.64);
+  tl.to("#b01-hs10", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.69);
+  tl.to("#b01-hs11", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 11.74);
+  tl.to("#b01-src", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 10.69);
+  tl.to("#b01-n1", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 12.48);
+  tl.to(c1, { v: 631, duration: 1.1, ease: "power2.out", onUpdate: s1 }, 12.48);
+  tl.to("#b01-n2", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 13.77);
+  tl.to(c2, { v: 543, duration: 1.1, ease: "power2.out", onUpdate: s2 }, 13.77);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

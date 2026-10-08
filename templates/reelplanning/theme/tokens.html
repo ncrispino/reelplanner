@@ -1,0 +1,62 @@
+<!-- The video's colour system, as tokens, so one attribute on <html> recolours the whole thing.
+
+     Dark mode is not an inversion. Each token keeps its MEANING across themes, and where a naive
+     flip would destroy the meaning, the value is chosen to preserve it instead:
+
+     · --rp-data is the one tile that differs from every other tile — the diagram's landmark, "where
+       state lives". In light it is the dark tile on cream. Inverting it would make it the same shade
+       as the dark ground and the landmark would vanish, so in dark it becomes the one LIGHT tile.
+       The eye still finds the store first, which is the whole reason the tile exists.
+     · --rp-slab is a photograph or a code window. Those are dark because that is what they are, not
+       because the page is light, so they do not move at all.
+     · --rp-shadow-rgb stays black in both. A shadow flipped light is a glow, and the anti-slop
+       checklist bans glows.
+     · --rp-coral is the one accent, a darker coral (D-142): #B8552E clears 3:1 on the paper (4.6) and
+       on both tiles (4.0, 3.8), where the old #CC785C (3.1 on paper, 2.7 on a tile) did not. Its dark
+       partner keeps the hue and lightens to #D2693F, which clears 3:1 on the dark paper (5.2) and tiles
+       (4.5, 4.0). One hue in both themes: an accent that changes hue with the lights is not an identity.
+     · --rp-coral-deep is the same role in both — small coral TEXT that must clear 4.5:1 on its own
+       ground — which means a different value: #9C4524 on cream (5.0 on the darker tile), #E3A184 on
+       charcoal.
+     · --rp-syn-* colour code on the slab (keywords, strings, numbers, comments, added and removed
+       lines). The slab is dark in both themes, so they do not move either; each clears 4.5:1 on it.
+
+     The legacy --cap-* / --ink / --navy names that the captions layer emits are redefined here in
+     terms of these tokens, so captions follow the theme without that generated file being edited. -->
+<style id="rp-theme">
+  :root {
+    --rp-paper:#FAF9F5; --rp-tile:#EFE9DE; --rp-tile-2:#ECE3D4;
+    --rp-ink:#141413; --rp-on-ink:#FAF9F5; --rp-data:#181715;
+    --rp-coral:#B8552E; --rp-coral-deep:#9C4524;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:20,20,19; --rp-on-ink-rgb:250,249,245; --rp-tile-rgb:239,233,222;
+    --rp-coral-rgb:184,85,46; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:20,20,19;
+    --rp-syn-key:#E3A184; --rp-syn-str:#5DB8A6; --rp-syn-num:#E8A55A; --rp-syn-com:#9C978C;
+    --rp-syn-add:#6CC486; --rp-syn-del:#E27D7D; --rp-syn-add-rgb:93,184,114; --rp-syn-del-rgb:198,69,69;
+  }
+  :root[data-theme="dark"] {
+    --rp-paper:#141310; --rp-tile:#232120; --rp-tile-2:#2C2925;
+    --rp-ink:#F2EFE8; --rp-on-ink:#141413; --rp-data:#EFE9DE;
+    --rp-coral:#D2693F; --rp-coral-deep:#E3A184;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:242,239,232; --rp-on-ink-rgb:20,20,19; --rp-tile-rgb:35,33,32;
+    --rp-coral-rgb:210,105,63; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:0,0,0;
+    --rp-syn-key:#E3A184; --rp-syn-str:#5DB8A6; --rp-syn-num:#E8A55A; --rp-syn-com:#9C978C;
+    --rp-syn-add:#6CC486; --rp-syn-del:#E27D7D; --rp-syn-add-rgb:93,184,114; --rp-syn-del-rgb:198,69,69;
+  }
+  /* The generated captions layer speaks in these names, and its own stylesheet is parsed later in
+     the document, so a plain :root here would lose the cascade to it. :root:root outranks it on
+     specificity instead, which is what !important would buy without the shouting. */
+  :root:root {
+    --ink:var(--rp-ink); --cream:var(--rp-paper); --tile:var(--rp-tile); --tile-strong:var(--rp-tile-2);
+    --coral:var(--rp-coral); --navy:var(--rp-data); --navy-soft:var(--rp-slab); --navy-elev:var(--rp-slab-bar);
+    --cap-ink:var(--rp-ink); --cap-canvas:var(--rp-paper); --cap-accent:var(--rp-coral); --cap-accent-2:var(--rp-tile-2);
+  }
+  html, body { background:var(--rp-paper); }
+</style>
+<script>
+  // Frame timelines are built once, at load, and GSAP cannot interpolate through a var(). So the
+  // tween colours read the live token values here instead; switching theme rebuilds the composition.
+  window.__RP = new Proxy({}, { get: (_, k) =>
+    getComputedStyle(document.documentElement).getPropertyValue("--rp-" + String(k)).trim() });
+</script>

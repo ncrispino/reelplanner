@@ -1,0 +1,183 @@
+<template>
+  <style>
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; font-display: block;
+      src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; font-display: block;
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+    .clip { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .f08-step-5-ground { background: #FAF9F5; }
+
+    /* geometry law: rail x80 w540, six slots y=170+112*i h96; diagram nodes at fixed boxes below */
+    .f08-step-5-rail { position:absolute; left:80px; top:170px; width:540px; height:660px; }
+    .f08-step-5-slot { position:absolute; left:0; width:540px; height:96px; border-radius:12px;
+                border:1px dashed rgba(20,20,19,0.18); }
+    .f08-step-5-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE;
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f08-step-5-slot .n { position:absolute; left:22px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; }
+    .f08-step-5-slot .t { position:absolute; left:78px; top:29px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; }
+    .f08-step-5-slot.dim { opacity:0.72; }            /* earlier steps: ≥0.72 keeps the contrast gate (3:1) happy */
+    .f08-step-5-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12);
+                box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f08-step-5-node .l { position:absolute; left:20px; top:20px; font:500 28px/1.2 "Inter"; color:#141413; }
+    .f08-step-5-node .s { position:absolute; left:20px; top:58px; font:500 18px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(20,20,19,0.62); }
+    .f08-step-5-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); }
+    .f08-step-5-node.navy .l { color:#FAF9F5; } .f08-step-5-node.navy .s { color:rgba(250,249,245,0.7); }
+    .f08-step-5-node.dim { opacity:0.72; }
+    .f08-step-5-node.active { border:2px solid #CC785C; }   /* the ONE coral signal — only one element per frame may be coral at a time */
+    .f08-step-5-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f08-step-5-edges path { fill:none; stroke:#141413; stroke-width:2; stroke-linecap:round; }
+    .f08-step-5-edges path.dim { opacity:0.35; }
+    .f08-step-5-edges path.active { stroke:#CC785C; stroke-width:3; }
+
+    /* this frame's additions (no geometry change to the stage) */
+    .f08-step-5-slot-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(20,20,19,0.12);
+                background:#EFE9DE; box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+    .f08-step-5-row { position:absolute; left:16px; width:236px; white-space:nowrap; display:inline-flex; align-items:baseline;
+                font:400 19px/1 "JetBrains Mono"; letter-spacing:-0.03em; color:#FAF9F5; }
+    .f08-step-5-row .txt { display:inline-block; white-space:pre; }
+    .f08-step-5-row .st  { display:inline-block; white-space:pre; }
+    .f08-step-5-row .cur { display:inline-block; width:6px; height:19px; margin-left:2px; background:#FAF9F5; opacity:0; align-self:center; }
+    .f08-step-5-part { position:absolute; top:660px; width:32px; height:32px; border-radius:6px;
+                border:1px solid rgba(20,20,19,0.20); background:rgba(20,20,19,0.14); }
+    .f08-step-5-strike { position:absolute; left:1432px; top:676px; width:120px; height:1px; background:#141413; transform-origin:0 50%; }
+    .f08-step-5-tag { position:absolute; left:1300px; top:364px; font:500 18px/1 "JetBrains Mono"; letter-spacing:0.12em;
+                text-transform:uppercase; color:rgba(20,20,19,0.62); }
+  </style>
+
+  <div id="root" data-composition-id="08-step-5" data-width="1920" data-height="1080" data-duration="9.353">
+    <!-- full-bleed cream ground -->
+    <div class="clip f08-step-5-ground" data-start="0" data-duration="9.353" data-track-index="0"></div>
+
+    <!-- shared stage -->
+    <div class="clip" id="f08-step-5-stage" data-start="0" data-duration="9.353" data-track-index="1">
+
+      <!-- RAIL: six slots. Slots 1..4 filled + dim at t=0; slot 5 pops in on cue; 6 empty. -->
+      <div class="f08-step-5-rail" id="f08-step-5-rail">
+        <div class="f08-step-5-slot dim" id="f08-step-5-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead manifest</span></div>
+        <div class="f08-step-5-slot dim" id="f08-step-5-slot-2" data-plan-step="2" data-filled style="top:112px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f08-step-5-slot dim" id="f08-step-5-slot-3" data-plan-step="3" data-filled style="top:224px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f08-step-5-slot dim" id="f08-step-5-slot-4" data-plan-step="4" data-filled style="top:336px"><span class="n">4</span><span class="t">Billing on complete</span></div>
+        <div class="f08-step-5-slot" id="f08-step-5-slot-5" data-plan-step="5" style="top:448px"><div class="f08-step-5-slot-fill" id="f08-step-5-slot-5-fill"></div><span class="n" id="f08-step-5-slot-5-n">5</span><span class="t" id="f08-step-5-slot-5-t">Sweeper</span></div>
+        <div class="f08-step-5-slot" id="f08-step-5-slot-6" data-plan-step="6" style="top:560px"><span class="n" style="opacity:0">6</span><span class="t" style="opacity:0">SDK resume</span></div>
+      </div>
+
+      <!-- DIAGRAM: six nodes, fixed boxes. -->
+      <div class="f08-step-5-node dim" id="f08-step-5-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:380px; width:240px; height:100px"><span class="l">Client SDK</span><span class="s">packages/sdk</span></div>
+      <div class="f08-step-5-node dim" id="f08-step-5-node-api"      data-plan-component="api"      style="left:1000px; top:380px; width:240px; height:100px"><span class="l">Upload API</span><span class="s">src/upload</span></div>
+      <div class="f08-step-5-node navy dim" id="f08-step-5-node-manifest" data-plan-component="manifest" style="left:1300px; top:200px; width:260px; height:150px">
+        <span class="l">Manifest store</span><span class="s">upload_manifests</span>
+        <div class="f08-step-5-row" id="f08-step-5-row-1" style="top:92px"><span class="txt">7f3a · 2 GB · 111111</span></div>
+        <div class="f08-step-5-row" id="f08-step-5-row-2" style="top:118px"><span class="txt" id="f08-step-5-row-2-txt"></span><span class="st" id="f08-step-5-row-2-st"></span><span class="cur" id="f08-step-5-row-2-cur"></span></div>
+      </div>
+      <div class="f08-step-5-node dim" id="f08-step-5-node-blob"     data-plan-component="blob"     style="left:1300px; top:540px; width:260px; height:100px"><span class="l">Blob store</span><span class="s">src/blob</span></div>
+      <div class="f08-step-5-node dim" id="f08-step-5-node-billing"  data-plan-component="billing"  style="left:1620px; top:200px; width:220px; height:100px"><span class="l">Billing hook</span><span class="s">src/billing</span></div>
+      <div class="f08-step-5-node dim" id="f08-step-5-node-sweeper"  data-plan-component="sweeper"  style="left:1620px; top:540px; width:220px; height:100px"><span class="l">Sweeper</span><span class="s">src/jobs</span></div>
+
+      <!-- Part boxes for the blob store: six 32×32 hairline boxes at left:1300 top:660, gap 12 — all filled at t=0. -->
+      <div class="f08-step-5-part" id="f08-step-5-part-1" style="left:1300px"></div>
+      <div class="f08-step-5-part" id="f08-step-5-part-2" style="left:1344px"></div>
+      <div class="f08-step-5-part" id="f08-step-5-part-3" style="left:1388px"></div>
+      <div class="f08-step-5-part" id="f08-step-5-part-4" style="left:1432px"></div>
+      <div class="f08-step-5-part" id="f08-step-5-part-5" style="left:1476px"></div>
+      <div class="f08-step-5-part" id="f08-step-5-part-6" style="left:1520px"></div>
+      <div class="f08-step-5-strike" id="f08-step-5-strike"></div>
+
+      <!-- bounded tag under the manifest node -->
+      <div class="f08-step-5-tag" id="f08-step-5-tag">bounded</div>
+
+      <!-- EDGES: earlier frames' edges dim; this frame's two edges draw on cue. -->
+      <svg class="f08-step-5-edges" id="f08-step-5-edges" viewBox="0 0 1920 1080">
+        <path class="dim" id="f08-step-5-e-api-manifest" d="M1240 405 L1270 405 L1270 275 L1300 275" />
+        <path class="dim" id="f08-step-5-e-api-blob"     d="M1240 455 L1270 455 L1270 590 L1300 590" />
+        <path class="dim" id="f08-step-5-e-sdk-api"      d="M940 430 L1000 430" />
+        <path class="dim" id="f08-step-5-e-api-billing"  d="M1120 380 L1120 160 L1730 160 L1730 200" />
+        <path id="f08-step-5-e-sweeper-manifest" d="M1730 540 L1730 380 L1590 380 L1590 275 L1560 275" style="stroke-dasharray:435; stroke-dashoffset:435" />
+        <path id="f08-step-5-e-sweeper-blob"     d="M1620 590 L1560 590" style="stroke-dasharray:60; stroke-dashoffset:60" />
+      </svg>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var DUR = 8.853;
+      var CORAL = "#CC785C", INK = "#141413", HAIR = "rgba(20,20,19,0.12)";
+      var SHADOW = "0 1px 3px rgba(20,20,19,0.08), 0 4px 16px rgba(20,20,19,0.04)";
+      var SHADOW_CORAL = "0 0 0 1px #CC785C, 0 1px 3px rgba(20,20,19,0.08), 0 4px 16px rgba(20,20,19,0.04)";
+      var q = function (id) { return document.getElementById("f08-step-5-" + id); };
+
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["08-step-5"] = tl;
+
+      /* ── Scene 1 (0.0–1.2s): "Step five" → slot 5 fills; "the sweeper" → coral lands on the Sweeper node ── */
+      tl.fromTo(q("slot-5-fill"), { opacity: 0, scale: 0.985 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 0.10);
+      tl.fromTo([q("slot-5-n"), q("slot-5-t")], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.05 }, 0.18);
+
+      tl.to(q("node-sweeper"), { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.70);
+      tl.fromTo(q("node-sweeper"), { borderColor: HAIR, boxShadow: SHADOW },
+        { borderColor: CORAL, boxShadow: SHADOW_CORAL, duration: 0.35, ease: "power3.out" }, 0.70);
+
+      /* ── Scene 2 (1.2–5.6s) ── */
+      // "a day old": second manifest row types in (discrete-text-sequence: sparse states, pauses at breaks)
+      tl.to(q("node-manifest"), { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.55);
+
+      var TYPE_START = 1.65, TYPE_END = 3.35;
+      var SEQ = [
+        { t: 0.00, text: "" },
+        { t: 1.70, text: "2" },
+        { t: 1.82, text: "2c" },
+        { t: 1.94, text: "2c9" },
+        { t: 2.06, text: "2c91" },
+        { t: 2.42, text: "2c91 " },
+        { t: 2.50, text: "2c91 ·" },
+        { t: 2.58, text: "2c91 · " },
+        { t: 2.70, text: "2c91 · 2" },
+        { t: 2.82, text: "2c91 · 26" },
+        { t: 2.94, text: "2c91 · 26h" },
+        { t: 3.20, text: "2c91 · 26h · " }
+      ];
+      var STATUS = [
+        { t: 0.00, text: "" },
+        { t: 3.32, text: "∅" },
+        { t: 4.10, text: "abandoned" }   // "get aborted": the status swaps; coral moves to this word
+      ];
+      function stateAt(seq, time) {
+        for (var i = seq.length - 1; i >= 0; i--) { if (time >= seq[i].t) return seq[i].text; }
+        return "";
+      }
+      var txtEl = q("row-2-txt"), stEl = q("row-2-st"), curEl = q("row-2-cur");
+      var driver = { t: 0 };
+      tl.to(driver, {
+        t: DUR, duration: DUR, ease: "none",
+        onUpdate: function () {
+          var t = driver.t;
+          txtEl.textContent = stateAt(SEQ, t);
+          stEl.textContent = stateAt(STATUS, t);
+          stEl.style.color = t >= 4.10 ? CORAL : "#FAF9F5";
+          // block cursor: sin square wave (~0.6s cycle) only while the row is being typed
+          var on = t >= TYPE_START && t < TYPE_END && Math.sin((t - TYPE_START) * Math.PI * 2 / 0.6) >= 0;
+          curEl.style.opacity = on ? "1" : "0";
+        }
+      }, 0);
+
+      // "get aborted": coral leaves the Sweeper node and draws the Sweeper → Manifest edge
+      tl.set(q("node-sweeper"), { borderColor: HAIR, boxShadow: SHADOW }, 3.55);
+      tl.set(q("e-sweeper-manifest"), { stroke: CORAL, strokeWidth: 3 }, 3.55);
+      tl.fromTo(q("e-sweeper-manifest"), { strokeDashoffset: 435 }, { strokeDashoffset: 0, duration: 0.55, ease: "power2.inOut" }, 3.55);
+      // the row flips to "abandoned" at 4.10 (driver above); the edge settles to ink at the same instant
+      tl.set(q("e-sweeper-manifest"), { stroke: INK, strokeWidth: 2 }, 4.10);
+
+      // "their parts deleted": Sweeper → Blob edge draws; three part boxes fade + hairline strike
+      tl.to(q("node-blob"), { opacity: 1, duration: 0.3, ease: "power2.out" }, 4.55);
+      tl.fromTo(q("e-sweeper-blob"), { strokeDashoffset: 60 }, { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 4.60);
+      tl.to([q("part-4"), q("part-5"), q("part-6")], { opacity: 0.72, duration: 0.4, ease: "power2.out", stagger: 0.08 }, 4.95);
+      tl.fromTo(q("strike"), { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.out" }, 5.05);
+
+      /* ── Scene 3 (5.6–9.0s): "storage leak closed" → bounded tag; hold ── */
+      tl.fromTo(q("tag"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 6.45);
+    })();
+  </script>
+</template>

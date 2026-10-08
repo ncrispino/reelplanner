@@ -1,0 +1,17 @@
+$ reelplanning build .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video
+build .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video
+△ check-terms           0.2 s  terms: 17 words before their definition, 2 quick checks whose answer was not shown (warnings)
+✓ narrate              12.8 s  narrate: 0 line(s) narrated, 13 kept byte for byte, in 13 s → audio_meta.json
+✓ fetch-sfx             0.3 s  · sfx: 0 cue(s) resolved (bundled library)
+✓ transcribe-missing    0.1 s  .: all 13 voices have word timings
+✓ sync-durations        0.2 s  audio sync-durations: 13 frame duration(s) updated
+✓ hold-durations        0.1 s  holds: 1 frame(s) held — 13: 3.904s → 7.5s
+· retime-frames         0.0 s  skipped: no line changed
+✓ finish-project       20.4 s  ◇  Check passed
+✓ verify               27.8 s  [hyperframes] browserGpuMode probe → software (WebGL unavailable)
+✓ fresh-eyes                   3 rounds done, round 3's 13 findings answered (2 fixed, 0 a meaning, 11 kept); what is left is said on the page ("Before you watch") and in the notifi
+✓ built .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video in 61.9 s
+✓ length  2:22 (a walkthrough video: aim 1–2 min; past it, which is fine only if the plan needs it)
+✓ variety  8 layout(s), 3 kind(s) of transition, none on over 70% of scenes
+✓ variety  BRIEF.md picks the real things: scene 1 (the change's map), 2 (`fresh-eyes` run on the system video, and a finding it wrote), 3 (`build`
+exit 0

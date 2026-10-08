@@ -1,0 +1,95 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d06-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d06-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d06-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d06-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d06-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d06-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d06-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d06-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d06-ring.hot { border-color:var(--rp-coral); }
+  .d06-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d06-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d06-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d06-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d06-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d06-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d06-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d06-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d06-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d06-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d06-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d06-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d06-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d06-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d06-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d06-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d06-case { position:absolute; }
+  .d06-u { background-image:linear-gradient(var(--rp-coral),var(--rp-coral)); background-repeat:no-repeat; background-position:0 100%; background-size:0% 4px; padding-bottom:3px; }
+  .d06-x { background-image:linear-gradient(var(--rp-ink),var(--rp-ink)); background-repeat:no-repeat; background-position:0 55%; background-size:0% 3px; }
+
+</style>
+
+<div id="root" data-composition-id="06-step-2-who-decides" data-band="bottom" data-duration="17.685" data-width="1920" data-height="1080">
+
+  <div class="clip d06-bg" id="d06-bg" data-start="0" data-duration="17.685" data-track-index="0"></div>
+
+  <div class="clip d06-scene" id="d06-scene" data-start="0" data-duration="17.685" data-track-index="1">
+    <div class="d06-lab" id="d06-h" style="left:90px; top:60px">step 2 · Ana's pull request</div>
+    <div class="d06-slab" id="d06-rec" data-detail="who-decides" data-artifact="reel record of Ana&#x27;s walkthrough review, on the scratch repo" style="left:90px; top:150px; width:1300px; height:290px"><div class="d06-sbar"></div><div class="d06-sbt">reel record · Ana&#x27;s own walkthrough review</div><div class="d06-row" id="d06-rec-r0" style="top:62px; font-size:26px; line-height:42px"><span class="g">$</span><span id="d06-rec-c0"></span></div><div class="d06-row" id="d06-rec-r1" style="top:104px; font-size:26px; line-height:42px">△ a contributor's walkthrough review (id:ana is not in config.json's</div><div class="d06-row" id="d06-rec-r2" style="top:146px; font-size:26px; line-height:42px">    maintainers: owner): its accepts and flags help fix things before</div><div class="d06-row" id="d06-rec-r3" style="top:188px; font-size:26px; line-height:42px">    the PR, and add nothing to the decision log. …</div><div class="d06-row" id="d06-rec-r4" style="top:230px; font-size:26px; line-height:42px">✓ ledger: <span class="d06-u" id="d06-zero">+0 (nothing new)</span>, 2 total</div></div>
+    <div class="d06-slab" id="d06-chk" data-artifact="reel pr-check --base origin/main on Ana&#x27;s branch: its two columns" style="left:90px; top:480px; width:1300px; height:248px"><div class="d06-sbar"></div><div class="d06-sbt">reel pr-check · what lands, what stays</div><div class="d06-row" id="d06-chk-r0" style="top:62px; font-size:26px; line-height:42px"><span class="g">$</span><span id="d06-chk-c0"></span></div><div class="d06-row" id="d06-chk-r1" style="top:104px; font-size:26px; line-height:42px">· lands on main: 2026-09-27-port: plan.md, walkthrough.md,</div><div class="d06-row" id="d06-chk-r2" style="top:146px; font-size:26px; line-height:42px">    the videos' text (walkthrough-video)</div><div class="d06-row" id="d06-chk-r3" style="top:188px; font-size:26px; line-height:42px">· stays in the PR: 2026-09-27-port/reviews/plan-20260927T110000Z (id:ana)</div></div>
+    <div class="d06-tag" id="d06-mt" style="left:1430px; top:212px">only a maintainer&#39;s</div>
+    <div class="d06-tag" id="d06-mt2" style="left:1430px; top:264px">review counts</div>
+    <div class="d06-chip" id="d06-tidy" style="left:90px; top:760px"><code>reel pr-check --tidy</code> · one commit</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "06-step-2-who-decides";
+  var d06_rec_c0_d = { t: 0 }, d06_rec_c0_s = "reel record .reelplanning/plans/2026-09-27-port wa.json";
+  var d06_chk_c0_d = { t: 0 }, d06_chk_c0_s = "reel pr-check --base origin/main";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d06-h", {"opacity": 0});
+  gsap.set("#d06-rec", {"opacity": 0});
+  gsap.set("#d06-rec-r1", {"opacity": 0});
+  gsap.set("#d06-rec-r2", {"opacity": 0});
+  gsap.set("#d06-rec-r3", {"opacity": 0});
+  gsap.set("#d06-rec-r4", {"opacity": 0});
+  gsap.set("#d06-mt", {"opacity": 0});
+  gsap.set("#d06-mt2", {"opacity": 0});
+  gsap.set("#d06-chk", {"opacity": 0});
+  gsap.set("#d06-chk-r1", {"opacity": 0});
+  gsap.set("#d06-chk-r2", {"opacity": 0});
+  gsap.set("#d06-chk-r3", {"opacity": 0});
+  gsap.set("#d06-tidy", {"opacity": 0, "y": 8});
+  tl.to("#d06-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d06-rec", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.3);
+  tl.to(d06_rec_c0_d, { t: 1, duration: 0.8, ease: "none", onUpdate: function () { document.getElementById("d06-rec-c0").textContent = d06_rec_c0_s.slice(0, Math.round(d06_rec_c0_d.t * d06_rec_c0_s.length)); } }, 7.02);
+  tl.to("#d06-rec-r1", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 7.919999999999999);
+  tl.to("#d06-rec-r2", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 7.999999999999999);
+  tl.to("#d06-rec-r3", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 8.079999999999998);
+  tl.to("#d06-rec-r4", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 8.159999999999998);
+  tl.to("#d06-zero", { backgroundSize: "100% 4px", duration: 0.5, ease: "power2.out" }, 8.17);
+  tl.to("#d06-mt", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 9.88);
+  tl.to("#d06-mt2", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 10.180000000000001);
+  tl.to("#d06-chk", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 12.08);
+  tl.to(d06_chk_c0_d, { t: 1, duration: 0.6, ease: "none", onUpdate: function () { document.getElementById("d06-chk-c0").textContent = d06_chk_c0_s.slice(0, Math.round(d06_chk_c0_d.t * d06_chk_c0_s.length)); } }, 12.28);
+  tl.to("#d06-chk-r1", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 12.979999999999999);
+  tl.to("#d06-chk-r2", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 13.059999999999999);
+  tl.to("#d06-chk-r3", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 13.139999999999999);
+  tl.to("#d06-tidy", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 14.96);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

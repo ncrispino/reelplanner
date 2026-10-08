@@ -1,0 +1,2768 @@
+{
+  "project": "video",
+  "title": "Several people, one repo: contributing with reelplanning",
+  "planDir": ".reelplanning/plans/2026-09-26-contributing",
+  "totalSeconds": 288.384,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "One repo, several people",
+      "fromFrame": 1,
+      "toFrame": 3,
+      "start": 0,
+      "end": 47.53,
+      "linearSeconds": 47.53,
+      "watchedSeconds": 47.53,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 1: when a PR gets a video",
+      "fromFrame": 4,
+      "toFrame": 6,
+      "start": 47.53,
+      "end": 101.034,
+      "linearSeconds": 53.504,
+      "watchedSeconds": 53.504,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 2: who does what, and what lands",
+      "fromFrame": 7,
+      "toFrame": 9,
+      "start": 101.034,
+      "end": 145.322,
+      "linearSeconds": 44.288,
+      "watchedSeconds": 44.288,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 3: watching, checking, and where the video lives",
+      "fromFrame": 10,
+      "toFrame": 14,
+      "start": 145.322,
+      "end": 221.717,
+      "linearSeconds": 76.395,
+      "watchedSeconds": 76.395,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Step 4: records that merge",
+      "fromFrame": 15,
+      "toFrame": 16,
+      "start": 221.717,
+      "end": 247.871,
+      "linearSeconds": 26.154,
+      "watchedSeconds": 26.154,
+      "decisions": []
+    },
+    {
+      "id": "ch6",
+      "title": "Step 5: CI, the merge, the system video",
+      "fromFrame": 17,
+      "toFrame": 20,
+      "start": 247.871,
+      "end": 288.384,
+      "linearSeconds": 40.513,
+      "watchedSeconds": 40.513,
+      "decisions": []
+    }
+  ],
+  "levels": {
+    "new": 288.384,
+    "familiar": 267.883,
+    "owner": 267.883
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 9,
+      "planStep": 1,
+      "question": "Omar's PR #58 is 25 lines and adds a flag, --quiet, to the reel CLI. He doesn't use reelplanning. What happens?",
+      "options": [
+        {
+          "id": "a",
+          "label": "It merges on a code review: 25 lines",
+          "why": "Size is one test of two: a choice, like a new flag, crosses the line at any size."
+        },
+        {
+          "id": "b",
+          "label": "It waits for Omar's video",
+          "why": "Nobody is turned away: a contributor who doesn't use reelplanning is never asked for a video."
+        },
+        {
+          "id": "c",
+          "label": "The maintainer makes its walkthrough",
+          "more": "The maintainer's agent writes its walkthrough from the pull request, and builds the video.",
+          "why": "Right: a flag is a choice, and the maintainer's agent makes the walkthrough from the pull request."
+        }
+      ],
+      "answer": "c",
+      "explain": "A new flag is a choice a reviewer could make the other way, so it gets a video at any size; Omar doesn't use reelplanning, so the maintainer's agent makes the walkthrough.",
+      "at": 145.272,
+      "explainedAt": 85.973,
+      "explainedFrame": 6,
+      "walkMeThrough": "Pull request 58 is only 25 lines, but it adds a flag, and a flag is a choice a reviewer could make the other way, so it crosses the line; size is only the other test. Omar doesn't use reelplanning, so he just opens it. The maintainer's agent writes its walkthrough from the diff and the pull request's text, and nothing waits on Omar."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 14,
+      "planStep": 2,
+      "question": "Lee accepted all 4 choices in PR #61's walkthrough; the owner flagged one, and it was fixed. What reviews does main hold?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Lee's and the owner's",
+          "why": "Lee's reviews are Lee's own checks: they stay in the pull request's history, off main."
+        },
+        {
+          "id": "b",
+          "label": "Only the owner's",
+          "why": "Right: the owner's review counts, and lands; Lee's stay in the pull request."
+        },
+        {
+          "id": "c",
+          "label": "None: only the code",
+          "why": "The plan, its final decisions, walkthrough.md and the owner's review all land with the code."
+        }
+      ],
+      "answer": "b",
+      "explain": "The owner's review is the one that counts, and lands with the plan; Lee's own reviews stay in the pull request's history.",
+      "at": 221.667,
+      "explainedAt": 117.29,
+      "explainedFrame": 8,
+      "walkMeThrough": "Lee's accepts helped Lee fix things before the pull request; they decide nothing. The owner's review, the flag and the accept after the fix, is the one that counts, so it lands on main with the plan, its decisions and walkthrough.md. Lee's own reviews stay in pull request 61's history: reel pr-check --tidy takes them off the branch before the merge."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 16,
+      "planStep": 3,
+      "question": "PR #61's walkthrough says a missing file is skipped; the code stops with an error. CI's checks pass. What finds it?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing: CI passed",
+          "why": "CI's checks read the video and the plan's files, not the code, so they cannot see it."
+        },
+        {
+          "id": "b",
+          "label": "The maintainer's code check",
+          "why": "Right: the code check is the one that reads the code."
+        },
+        {
+          "id": "c",
+          "label": "A rebuild of the video",
+          "why": "A rebuild is made from the same walkthrough.md, so it says 'skipped' again."
+        }
+      ],
+      "answer": "b",
+      "explain": "CI's checks compare the video with the plan's files, which agree; only the code check reads the code.",
+      "at": 247.821,
+      "explainedAt": 145.322,
+      "explainedFrame": 10,
+      "walkMeThrough": "CI's checks compare the video with plan.md and walkthrough.md, and all three say a missing file is skipped, so they pass. Only a check that reads the code sees that it stops with an error: the maintainer's own code check, a fresh agent, finds it. A rebuild is made from the same walkthrough.md, so it would say 'skipped' again."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 18,
+      "planStep": 4,
+      "question": "PRs #70 and #71 each recorded a decision D-210, and #70 has merged. What does #71's contributor do?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep both rows",
+          "why": "Two rows under one number: a later plan that cites D-210 would mean two things."
+        },
+        {
+          "id": "b",
+          "label": "Run reel renumber",
+          "more": "reel renumber, after rebasing on main.",
+          "why": "Right: #71's entry takes the next number, after main's last."
+        },
+        {
+          "id": "c",
+          "label": "Renumber #70's entry on main",
+          "why": "A number on main never changes; the branch merged second renumbers its own."
+        }
+      ],
+      "answer": "b",
+      "explain": "A number on main never changes; reel renumber puts #71's entry after main's last, with the next number.",
+      "at": 272.803,
+      "explainedAt": 221.717,
+      "explainedFrame": 15,
+      "walkMeThrough": "Main now has pull request 70's decision D-210, and a number never changes once it is on main. So 71's contributor rebases on main and runs reel renumber: 71's entry goes after main's last, as decision D-211, and its mentions in 71's plan folder follow. Keeping both rows would leave two decisions under one number."
+    },
+    {
+      "id": "k5",
+      "frameIndex": 19,
+      "planStep": 5,
+      "question": "PR #64 passes the fast suite, but a test only the full suite runs fails. Can it merge?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: the fast suite passed",
+          "why": "The fast suite is for every push; a merge needs the full suite too."
+        },
+        {
+          "id": "b",
+          "label": "Not before the full suite passes",
+          "why": "Right: the merge needs the full suite to pass."
+        },
+        {
+          "id": "c",
+          "label": "Yes; the release tag catches it",
+          "why": "The release tag runs it again, but the merge needs it first, so main never breaks."
+        }
+      ],
+      "answer": "b",
+      "explain": "The full suite runs before every merge, and the merge needs it to pass.",
+      "at": 280.334,
+      "explainedAt": 247.871,
+      "explainedFrame": 17,
+      "walkMeThrough": "The fast suite runs on every push, and pull request 64 passes it. But before a merge the full suite runs, every test, and the merge needs it to pass. One of its tests fails, so 64 cannot merge until it is fixed and the full suite passes on its last commit."
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 288.384,
+  "frames": [
+    {
+      "index": 1,
+      "title": "One person per repo, then a shared one",
+      "compositionId": "01-one-owner",
+      "type": "hook",
+      "durationSeconds": 13.653,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "One repo, several people",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-7.08s.png",
+      "terms": [
+        "pull request",
+        "contributor",
+        "review",
+        "repo",
+        "merge"
+      ],
+      "defines": [
+        "pull request",
+        "contributor"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
+    },
+    {
+      "index": 2,
+      "title": "What changes",
+      "compositionId": "03-what-changes",
+      "type": "product_intro",
+      "durationSeconds": 13.376,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 13.653,
+      "thumb": "snapshots/frame-01-at-20.59s.png",
+      "terms": [
+        "review",
+        "step",
+        "repo",
+        "merge",
+        "pull request"
+      ],
+      "change": {
+        "status": "edited",
+        "said": false,
+        "shown": true,
+        "retimed": false,
+        "wasIndex": 2
+      }
+    },
+    {
+      "index": 3,
+      "title": "Eight earlier plans",
+      "compositionId": "03b-before-this-plan",
+      "type": "feature_showcase",
+      "durationSeconds": 20.501,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 27.029,
+      "thumb": "snapshots/frame-02-at-37.28s.png",
+      "terms": [
+        "system video",
+        "call",
+        "memory",
+        "beat",
+        "step",
+        "quick check",
+        "detail",
+        "agent",
+        "walkthrough video",
+        "template"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 3
+      }
+    },
+    {
+      "index": 4,
+      "title": "Step 1: the line, as decided",
+      "compositionId": "04-step-1-the-rule",
+      "type": "feature_showcase",
+      "durationSeconds": 18.283,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 1: when a PR gets a video",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 47.53,
+      "thumb": "snapshots/frame-03-at-56.92s.png",
+      "terms": [
+        "call",
+        "step",
+        "repo",
+        "pull request",
+        "flag",
+        "contributing.md"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 4
+      },
+      "guide": "step-1",
+      "detail": "step-1"
+    },
+    {
+      "index": 5,
+      "title": "The check, on a one-line fix",
+      "compositionId": "05-the-pr-page",
+      "type": "feature_showcase",
+      "durationSeconds": 20.16,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 65.813,
+      "thumb": "snapshots/frame-04-at-76.14s.png",
+      "terms": [
+        "maintainer",
+        "reel cli",
+        "review",
+        "call",
+        "tag",
+        "merge",
+        "pull request",
+        "flag",
+        "dependency",
+        "cli",
+        "contributor",
+        "pr-check"
+      ],
+      "defines": [
+        "maintainer"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 5
+      }
+    },
+    {
+      "index": 6,
+      "title": "Who makes the video, as decided",
+      "compositionId": "06b-the-cost",
+      "type": "feature_showcase",
+      "durationSeconds": 15.061,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 85.973,
+      "thumb": "snapshots/frame-05-at-93.5s.png",
+      "terms": [
+        "agent",
+        "plan video",
+        "walkthrough video",
+        "pull request",
+        "contributor",
+        "maintainer"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 6
+      }
+    },
+    {
+      "index": 7,
+      "title": "Step 2: who does what, with one PR",
+      "compositionId": "07-step-2-two-roles",
+      "type": "feature_showcase",
+      "durationSeconds": 16.256,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: who does what, and what lands",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 101.034,
+      "thumb": "snapshots/frame-06-at-109.41s.png",
+      "terms": [
+        "call",
+        "step",
+        "agent",
+        "walkthrough video",
+        "pull request",
+        "flag",
+        "contributor",
+        "maintainer"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      },
+      "guide": "step-2",
+      "detail": "step-2"
+    },
+    {
+      "index": 8,
+      "title": "What lands on main",
+      "compositionId": "07b-what-lands",
+      "type": "feature_showcase",
+      "durationSeconds": 19.243,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 117.29,
+      "thumb": "snapshots/frame-07-at-126.91s.png",
+      "terms": [
+        "review",
+        "walkthrough video",
+        "branch",
+        "merge",
+        "pull request",
+        "pr-check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 8
+      }
+    },
+    {
+      "index": 9,
+      "title": "Quick check: a small PR with a flag",
+      "compositionId": "06-qc-one-line-fix",
+      "type": "social_proof",
+      "durationSeconds": 8.789,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Omar's PR #58 is 25 lines and adds a flag, --quiet, to the reel CLI. He doesn't use reelplanning. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "c",
+      "explain": "A new flag is a choice a reviewer could make the other way, so it gets a video at any size; Omar doesn't use reelplanning, so the maintainer's agent makes the walkthrough.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It merges on a code review: 25 lines",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "It waits for Omar's video",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The maintainer makes its walkthrough",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 136.533,
+      "thumb": "snapshots/frame-08-at-140.93s.png",
+      "terms": [
+        "reel cli",
+        "call",
+        "step",
+        "quick check",
+        "agent",
+        "walkthrough video",
+        "pull request",
+        "flag",
+        "cli",
+        "maintainer"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 9
+      }
+    },
+    {
+      "index": 10,
+      "title": "Step 3: watching and checking, as decided",
+      "compositionId": "13-step-3-where",
+      "type": "feature_showcase",
+      "durationSeconds": 20.117,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: watching, checking, and where the video lives",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 145.322,
+      "thumb": "snapshots/frame-09-at-155.63s.png",
+      "terms": [
+        "ci",
+        "review",
+        "step",
+        "agent",
+        "code check",
+        "pull request",
+        "github",
+        "contributor",
+        "maintainer"
+      ],
+      "defines": [
+        "ci"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 10
+      },
+      "guide": "step-3",
+      "detail": "step-3"
+    },
+    {
+      "index": 11,
+      "title": "The video is heavy in git",
+      "compositionId": "13b-heavy",
+      "type": "pain_point",
+      "durationSeconds": 12.8,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 165.439,
+      "thumb": "snapshots/frame-10-at-172.09s.png",
+      "change": {
+        "status": "restyled",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 11
+      },
+      "terms": [
+        "repo",
+        "branch",
+        "git"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Where it lives, as decided",
+      "compositionId": "15-q-where-video",
+      "type": "feature_showcase",
+      "durationSeconds": 15.787,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 178.239,
+      "thumb": "snapshots/frame-11-at-186.38s.png",
+      "terms": [
+        "review",
+        "branch",
+        "merge",
+        "clone",
+        "pull request",
+        "maintainer"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 12
+      }
+    },
+    {
+      "index": 13,
+      "title": "Would it be easy? A real run",
+      "compositionId": "17-branch-where-b",
+      "type": "feature_showcase",
+      "durationSeconds": 18.752,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 194.026,
+      "thumb": "snapshots/frame-12-at-203.4s.png",
+      "terms": [
+        "step",
+        "agent",
+        "branch",
+        "clone"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 14
+      }
+    },
+    {
+      "index": 14,
+      "title": "Quick check: what main holds",
+      "compositionId": "08-qc-two-reviews",
+      "type": "social_proof",
+      "durationSeconds": 8.939,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Lee accepted all 4 choices in PR #61's walkthrough; the owner flagged one, and it was fixed. What reviews does main hold?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "The owner's review is the one that counts, and lands with the plan; Lee's own reviews stay in the pull request's history.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Lee's and the owner's",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Only the owner's",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "None: only the code",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 212.778,
+      "thumb": "snapshots/frame-13-at-217.25s.png",
+      "terms": [
+        "review",
+        "call",
+        "step",
+        "quick check",
+        "agent",
+        "walkthrough video",
+        "merge",
+        "pull request"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 16
+      }
+    },
+    {
+      "index": 15,
+      "title": "Step 4: records that merge, as decided",
+      "compositionId": "19-step-4-records",
+      "type": "feature_showcase",
+      "durationSeconds": 18.261,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 4: records that merge",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 221.717,
+      "thumb": "snapshots/frame-14-at-230.85s.png",
+      "terms": [
+        "step",
+        "branch",
+        "terms index"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 17
+      },
+      "guide": "step-4",
+      "detail": "step-4"
+    },
+    {
+      "index": 16,
+      "title": "Quick check: a walkthrough that is wrong",
+      "compositionId": "14-qc-private-link",
+      "type": "social_proof",
+      "durationSeconds": 7.893,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "PR #61's walkthrough says a missing file is skipped; the code stops with an error. CI's checks pass. What finds it?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "b",
+      "explain": "CI's checks compare the video with the plan's files, which agree; only the code check reads the code.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing: CI passed",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The maintainer's code check",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "A rebuild of the video",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 239.978,
+      "thumb": "snapshots/frame-15-at-243.92s.png",
+      "terms": [
+        "step",
+        "quick check",
+        "walkthrough video",
+        "code check",
+        "pull request",
+        "ci"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 18
+      }
+    },
+    {
+      "index": 17,
+      "title": "Step 5: CI, the merge, the system video",
+      "compositionId": "25-step-5-ci",
+      "type": "feature_showcase",
+      "durationSeconds": 16.683,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5: CI, the merge, the system video",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 247.871,
+      "thumb": "snapshots/frame-16-at-256.21s.png",
+      "terms": [
+        "system video",
+        "tag",
+        "step",
+        "merge",
+        "ci"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 19
+      },
+      "guide": "step-5",
+      "detail": "step-5"
+    },
+    {
+      "index": 18,
+      "title": "Quick check: two branches, one number",
+      "compositionId": "20-qc-terms-index",
+      "type": "social_proof",
+      "durationSeconds": 8.299,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "PRs #70 and #71 each recorded a decision D-210, and #70 has merged. What does #71's contributor do?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "A number on main never changes; reel renumber puts #71's entry after main's last, with the next number.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Keep both rows",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Run reel renumber",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Renumber #70's entry on main",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 264.554,
+      "thumb": "snapshots/frame-17-at-268.7s.png",
+      "terms": [
+        "step",
+        "quick check",
+        "pull request",
+        "contributor"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 20
+      }
+    },
+    {
+      "index": 19,
+      "title": "Quick check: the full suite",
+      "compositionId": "27-qc-player-pr",
+      "type": "social_proof",
+      "durationSeconds": 7.531,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "PR #64 passes the fast suite, but a test only the full suite runs fails. Can it merge?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "b",
+      "explain": "The full suite runs before every merge, and the merge needs it to pass.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: the fast suite passed",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Not before the full suite passes",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Yes; the release tag catches it",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 272.853,
+      "thumb": "snapshots/frame-18-at-276.87s.png",
+      "terms": [
+        "step",
+        "quick check",
+        "merge",
+        "pull request"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 21
+      }
+    },
+    {
+      "index": 20,
+      "title": "The plan",
+      "compositionId": "28-the-plan",
+      "type": "cta",
+      "durationSeconds": 8,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 280.384,
+      "thumb": "snapshots/frame-19-at-284.38s.png",
+      "terms": [
+        "approve",
+        "step"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": false,
+        "wasIndex": 22
+      },
+      "guide": "decisions",
+      "detail": "decisions"
+    }
+  ],
+  "decisions": [],
+  "details": [
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html",
+      "title": "Step 1 · When a PR gets a video, and who makes it",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 4,
+      "compositionId": "04-step-1-the-rule",
+      "planStep": 1,
+      "start": 47.53,
+      "end": 65.813,
+      "autonomy": null
+    },
+    {
+      "name": "step-2",
+      "src": "guide/step-2.html",
+      "title": "Step 2 · Who does what, and what lands on main",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 7,
+      "compositionId": "07-step-2-two-roles",
+      "planStep": 2,
+      "start": 101.034,
+      "end": 117.29,
+      "autonomy": null
+    },
+    {
+      "name": "step-3",
+      "src": "guide/step-3.html",
+      "title": "Step 3 · Watching a contributor's video, checking it, and where it lives",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 10,
+      "compositionId": "13-step-3-where",
+      "planStep": 3,
+      "start": 145.322,
+      "end": 165.439,
+      "autonomy": null
+    },
+    {
+      "name": "step-4",
+      "src": "guide/step-4.html",
+      "title": "Step 4 · Records that merge: decision numbers, generated files, the glossary",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 15,
+      "compositionId": "19-step-4-records",
+      "planStep": 4,
+      "start": 221.717,
+      "end": 239.978,
+      "autonomy": null
+    },
+    {
+      "name": "step-5",
+      "src": "guide/step-5.html",
+      "title": "Step 5 · CI, the merge, and the system video",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 17,
+      "compositionId": "25-step-5-ci",
+      "planStep": 5,
+      "start": 247.871,
+      "end": 264.554,
+      "autonomy": null
+    },
+    {
+      "name": "decisions",
+      "src": "guide/decisions.html",
+      "title": "Decisions in force",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every decision in force, each with its ledger entry.",
+      "frameIndex": 20,
+      "compositionId": "28-the-plan",
+      "planStep": null,
+      "start": 280.384,
+      "end": 288.384,
+      "autonomy": null
+    }
+  ],
+  "plan": {
+    "title": "Several people, one repo: contributing with reelplanning",
+    "problem": "The owner:\n\n> \"Sure contributing is good we should specify that. Each PR above certain complexity we would prefer a\n> video for it and updated system video too? This is actually important, how do we use reelplanning to\n> plan (here, for this repo itself so it's kinda meta) when multiple users\"\n\non the first version of this plan:\n\n> \"do you think this might minimize contributions if we require this kind of thing? like make it less\n> likely for people to help out? how do we balance that? also a general thing is this is not just for us\n> working on this repo, but in fact for any repo where there is one person using reelplanning and we\n> want to share it\"\n\nand on the second:\n\n> \"the point is the pr shouldnt add slop, it should appear very clean\" · \"but isnt it heavy to carry each\n> video with the branch\" · \"maybe a merge requires full suite i guess like isnt that the point so we know\n> it doesnt break\"\n\nand on the third:\n\n> \"eh idk i still feel like small ones just not needed really? what do you think\" · \"would B be easy to\n> do? also i dont know if we want in the git history though thats the main question\"\n\n`reelplanning` assumes one person per repo: they write each plan with their agent, review its videos,\nand merge. That stops working as soon as the repo is shared, whether one person uses `reelplanning` and\nthe others don't, or several people do. This plan is how `reelplanning` works in any shared repo; this\nrepo is the first to use it. Five things break.\n\n- **Nothing says when a pull request (PR) gets a video, or who makes it.** There is no\n  `CONTRIBUTING.md`, no PR template, and no check. And asking for videos has a cost: someone fixing a bug\n  may have no `reelplanning`, no agent and no voice engine, and a rule that asks for them turns that\n  person away.\n- **Nothing says who reviews what, or what a merged PR leaves on main.** A contributor who plans with\n  `reelplanning` answers their own plan's questions; the maintainer reads every PR before merging. Today\n  both are the owner, so nothing says whose review counts, what happens when they disagree, or which of\n  their files a merge should keep.\n- **A maintainer cannot watch someone else's video, or tell whether it is right, and carrying the video\n  is heavy.** The hosted review page is private to whoever published it. A video built by someone else\n  could be out of date, or say something the code does not do. And a built video in git stays there for\n  good: this repo's `.git` is 893 MB, with 538 MB of media tracked, 373 MB of it in 779 voice files.\n- **The records collide.** The decision log numbers its entries in order across the repo (`reel record`\n  takes the next number). Two branches made from main at D-193 each record their own D-194. A real run,\n  in a scratch copy of this repo's `.reelplanning/` (two branches, one plan and one review each, then\n  both merged into main), stops at the second merge:\n\n  ```\n  CONFLICT (content): Merge conflict in .reelplanning/decisions.json\n  CONFLICT (content): Merge conflict in .reelplanning/decisions.md\n  <<<<<<< HEAD\n  | D-194 | 2026-09-27 | 2026-09-27-cache | 1 | q1 | **In the repo** | active |\n  =======\n  | D-194 | 2026-09-27 | 2026-09-27-port | 1 | q1 | **8790** | active |\n  >>>>>>> sam\n  ```\n\n  Keeping both lines, the obvious fix, leaves two D-194s, and a later plan that cites D-194 then means\n  two things. `terms-index.json` (written by every build) and the system video (brought up to date after\n  every accepted walkthrough, D-003) collide the same way.\n- **No tests run on a PR.** `.github/workflows/publish.yml` runs on version tags only, and runs no tests.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "When a PR gets a video, and who makes it",
+        "text": "*Stands alone.*\n\n`reelplanning` ships two templates, `templates/CONTRIBUTING.md` (a section, \"Contributing with\nreelplanning\") and `templates/pull_request_template.md`. The skill's \"Several people\" section tells the\nagent to copy them into a repo when it is shared. This repo is the first.\n\n**The line, as decided (D-214): choices or size.** A PR gets a video only when it does one of these:\n\n- **makes a choice a reviewer could make the other way**: a default, a command or flag, a file format, a\n  data shape, a dependency the package ships;\n- **is large**: over 300 changed lines outside tests, docs, videos and generated files.\n\n**Which files it touches no longer counts.** A bug fix that makes no choice merges on a normal code\nreview, whatever part it is in, and brings no video. A maintainer can still ask for a video on any PR.\n\n`reel pr-check [--base origin/main]` reads the line, in three parts:\n\n- **the size**, exactly: the changed lines outside tests, docs, videos and generated files;\n- **the choices it can see in the diff**: a dependency added to `package.json`'s `dependencies` (a version\n  bump is not a choice), and a command or flag new to the CLI (a command name or a `--flag` in the branch's\n  `bin/` and `scripts/` that the base does not have);\n- **the choices only a person can see** (a default, a file format, a data shape): the PR template asks the\n  contributor to tick \"makes a choice a reviewer could make the other way\" and name it, and the\n  maintainer, who reads every PR anyway, can add the `needs-video` label.\n\nTwo labels, and only a maintainer can add a label on GitHub: `needs-video` asks for a video on any PR;\n`no-video` waives one the check asked for by mistake. `reel pr-check` reads them from the PR (`gh pr view\n--json labels`, or the event CI hands it), then what the PR carries: a plan folder, its videos' text,\ntheir reviews, and the video's branch (step 3). It prints one line each: whether the PR crosses the line\nand why (\"a new flag: `--quiet`\", \"412 lines\", \"ticked: a choice\", \"`needs-video`\"), and what is missing\n(with the checks of steps 3 and 4).\n\nExamples:\n\n- PR #42, \"Serve the review page on port 8790\", changes 20 lines of `scripts/review.mjs`. The port by\n  default is a choice, so it crosses the line; Sam ticks the box and brings the video.\n- PR #43 fixes a one-line bug in `scripts/reel.mjs`, with its test. No choice, 2 lines: it merges on a\n  normal code review, with no video.\n- Priya's PR #57 fixes a bug in 40 lines of the review player (the case in the last review's quick\n  check). No choice, under 300 lines: no video, a normal code review. Had it also added a flag, the check\n  would ask for one.\n- A typo fix in `docs/lifecycle.md` never crosses the line.\n\n**Who makes the video**, as decided (D-200): the PR asks for one, and the maintainer can make it instead.\nTwo cases, and nobody is turned away:\n\n- **The contributor plans with `reelplanning`** (Sam): they bring a plan folder with two videos. A plan\n  video, which they reviewed themselves before writing the code, where a wrong choice costs least; and a\n  walkthrough video of the code.\n- **The contributor doesn't** (a newcomer's PR #44): they open the PR as on any GitHub repo and tick \"no\n  video\" in the template. The maintainer asks their agent for a walkthrough of the PR (the skill's\n  \"Several people\" section): it writes the PR's `walkthrough.md` from the diff and the PR's text (`gh pr\n  diff 44`, `gh pr view 44`), each choice the PR makes as a row, in a plan folder\n  `.reelplanning/plans/<date>-pr-44/`, and builds the walkthrough video as for any plan.\n- `reel pr-check` reports a PR over the line with no video as \"needs a video\", not as the contributor's\n  failure: it can merge once a maintainer has reviewed a video from either side, or added `no-video`."
+      },
+      {
+        "n": 2,
+        "title": "Who does what, and what lands on main",
+        "text": "*Stands alone. Decided: the last answer (D-201).*\n\n`CONTRIBUTING.md` names two roles. A **contributor** opens a PR. A **maintainer** can merge; maintainers\nare listed in `.reelplanning/config.json` as `maintainers`, each as `reel record` writes a reviewer:\n`owner`, `id:<id>` for a hosted page's viewer, or an email.\n\n**Who does what**, with one PR, #42 by Sam:\n\n1. **Sam, the contributor, plans.** Sam's plan asks \"Which port by default?\"; Sam answers 8790 in their\n   own plan review, and the answer is an entry in the decision log on Sam's branch.\n2. **Sam checks their agent's choices, for themselves.** Sam's agent builds it and makes one choice\n   alone, A1: \"the port is taken: try the next one\". Sam accepts A1 in the walkthrough and opens the PR.\n   Sam's accepts and flags help Sam fix things before the PR; they decide nothing.\n3. **The owner, a maintainer, reviews the PR, and that review is the one that counts.** The owner always\n   reads a PR before merging, and the walkthrough video is how (step 3): it stops on each choice the\n   agent made alone. The owner flags A1: \"fail with a message instead\". The flag reaches Sam as a comment\n   on the PR; Sam's agent changes A1 on the branch; the owner accepts it, and merges.\n\nWhen the owner disagrees with one of Sam's plan answers (the owner would keep 8787), the log keeps the\nlast answer (D-201): Sam's agent changes the code and the entry on the branch, which then reads 8787,\n\"changed after the maintainer's review\". An entry is final only once it is on main (D-171), so `reel\nrecord` needs nothing new for it.\n\n**What lands on main: only what counts.** A merged PR adds the plan, its final decisions, the walkthrough\nand the maintainer's review. The contributor's working reviews, and anything the maintainer overruled, stay\nin the PR:\n\n| Lands on main | Stays in the PR (its branch, and its commits on GitHub) |\n|---|---|\n| `plan.md`, with each question's final answer | the contributor's plan reviews (their first answers) |\n| the plan's entries in the decision log, as they read at the merge: the last answers | the contributor's walkthrough reviews (their accepts and flags) |\n| `walkthrough.md`, and the code check it answers (`code-check/findings.md`) | a choice or answer the maintainer changed, as it first read |\n| the maintainer's walkthrough reviews; their accepted choices join the log | |\n| the videos' text (step 3) | |\n\nThe built videos are in neither: they ride on a throwaway branch, deleted after the merge (step 3).\n\nFor PR #42: on Sam's branch, `reviews/` holds Sam's plan review, Sam's walkthrough review and the owner's\ntwo walkthrough reviews (the flag, then the accept). Main gets the owner's two. The log on main has \"which\nport? → 8790\" and A1 as the owner accepted it, \"fail with a message\", never Sam's \"try the next one\".\n\nHow:\n\n- **A contributor's walkthrough review adds nothing to the log.** In a repo whose `config.json` lists\n  `maintainers`, `reel record` files a walkthrough review by someone not listed, and writes its\n  `reviews/<id>.md` (the flags for their agent to fix), as today; its accepted choices do not join the\n  decision log. A maintainer's do. A plan review's answers join the log whoever gave them: they are the\n  plan's decisions, and D-201 keeps the last.\n- **`reel pr-check --tidy`**, run once the maintainer has accepted the walkthrough, removes from the\n  branch, in one commit, the review files of anyone not in `maintainers` (\"tidy: the contributor's reviews\n  stay in the PR's history\"). Without `--tidy`, `reel pr-check` prints the two columns above for the PR,\n  and fails \"not tidy\" while a PR with a maintainer's accepted walkthrough still carries the second.\n- **Squash and merge.** `CONTRIBUTING.md` says a PR is merged with GitHub's \"Squash and merge\", so main\n  gets one commit per PR, not the contributor's working commits. GitHub keeps a merged PR's commits on its\n  page (`refs/pull/42/head`) after the branch is deleted, so Sam's reviews and first answers stay where\n  anyone can read them.\n- The repo's memory (`reel memory`, from every plan's `reviews/`) then learns from the maintainers'\n  reviews; a contributor's own stays in their home folder (D-106).\n\nWhat is kept as it is: every review is filed once, never overwritten, under its reviewer\n(`recorded.reviewer`)."
+      },
+      {
+        "n": 3,
+        "title": "Watching a contributor's video, checking it, and where it lives",
+        "text": "*Stands alone; its checks run in CI with step 5. Decided: CI's checks, and a code check (D-202); the built\nvideo stays out of git's history (D-213), on a throwaway branch (D-215).*\n\n**Watching needs no rebuild.** A built video is HTML and its voice files; nothing in it needs making\nagain. The maintainer runs `reelplanning review` on it, which only serves those files on localhost\n(`scripts/review.mjs`): no voice engine, only Node. The page's Send puts the review in the maintainer's\nown inbox; `reel-intake` files it in the PR's plan folder, and the maintainer commits it to the PR branch\n(GitHub's \"allow edits by maintainers\", on by default for a PR from a fork). A hosted review page will\nnot do: it is private to whoever published it, so **a contributor who sends the maintainer the link to\ntheirs shows them nothing, not even the video**.\n\n**Checking it, as decided (D-202): two checks, neither rebuilds anything.**\n\n- **CI, on every PR, in seconds.** `reel pr-check` checks that the video was built from the PR's plan\n  as it is now: each video's plan map (written by the build: the plan's text and every stop) against\n  `plan.md` by hash, and each row of `walkthrough.md` against its stop. A video built before the last\n  change to either fails. `reel audit` checks that `walkthrough.md` covers every step and decision and\n  answers every finding.\n- **The maintainer's own code check, in minutes, before accepting a walkthrough they did not build.** A\n  fresh agent reads the code against the plan, in the PR's checkout (`gh pr checkout 42`, then\n  `reelplanning code-check <plan-dir> --base origin/main` and the prompt from `--prompt`). Its findings\n  become the maintainer's flags; they are not committed.\n\nA rebuild only when one of them disagrees with the video, and it is the contributor's to do (or, for a PR\nwith no video of its own, the maintainer's agent's).\n\n**Where the built video lives, as decided: never in main's history (D-213), on a throwaway branch\n(D-215).** \"i dont know if we want in the git history though thats the main question\": we don't. A built\nvideo in git stays there for good: this plan's video is 16 MB in git (15 MB of voice files, fonts and a\nscreenshot; 1 MB of text), a walkthrough video 17 to 50 MB, and each rebuild that changes a line adds that\nline's new voice file. This repo's `.git` is 893 MB, with 538 MB of media tracked, 373 MB of it in 779\nvoice files. So:\n\n- **The PR's branch carries only the videos' text:** `BRIEF.md`, `STORYBOARD.md`, `SCRIPT.md`, the frames'\n  HTML and `plan-map.json`, about 1 MB for this plan's video. `templates/gitignore` holds the lines that\n  leave the rest out (each video's `assets/`, `snapshots/`, `capture/` and its audio files' metadata), and\n  the skill copies them into a shared repo's `.gitignore`. `reel pr-check` fails a PR that adds a voice\n  file, an image or a video under `.reelplanning/plans/`.\n- **The built video goes on a second branch, `video/pr-42`, that is never merged.** Once the PR is open\n  (so its number is known), the contributor's agent packs the videos with `bundle-player` (the voice as\n  MP3, the player beside it) and pushes the packed folder as a branch of its own. The simplest way is a\n  fresh repo in that folder: its one commit shares nothing with main, and the PR's checkout is not\n  touched (a `git worktree --orphan` needs the files copied in, and `git subtree` needs them committed on\n  a branch first, which is what this avoids):\n\n  ```sh\n  url=$(git remote get-url origin)            # for a PR from a fork, this is the fork\n  reelplanning bundle-player ../pr-42-video <plan-dir>/video <plan-dir>/walkthrough-video\n  cd ../pr-42-video\n  git init -q -b video/pr-42 && git add -A && git commit -qm \"PR #42: its videos\"\n  git push --force \"$url\" video/pr-42\n  ```\n\n  The agent then writes the maintainer's two lines (below, with the URL filled in) into the PR's text. A\n  rebuild runs the same again: `--force` replaces the branch's one commit, so the branch always holds\n  just the latest video.\n- **The maintainer clones just that branch beside the PR's checkout, and serves it:**\n\n  ```sh\n  git clone -q --depth 1 -b video/pr-42 <url> ../pr-42-video\n  reelplanning review ../pr-42-video           # in the PR's checkout, so Send lands in its inbox\n  ```\n\n  `git fetch origin video/pr-42` and `git worktree add ../pr-42-video FETCH_HEAD` do the same in two\n  commands, but keep the video in the maintainer's own `.git` until git cleans it up; the clone is one\n  command, and deleting the folder removes it. `reelplanning review` today takes only a built video and\n  packs it itself; it learns to serve a folder `bundle-player` already packed, as it is, and says so when\n  that folder's plan map is not the checkout's `plan-map.json` (a video built from another version of\n  the plan).\n- **After the merge, the branch is deleted:** `git push origin --delete video/pr-42`. A job in\n  `.github/workflows/test.yml` runs it when the PR closes, merged or not. A branch in a contributor's fork\n  was never in this repo; the contributor deletes it when they like.\n\n**What \"never lands in main\" means for a clone**, from a real run in a scratch copy (a bare repo as\n`origin`, main holding this plan's text; this plan's video packed and pushed as above):\n\n| | `.git` of a fresh clone |\n|---|---|\n| main alone (`git clone --single-branch`) | 224 KB |\n| a full `git clone` while `video/pr-42` exists | 4.3 MB |\n| a full `git clone` after `git push origin --delete video/pr-42` | 224 KB |\n\nThe packed video is 67 files, 5.4 MB (the voice 13.7 MB as WAV, 3.5 MB as MP3), about 4 MB once git\ncompresses it. Main's history never holds it. A plain `git clone` takes every branch, so while a PR from\nthis repo is open a full clone downloads its video too, about 4 MB a video; once it is merged and the\nbranch deleted, nobody does. A PR from a fork never adds it to this repo's clones. GitHub may keep a\ndeleted branch's files on its own servers for a while, but no clone gets them.\n\n**Would it be easy?** Yes, and easier than the zip: every step is a command an agent runs, where the zip\nneeded a person to drag it into the PR's page, since GitHub has no command to attach a file there. The\ncontributor's agent runs five lines, the maintainer two, and the deletion runs by itself. What it costs:\n\n- the code: `reelplanning review` serving a packed folder as it is, and the delete job;\n- a second push per PR, and a forced push on each rebuild;\n- from a fork, the video's branch is in the fork, so the maintainer clones from the fork's URL: the line\n  in the PR's text has it;\n- once the branch is deleted, the built video is gone. Watching it again after the merge means building\n  it from its text on main (`reelplanning build`, with the voice engine), where a zip would have stayed\n  on the PR. That is the price of nothing in git.\n\nWhy not the others: a zip attached to the PR is a person's step on every video; a GitHub release asset\nneeds write access to the repo, which a contributor from a fork does not have, and releases are for\nversions. A CI workflow's artifact would need CI to voice the video, and Git LFS keeps the files for good\nunder the account's quota.\n\n**This repo's own videos:** the ones already committed stay as they are. They are in the history either\nway, and removing them from the tree would not make a clone any smaller. From the merge of this plan on, a\nnew plan's videos follow the rule (only their text is committed; the owner watches the built folder\nlocally, as today). The system video stays in the repo (Not in this plan)."
+      },
+      {
+        "n": 4,
+        "title": "Records that merge: decision numbers, generated files, the glossary",
+        "text": "*Stands alone. Decided: numbers in order, with a merge rule (D-171).*\n\nDecision numbers stay in order across the repo, and the PR merged second fixes the clash with one\ncommand. Example, the real run above: the cache PR merges first with its decision D-194; Sam's branch\nwrote a D-194 too. `git rebase origin/main` on Sam's branch stops at the conflict in `decisions.json`,\nthen:\n\n- **`reel renumber`** takes main's log as it is, adds the branch's own new entries after main's last\n  (Sam's D-194 becomes D-195), and rewrites their mentions in the branch's plan folder (`plan.md`,\n  `walkthrough.md`, `reviews/*.md`). It lists the video frames that say an old number; `reelplanning\n  build` rebuilds them. It writes `terms-index.json` again too (below).\n- `reel pr-check` (step 1) also fails when an id on the branch names a different entry on the base.\n- `docs/project-dir.md`'s first rule gains a line: an id is final once it is on main.\n\nThe other records:\n\n- **`terms-index.json`** is written by every build, from all the storyboards. **A conflict in it is never\n  merged by hand: take main's copy, then run `reelplanning terms-index`**, which writes it again from\n  every storyboard, both branches' words included. `reel renumber` does this.\n- **Plan folders** are named by date and name, and `reel new-plan` refuses one that exists, so two\n  branches clash only on the same date and name: pick another name.\n- **Reviews** live in their plan's folder: no clash.\n- **`glossary.md`, `spec.md`, `system.json`** are written by hand. A conflict keeps both rows; `reel\n  check` on the plan after.\n- **Memory** stays per person in each home folder (D-106). The repo's `you.pending.jsonl` holds one\n  reviewer's lines until they move into that reviewer's file; with several reviewers, a line moves only\n  into the file of the reviewer it names, and `.gitattributes` marks the file `merge=union` (both sides'\n  lines kept)."
+      },
+      {
+        "n": 5,
+        "title": "CI, the merge, and the system video",
+        "text": "*Needs step 1's and step 3's `reel pr-check`, step 2's `--tidy`, and step 4's number check.*\n\n\"maybe a merge requires full suite ... so we know it doesnt break\": yes. `.github/workflows/test.yml`\nruns two suites.\n\n- **The fast suite, on every push** (to a PR's branch, and to main): Node 20, `npm ci`, then `npm test`,\n  the 19 script specs and the 8 player specs of the fast run in Chromium (the player loading and playing,\n  its controls, a decision, a quick check, the band, the size, access, and answer-on-frame's quicker\n  run); then `reel pr-check --base origin/main` and `reel audit` on each plan folder the PR adds.\n- **The full suite, before every merge:** `npm run test:full`, all 19 script specs and 23 player specs,\n  answer-on-frame's full pass as 4 shards side by side: about 5 minutes on 4 CPUs. It runs on a PR once\n  a maintainer adds the `ready-to-merge` label (their review is done), and again on every push after it.\n  It is the check the owner marks required in the repo's settings, so a PR merges only when the full\n  suite passed on its last commit. Not on every push: 5 minutes of 4 CPUs on each push of a PR still being\n  written is waiting nobody needs.\n- **The full suite, on the release tag:** `publish.yml` runs `npm run test:full` before `npm publish`,\n  which today runs no tests.\n- **When a PR closes**, merged or not: a small job deletes its video's branch, `video/pr-<n>` (step 3).\n- **Before merging**, the maintainer checks, as `CONTRIBUTING.md` and the PR template list them: both\n  suites pass; a PR over the line has a video a maintainer has reviewed, or the `no-video` label; a\n  contributor's own plan was reviewed before the code; their own code check found nothing left (D-202);\n  `spec.md`, `system.json` and `glossary.md` say what changed. Then `reel pr-check --tidy` (step 2), and\n  \"Squash and merge\".\n\n**The system video, on main after the merge.** The system video is still brought up to date after every\naccepted walkthrough (D-003); with several PRs open, it is done on main. A PR carries only the changes to\nwhat the video is made from: `spec.md`, `system.json` and `glossary.md`. After a merge the maintainer runs\n`reelplanning spec-diff` on main, rebuilds the frames it names with `reelplanning build\n.reelplanning/system-video`, and commits once for every PR merged since. The video is behind only between\na merge and that commit, and `reel status` says so meanwhile. Why not in each PR: two PRs that touch one\nchapter conflict in its frames and voice files, which git cannot merge. Why not a CI job: it needs the\nvoice and a browser in CI, several minutes per merge, for a rebuild one person can batch."
+      }
+    ]
+  },
+  "slug": "2026-09-26-contributing",
+  "prerequisites": [
+    {
+      "video": "system",
+      "title": "reelplanning: the whole system",
+      "gives": "what the parts are and how a review goes",
+      "seconds": 472.7,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all"
+      ],
+      "found": true,
+      "default": true
+    }
+  ],
+  "terms": [
+    "pull request",
+    "contributor",
+    "maintainer",
+    "CI",
+    "CONTRIBUTING.md",
+    "pr-check",
+    "plan.md",
+    "terms index"
+  ],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns a plan into a video, via HyperFrames (plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "Turns a plan into a video, via HyperFrames.",
+      "files": [
+        "`plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanning build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "spec-diff",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanning spec-diff); it also names a row no scene explains yet",
+      "forms": [
+        "spec-diff"
+      ],
+      "said": "Which scenes of the system video a change to the system's description, its parts or this glossary reaches, so only those are rebuilt; it also names a row no scene explains yet.",
+      "files": [
+        "`spec.md`",
+        "`system.json`",
+        "`reelplanning spec-diff`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "This video catches up",
+        "start": 364.554,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "said": "Where you watch, answer on the frame, mark, and press Finish.",
+      "files": [
+        "`<reelplanning-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanning review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project record (scripts/reel.mjs, in .reelplanning/): reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project record: `reel record` logs a review's answers and files the review; `reel status` ends with memory.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanning/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into the plan (plan.md); changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "Acts on a plan review: approved, folds the comments into the plan; changes requested, rewrites the steps a comment touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Builds what the plan says (plan.md) and logs each call the plan did not cover, with tags (in walkthrough.md); its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "said": "Builds what the plan says and logs each call the plan did not cover, with tags; its diff is then checked by a second, fresh agent (the code check).",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo (from spec.md); rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video explaining the whole repo; rebuilt where the spec changes.",
+      "files": [
+        "from `spec.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "Finish: approve, or request changes",
+        "start": 171.351,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed.",
+      "files": [
+        "`.reelplanning/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Handed on once, and fenced",
+        "start": 192.491,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Only the changes come back",
+        "start": 232.961,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "What stops the walkthrough",
+        "start": 312.914,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanning/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 29,
+        "title": "What your reviews teach",
+        "start": 391.004,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "What stops the walkthrough",
+        "start": 312.914,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not.",
+      "definedIn": {
+        "video": "system",
+        "frame": 20,
+        "title": "Every choice, written down",
+        "start": 255.241,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "said": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "What stops the walkthrough",
+        "start": 312.914,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 20,
+        "title": "Every choice, written down",
+        "start": 255.241,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 29,
+        "title": "What your reviews teach",
+        "start": 391.004,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "One stop per step",
+        "start": 331.614,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "Finish: approve, or request changes",
+        "start": 171.351,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "said": "Every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Your answers go on record",
+        "start": 206.331,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each question",
+        "start": 27.291,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "This video catches up",
+        "start": 364.554,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens over the paused frame, grown out of the thing it explains, for what the video cannot hold (started from a template in templates/details/). The frame marks that thing (data-detail); on the review page it is a button with a tab, \"Open · <the page's title>\": click it, or press O",
+      "forms": [
+        "detail"
+      ],
+      "said": "A page a beat opens over the paused frame, grown out of the thing it explains, for what the video cannot hold. The frame marks that thing; on the review page it is a button with a tab, \"Open · <the page's title>\": click it, or press O.",
+      "files": [
+        "started from a template in `templates/details/`",
+        "`data-detail`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 139.256,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip",
+      "forms": [
+        "open chip"
+      ],
+      "said": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip.",
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 139.256,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here.",
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "What to watch first, and what words mean",
+        "start": 127.208,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words (from plan.md), one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 139.256,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The details check / check-details",
+      "meaning": "The check that every detail page works and that each frame marks only its own scene's detail (check-details), run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build (under details_check: strict, so does a scene whose thing is marked nowhere)",
+      "forms": [
+        "details check",
+        "check-details"
+      ],
+      "said": "The check that every detail page works and that each frame marks only its own scene's detail, run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build.",
+      "files": [
+        "`check-details`",
+        "under `details_check: strict`, so does a scene whose thing is marked nowhere"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 139.256,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The agent",
+      "meaning": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses (config.json names its command)",
+      "forms": [
+        "agent"
+      ],
+      "said": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses.",
+      "files": [
+        "`config.json` names its command"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan video",
+      "meaning": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised",
+      "forms": [
+        "plan video"
+      ],
+      "said": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The walkthrough video / walkthrough",
+      "meaning": "The video made after the code is built: what was built, step by step, and each choice the agent made alone (listed in walkthrough.md). You accept or flag each choice, then approve the build or ask for changes",
+      "forms": [
+        "walkthrough video",
+        "walkthrough"
+      ],
+      "said": "The video made after the code is built: what was built, step by step, and each choice the agent made alone. You accept or flag each choice, then approve the build or ask for changes.",
+      "files": [
+        "listed in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The code check",
+      "meaning": "A second, fresh agent that reads the built code against the plan and the decision log, from a short brief, and says where they differ; each finding is answered before the walkthrough video is made (code-check)",
+      "forms": [
+        "code check"
+      ],
+      "said": "A second, fresh agent that reads the built code against the plan and the decision log, from a short brief, and says where they differ; each finding is answered before the walkthrough video is made.",
+      "files": [
+        "`code-check`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A second agent checks",
+        "start": 284.131,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A brief",
+      "meaning": "A short written description an agent starts from. A video's brief (BRIEF.md) says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare",
+      "forms": [
+        "brief"
+      ],
+      "said": "A short written description an agent starts from. A video's brief says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare.",
+      "files": [
+        "`BRIEF.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A second agent checks",
+        "start": 284.131,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "The storyboard",
+      "meaning": "A video's plan, scene by scene (STORYBOARD.md): what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains",
+      "forms": [
+        "storyboard"
+      ],
+      "said": "A video's plan, scene by scene: what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains.",
+      "files": [
+        "`STORYBOARD.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "reel audit / audit",
+      "meaning": "The check on a walkthrough (reel audit): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked",
+      "forms": [
+        "reel audit",
+        "audit"
+      ],
+      "said": "The check on a walkthrough: it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked.",
+      "files": [
+        "`reel audit`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 21,
+        "title": "The fifth choice is asked, not made",
+        "start": 271.571,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A repo / repository",
+      "meaning": "A project's folder of code together with its whole history, kept with git (on GitHub, say)",
+      "forms": [
+        "repo",
+        "repository"
+      ],
+      "said": "A project's folder of code together with its whole history, kept with git (on GitHub, say).",
+      "other": true
+    },
+    {
+      "term": "A branch",
+      "meaning": "A line of work kept apart from the main code until it is merged",
+      "forms": [
+        "branch"
+      ],
+      "said": "A line of work kept apart from the main code until it is merged.",
+      "other": true
+    },
+    {
+      "term": "Merge",
+      "meaning": "To bring a branch's changes into the main code. A pull request is merged when it is accepted",
+      "forms": [
+        "merge"
+      ],
+      "said": "To bring a branch's changes into the main code. A pull request is merged when it is accepted.",
+      "other": true
+    },
+    {
+      "term": "A commit",
+      "meaning": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them",
+      "forms": [
+        "commit"
+      ],
+      "said": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them.",
+      "other": true
+    },
+    {
+      "term": "Clone",
+      "meaning": "To copy a repo, with its history, onto your own computer",
+      "forms": [
+        "clone"
+      ],
+      "said": "To copy a repo, with its history, onto your own computer.",
+      "other": true
+    },
+    {
+      "term": "A diff",
+      "meaning": "The lines a change adds and removes, shown together",
+      "forms": [
+        "diff"
+      ],
+      "said": "The lines a change adds and removes, shown together.",
+      "other": true
+    },
+    {
+      "term": "A pull request / PR",
+      "meaning": "A change someone asks to have merged into a repo; others read it and comment before it goes in",
+      "forms": [
+        "pull request",
+        "pr"
+      ],
+      "said": "A change someone asks to have merged into a repo; others read it and comment before it goes in.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 1,
+        "title": "One person per repo, then a shared one",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "One repo, several people"
+      }
+    },
+    {
+      "term": "Squash",
+      "meaning": "To merge a pull request's commits as one commit",
+      "forms": [
+        "squash"
+      ],
+      "said": "To merge a pull request's commits as one commit.",
+      "other": true
+    },
+    {
+      "term": "CI",
+      "meaning": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it",
+      "forms": [
+        "ci"
+      ],
+      "said": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 10,
+        "title": "Step 3: watching and checking, as decided",
+        "start": 145.322,
+        "chapter": 4,
+        "chapterTitle": "Step 3: watching, checking, and where the video lives"
+      }
+    },
+    {
+      "term": "A test suite",
+      "meaning": "All of a project's tests, run together to check that nothing broke",
+      "forms": [
+        "test suite"
+      ],
+      "said": "All of a project's tests, run together to check that nothing broke.",
+      "other": true
+    },
+    {
+      "term": "A spec",
+      "meaning": "Two meanings here: one file of tests (scripts/test/terms.spec.mjs), run with the others by npm test; or the system's own description of its parts, spec.md",
+      "forms": [
+        "spec"
+      ],
+      "said": "Two meanings here: one file of tests, run with the others by `npm test`; or the system's own description of its parts, `spec.md`.",
+      "files": [
+        "`scripts/test/terms.spec.mjs`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Lint / linter",
+      "meaning": "A check that reads code or files for mistakes without running them (frame-lint reads a video's scenes)",
+      "forms": [
+        "lint",
+        "linter"
+      ],
+      "said": "A check that reads code or files for mistakes without running them.",
+      "files": [
+        "`frame-lint` reads a video's scenes"
+      ],
+      "other": true
+    },
+    {
+      "term": "A flag",
+      "meaning": "In a command, an option written after its name (like --dry-run). On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept)",
+      "forms": [
+        "flag"
+      ],
+      "said": "In a command, an option written after its name. On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept).",
+      "files": [
+        "like `--dry-run`"
+      ],
+      "other": true
+    },
+    {
+      "term": "A prompt",
+      "meaning": "The words given to an agent to start it on a task",
+      "forms": [
+        "prompt"
+      ],
+      "said": "The words given to an agent to start it on a task.",
+      "other": true
+    },
+    {
+      "term": "A template",
+      "meaning": "A file to start from, filled in for each new use",
+      "forms": [
+        "template"
+      ],
+      "said": "A file to start from, filled in for each new use.",
+      "other": true
+    },
+    {
+      "term": "A dependency",
+      "meaning": "A package of someone else's code a project needs in order to run",
+      "forms": [
+        "dependency"
+      ],
+      "said": "A package of someone else's code a project needs in order to run.",
+      "other": true
+    },
+    {
+      "term": "A terminal",
+      "meaning": "The window where you type commands",
+      "forms": [
+        "terminal"
+      ],
+      "said": "The window where you type commands.",
+      "other": true
+    },
+    {
+      "term": "CLI",
+      "meaning": "A command-line tool: a program you run by typing its name and options in a terminal",
+      "forms": [
+        "cli"
+      ],
+      "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
+      "other": true
+    },
+    {
+      "term": "HTML",
+      "meaning": "The language web pages are written in; each scene of a video is an HTML page",
+      "forms": [
+        "html"
+      ],
+      "said": "The language web pages are written in; each scene of a video is an HTML page.",
+      "other": true
+    },
+    {
+      "term": "CSS",
+      "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
+      "forms": [
+        "css"
+      ],
+      "said": "The rules for how a web page looks: its colours, sizes and where things sit.",
+      "other": true
+    },
+    {
+      "term": "JSON",
+      "meaning": "A plain-text format for data a program reads (plan-map.json, say)",
+      "forms": [
+        "json"
+      ],
+      "said": "A plain-text format for data a program reads.",
+      "files": [
+        "`plan-map.json`, say"
+      ],
+      "other": true
+    },
+    {
+      "term": "TTS",
+      "meaning": "Text to speech: the voice made from a video's script",
+      "forms": [
+        "tts"
+      ],
+      "said": "Text to speech: the voice made from a video's script.",
+      "other": true
+    },
+    {
+      "term": "git",
+      "meaning": "The tool that keeps a repo's history: its commits and branches",
+      "forms": [
+        "git"
+      ],
+      "said": "The tool that keeps a repo's history: its commits and branches.",
+      "other": true
+    },
+    {
+      "term": "GitHub",
+      "meaning": "The website where many repos are kept and pull requests are reviewed",
+      "forms": [
+        "github"
+      ],
+      "said": "The website where many repos are kept and pull requests are reviewed.",
+      "other": true
+    },
+    {
+      "term": "npm",
+      "meaning": "The tool that installs a JavaScript project's packages and runs its scripts (npm test)",
+      "forms": [
+        "npm"
+      ],
+      "said": "The tool that installs a JavaScript project's packages and runs its scripts.",
+      "files": [
+        "`npm test`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "Claude Code's mode where the agent plans in chat and changes nothing until you approve",
+      "forms": [
+        "plan mode"
+      ],
+      "said": "Claude Code's mode where the agent plans in chat and changes nothing until you approve.",
+      "other": true
+    }
+  ],
+  "ids": {
+    "D-003": {
+      "kind": "decision",
+      "gloss": "When does the system video update? i want after every accept except i am…"
+    },
+    "D-171": {
+      "kind": "decision",
+      "gloss": "How do decision numbers survive two branches? In order, a merge rule"
+    },
+    "D-194": {
+      "kind": "decision",
+      "gloss": "What shows that a thing on the frame opens a page? A tab, the whole time"
+    },
+    "D-195": {
+      "kind": "decision",
+      "gloss": "Where does a detail open once you click the thing? Over the frame, from the…"
+    },
+    "D-200": {
+      "kind": "decision",
+      "gloss": "How much does a PR ask of its contributor? Asked; the maintainer can make it"
+    },
+    "D-201": {
+      "kind": "decision",
+      "gloss": "When the maintainer disagrees with an answer from the contributor's plan, what…"
+    },
+    "D-202": {
+      "kind": "decision",
+      "gloss": "How much does the maintainer check before trusting a contributor's video?…"
+    },
+    "D-210": {
+      "kind": "decision",
+      "gloss": "O is logged by the way the scene offers: `from: \"frame\"` where its thing is…"
+    },
+    "D-211": {
+      "kind": "decision",
+      "gloss": "Each own-words field grows with its words to a cap and then scrolls inside the…"
+    },
+    "D-213": {
+      "kind": "decision",
+      "gloss": "Where does a PR's built video live? Attached to the PR, as a zip"
+    },
+    "D-214": {
+      "kind": "decision",
+      "gloss": "When does a PR need a video? Choices or size only"
+    },
+    "D-215": {
+      "kind": "decision",
+      "gloss": "How does a PR's built video reach the maintainer? A throwaway branch"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "Omar's PR #58 is 25 lines and adds a flag, --quiet, to the reel CLI. He…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "Lee accepted all 4 choices in PR #61's walkthrough; the owner flagged one, and…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "PR #61's walkthrough says a missing file is skipped; the code stops with an…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "PRs #70 and #71 each recorded a decision D-210, and #70 has merged. What does…"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "PR #64 passes the fast suite, but a test only the full suite runs fails. Can…"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": true,
+    "at": "2026-09-27T06:43:24.357Z",
+    "added": 0,
+    "edited": 8,
+    "restyled": 1,
+    "retimed": 0,
+    "same": 11,
+    "removed": [
+      {
+        "index": 13,
+        "title": "If A: in the branch"
+      },
+      {
+        "index": 15,
+        "title": "If C: Git LFS"
+      }
+    ],
+    "changedFrames": [
+      2,
+      4,
+      5,
+      9,
+      10,
+      12,
+      13,
+      20
+    ],
+    "restyledFrames": [
+      11
+    ],
+    "changedSeconds": 123.27,
+    "totalSeconds": 288.384
+  },
+  "termMeanings": {
+    "contributing.md": "the file in a shared repo that tells a contributor how to work in it, here when a pull request needs a video",
+    "pr-check": "the check every pull request gets (`reel pr-check`): it says whether the pull request needs a video, from its changed lines, the contributor's ticked box and the needs-video label, and names any new flag, command or dependency it adds",
+    "plan.md": "the file a plan is written in: its problem, its steps and its questions for you",
+    "terms index": "the list of which video explains each word (`terms-index.json`), written again by every build"
+  },
+  "guide": {
+    "parts": [
+      {
+        "name": "step-1",
+        "title": "Step 1 · When a PR gets a video, and who makes it",
+        "planStep": 1,
+        "kind": "step",
+        "src": "guide/step-1.html"
+      },
+      {
+        "name": "step-2",
+        "title": "Step 2 · Who does what, and what lands on main",
+        "planStep": 2,
+        "kind": "step",
+        "src": "guide/step-2.html"
+      },
+      {
+        "name": "step-3",
+        "title": "Step 3 · Watching a contributor's video, checking it, and where it lives",
+        "planStep": 3,
+        "kind": "step",
+        "src": "guide/step-3.html"
+      },
+      {
+        "name": "step-4",
+        "title": "Step 4 · Records that merge: decision numbers, generated files, the glossary",
+        "planStep": 4,
+        "kind": "step",
+        "src": "guide/step-4.html"
+      },
+      {
+        "name": "step-5",
+        "title": "Step 5 · CI, the merge, and the system video",
+        "planStep": 5,
+        "kind": "step",
+        "src": "guide/step-5.html"
+      },
+      {
+        "name": "decisions",
+        "title": "Decisions in force",
+        "planStep": null,
+        "kind": "decisions",
+        "src": "guide/decisions.html"
+      },
+      {
+        "name": "what-changed",
+        "title": "What changed, in full",
+        "planStep": null,
+        "kind": "overview",
+        "src": "guide/what-changed.html"
+      },
+      {
+        "name": "pr-check",
+        "title": "The PR check",
+        "planStep": 1,
+        "kind": "category",
+        "src": "guide/pr-check.html"
+      },
+      {
+        "name": "who-decides",
+        "title": "Who decides",
+        "planStep": 2,
+        "kind": "category",
+        "src": "guide/who-decides.html"
+      },
+      {
+        "name": "watching",
+        "title": "Watching a contributor's video",
+        "planStep": 3,
+        "kind": "category",
+        "src": "guide/watching.html"
+      },
+      {
+        "name": "renumber",
+        "title": "Decision numbers",
+        "planStep": 4,
+        "kind": "category",
+        "src": "guide/renumber.html"
+      },
+      {
+        "name": "templates",
+        "title": "The templates",
+        "planStep": 1,
+        "kind": "category",
+        "src": "guide/templates.html"
+      },
+      {
+        "name": "ci",
+        "title": "CI",
+        "planStep": 5,
+        "kind": "category",
+        "src": "guide/ci.html"
+      },
+      {
+        "name": "skill",
+        "title": "The skill and the docs",
+        "planStep": null,
+        "kind": "category",
+        "src": "guide/skill.html"
+      },
+      {
+        "name": "tests",
+        "title": "Tests",
+        "planStep": null,
+        "kind": "category",
+        "src": "guide/tests.html"
+      },
+      {
+        "name": "choices",
+        "title": "Every choice the agent made",
+        "planStep": null,
+        "kind": "choices",
+        "src": "guide/choices.html"
+      }
+    ]
+  }
+}

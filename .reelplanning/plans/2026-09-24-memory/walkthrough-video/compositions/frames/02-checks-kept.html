@@ -1,0 +1,114 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f02-checks-kept-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f02-checks-kept-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f02-checks-kept-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-kicker b { color:var(--rp-coral); font-weight:500; }
+  .f02-checks-kept-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f02-checks-kept-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-checks-kept-chip.lbl { letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); background:transparent; }
+  .f02-checks-kept-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-num { position:absolute; font:400 150px/1 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-num.xl { font-size:230px; }
+  .f02-checks-kept-unit { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-checks-kept-mid { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-mid.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-checks-kept-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f02-checks-kept-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f02-checks-kept-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f02-checks-kept-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f02-checks-kept-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f02-checks-kept-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f02-checks-kept-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f02-checks-kept-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-slot .d { position:absolute; right:-46px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-checks-kept-slot.dim { opacity:0.55; }
+  .f02-checks-kept-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f02-checks-kept-card.chose { border:2px solid var(--rp-ink); }
+  .f02-checks-kept-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f02-checks-kept-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-checks-kept-card .l { display:block; margin-top:18px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f02-checks-kept-card .s { display:block; margin-top:22px; font:500 30px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f02-checks-kept-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-checks-kept-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f02-checks-kept-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f02-checks-kept-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f02-checks-kept-term { position:absolute; box-sizing:border-box; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f02-checks-kept-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f02-checks-kept-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f02-checks-kept-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f02-checks-kept-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f02-checks-kept-file { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f02-checks-kept-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f02-checks-kept-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-file .row.dim { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f02-checks-kept-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f02-checks-kept-tile.dim { opacity:0.5; }
+  .f02-checks-kept-tile .id { position:absolute; left:26px; top:28px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-tile .mono { position:absolute; left:26px; top:26px; font:500 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-tile .t { position:absolute; left:120px; top:25px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-checks-kept-tile .t.at0 { left:26px; }
+  .f02-checks-kept-tile .t2 { position:absolute; left:26px; font:500 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-checks-kept-tile .d { position:absolute; right:26px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f02-checks-kept-pill { position:absolute; box-sizing:border-box; height:70px; padding:0 26px; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.35); font:500 32px/66px "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f02-checks-kept-pill.ink { background:var(--rp-ink); color:var(--rp-paper); border-color:var(--rp-ink); }
+  .f02-checks-kept-sq { position:absolute; box-sizing:border-box; width:80px; height:80px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.55); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f02-checks-kept-sq.sm { width:40px; height:40px; border-radius:6px; }
+  .f02-checks-kept-hl { position:absolute; box-sizing:border-box; border-radius:10px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f02-checks-kept-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:3px solid var(--rp-ink); }
+  .f02-checks-kept-strike { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f02-checks-kept-note { position:absolute; right:80px; top:830px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="02-checks-kept" data-band="bottom" data-duration="17.9" data-width="1920" data-height="1080">
+
+  <div class="clip f02-checks-kept-bg" id="f02-checks-kept-bg" data-start="0" data-duration="17.9" data-track-index="0"></div>
+
+  <div class="clip f02-checks-kept-scene" id="f02-checks-kept-scene" data-start="0" data-duration="17.9" data-track-index="1">
+  <div class="f02-checks-kept-kicker" id="f02-checks-kept-kicker">Your plan-video checks · k3, k4</div>
+  <div class="f02-checks-kept-card instead" id="f02-checks-kept-k3" style="left:200px; top:170px; width:800px; height:370px"><span class="k">k3 · you expected</span><span class="l">Nothing reaches your file until --you</span><span class="s" id="f02-checks-kept-k3-s">Kept: a summary, on record</span></div>
+  <div class="f02-checks-kept-card instead" id="f02-checks-kept-k4" style="left:1040px; top:170px; width:800px; height:370px"><span class="k">k4 · you expected</span><span class="l">A step rewound twice is a miss</span><span class="s" id="f02-checks-kept-k4-s">Kept: a rewind, not a miss</span></div>
+  <div class="f02-checks-kept-term" id="f02-checks-kept-tm" style="left:200px; top:580px; width:1640px; height:220px"><div class="bar"></div><span class="cmd">two cheap changes</span><span class="ln" id="f02-checks-kept-tm-l0" style="top:92px">reel record  ✓ your memory: a summary of this review added to ~/.reelplanning/you.jsonl</span><span class="ln" id="f02-checks-kept-tm-l1" style="top:150px">reel status  [rewinds] … 1 rewound again after a revision: deep-dives step 4.</span></div>
+  <div class="f02-checks-kept-hl" id="f02-checks-kept-tmhl" style="left:200px; top:580px; width:1640px; height:220px"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "02-checks-kept";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f02-checks-kept-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  pop(tl, $("k3"), 3.32, 10);
+  pop(tl, $("k4"), 6.12, 10);
+  fade(tl, $("k3-s"), 8.28);
+  fade(tl, $("k4-s"), 8.58);
+  pop(tl, $("tm"), 9.94, 10);
+  lit(tl, $("tmhl"), 10.24);
+  fade(tl, $("tm-l0"), 11.33);
+  fade(tl, $("tm-l1"), 13.59);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 16.900);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

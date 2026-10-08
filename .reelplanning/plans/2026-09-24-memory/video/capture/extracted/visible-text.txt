@@ -1,0 +1,114 @@
+# Memory: learn which questions are the right ones, from what reviews already record
+
+## The problem
+
+Every plan starts from nothing. The records say a lot about what you care about, but no plan reads
+them. You took the recommended option on every question you answered from a list, and wrote your
+own words on 3 of 16: the options were too abstract (D-022), the question was framed wrong (D-023),
+or you accepted with a condition (D-003). You accepted 85 of 91 of the agent's calls. The steps you
+rewound are the ones you later flagged or questioned, and one was rewound again after its revision.
+Most of your own-words notes are questions. And some things got past a review and were changed
+later: a decision superseded (D-056 by D-063), a call accepted and reversed after review (the
+file tools, k3), a part reworked within days. Each of those is a question that should have been
+asked, or a call that should have stopped.
+
+The aim is the right questions, not fewer. The tool can also improve itself, which needs a
+yardstick outside its own numbers: it could "improve" by asking less and counting that as success.
+
+## What changes
+
+Four changes; the first three stand alone, the fourth uses them.
+
+1. **Every review says who and which skill** (step 1): the record needed to learn from it.
+2. **Memory, worked out on demand** (steps 2 and 3): for this repo and for you across repos, a few
+   lines up front with the evidence one command away, never a hand-kept file.
+3. **Misses decide what stops** (step 4): something changed later that a review let through makes
+   its kind of question or call stop next time.
+4. **A retro you start** (step 5): the tool suggests one; you decide.
+
+## Steps
+
+### Step 1 — Every review records its reviewer and the skill version
+
+*Independent.*
+
+Intake adds the reviewer (git's `user.email` where the review is recorded, or the page's viewer) and
+the reelplanning version that built the video to every review in `reviews/`. Old reviews are left as
+they are. Without the version, a change to the skill can't be told apart from a change in the plans;
+without the reviewer, one person's taste can't be told apart from what works.
+
+### Step 2 — The repo's memory: `reel status` says what reviews show
+
+*Needs step 1 (to tell reviewers apart; works without it for one reviewer).*
+
+`reel status` ends with at most five lines, worked out each time from the ledger and `reviews/`:
+how often a recommendation was taken; the questions answered in own words, and why; the steps
+rewound, and those rewound again after a revision; the quick checks answered wrong; the misses (step
+4). Each line has an id, and `reel memory <id>` prints its evidence: the reviews, the words, the
+times. The skill says to read it before writing a plan and when tagging calls. Nothing is stored
+that the reviews do not already hold.
+
+### Step 3 — Your memory, across repos
+
+*Needs step 1.*
+
+When a review is recorded, a short summary of it (verdict, own-words answers and their reasons,
+rewinds, wrong quick checks, the kinds of call flagged) is appended to a file of your own, outside
+any repo (question 1). `reel memory --you` works out the same few lines across every repo you have
+reviewed in: your taste, not this repo's facts. The skill reads both.
+
+### Step 4 — Misses decide what stops
+
+*Needs step 2.*
+
+A miss is something a later plan, fix or system-video review changed that an earlier review let
+through: a decision superseded, an accepted call later flagged or reversed, a part reworked soon
+after. `reel memory` traces each to the question or call that passed it, and its kind (a call's
+tags, a question's topic). A call of that kind stops the walkthrough again, whatever its streak of
+accepts (D-084's rule gains this one exception), and the next plan that touches that part asks that
+kind of question.
+
+### Step 5 — A retro you start, checked against a fixed benchmark
+
+*Needs steps 2–4.*
+
+`reel status` suggests a retro when one is due (question 2). `reel retro` starts a plan: skill edits
+the evidence supports, each citing it, and it must cut at least as many words as it adds. It is
+reviewed like any plan. Before it is accepted, the benchmark (the Bob Dylan example, redone from the
+same prompt, next to its text and HTML baselines) is run with the old and the new skill and
+compared, so the retro is judged by something outside the loop's own numbers.
+
+## Components touched
+
+- **The reel CLI** — `status`, `memory`, `retro`; intake records reviewer and version (steps 1–5)
+- **The plan-to-video skill** — reads memory before planning and tagging (steps 2–4)
+
+## Open questions for the reviewer
+
+1. **Where does your memory across repos live?** (step 3)
+- **A · A file in your home folder.** `~/.reelplanning/you.jsonl`, one line per review; any agent
+  reads it through `reel memory --you`. Stays on this machine.
+- **B · Claude's own memory.** Claude Code's user memory holds it; nothing new to keep, but only
+  Claude reads it.
+- **C · Not yet.** The repo's memory first; yours waits for a later plan.
+I recommend A: it works under any agent, and it is the same kind of record the repo keeps.
+
+2. **When does the tool suggest a retro?** (step 5)
+- **A · Every five plans, or when a signal repeats three times.** Whichever comes first.
+- **B · Only when a signal repeats three times.** No schedule; evidence only.
+- **C · Never; you ask for one.** `reel retro` exists, nothing suggests it.
+I recommend A: a schedule catches slow drift that no single signal shows, and you still decide.
+
+## Decisions in force
+
+- **D-084** Tags and your record decide what stops; step 4 adds misses to it.
+- **D-085** Less scaffolding: memory is worked out from records, not kept by hand.
+- **D-083** Quick checks, and a wrong answer is a comment: one of memory's signals.
+- **D-082** A run nobody is watching runs in auto mode, in the sandbox. Unchanged; memory is read by
+  whoever writes the plan, a session or such a run.
+- **D-024** Detail pages start from a template. Unchanged.
+
+## Not in this plan
+
+Sharing memory between people, or across machines. Learning the style of frames (colours, pace).
+Anything that changes a plan without a review.

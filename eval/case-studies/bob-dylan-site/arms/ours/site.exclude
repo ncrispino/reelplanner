@@ -1,0 +1,26 @@
+# reel case-study: the built videos' media stay out of the site's history (D-305; `reel case-study keep` refuses a history holding them)
+.reelplanning/plans/*/*video/assets/
+.reelplanning/plans/*/*video/capture/
+.reelplanning/plans/*/*video/audio_meta.json
+.reelplanning/plans/*/*video/audio_engine_meta.json
+.reelplanning/explainers/*/video/assets/
+.reelplanning/explainers/*/video/capture/
+.reelplanning/explainers/*/video/audio_meta.json
+.reelplanning/explainers/*/video/audio_engine_meta.json
+.reelplanning/plans/*/*video/guide/
+.reelplanning/explainers/*/video/guide/
+.reelplanning/plans/*/guide/index.html
+.reelplanning/plans/*/guide/parts.json
+.reelplanning/plans/*/guide/.cache/
+.reelplanning/system-video/assets/
+.reelplanning/system-video/capture/
+.reelplanning/**/renders/
+.reelplanning/**/*.wav
+.reelplanning/**/*.mp3
+.reelplanning/**/*.m4a
+.reelplanning/**/*.mp4
+.reelplanning/**/*.webm
+.reelplanning/**/*.mov
+# keys (narration's OPENROUTER_API_KEY …) stay out of the history: the site is published
+.env
+**/.env

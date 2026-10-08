@@ -1,0 +1,88 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d09-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d09-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d09-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d09-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d09-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d09-ring.hot { border-color:var(--rp-coral); }
+  .d09-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d09-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d09-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d09-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d09-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d09-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d09-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d09-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d09-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d09-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d09-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d09-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d09-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d09-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d09-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d09-case { position:absolute; }
+
+</style>
+
+<div id="root" data-composition-id="09-step-3-over-the-frame" data-band="bottom" data-duration="22.933" data-width="1920" data-height="1080">
+
+  <div class="clip d09-bg" id="d09-bg" data-start="0" data-duration="22.933" data-track-index="0"></div>
+
+  <div class="clip d09-scene" id="d09-scene" data-start="0" data-duration="22.933" data-track-index="1">
+    <div class="d09-lab" id="d09-h" style="left:90px; top:60px">the review page · step 3</div>
+    <div class="d09-shotbox" id="d09-left" data-artifact="the review page at this build: the page growing out of the block" style="left:90px; top:150px; width:850px; height:478px"><img src="assets/shots/grow.jpg" alt=""></div>
+    <div class="d09-shotbox" id="d09-right" data-artifact="the review page at this build: the page over the frame" style="left:980px; top:150px; width:850px; height:478px"><img src="assets/shots/page-over.jpg" alt=""></div>
+    <div class="d09-tag" id="d09-dec" style="left:1600px; top:96px">decision D-195</div>
+    <div class="d09-tag" id="d09-gt" style="left:90px; top:648px">growing out of the block</div>
+    <div class="d09-tag" id="d09-ink" style="left:980px; top:648px">over the frame · the thing: an ink ring</div>
+    <div class="d09-chip" id="d09-e0" style="left:90px; top:730px"><code>Esc</code> or × closes</div>
+    <div class="d09-chip" id="d09-e1" style="left:470px; top:730px">plays on if playing</div>
+    <div class="d09-chip" id="d09-e2" style="left:840px; top:730px">focus → the thing</div>
+    <div class="d09-tag" id="d09-from" style="left:1180px; top:734px"><span id="d09-ft"></span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-step-3-over-the-frame";
+  var d09_ft_d = { t: 0 }, d09_ft_s = "from: \"frame\" | \"chip\" | \"list\"";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d09-h", {"opacity": 0});
+  gsap.set("#d09-left", {"opacity": 0});
+  gsap.set("#d09-gt", {"opacity": 0});
+  gsap.set("#d09-right", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#d09-dec", {"opacity": 0});
+  gsap.set("#d09-ink", {"opacity": 0});
+  gsap.set("#d09-e0", {"opacity": 0, "y": 8});
+  gsap.set("#d09-e1", {"opacity": 0, "y": 8});
+  gsap.set("#d09-e2", {"opacity": 0, "y": 8});
+  gsap.set("#d09-from", {"opacity": 0});
+  tl.to("#d09-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d09-left", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 4.42);
+  tl.to("#d09-right", { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "power2.inOut" }, 4.7);
+  tl.to("#d09-gt", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 4.72);
+  tl.to("#d09-dec", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 7.42);
+  tl.to("#d09-ink", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 10.5);
+  tl.to("#d09-e0", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 11.56);
+  tl.to("#d09-e1", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 13.6);
+  tl.to("#d09-e2", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 16.66);
+  tl.to("#d09-from", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 18.560000000000002);
+  tl.to(d09_ft_d, { t: 1, duration: 1.0, ease: "none", onUpdate: function () { document.getElementById("d09-ft").textContent = d09_ft_s.slice(0, Math.round(d09_ft_d.t * d09_ft_s.length)); } }, 18.76);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

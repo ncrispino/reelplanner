@@ -1,0 +1,107 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f09-opener-2-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f09-opener-2-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f09-opener-2-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-kicker b { color:var(--rp-coral); font-weight:500; }
+  .f09-opener-2-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f09-opener-2-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f09-opener-2-chip.lbl { letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); background:transparent; }
+  .f09-opener-2-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-num { position:absolute; font:400 150px/1 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-num.xl { font-size:230px; }
+  .f09-opener-2-unit { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-opener-2-mid { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-mid.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f09-opener-2-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f09-opener-2-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f09-opener-2-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f09-opener-2-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f09-opener-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f09-opener-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f09-opener-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-opener-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-slot .d { position:absolute; right:-46px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f09-opener-2-slot.dim { opacity:0.55; }
+  .f09-opener-2-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f09-opener-2-card.chose { border:2px solid var(--rp-ink); }
+  .f09-opener-2-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f09-opener-2-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f09-opener-2-card .l { display:block; margin-top:18px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f09-opener-2-card .s { display:block; margin-top:22px; font:500 30px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f09-opener-2-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f09-opener-2-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f09-opener-2-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f09-opener-2-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f09-opener-2-term { position:absolute; box-sizing:border-box; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f09-opener-2-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f09-opener-2-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f09-opener-2-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f09-opener-2-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f09-opener-2-file { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f09-opener-2-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f09-opener-2-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-file .row.dim { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f09-opener-2-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f09-opener-2-tile.dim { opacity:0.5; }
+  .f09-opener-2-tile .id { position:absolute; left:26px; top:28px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-tile .mono { position:absolute; left:26px; top:26px; font:500 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-tile .t { position:absolute; left:120px; top:25px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-opener-2-tile .t.at0 { left:26px; }
+  .f09-opener-2-tile .t2 { position:absolute; left:26px; font:500 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-opener-2-tile .d { position:absolute; right:26px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-opener-2-pill { position:absolute; box-sizing:border-box; height:70px; padding:0 26px; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.35); font:500 32px/66px "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f09-opener-2-pill.ink { background:var(--rp-ink); color:var(--rp-paper); border-color:var(--rp-ink); }
+  .f09-opener-2-sq { position:absolute; box-sizing:border-box; width:80px; height:80px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.55); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f09-opener-2-sq.sm { width:40px; height:40px; border-radius:6px; }
+  .f09-opener-2-hl { position:absolute; box-sizing:border-box; border-radius:10px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f09-opener-2-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:3px solid var(--rp-ink); }
+  .f09-opener-2-strike { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f09-opener-2-note { position:absolute; right:80px; top:830px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="09-opener-2" data-band="bottom" data-duration="4.5" data-width="1920" data-height="1080">
+
+  <div class="clip f09-opener-2-bg" id="f09-opener-2-bg" data-start="0" data-duration="4.5" data-track-index="0"></div>
+
+  <div class="clip f09-opener-2-scene" id="f09-opener-2-scene" data-start="0" data-duration="4.5" data-track-index="1">
+  <div class="f09-opener-2-kicker" id="f09-opener-2-kicker">Part 2 of 5</div>
+  <div class="f09-opener-2-rail" id="f09-opener-2-rail"><div class="f09-opener-2-slot" id="f09-opener-2-slot-1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Who, and which skill</span></div><div class="f09-opener-2-slot" id="f09-opener-2-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">The repo's memory</span></div><div class="f09-opener-2-slot dim" id="f09-opener-2-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Your memory, across repos</span></div><div class="f09-opener-2-slot dim" id="f09-opener-2-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Misses decide what stops</span></div><div class="f09-opener-2-slot dim" id="f09-opener-2-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">A retro you start</span></div></div>
+  <div class="f09-opener-2-hero" id="f09-opener-2-hero" style="left:700px; top:320px">The repo's memory</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-opener-2";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f09-opener-2-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  pop(tl, $("rail"), 0.20, 10);
+  lit(tl, $("slot-2"), 0.60);
+  pop(tl, $("hero"), 0.90, 12);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 3.500);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

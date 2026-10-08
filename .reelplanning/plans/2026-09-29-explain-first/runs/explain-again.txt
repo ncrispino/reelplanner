@@ -1,0 +1,7 @@
+$ reelplanning explain "what did the experiment show?" ~/runs/results.csv --date 2026-09-29 --slug experiment   (asked again the same day)
+✓ .reelplanning/explainers/2026-09-29-experiment-2/ · 1 source (table 1) · none needs a guide part · pinned at 9fe2b88
+  `~/runs/results.csv` · table · 3 lines (outside the repo: its path and hash only, never its text)
+next: fill explain.md's "What it will cover", "What it leaves out" and "Open threads" from the sources, write video/STORYBOARD.md and
+SCRIPT.md (each scene that says a fact names its `- source:`), then `reelplanning build .reelplanning/explainers/2026-09-29-experiment-2/video`: it checks
+every quoted line against its source (check-sources), and fresh eyes look at it.
+exit 0

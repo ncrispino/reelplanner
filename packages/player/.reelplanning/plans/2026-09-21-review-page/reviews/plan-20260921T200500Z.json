@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "src": "videos/r1-review-page/index.html",
+  "project": "r1-review-page",
+  "exportedAt": "2026-09-21T20:05:00.000Z",
+  "knowledgeLevel": "owner",
+  "decisions": [
+    {
+      "id": "q1",
+      "option": "own",
+      "label": "Overlay the lower third, but the question collapses and reopens",
+      "own": true,
+      "recommended": false,
+      "planStep": 2,
+      "t": 80,
+      "decidedAt": "2026-09-21T20:05:00.000Z"
+    },
+    {
+      "id": "q2",
+      "option": "a",
+      "label": "Under the video",
+      "recommended": true,
+      "planStep": 4,
+      "t": 144,
+      "decidedAt": "2026-09-21T20:05:00.000Z"
+    },
+    {
+      "id": "q3",
+      "option": "a",
+      "label": "One sheet you pull up",
+      "recommended": true,
+      "planStep": 6,
+      "t": 200,
+      "decidedAt": "2026-09-21T20:05:00.000Z"
+    }
+  ],
+  "quizzes": [],
+  "autonomy": [],
+  "annotations": [
+    {
+      "id": "own-q1",
+      "kind": "note",
+      "t": 80,
+      "comment": "We can do an overlay but easily collapse the question and then re open. Concerned whole stage shrinking bc then might be too small to view",
+      "plan": {
+        "step": 2
+      },
+      "about": "Answered in their own words: When a decision is asked, what happens to the video?"
+    }
+  ]
+}

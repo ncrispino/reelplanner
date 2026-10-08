@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+<!-- The video's colour system, as tokens, so one attribute on <html> recolours the whole thing.
+
+     Dark mode is not an inversion. Each token keeps its MEANING across themes, and where a naive
+     flip would destroy the meaning, the value is chosen to preserve it instead:
+
+     · --rp-data is the one tile that differs from every other tile — the diagram's landmark, "where
+       state lives". In light it is the dark tile on cream. Inverting it would make it the same shade
+       as the dark ground and the landmark would vanish, so in dark it becomes the one LIGHT tile.
+       The eye still finds the store first, which is the whole reason the tile exists.
+     · --rp-slab is a photograph or a code window. Those are dark because that is what they are, not
+       because the page is light, so they do not move at all.
+     · --rp-shadow-rgb stays black in both. A shadow flipped light is a glow, and the anti-slop
+       checklist bans glows.
+     · --rp-coral is the one accent, a darker coral (D-142): #B8552E clears 3:1 on the paper (4.6) and
+       on both tiles (4.0, 3.8), where the old #CC785C (3.1 on paper, 2.7 on a tile) did not. Its dark
+       partner keeps the hue and lightens to #D2693F, which clears 3:1 on the dark paper (5.2) and tiles
+       (4.5, 4.0). One hue in both themes: an accent that changes hue with the lights is not an identity.
+     · --rp-coral-deep is the same role in both — small coral TEXT that must clear 4.5:1 on its own
+       ground — which means a different value: #9C4524 on cream (5.0 on the darker tile), #E3A184 on
+       charcoal.
+     · --rp-syn-* colour code on the slab (keywords, strings, numbers, comments, added and removed
+       lines). The slab is dark in both themes, so they do not move either; each clears 4.5:1 on it.
+
+     The legacy --cap-* / --ink / --navy names that the captions layer emits are redefined here in
+     terms of these tokens, so captions follow the theme without that generated file being edited. -->
+<style id="rp-theme">
+  :root {
+    --rp-paper:#FAF9F5; --rp-tile:#EFE9DE; --rp-tile-2:#ECE3D4;
+    --rp-ink:#141413; --rp-on-ink:#FAF9F5; --rp-data:#181715;
+    --rp-coral:#B8552E; --rp-coral-deep:#9C4524;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:20,20,19; --rp-on-ink-rgb:250,249,245; --rp-tile-rgb:239,233,222;
+    --rp-coral-rgb:184,85,46; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:20,20,19;
+    --rp-syn-key:#E3A184; --rp-syn-str:#5DB8A6; --rp-syn-num:#E8A55A; --rp-syn-com:#9C978C;
+    --rp-syn-add:#6CC486; --rp-syn-del:#E27D7D; --rp-syn-add-rgb:93,184,114; --rp-syn-del-rgb:198,69,69;
+  }
+  :root[data-theme="dark"] {
+    --rp-paper:#141310; --rp-tile:#232120; --rp-tile-2:#2C2925;
+    --rp-ink:#F2EFE8; --rp-on-ink:#141413; --rp-data:#EFE9DE;
+    --rp-coral:#D2693F; --rp-coral-deep:#E3A184;
+    --rp-slab:#181715; --rp-slab-bar:#252320; --rp-slab-ink:#FAF9F5;
+    --rp-ink-rgb:242,239,232; --rp-on-ink-rgb:20,20,19; --rp-tile-rgb:35,33,32;
+    --rp-coral-rgb:210,105,63; --rp-slab-ink-rgb:250,249,245; --rp-shadow-rgb:0,0,0;
+    --rp-syn-key:#E3A184; --rp-syn-str:#5DB8A6; --rp-syn-num:#E8A55A; --rp-syn-com:#9C978C;
+    --rp-syn-add:#6CC486; --rp-syn-del:#E27D7D; --rp-syn-add-rgb:93,184,114; --rp-syn-del-rgb:198,69,69;
+  }
+  /* The generated captions layer speaks in these names, and its own stylesheet is parsed later in
+     the document, so a plain :root here would lose the cascade to it. :root:root outranks it on
+     specificity instead, which is what !important would buy without the shouting. */
+  :root:root {
+    --ink:var(--rp-ink); --cream:var(--rp-paper); --tile:var(--rp-tile); --tile-strong:var(--rp-tile-2);
+    --coral:var(--rp-coral); --navy:var(--rp-data); --navy-soft:var(--rp-slab); --navy-elev:var(--rp-slab-bar);
+    --cap-ink:var(--rp-ink); --cap-canvas:var(--rp-paper); --cap-accent:var(--rp-coral); --cap-accent-2:var(--rp-tile-2);
+  }
+  html, body { background:var(--rp-paper); }
+</style>
+<script>
+  // Frame timelines are built once, at load, and GSAP cannot interpolate through a var(). So the
+  // tween colours read the live token values here instead; switching theme rebuilds the composition.
+  window.__RP = new Proxy({}, { get: (_, k) =>
+    getComputedStyle(document.documentElement).getPropertyValue("--rp-" + String(k)).trim() });
+</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--rp-paper);
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--rp-paper);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="231.057"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="el-01-accept-accept-accept"
+        class="scene"
+        data-composition-id="01-accept-accept-accept"
+        data-composition-src="compositions/frames/01-accept-accept-accept.html"
+        data-start="0"
+        data-duration="12.319"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-01-accept-accept-accept-voice"
+        src="assets/voice/01.wav"
+        data-start="0"
+        data-duration="11.819"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-02b-after-your-review"
+        class="scene"
+        data-composition-id="02b-after-your-review"
+        data-composition-src="compositions/frames/02b-after-your-review.html"
+        data-start="11.819"
+        data-duration="13.129"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-02b-after-your-review-voice"
+        src="assets/voice/02.wav"
+        data-start="11.819"
+        data-duration="12.629"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-05-what-changes"
+        class="scene"
+        data-composition-id="05-what-changes"
+        data-composition-src="compositions/frames/05-what-changes.html"
+        data-start="24.448"
+        data-duration="13.471"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-05-what-changes-voice"
+        src="assets/voice/03.wav"
+        data-start="24.448"
+        data-duration="12.971"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-06-earlier-plans"
+        class="scene"
+        data-composition-id="06-earlier-plans"
+        data-composition-src="compositions/frames/06-earlier-plans.html"
+        data-start="37.419"
+        data-duration="12.011"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-06-earlier-plans-voice"
+        src="assets/voice/04.wav"
+        data-start="37.419"
+        data-duration="12.011"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-07-step-1-the-change-running"
+        class="scene"
+        data-composition-id="07-step-1-the-change-running"
+        data-composition-src="compositions/frames/07-step-1-the-change-running.html"
+        data-start="49.42999999999999"
+        data-duration="17.524"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-07-step-1-the-change-running-voice"
+        src="assets/voice/05.wav"
+        data-start="49.42999999999999"
+        data-duration="17.024"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-13-step-2-only-what-youd-notice"
+        class="scene"
+        data-composition-id="13-step-2-only-what-youd-notice"
+        data-composition-src="compositions/frames/13-step-2-only-what-youd-notice.html"
+        data-start="66.454"
+        data-duration="22.687"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-13-step-2-only-what-youd-notice-voice"
+        src="assets/voice/06.wav"
+        data-start="66.454"
+        data-duration="22.187"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-22-step-3-one-question"
+        class="scene"
+        data-composition-id="22-step-3-one-question"
+        data-composition-src="compositions/frames/22-step-3-one-question.html"
+        data-start="88.64099999999999"
+        data-duration="16.64"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-22-step-3-one-question-voice"
+        src="assets/voice/07.wav"
+        data-start="88.64099999999999"
+        data-duration="16.64"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-23-qc-which-pause"
+        class="scene"
+        data-composition-id="23-qc-which-pause"
+        data-composition-src="compositions/frames/23-qc-which-pause.html"
+        data-start="105.28099999999999"
+        data-duration="9.6"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-23-qc-which-pause-voice"
+        src="assets/voice/08.wav"
+        data-start="105.28099999999999"
+        data-duration="9.6"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-28-step-4-pull-requests"
+        class="scene"
+        data-composition-id="28-step-4-pull-requests"
+        data-composition-src="compositions/frames/28-step-4-pull-requests.html"
+        data-start="114.88099999999999"
+        data-duration="14.059"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-28-step-4-pull-requests-voice"
+        src="assets/voice/09.wav"
+        data-start="114.88099999999999"
+        data-duration="14.059"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-29-qc-nothing-to-predict"
+        class="scene"
+        data-composition-id="29-qc-nothing-to-predict"
+        data-composition-src="compositions/frames/29-qc-nothing-to-predict.html"
+        data-start="128.94"
+        data-duration="9.524"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-29-qc-nothing-to-predict-voice"
+        src="assets/voice/10.wav"
+        data-start="128.94"
+        data-duration="9.024"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-29b-step-5-plan-and-built"
+        class="scene"
+        data-composition-id="29b-step-5-plan-and-built"
+        data-composition-src="compositions/frames/29b-step-5-plan-and-built.html"
+        data-start="137.964"
+        data-duration="12.885"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-29b-step-5-plan-and-built-voice"
+        src="assets/voice/11.wav"
+        data-start="137.964"
+        data-duration="12.885"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-31-qc-forty-lines"
+        class="scene"
+        data-composition-id="31-qc-forty-lines"
+        data-composition-src="compositions/frames/31-qc-forty-lines.html"
+        data-start="150.849"
+        data-duration="5.248"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-31-qc-forty-lines-voice"
+        src="assets/voice/12.wav"
+        data-start="150.849"
+        data-duration="5.248"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-30-step-5-did-it-work"
+        class="scene"
+        data-composition-id="30-step-5-did-it-work"
+        data-composition-src="compositions/frames/30-step-5-did-it-work.html"
+        data-start="156.09699999999998"
+        data-duration="23.531"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-30-step-5-did-it-work-voice"
+        src="assets/voice/13.wav"
+        data-start="156.09699999999998"
+        data-duration="23.531"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-33b-qc-see-it-built"
+        class="scene"
+        data-composition-id="33b-qc-see-it-built"
+        data-composition-src="compositions/frames/33b-qc-see-it-built.html"
+        data-start="179.628"
+        data-duration="6.623"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-33b-qc-see-it-built-voice"
+        src="assets/voice/14.wav"
+        data-start="179.628"
+        data-duration="6.123"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-32-step-6-the-system-video"
+        class="scene"
+        data-composition-id="32-step-6-the-system-video"
+        data-composition-src="compositions/frames/32-step-6-the-system-video.html"
+        data-start="185.75099999999998"
+        data-duration="15.317"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-32-step-6-the-system-video-voice"
+        src="assets/voice/15.wav"
+        data-start="185.75099999999998"
+        data-duration="15.317"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-33-qc-when-nothing-changes"
+        class="scene"
+        data-composition-id="33-qc-when-nothing-changes"
+        data-composition-src="compositions/frames/33-qc-when-nothing-changes.html"
+        data-start="201.06799999999998"
+        data-duration="8.213"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-33-qc-when-nothing-changes-voice"
+        src="assets/voice/16.wav"
+        data-start="201.06799999999998"
+        data-duration="8.213"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-34-qc-a-scene-added"
+        class="scene"
+        data-composition-id="34-qc-a-scene-added"
+        data-composition-src="compositions/frames/34-qc-a-scene-added.html"
+        data-start="209.28099999999998"
+        data-duration="7.561"
+        data-track-index="0"
+      ></div>
+      <audio
+        id="el-34-qc-a-scene-added-voice"
+        src="assets/voice/17.wav"
+        data-start="209.28099999999998"
+        data-duration="7.061"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <div
+        id="el-35-the-plan"
+        class="scene"
+        data-composition-id="35-the-plan"
+        data-composition-src="compositions/frames/35-the-plan.html"
+        data-start="216.34199999999998"
+        data-duration="14.715"
+        data-track-index="1"
+      ></div>
+      <audio
+        id="el-35-the-plan-voice"
+        src="assets/voice/18.wav"
+        data-start="216.34199999999998"
+        data-duration="14.315"
+        data-track-index="10"
+        data-volume="1"
+      ></audio>
+
+      <!-- captions -->
+      <div
+        id="el-captions"
+        class="scene"
+        data-composition-id="captions"
+        data-composition-src="compositions/captions.html"
+        data-start="0"
+        data-duration="231.057"
+        data-track-index="2"
+      ></div>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-accept-accept-accept", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 11.819);
+        tl.fromTo("#el-02b-after-your-review", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 11.819);
+        tl.to("#el-02b-after-your-review", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 24.448);
+        tl.fromTo("#el-05-what-changes", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 24.448);
+        tl.to("#el-05-what-changes", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 37.419);
+        tl.fromTo("#el-06-earlier-plans", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 37.419);
+        tl.to("#el-07-step-1-the-change-running", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 66.454);
+        tl.fromTo("#el-13-step-2-only-what-youd-notice", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 66.454);
+        tl.to("#el-13-step-2-only-what-youd-notice", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 88.641);
+        tl.fromTo("#el-22-step-3-one-question", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 88.641);
+        tl.to("#el-29-qc-nothing-to-predict", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 137.964);
+        tl.fromTo("#el-29b-step-5-plan-and-built", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 137.964);
+        tl.to("#el-33b-qc-see-it-built", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 185.751);
+        tl.fromTo("#el-32-step-6-the-system-video", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 185.751);
+        tl.to("#el-34-qc-a-scene-added", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 216.342);
+        tl.fromTo("#el-35-the-plan", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 216.342);
+        tl.to({}, { duration: 231.057 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
+    </script>
+  </body>
+</html>

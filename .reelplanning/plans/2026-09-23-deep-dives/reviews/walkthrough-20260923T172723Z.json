@@ -1,0 +1,222 @@
+{
+  "annotations": [
+    {
+      "about": "On what the agent decided: The plan beside the video reads plan.md, never plan.resolved.md",
+      "comment": "Ok but I'd plan resolved more updated?",
+      "frame": {
+        "compositionId": "31-call-a8",
+        "index": 31,
+        "title": "Call A8: the plan as written, not resolved"
+      },
+      "id": "amuedjez73q0v",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 5
+      },
+      "t": 280.05
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The Open chip's key is O; while a question sheet is up, O keeps meaning \"answer in my own words\", so the chip waits behind it",
+      "id": "a1",
+      "judgedAt": "2026-09-23T17:19:54.236Z",
+      "planStep": 1,
+      "t": 31.61,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Close plays again only if the video was playing when the detail opened and the playhead is still where it was; no seek back",
+      "id": "a4",
+      "judgedAt": "2026-09-23T17:20:28.200Z",
+      "planStep": 1,
+      "t": 62.26,
+      "verdict": "accept"
+    },
+    {
+      "chose": "While the panel is open the video's keys are off (no play, draw or answer); O and Esc close it",
+      "id": "a5",
+      "judgedAt": "2026-09-23T17:20:51.702Z",
+      "planStep": 1,
+      "t": 82.89,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A seventh template, fresh.html: the base styles, theme and bridge with an empty body, for kind fresh",
+      "id": "a10",
+      "judgedAt": "2026-09-23T17:21:17.901Z",
+      "planStep": 2,
+      "t": 106.4,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Data pages are filled by one JSON block (rp-data); a prototype by two slots, markup and behaviour; explore by one optional script",
+      "id": "a11",
+      "judgedAt": "2026-09-23T17:21:57.799Z",
+      "planStep": 2,
+      "t": 119.3,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Each template's sample is the uploads plan (risks, the 8/16/32 MB staging runs, parts.ts line 14, before/after drop, manifest explorer, a step's text), marked \"Sample content\"",
+      "id": "a12",
+      "judgedAt": "2026-09-23T17:22:11.413Z",
+      "planStep": 2,
+      "t": 129.4,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A detail comment is kind: \"note\" with detail: { name, anchor, text }; Enter or Esc keeps the words, the × discards them; a click on another anchor keeps what was typed on the first",
+      "id": "a6",
+      "judgedAt": "2026-09-23T17:22:46.444Z",
+      "planStep": 3,
+      "t": 171.88,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A click on a control (button, a, input, select, textarea, label, summary, [data-no-anchor]) inside an anchored element does not post an anchor; the anchor element itself does",
+      "id": "a9",
+      "judgedAt": "2026-09-23T17:22:53.890Z",
+      "planStep": 3,
+      "t": 179.34,
+      "verdict": "accept"
+    },
+    {
+      "chose": "plan-text renders a Markdown link as its text plus the address in grey, never an <a href>",
+      "id": "a15",
+      "judgedAt": "2026-09-23T17:23:36.853Z",
+      "planStep": 3,
+      "t": 188.25,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Accept / Flag in the panel are one-shot like the sheet's: once a verdict is on the record the buttons show it and are disabled; if that call's sheet is waiting, the panel's verdict answers it too",
+      "id": "a7",
+      "judgedAt": "2026-09-23T17:24:14.528Z",
+      "planStep": 4,
+      "t": 225.23,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The plan text goes beside the stage (a 340 px column) when the stage loses under 10 % of its width for it; otherwise it is a section in the record, under Steps",
+      "id": "a3",
+      "judgedAt": "2026-09-23T17:24:54.654Z",
+      "planStep": 5,
+      "t": 249.23,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from step 5: the plan text sits beside the stage when the window is wide, in the record otherwise (A3)",
+      "id": "d2",
+      "judgedAt": "2026-09-23T17:25:03.687Z",
+      "planStep": 5,
+      "t": 258.76,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The plan beside the video reads plan.md, never plan.resolved.md",
+      "id": "a8",
+      "judgedAt": "2026-09-23T17:25:47.536Z",
+      "own": "Ok but I'd plan resolved more updated?",
+      "planStep": 5,
+      "t": 280.05,
+      "verdict": "own"
+    },
+    {
+      "chose": "The check fails on eight more ways a page can break than the four named before the build (the detail lists every rule)",
+      "id": "a13",
+      "judgedAt": "2026-09-23T17:26:17.876Z",
+      "planStep": 6,
+      "t": 304.69,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Without playwright-core (or when Chromium will not start) the static checks still run and the result says the pages were not opened",
+      "id": "a14",
+      "judgedAt": "2026-09-23T17:26:29.344Z",
+      "planStep": 6,
+      "t": 314.81,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-23T17:27:23.980Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T17:22:18.773Z",
+      "correct": true,
+      "id": "k1",
+      "t": 138.43
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T17:23:43.758Z",
+      "correct": true,
+      "id": "k2",
+      "t": 196.7
+    }
+  ],
+  "src": "2026-09-23-deep-dives--walkthrough/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      }
+    ],
+    "completion": 1,
+    "details": [
+      {
+        "name": "keys-with-a-page-open",
+        "openedAt": "2026-09-23T17:20:38.360Z",
+        "seconds": 17
+      },
+      {
+        "name": "data-block-and-slots",
+        "openedAt": "2026-09-23T17:21:19.402Z",
+        "seconds": 23.3
+      },
+      {
+        "name": "step-5-written-and-built",
+        "openedAt": "2026-09-23T17:24:16.804Z",
+        "seconds": 19.5
+      },
+      {
+        "name": "check-rules",
+        "openedAt": "2026-09-23T17:25:59.857Z",
+        "seconds": 9.4
+      }
+    ],
+    "durationSeconds": 393.89,
+    "firstPlayAt": "2026-09-23T17:19:02.199Z",
+    "maxTimeReached": 393.89,
+    "moments": []
+  }
+}

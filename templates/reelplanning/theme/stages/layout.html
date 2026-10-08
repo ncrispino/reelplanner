@@ -1,0 +1,117 @@
+<!-- SHARED STAGE (style guide §5) for a plan whose subject is a LAYOUT. Paste into your <template>
+     and replace every FID with "f" + your frame_id.
+
+     WHY THIS SHAPE. This plan changes where things sit on one screen and how much room each gets.
+     Nothing in it exchanges data at runtime, so a node graph would assert something false. The
+     artefact IS the screen, drawn as a wireframe at a size you can read across the room.
+
+     WHAT IS LAW. The outer page card never moves: left 660, top 230, 1180 x 650. Everything inside
+     it does move — that is the plan. A step beat is the regions travelling from where they are to
+     where the step puts them, so the motion and the sentence are the same event.
+
+     REGION GRID (inside the card, card-relative). Today's layout:
+       title      16,  16  830 x 34      rail: steps    862,  16  302 x 120
+       video      16,  60  830 x 250           level     862, 146  302 x  70
+       transport  16, 320  830 x  30           decisions 862, 226  302 x 150
+       tools      16, 358  830 x  34           comments  862, 386  302 x 248
+       void       16, 402  830 x 232    <- the ~400 px of nothing, drawn as a measured region
+     After step 1 the main column is the full 1148 wide and the rail regions ride under it.
+
+     PRESENCE. Do not draw the page out of habit:
+       · whole page (card + every region) .. the "today" beat, step 1, the resolved plan
+       · main column only .................. any beat about the video, the sheet or the composer
+       · phone only ........................ step 6 and its branches
+       · rail only ......................... openers, closers, decision questions, quizzes
+     The main column, when a beat draws it alone, uses this same box: left 660, top 230, 1180 wide.
+     Colours are tokens so the video can be recoloured at runtime; never hardcode a hex. -->
+<style>
+  /* ---- the rail: the plan. Shared grammar with every other stage. ---- */
+  .FID-rail { position:absolute; left:80px; top:150px; width:500px; height:660px; }
+  .FID-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .FID-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .FID-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .FID-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .FID-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .FID-slot.dim { opacity:0.72; }
+
+/* ---- the rail, SPINE state (style guide §5): the smallest thing that still answers "where am I".
+     44px instead of 500 — 1.4% of the frame instead of 16% — and the subject gets the rest.
+     Use it on any beat where the rail is not itself the subject. Ticks share the slots' y grid. ---- */
+  .FID-spine { position:absolute; left:80px; top:150px; width:44px; height:660px; }
+  .FID-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .FID-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .FID-tick[data-live] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .FID-spine .n { position:absolute; left:56px; top:-4px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* tops: 0 / 128 / 256 / 384 / 512 / 640 — the six steps, same order as the full rail */
+
+  .FID-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the artefact: the screen itself. This outline is LAW. ---- */
+  .FID-page { position:absolute; left:660px; top:230px; width:1180px; height:650px; border-radius:8px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2);
+    box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 8px 28px rgba(var(--rp-shadow-rgb),0.05); }
+
+  /* ---- regions. Position each one with left/top/width/height, card-relative. ---- */
+  .FID-r { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .FID-r .cap { position:absolute; left:14px; top:12px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+  /* a region's own words (the style guide's §5, rule 1: show the thing, never grey bars standing for words);
+     a region whose words don't matter to the beat keeps only its name */
+  .FID-r .lines { position:absolute; left:14px; right:14px; top:46px; }
+  .FID-r .line { display:block; font:400 20px/1.35 "Inter"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* the video: the one region the page exists for */
+  .FID-r.vid { background:var(--rp-data); border-color:transparent; }
+  .FID-r.vid .cap { color:rgba(var(--rp-on-ink-rgb),0.6); }
+  .FID-r.vid .mini { position:absolute; left:50%; top:54%; transform:translate(-50%,-50%); width:70%; height:6px; border-radius:3px; background:rgba(var(--rp-on-ink-rgb),0.35); }
+
+  /* an empty stretch, measured rather than described */
+  .FID-r.void { background:transparent; border:2px dashed rgba(var(--rp-coral-rgb),0.55); }
+  .FID-r.void .note { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); text-align:center; font:400 26px/1.3 "JetBrains Mono"; color:var(--rp-coral-deep); }
+
+  /* the decision sheet, when a beat is about what a decision does to the frame */
+  .FID-sheet { position:absolute; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 -2px 24px rgba(var(--rp-shadow-rgb),0.12); }
+  .FID-sheet .q { position:absolute; left:18px; top:16px; font:500 26px/1.2 "Inter"; color:var(--rp-ink); }
+
+  .FID-r.lit { outline:3px solid var(--rp-coral); outline-offset:0; }   /* the frame's ONE coral */
+
+  /* ---- the phone, for the beats that are about the phone ---- */
+  .FID-phone { position:absolute; width:300px; height:620px; border-radius:26px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.28); }
+  .FID-phone .FID-r { border-radius:4px; }
+  .FID-phone .FID-r .cap { left:8px; top:7px; font-size:15px; }
+</style>
+
+<!-- MARKUP, the rail: the plan's six steps. Empty slots show the dashed outline only (their .n/.t at opacity 0). -->
+<div class="FID-rail" id="FID-rail">
+  <div class="FID-slot" id="FID-slot-1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Give the video the page</span></div>
+  <div class="FID-slot" id="FID-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Never crop the evidence</span></div>
+  <div class="FID-slot" id="FID-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">One home per question</span></div>
+  <div class="FID-slot" id="FID-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Comment where you are</span></div>
+  <div class="FID-slot" id="FID-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">One fact per line</span></div>
+  <div class="FID-slot" id="FID-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">The phone is the video</span></div>
+</div>
+
+<!-- MARKUP, the rail in its SPINE state. Only the live tick carries its number, so the beat's one
+     coral is still free if the beat needs it elsewhere: a live tick is the frame's coral or it is not,
+     never both. -->
+<div class="FID-spine" id="FID-spine">
+  <div class="FID-tick" id="FID-tick-1" data-plan-step="1" style="top:0px"></div>
+  <div class="FID-tick" id="FID-tick-2" data-plan-step="2" style="top:128px"></div>
+  <div class="FID-tick" id="FID-tick-3" data-plan-step="3" style="top:256px"></div>
+  <div class="FID-tick" id="FID-tick-4" data-plan-step="4" style="top:384px"></div>
+  <div class="FID-tick" id="FID-tick-5" data-plan-step="5" style="top:512px"></div>
+  <div class="FID-tick" id="FID-tick-6" data-plan-step="6" style="top:640px"></div>
+</div>
+
+<!-- MARKUP, the whole page as it is today. Drop the regions your beat does not need. -->
+<div class="FID-lbl" style="left:660px;top:180px">The review page</div>
+<div class="FID-page" id="FID-page">
+  <div class="FID-r" id="FID-r-title" style="left:16px;top:16px;width:830px;height:34px"><span class="cap">Title</span></div>
+  <div class="FID-r vid" id="FID-r-video" style="left:16px;top:60px;width:830px;height:250px"><span class="cap">The video</span><i class="mini"></i></div>
+  <div class="FID-r" id="FID-r-transport" style="left:16px;top:320px;width:830px;height:30px"><span class="cap" style="top:8px">Transport</span></div>
+  <div class="FID-r" id="FID-r-tools" style="left:16px;top:358px;width:830px;height:34px"><span class="cap" style="top:10px">Mark · Wait · Note · Approve</span></div>
+  <div class="FID-r void" id="FID-r-void" style="left:16px;top:402px;width:830px;height:232px"><span class="note">≈ 400 px of nothing</span></div>
+  <div class="FID-r" id="FID-r-steps" style="left:862px;top:16px;width:302px;height:120px"><span class="cap">Steps</span><div class="lines"><span class="line">1 · Give the video the page</span><span class="line">2 · Never crop the evidence</span></div></div>
+  <div class="FID-r" id="FID-r-level" style="left:862px;top:146px;width:302px;height:70px"><span class="cap">Level</span></div>
+  <div class="FID-r" id="FID-r-decisions" style="left:862px;top:226px;width:302px;height:150px"><span class="cap">Decisions</span><div class="lines"><span class="line">Choice 1 · Part size: 8 MB</span><span class="line">Choice 2 · not answered</span></div></div>
+  <div class="FID-r" id="FID-r-comments" style="left:862px;top:386px;width:302px;height:248px"><span class="cap">Comments</span><div class="lines"><span class="line">0:41 · clearer, please</span><span class="line">1:12 · why 16 MB?</span></div></div>
+</div>

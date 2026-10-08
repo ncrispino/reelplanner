@@ -1,0 +1,157 @@
+<template>
+<div id="root" data-composition-id="10-step-4" data-width="1920" data-height="1080" data-duration="15.391">
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f10-step-4-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f10-step-4-stage { position: absolute; inset: 0; }
+
+  /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+  .f10-step-4-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f10-step-4-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f10-step-4-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f10-step-4-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f10-step-4-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f10-step-4-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f10-step-4-slot.dim { opacity:0.72; }
+  .f10-step-4-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f10-step-4-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f10-step-4-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f10-step-4-node.navy .l { color:var(--rp-on-ink); }
+  .f10-step-4-node.dim { opacity:0.72; }
+  .f10-step-4-node.navy.dim { opacity:1; }
+  .f10-step-4-node.active { border:3px solid var(--rp-coral); }
+  .f10-step-4-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f10-step-4-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f10-step-4-edges path.dim { opacity:0.35; }
+  .f10-step-4-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  /* ---- end shared stage ---- */
+
+  /* empty (not yet reached) slots: dashed outline only */
+  .f10-step-4-slot.empty .n, .f10-step-4-slot.empty .t { opacity:0; }
+  /* slot 4 fill layer (animates the empty→filled swap without touching the shared attr styling) */
+  .f10-step-4-fill { position:absolute; left:-1px; top:-1px; width:500px; height:90px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+  /* coral border overlay on Billing == .active geometry (3px border, same outer box) */
+  .f10-step-4-ring { position:absolute; left:-1px; top:-1px; width:186px; height:156px; box-sizing:border-box; border:3px solid var(--rp-coral); border-radius:12px; opacity:0; }
+  /* worked-example chips: 26px mono, ink on tile, hairline border, 16px under their node */
+  .f10-step-4-chip { position:absolute; height:38px; box-sizing:border-box; padding:0 12px; display:flex; align-items:center; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:6px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); white-space:nowrap; }
+  .f10-step-4-chip.coral { color:var(--rp-coral-deep); }
+  /* under Manifest (bottom 380) and Blob (bottom 700): left-aligned, inherited state, present from t=0 */
+  .f10-step-4-chip-manifest { left:1360px; top:396px; }
+  .f10-step-4-chip-blob     { left:1360px; top:716px; }
+  /* under Billing (bottom 380): at most two chips, right-aligned to its right edge (x 1860) and never left of x 1680.
+     The call chip is ONE element: `complete` (149 px, clears 1680) becomes `no-op` on cue; `billed once` is the second. */
+  .f10-step-4-chip-call   { right:60px; top:396px; opacity:0; }
+  .f10-step-4-chip-billed { right:60px; top:446px; opacity:0; }
+  /* "twice" — the why-not lives on the rail: a 26px mono ×2 ghost at slot 4's right (where Frame 12's tag sits), struck level */
+  .f10-step-4-x2 { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+  .f10-step-4-strike { position:absolute; left:-4px; right:-4px; top:12px; height:2px; background:var(--rp-ink); transform-origin:0 50%; transform:scaleX(0); }
+</style>
+
+<div class="clip f10-step-4-bg" data-start="0" data-duration="15.391" data-track-index="0"></div>
+
+<div class="clip f10-step-4-stage" data-start="0" data-duration="15.391" data-track-index="1">
+
+  <div class="f10-step-4-rail" id="f10-step-4-rail">
+    <div class="f10-step-4-slot dim" id="f10-step-4-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+    <div class="f10-step-4-slot dim" id="f10-step-4-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+    <div class="f10-step-4-slot dim" id="f10-step-4-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f10-step-4-slot" id="f10-step-4-slot-4" data-plan-step="4" style="top:330px"><div class="f10-step-4-fill" id="f10-step-4-fill-4"></div><span class="n" id="f10-step-4-n-4">4</span><span class="t" id="f10-step-4-t-4">Bill once</span><span class="f10-step-4-x2" id="f10-step-4-x2">×2<div class="f10-step-4-strike" id="f10-step-4-strike"></div></span></div>
+    <div class="f10-step-4-slot empty" id="f10-step-4-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+    <div class="f10-step-4-slot empty" id="f10-step-4-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <div class="f10-step-4-node dim"      id="f10-step-4-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f10-step-4-node dim"      id="f10-step-4-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f10-step-4-node navy dim" id="f10-step-4-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+  <div class="f10-step-4-node dim"      id="f10-step-4-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+  <div class="f10-step-4-node dim"      id="f10-step-4-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span><div class="f10-step-4-ring" id="f10-step-4-ring"></div></div>
+  <div class="f10-step-4-node dim"      id="f10-step-4-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+  <!-- edges: the three that exist today + api→manifest (step 1), all inherited dim from t=0; api→billing is LIT on cue, never drawn -->
+  <svg class="f10-step-4-edges" id="f10-step-4-edges" viewBox="0 0 1920 1080">
+    <path class="dim" id="f10-step-4-e-sdk-api"      d="M970 485 L1030 485" />
+    <path class="dim" id="f10-step-4-e-api-blob"     d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path class="dim" id="f10-step-4-e-api-billing"  d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path class="dim" id="f10-step-4-e-api-manifest" d="M1300 460 L1330 460 L1330 305 L1360 305" />
+  </svg>
+
+  <!-- worked example: inherited state under Manifest and Blob, the step's call and result under Billing -->
+  <div class="f10-step-4-chip f10-step-4-chip-manifest" id="f10-step-4-chip-manifest">7f3a · 111111</div>
+  <div class="f10-step-4-chip f10-step-4-chip-blob"     id="f10-step-4-chip-blob">7f3a · 6 of 6 parts</div>
+  <div class="f10-step-4-chip f10-step-4-chip-call"     id="f10-step-4-chip-call">complete</div>
+  <div class="f10-step-4-chip f10-step-4-chip-billed coral" id="f10-step-4-chip-billed">billed once</div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var fill4    = q("f10-step-4-fill-4");
+  var n4       = q("f10-step-4-n-4");
+  var t4       = q("f10-step-4-t-4");
+  var billing  = q("f10-step-4-node-billing");
+  var manifest = q("f10-step-4-node-manifest");
+  var ring     = q("f10-step-4-ring");
+  var edge     = q("f10-step-4-e-api-billing");
+  var call     = q("f10-step-4-chip-call");
+  var billed   = q("f10-step-4-chip-billed");
+  var chipMan  = q("f10-step-4-chip-manifest");
+  var x2       = q("f10-step-4-x2");
+  var strike   = q("f10-step-4-strike");
+
+  var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+  /* Cue sheet (frame-relative s): Step 0.04 · four 0.35 · billing 0.94 · moves 1.17 · complete 1.74 ·
+     keyed 2.44 · manifest 3.34 · first 4.67 · complete 5.26 · 7F3a 5.96 · bills 6.63 · once 7.06 ·
+     second 7.50 · complete 7.96 · 7F3a 8.78 · sees 9.52 · completed 10.03 · timestamp 10.48 ·
+     does 11.30 · nothing 11.54 · That 12.20 · stop 12.71 · billing 13.11 · twice 13.48 */
+
+  /* "Step four" — slot 4 fills; on "billing" the coral lands on the Billing border */
+  tl.fromTo(fill4, { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.35)
+    .fromTo([n4, t4], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.06 }, 0.42)
+    .fromTo(billing, { opacity: 0.72 }, { opacity: 1, duration: 0.4 }, 0.94)
+    .fromTo(ring, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.00977780983985);
+
+  /* "moves to the complete call" — the existing API → Billing edge LIGHTS coral (not drawn) and takes the coral from the border */
+  tl.fromTo(edge, { opacity: 0.35, stroke: __RP["ink"], strokeWidth: 3 }, { opacity: 1, stroke: __RP["coral"], strokeWidth: 4, duration: 0.4 }, 1.17)
+    .to(ring, { opacity: 0, duration: 0.4, ease: "power2.out" }, 1.3105626893666138);
+
+  /* "the complete call" — the call chip named by the narration settles in under Billing */
+  tl.fromTo(call, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, 2.234401962198817);
+
+  /* "keyed by the manifest id" — the key itself: the manifest row chip re-settles under the store */
+  tl.fromTo(chipMan, { y: 6 }, { y: 0, duration: 0.5 }, 3.587933920069254);
+
+  /* "The first complete for 7f3a" — the same chip re-settles: this is call one */
+  tl.fromTo(call, { y: 6 }, { y: 0, duration: 0.4 }, 5.650458808252778);
+
+  /* "bills once" — the coral hands off from the edge to the `billed once` chip; edge settles to full ink */
+  tl.fromTo(billed, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, 6.63)
+    .to(edge, { stroke: __RP["ink"], strokeWidth: 3, duration: 0.5, ease: "power2.out" }, 7.122156254508729);
+
+  /* "A second complete for 7f3a" — the same call chip re-settles (the second call) */
+  tl.fromTo(call, { y: 6 }, { y: 0, duration: 0.4 }, 8.550884432260858);
+
+  /* "sees the completed timestamp" — the Manifest node lights (the record it reads) */
+  tl.fromTo(manifest, { opacity: 0.72 }, { opacity: 1, duration: 0.5 }, 10.774544077333719);
+
+  /* "does nothing" — the same call chip swaps its word to `no-op` (one chip; a string set is seek-safe) and re-settles */
+  tl.set(call, { textContent: "no-op" }, 11.30)
+    .fromTo(call, { y: 6 }, { y: 0, duration: 0.4 }, 12.138818352330112);
+
+  /* "That is how we stop billing twice" — the ×2 ghost at slot 4's right appears, then a level strike; hold */
+  tl.fromTo(x2, { opacity: 0, y: 6 }, { opacity: 0.6, y: 0, duration: 0.5 }, 12.20)
+    .fromTo(strike, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 13.653485067089887);
+  tl.to({}, { duration: 0.01 }, 14.878109219448854);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["10-step-4"] = tl;
+})();
+</script>
+</div>
+</template>

@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "26e1573430431ef6830a",
+      "text": "Step three. The maintainer watches a contributor's video without building anything: reelplanning review just serves the files. Then, as you decided, two checks. On every pull request, CI, the checks GitHub runs, confirms the video matches the plan, in seconds. And before accepting, the maintainer's own code check: a fresh agent reads the code, in minutes.",
+      "sha256": "c31e035f61d5a0305c8dfeb9b3aa306006706b2e025ad8edbcbff670721ec9b0",
+      "duration_s": 20.117
+    },
+    "11": {
+      "key": "0594d098cc7b81eb760f",
+      "text": "But where does the built video live? Today the branch carries it, voice files and all, in git for good. This plan's video has fifteen megabytes of voice alone, and this repo's history is already eight hundred and ninety-three megabytes.",
+      "sha256": "a9f88b5e243a6cd0abb6e71cb0b47db76777b25dbbc8f5061221bf203b334ef1",
+      "duration_s": 12.8
+    },
+    "12": {
+      "key": "769ef36fdf438283b32b",
+      "text": "As you decided, the built video never lands in main's history. The pull request's branch carries only the video's text. The built video goes on a throwaway branch of its own, never merged: the maintainer clones it and runs reelplanning review, and it is deleted after the merge.",
+      "sha256": "b26e8786ae9b0daddb97679aa013e824b79a2af199bc28f96acede2b84a0e0c1",
+      "duration_s": 15.787
+    },
+    "13": {
+      "key": "e0cf4619176545cb3e64",
+      "text": "Would it be easy? Yes: every step is a command an agent runs, nothing by hand. In a real run the packed video is about five megabytes; a clone gets it only while its branch exists, and after, a fresh clone is back to main's text alone: kilobytes, not megabytes. The catch: once it is deleted, watching it again means rebuilding it.",
+      "sha256": "ce8e45928e75c7ec1ab610ac61f2646d1d4e3794e1fdad891a5ba304d22ab741",
+      "duration_s": 18.752
+    },
+    "14": {
+      "key": "a7ac0f6f829a64440c0c",
+      "text": "Quick check, on step two. Lee accepted all four of their agent's choices; the owner flagged one, and it was fixed. After the merge, what reviews does main hold?",
+      "sha256": "53b3d041a400b8420a476e13748c5d2ca22228c3368e4229a4d4e0541c2cabe6",
+      "duration_s": 8.939
+    },
+    "15": {
+      "key": "795075e1b24ca6a8a54a",
+      "text": "Step four, as you decided: numbers stay in order. In a real run, two branches each wrote decision D-194. The one merged second runs reel renumber, and its entry becomes decision D-195. The terms index, which builds write, is never merged by hand: take main's copy and write it again.",
+      "sha256": "a097d08a4520a467000ea1f5acc042fe2ed968c6a269326d824bf17f0423aa2c",
+      "duration_s": 18.261
+    },
+    "16": {
+      "key": "63d709c8e7730cb968f1",
+      "text": "Quick check, on step three. Lee's walkthrough says a missing file is skipped, but the code stops with an error. CI's checks pass. What finds it?",
+      "sha256": "e284271da42bee38c735d09cfff10778bdc69730a510a87270865719aa262e5a",
+      "duration_s": 7.893
+    },
+    "17": {
+      "key": "5c70fd5ff6bed74af619",
+      "text": "Step five: CI runs the fast suite on every push. Before a merge, it runs the full suite, every test, about five minutes, and the merge needs it to pass; and again on the release tag. The system video catches up on main after the merges, as decision D-003 keeps it.",
+      "sha256": "670577f2910bfe21e18772335d01124769ad5be37bc3f8fabb44725d067fc9fc",
+      "duration_s": 16.683
+    },
+    "18": {
+      "key": "398e02a1a57e3cf33429",
+      "text": "Quick check, on step four. Two pull requests each recorded a decision D-210, and one has merged. What does the other's contributor do?",
+      "sha256": "8eb5b3cb674a157eeb654a61a584068870a3f50c8b54ee6e66db4623be09899e",
+      "duration_s": 8.299
+    },
+    "19": {
+      "key": "d76771a662a49135283c",
+      "text": "Last quick check, on step five. A pull request passes the fast suite, but a test only the full suite runs is failing. Can it merge?",
+      "sha256": "f70336a0c345968c3337fe4e7325c9fa8513456729d36b4b9ae6f6cd5390e493",
+      "duration_s": 7.531
+    },
+    "20": {
+      "key": "b9d10df6498c14f376d2",
+      "text": "That is the plan: five steps, every question decided. Draw on any step to leave a note, or approve.",
+      "sha256": "59dbe33c3ceb9bbe9fac7a06ba8b67a808303f12b2299edeca9e79460418a1da",
+      "duration_s": 5.675
+    },
+    "01": {
+      "key": "b9c5d32098e57e0c3e13",
+      "text": "reelplanning assumes one person per repo, who plans, reviews the videos and merges. What happens when the repo is shared, and a contributor, someone who may not use reelplanning at all, opens a pull request: a change they ask to have merged?",
+      "sha256": "f3706047732b73bdcd850ec9c40d8270e68154f972f3b3931f9c1760a8d827f0",
+      "duration_s": 13.653
+    },
+    "02": {
+      "key": "4c41970254a813977626",
+      "text": "This plan is for any shared repo, this one first. Step one: when a pull request gets a video, and who makes it. Steps two and three: who reviews, what lands on main, and where the video lives. Four and five: records that merge, and tests.",
+      "sha256": "6c632d6eb2f0849a3ca265e916af4d68cf2fc753c8fd55cf0cd69addf8eaffc0",
+      "duration_s": 13.376
+    },
+    "03": {
+      "key": "f17909f76ce53fa935fb",
+      "text": "Eight earlier plans lead here. The system video catches up after every accepted walkthrough, and a second agent checks the code. Memory lives in each person's home folder. A quick check per step. Plain words on screen. At a step's fifth choice, the builder asks. Detail pages start from a template. Scenes show the real thing. And the case study stays as it is.",
+      "sha256": "1ce06fe67f5a0f8a8f8d61a6e97c376d26365edd5f0418b4c968ef110477dfe0",
+      "duration_s": 20.501
+    },
+    "04": {
+      "key": "99e53c7ac5705765c51a",
+      "text": "Step one. CONTRIBUTING.md, which reelplanning gives any shared repo, draws the line, as you decided: a pull request gets a video only when it makes a choice a reviewer could make the other way, like a default or a new flag, or when it changes over three hundred lines. Which files it touches no longer counts.",
+      "said": "Step one. CONTRIBUTING dot md, which reelplanning gives any shared repo, draws the line, as you decided: a pull request gets a video only when it makes a choice a reviewer could make the other way, like a default or a new flag, or when it changes over three hundred lines. Which files it touches no longer counts.",
+      "sha256": "c248e29914093da25019b7dd71f901b9996224323e5bbdf32b93db080757cc85",
+      "duration_s": 18.283
+    },
+    "05": {
+      "key": "ff676cce043f0fc05fe6",
+      "text": "Its check, reel pr-check, counts the lines and looks for a new flag, command or dependency; a choice it cannot see, the contributor ticks. So pull request forty-three, a one-line fix in the reel CLI, merges on a normal code review, with no video. And a maintainer, someone who can merge, can still ask for one on any pull request, with the needs-video label.",
+      "sha256": "70cb6a608dde01cf46fc117908bbb5e180a45704a7ef02ae3048bc8f119e2109",
+      "duration_s": 20.16
+    },
+    "06": {
+      "key": "52b93ce8f9d726a16763",
+      "text": "Who makes the video, as you decided. A contributor who plans with reelplanning, like Sam, brings a plan video, reviewed before the code, and a walkthrough. One who doesn't just opens the pull request, and the maintainer's agent makes the walkthrough from it. Nobody is turned away.",
+      "sha256": "3ff24a85ba9dd32a2bcc6f102590709a52c439d26bb987080615fdf77bf326d9",
+      "duration_s": 15.061
+    },
+    "07": {
+      "key": "d2925facbbd34035b55a",
+      "text": "Step two, with pull request forty-two. Sam, the contributor, answers their own plan's questions, and checks their agent's choices before opening it. The owner, the maintainer, then watches its walkthrough, and accepts or flags each choice. Sam's checks help Sam; the owner's are the ones that count.",
+      "sha256": "2f65c53b55ab4d8a9f3815d45a3a15076a94de6b01166808e5dd7769fed0cb81",
+      "duration_s": 16.256
+    },
+    "08": {
+      "key": "e5710251d56da228d892",
+      "text": "So what lands on main is only what counts: the plan, its final decisions, walkthrough.md, and the owner's review. Sam's own reviews stay in the pull request's history: reel pr-check --tidy takes them off the branch before the merge. And if the owner changed one of Sam's answers, the log keeps the last one, as you decided.",
+      "said": "So what lands on main is only what counts: the plan, its final decisions, walkthrough dot md, and the owner's review. Sam's own reviews stay in the pull request's history: reel pr-check dash dash tidy takes them off the branch before the merge. And if the owner changed one of Sam's answers, the log keeps the last one, as you decided.",
+      "sha256": "33c2f07c3dcd299e7bb50040200444bab4443cc898858f7b9bbf29ffa8447c85",
+      "duration_s": 19.243
+    },
+    "09": {
+      "key": "aca8aaec4432760b0a23",
+      "text": "Quick check, on step one. Omar's pull request is twenty-five lines, and adds a new flag to the reel CLI. He doesn't use reelplanning. What happens?",
+      "sha256": "e820b9de86e0031241d0c57b8bac11fe0a35343d178ddad5bc64246d67e53e35",
+      "duration_s": 8.789
+    }
+  }
+}

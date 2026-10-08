@@ -1,0 +1,2613 @@
+{
+  "project": "walkthrough-video",
+  "title": "Answer on the video itself: what was built, second version",
+  "planDir": ".reelplanning/plans/2026-09-24-answer-on-the-video",
+  "totalSeconds": 297.834,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "The answers, and step 1",
+      "fromFrame": 1,
+      "toFrame": 8,
+      "start": 0,
+      "end": 77.61,
+      "linearSeconds": 77.61,
+      "watchedSeconds": 77.61,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 2: the answer band",
+      "fromFrame": 9,
+      "toFrame": 19,
+      "start": 77.61,
+      "end": 154.613,
+      "linearSeconds": 77.003,
+      "watchedSeconds": 77.003,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 5: questions keep pace",
+      "fromFrame": 20,
+      "toFrame": 28,
+      "start": 154.613,
+      "end": 215.247,
+      "linearSeconds": 60.634,
+      "watchedSeconds": 60.634,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Steps 3 and 4: the record, and the check",
+      "fromFrame": 29,
+      "toFrame": 39,
+      "start": 215.247,
+      "end": 297.834,
+      "linearSeconds": 82.587,
+      "watchedSeconds": 82.587,
+      "decisions": []
+    }
+  ],
+  "levels": null,
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 8,
+      "planStep": 1,
+      "question": "A frame draws three option cards, but its question has four options. What do you see?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The three cards answer; D in the band"
+        },
+        {
+          "id": "b",
+          "label": "Today's sheet, as before"
+        },
+        {
+          "id": "c",
+          "label": "The cards answer; D by its key only"
+        }
+      ],
+      "answer": "b",
+      "explain": "A rule counts only when it finds one card for every option, so a frame with three cards for four options keeps today's sheet (A2).",
+      "at": 77.56,
+      "explainedAt": 48.448,
+      "explainedFrame": 5
+    },
+    {
+      "id": "k2",
+      "frameIndex": 19,
+      "planStep": 2,
+      "question": "A video built before the band stops at a question. Where does the band go?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Over the frame's lowest eighth"
+        },
+        {
+          "id": "b",
+          "label": "Under the video, in room kept all along"
+        },
+        {
+          "id": "c",
+          "label": "Under the video, which shrinks while it is up"
+        }
+      ],
+      "answer": "b",
+      "explain": "Its frames don't carry data-band=\"bottom\", so the band goes under the video, in room kept for the whole video, and nothing resizes (A13, A14).",
+      "at": 154.563,
+      "explainedAt": 104.266,
+      "explainedFrame": 12
+    },
+    {
+      "id": "k3",
+      "frameIndex": 28,
+      "planStep": 5,
+      "question": "You answered a quick check, and your pointer rests on the band. When does the video go on?",
+      "options": [
+        {
+          "id": "a",
+          "label": "After ten seconds"
+        },
+        {
+          "id": "b",
+          "label": "After four seconds"
+        },
+        {
+          "id": "c",
+          "label": "Ten seconds after you leave the band, or on Continue"
+        }
+      ],
+      "answer": "c",
+      "explain": "The count waits while the pointer or the keyboard is on the band, and starts again from the top when you leave; Continue goes at once (A18).",
+      "at": 215.197,
+      "explainedAt": 179.685,
+      "explainedFrame": 23
+    },
+    {
+      "id": "k4",
+      "frameIndex": 37,
+      "planStep": 3,
+      "question": "You have sent your review, and now switch a call's verdict in the record. What happens?",
+      "options": [
+        {
+          "id": "a",
+          "label": "It is saved, and goes with your next review"
+        },
+        {
+          "id": "b",
+          "label": "It is offered as Send the change"
+        },
+        {
+          "id": "c",
+          "label": "It is sent at once"
+        }
+      ],
+      "answer": "b",
+      "explain": "After a send, any edit in the record is offered as Send the change, at the head of the record and in the Finish panel; nothing is sent until you press it (A10).",
+      "at": 273.748,
+      "explainedAt": 243.739,
+      "explainedFrame": 34
+    }
+  ],
+  "autonomy": [
+    {
+      "id": "a1",
+      "frameIndex": 4,
+      "planStep": 1,
+      "chose": "The frame's cards are answered through transparent buttons the player lays over them in its own page, placed from each card's box in the frame (percent of the stage), with the hover and focus ring drawn by the player",
+      "insteadOf": "listeners and a hover style injected into the frame's own document",
+      "why": "the frame's document is rebuilt by the runtime (a theme switch, a reload) and sits under the HyperFrames player's own click handling; the player's buttons are tabbable, keep the keyboard in the player, and need nothing from the frame but its boxes",
+      "check": "packages/player/reelplanning-player.js frameCards, renderHits, .hits CSS",
+      "at": 48.398
+    },
+    {
+      "id": "a2",
+      "frameIndex": 5,
+      "planStep": 1,
+      "chose": "Cards are matched by data-option, then by data-plan-option (the letter the system video, every walkthrough check and the bob-dylan check already carry), then by an id ending -opt-a / -option-a / -choice-a / -chip-a, and only then by the order of the elements whose class ends in -opt; a rule counts only when it finds exactly one card per option, each with a box",
+      "insteadOf": "data-option then the order of -opt elements only",
+      "why": "a survey of every question frame on the review page: order alone matched none of the quick checks in the walkthroughs or the system video, and a letter already written on the card is safer than counting; a frame where no rule finds every option keeps the sheet",
+      "check": "packages/player/reelplanning-player.js frameCards",
+      "at": 56.291
+    },
+    {
+      "id": "a6",
+      "frameIndex": 6,
+      "planStep": 1,
+      "chose": "A card on the frame shows its state as its button in the (hidden) sheet does: ticked or your answer ringed in ink, the right answer to an answered quick check in coral, with a small tag (\"picked\", \"your answer\", \"the answer\"); \"recommended\" is not tagged, the frame says it",
+      "insteadOf": "no state on the frame, only words in the strip",
+      "why": "the reviewer answered on the card, so the answer is marked there; reading the sheet's buttons (a MutationObserver) keeps both in step with one source",
+      "check": "packages/player/reelplanning-player.js syncHits, .hit[data-chosen], .hit[data-right] CSS",
+      "at": 64.056
+    },
+    {
+      "id": "a11",
+      "frameIndex": 7,
+      "planStep": 1,
+      "chose": "\"Show the frame\" is kept in the strip, and there it puts the question aside: the strip folds to one line (\"Still to answer\") and the cards and keys stop answering, so the frame can be marked; a mark tool that is on also takes the clicks from the cards (changed after review: under the video the band folds to that one line in its kept room; in the frame it folds to a pill in the corner of the empty eighth, m3)",
+      "insteadOf": "dropping \"Show the frame\" (the frame is no longer covered), or cards that answer while drawing",
+      "why": "the plan lists it; without it a reviewer who wants to draw on a question's frame would answer it by accident",
+      "check": "packages/player/reelplanning-player.js fold, placeCard, .stage:not([data-tool=\"\"]) .hits CSS",
+      "at": 72.12
+    },
+    {
+      "id": "a13",
+      "frameIndex": 11,
+      "planStep": 2,
+      "chose": "A video leaves its lowest eighth for the band by data-band=\"bottom\" on each frame's root (or once, on the video's own root); the band goes in the frame only when every frame that asks something carries it, decided once, when the runtime has mounted those frames (looked for up to about 8 s after ready); until then, and otherwise, it goes under the video",
+      "insteadOf": "a field in the storyboard's front matter lifted into the plan map, or a place decided per question",
+      "why": "the attribute is on what actually leaves the room, so a frame built without it cannot claim it; a video mixing places would still have to keep the room under it for its older frames, so it is one place per video",
+      "check": "packages/player/reelplanning-player.js detectBand, placeBand",
+      "at": 104.216
+    },
+    {
+      "id": "a14",
+      "frameIndex": 12,
+      "planStep": 2,
+      "chose": "The band is an eighth of the video high, never under 72 px. Under the video its room (.bandroom) is kept for the whole video and the stage's height formula leaves exactly it (--band-k 8/9, --band-min 72 px), so the page still fits the window; what does not fit scrolls inside the band rather than growing it. On a phone it is in the page's flow, at least 104 px, and grows by a line when needed",
+      "insteadOf": "a band that grows with what it holds, or a fixed pixel height",
+      "why": "growing would move the transport under it, and a fixed height would be too small on a large screen or too large on a small one; on a phone the frame is the page's width, so a growing band still never resizes it",
+      "check": "packages/player/reelplanning-player.js .bandroom, --band-k, the phone block",
+      "at": 110.68
+    },
+    {
+      "id": "a15",
+      "frameIndex": 13,
+      "planStep": 2,
+      "chose": "The band's layout: two lines. First the kicker, the question in its own words on one line in the serif (the whole question in its title) and Show the frame; then the hint and the acts, the act that goes on (Continue, Confirm) at the right in ink. Answered, the feedback (two lines at most) takes the question's place. Type scales with the video (cqw): the question 15–22 px, buttons 30–40 px",
+      "insteadOf": "the question in full, wrapping; or the strip's one line",
+      "why": "an eighth of the video holds two lines of reading-size type; the frame shows the question in full already, so the band's line says which question waits",
+      "check": "packages/player/reelplanning-player.js the .decision.band CSS",
+      "at": 118.104
+    },
+    {
+      "id": "a16",
+      "frameIndex": 14,
+      "planStep": 2,
+      "chose": "In the frame, the captions are hidden while the band is up (not while it is folded), and come back when it goes",
+      "insteadOf": "leaving the captions",
+      "why": "the caption pill sits at y 880–1040, so the band (from y 945) would leave its top edge showing above it; while a question waits the band carries the words",
+      "check": "packages/player/reelplanning-player.js syncBand",
+      "at": 124.76
+    },
+    {
+      "id": "a3",
+      "frameIndex": 15,
+      "planStep": 2,
+      "chose": "A call always gets the strip, though its frame has no cards: Accept (A) and Flag (B) in it, and the call's \"Instead of\", \"Why\" and \"Check\" leave the player for the kicker's tooltip, since the call's frame shows them (changed after review: the strip is now the band; what the call chose is its one line of words there, in the serif, and its Accept and Flag are clear buttons)",
+      "insteadOf": "keeping the sheet for calls, or listing those facts in the strip",
+      "why": "the plan puts a call's Accept and Flag in the strip; every walkthrough frame for a call already draws what it chose, what it replaced and where to check",
+      "check": "packages/player/reelplanning-player.js openCard (kind === \"call\"), askAutonomy (about)",
+      "at": 131.437
+    },
+    {
+      "id": "a4",
+      "frameIndex": 16,
+      "planStep": 2,
+      "chose": "A group of calls in the strip: Accept all, then one \"Flag A21\" per call, named by its id as the frame names it; what each chose and replaced is in its button's title (changed after review: in the band, with \"N more calls from this part.\" as its line of words)",
+      "insteadOf": "the sheet's list of the calls with a Flag on each row",
+      "why": "the grouped frame lists the calls; the list over it is what step 2 removes",
+      "check": "packages/player/reelplanning-player.js groupOpts, flagInGroup",
+      "at": 137.837
+    },
+    {
+      "id": "a12",
+      "frameIndex": 17,
+      "planStep": 2,
+      "chose": "On a touch screen the strip says \"Tap a card.\" with no keys named, and its buttons drop their key caps (changed after review: the band's words; on a phone every key cap in the band goes, and its buttons are 44 px high)",
+      "insteadOf": "the desktop wording (\"Click a card, or press A, B or C.\")",
+      "why": "there are no keys to press on a phone",
+      "check": "packages/player/reelplanning-player.js openCard (touch), the phone CSS",
+      "at": 143.128
+    },
+    {
+      "id": "a5",
+      "frameIndex": 18,
+      "planStep": 2,
+      "chose": "While the strip is up the stage gives it its height, so the page still fits the window: the frame shrinks by the strip (about 52 px at 1440×1000; more while an answered quick check shows its explanation, which takes a second line). On a phone the strip is simply in the page's flow (changed after review: removed; the owner saw the video shrink and grow back. The band's room is kept for the whole video instead, A14, and the video never changes size)",
+      "insteadOf": "keeping the frame's size and letting the page scroll under the strip",
+      "why": "the page's rule is the biggest frame that fits the window with its chrome; a strip pushing the timeline and Finish below the window breaks it",
+      "check": "packages/player/reelplanning-player.js syncStrip, --strip in .wrap CSS",
+      "at": 150.04
+    },
+    {
+      "id": "a17",
+      "frameIndex": 22,
+      "planStep": 5,
+      "chose": "The 10 s wait is for a quick check answered just now; a question met again, already answered, keeps 4 s",
+      "insteadOf": "10 s for every answered question met again",
+      "why": "the owner's words were about reading a quick check's explanation after answering; a rewatch past a run of answered questions would otherwise stop 10 s at each",
+      "check": "packages/player/reelplanning-player.js startWait, _freshAnswer",
+      "at": 179.635
+    },
+    {
+      "id": "a18",
+      "frameIndex": 23,
+      "planStep": 5,
+      "chose": "\"On the band\" is the pointer over it, or the keyboard on any control in it but Continue; while held the count starts again from the top when let go, and the hint says \"Waits while you are here\". Only the band: the sheet (a frame with no cards) keeps counting under a resting pointer",
+      "insteadOf": "Continue counting too; or pausing and resuming the count where it was",
+      "why": "the player puts the keyboard on Continue after every answer, so counting it would mean it never goes on; a sheet is answered by clicking on it, so the pointer is always there",
+      "check": "packages/player/reelplanning-player.js bandHeld, startWait",
+      "at": 185.608
+    },
+    {
+      "id": "a19",
+      "frameIndex": 24,
+      "planStep": 5,
+      "chose": "\"Back to where this was explained\": explained_at is a frame number or a composition id, lifted into the plan map as that frame's start (explainedAt, explainedFrame; one naming no frame warns and is left out). Without it: the first beat of the check's plan_step before it that is not a branch or a quick check, else its part's start. The video plays from there at once. In the record it is on the answered quick checks' rows, the only ones listed there",
+      "insteadOf": "a time in seconds in the storyboard; landing paused",
+      "why": "a frame survives a retime and a time does not; the reviewer asked for the rewind to be automatic, so it plays",
+      "check": "scripts/plan-map.mjs explainedFrame; packages/player/reelplanning-player.js explainedAt, backToExplained, renderDecisions (data-back)",
+      "at": 192.179
+    },
+    {
+      "id": "a20",
+      "frameIndex": 25,
+      "planStep": 5,
+      "chose": "The trip back is sent as a rewind (D-005)",
+      "insteadOf": "not counting it",
+      "why": "it is one, and the review's \"rewound here\" is the same signal: something there wanted saying more plainly",
+      "check": "packages/player/reelplanning-player.js backToExplained (noteRewind)",
+      "at": 195.976
+    },
+    {
+      "id": "a21",
+      "frameIndex": 26,
+      "planStep": 5,
+      "chose": "Reached again after \"Back to where this was explained\", a quick check waits with no count even when it was answered, as when opened from its mark",
+      "insteadOf": "the usual 4 s for an answered one",
+      "why": "the reviewer went back to look at it again; it should be there when they arrive",
+      "check": "packages/player/reelplanning-player.js meet (_waitFor)",
+      "at": 202.376
+    },
+    {
+      "id": "a22",
+      "frameIndex": 27,
+      "planStep": 5,
+      "chose": "An open question the video leaves while playing (Play pressed with it up, or a seek away and then Play) gives way, and stops the video again when reached; a seek while paused still leaves it up, the frame moving under it; the rule that a question asked once and left open is never asked again is dropped",
+      "insteadOf": "closing it on any seek, or Play doing nothing while a question waits",
+      "why": "review-keys.spec.mjs keeps the question up under ← and →, so a reviewer can look back before answering; Play is the reviewer choosing to go on without answering, and the question then comes back where it belongs",
+      "check": "packages/player/reelplanning-player.js tickDecisions",
+      "at": 210.269
+    },
+    {
+      "id": "a7",
+      "frameIndex": 31,
+      "planStep": 3,
+      "chose": "\"change\" opens a small editor under the answer: the question's options (a click saves; a pick-all ticks, then \"Save the picks\") and a line for own words (Enter saves); Esc closes it unchanged; no \"Explain this more\" there. Changing it while that question is up on the video closes the question",
+      "insteadOf": "a select, or reopening the question on the video as before",
+      "why": "the options are what the question offered, and the record is written as a fresh answer would be, so the video routes by it; asking for more is the question's own act",
+      "check": "packages/player/reelplanning-player.js answerEditor, changeAnswer, .redit CSS",
+      "at": 232.083
+    },
+    {
+      "id": "a8",
+      "frameIndex": 32,
+      "planStep": 3,
+      "chose": "An answer that was in own words, changed in the record, drops the comment those words made at the question; new own words make a new one",
+      "insteadOf": "leaving the old comment, or rewording it in place",
+      "why": "the answer and that comment are the same words; left behind, the export would carry two different answers to one question",
+      "check": "packages/player/reelplanning-player.js changeAnswer",
+      "at": 238.526
+    },
+    {
+      "id": "a9",
+      "frameIndex": 33,
+      "planStep": 3,
+      "chose": "A call's verdict switches with one link beside it, \"accept instead\" or \"flag instead\"; a call answered in own words can be switched to either, and its comment goes",
+      "insteadOf": "a toggle, or reopening the call on the video",
+      "why": "one click makes the same record the strip makes (recordVerdict), so the flag's note on its step is added or removed with it",
+      "check": "packages/player/reelplanning-player.js renderAutonomy (data-reverdict), changeVerdict",
+      "at": 243.689
+    },
+    {
+      "id": "a10",
+      "frameIndex": 34,
+      "planStep": 3,
+      "chose": "After a send, \"Send the change\" is offered at the head of the record as well as in the Finish panel, on the local review page only",
+      "insteadOf": "the Finish panel only; or the hosted page too",
+      "why": "edits are made in the record, so the offer is where they are made; a hosted page has no second send today (a new comment is not offered there either), and adding one is a change to what the hosted store receives",
+      "check": "packages/player/reelplanning-player.js syncResend, .resend",
+      "at": 249.705
+    },
+    {
+      "id": "d1",
+      "frameIndex": 36,
+      "planStep": 4,
+      "chose": "The new spec plays four videos through (this plan's, the revise-loop plan and walkthrough, the system video); the other videos on the review page were checked once, by a script, for their cards being matched (all were), and are not in the spec",
+      "insteadOf": "every video on the review page in the spec",
+      "why": "the four are the kinds there are (plan, walkthrough with calls and groups, system); each more video adds about a minute to npm test, and the matching they would test is the same code",
+      "check": "packages/player/test/answer-on-frame.spec.mjs",
+      "at": 269.012
+    }
+  ],
+  "watchedSeconds": 297.834,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Question 2 is B, from your words",
+      "compositionId": "01-answers",
+      "type": "hook",
+      "durationSeconds": 14.443,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "The answers, and step 1",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-7.47s.png",
+      "terms": [
+        "review"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "Five steps, twenty-two calls",
+      "compositionId": "02-landed",
+      "type": "product_intro",
+      "durationSeconds": 15.061,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 14.443,
+      "thumb": "snapshots/frame-01-at-22.22s.png",
+      "terms": [
+        "call",
+        "deviation",
+        "step"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "Step 1: the frame's cards answer",
+      "compositionId": "03-step-1",
+      "type": "feature_showcase",
+      "durationSeconds": 10.837,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 29.504,
+      "thumb": "snapshots/frame-02-at-35.17s.png",
+      "terms": [
+        "review",
+        "step"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "Call A1: buttons over the cards",
+      "compositionId": "04-call-a1",
+      "type": "cta",
+      "durationSeconds": 8.107,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a1",
+      "chose": "The frame's cards are answered through transparent buttons the player lays over them in its own page, placed from each card's box in the frame (percent of the stage), with the hover and focus ring drawn by the player",
+      "insteadOf": "listeners and a hover style injected into the frame's own document",
+      "why": "the frame's document is rebuilt by the runtime (a theme switch, a reload) and sits under the HyperFrames player's own click handling; the player's buttons are tabbable, keep the keyboard in the player, and need nothing from the frame but its boxes",
+      "check": "packages/player/reelplanning-player.js frameCards, renderHits, .hits CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 40.341,
+      "thumb": "snapshots/frame-03-at-44.64s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Call A2: letters first, order last",
+      "compositionId": "05-call-a2",
+      "type": "cta",
+      "durationSeconds": 7.893,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a2",
+      "chose": "Cards are matched by data-option, then by data-plan-option (the letter the system video, every walkthrough check and the bob-dylan check already carry), then by an id ending -opt-a / -option-a / -choice-a / -chip-a, and only then by the order of the elements whose class ends in -opt; a rule counts only when it finds exactly one card per option, each with a box",
+      "insteadOf": "data-option then the order of -opt elements only",
+      "why": "a survey of every question frame on the review page: order alone matched none of the quick checks in the walkthroughs or the system video, and a letter already written on the card is safer than counting; a frame where no rule finds every option keeps the sheet",
+      "check": "packages/player/reelplanning-player.js frameCards",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 48.448,
+      "thumb": "snapshots/frame-04-at-52.64s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "Call A6: a card shows its state",
+      "compositionId": "06-call-a6",
+      "type": "cta",
+      "durationSeconds": 7.765,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a6",
+      "chose": "A card on the frame shows its state as its button in the (hidden) sheet does: ticked or your answer ringed in ink, the right answer to an answered quick check in coral, with a small tag (\"picked\", \"your answer\", \"the answer\"); \"recommended\" is not tagged, the frame says it",
+      "insteadOf": "no state on the frame, only words in the strip",
+      "why": "the reviewer answered on the card, so the answer is marked there; reading the sheet's buttons (a MutationObserver) keeps both in step with one source",
+      "check": "packages/player/reelplanning-player.js syncHits, .hit[data-chosen], .hit[data-right] CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 56.341,
+      "thumb": "snapshots/frame-05-at-60.47s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "Call A11: Show the frame puts it aside",
+      "compositionId": "07-call-a11",
+      "type": "cta",
+      "durationSeconds": 8.064,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a11",
+      "chose": "\"Show the frame\" is kept in the strip, and there it puts the question aside: the strip folds to one line (\"Still to answer\") and the cards and keys stop answering, so the frame can be marked; a mark tool that is on also takes the clicks from the cards (changed after review: under the video the band folds to that one line in its kept room; in the frame it folds to a pill in the corner of the empty eighth, m3)",
+      "insteadOf": "dropping \"Show the frame\" (the frame is no longer covered), or cards that answer while drawing",
+      "why": "the plan lists it; without it a reviewer who wants to draw on a question's frame would answer it by accident",
+      "check": "packages/player/reelplanning-player.js fold, placeCard, .stage:not([data-tool=\"\"]) .hits CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 64.106,
+      "thumb": "snapshots/frame-06-at-68.39s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "Quick check: three cards, four options",
+      "compositionId": "08-quiz-k1",
+      "type": "social_proof",
+      "durationSeconds": 5.44,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A frame draws three option cards, but its question has four options. What do you see?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "b",
+      "explain": "A rule counts only when it finds one card for every option, so a frame with three cards for four options keeps today's sheet (A2).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The three cards answer; D in the band",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Today's sheet, as before",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The cards answer; D by its key only",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 72.17,
+      "thumb": "snapshots/frame-07-at-75.14s.png",
+      "terms": [
+        "quick check"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "Part 2 of 4",
+      "compositionId": "09-opener-2",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: the answer band",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 77.61,
+      "thumb": "snapshots/frame-08-at-79.86s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "Step 2: the answer band",
+      "compositionId": "10-step-2",
+      "type": "feature_showcase",
+      "durationSeconds": 15.573,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 81.61,
+      "thumb": "snapshots/frame-09-at-89.65s.png",
+      "detail": "band-places",
+      "terms": [
+        "call",
+        "step",
+        "detail"
+      ]
+    },
+    {
+      "index": 11,
+      "title": "Call A13: the frame claims the room",
+      "compositionId": "11-call-a13",
+      "type": "cta",
+      "durationSeconds": 7.083,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a13",
+      "chose": "A video leaves its lowest eighth for the band by data-band=\"bottom\" on each frame's root (or once, on the video's own root); the band goes in the frame only when every frame that asks something carries it, decided once, when the runtime has mounted those frames (looked for up to about 8 s after ready); until then, and otherwise, it goes under the video",
+      "insteadOf": "a field in the storyboard's front matter lifted into the plan map, or a place decided per question",
+      "why": "the attribute is on what actually leaves the room, so a frame built without it cannot claim it; a video mixing places would still have to keep the room under it for its older frames, so it is one place per video",
+      "check": "packages/player/reelplanning-player.js detectBand, placeBand",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 97.183,
+      "thumb": "snapshots/frame-10-at-100.97s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Call A14: older videos keep room under",
+      "compositionId": "12-call-a14",
+      "type": "cta",
+      "durationSeconds": 6.464,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a14",
+      "chose": "The band is an eighth of the video high, never under 72 px. Under the video its room (.bandroom) is kept for the whole video and the stage's height formula leaves exactly it (--band-k 8/9, --band-min 72 px), so the page still fits the window; what does not fit scrolls inside the band rather than growing it. On a phone it is in the page's flow, at least 104 px, and grows by a line when needed",
+      "insteadOf": "a band that grows with what it holds, or a fixed pixel height",
+      "why": "growing would move the transport under it, and a fixed height would be too small on a large screen or too large on a small one; on a phone the frame is the page's width, so a growing band still never resizes it",
+      "check": "packages/player/reelplanning-player.js .bandroom, --band-k, the phone block",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 104.266,
+      "thumb": "snapshots/frame-11-at-107.75s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 13,
+      "title": "Call A15: two lines",
+      "compositionId": "13-call-a15",
+      "type": "cta",
+      "durationSeconds": 7.424,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a15",
+      "chose": "The band's layout: two lines. First the kicker, the question in its own words on one line in the serif (the whole question in its title) and Show the frame; then the hint and the acts, the act that goes on (Continue, Confirm) at the right in ink. Answered, the feedback (two lines at most) takes the question's place. Type scales with the video (cqw): the question 15–22 px, buttons 30–40 px",
+      "insteadOf": "the question in full, wrapping; or the strip's one line",
+      "why": "an eighth of the video holds two lines of reading-size type; the frame shows the question in full already, so the band's line says which question waits",
+      "check": "packages/player/reelplanning-player.js the .decision.band CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 110.73,
+      "thumb": "snapshots/frame-12-at-114.69s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "Call A16: the captions step aside",
+      "compositionId": "14-call-a16",
+      "type": "cta",
+      "durationSeconds": 6.656,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a16",
+      "chose": "In the frame, the captions are hidden while the band is up (not while it is folded), and come back when it goes",
+      "insteadOf": "leaving the captions",
+      "why": "the caption pill sits at y 880–1040, so the band (from y 945) would leave its top edge showing above it; while a question waits the band carries the words",
+      "check": "packages/player/reelplanning-player.js syncBand",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 118.154,
+      "thumb": "snapshots/frame-13-at-121.73s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 15,
+      "title": "Call A3: a call gets the band",
+      "compositionId": "15-call-a3",
+      "type": "cta",
+      "durationSeconds": 6.677,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a3",
+      "chose": "A call always gets the strip, though its frame has no cards: Accept (A) and Flag (B) in it, and the call's \"Instead of\", \"Why\" and \"Check\" leave the player for the kicker's tooltip, since the call's frame shows them (changed after review: the strip is now the band; what the call chose is its one line of words there, in the serif, and its Accept and Flag are clear buttons)",
+      "insteadOf": "keeping the sheet for calls, or listing those facts in the strip",
+      "why": "the plan puts a call's Accept and Flag in the strip; every walkthrough frame for a call already draws what it chose, what it replaced and where to check",
+      "check": "packages/player/reelplanning-player.js openCard (kind === \"call\"), askAutonomy (about)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 124.81,
+      "thumb": "snapshots/frame-14-at-128.4s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "Call A4: a group in the band",
+      "compositionId": "16-call-a4",
+      "type": "cta",
+      "durationSeconds": 6.4,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a4",
+      "chose": "A group of calls in the strip: Accept all, then one \"Flag A21\" per call, named by its id as the frame names it; what each chose and replaced is in its button's title (changed after review: in the band, with \"N more calls from this part.\" as its line of words)",
+      "insteadOf": "the sheet's list of the calls with a Flag on each row",
+      "why": "the grouped frame lists the calls; the list over it is what step 2 removes",
+      "check": "packages/player/reelplanning-player.js groupOpts, flagInGroup",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 131.487,
+      "thumb": "snapshots/frame-15-at-134.94s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 17,
+      "title": "Call A12: tap a card",
+      "compositionId": "17-call-a12",
+      "type": "cta",
+      "durationSeconds": 5.291,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a12",
+      "chose": "On a touch screen the strip says \"Tap a card.\" with no keys named, and its buttons drop their key caps (changed after review: the band's words; on a phone every key cap in the band goes, and its buttons are 44 px high)",
+      "insteadOf": "the desktop wording (\"Click a card, or press A, B or C.\")",
+      "why": "there are no keys to press on a phone",
+      "check": "packages/player/reelplanning-player.js openCard (touch), the phone CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 137.887,
+      "thumb": "snapshots/frame-16-at-140.78s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "Call A5: removed",
+      "compositionId": "18-call-a5",
+      "type": "cta",
+      "durationSeconds": 6.912,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a5",
+      "chose": "While the strip is up the stage gives it its height, so the page still fits the window: the frame shrinks by the strip (about 52 px at 1440×1000; more while an answered quick check shows its explanation, which takes a second line). On a phone the strip is simply in the page's flow (changed after review: removed; the owner saw the video shrink and grow back. The band's room is kept for the whole video instead, A14, and the video never changes size)",
+      "insteadOf": "keeping the frame's size and letting the page scroll under the strip",
+      "why": "the page's rule is the biggest frame that fits the window with its chrome; a strip pushing the timeline and Finish below the window breaks it",
+      "check": "packages/player/reelplanning-player.js syncStrip, --strip in .wrap CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 143.178,
+      "thumb": "snapshots/frame-17-at-146.88s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 19,
+      "title": "Quick check: an older video",
+      "compositionId": "19-quiz-k2",
+      "type": "social_proof",
+      "durationSeconds": 4.523,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A video built before the band stops at a question. Where does the band go?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "Its frames don't carry data-band=\"bottom\", so the band goes under the video, in room kept for the whole video, and nothing resizes (A13, A14).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Over the frame's lowest eighth",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Under the video, in room kept all along",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Under the video, which shrinks while it is up",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 150.09,
+      "thumb": "snapshots/frame-18-at-152.6s.png",
+      "terms": [
+        "quick check"
+      ]
+    },
+    {
+      "index": 20,
+      "title": "Part 3 of 4",
+      "compositionId": "20-opener-3",
+      "type": "product_intro",
+      "durationSeconds": 4.08,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5: questions keep pace",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 154.613,
+      "thumb": "snapshots/frame-19-at-156.9s.png",
+      "terms": [
+        "review",
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 21,
+      "title": "Step 5: questions keep pace",
+      "compositionId": "21-step-5",
+      "type": "feature_showcase",
+      "durationSeconds": 14.144,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 158.693,
+      "thumb": "snapshots/frame-20-at-166.02s.png",
+      "detail": "step-5-rules",
+      "terms": [
+        "beat",
+        "step",
+        "quick check",
+        "detail"
+      ]
+    },
+    {
+      "index": 22,
+      "title": "Call A17: ten seconds just after",
+      "compositionId": "22-call-a17",
+      "type": "cta",
+      "durationSeconds": 6.848,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a17",
+      "chose": "The 10 s wait is for a quick check answered just now; a question met again, already answered, keeps 4 s",
+      "insteadOf": "10 s for every answered question met again",
+      "why": "the owner's words were about reading a quick check's explanation after answering; a rewatch past a run of answered questions would otherwise stop 10 s at each",
+      "check": "packages/player/reelplanning-player.js startWait, _freshAnswer",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 172.837,
+      "thumb": "snapshots/frame-21-at-176.51s.png",
+      "terms": [
+        "call",
+        "quick check"
+      ]
+    },
+    {
+      "index": 23,
+      "title": "Call A18: the count waits on the band",
+      "compositionId": "23-call-a18",
+      "type": "cta",
+      "durationSeconds": 5.973,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a18",
+      "chose": "\"On the band\" is the pointer over it, or the keyboard on any control in it but Continue; while held the count starts again from the top when let go, and the hint says \"Waits while you are here\". Only the band: the sheet (a frame with no cards) keeps counting under a resting pointer",
+      "insteadOf": "Continue counting too; or pausing and resuming the count where it was",
+      "why": "the player puts the keyboard on Continue after every answer, so counting it would mean it never goes on; a sheet is answered by clicking on it, so the pointer is always there",
+      "check": "packages/player/reelplanning-player.js bandHeld, startWait",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 179.685,
+      "thumb": "snapshots/frame-22-at-182.92s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 24,
+      "title": "Call A19: a frame, not a time",
+      "compositionId": "24-call-a19",
+      "type": "cta",
+      "durationSeconds": 6.571,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a19",
+      "chose": "\"Back to where this was explained\": explained_at is a frame number or a composition id, lifted into the plan map as that frame's start (explainedAt, explainedFrame; one naming no frame warns and is left out). Without it: the first beat of the check's plan_step before it that is not a branch or a quick check, else its part's start. The video plays from there at once. In the record it is on the answered quick checks' rows, the only ones listed there",
+      "insteadOf": "a time in seconds in the storyboard; landing paused",
+      "why": "a frame survives a retime and a time does not; the reviewer asked for the rewind to be automatic, so it plays",
+      "check": "scripts/plan-map.mjs explainedFrame; packages/player/reelplanning-player.js explainedAt, backToExplained, renderDecisions (data-back)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 185.658,
+      "thumb": "snapshots/frame-23-at-189.19s.png",
+      "terms": [
+        "call",
+        "beat",
+        "step"
+      ]
+    },
+    {
+      "index": 25,
+      "title": "Call A20: sent as a rewind",
+      "compositionId": "25-call-a20",
+      "type": "cta",
+      "durationSeconds": 3.797,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a20",
+      "chose": "The trip back is sent as a rewind (D-005)",
+      "insteadOf": "not counting it",
+      "why": "it is one, and the review's \"rewound here\" is the same signal: something there wanted saying more plainly",
+      "check": "packages/player/reelplanning-player.js backToExplained (noteRewind)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 192.229,
+      "thumb": "snapshots/frame-24-at-194.38s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 26,
+      "title": "Call A21: it waits there",
+      "compositionId": "26-call-a21",
+      "type": "cta",
+      "durationSeconds": 6.4,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a21",
+      "chose": "Reached again after \"Back to where this was explained\", a quick check waits with no count even when it was answered, as when opened from its mark",
+      "insteadOf": "the usual 4 s for an answered one",
+      "why": "the reviewer went back to look at it again; it should be there when they arrive",
+      "check": "packages/player/reelplanning-player.js meet (_waitFor)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 196.026,
+      "thumb": "snapshots/frame-25-at-199.48s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 27,
+      "title": "Call A22: it stops again",
+      "compositionId": "27-call-a22",
+      "type": "cta",
+      "durationSeconds": 7.893,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a22",
+      "chose": "An open question the video leaves while playing (Play pressed with it up, or a seek away and then Play) gives way, and stops the video again when reached; a seek while paused still leaves it up, the frame moving under it; the rule that a question asked once and left open is never asked again is dropped",
+      "insteadOf": "closing it on any seek, or Play doing nothing while a question waits",
+      "why": "review-keys.spec.mjs keeps the question up under ← and →, so a reviewer can look back before answering; Play is the reviewer choosing to go on without answering, and the question then comes back where it belongs",
+      "check": "packages/player/reelplanning-player.js tickDecisions",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 202.426,
+      "thumb": "snapshots/frame-26-at-206.62s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 28,
+      "title": "Quick check: the pointer on the band",
+      "compositionId": "28-quiz-k3",
+      "type": "social_proof",
+      "durationSeconds": 4.928,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You answered a quick check, and your pointer rests on the band. When does the video go on?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "c",
+      "explain": "The count waits while the pointer or the keyboard is on the band, and starts again from the top when you leave; Continue goes at once (A18).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "After ten seconds",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "After four seconds",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Ten seconds after you leave the band, or on Continue",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 210.319,
+      "thumb": "snapshots/frame-27-at-213.03s.png",
+      "terms": [
+        "quick check"
+      ]
+    },
+    {
+      "index": 29,
+      "title": "Part 4 of 4",
+      "compositionId": "29-opener-4",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Steps 3 and 4: the record, and the check",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 215.247,
+      "thumb": "snapshots/frame-28-at-217.5s.png"
+    },
+    {
+      "index": 30,
+      "title": "Step 3: the record edits in place",
+      "compositionId": "30-step-3",
+      "type": "feature_showcase",
+      "durationSeconds": 6.955,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 219.247,
+      "thumb": "snapshots/frame-29-at-222.97s.png",
+      "terms": [
+        "call",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 31,
+      "title": "Call A7: change opens the options",
+      "compositionId": "31-call-a7",
+      "type": "cta",
+      "durationSeconds": 5.931,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a7",
+      "chose": "\"change\" opens a small editor under the answer: the question's options (a click saves; a pick-all ticks, then \"Save the picks\") and a line for own words (Enter saves); Esc closes it unchanged; no \"Explain this more\" there. Changing it while that question is up on the video closes the question",
+      "insteadOf": "a select, or reopening the question on the video as before",
+      "why": "the options are what the question offered, and the record is written as a fresh answer would be, so the video routes by it; asking for more is the question's own act",
+      "check": "packages/player/reelplanning-player.js answerEditor, changeAnswer, .redit CSS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 226.202,
+      "thumb": "snapshots/frame-30-at-229.42s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 32,
+      "title": "Call A8: own words replaced",
+      "compositionId": "32-call-a8",
+      "type": "cta",
+      "durationSeconds": 6.443,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a8",
+      "chose": "An answer that was in own words, changed in the record, drops the comment those words made at the question; new own words make a new one",
+      "insteadOf": "leaving the old comment, or rewording it in place",
+      "why": "the answer and that comment are the same words; left behind, the export would carry two different answers to one question",
+      "check": "packages/player/reelplanning-player.js changeAnswer",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 232.133,
+      "thumb": "snapshots/frame-31-at-235.6s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 33,
+      "title": "Call A9: switch a verdict",
+      "compositionId": "33-call-a9",
+      "type": "cta",
+      "durationSeconds": 5.163,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a9",
+      "chose": "A call's verdict switches with one link beside it, \"accept instead\" or \"flag instead\"; a call answered in own words can be switched to either, and its comment goes",
+      "insteadOf": "a toggle, or reopening the call on the video",
+      "why": "one click makes the same record the strip makes (recordVerdict), so the flag's note on its step is added or removed with it",
+      "check": "packages/player/reelplanning-player.js renderAutonomy (data-reverdict), changeVerdict",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 238.576,
+      "thumb": "snapshots/frame-32-at-241.41s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 34,
+      "title": "Call A10: Send the change",
+      "compositionId": "34-call-a10",
+      "type": "cta",
+      "durationSeconds": 6.016,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a10",
+      "chose": "After a send, \"Send the change\" is offered at the head of the record as well as in the Finish panel, on the local review page only",
+      "insteadOf": "the Finish panel only; or the hosted page too",
+      "why": "edits are made in the record, so the offer is where they are made; a hosted page has no second send today (a new comment is not offered there either), and adding one is a change to what the hosted store receives",
+      "check": "packages/player/reelplanning-player.js syncResend, .resend",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 243.739,
+      "thumb": "snapshots/frame-33-at-247s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 35,
+      "title": "Step 4: four videos, by clicks",
+      "compositionId": "35-step-4",
+      "type": "feature_showcase",
+      "durationSeconds": 11.371,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 249.755,
+      "thumb": "snapshots/frame-34-at-255.69s.png",
+      "terms": [
+        "review",
+        "step"
+      ]
+    },
+    {
+      "index": 36,
+      "title": "Deviation D1: four videos, not every one",
+      "compositionId": "36-deviation-d1",
+      "type": "cta",
+      "durationSeconds": 7.936,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "d1",
+      "chose": "The new spec plays four videos through (this plan's, the revise-loop plan and walkthrough, the system video); the other videos on the review page were checked once, by a script, for their cards being matched (all were), and are not in the spec",
+      "insteadOf": "every video on the review page in the spec",
+      "why": "the four are the kinds there are (plan, walkthrough with calls and groups, system); each more video adds about a minute to npm test, and the matching they would test is the same code",
+      "check": "packages/player/test/answer-on-frame.spec.mjs",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 261.126,
+      "thumb": "snapshots/frame-35-at-265.34s.png",
+      "terms": [
+        "review",
+        "deviation"
+      ]
+    },
+    {
+      "index": 37,
+      "title": "Quick check: a verdict switched after the send",
+      "compositionId": "37-quiz-k4",
+      "type": "social_proof",
+      "durationSeconds": 4.736,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You have sent your review, and now switch a call's verdict in the record. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "After a send, any edit in the record is offered as Send the change, at the head of the record and in the Finish panel; nothing is sent until you press it (A10).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It is saved, and goes with your next review",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "It is offered as Send the change",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "It is sent at once",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 269.062,
+      "thumb": "snapshots/frame-36-at-271.68s.png",
+      "terms": [
+        "review",
+        "call",
+        "finish",
+        "quick check"
+      ]
+    },
+    {
+      "index": 38,
+      "title": "What ran, and what is not done",
+      "compositionId": "38-ran",
+      "type": "benefit_highlight",
+      "durationSeconds": 9.216,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 273.798,
+      "thumb": "snapshots/frame-37-at-278.66s.png"
+    },
+    {
+      "index": 39,
+      "title": "Flag a step, or accept",
+      "compositionId": "39-end",
+      "type": "cta",
+      "durationSeconds": 14.82,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 283.014,
+      "thumb": "snapshots/frame-38-at-290.42s.png",
+      "terms": [
+        "call",
+        "deviation",
+        "step"
+      ]
+    }
+  ],
+  "decisions": [],
+  "details": [
+    {
+      "name": "band-places",
+      "src": "details/band-places.html",
+      "title": "Where the band goes, and how big it is",
+      "kind": "table",
+      "why": "The detail lists where it goes on each kind of video.",
+      "frameIndex": 10,
+      "compositionId": "10-step-2",
+      "planStep": 2,
+      "start": 81.61,
+      "end": 97.183,
+      "autonomy": null
+    },
+    {
+      "name": "step-5-rules",
+      "src": "details/step-5-rules.html",
+      "title": "Step 5's rules, and the player's older ones",
+      "kind": "table",
+      "why": "The detail shows how these meet the older rules.",
+      "frameIndex": 21,
+      "compositionId": "21-step-5",
+      "planStep": 5,
+      "start": 158.693,
+      "end": 172.837,
+      "autonomy": null
+    }
+  ],
+  "plan": {
+    "title": "Answer on the video itself, and edit the record in place",
+    "problem": "When the video stops at a question, a sheet slides up over the frame and asks it again: the frame\nalready shows the question and its options as cards, and the sheet repeats both in a smaller, busier\nform, covering part of what it asks about. You answer in the sheet, not on the thing you are looking\nat. And the record is only partly editable: a comment's words can be edited there, and a comment or\na mark removed, but changing an answer (\"change\") sends you back into the video to be asked again,\nand a call's verdict, a mark's words and a quick check's note can't be changed from the list at all.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Click an option on the frame to answer",
+        "text": "*Independent.*\n\nWhile a question waits, the frame's option cards are clickable: hover and keyboard focus light the\ncard, a click answers exactly as the A–D keys do (a pick-all question ticks the card and waits for\nConfirm). The same for a quick check's options. The player already reads each frame's page (it\nmarks the chosen option there after an answer), so this is the player's work, not the frames': new\nframes mark each card with `data-option=\"a\"`, and older frames, which don't, are matched by the\norder of their option cards. A frame with no cards to match keeps today's sheet."
+      },
+      {
+        "n": 2,
+        "title": "A band, not a sheet: large enough to read, and the video never resizes",
+        "text": "*Needs step 1 (the cards answer, so the band no longer repeats them).*\n\nThe question and its options are no longer repeated over the frame. What is left is what the frame\ncannot do: answer in your own words, \"Explain this more\", a note on your answer, Confirm for a\npick-all question, \"Show the frame\" to look without answering, and a call's Accept and Flag (with A\nand B as now). The first version put these in a thin strip under the video (question 1, answered\nA), and your review found it too small to read, and that the video shrank to make room for it and\ngrew back after. So the band is redone: type at reading size, the question's own words in it, clear\nbuttons rather than links, laid out to match the frame's look; and its room is kept for the whole\nvideo, so nothing changes size when a question opens or closes. Where it sits is question 2."
+      },
+      {
+        "n": 3,
+        "title": "Edit the record where it is listed",
+        "text": "*Independent.*\n\nIn the record, the items that can't be changed there yet get their own small edit: a decision's\nanswer is changed in place, without going back into the video (the video routes as a fresh answer\nwould); a call's verdict switched; a mark's words edited; a quick check's note edited. Editing a\ncomment's words and removing a comment or a mark already work, and stay as they are. A quick check's first\nanswer stays as it is. After a review is sent, any edit is offered as \"Send the change\", as a new\ncomment already is."
+      },
+      {
+        "n": 4,
+        "title": "Check it on the videos already there",
+        "text": "*Needs steps 1–3 and 5.*\n\nEvery video on the review page is played through its questions with clicks only, in light and dark\nand at phone width: the plan videos, the walkthroughs and the system video. The record edits are\nchecked in the export the Finish panel sends; the video's size is measured before, during and after\neach question and must not change."
+      },
+      {
+        "n": 5,
+        "title": "Questions keep pace with you",
+        "text": "*Independent.*\n\nThree things your review asked for:\n\n- **A quick check waits longer.** After you answer, the video goes on by itself after 10 s, not 4 s,\n  and never while the pointer or focus is on the band; Continue still goes at once.\n- **\"Back to where this was explained.\"** Every quick check has it: one click takes the video to the\n  start of what the question tests (the first beat of its step, or a beat the storyboard names with\n  `- explained_at:`), and the question waits there again when playback reaches it.\n- **An unanswered question stops again.** A question you skipped past, folded away or never answered\n  stops the video every time playback reaches it, until it is answered. (Answered ones come back\n  answered and go on by themselves, as now.)"
+      }
+    ]
+  },
+  "slug": "2026-09-24-answer-on-the-video--walkthrough",
+  "prerequisites": [
+    {
+      "video": "system",
+      "title": "reelplanning: the whole system",
+      "gives": "what the parts are and how a review goes",
+      "seconds": 478.3,
+      "terms": [
+        "beat",
+        "plan text",
+        "open chip",
+        "detail",
+        "side panel",
+        "answer band",
+        "call",
+        "quick check",
+        "plan video",
+        "walkthrough",
+        "chapter",
+        "area",
+        "plan-to-video skill",
+        "narrate",
+        "finish-project",
+        "plan-diff",
+        "details check",
+        "review player",
+        "review server",
+        "inbox",
+        "headless run",
+        "reel cli",
+        "decision log",
+        "revise step",
+        "implement step",
+        "walkthrough fix step",
+        "system video",
+        "approve",
+        "sandbox",
+        "review",
+        "notification",
+        "tag",
+        "deviation",
+        "reel stops",
+        "streak",
+        "id",
+        "grouped beat",
+        "own words",
+        "accept all",
+        "system-review",
+        "memory",
+        "miss",
+        "retro",
+        "step",
+        "finish"
+      ],
+      "found": true,
+      "default": true
+    }
+  ],
+  "terms": [],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns plan.md into a video via HyperFrames",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's command from config.json, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "scripts/reel.mjs; manages .reelplanning/; reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into plan.md; changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Implements plan.md and logs each call the plan did not cover into walkthrough.md, with tags; its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo from spec.md; rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once as reviews/<kind>-<time>.json with a .md of what to act on; never overwritten. The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Review loop, step 2: nobody waiting",
+        "start": 185.951,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Review loop, steps 5–6: rebuild, and you're told",
+        "start": 225.235,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover: one row in walkthrough.md. Labelled visible, hard-to-undo or close when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the ledger and reviews/, never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Next: chapter 2",
+        "start": 75.483,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Chapter 2 of 5",
+        "start": 79.483,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started by reel retro when reel status says one is due, and judged against a fixed benchmark",
+      "forms": [
+        "retro"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each choice",
+        "start": 26.069,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Build loop, step 6: this video catches up",
+        "start": 343.071,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold; started from a template in templates/details/",
+      "forms": [
+        "detail"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words from plan.md, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "check-details, run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    }
+  ],
+  "ids": {
+    "A1": {
+      "kind": "choice",
+      "gloss": "The frame's cards are answered through transparent buttons the player lays…"
+    },
+    "A10": {
+      "kind": "choice",
+      "gloss": "After a send, \"Send the change\" is offered at the head of the record as well…"
+    },
+    "A11": {
+      "kind": "choice",
+      "gloss": "\"Show the frame\" is kept in the strip, and there it puts the question aside…"
+    },
+    "A12": {
+      "kind": "choice",
+      "gloss": "On a touch screen the strip says \"Tap a card.\" with no keys named, and its…"
+    },
+    "A13": {
+      "kind": "choice",
+      "gloss": "A video leaves its lowest eighth for the band by data-band=\"bottom\" on each…"
+    },
+    "A14": {
+      "kind": "choice",
+      "gloss": "The band is an eighth of the video high, never under 72 px. Under the video…"
+    },
+    "A15": {
+      "kind": "choice",
+      "gloss": "The band's layout: two lines. First the kicker, the question in its own words…"
+    },
+    "A16": {
+      "kind": "choice",
+      "gloss": "In the frame, the captions are hidden while the band is up (not while it is…"
+    },
+    "A17": {
+      "kind": "choice",
+      "gloss": "The 10 s wait is for a quick check answered just now; a question met again…"
+    },
+    "A18": {
+      "kind": "choice",
+      "gloss": "\"On the band\" is the pointer over it, or the keyboard on any control in it but…"
+    },
+    "A19": {
+      "kind": "choice",
+      "gloss": "\"Back to where this was explained\": explained_at is a frame number or a…"
+    },
+    "A2": {
+      "kind": "choice",
+      "gloss": "Cards are matched by data-option, then by data-plan-option (the letter the…"
+    },
+    "A20": {
+      "kind": "choice",
+      "gloss": "The trip back is sent as a rewind (D-005)"
+    },
+    "A21": {
+      "kind": "choice",
+      "gloss": "Reached again after \"Back to where this was explained\", a quick check waits…"
+    },
+    "A22": {
+      "kind": "choice",
+      "gloss": "An open question the video leaves while playing (Play pressed with it up, or a…"
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": "A call always gets the strip, though its frame has no cards: Accept (A) and…"
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": "A group of calls in the strip: Accept all, then one \"Flag A21\" per call, named…"
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": "While the strip is up the stage gives it its height, so the page still fits…"
+    },
+    "A6": {
+      "kind": "choice",
+      "gloss": "A card on the frame shows its state as its button in the (hidden) sheet does…"
+    },
+    "A7": {
+      "kind": "choice",
+      "gloss": "\"change\" opens a small editor under the answer: the question's options (a…"
+    },
+    "A8": {
+      "kind": "choice",
+      "gloss": "An answer that was in own words, changed in the record, drops the comment…"
+    },
+    "A9": {
+      "kind": "choice",
+      "gloss": "A call's verdict switches with one link beside it, \"accept instead\" or \"flag…"
+    },
+    "D-005": {
+      "kind": "decision",
+      "gloss": "Which video-only feedback comes first? Automatic rewinds"
+    },
+    "D-108": {
+      "kind": "decision",
+      "gloss": "Where do the answers the frame can't take go? i like the pricnicple of A, not…"
+    },
+    "D1": {
+      "kind": "off-plan change",
+      "gloss": "The new spec plays four videos through (this plan's, the revise-loop plan and…"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "A frame draws three option cards, but its question has four options. What do…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "A video built before the band stops at a question. Where does the band go?"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "You answered a quick check, and your pointer rests on the band. When does the…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "You have sent your review, and now switch a call's verdict in the record. What…"
+    },
+    "q2": {
+      "kind": "question",
+      "n": 2,
+      "gloss": null
+    }
+  }
+}

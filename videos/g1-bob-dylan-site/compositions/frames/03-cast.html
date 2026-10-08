@@ -1,0 +1,170 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  #f03-cast-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  #f03-cast-stage { position: absolute; inset: 0; }
+
+  /* kicker-spike: ink, no coral in this frame until the stage's own signal */
+  #f03-cast-kicker { position: absolute; left: 80px; top: 96px; font: 500 28px/1 "JetBrains Mono"; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rp-ink); white-space: nowrap; }
+
+  /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+  /* the rail: the plan. Six dashed slots land on "six parts"; each one fills on its spoken name. */
+  .f03-cast-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f03-cast-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f03-cast-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f03-cast-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  /* the filled look, drawn over the dashed outline when the slot is named */
+  .f03-cast-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+
+  /* section labels above each stretch of the chain */
+  .f03-cast-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* sources: real file names, stacked */
+  .f03-cast-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+
+  /* the one process */
+  .f03-cast-build { position:absolute; left:980px; top:400px; width:200px; height:126px; border-radius:12px; background:var(--rp-data); display:flex; align-items:center; justify-content:center; }
+  .f03-cast-build .l { font:500 32px/1.15 "Inter"; color:var(--rp-on-ink); }
+  /* the frame's ONE coral: the ring the Build tile lands with, handed back to ink */
+  .f03-cast-ring { position:absolute; inset:-3px; border-radius:15px; border:3px solid var(--rp-coral); pointer-events:none; }
+
+  .f03-cast-arrow { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f03-cast-arrow::after { content:""; position:absolute; right:-2px; top:-8px; border-left:16px solid rgba(var(--rp-ink-rgb),0.4); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+
+  /* the output IS pages, so it is drawn as pages */
+  .f03-cast-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f03-cast-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  /* the bar carries its FINAL (book) rhythm; the pre-book look is a scaleY, not a height */
+  .f03-cast-page .bar { height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:9px; }
+  /* the search field is out of flow, so the first bar under it holds its place (18 + 10) */
+  .f03-cast-page .f03-cast-find + .bar { margin-top:28px; }
+  .f03-cast-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* search is a field on the page that gets it (the song page) */
+  /* final geometry, out of flow: 14 padding + 17.25 heading line + 9 heading margin = 40.25 */
+  .f03-cast-find { position:absolute; left:14px; right:14px; top:40.25px; height:18px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.35); overflow:hidden; }
+  .f03-cast-find::after { content:""; position:absolute; left:6px; top:5px; width:7px; height:7px; border-radius:50%; border:1.5px solid rgba(var(--rp-ink-rgb),0.5); }
+
+  /* hosting is where the pages are served from: a bar over the row */
+  .f03-cast-host { position:absolute; top:300px; left:1258px; width:552px; height:34px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 14px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+</style>
+
+<div id="root" data-composition-id="03-cast" data-duration="11" data-width="1920" data-height="1080">
+  <div class="clip" id="f03-cast-bg" data-start="0" data-duration="11" data-track-index="0"></div>
+
+  <div class="clip" id="f03-cast-stage" data-start="0" data-duration="11" data-track-index="1">
+    <div id="f03-cast-kicker">&#x2731; 6 parts</div>
+
+    <!-- the plan: six slots, each filled on the word that names it -->
+    <div class="f03-cast-rail" id="f03-cast-rail">
+      <div class="f03-cast-slot" id="f03-cast-slot-1" data-plan-step="1" style="top:0px"><div class="f03-cast-fill" id="f03-cast-fill-1"></div><span class="n">1</span><span class="t">Content model</span></div>
+      <div class="f03-cast-slot" id="f03-cast-slot-2" data-plan-step="2" style="top:110px"><div class="f03-cast-fill" id="f03-cast-fill-2"></div><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f03-cast-slot" id="f03-cast-slot-3" data-plan-step="3" style="top:220px"><div class="f03-cast-fill" id="f03-cast-fill-3"></div><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f03-cast-slot" id="f03-cast-slot-4" data-plan-step="4" style="top:330px"><div class="f03-cast-fill" id="f03-cast-fill-4"></div><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f03-cast-slot" id="f03-cast-slot-5" data-plan-step="5" style="top:440px"><div class="f03-cast-fill" id="f03-cast-fill-5"></div><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f03-cast-slot" id="f03-cast-slot-6" data-plan-step="6" style="top:550px"><div class="f03-cast-fill" id="f03-cast-fill-6"></div><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- THE CHAIN: content files -> build -> pages. Assembled stretch by stretch. -->
+    <div class="f03-cast-lbl" id="f03-cast-lbl-files" style="left:660px;top:300px">Content files</div>
+    <div class="f03-cast-file" id="f03-cast-file-1" style="top:346px">albums/</div>
+    <div class="f03-cast-file" id="f03-cast-file-2" style="top:432px">songs/</div>
+    <div class="f03-cast-file" id="f03-cast-file-3" style="top:518px">events/</div>
+
+    <div class="f03-cast-arrow" id="f03-cast-arrow-1" style="left:900px;top:462px;width:60px"></div>
+
+    <div class="f03-cast-lbl" id="f03-cast-lbl-build" style="left:980px;top:300px">Build</div>
+    <div class="f03-cast-build" id="f03-cast-build"><span class="l">Build</span><i class="f03-cast-ring" id="f03-cast-ring"></i></div>
+
+    <div class="f03-cast-arrow" id="f03-cast-arrow-2" style="left:1200px;top:462px;width:60px"></div>
+
+    <div class="f03-cast-lbl" id="f03-cast-lbl-pages" style="left:1258px;top:300px">Pages</div>
+    <div class="f03-cast-host" id="f03-cast-host">bob-dylan.site &#183; static host</div>
+
+    <div class="f03-cast-page" id="f03-cast-page-album" style="left:1258px"><h>Bringing It All Back Home</h><div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div><span class="cap">album</span></div>
+    <div class="f03-cast-page" id="f03-cast-page-era" style="left:1448px"><h>Going Electric, 1965</h><div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div><span class="cap">era</span></div>
+    <div class="f03-cast-page" id="f03-cast-page-song" style="left:1638px"><h>Like a Rolling Stone</h><div class="f03-cast-find" id="f03-cast-find"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><span class="cap">song</span></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+
+  var slots = [1, 2, 3, 4, 5, 6].map(function (i) { return q("f03-cast-slot-" + i); });
+  var fills = [1, 2, 3, 4, 5, 6].map(function (i) { return q("f03-cast-fill-" + i); });
+  var files = [1, 2, 3].map(function (i) { return q("f03-cast-file-" + i); });
+  var pages = [q("f03-cast-page-album"), q("f03-cast-page-era"), q("f03-cast-page-song")];
+  var heads = pages.map(function (p) { return p.querySelector("h"); });
+  var bars  = pages.reduce(function (a, p) { return a.concat(Array.prototype.slice.call(p.querySelectorAll(".bar"))); }, []);
+
+  var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+  // a rail slot fills on the word that names it: the filled plate, then its number and title.
+  function fillSlot(i, at) {
+    tl.fromTo(fills[i - 1], { opacity: 0 }, { opacity: 1, duration: 0.45 }, at);
+    tl.fromTo(slots[i - 1].querySelector(".n"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, at + 0.06);
+    tl.fromTo(slots[i - 1].querySelector(".t"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, at + 0.12);
+  }
+
+  // Scene 1 — "The plan has six parts": the kicker, then six empty slots. They name nothing yet.
+  tl.fromTo(q("f03-cast-kicker"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4 }, 0.938);
+  tl.fromTo(slots, { opacity: 0, y: 12 }, { opacity: 0.72, y: 0, duration: 0.5, stagger: 0.07 }, 1.242);
+
+  // Scene 2 — "content files": the head of the chain, three real file names.
+  tl.fromTo(q("f03-cast-lbl-files"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4 }, 1.698);
+  tl.fromTo(files, { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.45, stagger: 0.14 }, 1.851);
+  fillSlot(1, 1.698);
+
+  // Scene 3 — "a data build that checks and links them": the arrow draws into the one process,
+  // the Build tile lands wearing the frame's single coral ring.
+  tl.fromTo(q("f03-cast-arrow-1"), { width: 0, opacity: 0 }, { width: 60, opacity: 1, duration: 0.45 }, 2.686);
+  tl.fromTo(q("f03-cast-lbl-build"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4 }, 2.956);
+  tl.fromTo(q("f03-cast-build"), { opacity: 0, y: 18, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45 }, 2.956);
+  tl.fromTo(q("f03-cast-ring"), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 2.956);
+  fillSlot(2, 2.956);
+  // "...them." — the build has been described; the coral hands back to ink.
+  tl.to(q("f03-cast-ring"), { opacity: 0, duration: 0.3 }, 4.334);
+
+  // Scene 4 — "a generator that makes the pages": the second arrow, then the pages themselves.
+  tl.fromTo(q("f03-cast-arrow-2"), { width: 0, opacity: 0 }, { width: 60, opacity: 1, duration: 0.45 }, 4.84);
+  fillSlot(3, 4.84);
+  tl.fromTo(q("f03-cast-lbl-pages"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4 }, 6.41);
+  tl.fromTo(pages, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12 }, 6.41);
+
+  // Scene 5 — "a search index": the rail takes the step, then a search field opens ON the song page.
+  fillSlot(5, 6.822);
+  tl.fromTo(q("f03-cast-find"), { scaleY: 0, opacity: 0, transformOrigin: "50% 0" },
+                                { scaleY: 1, opacity: 1, transformOrigin: "50% 0", duration: 0.45 }, 7.18);
+
+  // Scene 6 — "hosting": the row's label gives way to the host the pages are served from.
+  tl.to(q("f03-cast-lbl-pages"), { opacity: 0, duration: 0.2, ease: "power2.in" }, 7.524);
+  tl.fromTo(q("f03-cast-host"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45 }, 7.582);
+  fillSlot(6, 7.524);
+
+  // Scene 7 — "a design system": not a box — the pages restyle. Headings turn serif, rules loosen.
+  fillSlot(4, 8.417);
+  tl.set(heads, { fontFamily: '"EB Garamond"', letterSpacing: 0 }, 8.417);
+  tl.fromTo(heads, { opacity: 0.45, y: 3 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, immediateRender: false }, 8.417);
+  // 5px/7px pre-book -> 4px/9px book: scaleY 1.25 -> 1, and the 12px -> 13px pitch as a 1px y per bar.
+  tl.fromTo(bars, { scaleY: 1.25, y: function (i) { return -(i % 4); }, transformOrigin: "50% 0" },
+                  { scaleY: 1, y: 0, transformOrigin: "50% 0", duration: 0.4, stagger: 0.012 }, 8.579);
+
+  // held read to the end of the clip
+  tl.to({}, { duration: 0.001 }, 10.823);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["03-cast"] = tl;
+})();
+</script>
+</template>

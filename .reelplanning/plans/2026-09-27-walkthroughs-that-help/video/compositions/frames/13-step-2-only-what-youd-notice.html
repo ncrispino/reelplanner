@@ -1,0 +1,139 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k13-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k13-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k13-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k13-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k13-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k13-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k13-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k13-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k13-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k13-ul.ink { background:var(--rp-ink); height:3px; }
+  .k13-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k13-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k13-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k13-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k13-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k13-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k13-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k13-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k13-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k13-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k13-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k13-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k13-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k13-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k13-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k13-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k13-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k13-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k13-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k13-chip code, .k13-name code, .k13-small code, .k13-lab code, .k13-kick code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k13-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k13-line.hot { background:var(--rp-coral); }
+  .k13-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k13-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k13-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k13-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k13-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .k13-shot img { display:block; }
+  .k13-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k13-rg.hot { border-color:var(--rp-coral); }
+  .k13-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k13-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k13-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k13-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k13-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k13-ctl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k13-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k13-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k13-card { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k13-card i { position:absolute; left:14px; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k13-bar { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.55); border-radius:4px 4px 0 0; }
+  .k13-bar.hot { background:var(--rp-coral); }
+  .k13-mk { position:absolute; font:700 40px/1 "Inter"; color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="13-step-2-only-what-youd-notice" data-band="bottom" data-duration="22.687" data-width="1920" data-height="1080">
+
+  <div class="clip k13-bg" id="k13-bg" data-start="0" data-duration="22.687" data-track-index="0"></div>
+
+  <div class="clip k13-scene" id="k13-scene" data-start="0" data-duration="22.687" data-track-index="1">
+    <div class="k13-chip" id="k13-dec" style="left:120px; top:70px">decided · decisions D-220, D-221</div>
+    <div class="k13-bl" id="k13-hp" style="left:120px; top:170px">pauses · shown running</div>
+    <div class="k13-box" id="k13-p0" style="left:120px; top:215px; width:860px; height:110px"></div><div class="k13-name" id="k13-pt0" style="left:150px; top:240px; font-size:38px">an off-plan change</div><div class="k13-bl" id="k13-pw0" style="left:760px; top:254px">always</div>
+    <div class="k13-box" id="k13-p1" style="left:120px; top:345px; width:860px; height:110px"></div><div class="k13-name" id="k13-pt1" style="left:150px; top:370px; font-size:38px">the Save button moves</div><div class="k13-bl" id="k13-pw1" style="left:760px; top:384px">you'd notice</div>
+    <div class="k13-box" id="k13-p2" style="left:120px; top:475px; width:860px; height:110px"></div><div class="k13-name" id="k13-pt2" style="left:150px; top:500px; font-size:38px">saved reviews, new file layout</div><div class="k13-bl" id="k13-pw2" style="left:760px; top:514px">hard to undo</div>
+    <div class="k13-bl" id="k13-hs" style="left:1060px; top:170px">split a long file · before and after</div>
+    <div class="k13-small" id="k13-s0" style="left:1060px; top:220px">the page</div><div class="k13-chip" id="k13-sc0" style="left:1560px; top:214px">the same</div>
+    <div class="k13-small" id="k13-s1" style="left:1060px; top:290px">the buttons</div><div class="k13-chip" id="k13-sc1" style="left:1560px; top:284px">the same</div>
+    <div class="k13-small" id="k13-s2" style="left:1060px; top:360px">the data on disk</div><div class="k13-chip" id="k13-sc2" style="left:1560px; top:354px">the same</div>
+    <div class="k13-line" id="k13-l0" style="left:1060px; top:500px; width:460px"></div><div class="k13-small" id="k13-lt0" style="left:1060px; top:450px; font-size:26px">the list · not judged</div><div class="k13-tab" id="k13-f0" style="left:1560px; top:470px">Flag</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "13-step-2-only-what-youd-notice";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k13-dec", { opacity: 0, y: 12 });
+  tl.to("#k13-dec", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.73);
+  gsap.set("#k13-hp", { opacity: 0 });
+  tl.to("#k13-hp", { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.51);
+  gsap.set("#k13-p0", { opacity: 0, y: 12 });
+  tl.to("#k13-p0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.61);
+  gsap.set("#k13-pt0", { opacity: 0, y: 12 });
+  tl.to("#k13-pt0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.81);
+  gsap.set("#k13-pw0", { opacity: 0 });
+  tl.to("#k13-pw0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 3.11);
+  gsap.set("#k13-p1", { opacity: 0, y: 12 });
+  tl.to("#k13-p1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.17);
+  gsap.set("#k13-pt1", { opacity: 0, y: 12 });
+  tl.to("#k13-pt1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.37);
+  gsap.set("#k13-pw1", { opacity: 0 });
+  tl.to("#k13-pw1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 6.67);
+  gsap.set("#k13-p2", { opacity: 0, y: 12 });
+  tl.to("#k13-p2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.13);
+  gsap.set("#k13-pt2", { opacity: 0, y: 12 });
+  tl.to("#k13-pt2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.33);
+  gsap.set("#k13-pw2", { opacity: 0 });
+  tl.to("#k13-pw2", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.63);
+  gsap.set("#k13-hs", { opacity: 0 });
+  tl.to("#k13-hs", { opacity: 1, duration: 0.3, ease: "power2.out" }, 12.34);
+  gsap.set("#k13-s0", { opacity: 0 });
+  tl.to("#k13-s0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 14.42);
+  gsap.set("#k13-sc0", { opacity: 0, y: 12 });
+  tl.to("#k13-sc0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.82);
+  gsap.set("#k13-s1", { opacity: 0 });
+  tl.to("#k13-s1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 15.55);
+  gsap.set("#k13-sc1", { opacity: 0, y: 12 });
+  tl.to("#k13-sc1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.95);
+  gsap.set("#k13-s2", { opacity: 0 });
+  tl.to("#k13-s2", { opacity: 1, duration: 0.3, ease: "power2.out" }, 16.72);
+  gsap.set("#k13-sc2", { opacity: 0, y: 12 });
+  tl.to("#k13-sc2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 17.12);
+  gsap.set("#k13-l0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k13-l0", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 20.92);
+  gsap.set("#k13-lt0", { opacity: 0 });
+  tl.to("#k13-lt0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 21.02);
+  gsap.set("#k13-f0", { opacity: 0, y: 12 });
+  tl.to("#k13-f0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 21.32);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

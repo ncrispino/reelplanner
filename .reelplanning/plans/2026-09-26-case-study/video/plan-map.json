@@ -1,0 +1,2021 @@
+{
+  "project": "video",
+  "title": "A case study for any plan: text only, HTML and ours, from one prompt to a finished site",
+  "planDir": ".reelplanning/plans/2026-09-26-case-study",
+  "totalSeconds": 299.4,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "One prompt, three ways",
+      "fromFrame": 1,
+      "toFrame": 3,
+      "start": 0,
+      "end": 41,
+      "linearSeconds": 41,
+      "watchedSeconds": 41,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 1: the kit",
+      "fromFrame": 4,
+      "toFrame": 8,
+      "start": 41,
+      "end": 121.1,
+      "linearSeconds": 80.1,
+      "watchedSeconds": 80.1,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 2: the other two arms",
+      "fromFrame": 9,
+      "toFrame": 11,
+      "start": 121.1,
+      "end": 162.6,
+      "linearSeconds": 41.5,
+      "watchedSeconds": 41.5,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 3: ours, every stage",
+      "fromFrame": 12,
+      "toFrame": 15,
+      "start": 162.6,
+      "end": 223.1,
+      "linearSeconds": 60.5,
+      "watchedSeconds": 60.5,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Step 4: where each ends up",
+      "fromFrame": 16,
+      "toFrame": 20,
+      "start": 223.1,
+      "end": 299.4,
+      "linearSeconds": 76.3,
+      "watchedSeconds": 76.3,
+      "decisions": []
+    }
+  ],
+  "levels": {
+    "new": 299.4,
+    "familiar": 277.5,
+    "owner": 277.5
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 8,
+      "planStep": 1,
+      "question": "The HTML arm's folder goes to the blind judge. What does the judge see?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Its plan page and the site",
+          "why": "The plan page names the arm, so it is taken out first."
+        },
+        {
+          "id": "b",
+          "label": "The site alone, as X, Y or Z",
+          "why": "Right: only the site is left, under a shuffled letter."
+        },
+        {
+          "id": "c",
+          "label": "The site, labelled HTML",
+          "why": "The judge never learns which arm made which site; the key stays with you."
+        }
+      ],
+      "answer": "b",
+      "explain": "Everything that names an arm is taken out, the plan page and the report included, so the judge sees only a site, under a letter.",
+      "at": 121.05,
+      "explainedAt": 95.9,
+      "explainedFrame": 7,
+      "walkMeThrough": "The HTML arm's folder holds its plan page, its report page and the site. Before the judge sees it, anything that names an arm is taken out: plan.html and report.html go. What is left is the site alone, and it arrives as X, Y or Z, shuffled with the other two."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 11,
+      "planStep": 2,
+      "question": "In the HTML arm, where do you read the choices the agent made that the plan did not cover?",
+      "options": [
+        {
+          "id": "a",
+          "label": "In the chat",
+          "why": "The chat has the agent's closing words, but the arm asks for the choices in a page."
+        },
+        {
+          "id": "b",
+          "label": "In its report page",
+          "why": "Right: the report page lists what was built and the choices made alone."
+        },
+        {
+          "id": "c",
+          "label": "In the plan page",
+          "why": "The plan page is written before the build, so it cannot hold choices made during it."
+        }
+      ],
+      "answer": "b",
+      "explain": "After the build, the HTML arm asks for a report page: what was built, and the choices the agent made on its own.",
+      "at": 162.55,
+      "explainedAt": 121.1,
+      "explainedFrame": 9,
+      "walkMeThrough": "The HTML arm's plan page is written before the build, so it cannot hold choices made during it. After the build, the arm asks the agent for a report page. That page says what it built and the choices it made on its own, so that is where you read them."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 15,
+      "planStep": 3,
+      "question": "Our arm has an approved plan and a built site. Is it done?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, the site is built",
+          "why": "The code check, the walkthrough and the fixes still come after the build."
+        },
+        {
+          "id": "b",
+          "label": "Not until the walkthrough is accepted",
+          "why": "Right: done is the walkthrough accepted, with the system video current."
+        },
+        {
+          "id": "c",
+          "label": "Not until a second plan review",
+          "why": "The plan was already approved; what comes next is about the code."
+        }
+      ],
+      "answer": "b",
+      "explain": "Ours is done when the walkthrough is accepted and the system video is current, not when the site is first built.",
+      "at": 223.05,
+      "explainedAt": 184.5,
+      "explainedFrame": 13,
+      "walkMeThrough": "After the build come the code check by a fresh agent, the walkthrough video, your accepts and flags, and the fixes. Only when the walkthrough is accepted, and the system video is current, is our arm done. A built site is about two thirds of the way."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 17,
+      "planStep": 4,
+      "question": "The text-only site scrolls sideways on a phone, and nobody asked for a fix. Where does that show?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Nowhere: the review passed it",
+          "why": "Passing review is what the sweep checks after; it does not hide the defect."
+        },
+        {
+          "id": "b",
+          "label": "In what slipped through",
+          "why": "Right: the sweep on every site finds it, and it counts as slipped through."
+        },
+        {
+          "id": "c",
+          "label": "Only if you notice it",
+          "why": "The sweep is the same for every site, so it does not depend on you noticing."
+        }
+      ],
+      "answer": "b",
+      "explain": "The same sweep runs on every finished site, a phone width included, so a defect nobody fixed is counted as slipped through.",
+      "at": 252.55,
+      "explainedAt": 223.1,
+      "explainedFrame": 16,
+      "walkMeThrough": "After each arm is done, one sweep runs on every site: a phone at 390 pixels, a desktop, the console, the links and ten facts. The text-only site scrolls sideways at 390 pixels, so the sweep finds it. Nobody asked for a fix, so it lands in what slipped through for that arm."
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 299.4,
+  "frames": [
+    {
+      "index": 1,
+      "title": "One prompt, three ways",
+      "compositionId": "01-one-prompt-three-ways",
+      "type": "hook",
+      "durationSeconds": 12.7,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "One prompt, three ways",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-6.6s.png",
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
+    },
+    {
+      "index": 2,
+      "title": "Today: both stop at the plan",
+      "compositionId": "02-both-stop-at-the-plan",
+      "type": "pain_point",
+      "durationSeconds": 13.1,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 12.7,
+      "thumb": "snapshots/frame-01-at-19.5s.png",
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 2
+      }
+    },
+    {
+      "index": 3,
+      "title": "What changes",
+      "compositionId": "03-what-changes",
+      "type": "product_intro",
+      "durationSeconds": 15.2,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 25.8,
+      "thumb": "snapshots/frame-02-at-33.4s.png",
+      "terms": [
+        "arm",
+        "step"
+      ],
+      "defines": [
+        "arm"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 3
+      }
+    },
+    {
+      "index": 4,
+      "title": "Step 1: the kit, one command",
+      "compositionId": "04-step-1-the-kit",
+      "type": "feature_showcase",
+      "durationSeconds": 19.7,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 1: the kit",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 41,
+      "thumb": "snapshots/frame-03-at-51.1s.png",
+      "terms": [
+        "case study",
+        "feedback sheet",
+        "step",
+        "arm"
+      ],
+      "defines": [
+        "case study",
+        "feedback sheet"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 4
+      }
+    },
+    {
+      "index": 5,
+      "title": "An empty start, checked",
+      "compositionId": "04b-an-empty-start",
+      "type": "feature_showcase",
+      "durationSeconds": 15.2,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 60.7,
+      "thumb": "snapshots/frame-04-at-68.55s.png",
+      "terms": [
+        "preflight",
+        "container",
+        "arm"
+      ],
+      "defines": [
+        "preflight",
+        "container"
+      ],
+      "change": {
+        "status": "added"
+      }
+    },
+    {
+      "index": 6,
+      "title": "Seven stages, three ways",
+      "compositionId": "05-seven-stages",
+      "type": "feature_showcase",
+      "durationSeconds": 20,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 75.9,
+      "thumb": "snapshots/frame-05-at-86.15s.png",
+      "terms": [
+        "arm"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 5
+      }
+    },
+    {
+      "index": 7,
+      "title": "The rubric and the blind judge",
+      "compositionId": "06-rubric-and-blind-judge",
+      "type": "feature_showcase",
+      "durationSeconds": 18.7,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 95.9,
+      "thumb": "snapshots/frame-06-at-105.25s.png",
+      "terms": [
+        "rubric",
+        "blind judge",
+        "arm"
+      ],
+      "defines": [
+        "rubric",
+        "blind judge"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 6
+      }
+    },
+    {
+      "index": 8,
+      "title": "Quick check: what the judge sees",
+      "compositionId": "07-quick-check-what-the-judge-sees",
+      "type": "social_proof",
+      "durationSeconds": 6.5,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The HTML arm's folder goes to the blind judge. What does the judge see?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "b",
+      "explain": "Everything that names an arm is taken out, the plan page and the report included, so the judge sees only a site, under a letter.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Its plan page and the site",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The site alone, as X, Y or Z",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The site, labelled HTML",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 114.6,
+      "thumb": "snapshots/frame-07-at-117.85s.png",
+      "terms": [
+        "quick check",
+        "arm",
+        "blind judge"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      }
+    },
+    {
+      "index": 9,
+      "title": "Step 2: the other two arms, all the way",
+      "compositionId": "08-step-2-the-other-two-arms",
+      "type": "feature_showcase",
+      "durationSeconds": 17.9,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: the other two arms",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 121.1,
+      "thumb": "snapshots/frame-08-at-130.3s.png",
+      "terms": [
+        "call",
+        "step",
+        "arm"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 8
+      }
+    },
+    {
+      "index": 10,
+      "title": "A case study, the same feedback",
+      "compositionId": "08b-the-same-feedback",
+      "type": "feature_showcase",
+      "durationSeconds": 16.3,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 139,
+      "thumb": "snapshots/frame-09-at-147.15s.png",
+      "terms": [
+        "arm",
+        "case study"
+      ],
+      "change": {
+        "status": "added"
+      }
+    },
+    {
+      "index": 11,
+      "title": "Quick check: where the HTML arm's choices are",
+      "compositionId": "09-quick-check-the-html-arm",
+      "type": "social_proof",
+      "durationSeconds": 7.3,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "In the HTML arm, where do you read the choices the agent made that the plan did not cover?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "After the build, the HTML arm asks for a report page: what was built, and the choices the agent made on its own.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "In the chat",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "In its report page",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "In the plan page",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 155.3,
+      "thumb": "snapshots/frame-10-at-158.95s.png",
+      "terms": [
+        "call",
+        "quick check",
+        "arm"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 9
+      }
+    },
+    {
+      "index": 12,
+      "title": "What our arm keeps",
+      "compositionId": "14-what-our-arm-keeps",
+      "type": "feature_showcase",
+      "durationSeconds": 21.9,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: ours, every stage",
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 162.6,
+      "thumb": "snapshots/frame-11-at-173.8s.png",
+      "terms": [
+        "retro",
+        "system video",
+        "call",
+        "beat",
+        "step",
+        "quick check",
+        "arm"
+      ],
+      "defines": [
+        "retro"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 14
+      }
+    },
+    {
+      "index": 13,
+      "title": "Step 3: ours, every stage",
+      "compositionId": "15-step-3-ours-every-stage",
+      "type": "feature_showcase",
+      "durationSeconds": 20.9,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 184.5,
+      "thumb": "snapshots/frame-12-at-195.2s.png",
+      "terms": [
+        "system video",
+        "review",
+        "call",
+        "step",
+        "arm"
+      ],
+      "change": {
+        "status": "restyled",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 15
+      }
+    },
+    {
+      "index": 14,
+      "title": "Decided: ours first",
+      "compositionId": "15b-decided-ours-first",
+      "type": "benefit_highlight",
+      "durationSeconds": 11.2,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 205.4,
+      "thumb": "snapshots/frame-13-at-211s.png",
+      "terms": [
+        "arm"
+      ],
+      "change": {
+        "status": "added"
+      }
+    },
+    {
+      "index": 15,
+      "title": "Quick check: when ours is done",
+      "compositionId": "16-quick-check-when-ours-is-done",
+      "type": "social_proof",
+      "durationSeconds": 6.5,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Our arm has an approved plan and a built site. Is it done?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "b",
+      "explain": "Ours is done when the walkthrough is accepted and the system video is current, not when the site is first built.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, the site is built",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Not until the walkthrough is accepted",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Not until a second plan review",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 216.6,
+      "thumb": "snapshots/frame-14-at-219.85s.png",
+      "terms": [
+        "system video",
+        "quick check",
+        "arm"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 16
+      }
+    },
+    {
+      "index": 16,
+      "title": "Step 4: measured the same way",
+      "compositionId": "21-step-4-measured-the-same-way",
+      "type": "feature_showcase",
+      "durationSeconds": 22,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 4: where each ends up",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 223.1,
+      "thumb": "snapshots/frame-15-at-234.1s.png",
+      "terms": [
+        "review",
+        "memory",
+        "step"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 21
+      }
+    },
+    {
+      "index": 17,
+      "title": "Quick check: a site that scrolls sideways",
+      "compositionId": "22-quick-check-sideways",
+      "type": "social_proof",
+      "durationSeconds": 7.5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The text-only site scrolls sideways on a phone, and nobody asked for a fix. Where does that show?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "The same sweep runs on every finished site, a phone width included, so a defect nobody fixed is counted as slipped through.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Nowhere: the review passed it",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "In what slipped through",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Only if you notice it",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 245.1,
+      "thumb": "snapshots/frame-16-at-249.1s.png",
+      "terms": [
+        "quick check"
+      ],
+      "change": {
+        "status": "restyled",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 22
+      }
+    },
+    {
+      "index": 18,
+      "title": "Decided: the result, and the process",
+      "compositionId": "23b-judged-result-and-process",
+      "type": "feature_showcase",
+      "durationSeconds": 17,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 252.6,
+      "thumb": "snapshots/frame-17-at-261.35s.png",
+      "terms": [
+        "rubric",
+        "blind judge"
+      ],
+      "change": {
+        "status": "added"
+      }
+    },
+    {
+      "index": 19,
+      "title": "The case study's page",
+      "compositionId": "27-who-does-what",
+      "type": "benefit_highlight",
+      "durationSeconds": 16,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 269.6,
+      "thumb": "snapshots/frame-18-at-277.85s.png",
+      "terms": [
+        "step",
+        "arm",
+        "case study",
+        "feedback sheet"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 27
+      }
+    },
+    {
+      "index": 20,
+      "title": "The plan, decided",
+      "compositionId": "28-the-plan",
+      "type": "cta",
+      "durationSeconds": 13.8,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 285.6,
+      "thumb": "snapshots/frame-19-at-292.5s.png",
+      "terms": [
+        "approve",
+        "step",
+        "arm"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 28
+      }
+    }
+  ],
+  "decisions": [],
+  "details": [],
+  "plan": {
+    "title": "A case study for any plan: text only, HTML and ours, from one prompt to a finished site",
+    "problem": "The owner:\n\n> \"plan out how we do full example? remember we want for any plan to write up case study comparison of\n> text only vs html vs ours. and the start is bob dylan site. we start with same prompt from user, same\n> files (here, none bc greenfield) and then compare all of them, go thru full lifecycle especially on\n> ours. and we compare where we end up.\"\n\nWhat we have today stops short of that.\n\n- **One prompt, three starts, one finish.** `eval/bob-dylan-site/` holds the prompt (`prompt.md`), a\n  checklist for a full run of our way (`RUN.md`, stages 1 to 10), and two other plans from the same\n  prompt: Claude Code's plan mode (`baselines/plan-mode.md`) and an HTML plan (`baselines/html-plan.html`).\n  Both of those stop at the plan. Nobody reviewed them, nothing was built from them, so there is nothing\n  to set beside our finished site.\n- **They were not made the way a person would make them.** Both ran headless with `claude -p` on\n  claude-sonnet-5, so plan mode asked no questions and nobody approved anything. A fair comparison needs\n  the same agent, the same model and a person at the keyboard, in every arm.\n- **Nothing says what \"better\" means.** `RUN.md` ends with \"Totals and comparison\" and three loose\n  lines. `eval/metrics.md` has an older idea (a planted flaw, three formats) but no measures for a\n  finished site. Without the measures fixed before the runs, any result is easy to doubt.\n- **It is one-off.** The owner wants this for any plan, not just this site. Today every piece is\n  written by hand for Bob Dylan.\n\nThe retro's benchmark (`reel retro`) already points at this run, so what we build here is also how a\nlater change to the skill is judged.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "The kit: a template, the sheets, an empty start, and a command that sets it up",
+        "text": "*Independent. The agent builds this now, before any run.*\n\n`reel case-study bob-dylan-site --prompt eval/bob-dylan-site/prompt.md` makes\n`eval/case-studies/bob-dylan-site/`:\n\n- `prompt.md`, the user's words, byte for byte, and `start/`, the starting files (empty here: the site\n  is greenfield; for a plan in an existing repo, `--from <commit>` records the commit and its file list).\n- `arms/text/`, `arms/html/`, `arms/ours/`, each with the arm's container (below) and a `SHEET.md`, the\n  form filled in as the arm runs: the preflight's output first, then per stage the time on the clock and\n  your own time, every question asked and your answer, screenshots named `NN-stage.png`, and the cost the\n  agent reports.\n- `REPLICATE.md`, this case study's copy of the instructions (below), filled in: the versions, the\n  model, the dates, the container recipe.\n- `FEEDBACK.md`, the feedback sheet (step 2 says how it is used): a table with one row a point and a\n  column per arm.\n- `README.md` from `eval/case-studies/TEMPLATE.md`, the write-up's words with their blanks, and\n  `data/`, where the numbers go (times, scores, the judge's output), so the page is built from files.\n- `RUBRIC.md` and `JUDGE.md`, copied from the templates (below), so a later case study is judged the\n  same way.\n\n`reel case-study report bob-dylan-site` builds the case study's page from that folder (step 4), so any\nplan's case study gets the same page.\n\n**One template for every write-up.** `eval/case-studies/TEMPLATE.md` holds the write-up's sections in\nthe same order as the page (step 4 lists them): the prompt and the empty start; the arms, stage by\nstage; the feedback sheet; what each review caught and what slipped through; the sites; the scores, the\njudge and your ranking; the process and what felt different; what we would change; links. Under each\nheading it says what goes there and which file feeds it (`data/times.json`, `FEEDBACK.md`,\n`data/judge.json`, the sheets). `reel case-study report` warns on a section left empty while you fill it\nin, and refuses to publish the page until every section is filled, so every case study has the same\nshape.\n\n**Instructions to replicate it.** `eval/case-studies/REPLICATE.md` says how to run a case study exactly,\nstep by step, and each case study keeps its own copy with the versions, model, dates and container\nfilled in. Per arm, from install to the finished site: every command and prompt to type, what you see at\neach stage, and what to capture and where. Our arm's part doubles as a walkthrough of using\n`reelplanning` from start to finish: install (`npx skills add …`, `reelplanning setup`), the first\nprompt, the plan video and answering on the frame, the revise, the build, the code check and `reel\naudit`, the walkthrough video with its accepts and flags, the fixes, and the system video. Today's\n`eval/bob-dylan-site/RUN.md` becomes that part (moved, not copied), and the repo's `README.md` links it\nfrom its quick start as \"a full example, start to finish\".\n\nThe arms share the same seven stages, so the times line up: **plan, review, revise, build, check the\nresult, fix, done**. What happens at each:\n\n| Stage | Text only | HTML | Ours |\n|---|---|---|---|\n| plan | plan mode, the prompt as typed | the prompt, plus the HTML paragraph already in `html-plan.prompt.md` | \"Use reelplanning to plan: \" and the prompt |\n| review | read the plan, answer its questions in chat | read `plan.html` in a browser, notes in chat | the plan video on the hosted review page |\n| revise | the agent edits the plan | the agent edits `plan.html` | revised steps, rebuilt scenes |\n| build | approve; it builds | \"build plan.html\" | build, choices recorded, stop at a step's fifth |\n| check the result | its closing summary and `git diff --stat` | a `report.html` it writes (new prompt, same article's words) | code check by a fresh agent, `reel audit`, the walkthrough video |\n| fix | ask in chat | ask in chat | flags on the walkthrough, fixes |\n| done | you would ship it | you would ship it | accepted; the system video current |\n\nEvery arm stops at \"you would ship it\", or after two rounds of fixes, whichever comes first.\n\n**An empty start, checked.** Each arm's agent sees only an empty folder: no other plans, no baselines,\nno HTML plans, no earlier arm's site, no `CLAUDE.md` or memory above it. A fresh folder is not enough on\nits own: the agent can read anything on the disk by its path. A first run of the preflight (below) in\nan empty folder with a fresh home folder, on the machine this plan was written on, still found nine\nthings: this checkout's repo and plans, a `.reelplanning/` in the real home folder, and other repos. The\nsame check in an isolated run (`bwrap`) holding only the empty folder and a new home folder found nothing\n(both runs, and the draft script, are in `drafts/` beside this plan). So each arm\nruns in a fresh container:\n\n- `arms/<arm>/Dockerfile`: the same Claude Code version and model in all three, `git`, and nothing else\n  but what that arm needs (ours adds `reelplanning` and its video tools). Its home folder is new and\n  empty, and the only folder mounted is the arm's own empty `site/`, as `~/dylan-site`, with `git init`\n  run in it. `REPLICATE.md` gives the two commands to build and start it. Without Docker, a fresh cloud\n  session holding only an empty repo does the same.\n- `preflight.sh` runs inside the container before `claude` starts, as the agent's user, in its folder,\n  with its home: so it sees what the agent would see, and the session begins with the prompt alone. It\n  prints one line a check: the folder is empty (`git init` only); no `CLAUDE.md` or `AGENTS.md` above\n  it; no `~/.claude/CLAUDE.md`; no `~/.reelplanning/you.jsonl`; no past sessions; no other repos, plans or\n  plan pages on the disk. If any line fails, the arm does not start. Its output is pasted first in the\n  arm's sheet.\n\n**Memory starts empty in every arm.** With a fresh home folder, our arm's memory of the reviewer\n(`~/.reelplanning/you.jsonl`, D-106) starts empty too, so this first case study compares the formats\nwithout memory. Memory is not tested here; a later case study does that (below, under Not in this plan).\n\n**The rubric** scores each finished site 1 to 5 on five things, each with what a 1, a 3 and a 5 look\nlike: does what the prompt asked (eras, albums, songs and how they connect); more engaging than a\nWikipedia article (you can wander sideways, not only down); works on a phone (390 px wide, no sideways\nscroll, taps land); facts right (ten facts checked against a source); easy to change (add one album\nwithout touching code).\n\n**The judge's prompt** is for a fresh agent that sees three folders named X, Y and Z, shuffled, with\neverything that names an arm taken out (`.reelplanning/`, `plan.html`, `report.html`, the plan files, the\ngit history squashed to one commit). It runs each site, takes phone and desktop screenshots, scores\neach on the rubric with a line of evidence per score, and ranks them. The key from X, Y, Z to the arms\nstays with the owner until the scores are in.\n\n`reel retro`'s benchmark reads this folder too, so a retro is checked against all three arms."
+      },
+      {
+        "n": 2,
+        "title": "The text-only and HTML arms, run by you, all the way to a finished site",
+        "text": "*Needs step 1's kit. The owner runs it, on their own machine, after ours (step 3), a day between arms.*\n\nDecided: both arms go all the way, fixes included (D-168), so all three end at a site you would ship.\n\nYou run each arm yourself, at the keyboard, as you would for real work: nothing in it is autonomous.\nEach starts in its own fresh container (step 1), preflight first, and follows its `SHEET.md`:\n\n- **Text only.** `claude --permission-mode plan`, the prompt as typed. Plan mode asks its questions in\n  chat; answer them, read the plan, ask for changes, approve. It builds. Check the result from what it\n  says it did and from `git diff --stat`, then open the site. Ask for fixes in chat.\n- **HTML.** The prompt with the HTML paragraph from `html-plan.prompt.md`, unchanged. Read `plan.html` in\n  a browser, give notes in chat, have it revise the page, then \"build what plan.html says\". Then ask for\n  `report.html`: what was built, the choices it made that the plan did not cover, and how to check each\n  (the agent writes this prompt in step 1, in the words of the article the HTML arm follows). Ask for\n  fixes in chat.\n\n**The same feedback in every arm.** Before the first arm, you write `FEEDBACK.md` from the prompt alone:\nwhat you care about in this site, one point a row (for example: eras first, then albums; it works on a\nphone; which songs it covers; the tone). It stays in the case study's folder. In each arm you raise the\nsame points, in whatever form that arm allows: in chat, as notes on the HTML page, or as answers and\nnotes on the video. After each arm, its column says for each point: raised (and where), already covered\nby the plan, or missed; and a row is added for anything new you raised that was not on the sheet. Where\nan arm's format made a point easier or harder to raise, that is a finding, and the column says how.\n\nEach arm's folder is committed as it ends, with its sheet and its column of `FEEDBACK.md` filled in. The\ntwo headless baselines stay where they are, as \"the plan with nobody asked\", for reference."
+      },
+      {
+        "n": 3,
+        "title": "Our arm: the whole lifecycle, every stage captured",
+        "text": "*Needs step 1's kit (today's `RUN.md`, moved into `REPLICATE.md` as our arm's part). The owner runs it\nfirst; it needs the hosted review page.*\n\nIn its fresh container (step 1), preflight first, \"Use reelplanning to plan:\" and the prompt, then every\nstage as the skill runs it: the plan, the plan video, the review on the hosted page, the revised plan,\nthe build with its choices recorded (stopping at a step's fifth), the code check by a fresh agent,\n`reel audit`, the walkthrough video, each choice accepted or flagged, the fixes, and the system video it\nleaves behind, each as `REPLICATE.md` says. The sheet captures each stage as `RUN.md` does today: the\ncommands typed, your words verbatim, the links to the videos and the review page, and the time.\n\nDecided: you review all three, ours first, a day between arms (D-169), so what you learn on ours helps\nthe other two, and a win for ours is not from practice."
+      },
+      {
+        "n": 4,
+        "title": "Where each ends up, and how each got there: measured, judged blind, and a page",
+        "text": "*Needs steps 2 and 3.*\n\nThe agent fills the write-up from the three arm folders:\n\n- **Time**, per stage: the owner's and the agent's, from the sheets.\n- **Questions asked and answered**, and **decisions recorded**: each arm's decisions listed from its\n  plan and chat. Then **did the code hold to them?** A fresh agent checks every arm's code against its\n  own decisions (the check our arm already has, run on all three).\n- **The feedback sheet**, each point by each arm: raised, already covered, missed, or new; and where a\n  format made a point easier or harder to raise.\n- **What each review caught** (what changed between the first plan and the approved one) and **what\n  slipped through**: defects found after \"done\" by the same sweep on all three (phone at 390 px, desktop\n  at 1440 px, errors in the console, broken links, the ten facts), and drift between plan and site.\n- **The sites side by side**, phone and desktop, the same three screens each.\n- **What the reviewer understood**: a day after each arm ends, five questions about what was built,\n  answered from memory (\"What happens when you tap a song on a phone?\", \"How would you add an album?\"),\n  scored against the code.\n\n**Judged on the result and on the process** (D-170). The result: the rubric, the blind judge, and your\nranking, made before you see the judge's scores; where they disagree gets a line. The process, a\nsection per arm: how you read the plan and answered it; what was misunderstood, and when it surfaced\n(at the plan, in the build, or only in the finished site); how much effort your feedback took; and what\nyou knew about the build before you looked at the code. Then **what felt different**, in your own\nwords, for what the rubric misses.\n\n**The write-up is an HTML page**, published like the review page. `reel case-study report\nbob-dylan-site` builds it, as `case-study.html` (named apart from the HTML arm's `report.html`), from the\ncase study's folder, which stays the source: `README.md` holds the words (the process sections and\nyours included), `data/` the numbers, and the sheets, the feedback sheet, the screenshots and the\njudge's output sit beside them. The page follows `TEMPLATE.md`'s sections, top to bottom:\n\n1. The one prompt and the empty start, with each arm's preflight output.\n2. The three arms side by side, stage by stage: what you saw at the plan review (plan mode's text, the\n   HTML plan, our review page with its video), and the time per stage as a bar each.\n3. The feedback sheet as a table: each point by each arm, raised, already covered, missed, or new.\n4. What each review caught, and what slipped through.\n5. The three finished sites side by side, at phone and desktop width, each linked so it can be run.\n6. The rubric scores, the blind judge's ranking and its reasons, and your ranking.\n7. The process section, and what felt different, in your words.\n8. What we would change in reelplanning because of it.\n9. Links to every artifact: the plans, the reviews, the videos, the commits.\n\nA short video of the result can come later, once there is a result to show."
+      }
+    ]
+  },
+  "slug": "2026-09-26-case-study",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 5,
+      "partTitle": "The build",
+      "title": "reelplanning: the whole system",
+      "gives": "the build, with the reel CLI",
+      "seconds": 55.5,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 7,
+      "partTitle": "Memory, and six rules",
+      "title": "reelplanning: the whole system",
+      "gives": "memory, and six rules, with the reel CLI",
+      "seconds": 87.7,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-22-m3-revise-loop",
+      "title": "The loop, what's left: an agent runs it in the background, narration redoes only what changed, and the system video can change the system",
+      "gives": "decisions D-083, D-084, D-082, D-085: how many quick checks does a video ask?",
+      "seconds": 428.4,
+      "terms": [],
+      "found": true
+    },
+    {
+      "video": "2026-09-25-videos-you-can-follow",
+      "title": "Videos you can follow",
+      "gives": "decisions D-127, D-129: which words does the viewer see: plain new ones, or…",
+      "seconds": 224.3,
+      "terms": [
+        "quick check",
+        "call",
+        "tag",
+        "streak",
+        "miss",
+        "prerequisite",
+        "system video",
+        "glossary",
+        "beat",
+        "memory"
+      ],
+      "found": true
+    }
+  ],
+  "terms": [
+    "arm",
+    "case study",
+    "rubric",
+    "blind judge",
+    "feedback sheet",
+    "preflight",
+    "container"
+  ],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns a plan into a video, via HyperFrames (plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "Turns a plan into a video, via HyperFrames.",
+      "files": [
+        "`plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four parts make the video",
+        "start": 65.68,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanning build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four parts make the video",
+        "start": 65.68,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check.",
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four parts make the video",
+        "start": 65.68,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four parts make the video",
+        "start": 65.68,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "said": "Where you watch, answer on the frame, mark, and press Finish.",
+      "files": [
+        "`<reelplanning-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four carry your answers back",
+        "start": 81.97,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanning review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four carry your answers back",
+        "start": 81.97,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four carry your answers back",
+        "start": 81.97,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project record (scripts/reel.mjs, in .reelplanning/): reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project record: `reel record` logs a review's answers and files the review; `reel status` ends with memory.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanning/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four carry your answers back",
+        "start": 81.97,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into the plan (plan.md); changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "Acts on a plan review: approved, folds the comments into the plan; changes requested, rewrites the steps a comment touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four act on your answers",
+        "start": 97.96,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Builds what the plan says (plan.md) and logs each call the plan did not cover, with tags (in walkthrough.md); its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "said": "Builds what the plan says and logs each call the plan did not cover, with tags; its diff is then checked by a second, fresh agent (the code check).",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four act on your answers",
+        "start": 97.96,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four act on your answers",
+        "start": 97.96,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo (from spec.md); rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video explaining the whole repo; rebuilt where the spec changes.",
+      "files": [
+        "from `spec.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four act on your answers",
+        "start": 97.96,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 11.02,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Finish: approve, or request changes",
+        "start": 165.43,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed.",
+      "files": [
+        "`.reelplanning/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four carry your answers back",
+        "start": 81.97,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Handed on once, and fenced",
+        "start": 185.05,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Only the changes come back",
+        "start": 225.52,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 38.95,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label.",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "What stops the walkthrough",
+        "start": 300.77,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanning/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "What your reviews teach",
+        "start": 375.68,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row.",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "What stops the walkthrough",
+        "start": 300.77,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not.",
+      "definedIn": {
+        "video": "system",
+        "frame": 21,
+        "title": "Every choice, written down",
+        "start": 246.52,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "said": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero.",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "What stops the walkthrough",
+        "start": 300.77,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 21,
+        "title": "Every choice, written down",
+        "start": 246.52,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 11.02,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 11.02,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four parts make the video",
+        "start": 65.68,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "What your reviews teach",
+        "start": 375.68,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 26,
+        "title": "One stop per step",
+        "start": 319.47,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Finish: approve, or request changes",
+        "start": 165.43,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "said": "Every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Your answers go on record",
+        "start": 198.89,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 38.95,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each question",
+        "start": 25.41,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 29,
+        "title": "This video catches up",
+        "start": 360.63,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold (started from a template in templates/details/)",
+      "forms": [
+        "detail"
+      ],
+      "said": "A page a beat opens beside the paused video, for what the video cannot hold.",
+      "files": [
+        "started from a template in `templates/details/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "The plan beside it, and a page when it can't hold more",
+        "start": 139.83,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "said": "Shows on a frame with a detail; click it or press O to open the detail.",
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "The plan beside it, and a page when it can't hold more",
+        "start": 139.83,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where a detail opens: beside the stage on a wide window, covering it otherwise.",
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "The plan beside it, and a page when it can't hold more",
+        "start": 139.83,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words (from plan.md), one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "The plan beside it, and a page when it can't hold more",
+        "start": 139.83,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "The check that every detail page works (check-details), run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "said": "The check that every detail page works, run by finish-project and verify; a broken detail page stops the build.",
+      "files": [
+        "`check-details`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "The plan beside it, and a page when it can't hold more",
+        "start": 139.83,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    }
+  ],
+  "ids": {
+    "D-168": {
+      "kind": "decision",
+      "gloss": "Do the text-only and HTML arms go all the way to a finished site? All the way…"
+    },
+    "D-169": {
+      "kind": "decision",
+      "gloss": "Who reviews each arm, and in what order? You, ours first"
+    },
+    "D-170": {
+      "kind": "decision",
+      "gloss": "How is where we end up judged? Rubric, blind judge, your rank"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "The HTML arm's folder goes to the blind judge. What does the judge see?"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "In the HTML arm, where do you read the choices the agent made that the plan…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "Our arm has an approved plan and a built site. Is it done?"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "The text-only site scrolls sideways on a phone, and nobody asked for a fix…"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": true,
+    "at": "2026-09-26T21:38:24.267Z",
+    "added": 4,
+    "edited": 4,
+    "restyled": 2,
+    "retimed": 0,
+    "same": 10,
+    "removed": [
+      {
+        "index": 10,
+        "title": "Question 1: all the way?"
+      },
+      {
+        "index": 11,
+        "title": "If A: all the way"
+      },
+      {
+        "index": 12,
+        "title": "If B: stop at the plan"
+      },
+      {
+        "index": 13,
+        "title": "If C: build once"
+      },
+      {
+        "index": 17,
+        "title": "Question 2: who reviews, in what order"
+      },
+      {
+        "index": 18,
+        "title": "If A: ours last"
+      },
+      {
+        "index": 19,
+        "title": "If B: ours first"
+      },
+      {
+        "index": 20,
+        "title": "If C: a second reviewer"
+      },
+      {
+        "index": 23,
+        "title": "Question 3: how it is judged"
+      },
+      {
+        "index": 24,
+        "title": "If A: three views"
+      },
+      {
+        "index": 25,
+        "title": "If B: you alone"
+      },
+      {
+        "index": 26,
+        "title": "If C: the judge alone"
+      }
+    ],
+    "changedFrames": [
+      4,
+      5,
+      9,
+      10,
+      14,
+      18,
+      19,
+      20
+    ],
+    "restyledFrames": [
+      13,
+      17
+    ],
+    "changedSeconds": 127.1,
+    "totalSeconds": 299.4
+  }
+}

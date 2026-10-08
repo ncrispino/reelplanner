@@ -1,0 +1,255 @@
+{
+  "annotations": [
+    {
+      "about": "Answered in their own words: Is an explainer's whole source there to read, behind the video?",
+      "comment": "i think we need to note the explainer is for many different things; we might not always be doing changes within an agent session, we might be doing outside of it, so its different what we want to see, it might be files changed, might be new experimental output, etc. want to make it general",
+      "frame": {
+        "compositionId": "06-q1-whole-source",
+        "index": 6,
+        "title": "Question 1: the whole source behind it"
+      },
+      "id": "amumareo15h03",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 1
+      },
+      "t": 105.25
+    },
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "28-the-plan",
+        "index": 28,
+        "title": "The plan"
+      },
+      "id": "amumauia03xf4",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2,
+          3
+        ],
+        "step": null
+      },
+      "t": 322.96
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 1,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 3,
+    "watchedPct": 100,
+    "wrongChecks": 3
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-29T06:30:10.945Z",
+      "id": "q1",
+      "label": "i think we need to note the explainer is for many different things; we might not always be doing changes within an agent session, we might be doing outside of it, so its different what we want to see, it might be files changed, might be new experimental output, etc. want to make it general",
+      "option": "own",
+      "own": true,
+      "planStep": 1,
+      "question": "Is an explainer's whole source there to read, behind the video?",
+      "recommended": false,
+      "t": 105.251
+    },
+    {
+      "decidedAt": "2026-09-29T06:31:08.710Z",
+      "id": "q2",
+      "label": "Lean on it",
+      "option": "a",
+      "planStep": 4,
+      "question": "After Plan this, how far does the plan lean on the explainer?",
+      "recommended": true,
+      "t": 208.442
+    },
+    {
+      "decidedAt": "2026-09-29T06:31:51.509Z",
+      "id": "q3",
+      "label": "Its text, never the transcript",
+      "option": "a",
+      "planStep": 5,
+      "question": "What of an explainer goes into git?",
+      "recommended": true,
+      "t": 283.111
+    }
+  ],
+  "exportedAt": "2026-09-29T06:32:45.263Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "questions": [],
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-29T06:30:27.625Z",
+      "correct": true,
+      "id": "k1",
+      "t": 145.296
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T06:30:46.846Z",
+      "correct": false,
+      "id": "k2",
+      "t": 174.117,
+      "walked": true
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T06:31:18.843Z",
+      "correct": false,
+      "id": "k3",
+      "t": 229.309,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-29T06:32:03.413Z",
+      "correct": true,
+      "id": "k4",
+      "t": 304.81
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T06:32:09.101Z",
+      "correct": false,
+      "id": "k5",
+      "t": 310.911,
+      "walked": true
+    }
+  ],
+  "src": "2026-09-29-explain-first/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 322.96,
+    "firstPlayAt": "2026-09-29T06:26:28.402Z",
+    "maxTimeReached": 322.96,
+    "moments": [
+      {
+        "frameIndex": 6,
+        "from": 206.8,
+        "kind": "rewind",
+        "planStep": 1,
+        "t": 94.33
+      }
+    ]
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T23:18:09.177Z",
+      "video": "2026-09-26-contributing--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    },
+    {
+      "seen": "2026-09-28T19:04:26.852Z",
+      "sent": "2026-09-28T19:05:42.926Z",
+      "video": "2026-09-28-plan-guide"
+    },
+    {
+      "seen": "2026-09-28T04:39:23.180Z",
+      "sent": "2026-09-28T04:40:05.234Z",
+      "video": "2026-09-28-videos-that-make-sense"
+    },
+    {
+      "seen": "2026-09-28T19:00:00.857Z",
+      "sent": "2026-09-28T19:01:34.163Z",
+      "video": "2026-09-28-videos-that-make-sense--walkthrough"
+    },
+    {
+      "seen": "2026-09-29T06:31:36.845Z",
+      "video": "2026-09-29-explain-first"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

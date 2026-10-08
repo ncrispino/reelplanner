@@ -1,0 +1,149 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k05-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k05-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k05-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k05-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k05-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k05-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k05-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k05-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k05-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k05-ul.ink { background:var(--rp-ink); height:3px; }
+  .k05-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k05-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k05-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k05-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k05-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k05-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k05-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k05-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k05-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k05-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k05-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k05-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k05-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k05-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k05-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k05-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k05-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k05-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k05-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k05-chip code, .k05-name code, .k05-small code, .k05-td code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k05-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k05-line.hot { background:var(--rp-coral); }
+  .k05-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k05-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k05-kick { position:absolute; left:120px; top:70px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k05-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k05-win { position:absolute; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .k05-wbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .k05-dot { position:absolute; top:19px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .k05-wt { position:absolute; left:110px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k05-tl { position:absolute; left:36px; font:400 26px/42px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k05-tl .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k05-err { color:var(--rp-syn-del); } .k05-ok { color:var(--rp-syn-add); }
+  .k05-ring { position:absolute; box-sizing:border-box; border:3px solid var(--rp-coral); border-radius:8px; }
+  .k05-flow { position:absolute; display:flex; align-items:center; }
+  .k05-fc { position:relative; height:68px; padding:0 28px; box-sizing:border-box; font:400 36px/64px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:34px; white-space:nowrap; }
+  .k05-fc.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k05-fc code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k05-fl { position:relative; height:4px; margin:0 12px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k05-fl.hot { background:var(--rp-coral); }
+
+  .k05-pg { position:absolute; left:110px; top:110px; width:1720px; height:640px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); }
+  .k05-pt { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k05-pt code { font-family:"JetBrains Mono"; font-size:0.8em; }
+  .k05-ps { position:absolute; font:400 28px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k05-ps code, .k05-mono code { font-family:"JetBrains Mono"; font-size:0.92em; }
+  .k05-mono { position:absolute; font:400 28px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .k05-card { position:absolute; box-sizing:border-box; border-radius:10px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:var(--rp-tile); }
+  .k05-cb { display:inline-block; position:relative; width:24px; height:24px; margin-right:16px; vertical-align:-3px; border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:4px; box-sizing:border-box; }
+  .k05-okd { color:var(--rp-syn-add); }
+.k05-u { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k05-u.ink { background:var(--rp-ink); height:3px; }
+</style>
+
+<div id="root" data-composition-id="05-the-pr-page" data-band="bottom" data-duration="20.66" data-width="1920" data-height="1080">
+
+  <div class="clip k05-bg" id="k05-bg" data-start="0" data-duration="20.66" data-track-index="0"></div>
+
+  <div class="clip k05-scene" id="k05-scene" data-start="0" data-duration="20.66" data-track-index="1">
+    <div class="k05-view" id="k05-view"><div class="k05-cam" id="k05-cam">
+    <div class="k05-lab" style="left:110px; top:56px">a pull request on GitHub · planned, an example</div>
+    <div class="k05-pg" id="k05-pg">
+    <div class="k05-pt" style="left:40px; top:34px">Fix an off-by-one in <code>reel status</code> <span style="opacity:0.55">#43</span></div>
+    <div class="k05-ps" id="k05-meta" style="left:40px; top:104px">Sam wants to merge 1 commit into <code>main</code> · <code>scripts/reel.mjs</code> ·</div>
+    <div class="k05-ps" style="left:900px; top:104px"><b>+1 −1</b></div>
+    <div class="k05-card" style="left:40px; top:170px; width:1080px; height:220px" id="k05-tpl">
+    <div class="k05-ps" style="left:28px; top:22px; opacity:0.7">from the PR template</div>
+    <div class="k05-ps" style="left:28px; top:80px"><span class="k05-cb"></span>This PR brings a video</div>
+    <div class="k05-ps" style="left:28px; top:140px"><span class="k05-cb" id="k05-box"></span>Makes a choice a reviewer could make the other way</div>
+    </div>
+    <div class="k05-card" style="left:40px; top:420px; width:1080px; height:170px" id="k05-chk">
+    <div class="k05-ps" style="left:28px; top:22px; opacity:0.7">checks</div>
+    <div class="k05-mono" style="left:28px; top:80px"><span class="k05-okd">●</span> <code>reel pr-check</code></div>
+    <div class="k05-mono" id="k05-why" style="left:74px; top:120px">2 lines · no new flag, command, dependency: no video</div>
+    </div>
+    <div class="k05-card" id="k05-lb" style="left:1180px; top:170px; width:500px; height:210px">
+    <div class="k05-ps" style="left:28px; top:22px; opacity:0.7">Labels</div>
+    <div class="k05-chip" id="k05-sfx" style="left:28px; top:74px">needs-video</div>
+    <div class="k05-ps" style="left:28px; top:146px; font-size:26px">maintainers only</div>
+    </div>
+    </div>
+    <div class="k05-u ink" id="k05-u1" style="left:218px; top:460px; width:690px"></div>
+    <div class="k05-u ink" id="k05-u0" style="left:685px; top:252px; width:250px"></div>
+    <div class="k05-pin" id="k05-part" style="left:1290px; top:210px">no choice · 2 lines</div>
+    <div class="k05-u" id="k05-u" style="left:224px; top:688px; width:880px"></div>
+    <div class="k05-u" id="k05-u2" style="left:1318px; top:408px; width:190px"></div>
+    </div></div>
+    <div class="k05-pin" id="k05-pm" style="left:1290px; top:780px">maintainer · can merge</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05-the-pr-page";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k05-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#k05-pg", { opacity: 0, y: 12 });
+  tl.to("#k05-pg", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.15);
+  gsap.set("#k05-tpl", { opacity: 0, y: 12 });
+  tl.to("#k05-tpl", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.5);
+  gsap.set("#k05-chk", { opacity: 0, y: 12 });
+  tl.to("#k05-chk", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.42);
+  gsap.set("#k05-why", { opacity: 0 });
+  gsap.set("#k05-u1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k05-u1", { scaleX: 1, duration: 0.45, ease: "power1.inOut" }, 7.26);
+  gsap.set("#k05-u0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k05-u0", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 9.73);
+  gsap.set("#k05-part", { opacity: 0, y: 12 });
+  tl.to("#k05-part", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.03);
+  tl.to("#k05-cam", { x: 132, y: -294, scale: 1.2, duration: 1, ease: "power2.inOut" }, 11.57);
+  tl.to("#k05-why", { opacity: 1, duration: 0.3, ease: "none" }, 12.47);
+  gsap.set("#k05-u", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k05-u", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 12.87);
+  tl.to("#k05-cam", { x: 0, y: 0, scale: 1, duration: 0.9, ease: "power2.inOut" }, 14.07);
+  gsap.set("#k05-lb", { opacity: 0, y: 12 });
+  tl.to("#k05-lb", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.67);
+  gsap.set("#k05-pm", { opacity: 0, y: 12 });
+  tl.to("#k05-pm", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.17);
+  gsap.set("#k05-u2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k05-u2", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 19.99);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

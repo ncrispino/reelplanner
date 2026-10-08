@@ -1,0 +1,261 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "oh also i feel like in the html we should make it much easier to switch between plan and walkthrough or have walkthough tied to plan? like can even merge the video, click a button to see, integrate them more",
+      "frame": {
+        "compositionId": "13-step-2-only-what-youd-notice",
+        "index": 13,
+        "title": "Step 2: only what you'd notice"
+      },
+      "id": "amuk4y0ywolw8",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 141.87
+    },
+    {
+      "about": "Answered in their own words: Which choices make it pause?",
+      "comment": "i dont like specifically saying 'five' i mean i think there's a lot that changes per plan i dont think being too specific is good",
+      "frame": {
+        "compositionId": "15-q2-which-choices-pause",
+        "index": 15,
+        "title": "Question 2: which choices pause"
+      },
+      "id": "amuk4z8ekb5yk",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 176.88
+    },
+    {
+      "about": "Answered in their own words: Does the walkthrough still test you?",
+      "comment": "what do you think is optimal for us? we want to understand how it works so probably some kinda quick check is worth it. i guess it depends.",
+      "frame": {
+        "compositionId": "24-q3-does-it-test-you",
+        "index": 24,
+        "title": "Question 3: does it still test you"
+      },
+      "id": "amuk54i7yjzpc",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 3
+      },
+      "t": 250.33
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 4,
+    "watchedPct": 100,
+    "wrongChecks": 4
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-27T18:11:07.373Z",
+      "id": "q1",
+      "label": "A short video of it running",
+      "option": "a",
+      "planStep": 1,
+      "question": "What replaces today's walkthrough video?",
+      "recommended": true,
+      "t": 115.409
+    },
+    {
+      "decidedAt": "2026-09-27T18:12:46.028Z",
+      "id": "q2",
+      "label": "i dont like specifically saying 'five' i mean i think there's a lot that changes per plan i dont think being too specific is good",
+      "option": "own",
+      "own": true,
+      "planStep": 2,
+      "question": "Which choices make it pause?",
+      "recommended": false,
+      "t": 176.885
+    },
+    {
+      "decidedAt": "2026-09-27T18:15:13.406Z",
+      "id": "q4",
+      "label": "Explain this more",
+      "option": "unclear",
+      "planStep": 2,
+      "question": "What does Approve make of the listed choices?",
+      "recommended": false,
+      "t": 206.52
+    },
+    {
+      "decidedAt": "2026-09-27T18:16:52.029Z",
+      "id": "q3",
+      "label": "what do you think is optimal for us? we want to understand how it works so probably some kinda quick check is worth it. i guess it depends.",
+      "option": "own",
+      "own": true,
+      "planStep": 3,
+      "question": "Does the walkthrough still test you?",
+      "recommended": false,
+      "t": 250.333
+    }
+  ],
+  "exportedAt": "2026-09-27T18:19:34.029Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-27T18:12:07.990Z",
+      "correct": true,
+      "id": "k1",
+      "t": 162.506
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T18:15:55.696Z",
+      "correct": false,
+      "id": "k2",
+      "t": 238.045,
+      "walked": true
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T18:17:10.233Z",
+      "correct": true,
+      "id": "k3",
+      "t": 287.349
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T18:17:25.996Z",
+      "correct": false,
+      "id": "k4",
+      "note": "i dont think it needs a new video if its that small? idk",
+      "t": 311.115,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T18:18:55.633Z",
+      "correct": false,
+      "id": "k5",
+      "t": 330.848,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T18:19:07.337Z",
+      "correct": false,
+      "id": "k6",
+      "note": "eh i dont want to be too constrained then we'll just waste tokens on making it smaller where we dont really care if it is much bigger",
+      "t": 338.08,
+      "walked": true
+    }
+  ],
+  "src": "2026-09-27-walkthroughs-that-help/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 0.977,
+        "id": "ch5"
+      }
+    ],
+    "completion": 0.996,
+    "details": [],
+    "durationSeconds": 350.13,
+    "firstPlayAt": "2026-09-27T18:10:09.864Z",
+    "maxTimeReached": 348.7,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

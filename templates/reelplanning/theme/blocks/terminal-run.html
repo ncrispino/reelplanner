@@ -1,0 +1,67 @@
+<!-- TERMINAL RUN (the theme's fork of HyperFrames' code-terminal-run block; better-visuals step 1).
+     Paste into your <template>, replace every FID with "f" + your frame_id, and put the REAL run in: the
+     command as it was typed and the output it printed, captured from the checkout (never re-worded). A
+     long output line wraps as <span class="FID-row"> pieces inside ONE row element, so it stays one line
+     for check-terms. Colours are theme tokens only (--rp-slab*, --rp-syn-*, --rp-coral); the registry block
+     hard-codes its colours and fails frame-lint.
+
+     THE REAL THING. The window is a `data-artifact`: its text is the command's own (check-terms reads it as
+     glossed in place, and an id in it is a warning at most). A word the video defines is pinned on the
+     output word it names (`data-gloss`), or drawn under it.
+
+     HOW IT MOVES (motion-language.md): the command is TYPED (the text driven from the timeline, one
+     character a step), the caret blinks in whole cycles, the output is PRINTED row by row, and the camera
+     pushes in on the line the sentence is about and pulls back. The camera is inside a view clipped at
+     y 900. Replace the times with your cues. -->
+<style>
+  .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+
+  .FID-win { position:absolute; left:160px; top:90px; width:1600px; height:560px; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .FID-bar { position:absolute; left:0; top:0; width:1600px; height:56px; background:var(--rp-slab-bar); }
+  .FID-dot { position:absolute; top:22px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .FID-title { position:absolute; left:110px; top:15px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.62); white-space:nowrap; }
+  .FID-line { position:absolute; left:40px; font:400 28px/48px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .FID-line .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }   /* the prompt */
+  .FID-row { display:block; }                               /* one wrapped piece of a single output line */
+  .FID-ok { color:var(--rp-syn-add); } .FID-warn { color:var(--rp-syn-num); } .FID-err { color:var(--rp-syn-del); }
+  .FID-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .FID-m { position:relative; display:inline-block; line-height:34px; }
+  .FID-u { position:absolute; left:0; right:0; bottom:-3px; height:3px; background:rgba(var(--rp-slab-ink-rgb),0.85); transform-origin:0 50%; }
+  .FID-u.hot { height:4px; background:var(--rp-coral); }
+</style>
+
+<div class="FID-view" id="FID-view"><div class="FID-cam" id="FID-cam" data-camera>
+  <div class="FID-win" id="FID-win" data-artifact="reel audit">
+    <div class="FID-bar"></div>
+    <div class="FID-dot" style="left:24px"></div><div class="FID-dot" style="left:48px"></div><div class="FID-dot" style="left:72px"></div>
+    <div class="FID-title" id="FID-title">~/reelplanning</div>
+    <div class="FID-line" id="FID-c1" style="top:82px"><span class="g">$</span><span id="FID-c1t">reel audit .reelplanning/plans/2026-09-24-memory</span><i class="FID-caret" id="FID-c1k"></i></div>
+    <div class="FID-line" id="FID-o1" style="top:130px"><span class="FID-row"><span class="FID-warn">△</span> <span class="FID-m" id="FID-k1">16 calls<i class="FID-u hot" id="FID-u1"></i></span>; step 1 has 4. Past 12, the plan left too much open: a step expected to</span><span class="FID-row">need 5 or more calls asks its biggest as a question instead</span></div>
+    <div class="FID-line" id="FID-o2" style="top:226px"><span class="FID-ok">✓</span> 2026-09-24-memory: 5 step(s), 2 own decision(s), 5 cited, 0 failure(s)</div>
+  </div>
+</div></div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`: a typer the timeline drives
+  function typer(el, text, t0, t1) {
+    var n = text.length;
+    return function (t) { var k = t <= t0 ? 0 : t >= t1 ? n : Math.floor(((t - t0) / (t1 - t0)) * n); el.textContent = text.slice(0, k); };
+  }
+  var c1 = document.getElementById("FID-c1t"), T1 = typer(c1, c1.textContent, 1.0, 2.6), d1 = { t: 0 };
+  var k1 = document.getElementById("FID-c1k"), blink = { p: 0 };
+  T1(0);
+  // after `var tl = gsap.timeline({ paused: true });`
+  gsap.set("#FID-cam", { x: 454, y: 0, scale: 2.3 });                 // close on the prompt
+  gsap.set(["#FID-o1", "#FID-o2"], { opacity: 0 });
+  gsap.set("#FID-u1", { scaleX: 0 });
+  tl.to(blink, { p: 6.283, duration: 1.0, ease: "none", onUpdate: function () { k1.style.opacity = Math.sin(blink.p * 3) >= 0 ? "1" : "0"; } }, 0);   // whole caret cycles
+  tl.to("#FID-cam", { x: 0, y: 0, scale: 1, duration: 1.8, ease: "expo.out" }, 0.05);
+  tl.to(d1, { t: 2.6, duration: 1.6, ease: "none", onUpdate: function () { T1(d1.t); } }, 1.0);   // typed
+  tl.set("#FID-c1k", { opacity: 0 }, 2.8);
+  tl.to("#FID-o1", { opacity: 1, duration: 0.12, ease: "none" }, 3.4);                          // printed
+  tl.to("#FID-o2", { opacity: 1, duration: 0.12, ease: "none" }, 3.6);
+  tl.to("#FID-cam", { x: 36, y: 84, scale: 1.32, duration: 2.1, ease: "power1.inOut" }, 4.2);   // push in on the warning
+  tl.to("#FID-u1", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 5.0);                      // drawn under "16 calls"
+  tl.to("#FID-cam", { x: 0, y: 0, scale: 1, duration: 0.7, ease: "power2.inOut" }, 7.0);        // at rest before a question
+</script>

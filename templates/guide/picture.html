@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  reelplanning guide picture · a step's own picture   (templates/guide/picture.html; the plan guide, step 1)
+  Copy it to <plan-dir>/guide/step-<n>.html (committed) when a step's idea needs a picture the guide cannot draw
+  from its blocks: an edge drawn on, a file, a field. `reelplanning guide` shows it on the step's first beat.
+
+  States: the guide posts {type: "rp-guide", state} to the picture when a case row opens ("case-2"), or a
+  question's option is chosen ("option-b"); the script below sets it as data-state on <html>. Draw each state
+  with CSS ([data-state="case-2"] .edge-b { … }), and the end state as the page loads: nothing is only in motion
+  (with reduced motion, no transition at all).
+  The rules of a detail page (templates/details/): nothing from the network, everything inline, the review
+  page's tokens (below), a label on its thing, no stand-ins.
+-->
+<title>Step picture</title>
+<style>
+:root{--paper:#FAF9F5;--ink:#141413;--ink-2:#3D3B37;--ink-3:#5C5953;--ink-rgb:20,20,19;--accent:#B8552E;color-scheme:light;
+  --sans:Inter,ui-sans-serif,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--serif:"EB Garamond",Georgia,serif}
+:root[data-theme="dark"]{--paper:#141310;--ink:#F2EFE8;--ink-2:#CFCAC1;--ink-3:#A6A196;--ink-rgb:242,239,232;--accent:#D2693F;color-scheme:dark}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--sans)}
+.part{fill:none;stroke:rgba(var(--ink-rgb),.3);stroke-width:1.5}
+.lit{stroke:var(--ink);stroke-width:2}
+@media (prefers-reduced-motion:no-preference){.part{transition:stroke .3s}}
+/* one rule a state: [data-state="case-1"] #edge-1 { stroke: var(--ink); } */
+</style>
+</head>
+<body>
+<svg viewBox="0 0 640 240" width="100%" role="img" aria-label="Describe what the picture shows">
+  <!-- draw the step's own change here: each thing labelled, each edge an id a state can light -->
+</svg>
+<script>
+(function () {
+  var r = document.documentElement, q = new URLSearchParams(location.search);
+  if (q.get("theme") === "dark" || (window.parent !== window && parent.document && parent.document.documentElement.getAttribute("data-theme") === "dark")) r.setAttribute("data-theme", "dark");
+  addEventListener("message", function (e) { var m = e.data; if (m && m.type === "rp-guide" && typeof m.state === "string" && /^[a-z0-9-]{1,40}$/.test(m.state)) r.setAttribute("data-state", m.state); });
+})();
+</script>
+</body>
+</html>

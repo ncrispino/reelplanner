@@ -1,0 +1,24 @@
+$ cat .reelplanning/explainers/2026-09-29-experiment/reviews/explainer-20260929T100000Z.md   (the review reel record filed, in the scratch repo)
+# Explainer review · 2026-09-29 10:00 · Plan this
+
+**Plan this:** a plan starts from what you said: `reel new-plan <repo> <slug> --from .reelplanning/explainers/2026-09-29-experiment` quotes it in the plan's problem, and its video leans on this explainer (D-248).
+
+**Nothing goes into the decision log.** It holds only answers to a plan's questions, and an explainer asks none: a comment here is kept with this review, and reaches a decision only by way of a plan (Plan this).
+
+From [explainer-20260929T100000Z.json](explainer-20260929T100000Z.json): 1 comment, 1 question; watched 100%.
+
+## Comments by scene
+
+- **Scene 1** (What you asked), at 0:20: "this looks wrong"
+
+## Questions you asked
+
+- scene 2, at 0:40: "why did the loss fall?"
+  - answered from results.csv: "the second run used more data"
+
+## What you want next
+
+- **Picked** from what Finish suggested for Plan this: "A plan to compare the loss across runs in one table" (explain.md, open threads · scene 2, "The loss"); then edited, your words below
+
+> make the loss easy to compare
+exit 0

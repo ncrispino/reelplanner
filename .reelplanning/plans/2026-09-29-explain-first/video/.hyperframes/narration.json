@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "1ca6aa1b20ca9d62904a",
+      "text": "Step two: you ask in your own words, and the agent runs one command. It gathers the sources and pins them: the commit, and each file as it was, so the video can say only what they say. It isn't rebuilt on its own; ask again for a new one. The explainer gets a folder of its own, and a row of its own on the review page, which says how many commits have landed since.",
+      "sha256": "b688b0111341fb67e31922d5304b7bb2b98a481158d8c7cfbeaa2ae22cae187c",
+      "duration_s": 20.288
+    },
+    "11": {
+      "key": "1b1906dc4f1097a920a0",
+      "text": "Quick check. You ask: why did last night's CI run fail? What does the explainer read?",
+      "sha256": "db2f1ab93b9388919131fff174eb2ee37141de24a3386ff9f759611fb6e1e749",
+      "duration_s": 4.757
+    },
+    "12": {
+      "key": "44c9361c5dd6a6e675eb",
+      "text": "Step three: you review it on the same page, with marks, comments and Ask about this, and a quick check only where there's something to predict. It asks nothing to decide, so in place of Approve and Request changes, Finish has three ends: Done; Explain more, which rebuilds the scenes you asked about; or Plan this. The review is filed, and your memory learns what you watched. The decision log gets nothing: only an answer is a decision.",
+      "sha256": "05e2f39976ef159e7248cad1cc9889c51acd179ef941a7f41f54688e574aed27",
+      "duration_s": 22.101
+    },
+    "13": {
+      "key": "4bf696449276f06ad88d",
+      "text": "Quick check. On Monday you ask about the review server; by Friday, seven commits have changed it. What plays on Friday?",
+      "sha256": "a27532ff05549de5083810711040cd0a225b0431e3d3daedf0d46d0681aa4918",
+      "duration_s": 6.72
+    },
+    "14": {
+      "key": "d0d133ca37ae03753cea",
+      "text": "Step four: Plan this. The agent writes a plan from what you said: your comments by scene and your questions, quoted in the plan's problem section, under a first line naming the explainer. From there it's an ordinary plan, with its review and its decisions, and its video lists the explainer under Before you watch.",
+      "sha256": "225787a29f4e3064b7287f1e6cc512183d26cfbcebbe2ae4f63fa49378356185",
+      "duration_s": 17.152
+    },
+    "15": {
+      "key": "b8e92b7a62fdbeead986",
+      "text": "Question two: how much does the plan's video say again? A: it leans on the explainer, with two lines for a new viewer. B: a recap chapter, about forty seconds of the explainer's scenes. C: it stands alone and explains it all again, about a minute. I recommend A: you just watched it. How far does it lean?",
+      "sha256": "2ab7893164210419324ce702786c946dde7b0500f215f4e998322098a0838124",
+      "duration_s": 17.173
+    },
+    "16": {
+      "key": "88d6e2fed385d503570a",
+      "text": "With A, the plan's video starts at what changes.",
+      "sha256": "f060bddb1606b591741207f4625a7f657c5d163a17f54305620836ed21d7e851",
+      "duration_s": 2.581
+    },
+    "17": {
+      "key": "b0dc6528f047e8adf182",
+      "text": "With B, its first forty seconds are the explainer's scenes, cut down.",
+      "sha256": "3305484e67807c07d749a9f13ea947e7d9d1758f65280340f9fb684d501e6a78",
+      "duration_s": 3.861
+    },
+    "18": {
+      "key": "01a59305b55f5f0660f1",
+      "text": "With C, a minute of the plan's video explains the server again.",
+      "sha256": "84d97a15aea962a613c87f024df8025575effed593c1044c0018343ad87701a9",
+      "duration_s": 3.349
+    },
+    "19": {
+      "key": "b592307b9519ee89d121",
+      "text": "Quick check. You comment on a branch's explainer, this looks wrong, and press Done. What goes into the decision log?",
+      "sha256": "793e10b91e47a991bc3b25e1fa9b032641576cf5185e429a1ed676f98d1519a4",
+      "duration_s": 5.867
+    },
+    "20": {
+      "key": "b9250cc7a21411a400cc",
+      "text": "Step five: honest. Each scene names where its facts come from, and a new check fails a quoted line its source doesn't hold word for word. Fresh eyes look at it, as at every video. For a transcript or a change, a third fresh agent, the fact check, reads the narration against the sources, since the agent that did the work is the worst judge of it.",
+      "sha256": "65ed92af2e659b7ac7e058ef4ee7c74d8fc9333d8479a0afe9483218830f2e40",
+      "duration_s": 19.2
+    },
+    "21": {
+      "key": "ac292459b0c1a79a4888",
+      "text": "And private. A transcript is read where it is, and never copied into the repo: the folder keeps its path and a fingerprint of it. A quoted line that looks like a key or a password, or holds an email address, stops the build until it's masked.",
+      "sha256": "8958423073f8b1de6c3b1f940407c53f706e96fea33ab755371f7031c67aafe7",
+      "duration_s": 13.333
+    },
+    "22": {
+      "key": "580e703681537417b98c",
+      "text": "Question three. The session's explainer quotes twelve lines of over twenty-one thousand. A: its text goes into git, those twelve lines included, never the transcript. B: the whole transcript too, for a teammate to read. C: nothing, until you press a new Keep button, or Plan this. I recommend A: it's committed and shared like a plan's video, and the transcript stays yours. What goes into git?",
+      "sha256": "ad5905d8e718a0f9b8c86b3db2b31c96fcd92c918549a989e6cfce501651d10b",
+      "duration_s": 21.269
+    },
+    "23": {
+      "key": "88a519e345c669b5ec88",
+      "text": "With A, the repo holds the explainer and twelve lines; the transcript stays on your machine.",
+      "sha256": "6b6a38b8124d51f591210514fb2720b42c356f3eb9f84a04fdff54acbb99438d",
+      "duration_s": 4.907
+    },
+    "24": {
+      "key": "c355491c714357b8e310",
+      "text": "With B, every line of the session is in the repo's history.",
+      "sha256": "c4db22fa5b8f0bd4ab283cc7bf98446d8c4fca109c8880f13f7497b95a5dcca2",
+      "duration_s": 3.115
+    },
+    "25": {
+      "key": "9ac0576206958833aab9",
+      "text": "With C, an explainer you press Done on stays on one machine.",
+      "sha256": "db81dcecac76962b3e19c1ad008bd80117e8fe35ab03f1c756d5438f80a89632",
+      "duration_s": 3.285
+    },
+    "26": {
+      "key": "1ab01c141047a281ce4a",
+      "text": "Quick check. You asked one question with Ask about this, left two comments, and press Plan this. Where does the question go?",
+      "sha256": "8af629be078e9dba9703cec31750760e6dffd26d6a04aa0ff85d815675f96e4e",
+      "duration_s": 6.699
+    },
+    "27": {
+      "key": "3b3314c7223b5e721f2e",
+      "text": "Last check. A CI log's explainer quotes a line holding a GitHub access key. What does the build do?",
+      "sha256": "f67c0cae16cfa401c344cb77eac8f534c3ab5b40e0771ecce0d1880bb1d875e0",
+      "duration_s": 6.101
+    },
+    "28": {
+      "key": "49adb4c984864e0ea2ad",
+      "text": "That's the plan: four kinds of explainer, asked for in your own words, reviewed on the same page, a plan when you want one, and honest and private. Draw on any step to leave a note, or approve.",
+      "sha256": "b48beff964f49ad6f92898016f82e4b147a9d43f33a9a0f84ccdc1095ad60f1c",
+      "duration_s": 10.624
+    },
+    "01": {
+      "key": "571979e465d8fb11ea36",
+      "text": "You asked for this: sometimes you just want to know what's going on, in the repo or in a transcript, and then decide whether a plan follows. Today, every video needs a plan first.",
+      "sha256": "b2bf5ed50c67ec25b323d1ab4e07349061518a1b73a9ff0c9fedfcd5452c0892",
+      "duration_s": 10.261
+    },
+    "02": {
+      "key": "41efea057e35a1b93893",
+      "text": "Every video today hangs off something: the system video off the whole repo, and the plan video and the walkthrough off a plan. So what does the review server do? What happened in this session? What does this branch change? What changed since Monday? None of these has a video. The agent answers in chat, in text.",
+      "sha256": "e4b2e41d5bfe0844e65056e3330b7ff98bc6abc9b05ed861c21ca00f5cdbbcc6",
+      "duration_s": 16.384
+    },
+    "03": {
+      "key": "e9e6304dd7e61ae60d89",
+      "text": "Earlier plans lead here. Videos that make sense added fresh eyes, two fresh agents that look at a video before you do, and Ask about this. The plan guide puts the whole plan behind its video. Walkthroughs that help ask a quick check only where there's something to predict. Better visuals put the real thing on screen.",
+      "sha256": "e32b5aa0908bbf1c882fe0f91e75b59829667608966d2178e6cdbdc78d3d5ec7",
+      "duration_s": 17.173
+    },
+    "04": {
+      "key": "6e72a3affb4426f5b50c",
+      "text": "Three changes. Steps one and two: you can ask for an explainer, a video of something that's there, with no plan behind it and nothing to decide. Steps three and four: you review it on the same page, and a plan can follow. Step five: it stays honest, every fact from its sources, and private, a transcript kept out of the repo.",
+      "sha256": "722f0d97c01381dbd669083145b56826bd2e2c2f6e40c89a2fe3438bf455554e",
+      "duration_s": 17.792
+    },
+    "05": {
+      "key": "d86382676991d955dc4a",
+      "text": "Step one: four kinds of explainer. A part of the repo: the review server is six files and five decisions. A transcript or a log, the record of a session or a run: the session building this repo since last Tuesday is over twenty-one thousand lines. A change: a branch of thirty-three files. A period: since Monday, thirty commits and nineteen decisions. Each runs two to five minutes, and shows the real thing: the code, the lines, the diff.",
+      "sha256": "29aedb40e27b3b4994ae68901ed420b53e7f6b6539a08c5fafafb9058364460e",
+      "duration_s": 23.36
+    },
+    "06": {
+      "key": "aeacd108c4e96a48d114",
+      "text": "Question one. That session is over twenty-one thousand lines, and its video quotes a dozen. A: no guide; you get the video. B: a guide for a transcript and a change: the whole transcript, organized, or the full diff, a click from each moment. C: a guide for every kind. I recommend B: the two with far more than a video can hold. Is the whole source there to read?",
+      "sha256": "3fb59225f85ab56805dd2d126bc548732f4f184d8ba46ff41edb337431fd84df",
+      "duration_s": 20.331
+    },
+    "07": {
+      "key": "59672fc18f77016fa5a2",
+      "text": "With A, the session is only the lines its scenes quote.",
+      "sha256": "497602518ee0b03e43233795181151471217609cb1d0e7f26f71f8f0d1b98741",
+      "duration_s": 2.752
+    },
+    "08": {
+      "key": "9aace9373b49eb146255",
+      "text": "With B, each moment of the session's video opens its turns on the guide.",
+      "sha256": "0750985dfe451d9a81f87f7eaed3e1c098adf222ea56e540a3ead765c7645e98",
+      "duration_s": 3.883
+    },
+    "09": {
+      "key": "4480cb87f1f8902222b1",
+      "text": "With C, a part's guide also holds its files, and a period's its commits.",
+      "sha256": "bebd6aa24e6dac089363bb64b4640fbaadaf9f7b558dd729e8497253f4f58300",
+      "duration_s": 4.181
+    }
+  }
+}

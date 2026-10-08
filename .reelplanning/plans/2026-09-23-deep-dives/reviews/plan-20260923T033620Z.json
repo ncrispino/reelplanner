@@ -1,0 +1,188 @@
+{
+  "annotations": [
+    {
+      "about": "Answered in their own words: Who writes a detail page?",
+      "comment": "confused by this, need more information and examples",
+      "frame": {
+        "compositionId": "11-decision-2",
+        "index": 11,
+        "title": "Choice 2: who writes a detail page?"
+      },
+      "id": "amudjqu3uor92",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 117.43
+    },
+    {
+      "about": "Answered in their own words: What code does a walkthrough show?",
+      "comment": "oh we shoulndt ALWAYS show the code, and we should not ONLY be showing the code as the thing we are showing more detail for. like there could be other thigns where detail is important. and code might not come with everything, only if it is relevant, and ppl often dont l ook at the full code there like it really should be justified. and other details could be important that are clearer, like going into more interactive depth.",
+      "frame": {
+        "compositionId": "19-decision-3",
+        "index": 19,
+        "title": "Choice 3: what code does a walkthrough show?"
+      },
+      "id": "amudjtpox35a3",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 4
+      },
+      "t": 198.09
+    },
+    {
+      "comment": "these are not making sense",
+      "frame": {
+        "compositionId": "25-step-6",
+        "index": 25,
+        "title": "Step 6: checked and bundled like the frames"
+      },
+      "id": "amudjv6uug0fr",
+      "kind": "box",
+      "path": [
+        [
+          0.08702502474322397,
+          0.11972309513744696
+        ],
+        [
+          0.9757245555684027,
+          0.7365542193974995
+        ]
+      ],
+      "plan": {
+        "component": "finish",
+        "questions": [],
+        "step": 6
+      },
+      "t": 249.1
+    },
+    {
+      "about": "",
+      "comment": "also just a general thing about the marking, is we should have a select indicator on the marking? that we can select to delete. and an eraser too? this way we have other way to clear. and when we select it we should se and be able to edit the textbox",
+      "frame": {
+        "compositionId": "25-step-6",
+        "index": 25,
+        "title": "Step 6: checked and bundled like the frames"
+      },
+      "id": "amudjwhe2dd7v",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 6
+      },
+      "t": 250.23
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-23T03:30:27.461Z",
+      "id": "q1",
+      "label": "Side panel",
+      "option": "a",
+      "planStep": 1,
+      "recommended": true,
+      "t": 51.829
+    },
+    {
+      "decidedAt": "2026-09-23T03:31:45.257Z",
+      "id": "q2",
+      "label": "confused by this, need more information and examples",
+      "option": "own",
+      "own": true,
+      "planStep": 2,
+      "recommended": false,
+      "t": 117.427
+    },
+    {
+      "decidedAt": "2026-09-23T03:33:59.505Z",
+      "id": "q3",
+      "label": "oh we shoulndt ALWAYS show the code, and we should not ONLY be showing the code as the thing we are showing more detail for. like there could be other thigns where detail is important. and code might not come with everything, only if it is relevant, and ppl often dont l ook at the full code there like it really should be justified. and other details could be important that are clearer, like going into more interactive depth.",
+      "option": "own",
+      "own": true,
+      "planStep": 4,
+      "recommended": false,
+      "t": 198.09
+    }
+  ],
+  "exportedAt": "2026-09-23T03:36:20.831Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-23-deep-dives/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "durationSeconds": 275.13,
+    "firstPlayAt": "2026-09-23T03:20:29.956Z",
+    "maxTimeReached": 275.13,
+    "moments": [
+      {
+        "frameIndex": 20,
+        "from": 215.3,
+        "kind": "rewind",
+        "planStep": 4,
+        "t": 198.91
+      },
+      {
+        "frameIndex": 19,
+        "from": 199.7,
+        "kind": "rewind",
+        "planStep": 4,
+        "t": 197.11
+      },
+      {
+        "frameIndex": 16,
+        "from": 198.07,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 140.01
+      },
+      {
+        "frameIndex": 25,
+        "from": 273.57,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 246.11
+      },
+      {
+        "frameIndex": 24,
+        "from": 247.67,
+        "kind": "rewind",
+        "planStep": 5,
+        "t": 233.31
+      },
+      {
+        "frameIndex": 25,
+        "kind": "slow",
+        "planStep": 6,
+        "rate": 0.75,
+        "t": 238.3
+      }
+    ]
+  }
+}

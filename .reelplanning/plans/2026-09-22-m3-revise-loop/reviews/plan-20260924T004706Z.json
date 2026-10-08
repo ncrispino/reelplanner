@@ -1,0 +1,64 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "21-resolved",
+        "index": 20,
+        "title": "The plan, resolved"
+      },
+      "id": "amuetax866e8s",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1
+        ],
+        "step": null
+      },
+      "t": 216.1
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-24T00:46:29.246Z",
+      "id": "q1",
+      "label": "One setting, tested with Claude Code",
+      "option": "a",
+      "planStep": 3,
+      "question": "How far does the first version go beyond Claude Code?",
+      "recommended": true,
+      "t": 141.388
+    }
+  ],
+  "exportedAt": "2026-09-24T00:47:06.493Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-22-m3-revise-loop/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 216.97,
+    "firstPlayAt": "2026-09-24T00:45:10.800Z",
+    "maxTimeReached": 216.97,
+    "moments": []
+  }
+}

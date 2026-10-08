@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--rp-paper:#FAF9F5;--rp-tile:#EFE9DE;--rp-ink:#141413;--rp-on-ink:#FAF9F5;--rp-data:#181715;
+--rp-coral:#CC785C;--rp-coral-deep:#A5614A;--rp-ink-rgb:20,20,19;--rp-shadow-rgb:20,20,19;}
+*{box-sizing:border-box;margin:0}
+body{width:1920px;height:1080px;background:var(--rp-paper);position:relative;
+font-family:Inter,system-ui,sans-serif;color:var(--rp-ink);overflow:hidden}
+.kicker{position:absolute;left:80px;top:92px;font:500 28px/1 "JetBrains Mono",monospace;letter-spacing:.14em}
+.rail{position:absolute;left:80px;top:150px;width:500px}
+.slot{position:relative;height:90px;margin-bottom:20px;border-radius:12px;border:1px dashed rgba(var(--rp-ink-rgb),.18)}
+.slot[data-filled]{border:1px solid rgba(var(--rp-ink-rgb),.12);background:var(--rp-tile);
+box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),.08),0 4px 16px rgba(var(--rp-shadow-rgb),.04)}
+.slot .n{position:absolute;left:24px;top:30px;font:500 26px/1 "JetBrains Mono",monospace}
+.slot .t{position:absolute;left:76px;top:29px;font:500 30px/1.2 Inter;letter-spacing:-.005em;white-space:nowrap}
+.slot .d{position:absolute;right:20px;top:33px;font:500 26px/1 "JetBrains Mono",monospace;color:var(--rp-coral-deep)}
+/* production line: sources → build → the real pages */
+.lbl{position:absolute;font:500 26px/1 "JetBrains Mono",monospace;letter-spacing:.1em;
+color:rgba(var(--rp-ink-rgb),.55);text-transform:uppercase}
+.file{position:absolute;left:660px;width:220px;height:62px;border-radius:8px;background:var(--rp-tile);
+border:1px solid rgba(var(--rp-ink-rgb),.12);display:flex;align-items:center;padding:0 18px;
+font:400 26px/1 "JetBrains Mono",monospace}
+.arrow{position:absolute;height:3px;background:rgba(var(--rp-ink-rgb),.4)}
+.arrow::after{content:"";position:absolute;right:-2px;top:-8px;border-left:16px solid rgba(var(--rp-ink-rgb),.4);
+border-top:8px solid transparent;border-bottom:8px solid transparent}
+.build{position:absolute;left:980px;top:400px;width:200px;height:126px;border-radius:12px;
+background:var(--rp-data);display:flex;align-items:center;justify-content:center}
+.build .l{font:500 32px/1.15 Inter;color:var(--rp-on-ink)}
+.page{position:absolute;top:346px;width:172px;height:250px;border-radius:6px;background:var(--rp-paper);
+border:1px solid rgba(var(--rp-ink-rgb),.2);padding:14px 14px 0;
+box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),.08),0 6px 20px rgba(var(--rp-shadow-rgb),.05)}
+.page h{display:block;font:600 15px/1.15 Inter;letter-spacing:-.01em;margin-bottom:9px}
+.page .bar{height:5px;border-radius:2px;background:rgba(var(--rp-ink-rgb),.22);margin-bottom:7px}
+.page .cap{position:absolute;left:0;right:0;bottom:-42px;text-align:center;
+font:400 26px/1 "JetBrains Mono",monospace;color:rgba(var(--rp-ink-rgb),.55)}
+</style></head><body>
+<div class="kicker">✱ STEP 2 · THE DATA BUILD</div>
+<div class="rail">
+  <div class="slot" data-filled><span class="n">1</span><span class="t">Content model</span><span class="d">10 albums</span></div>
+  <div class="slot" data-filled><span class="n">2</span><span class="t">Data build</span></div>
+  <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+</div>
+<div class="lbl" style="left:660px;top:300px">Content files</div>
+<div class="file" style="top:346px">albums.yml</div>
+<div class="file" style="top:432px">songs.csv</div>
+<div class="file" style="top:518px">bio.md</div>
+<div class="arrow" style="left:900px;top:462px;width:60px"></div>
+<div class="lbl" style="left:980px;top:300px">Build</div>
+<div class="build"><span class="l">Build</span></div>
+<div class="arrow" style="left:1200px;top:462px;width:60px"></div>
+<div class="lbl" style="left:1258px;top:300px">Pages</div>
+<div class="page" style="left:1258px"><h>Highway 61 Revisited</h><div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div><span class="cap">album</span></div>
+<div class="page" style="left:1448px"><h>Bob Dylan</h><div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div><span class="cap">biography</span></div>
+<div class="page" style="left:1638px"><h>All songs</h><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><span class="cap">index</span></div>
+</body></html>

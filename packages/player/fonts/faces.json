@@ -1,0 +1,16 @@
+{
+  "about": "The review page's typefaces: the one list. The player declares these faces in the page's head (a face declared inside its shadow root does not apply), and sets --sans, --serif and --mono from `roles`; bundle-player copies the files and licences beside the page and preloads them. To change the page's look, put the new woff2 files and their licences in this folder and change this file: nothing else names a family. Files are the latin subset of each family's variable (wght) woff2, from fontsource; each licence is named .txt so a host serves it as text/plain.",
+  "roles": {
+    "sans": { "family": "Inter", "fallback": "ui-sans-serif, system-ui, sans-serif" },
+    "serif": { "family": "EB Garamond", "fallback": "Georgia, serif" },
+    "mono": { "family": "JetBrains Mono", "fallback": "ui-monospace, SFMono-Regular, Menlo, monospace" }
+  },
+  "faces": [
+    { "family": "Inter", "file": "inter-latin-wght-normal.woff2", "weight": "100 900", "style": "normal", "unicodeRange": "latin", "licence": "OFL-inter.txt", "from": "@fontsource-variable/inter 5.3.0" },
+    { "family": "EB Garamond", "file": "eb-garamond-latin-wght-normal.woff2", "weight": "400 800", "style": "normal", "unicodeRange": "latin", "licence": "OFL-eb-garamond.txt", "from": "@fontsource-variable/eb-garamond 5.3.0" },
+    { "family": "JetBrains Mono", "file": "jetbrains-mono-latin-wght-normal.woff2", "weight": "100 800", "style": "normal", "unicodeRange": "latin", "licence": "OFL-jetbrains-mono.txt", "from": "@fontsource-variable/jetbrains-mono 5.3.0" }
+  ],
+  "ranges": {
+    "latin": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "is the checker a separate subagent? cant we tell it to launch a subagent w that reel check cmd i guess?",
+      "frame": {
+        "compositionId": "07-closer-1",
+        "index": 7,
+        "title": "Next: part 2"
+      },
+      "id": "amuds9thg4k15",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 73.13
+    },
+    {
+      "about": "",
+      "comment": "wait do we have to be as specific about what the review agent is doing and what it is provided? cant we say in text, like are we provided the diff to them explicitly? but they agent so smart so can fiugre out?",
+      "frame": {
+        "compositionId": "15-closer-2",
+        "index": 15,
+        "title": "Next: part 3"
+      },
+      "id": "amudsdlcy3868",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 143.93
+    },
+    {
+      "about": "",
+      "comment": "also for narration is it possible to come up with that script early on so can do in background while building the rest of the pages? just wanna make sure parallelise as much as posslbe",
+      "frame": {
+        "compositionId": "45-end",
+        "index": 45,
+        "title": "Flag a call, or accept"
+      },
+      "id": "amudsljpuuhei",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 433.67
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The skill runs its tools as npx -y reelplanning@0.1.0, pinned to the package version",
+      "id": "a18",
+      "judgedAt": "2026-09-23T07:29:44.037Z",
+      "planStep": 2,
+      "t": 44.52,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The checker's whole world is one file, code-check/brief.md",
+      "id": "a1",
+      "judgedAt": "2026-09-23T07:31:00.037Z",
+      "planStep": 3,
+      "t": 89.4,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The brief includes the implementer's autonomy log, but nothing else from the implementer",
+      "id": "a2",
+      "judgedAt": "2026-09-23T07:31:11.987Z",
+      "planStep": 3,
+      "t": 99.53,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The brief shows plan.md, the plan as implemented",
+      "id": "a19",
+      "judgedAt": "2026-09-23T07:31:23.170Z",
+      "planStep": 3,
+      "t": 110.49,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The code check leaves accepted agent calls out of the decisions it checks",
+      "id": "a15",
+      "judgedAt": "2026-09-23T07:31:37.701Z",
+      "planStep": 3,
+      "t": 120.17,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A diff over 400k characters is cut, with the command to read the rest",
+      "id": "a3",
+      "judgedAt": "2026-09-23T07:32:23.691Z",
+      "planStep": 3,
+      "t": 130.32,
+      "verdict": "accept"
+    },
+    {
+      "chose": "-- <paths> narrows the diff",
+      "id": "a4",
+      "judgedAt": "2026-09-23T07:32:44.511Z",
+      "planStep": 3,
+      "t": 140.51,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Findings in a fixed shape, every ✗ keyed by Step N, a decision id or a path",
+      "id": "a5",
+      "judgedAt": "2026-09-23T07:33:47.218Z",
+      "planStep": 3,
+      "t": 175.09,
+      "verdict": "accept"
+    },
+    {
+      "chose": "No findings file is a warning in reel audit, not a failure",
+      "id": "a6",
+      "judgedAt": "2026-09-23T07:33:55.538Z",
+      "planStep": 3,
+      "t": 184.51,
+      "verdict": "accept"
+    },
+    {
+      "chose": "reel audit asks for a named file only for this plan's own decisions, in their step's entry; a cited decision in force needs a mention",
+      "id": "a14",
+      "judgedAt": "2026-09-23T07:34:05.456Z",
+      "planStep": 3,
+      "t": 194.98,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from step 3: reel audit asks a named file only of this plan's own decisions (A14)",
+      "id": "d2",
+      "judgedAt": "2026-09-23T07:34:17.871Z",
+      "planStep": 3,
+      "t": 205.52,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A part labelled with a file name fails the lint; any other label that is not its glossary name is only a note; a mock of a file or page is left alone",
+      "id": "a11",
+      "judgedAt": "2026-09-23T07:35:06.966Z",
+      "planStep": 3,
+      "t": 234.55,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A step the reviewer rewound or slowed down on goes to the revise, to be said more plainly, without changing what it decides",
+      "id": "a12",
+      "judgedAt": "2026-09-23T07:35:18.799Z",
+      "planStep": 3,
+      "t": 245.17,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The fix step is skill instructions, not a script",
+      "id": "a7",
+      "judgedAt": "2026-09-23T07:35:40.865Z",
+      "planStep": 5,
+      "t": 282.18,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A fixed call's row is updated in place (\"changed after review: …\")",
+      "id": "a8",
+      "judgedAt": "2026-09-23T07:36:26.165Z",
+      "planStep": 5,
+      "t": 304.02,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A note with no step, within 15 s after a flag, is taken to be about that flag",
+      "id": "a9",
+      "judgedAt": "2026-09-23T07:36:37.224Z",
+      "planStep": 5,
+      "t": 313.96,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An accepted agent call warns a later plan in reel check that touches its part",
+      "id": "a13",
+      "judgedAt": "2026-09-23T07:36:50.445Z",
+      "planStep": 5,
+      "t": 325.73,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A flag becomes a new plan when the reviewer's words contain a ledger id or any option label (over 3 letters) of an active decision",
+      "id": "a16",
+      "judgedAt": "2026-09-23T07:37:06.308Z",
+      "planStep": 5,
+      "t": 338.31,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An answer in the reviewer's own words on an agent's call is a fix, with those words as the instruction",
+      "id": "a17",
+      "judgedAt": "2026-09-23T07:37:15.816Z",
+      "planStep": 5,
+      "t": 348.76,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The system video is behind when spec.md changed after the video did (git commit times, file times when uncommitted)",
+      "id": "a10",
+      "judgedAt": "2026-09-23T07:38:44.653Z",
+      "planStep": 6,
+      "t": 393.19,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from D-003: a rebuild regenerates narration for the whole video",
+      "id": "d1",
+      "judgedAt": "2026-09-23T07:38:55.166Z",
+      "planStep": 6,
+      "t": 405.2,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-23T07:39:57.613Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T07:34:24.128Z",
+      "correct": true,
+      "id": "k1",
+      "t": 212.54
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-23T07:37:36.290Z",
+      "correct": false,
+      "id": "k2",
+      "t": 358.32
+    }
+  ],
+  "src": "2026-09-22-close-the-lifecycle--walkthrough/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      }
+    ],
+    "completion": 1,
+    "durationSeconds": 437.66,
+    "firstPlayAt": "2026-09-23T07:29:11.293Z",
+    "maxTimeReached": 437.66,
+    "moments": [
+      {
+        "frameIndex": 8,
+        "from": 145.33,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 76.1
+      },
+      {
+        "frameIndex": 11,
+        "from": 110.53,
+        "kind": "rewind",
+        "planStep": 3,
+        "t": 108.4
+      },
+      {
+        "frameIndex": 10,
+        "from": 108.43,
+        "kind": "rewind",
+        "planStep": 3,
+        "t": 97.1
+      }
+    ]
+  }
+}

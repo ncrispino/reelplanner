@@ -1,0 +1,146 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "24-end",
+        "index": 24,
+        "title": "What ran, and the ask"
+      },
+      "id": "amujk8s6a501h",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 292.8
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "Small coral text (`--rp-coral-deep`) becomes `#9C4524` on cream (5.0:1 on the darker tile), `#E3A184` kept for dark; the detail pages' templates (`templates/details/*.html`) keep `#CC785C` for now [close] (changed after review: the detail pages' templates take today's look too, `#B8552E` / `#D2693F` and `#9C4524` / `#E3A184` at text size, the three solid inks, coral only for the call and the part a comment is on, and in the player's panel the review page's faces, which the player posts to the page; `04b9826`)",
+      "id": "a10",
+      "judgedAt": "2026-09-27T08:32:11.701Z",
+      "planStep": 3,
+      "t": 173.956,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The faces are one manifest, `packages/player/fonts/faces.json` (roles sans/serif/mono → family + fallback; faces → file, weight, style, range, licence). The player declares them in the page's `<head>` itself (a `<style data-rp-fonts>`, and `--rp-sans/--rp-serif/--rp-mono` on `:root` that its `--sans/--serif/--mono` read); the bundle copies the files and licences to `fonts/`, inlines the manifest in the page and preloads the files, so the declaration is synchronous there",
+      "id": "a22",
+      "judgedAt": "2026-09-27T08:32:11.702Z",
+      "planStep": 3,
+      "t": 173.956,
+      "verdict": "accept"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-27T08:32:20.942Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [],
+  "src": "2026-09-26-better-visuals--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 292.81,
+    "firstPlayAt": "2026-09-27T08:31:50.606Z",
+    "maxTimeReached": 292.8,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

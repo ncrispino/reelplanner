@@ -1,0 +1,154 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f13-step-3-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f13-step-3-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f13-step-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f13-step-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f13-step-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f13-step-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f13-step-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-slot .d.lit { color:var(--rp-coral-deep); }
+  .f13-step-3-slot:not([data-filled]) .n, .f13-step-3-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f13-step-3-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f13-step-3-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f13-step-3-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f13-step-3-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f13-step-3-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f13-step-3-node.dim { opacity:0.72; }
+  .f13-step-3-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f13-step-3-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f13-step-3-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f13-step-3-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f13-step-3-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f13-step-3-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f13-step-3-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f13-step-3-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f13-step-3-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  /* the player's question sheet, drawn as the page it is (a prototype of the player's own surface) */
+  .f13-step-3-q { position:absolute; font:400 48px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-qk { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f13-step-3-card { position:absolute; width:610px; height:130px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f13-step-3-card .k { position:absolute; left:24px; top:22px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f13-step-3-card .l { position:absolute; left:24px; top:62px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-card.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f13-step-3-card.ghost .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f13-step-3-box { position:absolute; left:24px; top:47px; width:36px; height:36px; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.55); background:var(--rp-paper); }
+  .f13-step-3-tickmark { position:absolute; left:7px; top:1px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); opacity:0; }
+  .f13-step-3-card .l.cb { left:84px; top:45px; }
+  .f13-step-3-btn { position:absolute; height:60px; padding:0 28px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  /* decision beats: three option cards, each carrying a small prototype of what that option does */
+  .f13-step-3-opt { position:absolute; top:300px; width:520px; height:330px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f13-step-3-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f13-step-3-opt .l { position:absolute; left:28px; top:70px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-fr { position:absolute; top:190px; height:84px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/82px "JetBrains Mono"; text-align:center; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-fr.q { background:var(--rp-paper); border-style:dashed; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f13-step-3-bar { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.25); }
+  .f13-step-3-mk { position:absolute; width:4px; height:28px; border-radius:2px; background:var(--rp-ink); }
+  .f13-step-3-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  .f13-step-3-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+  .f13-step-3-row { position:absolute; left:30px; width:700px; height:60px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 30px/60px "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f13-step-3-row .i { display:inline-block; width:70px; font:500 26px/60px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f13-step-3-links { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+  .f13-step-3-links path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; }
+  .f13-step-3-part { position:absolute; left:1100px; width:360px; height:52px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/50px "JetBrains Mono"; padding-left:20px; color:var(--rp-ink); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="13-step-3" data-duration="14.985" data-width="1920" data-height="1080">
+
+  <div class="clip f13-step-3-bg" data-start="0" data-duration="14.985" data-track-index="0"></div>
+
+  <div class="clip f13-step-3-scene" id="f13-step-3-scene" data-start="0" data-duration="14.985" data-track-index="1">
+
+  <div class="f13-step-3-kicker" id="f13-step-3-kicker">Step 3 · As many as needed</div>
+  <div class="f13-step-3-spine" id="f13-step-3-spine">
+    <div class="f13-step-3-tick" id="f13-step-3-tick-1" data-plan-step="1" data-done style="top:35px"></div>
+    <div class="f13-step-3-tick" id="f13-step-3-tick-2" data-plan-step="2" data-done style="top:145px"></div>
+    <div class="f13-step-3-tick" id="f13-step-3-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f13-step-3-tick" id="f13-step-3-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f13-step-3-tick" id="f13-step-3-tick-5" data-plan-step="5" style="top:475px"></div>
+    <div class="f13-step-3-tick" id="f13-step-3-tick-6" data-plan-step="6" style="top:585px"></div>
+  </div>
+  <div class="f13-step-3-page" id="f13-step-3-plan" style="left:200px; top:150px; width:760px; height:520px">
+    <div class="f13-step-3-file" style="left:30px; top:30px">plan.md</div>
+    <div class="f13-step-3-q" style="left:30px; top:72px; font-size:44px">Open questions</div>
+    <div class="f13-step-3-row" id="f13-step-3-r0" style="top:160px"><span class="i">q1</span><span>Where do drafts live?</span></div>
+    <div class="f13-step-3-row" id="f13-step-3-r1" style="top:230px"><span class="i">q2</span><span>Who can edit?</span></div>
+    <div class="f13-step-3-row" id="f13-step-3-r2" style="top:300px"><span class="i">q3</span><span>Keep old versions?</span></div>
+    <div class="f13-step-3-row" id="f13-step-3-r3" style="top:370px"><span class="i">q4</span><span>Which export format?</span></div>
+    <div class="f13-step-3-row" id="f13-step-3-r4" style="top:440px"><span class="i">q5</span><span>Notify on change?</span></div>
+  </div>
+  <svg class="f13-step-3-links" id="f13-step-3-links" viewBox="0 0 1920 1080">
+    <path id="f13-step-3-ln0" d="M960 340 L1100 340" />
+    <path id="f13-step-3-ln1" d="M960 410 L1100 410" />
+    <path id="f13-step-3-ln2" d="M960 480 L1100 480" />
+    <path id="f13-step-3-ln3" d="M960 550 L1100 550" />
+    <path id="f13-step-3-ln4" d="M960 620 L1100 620" />
+  </svg>
+  <div class="f13-step-3-part" id="f13-step-3-p0" style="top:314px">Part 1 · q1</div>
+  <div class="f13-step-3-part" id="f13-step-3-p1" style="top:384px">Part 2 · q2</div>
+  <div class="f13-step-3-part" id="f13-step-3-p2" style="top:454px">Part 3 · q3</div>
+  <div class="f13-step-3-part" id="f13-step-3-p3" style="top:524px">Part 4 · q4</div>
+  <div class="f13-step-3-part" id="f13-step-3-p4" style="top:594px">Part 5 · q5</div>
+  <div class="f13-step-3-sub" id="f13-step-3-warn" style="left:200px; top:700px; color:var(--rp-ink)">reel check: <span id="f13-step-3-w">warn</span> · 7 open questions</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "13-step-3", P = "#f13-step-3-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f13-step-3-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f13-step-3-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f13-step-3-slot-" + n + " .n, #f13-step-3-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f13-step-3-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f13-step-3-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  tickOn(tl, 3, 0.1);
+  pop(tl, $("plan"), 0.980, 16);
+  tl.fromTo("#f13-step-3-plan .f13-step-3-row", { opacity: 0 }, { opacity: 1, duration: 0.35, stagger: 0.12, ease: "power3.out" }, 1.280);
+  [0,1,2,3,4].forEach(function (i) { var p = $("ln" + i), L = lenOf(p); gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); gsap.set($("p" + i), { opacity: 0 });
+    tl.to(p, { strokeDashoffset: 0, duration: 0.3, ease: "power2.inOut" }, 9.81 + i * 0.18);
+    tl.fromTo($("p" + i), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 9.81 + i * 0.18 + 0.15); });
+  tickDone(tl, 3, 9.81);
+  tl.to("#f13-step-3-links path", { stroke: C, duration: 0.3, ease: "power3.out" }, 10.010);
+  tl.to("#f13-step-3-links path", { stroke: INK, duration: 0.3, ease: "power3.out" }, 11.29);
+  pop(tl, $("warn"), 11.29, 8);
+  tl.to($("w"), { color: __RP["coral-deep"], duration: 0.3, ease: "power3.out" }, 11.590);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 14.484);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

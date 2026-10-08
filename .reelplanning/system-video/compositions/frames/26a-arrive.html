@@ -1,0 +1,176 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .s26a-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .s26a-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .s26a-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .s26a-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .s26a-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .s26a-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .s26a-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .s26a-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s26a-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .s26a-ul.ink { background:var(--rp-ink); height:3px; }
+  .s26a-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s26a-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .s26a-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .s26a-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s26a-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .s26a-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .s26a-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .s26a-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .s26a-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .s26a-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s26a-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26a-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .s26a-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s26a-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .s26a-lab { background:var(--rp-paper); padding:6px 12px; margin:-6px -12px; border-radius:6px; z-index:5; }
+  .s26a-img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .s26a-img.s26a-dk { display:none; }
+  :root[data-theme="dark"] .s26a-img.s26a-lt { display:none; }
+  :root[data-theme="dark"] .s26a-img.s26a-dk { display:block; }
+  .s26a-scr { position:absolute; border-radius:8px; overflow:hidden; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s26a-wp { position:absolute; overflow:hidden; }
+  .s26a-wi { position:absolute; left:0; top:0; }
+  .s26a-gp { position:absolute; padding:0 0.42em; font-family:"Inter"; font-weight:400; font-style:normal; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; box-shadow:0 2px 8px rgba(var(--rp-shadow-rgb),0.18); }
+  .s26a-gp.slab { background:var(--rp-slab-ink); color:var(--rp-slab); }
+  .s26a-gp.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s26a-gu { position:absolute; background:var(--rp-ink); transform-origin:0 50%; border-radius:2px; }
+  .s26a-gu.slab { background:var(--rp-slab-ink); }
+  .s26a-gu.hot { background:var(--rp-coral); }
+  .s26a-ring2 { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .s26a-term { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .s26a-tbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .s26a-tdot { position:absolute; top:20px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .s26a-ttl { position:absolute; left:110px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s26a-cmd { position:absolute; font:400 28px/46px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26a-cmd .g { color:rgba(var(--rp-slab-ink-rgb),0.6); font-weight:700; margin-right:0.6em; }
+  .s26a-out { position:absolute; font:400 27px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26a-out .ln { display:block; position:relative; }
+  .s26a-out .ok { color:var(--rp-syn-add); } .s26a-out .warn { color:var(--rp-syn-num); } .s26a-out .err { color:var(--rp-syn-del); } .s26a-out .dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .s26a-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s26a-hl { position:absolute; background:rgba(var(--rp-coral-rgb),0.22); border-left:5px solid var(--rp-coral); transform-origin:0 50%; }
+  .s26a-page { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .s26a-md { position:absolute; font:400 27px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26a-md .ln { display:block; position:relative; }
+  .s26a-md .h { font-weight:700; }
+  .s26a-md .mu { color:rgba(var(--rp-ink-rgb),0.62); }
+  .s26a-bar { display:inline-block; height:12px; border-radius:6px; background:rgba(var(--rp-ink-rgb),0.16); vertical-align:middle; }
+  .s26a-strike { position:absolute; left:0; height:3px; top:50%; background:var(--rp-ink); transform-origin:0 50%; }
+  .s26a-chip { position:absolute; padding:0 18px; font:400 30px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:28px; white-space:nowrap; }
+  .s26a-chip.hot { border:3px solid var(--rp-coral); }
+  .s26a-say { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+
+  .s26a-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .s26a-h { position:absolute; font:400 48px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s26a-hl { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s26a-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .s26a-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .s26a-t code, .s26a-s code, .s26a-node code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .s26a-node { position:absolute; box-sizing:border-box; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 18px; border-radius:12px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:500 30px/1.2 "Inter"; color:var(--rp-ink); }
+  .s26a-node.hot { border:4px solid var(--rp-coral); }
+  .s26a-node.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .s26a-node .sub { display:block; font:400 24px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); margin-top:6px; }
+  .s26a-arrow { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.5); border-radius:2px; }
+  .s26a-arrow.v { width:4px; height:auto; }
+  .s26a-arrow.hot { background:var(--rp-coral); }
+  .s26a-arrow i { position:absolute; right:-6px; top:-6px; width:0; height:0; border-left:14px solid rgba(var(--rp-ink-rgb),0.5); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  .s26a-arrow.v i { right:auto; top:auto; left:-6px; bottom:-10px; border-left:8px solid transparent; border-right:8px solid transparent; border-top:14px solid rgba(var(--rp-ink-rgb),0.5); border-bottom:0; }
+  .s26a-arrow.hot i { border-left-color:var(--rp-coral); }
+  .s26a-arrow.v.hot i { border-left-color:transparent; border-top-color:var(--rp-coral); }
+  .s26a-tag { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:500 28px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:8px; white-space:nowrap; }
+  .s26a-tag.ink { background:var(--rp-ink); }
+  .s26a-tag.ghost { background:var(--rp-paper); color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.45); line-height:44px; }
+  .s26a-fence { position:absolute; box-sizing:border-box; border:3px dashed var(--rp-coral); border-radius:16px; }
+  .s26a-crop { position:absolute; overflow:hidden; border-radius:8px; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s26a-crop img { position:absolute; display:block; }
+  .s26a-crop img.s26a-dk { display:none; }
+  :root[data-theme="dark"] .s26a-crop img.s26a-lt { display:none; }
+  :root[data-theme="dark"] .s26a-crop img.s26a-dk { display:block; }
+  .s26a-gut { color:rgba(var(--rp-ink-rgb),0.45); display:inline-block; width:3.2em; text-align:right; margin-right:1.1em; }
+  .s26a-agent { position:absolute; height:46px; padding:0 18px; box-sizing:border-box; font:500 25px/42px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:23px; white-space:nowrap; z-index:6; }
+  .s26a-agent::before { content:""; display:inline-block; width:10px; height:10px; margin-right:10px; border-radius:50%; background:var(--rp-ink); vertical-align:2px; }
+
+  .s26a-node { font-size:30px; }
+  .s26a-node.dim { border-style:dashed; }
+  .s26a-w { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .s26a-w code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .s26a-dev { position:absolute; box-sizing:border-box; border:3px solid rgba(var(--rp-ink-rgb),0.55); border-radius:14px; background:var(--rp-paper); }
+  .s26a-dev i { position:absolute; left:10%; right:10%; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .s26a-url { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:400 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); border-radius:22px; white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="26a-arrive" data-band="bottom" data-duration="13.076" data-width="1920" data-height="1080">
+
+  <div class="clip s26a-bg" id="s26a-bg" data-start="0" data-duration="13.076" data-track-index="0"></div>
+
+  <div class="clip s26a-scene" id="s26a-scene" data-start="0" data-duration="13.076" data-track-index="1">
+    <div class="s26a-view" id="s26a-view"><div class="s26a-cam" id="s26a-cam">
+    <div class="s26a-kick" id="s26a-in" style="left:60px; top:50px;">three ways your review reaches the agent</div>
+    <div class="s26a-node ink" id="s26a-send" style="left:60px; top:120px; width:420px; height:120px">Send, on your machine</div>
+    <div class="s26a-arrow" id="s26a-a0" style="left:490px; top:178px; width:80px"><i></i></div>
+    <div class="s26a-node" id="s26a-srv" style="left:590px; top:120px; width:360px; height:120px">the review server</div>
+    <div class="s26a-w" id="s26a-w0" style="left:990px; top:140px; width:860px">who picks it up: the next scene</div>
+    <div class="s26a-node" id="s26a-host" style="left:60px; top:300px; width:420px; height:250px; flex-direction:column">a hosted page<span class="sub">the review page as a link you open anywhere · Claude only</span></div>
+    <div class="s26a-dev" id="s26a-lap" style="left:590px; top:310px; width:300px; height:190px; overflow:hidden"><div data-artifact="the review page, as a hosted page shows it"><div class="s26a-crop" id="s26a-hp" style="left:6px; top:6px; width:282px; height:174.69px"><img class="s26a-lt" src="assets/shots/question-light.jpg" alt="" style="left:-37.434px; top:-24.956px; width:359.363px; height:224.602px"><img class="s26a-dk" src="assets/shots/question-dark.jpg" alt="" style="left:-37.434px; top:-24.956px; width:359.363px; height:224.602px"></div></div></div>
+    <div class="s26a-dev" id="s26a-ph" style="left:920px; top:330px; width:110px; height:190px"><i style="top:30px"></i><i style="top:56px; right:25%"></i></div>
+    <div class="s26a-url" id="s26a-url" style="left:590px; top:520px">claude.ai/… · one link</div>
+    <div class="s26a-arrow" id="s26a-a1" style="left:1060px; top:418px; width:80px"><i></i></div>
+    <div class="s26a-w" id="s26a-w1" style="left:1160px; top:380px; width:700px">a review sent from that link: filed by <code>reel-intake</code></div>
+    <div class="s26a-node dim" id="s26a-dl" style="left:60px; top:620px; width:420px; height:120px">a download you hand it</div>
+    <div class="s26a-arrow" id="s26a-a2" style="left:490px; top:678px; width:80px"><i></i></div>
+    <div class="s26a-w" id="s26a-w2" style="left:590px; top:656px; width:1200px">filed by <code>reel record</code></div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "26a-arrive";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#s26a-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#s26a-in", { opacity: 0 });
+  tl.to("#s26a-in", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+  gsap.set("#s26a-send", { opacity: 0, y: 12 });
+  tl.to("#s26a-send", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.85);
+  gsap.set("#s26a-a0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26a-a0", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 3.25);
+  gsap.set("#s26a-srv", { opacity: 0, y: 12 });
+  tl.to("#s26a-srv", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.45);
+  gsap.set("#s26a-w0", { opacity: 0 });
+  tl.to("#s26a-w0", { opacity: 1, duration: 0.4, ease: "power2.out" }, 3.85);
+  gsap.set("#s26a-host", { opacity: 0, y: 12 });
+  tl.to("#s26a-host", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.25);
+  gsap.set("#s26a-lap", { opacity: 0, y: 12 });
+  tl.to("#s26a-lap", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.61);
+  gsap.set("#s26a-ph", { opacity: 0, y: 12 });
+  tl.to("#s26a-ph", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.76);
+  gsap.set("#s26a-url", { opacity: 0, y: 12 });
+  tl.to("#s26a-url", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.01);
+  gsap.set("#s26a-a1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26a-a1", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 8.32);
+  gsap.set("#s26a-w1", { opacity: 0 });
+  tl.to("#s26a-w1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 8.62);
+  gsap.set("#s26a-dl", { opacity: 0, y: 12 });
+  tl.to("#s26a-dl", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.32);
+  gsap.set("#s26a-a2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26a-a2", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 10.82);
+  gsap.set("#s26a-w2", { opacity: 0 });
+  tl.to("#s26a-w2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 11.02);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

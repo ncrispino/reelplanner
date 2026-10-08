@@ -1,0 +1,25 @@
+# Fresh eyes: newcomer · round 2 · stamp 712366da6611
+
+- N1 · scene 6 · "Each lists what it could mean for this video, from its scenes, its long sources and its open threads": "long sources" is never explained (what makes a source long, and where are long sources marked?). I guessed big files or logs that the video only skims. Also the picture's "explain.md, open threads · scene 3" reads as a file path plus a scene, and I could not tell which of the listed items come from open threads and which from scenes; it matters because that is the whole basis of the suggestions.
+  - Answer: kept: scene 2 says a source over two hundred lines gets a guide part, and the storyboard's terms now give "long sources" a meaning too (sources far longer than a video can show, over about 200 lines, each with a guide part); open threads and explain.md already have meanings, and each suggestion's grey line says where it came from
+
+- N2 · scene 6 · "the scene you rewound, your comment": the narration says the suggestions use what you did while watching, but the picture shows only one comment ("it should show who picked it up, by name") and no rewind. I guessed the player records rewinds. I could not tell how the video knows you rewound a scene, or that the Explain more card's "the part you rewound" is drawn from that. The three suggestion rows also show no cue for which one came from rewinding.
+  - Answer: kept: the Explain more card on the same picture says "the part you rewound", which is where the rewind shows; the player records a trip back itself, as the review page always has
+
+- N3 · scene 6 · "Two choices: that box is on every explainer's Finish, and Done still comes first": the on-screen cards "choice A13" and "choice A9" carry no explanation of what "A13" and "A9" are. "Done still comes first" is also unclear, since Done is already the leftmost card. I guessed it means Done is the default or comes first in the order. Also unclear: "that box" (the "What do you want next?" box?), and how it relates to the suggestion list above it.
+  - Answer: kept: scene 5 brings in numbered choices the same way; "that box" is ringed as it is said, and Done is ringed on "Done still comes first", the default the page picks
+
+- N4 · scene 6 · "Explain more … the scene your comment is on is rebuilt too": the video says an explainer asks nothing to decide, yet Explain more rebuilds a scene. I could not tell what "rebuilt" means for an explainer (a new video? just that scene?), or how it differs from Plan this, which "starts from" the explainer. I guessed Explain more makes a longer version of the same explainer.
+  - Answer: kept: the Explain more card says what it rebuilds (the scenes your comments are on), and step 3's Finish in the plan says the next version is a new build of the same explainer; Plan this starts a plan instead
+
+- N5 · scene 9 · "`reel new-plan --from`": the command is named but its argument is never shown, and "--from" what? I guessed the explainer's folder. Nothing says who runs it (me, the agent, the Finish button?) or when. It matters because Plan this is the step that starts a plan.
+  - Answer: kept: the agent runs it when a review ends on Plan this, as scene 8's `reel record` output says; the scene shows what it writes
+
+- N6 · scene 9 · "with no plan file, it writes a draft, the problem only": which plan file? The picture shows a plan.md at plans/2026-09-29-waiting-reviews/, but the video never says whether it already exists or where it comes from. I guessed that pressing Plan this creates it. "The problem only" is also unexplained: I guessed no steps or questions yet, so the plan video could not be made from it. What happens next, and who writes the steps, is not said.
+  - Answer: kept: the A12 card says it, a draft with the problem only, for the steps to be written; "no plan file" is `--plan`, the plan text an agent may already have
+
+- N7 · scene 9 · "`reel prereqs` puts the explainer first under Before you watch, so the plan video starts at what changes": the terminal shows two "before:" lines with a "|" and a "system#part 1" id, and neither is explained. I guessed that "before:" is the video id and "|" separates it from the reason shown to the viewer. The words "starts at what changes" are unclear too: the plan video skips something, but nothing says what.
+  - Answer: kept: `reel prereqs` has a meaning in the terms (it writes a video's Before you watch lines), and the ring marks the first line when "Before you watch" is said
+
+- N8 · scene 9 · "Explained first:" and the three highlighted "Scene 3" and "Picked at Finish" lines in plan.md: I guessed these are lines the tool wrote from your comment and your pick. The narration says "quotes what you said, by scene", but "Picked at Finish" quotes the option text, not something said. Also, the plan's title ("Make a waiting review easy to see on the page") is not the wording of the pick ("A plan to make a…"), so "titles the draft with what you picked" does not obviously match.
+  - Answer: kept: the title is the pick without its "A plan to", as the draft shows it; "Picked at Finish" is what you chose, quoted with the comment

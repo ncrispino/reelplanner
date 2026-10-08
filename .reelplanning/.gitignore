@@ -1,0 +1,61 @@
+# reproducible, large: rebuilt by the pipeline from the committed sources
+plans/*/video/renders/
+plans/*/video/snapshots/
+plans/*/video/node_modules/
+plans/*/video/assets/vendor/
+plans/*/video/.hyperframes/frame-packets/
+plans/*/walkthrough-video/renders/
+plans/*/walkthrough-video/snapshots/
+plans/*/walkthrough-video/node_modules/
+plans/*/walkthrough-video/assets/vendor/
+plans/*/walkthrough-video/.hyperframes/frame-packets/
+# the pictures fresh eyes looked at: made again by each run (the findings beside them are committed)
+plans/*/video/fresh-eyes/shots/
+plans/*/walkthrough-video/fresh-eyes/shots/
+system-video/fresh-eyes/shots/
+# an explainer's video (explain-first step 5, D-249): its text is committed, its build and its pictures are not
+explainers/*/video/renders/
+explainers/*/video/snapshots/
+explainers/*/video/node_modules/
+explainers/*/video/assets/vendor/
+explainers/*/video/.hyperframes/frame-packets/
+explainers/*/video/fresh-eyes/shots/
+# the system video's own build: rebuilt the same way (its text, frames and narration record are committed)
+system-video/renders/
+system-video/snapshots/
+system-video/node_modules/
+system-video/assets/vendor/
+system-video/.hyperframes/frame-packets/
+system-video/.hyperframes/cues/
+# the voice: made again by `narrate` from SCRIPT.md and .hyperframes/narration.json (D-305: no voice files
+# or renders are committed anywhere)
+plans/*/*video/assets/voice/
+explainers/*/video/assets/voice/
+system-video/assets/voice/
+# …and none anywhere else in the record either: a finished video people should watch goes up as a release file or
+# on the hosted page (D-305)
+*.wav
+*.mp4
+# the guide (D-213): built by `reelplanning guide` from plan.md, git and runs/, never committed; a plan with
+# no video yet gets guide/index.html, the same. A step's picture fragment (guide/step-<n>.html) is committed.
+plans/*/*video/guide/
+explainers/*/video/guide/
+plans/*/guide/index.html
+plans/*/guide/parts.json
+plans/*/guide/.cache/
+
+# reviews submitted on the local review page, claims, waiting-session heartbeats and headless-run
+# logs: machine-local and untrusted until `reel-intake` checks a row (what it writes is the record)
+inbox/
+
+# the blame `reel check --base` and `reel status` place accepted calls with (D-306): made again when missing
+.cache/
+# keys for narration (OPENROUTER_API_KEY …): .reelplanning/.env is where they go; read by `narrate`, `narration-check`
+# and `setup`, and never committed
+.env
+
+# kept on purpose, small and committed (`reel rebuild`, scripts/lib/versions.mjs): what each reviewed version was built
+# from that nothing makes again, its screenshots and captured text (media/, one file per content), and what each
+# version is (versions/). Never a voice file, a video or a render.
+!media/**
+!**/versions/**

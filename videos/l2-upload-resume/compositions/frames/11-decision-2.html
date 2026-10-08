@@ -1,0 +1,191 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+    #f11-decision-2-bg { position: absolute; inset: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+    #f11-decision-2-stage { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+
+    /* ---- SHARED STAGE v2 (law) ---- */
+    .f11-decision-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+    .f11-decision-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+    .f11-decision-2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+    .f11-decision-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+    .f11-decision-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+    .f11-decision-2-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral); }
+    .f11-decision-2-slot.dim { opacity:0.72; }
+    .f11-decision-2-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+    .f11-decision-2-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+    .f11-decision-2-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f11-decision-2-node.navy .l { color:var(--rp-on-ink); }
+    .f11-decision-2-node.dim { opacity:0.72; }
+  .f11-decision-2-node.navy.dim { opacity:1; }
+    .f11-decision-2-node.active { border:3px solid var(--rp-coral); }
+    .f11-decision-2-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f11-decision-2-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .f11-decision-2-edges path.dim { opacity:0.35; }
+    .f11-decision-2-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+    .f11-decision-2-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+    .f11-decision-2-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+    .f11-decision-2-opt.rec { border:3px solid var(--rp-coral); }
+    .f11-decision-2-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+    .f11-decision-2-kicker { position:absolute; left:700px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+    /* ---- end shared stage ---- */
+
+    /* coral ring on Billing: same outer box as .active (3px inside the node's 1px hairline), no layout shift.
+       It is the frame's one coral until card A lands, then hands off to card A's border. */
+    #f11-decision-2-ring { position:absolute; inset:-1px; border-radius:12px; border:3px solid var(--rp-coral); pointer-events:none; }
+
+    /* THE MARK — the same ring on an option card, so the option being spoken about is the one lit.
+       It lights and lets go through opacity alone; only ever one of them is up. */
+    .f11-decision-2-mark { position:absolute; inset:-1px; border-radius:12px; border:3px solid var(--rp-coral); pointer-events:none; opacity:0; }
+
+    /* ✱ kicker mark — ink, never coral */
+    #f11-decision-2-spike { display:inline-block; color:var(--rp-ink); margin-right:14px; transform-origin:50% 50%; }
+
+    /* worked-example chips: 26 px mono on a tile, 16 px under a node, left-aligned to it */
+    .f11-decision-2-chip { position:absolute; height:40px; padding:0 12px; box-sizing:border-box; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); font:400 26px/38px "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+    #f11-decision-2-chip-post  { left:700px;  top:556px; }   /* under Client SDK (bottom 540) */
+    #f11-decision-2-chip-409   { left:1030px; top:556px; }   /* under Upload API (bottom 540) */
+    #f11-decision-2-chip-m1    { left:1360px; top:396px; opacity:0.72; }   /* under Manifest store (bottom 380) */
+    #f11-decision-2-chip-m2    { left:1360px; top:448px; }   /* second manifest, 12 px gap */
+    #f11-decision-2-chip-parts { left:1360px; top:716px; opacity:0.72; }   /* under Blob store (bottom 700), inherited */
+
+    /* cost lines: one under each card, y 886, left-aligned to the card */
+    .f11-decision-2-cost { position:absolute; top:886px; font:400 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+    #f11-decision-2-cost-a { left:700px; }
+    #f11-decision-2-cost-b { left:1320px; }
+    .f11-decision-2-cost span { display:inline-block; }
+
+    /* option cards: one entrance (opacity + y), no scale */
+    .f11-decision-2-opt { will-change:transform; }
+  </style>
+
+  <div id="root" data-composition-id="11-decision-2" data-width="1920" data-height="1080" data-duration="23.732">
+    <div id="f11-decision-2-bg" class="clip" data-start="0" data-duration="23.732" data-track-index="0"></div>
+
+    <div id="f11-decision-2-stage" class="clip" data-start="0" data-duration="23.732" data-track-index="1">
+
+      <div class="f11-decision-2-rail" id="f11-decision-2-rail">
+        <div class="f11-decision-2-slot dim" id="f11-decision-2-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+        <div class="f11-decision-2-slot dim" id="f11-decision-2-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f11-decision-2-slot dim" id="f11-decision-2-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f11-decision-2-slot" id="f11-decision-2-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+        <div class="f11-decision-2-slot" id="f11-decision-2-slot-5" data-plan-step="5" style="top:440px"><span class="n" style="opacity:0">5</span><span class="t" style="opacity:0">Sweeper</span></div>
+        <div class="f11-decision-2-slot" id="f11-decision-2-slot-6" data-plan-step="6" style="top:550px"><span class="n" style="opacity:0">6</span><span class="t" style="opacity:0">SDK resume</span></div>
+      </div>
+
+      <div class="f11-decision-2-node dim"      id="f11-decision-2-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+      <div class="f11-decision-2-node"          id="f11-decision-2-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+      <div class="f11-decision-2-node navy dim" id="f11-decision-2-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+      <div class="f11-decision-2-node dim"      id="f11-decision-2-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+      <div class="f11-decision-2-node"          id="f11-decision-2-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span><div id="f11-decision-2-ring"></div></div>
+      <div class="f11-decision-2-node dim"      id="f11-decision-2-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+      <!-- four edges, inherited: three dim, api→billing (step 4's) full ink -->
+      <svg class="f11-decision-2-edges" id="f11-decision-2-edges" viewBox="0 0 1920 1080">
+        <path id="f11-decision-2-e-api-manifest" class="dim" d="M1300 460 L1330 460 L1330 305 L1360 305" />
+        <path id="f11-decision-2-e-api-blob"     class="dim" d="M1300 510 L1330 510 L1330 645 L1360 645" />
+        <path id="f11-decision-2-e-sdk-api"      class="dim" d="M970 485 L1030 485" />
+        <path id="f11-decision-2-e-api-billing"              d="M1165 430 L1165 180 L1770 180 L1770 230" />
+      </svg>
+
+      <!-- worked examples: chips under their nodes -->
+      <div class="f11-decision-2-chip" id="f11-decision-2-chip-m1">7f3a · 111111</div>
+      <div class="f11-decision-2-chip" id="f11-decision-2-chip-m2">7f3b · 000000</div>
+      <div class="f11-decision-2-chip" id="f11-decision-2-chip-parts">7f3a · 6 of 6 parts</div>
+      <div class="f11-decision-2-chip" id="f11-decision-2-chip-post">POST twice</div>
+      <div class="f11-decision-2-chip" id="f11-decision-2-chip-409">409 conflict</div>
+
+      <div class="f11-decision-2-kicker" id="f11-decision-2-kicker"><span id="f11-decision-2-spike">✱</span>CHOICE 2 · STEP 4</div>
+
+      <div class="f11-decision-2-opt" id="f11-decision-2-opt-a" data-plan-option="a" style="left:700px"><span class="k">A</span><span class="l">Server id</span><div class="f11-decision-2-mark" id="f11-decision-2-mark-a"></div></div>
+      <div class="f11-decision-2-opt" id="f11-decision-2-opt-b" data-plan-option="b" style="left:1320px"><span class="k">B</span><span class="l">Client key</span><div class="f11-decision-2-mark" id="f11-decision-2-mark-b"></div></div>
+      <div class="f11-decision-2-cost" id="f11-decision-2-cost-a">no SDK change</div>
+      <div class="f11-decision-2-cost" id="f11-decision-2-cost-b"><span id="f11-decision-2-cost-b-1">index</span><span id="f11-decision-2-cost-b-2">&nbsp;·&nbsp;409</span><span id="f11-decision-2-cost-b-3">&nbsp;·&nbsp;SDKs</span></div>
+
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var P = "#f11-decision-2-";
+      var tl = gsap.timeline({ paused: true });
+
+      /* The mark follows the sentence: whichever option is being described wears the coral, and
+         never two at once. Cue sheet 21.808s. */
+
+      /* hidden until their word */
+      tl.set([P + "chip-post", P + "chip-409", P + "chip-m2", P + "cost-a",
+              P + "cost-b-1", P + "cost-b-2", P + "cost-b-3", P + "opt-a", P + "opt-b"], { opacity: 0 }, 0);
+
+      /* 0.06 "Second choice" — ✱ kicker "CHOICE 2 · STEP 4" (ink) */
+      tl.fromTo(P + "kicker", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.07);
+      tl.fromTo(P + "spike", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.07);
+
+      /* 1.47 "the idempotency key?" — the question lands on the question: the manifest id, the key
+         whose ownership is at stake, comes up to full under the Manifest store. */
+      tl.to(P + "chip-m1", { opacity: 1, duration: 0.5, ease: "power3.out" }, 1.55);
+
+      /* 2.80 "a client sends POST uploads" — the client and its call to the API come forward */
+      tl.to([P + "node-sdk", P + "e-sdk-api"], { opacity: 1, duration: 0.6, ease: "power3.out" }, 2.97);
+      /* 4.18 "times out" — the call falls back to dim: nothing came back */
+      tl.to(P + "e-sdk-api", { opacity: 0.35, duration: 0.4, ease: "power3.out" }, 4.5);
+      /* 4.80 "sends it again" — one chip under Client SDK: the retried request */
+      tl.fromTo(P + "chip-post", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.21);
+
+      /* 6.04 "the server's manifest id" — A is what is being described: card A lands and takes the
+         mark as Billing's ring lets go (one coral). */
+      tl.fromTo(P + "opt-a", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 6.45);
+      tl.to(P + "mark-a", { opacity: 1, duration: 0.5, ease: "power3.out" }, 6.45);
+      tl.to(P + "ring", { opacity: 0, duration: 0.4, ease: "power2.out" }, 6.45);
+      /* 7.13 "that makes two manifests" — a second manifest chip under the first */
+      tl.fromTo(P + "chip-m2", { opacity: 0, y: 6 }, { opacity: 0.72, y: 0, duration: 0.5, ease: "power3.out" }, 7.61);
+      /* 8.84 "pays once per file it completes" — the completed file's parts come up to full */
+      tl.to(P + "chip-parts", { opacity: 1, duration: 0.5, ease: "power3.out" }, 9.31);
+
+      /* 10.66 "a key the client makes" — the sentence turns to B: card B lands, the mark crosses,
+         card A and A's side of the stage step back. */
+      tl.fromTo(P + "opt-b", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 11.3);
+      tl.to(P + "mark-b", { opacity: 1, duration: 0.5, ease: "power3.out" }, 11.3);
+      tl.to(P + "mark-a", { opacity: 0, duration: 0.45, ease: "power3.out" }, 11.3);
+      tl.to([P + "opt-a", P + "chip-m1", P + "chip-parts"], { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 11.3);
+
+      /* 12.69 "the second POST" — the same call again, down the same edge */
+      tl.to(P + "e-sdk-api", { opacity: 1, duration: 0.4, ease: "power3.out" }, 13.49);
+      /* 13.47 "is refused" — `409 conflict` under Upload API; the edge falls back and the second
+         manifest never happens */
+      tl.fromTo(P + "chip-409", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 14.29);
+      tl.to(P + "e-sdk-api", { opacity: 0.35, duration: 0.4, ease: "power3.out" }, 14.29);
+      tl.to(P + "chip-m2", { opacity: 0, duration: 0.5, ease: "power2.out" }, 14.29);
+
+      /* B's cost arrives on the words that name it: "unique index" @15.04 · "409 path" @15.61 ·
+         "a change in every SDK" @17.15 */
+      tl.fromTo(P + "cost-b-1", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 15.96);
+      tl.fromTo(P + "cost-b-2", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 16.64);
+      tl.fromTo(P + "cost-b-3", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 18.22);
+      /* 17.81 "in every SDK" — the contrast arrives under the dim card A: it needs none */
+      tl.fromTo(P + "cost-a", { opacity: 0, y: 6 }, { opacity: 0.72, y: 0, duration: 0.4, ease: "power3.out" }, 18.92);
+
+      /* 18.92 "For version one" — B steps back; 19.66 "I recommend the server id" — the mark settles
+         on A and stays there. */
+      tl.to([P + "opt-b", P + "cost-b"], { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 20.13);
+      tl.to(P + "mark-b", { opacity: 0, duration: 0.45, ease: "power3.out" }, 20.88);
+      tl.to(P + "mark-a", { opacity: 1, duration: 0.6, ease: "power3.out" }, 20.88);
+      tl.to([P + "opt-a", P + "cost-a"], { opacity: 1, duration: 0.6, ease: "power3.out" }, 20.88);
+
+      /* 21.20 "Which do you want?" — the pair is presented as a choice: B back to full beside A,
+         the mark still on the recommendation. */
+      tl.to([P + "opt-b", P + "cost-b"], { opacity: 1, duration: 0.6, ease: "power3.out" }, 22.59);
+      /* hold to the fixed duration */
+      tl.to({}, { duration: 0.01 }, 23.224);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["11-decision-2"] = tl;
+    })();
+  </script>
+</template>

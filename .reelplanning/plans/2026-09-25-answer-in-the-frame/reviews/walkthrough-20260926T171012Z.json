@@ -1,0 +1,94 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "19-end",
+        "index": 19,
+        "title": "What ran; flag a choice, or accept"
+      },
+      "id": "amuinawmaisa1",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 293.57
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-26T17:10:12.571Z",
+  "knowledgeLevel": "new",
+  "project": "walkthrough-video",
+  "quizzes": [],
+  "src": "2026-09-25-answer-in-the-frame--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 293.96,
+    "firstPlayAt": "2026-09-26T17:09:57.530Z",
+    "maxTimeReached": 293.96,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

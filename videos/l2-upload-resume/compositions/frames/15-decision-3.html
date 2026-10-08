@@ -1,0 +1,171 @@
+<template>
+<div id="root" data-composition-id="15-decision-3" data-width="1920" data-height="1080" data-duration="21.449">
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f15-decision-3-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f15-decision-3-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  /* ---- SHARED STAGE v2 (law; prefixed f15-decision-3) ---- */
+  .f15-decision-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f15-decision-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f15-decision-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f15-decision-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f15-decision-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f15-decision-3-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f15-decision-3-slot.dim { opacity:0.72; }
+  .f15-decision-3-slot.empty .n, .f15-decision-3-slot.empty .t { opacity:0; }
+  .f15-decision-3-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f15-decision-3-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f15-decision-3-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f15-decision-3-node.navy .l { color:var(--rp-on-ink); }
+  .f15-decision-3-node.dim { opacity:0.72; }
+  .f15-decision-3-node.navy.dim { opacity:1; }
+  .f15-decision-3-node.active { border:3px solid var(--rp-coral); }
+  .f15-decision-3-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f15-decision-3-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f15-decision-3-edges path.dim { opacity:0.35; }
+  .f15-decision-3-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  .f15-decision-3-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  .f15-decision-3-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+  .f15-decision-3-opt.rec { border:3px solid var(--rp-coral); }
+  .f15-decision-3-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* ---- end shared stage ---- */
+
+  /* nodes are a title, nothing else: the worked examples are mono chips 16 px under their node,
+     left-aligned to the node's left edge (Manifest: two chips stacked, 12 px gap, clear of the
+     Sweeper → Manifest edge at x 1660; Blob: the struck 2c91 chip inherited from step 5). */
+  .f15-decision-3-chip { position:absolute; padding:8px 12px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 26px/1 "JetBrains Mono"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; box-sizing:border-box; opacity:0.72; }
+  .f15-decision-3-chip.gone::after { content:""; position:absolute; left:12px; right:12px; top:50%; height:1px; background:var(--rp-ink); }
+
+  /* the Sweeper's inherited coral border (step 5's signal): a ring on the node, handed to card A on "At" */
+  .f15-decision-3-ring { position:absolute; left:-1px; top:-1px; right:-1px; bottom:-1px; border-radius:12px; border:3px solid var(--rp-coral); pointer-events:none; }
+
+  /* THE MARK — the same ring on an option card: the option being spoken about is the one lit, and
+     only ever one of them. It lights and lets go through opacity alone, so nothing re-lays out. */
+  .f15-decision-3-mark { position:absolute; left:-1px; top:-1px; right:-1px; bottom:-1px; border-radius:12px; border:3px solid var(--rp-coral); pointer-events:none; opacity:0; }
+
+  /* kicker-spike (ink; the stage owns the frame's one coral) */
+  .f15-decision-3-kicker { position:absolute; left:700px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f15-decision-3-kicker .spike { color:var(--rp-ink); margin-right:14px; }
+
+  /* cost lines: one under each card at y 886, left-aligned to the card, 26 px mono ink */
+  .f15-decision-3-tag { position:absolute; top:886px; width:540px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); text-align:left; white-space:nowrap; }
+</style>
+
+<div class="clip f15-decision-3-bg" data-start="0" data-duration="21.449" data-track-index="0"></div>
+
+<div class="clip f15-decision-3-stage" data-start="0" data-duration="21.449" data-track-index="1">
+
+  <div class="f15-decision-3-rail" id="f15-decision-3-rail">
+    <div class="f15-decision-3-slot dim" id="f15-decision-3-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+    <div class="f15-decision-3-slot dim" id="f15-decision-3-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+    <div class="f15-decision-3-slot dim" id="f15-decision-3-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f15-decision-3-slot dim" id="f15-decision-3-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+    <div class="f15-decision-3-slot" id="f15-decision-3-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+    <div class="f15-decision-3-slot empty" id="f15-decision-3-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <div class="f15-decision-3-node dim"      id="f15-decision-3-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f15-decision-3-node dim"      id="f15-decision-3-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f15-decision-3-node navy dim" id="f15-decision-3-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+  <div class="f15-decision-3-node dim"      id="f15-decision-3-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+  <div class="f15-decision-3-node dim"      id="f15-decision-3-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+  <div class="f15-decision-3-node"          id="f15-decision-3-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span><div class="f15-decision-3-ring" id="f15-decision-3-ring"></div></div>
+
+  <!-- worked examples, inherited from step 5: 16 px under Manifest (bottom 380) and Blob (bottom 700) -->
+  <div class="f15-decision-3-chip"      id="f15-decision-3-chip-manifest-1" style="left:1360px; top:396px">7f3a · 111111</div>
+  <div class="f15-decision-3-chip"      id="f15-decision-3-chip-manifest-2" style="left:1360px; top:452px">2c91 · 26 h</div>
+  <div class="f15-decision-3-chip gone" id="f15-decision-3-chip-blob"       style="left:1360px; top:716px">2c91 · 3 parts</div>
+
+  <svg class="f15-decision-3-edges" id="f15-decision-3-edges" viewBox="0 0 1920 1080">
+    <path class="dim" id="f15-decision-3-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+    <path class="dim" id="f15-decision-3-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path class="dim" id="f15-decision-3-e-sdk-api"          d="M970 485 L1030 485" />
+    <path class="dim" id="f15-decision-3-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path id="f15-decision-3-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+    <path id="f15-decision-3-e-sweeper-blob"     d="M1680 645 L1640 645" />
+  </svg>
+
+  <div class="f15-decision-3-kicker" id="f15-decision-3-kicker"><span class="spike">✱</span>CHOICE 3 · STEP 5</div>
+
+  <div class="f15-decision-3-opt" id="f15-decision-3-opt-a" data-plan-option="a" style="left:700px"><span class="k">A</span><span class="l">24 hours</span><div class="f15-decision-3-mark" id="f15-decision-3-mark-a"></div></div>
+  <div class="f15-decision-3-opt" id="f15-decision-3-opt-b" data-plan-option="b" style="left:1320px"><span class="k">B</span><span class="l">7 days</span><div class="f15-decision-3-mark" id="f15-decision-3-mark-b"></div></div>
+
+  <div class="f15-decision-3-tag" id="f15-decision-3-tag-a" style="left:700px">≤ 1 day storage</div>
+  <div class="f15-decision-3-tag" id="f15-decision-3-tag" style="left:1320px">×7 parts</div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById("f15-decision-3-" + id); };
+  var kicker = q("kicker"), optA = q("opt-a"), optB = q("opt-b"),
+      markA = q("mark-a"), markB = q("mark-b"),
+      tagA = q("tag-a"), tagB = q("tag"), ring = q("ring"),
+      age = q("chip-manifest-2"), parts = q("chip-blob"),
+      sdk = q("node-sdk"), call = q("e-sdk-api"), blob = q("node-blob"),
+      scan = [q("e-sweeper-manifest"), q("e-sweeper-blob")];
+  var tl = gsap.timeline({ paused: true });
+
+  // Cue sheet (frame-relative s, voice 19.559s): every reveal lands on the START of the word that
+  // names it, and the mark sits on whichever option the sentence is describing — never both.
+
+  // 0.09 "Third choice" → kicker-spike (ink) settles in above the diagram (stage already held).
+  tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.07);
+
+  // 1.00 "how old is abandoned?" → the question lands on the question: the abandoned upload's age
+  // (2c91 · 26 h) comes up to full under the Manifest store.
+  tl.to(age, { opacity: 1, duration: 0.5, ease: "power3.out" }, 1.05);
+
+  // 2.19 "At twenty-four hours" → A is what is being described: card A enters and takes the mark as
+  // the Sweeper's ring lets go, so there is never a second coral.
+  tl.fromTo(optA, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.27);
+  tl.to(markA, { opacity: 1, duration: 0.5, ease: "power3.out" }, 2.27);
+  tl.to(ring, { opacity: 0, duration: 0.4, ease: "power3.out" }, 2.27);
+  // 4.01 "at most one day of storage" → cost line "≤ 1 day storage" under card A.
+  tl.fromTo(tagA, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 4.28);
+  // 5.77 "most phones on bad networks" → the client comes forward; 7.31 "retry" → its call to the API.
+  tl.to(sdk, { opacity: 1, duration: 0.6, ease: "power3.out" }, 6.23);
+  tl.to(call, { opacity: 1, duration: 0.5, ease: "power3.out" }, 7.83);
+
+  // 8.53 "At seven days" → the sentence turns to B: card B enters, the mark crosses, and card A,
+  // its line, the retrying client and the sweeper's scan all step back.
+  tl.fromTo(optB, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 9.15);
+  tl.to(markB, { opacity: 1, duration: 0.5, ease: "power3.out" }, 9.15);
+  tl.to(markA, { opacity: 0, duration: 0.45, ease: "power3.out" }, 9.15);
+  tl.to([optA, tagA, sdk, age], { opacity: 0.72, duration: 0.6, ease: "power3.out" }, 9.15);
+  tl.to([call].concat(scan), { opacity: 0.35, duration: 0.6, ease: "power3.out" }, 9.15);
+
+  // 9.85 "a huge upload over a bad link still finishes" → the Blob store comes forward.
+  tl.to(blob, { opacity: 1, duration: 0.6, ease: "power3.out" }, 10.59);
+  // 12.27 "each abandoned upload holds its parts" → the parts it is holding come up to full.
+  tl.to(parts, { opacity: 1, duration: 0.5, ease: "power3.out" }, 13.23);
+  // 14.24 "for a week" → cost line "×7 parts" under card B.
+  tl.fromTo(tagB, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 15.46);
+  // 14.98 "the hourly scan grows seven times" → the sweeper's two scan edges come back to full ink.
+  tl.to(scan, { opacity: 1, duration: 0.6, ease: "power3.out" }, 16.18);
+
+  // 16.98 "I recommend twenty-four hours" → the mark settles back on card A and stays there; B and
+  // the week's consequence step back.
+  tl.to(markB, { opacity: 0, duration: 0.45, ease: "power3.out" }, 18.3);
+  tl.to(markA, { opacity: 1, duration: 0.6, ease: "power3.out" }, 18.3);
+  tl.to([optA, tagA], { opacity: 1, duration: 0.6, ease: "power3.out" }, 18.3);
+  tl.to([optB, tagB], { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 18.3);
+  tl.to([blob, parts], { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 18.3);
+
+  // 18.93 "Which do you want?" → the pair is finally presented as a choice: card B comes back to
+  // full beside card A, the mark still on the recommendation.
+  tl.to([optB, tagB], { opacity: 1, duration: 0.6, ease: "power3.out" }, 19.92);
+  // hold to the frame's full duration
+  tl.set({}, {}, 20.949);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["15-decision-3"] = tl;
+})();
+</script>
+</div>
+</template>

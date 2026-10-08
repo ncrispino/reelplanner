@@ -1,0 +1,102 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .s03b-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .s03b-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): nothing is drawn below 900 */
+  .s03b-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .s03b-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .s03b-num { position:absolute; box-sizing:border-box; width:96px; height:96px; border-radius:48px; display:flex; align-items:center; justify-content:center; font:400 52px/1 "EB Garamond"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.4); background:var(--rp-paper); }
+  .s03b-node { position:absolute; box-sizing:border-box; display:flex; align-items:center; padding:0 30px; border-radius:12px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .s03b-node.hot { border:4px solid var(--rp-coral); }
+  .s03b-w { position:absolute; font:400 34px/44px "Inter"; color:var(--rp-ink); }
+  .s03b-w .d { color:rgba(var(--rp-ink-rgb),0.5); margin:0 0.3em; }
+  .s03b-tag { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:500 28px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:8px; white-space:nowrap; }
+  .s03b-tag.ink { background:var(--rp-ink); }
+  .s03b-rail { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.2); border-radius:2px; transform-origin:50% 0; }
+</style>
+
+<div id="root" data-composition-id="03b-levels" data-band="bottom" data-duration="22.633" data-width="1920" data-height="1080">
+
+  <div class="clip s03b-bg" id="s03b-bg" data-start="0" data-duration="22.633" data-track-index="0"></div>
+
+  <div class="clip s03b-scene" id="s03b-scene" data-start="0" data-duration="22.633" data-track-index="1">
+    <div class="s03b-view" id="s03b-view">
+    <div class="s03b-kick" id="s03b-in" style="left:120px; top:70px;">how much of it you use</div>
+    <div class="s03b-tag" id="s03b-pick" style="left:620px; top:56px;">you pick: each level is optional</div>
+
+    <div class="s03b-rail" id="s03b-rail" style="left:166px; top:250px; height:480px"></div>
+
+    <div class="s03b-num" id="s03b-n1" style="left:120px; top:182px">1</div>
+    <div class="s03b-node hot" id="s03b-r1" style="left:260px; top:160px; width:560px; height:140px">one video</div>
+    <div class="s03b-tag ink" id="s03b-unit" style="left:560px; top:206px;">the basic unit</div>
+    <div class="s03b-w" id="s03b-r1a" style="left:870px; top:164px; width:960px">a plan video, from a plan</div>
+    <div class="s03b-w" id="s03b-r1b" style="left:870px; top:208px; width:960px">or an explainer, of what is already there</div>
+    <div class="s03b-w" id="s03b-r1c" style="left:870px; top:252px; width:960px">just the video: no guide, no record</div>
+
+    <div class="s03b-num" id="s03b-n2" style="left:120px; top:412px">2</div>
+    <div class="s03b-node" id="s03b-r2" style="left:260px; top:390px; width:560px; height:140px">+ a walkthrough</div>
+    <div class="s03b-w" id="s03b-r2a" style="left:870px; top:438px; width:960px">after the build: the change, running</div>
+
+    <div class="s03b-num" id="s03b-n3" style="left:120px; top:642px">3</div>
+    <div class="s03b-node" id="s03b-r3" style="left:260px; top:620px; width:560px; height:140px">+ the whole pipeline</div>
+    <div class="s03b-w" id="s03b-r3a" style="left:870px; top:624px; width:960px">your answers kept as decisions</div>
+    <div class="s03b-w" id="s03b-r3b" style="left:870px; top:668px; width:960px">every review on record</div>
+    <div class="s03b-w" id="s03b-r3c" style="left:870px; top:712px; width:960px">the system video, kept current</div>
+    <div class="s03b-tag ink" id="s03b-here" style="left:260px; top:800px;">from here on, this video: the whole pipeline</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "03b-levels";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#s03b-in", { opacity: 0 });
+  tl.to("#s03b-in", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+  gsap.set("#s03b-pick", { opacity: 0, y: 12 });
+  tl.to("#s03b-pick", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
+  gsap.set("#s03b-rail", { scaleY: 0 });
+  tl.to("#s03b-rail", { scaleY: 1, duration: 0.6, ease: "power1.inOut" }, 2.3);
+  gsap.set("#s03b-n1", { opacity: 0, y: 12 });
+  tl.to("#s03b-n1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.2);
+  gsap.set("#s03b-r1", { opacity: 0, y: 12 });
+  tl.to("#s03b-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.3);
+  gsap.set("#s03b-unit", { opacity: 0, y: 8 });
+  tl.to("#s03b-unit", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 3.6);
+  gsap.set("#s03b-r1a", { opacity: 0, y: 12 });
+  tl.to("#s03b-r1a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.37);
+  gsap.set("#s03b-r1b", { opacity: 0, y: 12 });
+  tl.to("#s03b-r1b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.28);
+  gsap.set("#s03b-n2", { opacity: 0, y: 12 });
+  tl.to("#s03b-n2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.5);
+  gsap.set("#s03b-r2", { opacity: 0, y: 12 });
+  tl.to("#s03b-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.54);
+  gsap.set("#s03b-r2a", { opacity: 0, y: 12 });
+  tl.to("#s03b-r2a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.36);
+  gsap.set("#s03b-n3", { opacity: 0, y: 12 });
+  tl.to("#s03b-n3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.9);
+  gsap.set("#s03b-r3", { opacity: 0, y: 12 });
+  tl.to("#s03b-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.99);
+  gsap.set("#s03b-r3a", { opacity: 0, y: 12 });
+  tl.to("#s03b-r3a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.07);
+  gsap.set("#s03b-r3b", { opacity: 0, y: 12 });
+  tl.to("#s03b-r3b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.01);
+  gsap.set("#s03b-r3c", { opacity: 0, y: 12 });
+  tl.to("#s03b-r3c", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.44);
+  gsap.set("#s03b-r1c", { opacity: 0, y: 12 });
+  tl.to("#s03b-r1c", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.2);
+  gsap.set("#s03b-here", { opacity: 0, y: 12 });
+  tl.to("#s03b-here", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 18.56);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

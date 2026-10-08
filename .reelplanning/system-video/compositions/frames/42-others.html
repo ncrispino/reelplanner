@@ -1,0 +1,150 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .s42-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .s42-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .s42-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .s42-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .s42-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .s42-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .s42-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .s42-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s42-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .s42-ul.ink { background:var(--rp-ink); height:3px; }
+  .s42-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s42-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .s42-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .s42-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s42-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .s42-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .s42-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .s42-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .s42-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .s42-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s42-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s42-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .s42-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s42-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .s42-lab { background:var(--rp-paper); padding:6px 12px; margin:-6px -12px; border-radius:6px; z-index:5; }
+  .s42-img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .s42-img.s42-dk { display:none; }
+  :root[data-theme="dark"] .s42-img.s42-lt { display:none; }
+  :root[data-theme="dark"] .s42-img.s42-dk { display:block; }
+  .s42-scr { position:absolute; border-radius:8px; overflow:hidden; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s42-wp { position:absolute; overflow:hidden; }
+  .s42-wi { position:absolute; left:0; top:0; }
+  .s42-gp { position:absolute; padding:0 0.42em; font-family:"Inter"; font-weight:400; font-style:normal; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; box-shadow:0 2px 8px rgba(var(--rp-shadow-rgb),0.18); }
+  .s42-gp.slab { background:var(--rp-slab-ink); color:var(--rp-slab); }
+  .s42-gp.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s42-gu { position:absolute; background:var(--rp-ink); transform-origin:0 50%; border-radius:2px; }
+  .s42-gu.slab { background:var(--rp-slab-ink); }
+  .s42-gu.hot { background:var(--rp-coral); }
+  .s42-ring2 { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .s42-term { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .s42-tbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .s42-tdot { position:absolute; top:20px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .s42-ttl { position:absolute; left:110px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s42-cmd { position:absolute; font:400 28px/46px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s42-cmd .g { color:rgba(var(--rp-slab-ink-rgb),0.6); font-weight:700; margin-right:0.6em; }
+  .s42-out { position:absolute; font:400 27px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s42-out .ln { display:block; position:relative; }
+  .s42-out .ok { color:var(--rp-syn-add); } .s42-out .warn { color:var(--rp-syn-num); } .s42-out .err { color:var(--rp-syn-del); } .s42-out .dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .s42-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s42-hl { position:absolute; background:rgba(var(--rp-coral-rgb),0.22); border-left:5px solid var(--rp-coral); transform-origin:0 50%; }
+  .s42-page { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .s42-md { position:absolute; font:400 27px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .s42-md .ln { display:block; position:relative; }
+  .s42-md .h { font-weight:700; }
+  .s42-md .mu { color:rgba(var(--rp-ink-rgb),0.62); }
+  .s42-bar { display:inline-block; height:12px; border-radius:6px; background:rgba(var(--rp-ink-rgb),0.16); vertical-align:middle; }
+  .s42-strike { position:absolute; left:0; height:3px; top:50%; background:var(--rp-ink); transform-origin:0 50%; }
+  .s42-chip { position:absolute; padding:0 18px; font:400 30px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:28px; white-space:nowrap; }
+  .s42-chip.hot { border:3px solid var(--rp-coral); }
+  .s42-say { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+
+  .s42-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .s42-h { position:absolute; font:400 48px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s42-hl { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s42-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .s42-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .s42-t code, .s42-s code, .s42-node code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .s42-node { position:absolute; box-sizing:border-box; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 18px; border-radius:12px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:500 30px/1.2 "Inter"; color:var(--rp-ink); }
+  .s42-node.hot { border:4px solid var(--rp-coral); }
+  .s42-node.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .s42-node .sub { display:block; font:400 24px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); margin-top:6px; }
+  .s42-arrow { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.5); border-radius:2px; }
+  .s42-arrow.v { width:4px; height:auto; }
+  .s42-arrow.hot { background:var(--rp-coral); }
+  .s42-arrow i { position:absolute; right:-6px; top:-6px; width:0; height:0; border-left:14px solid rgba(var(--rp-ink-rgb),0.5); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  .s42-arrow.v i { right:auto; top:auto; left:-6px; bottom:-10px; border-left:8px solid transparent; border-right:8px solid transparent; border-top:14px solid rgba(var(--rp-ink-rgb),0.5); border-bottom:0; }
+  .s42-arrow.hot i { border-left-color:var(--rp-coral); }
+  .s42-arrow.v.hot i { border-left-color:transparent; border-top-color:var(--rp-coral); }
+  .s42-tag { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:500 28px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:8px; white-space:nowrap; }
+  .s42-tag.ink { background:var(--rp-ink); }
+  .s42-tag.ghost { background:var(--rp-paper); color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.45); line-height:44px; }
+  .s42-fence { position:absolute; box-sizing:border-box; border:3px dashed var(--rp-coral); border-radius:16px; }
+  .s42-crop { position:absolute; overflow:hidden; border-radius:8px; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s42-crop img { position:absolute; display:block; }
+  .s42-crop img.s42-dk { display:none; }
+  :root[data-theme="dark"] .s42-crop img.s42-lt { display:none; }
+  :root[data-theme="dark"] .s42-crop img.s42-dk { display:block; }
+  .s42-gut { color:rgba(var(--rp-ink-rgb),0.45); display:inline-block; width:3.2em; text-align:right; margin-right:1.1em; }
+  .s42-agent { position:absolute; height:46px; padding:0 18px; box-sizing:border-box; font:500 25px/42px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:23px; white-space:nowrap; z-index:6; }
+  .s42-agent::before { content:""; display:inline-block; width:10px; height:10px; margin-right:10px; border-radius:50%; background:var(--rp-ink); vertical-align:2px; }
+
+  .s42-pr { position:absolute; left:80px; top:80px; width:520px; height:170px; box-sizing:border-box; padding:22px 26px; border-radius:14px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:400 44px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .s42-pr span { display:block; margin-top:14px; font:400 26px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.75); }
+  .s42-br { position:absolute; left:720px; top:80px; width:560px; height:170px; box-sizing:border-box; padding:22px 26px; border-radius:14px; border:3px dashed rgba(var(--rp-ink-rgb),0.5); }
+  .s42-br code { display:block; font:500 34px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .s42-br span { display:block; margin-top:16px; font:400 26px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.75); }
+  .s42-pc { position:absolute; left:80px; top:300px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .s42-pc span { font:400 28px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.75); margin-left:20px; }
+  .s42-arm { position:absolute; top:690px; width:500px; height:150px; }
+</style>
+
+<div id="root" data-composition-id="42-others" data-band="bottom" data-duration="9.525" data-width="1920" data-height="1080">
+
+  <div class="clip s42-bg" id="s42-bg" data-start="0" data-duration="9.525" data-track-index="0"></div>
+
+  <div class="clip s42-scene" id="s42-scene" data-start="0" data-duration="9.525" data-track-index="1">
+    <div class="s42-view" id="s42-view"><div class="s42-cam" id="s42-cam">
+    <div class="s42-pr" id="s42-pr">pull request #12<span>over 300 lines outside tests and docs</span></div>
+    <div class="s42-arrow" id="s42-a0" style="left:610px; top:163px; width:100px"><i></i></div>
+    <div class="s42-br" id="s42-br"><code>video/pr-12</code><span>its walkthrough video, a branch of its own, never merged</span></div>
+    <div class="s42-node hot" id="s42-mt" style="left:1360px; top:100px; width:470px; height:130px">the maintainer's review counts</div>
+    <div class="s42-pc" id="s42-pc">reel pr-check<span>where the pull request stands</span></div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "42-others";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#s42-cam", { x: 0, y: 200, scale: 1 });
+  gsap.set("#s42-pr", { opacity: 0, y: 12 });
+  tl.to("#s42-pr", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.32);
+  gsap.set("#s42-a0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s42-a0", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 3);
+  gsap.set("#s42-br", { opacity: 0, y: 12 });
+  tl.to("#s42-br", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.62);
+  gsap.set("#s42-mt", { opacity: 0, y: 12 });
+  tl.to("#s42-mt", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.44);
+  gsap.set("#s42-pc", { opacity: 0, y: 12 });
+  tl.to("#s42-pc", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.14);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

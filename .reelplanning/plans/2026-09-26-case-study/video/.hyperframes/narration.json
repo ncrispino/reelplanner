@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "f6a3c47a1407023616c6",
+      "text": "You run every arm yourself: a case study, not an experiment, testing whether reviewing a plan is easier in a video. Before the first arm, you write your points from the prompt alone, and raise them in every arm. The sheet records which came up, which the plan covered, and what was new.",
+      "sha256": "d98782339ded54409bea39fe7808df79a576a090286e681a0a1a567b57ae739a",
+      "duration_s": 15.403
+    },
+    "11": {
+      "key": "b6b01392fc924d1be8be",
+      "text": "Quick check. In the HTML arm, where do you read the choices the agent made that the plan did not cover?",
+      "sha256": "e0c670a0b255eaedb5485e4b68f01a88ad592259860edfef7999c22deb6bb61d",
+      "duration_s": 5.931
+    },
+    "12": {
+      "key": "602398141cfe4c5794b4",
+      "text": "Our arm keeps what seven earlier plans decided. A second agent checks the code, and the system video catches up after each accept. At a step's fifth choice, the builder asks you. A quick check per step. Plain words on screen. A retro, a plan to change the skill, is judged against this very run. A page beside the video starts from a template. And scenes show the real thing.",
+      "sha256": "8404fc19180084cd4373409a13794c650742804bd825d33d1a28105b0d412539",
+      "duration_s": 20.864
+    },
+    "13": {
+      "key": "868d031840508ca075e4",
+      "text": "Step three: our arm, every stage captured. The plan and its video, your review on the hosted page, the revised plan, the build with its choices recorded, the code check by a fresh agent, the walkthrough video, your accepts and flags, the fixes, and the system video it leaves behind. Ours is not done until the walkthrough is accepted and the system video is current.",
+      "sha256": "57a2760e65b5473c61bbdd33d7ce26bf3add300d5b64b6903d889ab4704f9da9",
+      "duration_s": 19.925
+    },
+    "14": {
+      "key": "ff095024519292f68684",
+      "text": "You decided the order: ours first, then the other two, a day between arms, decision D-169. What you learn on ours helps the others, so a win for ours is its own.",
+      "sha256": "ce12f712e3b6270a8fe27f47ea0a8f156cbd8a72952289eccdd1f0c3f2a2ec54",
+      "duration_s": 10.368
+    },
+    "15": {
+      "key": "cd0efb55cfaa3fe169d4",
+      "text": "Quick check. Our arm has an approved plan and a built site. Is it done?",
+      "sha256": "48c2c68d20e9a4d6b3002452094fda1e64a4ce0ebfcfa05cfcfe57e89dcee7b8",
+      "duration_s": 3.883
+    },
+    "16": {
+      "key": "1bffbdb38d94297761f5",
+      "text": "Step four: where each ends up, measured the same way. Time per stage, yours and the agent's. Questions asked and decisions recorded, then whether the code held to them: the same code check, run on all three. What each review caught, and what slipped through, from one sweep of every site: phone, desktop, console, links, ten facts. And a day later, five questions on what was built, from memory.",
+      "sha256": "1df1486b3daecaaef31b69784583283c0f968e15e9c36871ee08d11ed80a2c42",
+      "duration_s": 21.013
+    },
+    "17": {
+      "key": "13d878fdca5046760a4b",
+      "text": "Quick check. The text-only site scrolls sideways on a phone, and nobody asked for a fix. Where does that show?",
+      "sha256": "84492036d94e0080415a0eabf1f0ff91faffa2edbec11d00e017ec2787c8b3df",
+      "duration_s": 6.059
+    },
+    "18": {
+      "key": "3dc0eabb4a72c56d0eae",
+      "text": "You decided how it is judged: the rubric, the blind judge and your ranking, decision D-170. And as you said, the process counts too: how you read and answered each plan, what was misunderstood and when, and the effort your feedback took. Then what felt different, in your own words.",
+      "sha256": "cf6a7100aad4902c14198cecbdd2a3acc83586dd8247c8147b436c6ee693f07c",
+      "duration_s": 16.192
+    },
+    "19": {
+      "key": "141a243319f9f52f88dc",
+      "text": "The agent builds step one now; you run the arms, ours first. Then one command, reel case-study report, builds the case study's page from its folder: the prompt and the empty start, the arms stage by stage, the feedback sheet, the three sites, the scores, and your words.",
+      "sha256": "dee8f6e137707600224fd0afd77b08e66aa9ef84791c7382b9853865ad2cf988",
+      "duration_s": 15.168
+    },
+    "20": {
+      "key": "c930cfc130264291cb45",
+      "text": "That is the plan: four steps, all three questions decided. Each arm starts empty; you give the same feedback in each; and the page shows the process as well as the sites. Draw on any step to leave a note, or approve.",
+      "sha256": "3e3653528a5f83748c7853d064f6e23d8f5ad2331ba922da016406c8665a4a5e",
+      "duration_s": 12.757
+    },
+    "01": {
+      "key": "2c7c033f0f09c2162d3d",
+      "text": "Here is one prompt: an interactive website about Bob Dylan, built in an empty folder. We give it to the same agent three ways: a text plan, an HTML plan, and ours. Where does each one end up?",
+      "sha256": "df68ce9fd3f5929ef203d577e36142feea9ce0644edfc810ecb8fba4700513c8",
+      "duration_s": 11.712
+    },
+    "02": {
+      "key": "2f88f2eece0dfed565be",
+      "text": "We already have part of this. From that prompt, plan mode wrote this plan, and another run wrote this HTML plan. Both stop at the plan: nobody was asked a question, nothing was approved, and nothing was built.",
+      "sha256": "6e92d8d9a3263ad31d39dc3109d491347e2b59cb6cc8e27a00840730633b9117",
+      "duration_s": 12.139
+    },
+    "03": {
+      "key": "b26ba95bc18f5bb527c0",
+      "text": "The plan makes three changes. A kit any plan can use: step one. Three arms, each taken to a finished site: steps two and three. An arm is one way of working, from the prompt to a site you would ship. Then where each ends up, measured the same way: step four.",
+      "sha256": "d0a4dd00989070833894cd47299949972bb86c1d5f90a3637143a6a1f11f7bbf",
+      "duration_s": 14.165
+    },
+    "04": {
+      "key": "bdd3d68b47dbbf2eabb7",
+      "text": "Step one. A case study is the three arms and their write-up. One command, reel case-study, sets up its folder: the prompt, the empty start, a sheet per arm, a feedback sheet for your points, the score sheet and the judge's prompt. Every write-up follows one template, and a replication guide gives every command, from install to the finished site.",
+      "sha256": "bc6df6bdff8ea5192ba1c633b87d669f40bbc1a236dc8e52cb84f86b0f364ff7",
+      "duration_s": 18.837
+    },
+    "05": {
+      "key": "5d25825ad6591412d5b1",
+      "text": "Each arm starts empty, and a preflight, a check run before the agent, proves it. With only a fresh home folder, it still finds this repo on the disk. In its own container, a fresh machine holding only the empty folder, it finds nothing but the prompt.",
+      "sha256": "aed621818a313f539b6f2047112f24db5fd81ae643774461be3ac62ebec38e28",
+      "duration_s": 14.357
+    },
+    "06": {
+      "key": "9c871b89a04ed6d1a8bb",
+      "text": "Every arm goes through the same seven stages, so the times line up. What differs is how. To check the result, text only reads the agent's summary and its diff; HTML reads a report page; ours has a fresh agent check the code, then a walkthrough video. An arm stops when you would ship it, or after you have asked for fixes twice.",
+      "sha256": "18882abe1cfe0798d2f05c239d69e4e66317d9321be554f9b6969766b7975ad8",
+      "duration_s": 19.029
+    },
+    "07": {
+      "key": "c02dc5a280a906ea6d62",
+      "text": "The rubric is a fixed score sheet: one to five on five things, from does what was asked, to easy to change. The blind judge is a fresh agent that never learns which arm made which site. It gets three folders, X, Y and Z. Anything that names an arm is taken out first, so each folder holds a site alone.",
+      "sha256": "ad2dcaa03e4d8bace24f96fa24f56f64a1e66eae02733f10b45b137c18fc543f",
+      "duration_s": 17.728
+    },
+    "08": {
+      "key": "b3e62bffb94208ee0cd2",
+      "text": "Quick check. The HTML arm's folder goes to the judge. What does the judge see?",
+      "sha256": "c010db132f68d69a3280557617e07159ab376d5a3952011a68fe8b41b78b6486",
+      "duration_s": 4.608
+    },
+    "09": {
+      "key": "e950917430f0deb62932",
+      "text": "Step two: the other two arms, which you decided go all the way to a site you would ship, decision D-168. Text only starts in plan mode: answer its questions in chat, check the diff. HTML adds a plan page, then a report page: what it built, and the choices it made on its own.",
+      "sha256": "6687816cb02728506f98d3f4450dcfdd5d89c4b8006e0a8ee1ca0cf4d7788542",
+      "duration_s": 17.067
+    }
+  }
+}

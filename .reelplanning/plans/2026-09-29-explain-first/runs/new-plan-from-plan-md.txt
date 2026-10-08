@@ -1,0 +1,20 @@
+$ cat .reelplanning/plans/2026-09-30-loss/plan.md   (the draft new-plan --from wrote, in the scratch repo)
+# Make the loss easy to compare
+
+Explained first: `2026-09-29-experiment` (its review: `reviews/explainer-20260929T100000Z.md`)
+
+## The problem
+
+What you said on the explainer `2026-09-29-experiment` (`reviews/explainer-20260929T100000Z.md`):
+
+- **Scene 1** (What you asked): "this looks wrong"
+- **You asked** on scene 2: "why did the loss fall?", answered from results.csv: "the second run used more data"
+- **Picked at Finish:** "A plan to compare the loss across runs in one table" (suggested from explain.md, open threads · scene 2, "The loss"), then put in your words:
+- **What you want next:** "make the loss easy to compare"
+
+## Steps
+
+### Step 1 — <from what you said: make the loss easy to compare>
+
+<!-- the agent writes the steps from the problem above, then deletes this comment -->
+exit 0

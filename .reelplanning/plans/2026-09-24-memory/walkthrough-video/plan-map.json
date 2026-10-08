@@ -1,0 +1,2437 @@
+{
+  "project": "walkthrough-video",
+  "title": "Memory: what was built",
+  "planDir": ".reelplanning/plans/2026-09-24-memory",
+  "totalSeconds": 298.47,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "What was built, and step 1",
+      "fromFrame": 1,
+      "toFrame": 8,
+      "start": 0,
+      "end": 75.39,
+      "linearSeconds": 75.39,
+      "watchedSeconds": 75.39,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 2: the repo's memory",
+      "fromFrame": 9,
+      "toFrame": 15,
+      "start": 75.39,
+      "end": 128.94,
+      "linearSeconds": 53.55,
+      "watchedSeconds": 53.55,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 3: your memory, across repos",
+      "fromFrame": 16,
+      "toFrame": 21,
+      "start": 128.94,
+      "end": 180.47,
+      "linearSeconds": 51.53,
+      "watchedSeconds": 51.53,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 4: misses decide what stops",
+      "fromFrame": 22,
+      "toFrame": 27,
+      "start": 180.47,
+      "end": 245.38,
+      "linearSeconds": 64.91,
+      "watchedSeconds": 64.91,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Step 5, and what ran",
+      "fromFrame": 28,
+      "toFrame": 33,
+      "start": 245.38,
+      "end": 298.47,
+      "linearSeconds": 53.09,
+      "watchedSeconds": 53.09,
+      "decisions": []
+    }
+  ],
+  "levels": null,
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 8,
+      "planStep": 1,
+      "question": "The same review is recorded again, on a machine with another git email. How many files does reviews/ hold for it?",
+      "options": [
+        {
+          "id": "a",
+          "label": "One: the first file, as it was"
+        },
+        {
+          "id": "b",
+          "label": "Two: one per stamp"
+        },
+        {
+          "id": "c",
+          "label": "One, restamped with the new email"
+        }
+      ],
+      "answer": "a",
+      "explain": "A refile with another stamp is the same review (A5): the file already in reviews/ is left byte for byte, stamp and all.",
+      "at": 75.34,
+      "explainedAt": 36.53,
+      "explainedFrame": 4
+    },
+    {
+      "id": "k2",
+      "frameIndex": 15,
+      "planStep": 2,
+      "question": "In one sitting you rewind step 4 of a plan video three times. Does the rewinds line say it was rewound again after a revision?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: three rewinds"
+        },
+        {
+          "id": "b",
+          "label": "No: one review, one hard part"
+        },
+        {
+          "id": "c",
+          "label": "Only if you flag the step"
+        }
+      ],
+      "answer": "b",
+      "explain": "Rewound again after a revision is the same step rewound in two different reviews (A4); three rewinds in one sitting count as one rewound step.",
+      "at": 128.89,
+      "explainedAt": 108.22,
+      "explainedFrame": 13
+    },
+    {
+      "id": "k3",
+      "frameIndex": 21,
+      "planStep": 3,
+      "question": "A sandboxed run records a review, and your home folder is fenced off. What happens?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The record fails"
+        },
+        {
+          "id": "b",
+          "label": "Recorded, but not in your memory"
+        },
+        {
+          "id": "c",
+          "label": "A copy waits in the repo"
+        }
+      ],
+      "answer": "b",
+      "explain": "Recording the review is the job; the summary is a copy, so reel record records it and its last line says this review is not in your memory (A15).",
+      "at": 180.42,
+      "explainedAt": 165.31,
+      "explainedFrame": 20
+    },
+    {
+      "id": "k4",
+      "frameIndex": 27,
+      "planStep": 4,
+      "question": "A new call on the review player is tagged close, and close calls have been accepted ten times running. Does it stop?",
+      "options": [
+        {
+          "id": "a",
+          "label": "No: the streak groups it"
+        },
+        {
+          "id": "b",
+          "label": "Yes: the player's recent miss stops it"
+        },
+        {
+          "id": "c",
+          "label": "Only once you flag one"
+        }
+      ],
+      "answer": "b",
+      "explain": "D-056 → D-063 is a recent miss with no tags, so it matches by component, player (A12); a tagged player call stops however long its tag's streak.",
+      "at": 245.33,
+      "explainedAt": 205.81,
+      "explainedFrame": 25
+    },
+    {
+      "id": "k5",
+      "frameIndex": 32,
+      "planStep": 5,
+      "question": "You have just held a retro. When does reel status suggest the next one?",
+      "options": [
+        {
+          "id": "a",
+          "label": "After five more plans, or a signal repeated three times"
+        },
+        {
+          "id": "b",
+          "label": "Five days later"
+        },
+        {
+          "id": "c",
+          "label": "Never: you ask for one"
+        }
+      ],
+      "answer": "a",
+      "explain": "D-107: every five plans or three repeats of one signal, whichever comes first, both counted since the last retro (A13).",
+      "at": 280.35,
+      "explainedAt": 260.89,
+      "explainedFrame": 30
+    }
+  ],
+  "autonomy": [
+    {
+      "id": "a5",
+      "frameIndex": 4,
+      "planStep": 1,
+      "chose": "The stamp is one `recorded` object in the filed review, { reviewer, via, reelplanning }, where `via` says whether the reviewer came from the page's viewer or git's user.email; the same review filed again with a different stamp (another person's intake, an upgrade) is still the same review, not a second file",
+      "insteadOf": "top-level reviewer and version fields, or a file beside the review",
+      "why": "the filed review is the player's export plus what intake adds; one key keeps the two apart, and a refile must not turn one review into two",
+      "check": "scripts/lib/reviews.mjs recordedBy, fileReview (bare, same)",
+      "at": 44.88
+    },
+    {
+      "id": "a6",
+      "frameIndex": 5,
+      "planStep": 1,
+      "chose": "The version is the reelplanning that records the review (its package.json)",
+      "insteadOf": "the version that built the video, as the plan says",
+      "why": "no build writes which version built a video (video/meta.json has none); with the pinned npx or this checkout, the two are the same version",
+      "check": "scripts/lib/reviews.mjs recordedBy (VERSION)",
+      "at": 52.21
+    },
+    {
+      "id": "a8",
+      "frameIndex": 6,
+      "planStep": 1,
+      "chose": "migrate-reviews files old reviews unstamped (stamp: false)",
+      "insteadOf": "stamping them with whoever runs the migration",
+      "why": "old reviews stay as they are: who recorded them then is not known, and today's email and version would be wrong",
+      "check": "scripts/migrate-reviews.mjs, scripts/lib/reviews.mjs fileReview",
+      "at": 60.52
+    },
+    {
+      "id": "a1",
+      "frameIndex": 11,
+      "planStep": 2,
+      "chose": "The five lines' ids are words: recommended, own-words, rewinds, checks, misses (and flagged for yours across repos), so `reel memory own-words` says what it prints",
+      "insteadOf": "numbered ids (m1 … m5)",
+      "why": "an id you type is easier to remember as a word, and it stays the same when a line has nothing to say and is left out",
+      "check": "scripts/lib/memory.mjs LINES, memoryLines",
+      "at": 99.51
+    },
+    {
+      "id": "a2",
+      "frameIndex": 12,
+      "planStep": 2,
+      "chose": "Why a question was answered in own words is read from the words and the options: 'unclear, asked for more', 'an option, with a condition', otherwise 'the question framed otherwise'; the words are always shown with it",
+      "insteadOf": "no reason, only the words; or a reason the reviewer picks",
+      "why": "the plan's own problem statement sorts D-022, D-003 and D-023 this way, and all three land where it put them; a heuristic that shows its evidence can be wrong in the open",
+      "check": "scripts/lib/memory.mjs ownReason, REASONS",
+      "at": 108.17
+    },
+    {
+      "id": "a4",
+      "frameIndex": 13,
+      "planStep": 2,
+      "chose": "'Rewound again after a revision' is the same step of the same plan's same video rewound or slowed in two different reviews of it; a rewind with no step is left out of the line",
+      "insteadOf": "counting rewinds twice within one review; or including rewinds with no step",
+      "why": "a second review of a video is what follows a revision; two rewinds in one sitting are one hard part, and a moment with no step cannot be said about any step",
+      "check": "scripts/lib/memory.mjs rewoundAgain",
+      "at": 116.57
+    },
+    {
+      "id": "a9",
+      "frameIndex": 18,
+      "planStep": 3,
+      "chose": "Your file (~/.reelplanning/you.jsonl) gets a summary only for a review recorded inside a git repo (the repo is named by its git top level), once per repo, plan and review, and `reel record` says so on one line each time ('a summary of this review added to …', 'already in …', or 'not in a git repo')",
+      "insteadOf": "a summary for every review recorded anywhere",
+      "why": "a summary names its repo, and outside git there is none to name; it also keeps the player's finish.spec (a scratch folder, no git) out of the real home; the line makes it plain what reached the file. Each line names its reviewer: in a cloud session that is git's user.email (noreply@anthropic.com here) until the page sends a viewer (A7)",
+      "check": "scripts/lib/memory.mjs repoName, appendYou; scripts/reel.mjs record",
+      "at": 157.48
+    },
+    {
+      "id": "a10",
+      "frameIndex": 19,
+      "planStep": 3,
+      "chose": "Across repos (`reel memory --you`) the fifth line is `flagged`, the kinds of call flagged or answered in own words, by tag, instead of misses",
+      "insteadOf": "misses across repos too",
+      "why": "a miss is found in a repo's ledger history (what superseded what, rows changed after review), which a one-line summary per review does not carry; the plan's step 3 lists the kinds of call flagged as what the summary holds",
+      "check": "scripts/lib/memory.mjs memoryLines (you)",
+      "at": 165.26
+    },
+    {
+      "id": "a15",
+      "frameIndex": 20,
+      "planStep": 3,
+      "chose": "Where your file cannot be written (a run fenced to the repo by D-082's sandbox, a read-only home), `reel record` records the review all the same and says, on its last line, that this one is not in your memory",
+      "insteadOf": "failing the record; or keeping a pending copy in the repo to add later",
+      "why": "recording the review is the job; the summary is a copy, and a pending file in the repo would be one more thing kept by hand",
+      "check": "scripts/reel.mjs record (the appendYou try)",
+      "at": 174.47
+    },
+    {
+      "id": "a11",
+      "frameIndex": 24,
+      "planStep": 4,
+      "chose": "A miss is recent while the plan that showed it is one of the last five plan folders, retros not counted",
+      "insteadOf": "a number of days, or until the next retro",
+      "why": "plans are the unit the retro rule already counts (D-107), and days mean nothing in a repo worked on in bursts; on this repo it keeps D-056 → D-063 and m3's step 6, and lets close-the-lifecycle's two go",
+      "check": "scripts/lib/memory.mjs RECENT_PLANS, findMisses",
+      "at": 205.76
+    },
+    {
+      "id": "a12",
+      "frameIndex": 25,
+      "planStep": 4,
+      "chose": "A call's kind is its tags and the components its step names; a recent miss stops a tagged call that shares a tag with it, or, when the miss has no tags (a plan question, or a call logged before tags), a component. An untagged call still never stops (D-084). Right now no miss has tags, so D-056 → D-063 (component player) stops every tagged player call: all 22 of answer-on-the-video's calls, and m3's step 6 stops 13 of this plan's 15",
+      "insteadOf": "tags only (every miss so far has none, so nothing would change); or making untagged calls stop too",
+      "why": "the plan traces a question's miss to its components, so a component is the only way such a miss can reach a call; untagged calls are the ones the agent judged a reviewer would not care about, and the streak is what the exception overrides",
+      "check": "scripts/lib/autonomy.mjs missFor, stopFor; scripts/reel.mjs stops",
+      "at": 223
+    },
+    {
+      "id": "d1",
+      "frameIndex": 26,
+      "planStep": 4,
+      "chose": "'A part reworked soon after' is read as a step whose walkthrough quick check the reviewer disagreed with in their own words (it worked otherwise than the plan they approved led them to expect, and was reworked), traced to that step's plan questions; a call accepted in review whose row later says '(changed after review: …)' counts as an accepted call reversed. Not read from git history",
+      "insteadOf": "parts whose files a later commit changed within some days",
+      "why": "every plan here touches the player and the CLI, so 'changed again within days' would call every plan a miss; the disagreed check is the record of a part that worked otherwise than approved, and it finds the owner's own example (m3's step 6, the file tools, k3)",
+      "check": "scripts/lib/memory.mjs findMisses (reworked, the changed after review rows)",
+      "at": 237.5
+    },
+    {
+      "id": "a13",
+      "frameIndex": 30,
+      "planStep": 5,
+      "chose": "A signal is one of: a question answered in own words for the same reason, a step rewound again after a revision, a quick check answered wrong on the same component, a miss of the same kind (tag, else component), a call flagged with the same tag; each counted over the plans since the last retro, and three of one makes a retro due",
+      "insteadOf": "any line's count reaching three (rewinds and wrong checks reach it in every repo)",
+      "why": "a repeat has to be the same thing three times to say something the skill should learn; counting from the last retro means a retro answers the signals before it",
+      "check": "scripts/lib/memory.mjs signals, retroDue",
+      "at": 269.11
+    },
+    {
+      "id": "a14",
+      "frameIndex": 31,
+      "planStep": 5,
+      "chose": "`reel retro` names its folder <date>-retro (then -retro-2 …); its draft cites the active plan decisions on the skill as in force, so `reel check` passes it as written; the benchmark's parts are found by their files, in the repo or else in reelplanning's own checkout",
+      "insteadOf": "a fixed list of what is missing; a draft that fails `reel check` until the agent cites decisions",
+      "why": "a benchmark that gains its baselines should stop being called missing without a code change; a draft that fails its own check is scaffolding to clean up",
+      "check": "scripts/reel.mjs retro, benchmark",
+      "at": 275.4
+    }
+  ],
+  "autonomyGroups": [
+    {
+      "id": "group-7",
+      "frameIndex": 7,
+      "planStep": 1,
+      "ids": [
+        "a7"
+      ],
+      "calls": [
+        {
+          "id": "a7",
+          "planStep": 1,
+          "chose": "The page's viewer is read from the row's `viewer` (a string, or `{ email }` / `{ name }`), else the export's; the player is not changed to send one",
+          "insteadOf": "a player change that puts the viewer on every row",
+          "why": "the plan asks intake to use a viewer when the row has one; the player is being changed elsewhere right now, and a row that carries one works as soon as a page sends it",
+          "check": "scripts/lib/reviews.mjs recordedBy; scripts/reel-intake.mjs passes the row"
+        }
+      ],
+      "at": 67.6
+    },
+    {
+      "id": "group-14",
+      "frameIndex": 14,
+      "planStep": 2,
+      "ids": [
+        "a3"
+      ],
+      "calls": [
+        {
+          "id": "a3",
+          "planStep": 2,
+          "chose": "A call counts once, by the first verdict it was given (a later round that re-judges it does not count again); plan questions count per review",
+          "insteadOf": "every verdict in every walkthrough review",
+          "why": "\"how often a recommendation was taken\" is about the call as the agent first made it; deep-dives' second round re-judged all its calls",
+          "check": "scripts/lib/memory.mjs firstVerdicts"
+        }
+      ],
+      "at": 121.09
+    }
+  ],
+  "watchedSeconds": 298.47,
+  "frames": [
+    {
+      "index": 1,
+      "title": "The memory plan, as built",
+      "compositionId": "01-built",
+      "type": "hook",
+      "durationSeconds": 11.23,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What was built, and step 1",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-5.87s.png",
+      "terms": [
+        "call",
+        "memory",
+        "deviation",
+        "step"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "Your two quick checks, kept as planned",
+      "compositionId": "02-checks-kept",
+      "type": "product_intro",
+      "durationSeconds": 17.4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 11.23,
+      "thumb": "snapshots/frame-01-at-20.18s.png",
+      "terms": [
+        "miss",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "Step 1: every review is stamped",
+      "compositionId": "03-step-1",
+      "type": "feature_showcase",
+      "durationSeconds": 7.9,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 28.63,
+      "thumb": "snapshots/frame-02-at-32.83s.png",
+      "terms": [
+        "review",
+        "step"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "Call A5: one stamp object; a refile is one file",
+      "compositionId": "04-call-a5",
+      "type": "cta",
+      "durationSeconds": 8.4,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a5",
+      "chose": "The stamp is one `recorded` object in the filed review, { reviewer, via, reelplanning }, where `via` says whether the reviewer came from the page's viewer or git's user.email; the same review filed again with a different stamp (another person's intake, an upgrade) is still the same review, not a second file",
+      "insteadOf": "top-level reviewer and version fields, or a file beside the review",
+      "why": "the filed review is the player's export plus what intake adds; one key keeps the two apart, and a refile must not turn one review into two",
+      "check": "scripts/lib/reviews.mjs recordedBy, fileReview (bare, same)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 36.53,
+      "thumb": "snapshots/frame-03-at-40.98s.png",
+      "terms": [
+        "review",
+        "call"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Call A6: the version that records it",
+      "compositionId": "05-call-a6",
+      "type": "cta",
+      "durationSeconds": 7.33,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a6",
+      "chose": "The version is the reelplanning that records the review (its package.json)",
+      "insteadOf": "the version that built the video, as the plan says",
+      "why": "no build writes which version built a video (video/meta.json has none); with the pinned npx or this checkout, the two are the same version",
+      "check": "scripts/lib/reviews.mjs recordedBy (VERSION)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 44.93,
+      "thumb": "snapshots/frame-04-at-48.84s.png",
+      "terms": [
+        "review",
+        "call"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "Call A8: old reviews stay unstamped",
+      "compositionId": "06-call-a8",
+      "type": "cta",
+      "durationSeconds": 8.31,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a8",
+      "chose": "migrate-reviews files old reviews unstamped (stamp: false)",
+      "insteadOf": "stamping them with whoever runs the migration",
+      "why": "old reviews stay as they are: who recorded them then is not known, and today's email and version would be wrong",
+      "check": "scripts/migrate-reviews.mjs, scripts/lib/reviews.mjs fileReview",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 52.26,
+      "thumb": "snapshots/frame-05-at-56.66s.png",
+      "terms": [
+        "review",
+        "call"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "Step 1's call that does not stop: A7",
+      "compositionId": "07-group-1",
+      "type": "benefit_highlight",
+      "durationSeconds": 7.08,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "autonomyGroup": [
+        "a7"
+      ],
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 60.57,
+      "thumb": "snapshots/frame-06-at-64.36s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "Quick check: the same review, recorded again",
+      "compositionId": "08-quiz-k1",
+      "type": "social_proof",
+      "durationSeconds": 7.74,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The same review is recorded again, on a machine with another git email. How many files does reviews/ hold for it?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "a",
+      "explain": "A refile with another stamp is the same review (A5): the file already in reviews/ is left byte for byte, stamp and all.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "One: the first file, as it was",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Two: one per stamp",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "One, restamped with the new email",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 67.65,
+      "thumb": "snapshots/frame-07-at-71.77s.png",
+      "terms": [
+        "review",
+        "quick check"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "Part 2 of 5",
+      "compositionId": "09-opener-2",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: the repo's memory",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 75.39,
+      "thumb": "snapshots/frame-08-at-77.64s.png",
+      "terms": [
+        "memory",
+        "step"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "Step 2: reel status ends with five lines",
+      "compositionId": "10-step-2",
+      "type": "feature_showcase",
+      "durationSeconds": 13.24,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 79.39,
+      "thumb": "snapshots/frame-09-at-86.26s.png",
+      "terms": [
+        "review",
+        "call",
+        "miss",
+        "step"
+      ]
+    },
+    {
+      "index": 11,
+      "title": "Call A1: the ids are words",
+      "compositionId": "11-call-a1",
+      "type": "cta",
+      "durationSeconds": 6.93,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a1",
+      "chose": "The five lines' ids are words: recommended, own-words, rewinds, checks, misses (and flagged for yours across repos), so `reel memory own-words` says what it prints",
+      "insteadOf": "numbered ids (m1 … m5)",
+      "why": "an id you type is easier to remember as a word, and it stays the same when a line has nothing to say and is left out",
+      "check": "scripts/lib/memory.mjs LINES, memoryLines",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 92.63,
+      "thumb": "snapshots/frame-10-at-96.34s.png",
+      "terms": [
+        "call",
+        "memory"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Call A2: the reason, read from the words",
+      "compositionId": "12-call-a2",
+      "type": "cta",
+      "durationSeconds": 8.66,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a2",
+      "chose": "Why a question was answered in own words is read from the words and the options: 'unclear, asked for more', 'an option, with a condition', otherwise 'the question framed otherwise'; the words are always shown with it",
+      "insteadOf": "no reason, only the words; or a reason the reviewer picks",
+      "why": "the plan's own problem statement sorts D-022, D-003 and D-023 this way, and all three land where it put them; a heuristic that shows its evidence can be wrong in the open",
+      "check": "scripts/lib/memory.mjs ownReason, REASONS",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 99.56,
+      "thumb": "snapshots/frame-11-at-104.14s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 13,
+      "title": "Call A4: rewound again means two reviews",
+      "compositionId": "13-call-a4",
+      "type": "cta",
+      "durationSeconds": 8.4,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a4",
+      "chose": "'Rewound again after a revision' is the same step of the same plan's same video rewound or slowed in two different reviews of it; a rewind with no step is left out of the line",
+      "insteadOf": "counting rewinds twice within one review; or including rewinds with no step",
+      "why": "a second review of a video is what follows a revision; two rewinds in one sitting are one hard part, and a moment with no step cannot be said about any step",
+      "check": "scripts/lib/memory.mjs rewoundAgain",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 108.22,
+      "thumb": "snapshots/frame-12-at-112.67s.png",
+      "terms": [
+        "review",
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "Step 2's call that does not stop: A3",
+      "compositionId": "14-group-2",
+      "type": "benefit_highlight",
+      "durationSeconds": 4.52,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "autonomyGroup": [
+        "a3"
+      ],
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 116.62,
+      "thumb": "snapshots/frame-13-at-119.13s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 15,
+      "title": "Quick check: three rewinds in one sitting",
+      "compositionId": "15-quiz-k2",
+      "type": "social_proof",
+      "durationSeconds": 7.8,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "In one sitting you rewind step 4 of a plan video three times. Does the rewinds line say it was rewound again after a revision?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "Rewound again after a revision is the same step rewound in two different reviews (A4); three rewinds in one sitting count as one rewound step.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: three rewinds",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "No: one review, one hard part",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Only if you flag the step",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 121.14,
+      "thumb": "snapshots/frame-14-at-125.29s.png",
+      "terms": [
+        "review",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "Part 3 of 5",
+      "compositionId": "16-opener-3",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: your memory, across repos",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 128.94,
+      "thumb": "snapshots/frame-15-at-131.19s.png",
+      "terms": [
+        "memory",
+        "step"
+      ]
+    },
+    {
+      "index": 17,
+      "title": "Step 3: a summary in your own file",
+      "compositionId": "17-step-3",
+      "type": "feature_showcase",
+      "durationSeconds": 9.08,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 132.94,
+      "thumb": "snapshots/frame-16-at-137.73s.png",
+      "terms": [
+        "review",
+        "memory",
+        "step"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "Call A9: your file, on every record",
+      "compositionId": "18-call-a9",
+      "type": "cta",
+      "durationSeconds": 15.51,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a9",
+      "chose": "Your file (~/.reelplanning/you.jsonl) gets a summary only for a review recorded inside a git repo (the repo is named by its git top level), once per repo, plan and review, and `reel record` says so on one line each time ('a summary of this review added to …', 'already in …', or 'not in a git repo')",
+      "insteadOf": "a summary for every review recorded anywhere",
+      "why": "a summary names its repo, and outside git there is none to name; it also keeps the player's finish.spec (a scratch folder, no git) out of the real home; the line makes it plain what reached the file. Each line names its reviewer: in a cloud session that is git's user.email (noreply@anthropic.com here) until the page sends a viewer (A7)",
+      "check": "scripts/lib/memory.mjs repoName, appendYou; scripts/reel.mjs record",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 142.02,
+      "thumb": "snapshots/frame-17-at-150.03s.png",
+      "terms": [
+        "review",
+        "call"
+      ]
+    },
+    {
+      "index": 19,
+      "title": "Call A10: across repos, what you flagged",
+      "compositionId": "19-call-a10",
+      "type": "cta",
+      "durationSeconds": 7.78,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a10",
+      "chose": "Across repos (`reel memory --you`) the fifth line is `flagged`, the kinds of call flagged or answered in own words, by tag, instead of misses",
+      "insteadOf": "misses across repos too",
+      "why": "a miss is found in a repo's ledger history (what superseded what, rows changed after review), which a one-line summary per review does not carry; the plan's step 3 lists the kinds of call flagged as what the summary holds",
+      "check": "scripts/lib/memory.mjs memoryLines (you)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 157.53,
+      "thumb": "snapshots/frame-18-at-161.67s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 20,
+      "title": "Call A15: recorded, even where your file cannot be written",
+      "compositionId": "20-call-a15",
+      "type": "cta",
+      "durationSeconds": 9.21,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a15",
+      "chose": "Where your file cannot be written (a run fenced to the repo by D-082's sandbox, a read-only home), `reel record` records the review all the same and says, on its last line, that this one is not in your memory",
+      "insteadOf": "failing the record; or keeping a pending copy in the repo to add later",
+      "why": "recording the review is the job; the summary is a copy, and a pending file in the repo would be one more thing kept by hand",
+      "check": "scripts/reel.mjs record (the appendYou try)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 165.31,
+      "thumb": "snapshots/frame-19-at-170.16s.png",
+      "terms": [
+        "review",
+        "call",
+        "memory"
+      ]
+    },
+    {
+      "index": 21,
+      "title": "Quick check: a fenced-off home",
+      "compositionId": "21-quiz-k3",
+      "type": "social_proof",
+      "durationSeconds": 5.95,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A sandboxed run records a review, and your home folder is fenced off. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "b",
+      "explain": "Recording the review is the job; the summary is a copy, so reel record records it and its last line says this review is not in your memory (A15).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The record fails",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Recorded, but not in your memory",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "A copy waits in the repo",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 174.52,
+      "thumb": "snapshots/frame-20-at-177.75s.png",
+      "terms": [
+        "review",
+        "memory",
+        "quick check"
+      ]
+    },
+    {
+      "index": 22,
+      "title": "Part 4 of 5",
+      "compositionId": "22-opener-4",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 4: misses decide what stops",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 180.47,
+      "thumb": "snapshots/frame-21-at-182.72s.png",
+      "terms": [
+        "miss",
+        "step"
+      ]
+    },
+    {
+      "index": 23,
+      "title": "Step 4: a recent miss stops its kind",
+      "compositionId": "23-step-4",
+      "type": "feature_showcase",
+      "durationSeconds": 13.66,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 184.47,
+      "thumb": "snapshots/frame-22-at-191.55s.png",
+      "terms": [
+        "review",
+        "call",
+        "miss",
+        "streak",
+        "step"
+      ]
+    },
+    {
+      "index": 24,
+      "title": "Call A11: recent is the last five plans",
+      "compositionId": "24-call-a11",
+      "type": "cta",
+      "durationSeconds": 7.68,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a11",
+      "chose": "A miss is recent while the plan that showed it is one of the last five plan folders, retros not counted",
+      "insteadOf": "a number of days, or until the next retro",
+      "why": "plans are the unit the retro rule already counts (D-107), and days mean nothing in a repo worked on in bursts; on this repo it keeps D-056 → D-063 and m3's step 6, and lets close-the-lifecycle's two go",
+      "check": "scripts/lib/memory.mjs RECENT_PLANS, findMisses",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 198.13,
+      "thumb": "snapshots/frame-23-at-202.22s.png",
+      "terms": [
+        "call"
+      ]
+    },
+    {
+      "index": 25,
+      "title": "Call A12: no tags, so a miss matches by component",
+      "compositionId": "25-call-a12",
+      "type": "cta",
+      "durationSeconds": 17.24,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a12",
+      "chose": "A call's kind is its tags and the components its step names; a recent miss stops a tagged call that shares a tag with it, or, when the miss has no tags (a plan question, or a call logged before tags), a component. An untagged call still never stops (D-084). Right now no miss has tags, so D-056 → D-063 (component player) stops every tagged player call: all 22 of answer-on-the-video's calls, and m3's step 6 stops 13 of this plan's 15",
+      "insteadOf": "tags only (every miss so far has none, so nothing would change); or making untagged calls stop too",
+      "why": "the plan traces a question's miss to its components, so a component is the only way such a miss can reach a call; untagged calls are the ones the agent judged a reviewer would not care about, and the streak is what the exception overrides",
+      "check": "scripts/lib/autonomy.mjs missFor, stopFor; scripts/reel.mjs stops",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 205.81,
+      "thumb": "snapshots/frame-24-at-214.68s.png",
+      "terms": [
+        "review player",
+        "review",
+        "call",
+        "miss",
+        "tag"
+      ]
+    },
+    {
+      "index": 26,
+      "title": "Deviation D1: a part reworked, read from a disagreed check",
+      "compositionId": "26-deviation-d1",
+      "type": "cta",
+      "durationSeconds": 14.5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "d1",
+      "chose": "'A part reworked soon after' is read as a step whose walkthrough quick check the reviewer disagreed with in their own words (it worked otherwise than the plan they approved led them to expect, and was reworked), traced to that step's plan questions; a call accepted in review whose row later says '(changed after review: …)' counts as an accepted call reversed. Not read from git history",
+      "insteadOf": "parts whose files a later commit changed within some days",
+      "why": "every plan here touches the player and the CLI, so 'changed again within days' would call every plan a miss; the disagreed check is the record of a part that worked otherwise than approved, and it finds the owner's own example (m3's step 6, the file tools, k3)",
+      "check": "scripts/lib/memory.mjs findMisses (reworked, the changed after review rows)",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 223.05,
+      "thumb": "snapshots/frame-25-at-230.55s.png",
+      "terms": [
+        "deviation",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 27,
+      "title": "Quick check: ten accepts, then a player call",
+      "compositionId": "27-quiz-k4",
+      "type": "social_proof",
+      "durationSeconds": 7.83,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A new call on the review player is tagged close, and close calls have been accepted ten times running. Does it stop?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "D-056 → D-063 is a recent miss with no tags, so it matches by component, player (A12); a tagged player call stops however long its tag's streak.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "No: the streak groups it",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Yes: the player's recent miss stops it",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Only once you flag one",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 237.55,
+      "thumb": "snapshots/frame-26-at-241.72s.png",
+      "terms": [
+        "review player",
+        "review",
+        "call",
+        "miss",
+        "tag",
+        "streak",
+        "quick check"
+      ]
+    },
+    {
+      "index": 28,
+      "title": "Part 5 of 5",
+      "compositionId": "28-opener-5",
+      "type": "product_intro",
+      "durationSeconds": 4,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5, and what ran",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 245.38,
+      "thumb": "snapshots/frame-27-at-247.63s.png",
+      "terms": [
+        "step"
+      ]
+    },
+    {
+      "index": 29,
+      "title": "Step 5: a retro is due",
+      "compositionId": "29-step-5",
+      "type": "feature_showcase",
+      "durationSeconds": 11.51,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 249.38,
+      "thumb": "snapshots/frame-28-at-255.39s.png",
+      "terms": [
+        "retro",
+        "step"
+      ]
+    },
+    {
+      "index": 30,
+      "title": "Call A13: a signal is the same thing three times",
+      "compositionId": "30-call-a13",
+      "type": "cta",
+      "durationSeconds": 8.27,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a13",
+      "chose": "A signal is one of: a question answered in own words for the same reason, a step rewound again after a revision, a quick check answered wrong on the same component, a miss of the same kind (tag, else component), a call flagged with the same tag; each counted over the plans since the last retro, and three of one makes a retro due",
+      "insteadOf": "any line's count reaching three (rewinds and wrong checks reach it in every repo)",
+      "why": "a repeat has to be the same thing three times to say something the skill should learn; counting from the last retro means a retro answers the signals before it",
+      "check": "scripts/lib/memory.mjs signals, retroDue",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 260.89,
+      "thumb": "snapshots/frame-29-at-265.28s.png",
+      "terms": [
+        "call",
+        "tag",
+        "retro",
+        "step"
+      ]
+    },
+    {
+      "index": 31,
+      "title": "Call A14: a dated folder, a draft that passes",
+      "compositionId": "31-call-a14",
+      "type": "cta",
+      "durationSeconds": 6.29,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a14",
+      "chose": "`reel retro` names its folder <date>-retro (then -retro-2 …); its draft cites the active plan decisions on the skill as in force, so `reel check` passes it as written; the benchmark's parts are found by their files, in the repo or else in reelplanning's own checkout",
+      "insteadOf": "a fixed list of what is missing; a draft that fails `reel check` until the agent cites decisions",
+      "why": "a benchmark that gains its baselines should stop being called missing without a code change; a draft that fails its own check is scaffolding to clean up",
+      "check": "scripts/reel.mjs retro, benchmark",
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 269.16,
+      "thumb": "snapshots/frame-30-at-272.56s.png",
+      "terms": [
+        "call",
+        "retro"
+      ]
+    },
+    {
+      "index": 32,
+      "title": "Quick check: after a retro",
+      "compositionId": "32-quiz-k5",
+      "type": "social_proof",
+      "durationSeconds": 4.95,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You have just held a retro. When does reel status suggest the next one?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "a",
+      "explain": "D-107: every five plans or three repeats of one signal, whichever comes first, both counted since the last retro (A13).",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "After five more plans, or a signal repeated three times",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Five days later",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Never: you ask for one",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 275.45,
+      "thumb": "snapshots/frame-31-at-278.18s.png",
+      "terms": [
+        "retro",
+        "quick check"
+      ]
+    },
+    {
+      "index": 33,
+      "title": "What ran; flag a step, or accept",
+      "compositionId": "33-end",
+      "type": "cta",
+      "durationSeconds": 18.07,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 280.4,
+      "thumb": "snapshots/frame-32-at-289.44s.png",
+      "terms": [
+        "call",
+        "memory",
+        "step"
+      ]
+    }
+  ],
+  "decisions": [],
+  "details": [],
+  "plan": {
+    "title": "Memory: learn which questions are the right ones, from what reviews already record",
+    "problem": "Every plan starts from nothing. The records say a lot about what you care about, but no plan reads\nthem. You took the recommended option on every question you answered from a list, and wrote your\nown words on 3 of 16: the options were too abstract (D-022), the question was framed wrong (D-023),\nor you accepted with a condition (D-003). You accepted 85 of 91 of the agent's calls. The steps you\nrewound are the ones you later flagged or questioned, and one was rewound again after its revision.\nMost of your own-words notes are questions. And some things got past a review and were changed\nlater: a decision superseded (D-056 by D-063), a call accepted and reversed after review (the\nfile tools, k3), a part reworked within days. Each of those is a question that should have been\nasked, or a call that should have stopped.\n\nThe aim is the right questions, not fewer. The tool can also improve itself, which needs a\nyardstick outside its own numbers: it could \"improve\" by asking less and counting that as success.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Every review records its reviewer and the skill version",
+        "text": "*Independent.*\n\nIntake adds the reviewer (git's `user.email` where the review is recorded, or the page's viewer) and\nthe reelplanning version that built the video to every review in `reviews/`. Old reviews are left as\nthey are. Without the version, a change to the skill can't be told apart from a change in the plans;\nwithout the reviewer, one person's taste can't be told apart from what works."
+      },
+      {
+        "n": 2,
+        "title": "The repo's memory: `reel status` says what reviews show",
+        "text": "*Needs step 1 (to tell reviewers apart; works without it for one reviewer).*\n\n`reel status` ends with at most five lines, worked out each time from the ledger and `reviews/`:\nhow often a recommendation was taken; the questions answered in own words, and why; the steps\nrewound, and those rewound again after a revision; the quick checks answered wrong; the misses (step\n4). Each line has an id, and `reel memory <id>` prints its evidence: the reviews, the words, the\ntimes. The skill says to read it before writing a plan and when tagging calls. Nothing is stored\nthat the reviews do not already hold."
+      },
+      {
+        "n": 3,
+        "title": "Your memory, across repos",
+        "text": "*Needs step 1.*\n\nWhen a review is recorded, a short summary of it (verdict, own-words answers and their reasons,\nrewinds, wrong quick checks, the kinds of call flagged) is appended to a file of your own, outside\nany repo (question 1). `reel memory --you` works out the same few lines across every repo you have\nreviewed in: your taste, not this repo's facts. The skill reads both."
+      },
+      {
+        "n": 4,
+        "title": "Misses decide what stops",
+        "text": "*Needs step 2.*\n\nA miss is something a later plan, fix or system-video review changed that an earlier review let\nthrough: a decision superseded, an accepted call later flagged or reversed, a part reworked soon\nafter. `reel memory` traces each to the question or call that passed it, and its kind (a call's\ntags, a question's topic). A call of that kind stops the walkthrough again, whatever its streak of\naccepts (D-084's rule gains this one exception), and the next plan that touches that part asks that\nkind of question."
+      },
+      {
+        "n": 5,
+        "title": "A retro you start, checked against a fixed benchmark",
+        "text": "*Needs steps 2–4.*\n\n`reel status` suggests a retro when one is due (question 2). `reel retro` starts a plan: skill edits\nthe evidence supports, each citing it, adding no text the evidence does not need (not a quota to cut:\nthe owner's review, D-107's comment, asks only that nothing is added for its own sake). It is\nreviewed like any plan. Before it is accepted, the benchmark (the Bob Dylan example, redone from the\nsame prompt, next to its text and HTML baselines) is run with the old and the new skill and\ncompared, so the retro is judged by something outside the loop's own numbers."
+      }
+    ]
+  },
+  "slug": "2026-09-24-memory--walkthrough",
+  "prerequisites": [
+    {
+      "video": "system",
+      "title": "reelplanning: the whole system",
+      "gives": "what the parts are and how a review goes",
+      "seconds": 478.3,
+      "terms": [
+        "beat",
+        "plan text",
+        "open chip",
+        "detail",
+        "side panel",
+        "answer band",
+        "call",
+        "quick check",
+        "plan video",
+        "walkthrough",
+        "chapter",
+        "area",
+        "plan-to-video skill",
+        "narrate",
+        "finish-project",
+        "plan-diff",
+        "details check",
+        "review player",
+        "review server",
+        "inbox",
+        "headless run",
+        "reel cli",
+        "decision log",
+        "revise step",
+        "implement step",
+        "walkthrough fix step",
+        "system video",
+        "approve",
+        "sandbox",
+        "review",
+        "notification",
+        "tag",
+        "deviation",
+        "reel stops",
+        "streak",
+        "id",
+        "grouped beat",
+        "own words",
+        "accept all",
+        "system-review",
+        "memory",
+        "miss",
+        "retro",
+        "step",
+        "finish"
+      ],
+      "found": true,
+      "default": true
+    }
+  ],
+  "terms": [],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns plan.md into a video via HyperFrames",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's command from config.json, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "scripts/reel.mjs; manages .reelplanning/; reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into plan.md; changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Implements plan.md and logs each call the plan did not cover into walkthrough.md, with tags; its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo from spec.md; rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once as reviews/<kind>-<time>.json with a .md of what to act on; never overwritten. The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Review loop, step 2: nobody waiting",
+        "start": 185.951,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Review loop, steps 5–6: rebuild, and you're told",
+        "start": 225.235,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover: one row in walkthrough.md. Labelled visible, hard-to-undo or close when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the ledger and reviews/, never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Next: chapter 2",
+        "start": 75.483,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Chapter 2 of 5",
+        "start": 79.483,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started by reel retro when reel status says one is due, and judged against a fixed benchmark",
+      "forms": [
+        "retro"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each choice",
+        "start": 26.069,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Build loop, step 6: this video catches up",
+        "start": 343.071,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold; started from a template in templates/details/",
+      "forms": [
+        "detail"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words from plan.md, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "check-details, run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    }
+  ],
+  "ids": {
+    "A1": {
+      "kind": "choice",
+      "gloss": "The five lines' ids are words: recommended, own-words, rewinds, checks, misses…"
+    },
+    "A10": {
+      "kind": "choice",
+      "gloss": "Across repos (`reel memory --you`) the fifth line is `flagged`, the kinds of…"
+    },
+    "A11": {
+      "kind": "choice",
+      "gloss": "A miss is recent while the plan that showed it is one of the last five plan…"
+    },
+    "A12": {
+      "kind": "choice",
+      "gloss": "A call's kind is its tags and the components its step names; a recent miss…"
+    },
+    "A13": {
+      "kind": "choice",
+      "gloss": "A signal is one of: a question answered in own words for the same reason, a…"
+    },
+    "A14": {
+      "kind": "choice",
+      "gloss": "`reel retro` names its folder <date>-retro (then -retro-2 …); its draft cites…"
+    },
+    "A15": {
+      "kind": "choice",
+      "gloss": "Where your file cannot be written (a run fenced to the repo by D-082's…"
+    },
+    "A2": {
+      "kind": "choice",
+      "gloss": "Why a question was answered in own words is read from the words and the…"
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": "A call counts once, by the first verdict it was given (a later round that…"
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": "'Rewound again after a revision' is the same step of the same plan's same…"
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": "The stamp is one `recorded` object in the filed review, { reviewer, via…"
+    },
+    "A6": {
+      "kind": "choice",
+      "gloss": "The version is the reelplanning that records the review (its package.json)"
+    },
+    "A7": {
+      "kind": "choice",
+      "gloss": "The page's viewer is read from the row's `viewer` (a string, or `{ email }` /…"
+    },
+    "A8": {
+      "kind": "choice",
+      "gloss": "migrate-reviews files old reviews unstamped (stamp: false)"
+    },
+    "A9": {
+      "kind": "choice",
+      "gloss": "Your file (~/.reelplanning/you.jsonl) gets a summary only for a review…"
+    },
+    "D-003": {
+      "kind": "decision",
+      "gloss": "When does the system video update? i want after every accept except i am…"
+    },
+    "D-022": {
+      "kind": "decision",
+      "gloss": "Who writes a detail page? confused by this, need more information and examples"
+    },
+    "D-023": {
+      "kind": "decision",
+      "gloss": "What code does a walkthrough show? oh we shoulndt ALWAYS show the code, and we…"
+    },
+    "D-056": {
+      "kind": "decision",
+      "gloss": "The plan text goes beside the stage (a 340 px column) when the stage loses…"
+    },
+    "D-063": {
+      "kind": "decision",
+      "gloss": "Beside the stage when that costs it under 15 % of its width; otherwise in the…"
+    },
+    "D-082": {
+      "kind": "decision",
+      "gloss": "What may a run nobody is watching do? Auto mode, inside the sandbox"
+    },
+    "D-084": {
+      "kind": "decision",
+      "gloss": "Does your own record also decide what stops? The tags, and your record"
+    },
+    "D-085": {
+      "kind": "decision",
+      "gloss": "How much scaffolding comes out? B, and the files"
+    },
+    "D-107": {
+      "kind": "decision",
+      "gloss": "When does the tool suggest a retro? Every five plans, or when a signal repeats…"
+    },
+    "D1": {
+      "kind": "off-plan change",
+      "gloss": "'A part reworked soon after' is read as a step whose walkthrough quick check…"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "The same review is recorded again, on a machine with another git email. How…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "In one sitting you rewind step 4 of a plan video three times. Does the rewinds…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "A sandboxed run records a review, and your home folder is fenced off. What…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "A new call on the review player is tagged close, and close calls have been…"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "You have just held a retro. When does reel status suggest the next one?"
+    }
+  }
+}

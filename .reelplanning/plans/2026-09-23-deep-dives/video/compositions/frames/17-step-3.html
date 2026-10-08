@@ -1,0 +1,164 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f17-step-3-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f17-step-3-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f17-step-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f17-step-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f17-step-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f17-step-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f17-step-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-slot .d.lit { color:var(--rp-coral-deep); }
+  .f17-step-3-slot:not([data-filled]) .n, .f17-step-3-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f17-step-3-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f17-step-3-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f17-step-3-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f17-step-3-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f17-step-3-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f17-step-3-node.dim { opacity:0.72; }
+  .f17-step-3-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f17-step-3-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f17-step-3-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f17-step-3-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f17-step-3-chip.lit { color:var(--rp-coral-deep); }
+  .f17-step-3-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f17-step-3-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f17-step-3-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f17-step-3-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f17-step-3-conn { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f17-step-3-conn path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; }
+  .f17-step-3-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  /* ---- prototypes of the player's own surfaces (§16): small text inside a depicted page is the page's own ---- */
+  .f17-step-3-mockscreen { position:absolute; left:0; top:0; background:var(--rp-tile); overflow:hidden; }
+  .f17-step-3-mockbar { position:absolute; left:0; height:70px; border-top:1px solid rgba(var(--rp-ink-rgb),0.15); background:var(--rp-paper); }
+  .f17-step-3-mocktrack { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f17-step-3-mockfill { position:absolute; height:4px; border-radius:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f17-step-3-mockstat { position:absolute; font:500 24px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-mockk { position:absolute; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f17-step-3-mockh { position:absolute; font:400 52px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-mocks { position:absolute; font:400 28px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-mockfile { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); white-space:nowrap; }
+  .f17-step-3-mockcode { position:absolute; left:0; height:44px; font:400 24px/44px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; box-shadow:inset 5px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f17-step-3-mockcode .ln { display:inline-block; width:56px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f17-step-3-mockcode.sel { background:var(--rp-tile-2); box-shadow:inset 5px 0 0 var(--rp-ink); }
+  .f17-step-3-mockcode.del { color:rgba(var(--rp-ink-rgb),0.5); text-decoration:line-through; text-decoration-color:rgba(var(--rp-ink-rgb),0.35); }
+  .f17-step-3-mockcode.add { background:var(--rp-tile-2); }
+  .f17-step-3-mockrow { position:absolute; left:0; height:36px; font:400 20px/36px "Inter"; color:var(--rp-ink); white-space:nowrap; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f17-step-3-mockrow .lv { position:absolute; right:18px; font:500 18px/36px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f17-step-3-mockbtn { position:absolute; height:48px; padding:0 20px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f17-step-3-mockbar2 { position:absolute; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f17-step-3-mocknote { position:absolute; height:52px; padding:0 18px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/50px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f17-step-3-mocktab { position:absolute; top:0; height:48px; padding:0 22px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none; border-radius:8px 8px 0 0; font:500 22px/46px "Inter"; color:rgba(var(--rp-ink-rgb),0.6); background:var(--rp-tile); white-space:nowrap; }
+  .f17-step-3-mocktab.on { background:var(--rp-paper); color:var(--rp-ink); }
+  /* option cards (decision beats): each carries a small prototype of what that option does */
+  .f17-step-3-opt { position:absolute; top:190px; height:500px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f17-step-3-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f17-step-3-opt .l { position:absolute; left:28px; top:66px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f17-step-3-opt .c { position:absolute; left:28px; top:440px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f17-step-3-mini { position:absolute; left:28px; top:140px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-paper); overflow:hidden; }
+
+</style>
+
+<div id="root" data-composition-id="17-step-3" data-duration="17" data-width="1920" data-height="1080">
+
+  <div class="clip f17-step-3-bg" data-start="0" data-duration="17" data-track-index="0"></div>
+
+  <div class="clip f17-step-3-scene" id="f17-step-3-scene" data-start="0" data-duration="17" data-track-index="1">
+
+  <div class="f17-step-3-kicker" id="f17-step-3-kicker">Step 3 · Comments inside</div>
+  <div class="f17-step-3-spine" id="f17-step-3-spine">
+    <div class="f17-step-3-tick" id="f17-step-3-tick-1" data-plan-step="1" data-done style="top:35px"></div>
+    <div class="f17-step-3-tick" id="f17-step-3-tick-2" data-plan-step="2" data-done style="top:145px"></div>
+    <div class="f17-step-3-tick" id="f17-step-3-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f17-step-3-tick" id="f17-step-3-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f17-step-3-tick" id="f17-step-3-tick-5" data-plan-step="5" style="top:475px"></div>
+    <div class="f17-step-3-tick" id="f17-step-3-tick-6" data-plan-step="6" style="top:585px"></div>
+  </div>
+  <div class="f17-step-3-page" id="f17-step-3-code" data-plan-component="player" style="left:200px; top:170px; width:680px; height:400px">
+    <div class="f17-step-3-mockfile" style="left:24px; top:22px">details/parts-14.html</div>
+    <div style="position:absolute; left:0; top:62px; width:680px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-0" style="left:0px; top:80px; width:680px"><span class="ln">11</span></div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-1" style="left:0px; top:124px; width:680px"><span class="ln">12</span>// default part size, new uploads</div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-2" style="left:0px; top:168px; width:680px"><span class="ln">13</span>const MB = 1024 * 1024;</div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-3" style="left:0px; top:212px; width:680px"><span class="ln">14</span>export const PART_SIZE = 16 * MB;</div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-4" style="left:0px; top:256px; width:680px"><span class="ln">15</span>export const MIN_PART = 5 * MB;</div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-5" style="left:0px; top:300px; width:680px"><span class="ln">16</span>export function partsFor(size) {</div>
+      <div class="f17-step-3-mockcode" id="f17-step-3-l-6" style="left:0px; top:344px; width:680px"><span class="ln">17</span>  return Math.ceil(size / PART_SIZE);</div>
+  </div>
+  <svg class="f17-step-3-conn" viewBox="0 0 1920 1080"><path id="f17-step-3-conn" d="M880 356 L940 356" /></svg>
+  <div class="f17-step-3-page" id="f17-step-3-tb" style="left:940px; top:322px; width:520px; height:68px; border:2px solid rgba(var(--rp-ink-rgb),0.55)">
+    <div class="f17-step-3-mocks" style="left:20px; top:18px; color:var(--rp-ink); font-size:28px"><span id="f17-step-3-typed"></span></div>
+  </div>
+  <div class="f17-step-3-sub" id="f17-step-3-anch" style="left:940px; top:420px">step 2 · parts-14 · line 14</div>
+  <div class="f17-step-3-page" id="f17-step-3-res" data-plan-component="resolve" style="left:940px; top:490px; width:900px; height:260px">
+    <div class="f17-step-3-mockfile" style="left:28px; top:24px">plan.resolved.md</div>
+    <div class="f17-step-3-mockh" style="left:28px; top:66px; font-size:40px">Step 2</div>
+    <div class="f17-step-3-mockbar2" style="left:28px; top:130px; width:600px"></div>
+    <div class="f17-step-3-sub" id="f17-step-3-row" style="left:28px; top:164px; height:64px; width:844px; line-height:64px; padding-left:22px; box-sizing:border-box; background:var(--rp-tile); border-radius:6px; color:var(--rp-ink); box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0)">parts.ts line 14: Why 16 MB, not 8?</div>
+  </div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "17-step-3", P = "#f17-step-3-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f17-step-3-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f17-step-3-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f17-step-3-slot-" + n + " .n, #f17-step-3-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f17-step-3-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f17-step-3-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  // swap one status text for another (both sit in the same place)
+  var swap = function (tl, a, b, at) { tl.to($(a), { opacity: 0, duration: 0.25 }, at); tl.fromTo($(b), { opacity: 0 }, { opacity: 1, duration: 0.25 }, at + 0.1); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  tickOn(tl, 3, 0.1);
+  pop(tl, $("code"), 0.5, 16);
+  var CN = $("conn"), LC = lenOf(CN); gsap.set(CN, { strokeDasharray: LC, strokeDashoffset: LC });
+  tickDone(tl, 3, 2.42);
+  tl.to($("l-3"), { backgroundColor: TILE2, boxShadow: "inset 5px 0 0 " + INK, duration: 0.3 }, 2.42);
+  tl.to(CN, { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, 5.93);
+  pop(tl, $("tb"), 5.93, 8);
+  var TX = "Why 16 MB, not 8?", el = $("typed"), st = { n: 0 };
+  tl.to(st, { n: TX.length, duration: 0.8, ease: "none", onUpdate: function () { el.textContent = TX.slice(0, Math.round(st.n)); } }, 6.33);
+  pop(tl, $("anch"), 7.42, 8);
+  pop(tl, $("res"), 10, 12);
+  tl.to($("row"), { boxShadow: "inset 6px 0 0 " + C, duration: 0.3, ease: "power3.out" }, 12.47);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 16.499);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,124 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k18-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k18-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k18-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k18-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k18-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k18-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k18-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k18-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k18-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k18-ul.ink { background:var(--rp-ink); height:3px; }
+  .k18-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k18-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k18-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k18-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k18-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k18-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k18-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k18-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k18-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k18-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k18-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k18-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k18-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k18-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k18-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k18-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k18-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k18-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k18-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k18-chip code, .k18-name code, .k18-small code, .k18-lab code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k18-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k18-line.hot { background:var(--rp-coral); }
+  .k18-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k18-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k18-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k18-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k18-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; }
+  .k18-shot img { display:block; width:100%; height:auto; }
+  .k18-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k18-rg.hot { border-color:var(--rp-coral); }
+  .k18-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k18-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k18-tab b { font-weight:700; }
+  .k18-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k18-kbd { position:absolute; height:56px; min-width:56px; padding:0 16px; box-sizing:border-box; font:500 28px/52px "JetBrains Mono"; color:var(--rp-ink); text-align:center; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-bottom-width:5px; border-radius:8px; }
+  .k18-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k18-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k18-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k18-band { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.1); border-top:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .k18-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k18-blk { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k18-blk i { position:absolute; left:18px; height:10px; border-radius:5px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k18-mk { position:absolute; font:700 40px/1 "Inter"; }
+  .k18-mk.no { color:var(--rp-coral-deep); } .k18-mk.ok { color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="18-qc-escape" data-band="bottom" data-duration="6.037" data-width="1920" data-height="1080">
+
+  <div class="clip k18-bg" id="k18-bg" data-start="0" data-duration="6.037" data-track-index="0"></div>
+
+  <div class="clip k18-scene" id="k18-scene" data-start="0" data-duration="6.037" data-track-index="1">
+    <div class="k18-view" id="k18-view"><div class="k18-cam" id="k18-cam"><div id="k18-case">
+    <div class="k18-name" id="k18-n0" style="left:120px; top:190px; font-size:40px">click</div>
+    <div class="k18-blk" id="k18-b0" style="left:120px; top:270px; width:340px; height:180px"><i style="top:20px; width:213px"></i><i style="top:46px; width:137px"></i><i style="top:72px; width:167px"></i><i style="top:98px; width:106px"></i><i style="top:124px; width:152px"></i></div>
+    <div class="k18-name" id="k18-n1" style="left:560px; top:190px; font-size:40px">paused · page open</div>
+    <div class="k18-blk" id="k18-b1" style="left:560px; top:270px; width:340px; height:180px"><i style="top:20px; width:213px"></i><i style="top:46px; width:137px"></i><i style="top:72px; width:167px"></i><i style="top:98px; width:106px"></i><i style="top:124px; width:152px"></i></div>
+    <div class="k18-name" id="k18-n2" style="left:1000px; top:190px; font-size:40px">Esc</div>
+    <div class="k18-name" id="k18-n3" style="left:1360px; top:190px; font-size:40px">plays on</div>
+    <div class="k18-blk" id="k18-b3" style="left:1360px; top:270px; width:340px; height:180px"><i style="top:20px; width:213px"></i><i style="top:46px; width:137px"></i><i style="top:72px; width:167px"></i><i style="top:98px; width:106px"></i><i style="top:124px; width:152px"></i></div>
+    <div class="k18-rg hot" id="k18-r0" style="left:112px; top:262px; width:356px; height:196px"></div>
+    <div class="k18-rg" id="k18-r1" style="left:552px; top:262px; width:356px; height:196px"></div>
+    <div class="k18-box" id="k18-pg" style="left:760px; top:300px; width:180px; height:200px; background:var(--rp-paper)"><div class="k18-bl" style="left:16px; top:16px">the page</div></div>
+    <div class="k18-kbd" id="k18-esc" style="left:1010px; top:330px">Esc</div>
+    <div class="k18-rg dash" id="k18-r3" style="left:1352px; top:262px; width:356px; height:196px"></div>
+    <div class="k18-line" id="k18-a0" style="left:480px; top:360px; width:60px"></div>
+    <div class="k18-line" id="k18-a1" style="left:960px; top:360px; width:30px"></div>
+    <div class="k18-line" id="k18-a2" style="left:1170px; top:360px; width:170px"></div>
+    <div class="k18-slab2" id="k18-sl" style="left:120px; top:600px; width:1600px; height:90px"></div>
+    <div class="k18-code" id="k18-t0" style="left:150px; top:632px">{ "name": "data-block-and-slots", "from": "frame", "seconds": 42 }</div>
+    <div class="k18-lab" id="k18-ll" style="left:120px; top:560px">the review · details opened</div>
+    </div></div></div>
+    <div class="k18-q" id="k18-q" data-question style="left:180px; top:330px; width:1560px">The video is playing scene 12. You click the block, read the file, and press Escape. What happens?</div>
+    <div class="k18-opt" id="k18-opt-a" data-option="a" style="left:180px; top:540px; width:500px; height:250px"><span class="k">A</span><span class="l">It stays paused on the block</span></div>
+    <div class="k18-opt" id="k18-opt-b" data-option="b" style="left:710px; top:540px; width:500px; height:250px"><span class="k">B</span><span class="l">It jumps to the next scene</span></div>
+    <div class="k18-opt" id="k18-opt-c" data-option="c" style="left:1240px; top:540px; width:500px; height:250px"><span class="k">C</span><span class="l">It plays on from where it paused</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "18-qc-escape";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k18-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#k18-case", { opacity: 1, transformOrigin: "0 0" });
+  tl.to("#k18-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#k18-case", { scale: 0.3, x: 1320, y: 10, opacity: 0.92, duration: 1, ease: "power3.inOut" }, 1);
+  gsap.set("#k18-q", { opacity: 0, x: -24 });
+  tl.to("#k18-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.1);
+  gsap.set("#k18-opt-a", { opacity: 0, y: 28 });
+  tl.to("#k18-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 4.96);
+  gsap.set("#k18-opt-b", { opacity: 0, y: 28 });
+  tl.to("#k18-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.08);
+  gsap.set("#k18-opt-c", { opacity: 0, y: 28 });
+  tl.to("#k18-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.2);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

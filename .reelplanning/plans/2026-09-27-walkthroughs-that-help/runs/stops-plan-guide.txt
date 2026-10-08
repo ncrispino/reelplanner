@@ -1,0 +1,29 @@
+$ reel stops .reelplanning/plans/2026-09-28-plan-guide   (this repo, on a later plan's walkthrough.md)
+A1   step 1   pauses  you'd notice it: its scene shows it running  [visible]
+A2   step 1   pauses  you'd notice it: its scene shows it running  [visible, close]
+A3   step 1   pauses  you'd notice it: its scene shows it running  [visible, close]
+A4   step 1   pauses  you can't easily undo it: its scene shows it running  [hard-to-undo]
+A5   step 2   listed  close: on the list at the end  [close]
+A6   step 2   listed  close: on the list at the end  [close]
+A7   step 2   listed  close: on the list at the end  [close]
+A8   step 3   pauses  you'd notice it: its scene shows it running  [visible]
+A9   step 3   pauses  you'd notice it: its scene shows it running  [visible]
+A10  step 4   pauses  you can't easily undo it: its scene shows it running  [hard-to-undo]
+A11  step 4   pauses  you'd notice it: its scene shows it running  [visible, hard-to-undo]
+A12  step 5   pauses  you can't easily undo it: its scene shows it running  [hard-to-undo]
+A13  step 5   pauses  you'd notice it: its scene shows it running  [visible, close]
+A14  step 3   listed  close: on the list at the end  [close]
+D1   step 3   pauses  an off-plan change always pauses  [deviation]
+D2   step 1   pauses  an off-plan change always pauses  [deviation]
+
+The beats, by step (each line is one pause, in the scene that shows it running):
+  step 1    - autonomy: a1, a2, a3, a4   (4 calls share this pause)
+            - autonomy: d2   (an off-plan change: a pause of its own)
+  step 3    - autonomy: a8, a9   (2 calls share this pause)
+            - autonomy: d1   (an off-plan change: a pause of its own)
+  step 4    - autonomy: a10, a11   (2 calls share this pause)
+  step 5    - autonomy: a12, a13   (2 calls share this pause)
+  the end   - autonomy_list: a5, a6, a7, a14   (the list: one line each, each with its own Flag; Approve takes the rest, listed, not judged)
+
+10 call(s) pause, in 4 stop beat(s) (one per step); 2 off-plan change(s), each on its own beat; 4 on the list. The video pauses 6 time(s) for what you'd notice or can't easily undo, and once at the end for the list. An off-plan change said only in prose still pauses.
+exit 0

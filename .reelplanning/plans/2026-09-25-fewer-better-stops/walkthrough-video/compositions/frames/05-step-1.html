@@ -1,0 +1,153 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f05-step-1-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f05-step-1-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f05-step-1-kicker { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-lab { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-chip { position:absolute; font:500 28px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 12px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f05-step-1-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f05-step-1-chip.big { font:500 36px/1.2 "Inter"; border:2px solid var(--rp-ink); padding:14px 22px; }
+  .f05-step-1-spine { position:absolute; width:44px; height:420px; }
+  .f05-step-1-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f05-step-1-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f05-step-1-def { position:absolute; box-sizing:border-box; height:210px; border-radius:12px; background:var(--rp-paper); border:2px solid var(--rp-ink); }
+  .f05-step-1-def .k { position:absolute; right:26px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-step-1-def .t { position:absolute; left:28px; top:24px; font:400 64px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-def .m { position:absolute; left:28px; top:112px; right:28px; font:400 38px/1.2 "Inter"; color:var(--rp-ink); }
+  .f05-step-1-def.inline .m { left:auto; right:28px; top:52px; text-align:right; }
+  .f05-step-1-kind { position:absolute; box-sizing:border-box; height:96px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f05-step-1-kind .t { position:absolute; left:28px; top:28px; font:500 34px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-kind .m { position:absolute; right:28px; top:26px; font:400 38px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-row { position:absolute; box-sizing:border-box; height:100px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f05-step-1-row .n { position:absolute; left:30px; top:34px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f05-step-1-row .t { position:absolute; left:96px; top:28px; font:500 40px/1.1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-row .d { position:absolute; right:30px; top:36px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-fig { position:absolute; font:400 200px/0.9 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-fig .u { font:500 48px/1 "JetBrains Mono"; margin-left:22px; letter-spacing:0; }
+  .f05-step-1-srow { position:absolute; width:860px; height:60px; font:500 34px/60px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .f05-step-1-srow .v { position:absolute; right:0; top:0; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f05-step-1-tally { position:absolute; box-sizing:border-box; height:96px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f05-step-1-tally .v { position:absolute; left:28px; top:10px; font:400 76px/1 "EB Garamond"; color:var(--rp-ink); }
+  .f05-step-1-tally .t { position:absolute; left:110px; top:30px; font:500 36px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-track { position:absolute; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f05-step-1-mark { position:absolute; width:12px; height:56px; border-radius:3px; background:var(--rp-ink); }
+  .f05-step-1-stopm { position:absolute; width:14px; height:64px; border-radius:3px; background:var(--rp-ink); }
+  .f05-step-1-mk { position:absolute; font:500 28px/1.25 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-img { position:absolute; box-sizing:border-box; border-radius:10px; border:1px solid rgba(var(--rp-ink-rgb),0.22); overflow:hidden; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.06); }
+  .f05-step-1-img img { display:block; width:100%; height:100%; }
+  .f05-step-1-box { position:absolute; box-sizing:border-box; border:4px solid rgba(var(--rp-ink-rgb),0.55); border-radius:8px; }
+  .f05-step-1-call { position:absolute; box-sizing:border-box; height:220px; border-radius:12px; background:var(--rp-paper); border:2px solid var(--rp-ink); }
+  .f05-step-1-call .i { position:absolute; left:30px; top:26px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.08em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-call .g { position:absolute; right:30px; top:26px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-call .c { position:absolute; left:30px; top:70px; right:30px; font:400 60px/1.05 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-call .o { position:absolute; left:30px; top:156px; font:400 34px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f05-step-1-crow { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .f05-step-1-crow .i { position:absolute; left:26px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-crow .t { position:absolute; left:26px; top:60px; font:500 38px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-panel { position:absolute; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.16); background:var(--rp-tile); }
+  .f05-step-1-panel .plab { position:absolute; left:40px; top:30px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f05-step-1-line { position:absolute; font:500 40px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-rule { position:absolute; box-sizing:border-box; height:110px; border-radius:12px; background:var(--rp-paper); border:2px solid var(--rp-ink); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f05-step-1-rule .t { position:absolute; left:32px; top:26px; font:400 56px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-rule.small .t { font-size:48px; top:30px; }
+  .f05-step-1-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f05-step-1-slab .ln { position:absolute; left:40px; font:500 40px/1.2 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f05-step-1-dcard { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid var(--rp-ink); }
+  .f05-step-1-dcard .k { position:absolute; left:30px; top:28px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-dcard .t { position:absolute; left:30px; top:86px; font:400 50px/1 "EB Garamond"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f05-step-1-dcard .m { position:absolute; left:30px; top:152px; font:400 60px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f05-step-1-arrow { position:absolute; font:400 72px/1 "EB Garamond"; color:var(--rp-ink); }
+  .f05-step-1-small { position:absolute; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f05-step-1-q { position:absolute; left:200px; top:170px; width:1640px; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f05-step-1-opt { position:absolute; box-sizing:border-box; top:450px; width:520px; height:360px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f05-step-1-opt .k { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f05-step-1-opt .l { position:absolute; left:30px; top:84px; right:28px; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="05-step-1" data-band="bottom" data-duration="22.281" data-width="1920" data-height="1080">
+
+  <div class="clip f05-step-1-bg" id="f05-step-1-bg" data-start="0" data-duration="22.281" data-track-index="0"></div>
+
+  <div class="clip f05-step-1-scene" id="f05-step-1-scene" data-start="0" data-duration="22.281" data-track-index="1">
+  <div class="f05-step-1-kicker" id="f05-step-1-k" style="left:80px; top:88px">Step 1 · One pause per step</div>
+  <div class="f05-step-1-spine" id="f05-step-1-sp" style="left:80px; top:150px"><div class="f05-step-1-tick live" data-plan-step="1" style="top:40px"></div><div class="f05-step-1-tick" data-plan-step="2" style="top:160px"></div><div class="f05-step-1-tick" data-plan-step="3" style="top:280px"></div></div>
+  <div class="f05-step-1-def" id="f05-step-1-d1" style="left:1180px; top:150px; width:660px"><span class="t">scene</span><span class="k">means</span><span class="m">a picture, a sentence or two</span></div>
+  <div class="f05-step-1-lab" id="f05-step-1-l1" style="left:200px; top:190px">Before · 23 pauses</div>
+  <div class="f05-step-1-track" id="f05-step-1-m1-tr" style="left:200px; top:310px; width:912px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-0" style="left:200px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-1" style="left:241px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-2" style="left:282px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-3" style="left:323px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-4" style="left:364px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-5" style="left:405px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-6" style="left:445px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-7" style="left:486px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-8" style="left:527px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-9" style="left:568px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-10" style="left:609px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-11" style="left:650px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-12" style="left:691px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-13" style="left:732px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-14" style="left:773px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-15" style="left:814px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-16" style="left:855px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-17" style="left:895px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-18" style="left:936px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-19" style="left:977px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-20" style="left:1018px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-21" style="left:1059px; top:285px"></div><div class="f05-step-1-mark" id="f05-step-1-m1-22" style="left:1100px; top:285px"></div>
+  <div class="f05-step-1-lab" id="f05-step-1-l2" style="left:200px; top:420px">Now · one per step</div>
+  <div class="f05-step-1-track" id="f05-step-1-m2-tr" style="left:200px; top:540px; width:1560px"></div><div class="f05-step-1-stopm" id="f05-step-1-m2-0" style="left:220px; top:511px"></div><div class="f05-step-1-mk" id="f05-step-1-m2-t0" style="left:220px; top:590px">step 1<br>4 choices</div><div class="f05-step-1-stopm" id="f05-step-1-m2-1" style="left:532px; top:511px"></div><div class="f05-step-1-mk" id="f05-step-1-m2-t1" style="left:532px; top:590px">step 2<br>8 choices</div><div class="f05-step-1-stopm" id="f05-step-1-m2-2" style="left:844px; top:511px"></div><div class="f05-step-1-mk" id="f05-step-1-m2-t2" style="left:844px; top:590px">step 3<br>4 choices</div><div class="f05-step-1-stopm" id="f05-step-1-m2-3" style="left:1156px; top:511px"></div><div class="f05-step-1-mk" id="f05-step-1-m2-t3" style="left:1156px; top:590px">step 4<br>off-plan</div><div class="f05-step-1-stopm" id="f05-step-1-m2-4" style="left:1468px; top:511px"></div><div class="f05-step-1-mk" id="f05-step-1-m2-t4" style="left:1468px; top:590px">step 5<br>6 choices</div>
+  <div class="f05-step-1-chip big" id="f05-step-1-c1" style="left:200px; top:700px">23 → 5 pauses</div>
+  <div class="f05-step-1-chip grey" id="f05-step-1-c2" style="left:700px; top:716px">memory: 14 → 6</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05-step-1";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f05-step-1-" + s); };
+  var pop = function (tl, el, at) { tl.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var litB = function (tl, el, at) { tl.fromTo(el, { borderColor: "rgba(" + __RP["ink-rgb"] + ",0.55)" }, { borderColor: C, duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("k"), 0.10);
+  fade(tl, $("sp"), 0.15);
+  pop(tl, $("d1"), 1.77);
+  pop(tl, $("l1"), 4.89);
+  fade(tl, $("m1-tr"), 9.72);
+  pop(tl, $("m1-0"), 9.72);
+  pop(tl, $("m1-1"), 9.76);
+  pop(tl, $("m1-2"), 9.80);
+  pop(tl, $("m1-3"), 9.84);
+  pop(tl, $("m1-4"), 9.88);
+  pop(tl, $("m1-5"), 9.92);
+  pop(tl, $("m1-6"), 9.96);
+  pop(tl, $("m1-7"), 10.00);
+  pop(tl, $("m1-8"), 10.04);
+  pop(tl, $("m1-9"), 10.08);
+  pop(tl, $("m1-10"), 10.12);
+  pop(tl, $("m1-11"), 10.16);
+  pop(tl, $("m1-12"), 10.20);
+  pop(tl, $("m1-13"), 10.24);
+  pop(tl, $("m1-14"), 10.28);
+  pop(tl, $("m1-15"), 10.32);
+  pop(tl, $("m1-16"), 10.36);
+  pop(tl, $("m1-17"), 10.40);
+  pop(tl, $("m1-18"), 10.44);
+  pop(tl, $("m1-19"), 10.48);
+  pop(tl, $("m1-20"), 10.52);
+  pop(tl, $("m1-21"), 10.56);
+  pop(tl, $("m1-22"), 10.60);
+  pop(tl, $("l2"), 12.49);
+  fade(tl, $("m2-tr"), 12.49);
+  pop(tl, $("m2-0"), 12.64);
+  pop(tl, $("m2-t0"), 12.69);
+  pop(tl, $("m2-1"), 12.76);
+  pop(tl, $("m2-t1"), 12.81);
+  pop(tl, $("m2-2"), 12.88);
+  pop(tl, $("m2-t2"), 12.93);
+  pop(tl, $("m2-3"), 13.00);
+  pop(tl, $("m2-t3"), 13.05);
+  pop(tl, $("m2-4"), 13.12);
+  pop(tl, $("m2-t4"), 13.17);
+  pop(tl, $("c1"), 18.27);
+  lit(tl, $("c1"), 18.57);
+  pop(tl, $("c2"), 19.95);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.631);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

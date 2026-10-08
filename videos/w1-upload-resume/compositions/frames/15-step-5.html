@@ -1,0 +1,152 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+
+  /* ---- SHARED STAGE v2 (positions + sizes are law) ---- */
+  .f15-step-5-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f15-step-5-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f15-step-5-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f15-step-5-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f15-step-5-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f15-step-5-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f15-step-5-slot.dim { opacity:0.72; }
+  .f15-step-5-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f15-step-5-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f15-step-5-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f15-step-5-node.navy .l { color:var(--rp-on-ink); }
+  .f15-step-5-node.dim { opacity:0.72; }
+  .f15-step-5-node.navy.dim { opacity:1; }
+  .f15-step-5-node.active { border:3px solid var(--rp-coral); }
+  .f15-step-5-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f15-step-5-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f15-step-5-edges path.dim { opacity:0.35; }
+  .f15-step-5-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+  .f15-step-5-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  .f15-step-5-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+  .f15-step-5-opt.rec { border:3px solid var(--rp-coral); }
+  .f15-step-5-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* ---- /SHARED STAGE ---- */
+
+  .f15-step-5-ground { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f15-step-5-stage  { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+
+  /* the deviation tag on this run reads as INK (the one coral belongs to the lit node / edge) */
+  .f15-step-5-slot .d.ink { color:var(--rp-ink); }
+
+  /* lighting is layout-free: an inset outline, never a border-width change */
+  .f15-step-5-node { outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+
+  .f15-step-5-chip {
+    position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em;
+    color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:4px 5px; margin-left:-5px;
+  }
+  .f15-step-5-chip.r { margin-left:0; margin-right:-5px; text-align:right; }
+  .f15-step-5-chip span { display:inline-block; }
+</style>
+
+<div id="root" data-composition-id="15-step-5" data-duration="11.721" data-width="1920" data-height="1080">
+
+  <div class="clip f15-step-5-ground" data-start="0" data-duration="11.721" data-track-index="0"></div>
+
+  <div class="clip f15-step-5-stage" data-start="0" data-duration="11.721" data-track-index="1">
+
+    <div class="f15-step-5-rail" id="f15-step-5-rail">
+      <div class="f15-step-5-slot" id="f15-step-5-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+      <div class="f15-step-5-slot" id="f15-step-5-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span><span class="d ink">16 MB</span></div>
+      <div class="f15-step-5-slot" id="f15-step-5-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+      <div class="f15-step-5-slot" id="f15-step-5-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+      <div class="f15-step-5-slot" id="f15-step-5-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+      <div class="f15-step-5-slot" id="f15-step-5-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+    </div>
+
+    <div class="f15-step-5-node"      id="f15-step-5-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+    <div class="f15-step-5-node"      id="f15-step-5-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+    <div class="f15-step-5-node navy" id="f15-step-5-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+    <div class="f15-step-5-node"      id="f15-step-5-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+    <div class="f15-step-5-node"      id="f15-step-5-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+    <div class="f15-step-5-node"      id="f15-step-5-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+    <svg class="f15-step-5-edges" id="f15-step-5-edges" viewBox="0 0 1920 1080">
+      <path id="f15-step-5-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+      <path id="f15-step-5-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+      <path id="f15-step-5-e-sdk-api"          d="M970 485 L1030 485" />
+      <path id="f15-step-5-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+      <path id="f15-step-5-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+      <path id="f15-step-5-e-sweeper-blob"     d="M1680 645 L1640 645" />
+    </svg>
+
+    <!-- worked example chips: 16 px under the node; right-aligned to 1860 under Sweeper (a rightmost node) -->
+    <div class="f15-step-5-chip r" id="f15-step-5-chip-sweeper" style="right:60px; top:716px"><span id="f15-step-5-chip-sweeper-a">hourly</span><span id="f15-step-5-chip-sweeper-b">&nbsp;·&nbsp;24 h</span></div>
+    <div class="f15-step-5-chip"   id="f15-step-5-chip-blob"    style="left:1360px; top:716px">parts deleted</div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var INK = __RP["ink"], CORAL = __RP["coral"], CORAL_OFF = "rgba(204,120,92,0)";
+  var TILE = __RP["tile"], TILE_STRONG = __RP["tile-2"];
+  var id = function (s) { return document.getElementById(s); };
+
+  var slot5 = id("f15-step-5-slot-5");
+  var slotsOther = ["1", "2", "3", "4", "6"].map(function (i) { return id("f15-step-5-slot-" + i); });
+  var allNodes = ["sdk", "api", "manifest", "blob", "billing", "sweeper"].map(function (k) { return id("f15-step-5-node-" + k); });
+  var quietNodes = [id("f15-step-5-node-sdk"), id("f15-step-5-node-api"), id("f15-step-5-node-billing")];
+  var nodeSweeper = id("f15-step-5-node-sweeper");
+  var nodeManifest = id("f15-step-5-node-manifest");
+  var eSweeperManifest = id("f15-step-5-e-sweeper-manifest");
+  var eSweeperBlob = id("f15-step-5-e-sweeper-blob");
+  var chipA = id("f15-step-5-chip-sweeper-a");
+  var chipB = id("f15-step-5-chip-sweeper-b");
+  var chipBlob = id("f15-step-5-chip-blob");
+
+  // t = 0 - the stage is already done: every slot filled, every edge in ink, nothing coral.
+  gsap.set([slot5].concat(slotsOther), { opacity: 1, backgroundColor: TILE });
+  gsap.set(allNodes, { opacity: 1, outlineColor: CORAL_OFF });
+  gsap.set([eSweeperManifest, eSweeperBlob], { stroke: INK, strokeWidth: 3 });
+  gsap.set([chipA, chipB, chipBlob], { opacity: 0, color: INK });
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines["15-step-5"] = tl;
+
+  // 0.32 "five," - slot 5 lights; the rest of the rail settles back to context
+  tl.to(slot5, { backgroundColor: TILE_STRONG, duration: 0.5, ease: "power3.out" }, 0.32)
+    .to(slotsOther, { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 0.32)
+    .to(quietNodes, { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 0.34);
+
+  // 0.88 "sweeper." - the sweeper is the one coral
+  tl.to(nodeSweeper, { outlineColor: CORAL, duration: 0.3, ease: "power3.out" }, 0.95);
+
+  // 2.02 "hourly" - first half of the sweeper chip (both halves hold layout from t=0, so nothing shifts)
+  tl.fromTo(chipA, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.096);
+
+  // 3.12 "manifests" - coral hands off to the sweeper -> manifest edge (lit, never drawn)
+  tl.to(nodeSweeper, { outlineColor: CORAL_OFF, duration: 0.3, ease: "power3.out" }, 3.12)
+    .to(eSweeperManifest, { stroke: CORAL, strokeWidth: 4, duration: 0.35, ease: "power3.out" }, 3.29);
+
+  // 4.13 "24 hours" - second half of the same chip
+  tl.fromTo(chipB, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.302);
+
+  // 5.52 "completed at" - the edge hands off to the manifest record it reads
+  tl.to(eSweeperManifest, { stroke: INK, strokeWidth: 3, duration: 0.3, ease: "power3.out" }, 5.52)
+    .to(nodeManifest, { outlineColor: CORAL, duration: 0.3, ease: "power3.out" }, 5.77);
+
+  // 7.69 "cleared" - coral hands off to the sweeper -> blob edge, in turn after the first
+  tl.to(nodeManifest, { outlineColor: CORAL_OFF, duration: 0.3, ease: "power3.out" }, 7.69)
+    .to(eSweeperBlob, { stroke: CORAL, strokeWidth: 4, duration: 0.35, ease: "power3.out" }, 8.092);
+
+  // 8.74 "abandoned manifests" - the result under the blob store, in ink; held to the end
+  tl.fromTo(chipBlob, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.274);
+
+  tl.to(nodeSweeper, { opacity: 1, duration: 0.01 }, 11.211);
+})();
+</script>
+</template>

@@ -1,0 +1,75 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f22-branch-3a-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f22-branch-3a-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  /* ---- rail: GONE (§18 v9). The beat is the phone and the gesture; the kicker already says
+       which step and which option, so the device takes the frame. ---- */
+
+  /* ---- the phone, centred and as tall as the caption band allows: 404 x 744 at top 146,
+       bottom 890. Frame 23 holds the same rectangle, so the crossfade does not move it. ---- */
+  .f22-branch-3a-phone { position:absolute; left:758px; top:146px; width:404px; height:744px; border-radius:28px;
+    background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.28); overflow:hidden; }
+  .f22-branch-3a-vid { position:absolute; left:12px; top:12px; width:376px; height:716px; border-radius:6px; background:var(--rp-data); }
+
+  /* the sheet waits below the fold: at rest only its lip and handle show at the bottom edge.
+     Inner box is 400 x 740; the sheet rides from top 680 to top 255 — two thirds of the device. */
+  .f22-branch-3a-sheet { position:absolute; left:12px; top:680px; width:376px; height:489px; border-radius:13px 13px 0 0;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none;
+    box-shadow:0 -2px 24px rgba(var(--rp-shadow-rgb),0.12); opacity:0; }
+  .f22-branch-3a-row { position:absolute; left:18px; width:340px; height:110px; border-radius:6px;
+    background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f22-branch-3a-row span { position:absolute; left:13px; top:13px; font:500 21px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+  .f22-branch-3a-row i { position:absolute; left:13px; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.16); }
+
+  /* the frame's ONE coral: the handle — the only thing on the phone you can pull */
+  .f22-branch-3a-handle { position:absolute; left:149px; top:15px; width:76px; height:6px; border-radius:3px; background:var(--rp-coral-deep); }
+</style>
+
+<div id="root" data-composition-id="22-branch-3a" data-duration="5.876" data-width="1920" data-height="1080">
+  <div class="f22-branch-3a-bg"></div>
+  <div class="f22-branch-3a-kicker" id="f22-branch-3a-kicker">✱ If A · one sheet</div>
+
+  <div class="f22-branch-3a-phone" id="f22-branch-3a-phone" data-plan-component="page">
+    <div class="f22-branch-3a-vid" id="f22-branch-3a-vid" data-plan-component="stage"></div>
+
+    <!-- one sheet, holding all three lists -->
+    <div class="f22-branch-3a-sheet" id="f22-branch-3a-sheet">
+      <i class="f22-branch-3a-handle"></i>
+      <i class="f22-branch-3a-row" style="top:60px"><span>Steps</span><i style="top:51px;width:255px"></i><i style="top:74px;width:202px"></i></i>
+      <i class="f22-branch-3a-row" style="top:183px"><span>Decisions</span><i style="top:51px;width:268px"></i><i style="top:74px;width:187px"></i></i>
+      <i class="f22-branch-3a-row" style="top:306px"><span>Comments</span><i style="top:51px;width:227px"></i><i style="top:74px;width:247px"></i></i>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 5.376, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f22-branch-3a-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.42, ease: E }, 0.06);
+  tl.fromTo("#f22-branch-3a-phone", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: E, transformOrigin: "50% 40%" }, 0.06);
+
+  // "and nothing else" — the sheet's lip and its handle settle at the bottom edge. That is all
+  // the phone carries besides the picture.
+  tl.fromTo("#f22-branch-3a-sheet", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 1.756);
+
+  // "until you pull" — one sheet travels up over two thirds of the device, carrying all three lists
+  tl.to("#f22-branch-3a-sheet", { y: -425, duration: 0.44, ease: E }, 2.938);
+
+  // held read, 2.00s
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["22-branch-3a"] = tl;
+})();
+</script>
+</template>

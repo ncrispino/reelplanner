@@ -1,0 +1,144 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f09-quiz-old-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f09-quiz-old-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f09-quiz-old-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f09-quiz-old-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f09-quiz-old-chip.lit { color:var(--rp-coral-deep); }
+  .f09-quiz-old-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f09-quiz-old-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-quiz-old-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-quiz-old-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f09-quiz-old-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f09-quiz-old-lines path.ink { stroke:var(--rp-ink); }
+  .f09-quiz-old-lines path.dashed { stroke-dasharray:10 10; }
+  .f09-quiz-old-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f09-quiz-old-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f09-quiz-old-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f09-quiz-old-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f09-quiz-old-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f09-quiz-old-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f09-quiz-old-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f09-quiz-old-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f09-quiz-old-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f09-quiz-old-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f09-quiz-old-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f09-quiz-old-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-quiz-old-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-quiz-old-slot.dec .n { top:13px; } .f09-quiz-old-slot.dec .t { top:12px; }
+  .f09-quiz-old-slot:not([data-filled]) .n, .f09-quiz-old-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f09-quiz-old-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f09-quiz-old-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f09-quiz-old-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f09-quiz-old-opt.row .k { top:30px; } .f09-quiz-old-opt.row .l { left:84px; top:22px; }
+  .f09-quiz-old-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f09-quiz-old-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f09-quiz-old-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f09-quiz-old-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f09-quiz-old-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f09-quiz-old-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f09-quiz-old-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-quiz-old-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f09-quiz-old-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f09-quiz-old-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f09-quiz-old-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f09-quiz-old-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f09-quiz-old-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f09-quiz-old-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f09-quiz-old-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f09-quiz-old-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f09-quiz-old-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f09-quiz-old-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f09-quiz-old-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f09-quiz-old-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f09-quiz-old-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f09-quiz-old-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f09-quiz-old-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f09-quiz-old-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f09-quiz-old-box.center { justify-content:center; }
+  .f09-quiz-old-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f09-quiz-old-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f09-quiz-old-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f09-quiz-old-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f09-quiz-old-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f09-quiz-old-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f09-quiz-old-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f09-quiz-old-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f09-quiz-old-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f09-quiz-old-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f09-quiz-old-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="09-quiz-old" data-duration="5.85" data-width="1920" data-height="1080">
+
+  <div class="clip f09-quiz-old-bg" id="f09-quiz-old-bg" data-start="0" data-duration="5.85" data-track-index="0"></div>
+
+  <div class="clip f09-quiz-old-scene" id="f09-quiz-old-scene" data-start="0" data-duration="5.85" data-track-index="1">
+  <div class="f09-quiz-old-kicker" id="f09-quiz-old-kicker">Quick check · Step 1</div>
+  <div class="f09-quiz-old-spine" id="f09-quiz-old-spine">
+    <div class="f09-quiz-old-tick live" id="f09-quiz-old-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f09-quiz-old-tick" id="f09-quiz-old-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f09-quiz-old-tick" id="f09-quiz-old-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f09-quiz-old-tick" id="f09-quiz-old-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f09-quiz-old-tick" id="f09-quiz-old-tick-5" data-plan-step="5" style="top:475px"></div>
+  </div>
+  <div class="f09-quiz-old-q" id="f09-quiz-old-q">Recorded before step 1: then?</div>
+  <div id="f09-quiz-old-old"><div class="f09-quiz-old-file" style="left:200px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:304px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:408px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:512px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:616px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:720px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:824px; top:290px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:200px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:304px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:408px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:512px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:616px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:720px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div><div class="f09-quiz-old-file" style="left:824px; top:440px; width:84px; height:120px"><div class="bar" style="left:14px; top:24px; width:56px"></div><div class="bar" style="left:14px; top:52px; width:40px"></div></div></div>
+  <div class="f09-quiz-old-chip grey" id="f09-quiz-old-no" style="left:200px; top:600px">no reviewer line</div>
+  <div class="f09-quiz-old-opt row" id="f09-quiz-old-opt-a" data-option="a" data-plan-option="a" style="left:1000px; top:260px; width:840px; height:140px"><span class="k">A</span><span class="l">Left as they are</span></div>
+  <div class="f09-quiz-old-opt row" id="f09-quiz-old-opt-b" data-option="b" data-plan-option="b" style="left:1000px; top:420px; width:840px; height:140px"><span class="k">B</span><span class="l">Filled in from git</span></div>
+  <div class="f09-quiz-old-opt row" id="f09-quiz-old-opt-c" data-option="c" data-plan-option="c" style="left:1000px; top:580px; width:840px; height:140px"><span class="k">C</span><span class="l">Left out of memory</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-quiz-old";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f09-quiz-old-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("q"), 0.3, 10);
+  fade(tl, $("old"), 0.79);
+  pop(tl, $("no"), 1.19, 8);
+  pop(tl, $("opt-a"), 3.42);
+  pop(tl, $("opt-b"), 3.6);
+  pop(tl, $("opt-c"), 3.78);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 5.349);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

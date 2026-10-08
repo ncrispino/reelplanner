@@ -1,0 +1,154 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f33-step-9-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f33-step-9-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f33-step-9-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f33-step-9-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f33-step-9-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f33-step-9-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f33-step-9-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-slot:not([data-filled]) .n, .f33-step-9-slot:not([data-filled]) .t { opacity:0; }
+  .f33-step-9-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f33-step-9-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f33-step-9-slot.dec .n { top:13px; } .f33-step-9-slot.dec .t { top:12px; } .f33-step-9-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f33-step-9-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f33-step-9-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f33-step-9-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f33-step-9-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f33-step-9-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f33-step-9-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f33-step-9-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f33-step-9-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f33-step-9-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f33-step-9-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f33-step-9-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f33-step-9-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f33-step-9-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f33-step-9-chip.lit { color:var(--rp-coral-deep); }
+  .f33-step-9-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f33-step-9-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f33-step-9-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f33-step-9-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f33-step-9-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f33-step-9-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f33-step-9-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f33-step-9-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f33-step-9-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f33-step-9-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f33-step-9-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f33-step-9-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f33-step-9-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f33-step-9-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f33-step-9-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f33-step-9-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f33-step-9-seg { position:absolute; top:0; height:56px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f33-step-9-seg span { position:absolute; left:20px; top:15px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-row { position:absolute; left:30px; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f33-step-9-file { position:absolute; left:30px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; padding:8px 12px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.3); background:var(--rp-paper); }
+</style>
+
+<div id="root" data-composition-id="33-step-9" data-duration="21.3" data-width="1920" data-height="1080">
+
+  <div class="clip f33-step-9-bg" data-start="0" data-duration="21.3" data-track-index="0"></div>
+
+  <div class="clip f33-step-9-scene" id="f33-step-9-scene" data-start="0" data-duration="21.3" data-track-index="1">
+  <div class="f33-step-9-kicker" id="f33-step-9-kicker">Step 9 · Less scaffolding</div>
+  <div class="f33-step-9-spine" id="f33-step-9-spine">
+    <div class="f33-step-9-tick" id="f33-step-9-tick-6" data-plan-step="6" style="top:35px"></div>
+    <div class="f33-step-9-tick" id="f33-step-9-tick-7" data-plan-step="7" style="top:145px"></div>
+    <div class="f33-step-9-tick" id="f33-step-9-tick-8" data-plan-step="8" style="top:255px"></div>
+    <div class="f33-step-9-tick" id="f33-step-9-tick-9" data-plan-step="9" style="top:365px"></div>
+    <div class="f33-step-9-tick" id="f33-step-9-tick-10" data-plan-step="10" style="top:475px"></div>
+  </div>
+  <div class="f33-step-9-mono" id="f33-step-9-wl" style="left:200px; top:156px">12,000 words <span style="color:rgba(var(--rp-ink-rgb),0.62)">read before starting</span></div>
+  <div id="f33-step-9-bar" style="position:absolute; left:200px; top:200px; width:1640px; height:56px">
+    <div class="f33-step-9-seg" id="f33-step-9-s1" style="left:0; width:650px"><span>skill · 4,800</span></div>
+    <div class="f33-step-9-seg" id="f33-step-9-s2" style="left:660px; width:980px"><span>style guide · 7,200</span></div>
+  </div>
+  <div class="f33-step-9-sheet" id="f33-step-9-keep" style="left:200px; top:310px; width:760px; height:440px">
+    <div class="f33-step-9-mono grey" style="left:30px; top:30px">stays: the tools</div>
+    <div class="f33-step-9-row" id="f33-step-9-k1" style="top:84px">narration</div>
+    <div class="f33-step-9-row" id="f33-step-9-k2" style="top:140px">captions</div>
+    <div class="f33-step-9-row" id="f33-step-9-k3" style="top:196px">verify</div>
+    <div class="f33-step-9-row" id="f33-step-9-k4" style="top:252px">plan-diff</div>
+    <div class="f33-step-9-row" id="f33-step-9-k5" style="top:308px">the review server</div>
+    <div class="f33-step-9-row" id="f33-step-9-k6" style="top:364px">the ledger guard</div>
+  </div>
+  <div class="f33-step-9-sheet" id="f33-step-9-go" style="left:1020px; top:310px; width:820px; height:440px">
+    <div class="f33-step-9-mono grey" style="left:30px; top:30px">goes</div>
+    <div class="f33-step-9-row" id="f33-step-9-g1" style="top:84px">format rules → advice</div>
+    <div class="f33-step-9-row" id="f33-step-9-g2" style="top:152px">said twice: a review</div>
+    <div class="f33-step-9-file" id="f33-step-9-f1" style="top:212px">annotations.json</div>
+    <div class="f33-step-9-file" id="f33-step-9-f2" style="top:266px">plan.resolved.md</div>
+    <div class="f33-step-9-file" id="f33-step-9-f3" style="top:320px">revise-scope.json</div>
+    <div class="f33-step-9-chip lit" id="f33-step-9-three" style="left:420px; top:274px">kept 3 times</div>
+  </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "33-step-9";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f33-step-9-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f33-step-9-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f33-step-9-slot-" + n + " .n, #f33-step-9-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f33-step-9-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f33-step-9-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  gsap.set("#f33-step-9-tick-6", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  gsap.set("#f33-step-9-tick-7", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  gsap.set("#f33-step-9-tick-8", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  tickOn(tl, 9, 0.1);
+  pop(tl, $("wl"), 4.76, 6);
+  tl.fromTo($("s1"), { opacity: 0, scaleX: 0, transformOrigin: "0 50%" }, { opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }, 4.86);
+  tl.fromTo($("s2"), { opacity: 0, scaleX: 0, transformOrigin: "0 50%" }, { opacity: 1, scaleX: 1, duration: 0.6, ease: "power3.out" }, 5.26);
+  pop(tl, $("keep"), 7.38, 12);
+  gsap.set([$("k1"), $("k2"), $("k3"), $("k4"), $("k5"), $("k6"), $("g1"), $("g2"), $("f1"), $("f2"), $("f3")], { opacity: 0 });
+  tl.to($("k1"), { opacity: 1, duration: 0.3 }, 9.44);
+  tl.to($("k2"), { opacity: 1, duration: 0.3 }, 10.03);
+  tl.to($("k3"), { opacity: 1, duration: 0.3 }, 10.56);
+  tl.to($("k4"), { opacity: 1, duration: 0.3 }, 11.26);
+  tl.to($("k5"), { opacity: 1, duration: 0.3 }, 11.91);
+  tl.to($("k6"), { opacity: 1, duration: 0.3 }, 12.81);
+  pop(tl, $("go"), 13.92, 12);
+  tl.to($("g1"), { opacity: 1, duration: 0.3 }, 15.59);
+  tl.to($("g2"), { opacity: 1, duration: 0.3 }, 16.81);
+  tl.to($("f1"), { opacity: 1, duration: 0.3 }, 18.45);
+  tl.to($("f2"), { opacity: 1, duration: 0.3 }, 18.6);
+  tl.to($("f3"), { opacity: 1, duration: 0.3 }, 18.75);
+  pop(tl, $("three"), 19.29, 8);
+  tickDone(tl, 9, 19.29);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 20.799);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

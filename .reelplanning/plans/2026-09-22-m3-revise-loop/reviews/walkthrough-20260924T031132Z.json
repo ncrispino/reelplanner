@@ -1,0 +1,266 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "for this im actually not sure, is it better to let it do more than just this? explain what the other options might be. are we missing anything here? like we should probably run a bit sandboxed too on what it can read/write? but that might be for later, could be fine for now. but waht are we missing out on if we do this stuff vs just give it all tools in auto mode or something, if that's possible? we might for example want a claude -p to be able to use subagents",
+      "frame": {
+        "compositionId": "20-call-a15",
+        "index": 20,
+        "title": "Call A15: the page posts only to its own server"
+      },
+      "id": "amuey870annsk",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 3
+      },
+      "t": 192
+    },
+    {
+      "about": "On what the agent decided: Deviation from step 3: the hosted page's hook is documented in the skill, not built; the agent registers one where its harness offers a hook, and otherwise checks the page's submitted rows at session start",
+      "comment": "is this possible for others?",
+      "frame": {
+        "compositionId": "21-deviation-hook",
+        "index": 21,
+        "title": "Deviation: the hosted page's hook is written down, not built"
+      },
+      "id": "amuey8wo5zeb5",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 3
+      },
+      "t": 213.11
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The kept narration is the project's own committed assets/voice/NN.wav and audio_meta.json, indexed by a small committed record, .hyperframes/narration.json (frame → key, text, wav sha256)",
+      "id": "a1",
+      "judgedAt": "2026-09-24T03:00:34.186Z",
+      "planStep": 1,
+      "t": 40.75,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The key is sha256 of {text, voice, speed, model}, with model = the TTS model plus the whisper model (kokoro-v1.0 + whisper small.en), read from the pinned HyperFrames CLI",
+      "id": "a2",
+      "judgedAt": "2026-09-24T03:00:40.232Z",
+      "planStep": 1,
+      "t": 50.45,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A video narrated before the record existed is adopted from git: the SCRIPT.md of the commit that last wrote audio_meta.json, only when audio_meta.json and assets/voice/ are exactly that commit's; --adopt does the same from the working SCRIPT.md, outside git",
+      "id": "a3",
+      "judgedAt": "2026-09-24T03:00:47.286Z",
+      "planStep": 1,
+      "t": 60.1,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The cost is one phrase shared by spec-diff (\"cost: …\") and reel status (\"with …\"): the lines of the frames spec-diff names, plus any line already edited and not yet voiced, with seconds of speech and an estimate of time to make; spec-diff --json carries it as narration",
+      "id": "a4",
+      "judgedAt": "2026-09-24T03:00:53.418Z",
+      "planStep": 1,
+      "t": 71.2,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The notification fires from reelplanning review <video-dir> once the server is listening (the page is up and its URL known), and from reelplanning notify <video-dir> --url <artifact-url>, run by the skill after publishing a hosted page; review with no folder (the library) does not notify; --no-notify turns it off",
+      "id": "a5",
+      "judgedAt": "2026-09-24T03:01:17.672Z",
+      "planStep": 2,
+      "t": 104.39,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The inbox is .reelplanning/inbox/<id>.json, gitignored with its claims, heartbeats and run logs; reel-intake is what turns a row into committed files",
+      "id": "a6",
+      "judgedAt": "2026-09-24T03:01:39.246Z",
+      "planStep": 3,
+      "t": 127.21,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"A session is waiting\" = a heartbeat file inbox/.waiters/<pid>.json, rewritten every 2 s by review --wait, and counted when it is under 10 s old and (same host) its pid is alive",
+      "id": "a7",
+      "judgedAt": "2026-09-24T03:01:47.622Z",
+      "planStep": 3,
+      "t": 137.38,
+      "verdict": "accept"
+    },
+    {
+      "chose": "With a waiter alive, the server leaves the review to it, then looks again after 15 s: still unclaimed and no live waiter → it starts the headless run",
+      "id": "a8",
+      "judgedAt": "2026-09-24T03:01:54.127Z",
+      "planStep": 3,
+      "t": 147.61,
+      "verdict": "accept"
+    },
+    {
+      "chose": "One handler per review, enforced by an exclusive-create claim file inbox/<id>.claim (open(…, \"wx\")): the waiting session, the headless start and the session-start pickup all have to win it",
+      "id": "a9",
+      "judgedAt": "2026-09-24T03:02:06.436Z",
+      "planStep": 3,
+      "t": 167.72,
+      "verdict": "accept"
+    },
+    {
+      "chose": "POST /api/review accepts only content-type: application/json, a Host of 127.0.0.1 or localhost on its port, and no foreign Origin; 5 MB cap; the body must carry review.annotations",
+      "id": "a10",
+      "judgedAt": "2026-09-24T03:02:18.481Z",
+      "planStep": 3,
+      "t": 178.82,
+      "verdict": "accept"
+    },
+    {
+      "chose": "This repo's config.json is \"command\": \"claude -p\", exactly, with no permission flags; its // note says flags can be added (changed by the step 5 proof: a bare claude -p is denied every edit and command, so config.json now names claude --permission-mode acceptEdits --allowedTools Bash -p, with -p last)",
+      "id": "a11",
+      "judgedAt": "2026-09-24T03:02:49.985Z",
+      "planStep": 3,
+      "t": 191.8,
+      "verdict": "flag"
+    },
+    {
+      "chose": "On a local page, Finish POSTs the row to /api/review only when the review server marked the page as its own (a meta tag) and a GET /api/review on load answered {ok:true}; a failed POST is dropped quietly and the download stays",
+      "id": "a15",
+      "judgedAt": "2026-09-24T03:03:11.584Z",
+      "planStep": 3,
+      "t": 201.3,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from step 3: the hosted page's hook is documented in the skill, not built; the agent registers one where its harness offers a hook, and otherwise checks the page's submitted rows at session start",
+      "id": "d1",
+      "judgedAt": "2026-09-24T03:05:29.189Z",
+      "own": "is this possible for others?",
+      "planStep": 3,
+      "t": 213.11,
+      "verdict": "own"
+    },
+    {
+      "chose": "Intake checks a system-video target: inside the repo, directly in a .reelplanning/, with a STORYBOARD.md whose front matter says kind: system and a plan-map.json, and every mark's frame.compositionId one of that video's frames; system-review runs with the checked folder, never the row's claim",
+      "id": "a12",
+      "judgedAt": "2026-09-24T03:07:51.620Z",
+      "planStep": 4,
+      "t": 248.18,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The first sort is a keyword hint: rewinds, slow-downs, missed checks and wordless marks → video; words asking for a change → change, and then a choice word (or, which, either…) or a frame with 2+ parts (1 when the mark sits on a part) → plan, else small; each hint prints its reason; the agent decides",
+      "id": "a13",
+      "judgedAt": "2026-09-24T03:08:00.525Z",
+      "planStep": 4,
+      "t": 258.05,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The \"short walkthrough\" for a small change is a one-step plan from reel new-plan, with its own walkthrough.md and walkthrough video",
+      "id": "a14",
+      "judgedAt": "2026-09-24T03:08:08.740Z",
+      "planStep": 4,
+      "t": 267.32,
+      "verdict": "accept"
+    },
+    {
+      "chose": "After a rebuild, \"Play just the changes\" is on by default when the build is a revision (some beats changed, not all) and the reviewer has not already sent a review of this same build; the toggle is remembered per video only for that build",
+      "id": "a16",
+      "judgedAt": "2026-09-24T03:08:31.252Z",
+      "planStep": 4,
+      "t": 288.37,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-24T03:11:32.528Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T03:05:36.589Z",
+      "correct": true,
+      "id": "k1",
+      "t": 217.61
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T03:09:34.064Z",
+      "correct": true,
+      "id": "k2",
+      "t": 346.19
+    }
+  ],
+  "src": "2026-09-22-m3-revise-loop--walkthrough/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 371.69,
+    "firstPlayAt": "2026-09-24T03:00:06.672Z",
+    "maxTimeReached": 371.69,
+    "moments": [
+      {
+        "frameIndex": 20,
+        "from": 196.8,
+        "kind": "rewind",
+        "planStep": 3,
+        "t": 191.86
+      },
+      {
+        "frameIndex": 20,
+        "from": 200.97,
+        "kind": "rewind",
+        "planStep": 3,
+        "t": 198.05
+      },
+      {
+        "frameIndex": 19,
+        "from": 206.53,
+        "kind": "rewind",
+        "planStep": 3,
+        "t": 189.45
+      },
+      {
+        "frameIndex": 24,
+        "from": 248.17,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 224.64
+      },
+      {
+        "frameIndex": 16,
+        "from": 371.69,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 152.16
+      }
+    ]
+  }
+}

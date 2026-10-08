@@ -1,0 +1,146 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f24-step-6-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f24-step-6-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f24-step-6-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f24-step-6-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f24-step-6-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f24-step-6-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f24-step-6-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-slot:not([data-filled]) .n, .f24-step-6-slot:not([data-filled]) .t { opacity:0; }
+  .f24-step-6-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f24-step-6-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f24-step-6-slot.dec .n { top:13px; } .f24-step-6-slot.dec .t { top:12px; } .f24-step-6-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f24-step-6-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f24-step-6-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f24-step-6-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f24-step-6-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f24-step-6-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f24-step-6-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f24-step-6-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f24-step-6-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f24-step-6-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f24-step-6-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f24-step-6-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f24-step-6-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f24-step-6-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f24-step-6-chip.lit { color:var(--rp-coral-deep); }
+  .f24-step-6-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f24-step-6-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f24-step-6-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f24-step-6-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f24-step-6-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f24-step-6-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f24-step-6-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f24-step-6-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f24-step-6-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f24-step-6-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f24-step-6-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f24-step-6-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f24-step-6-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f24-step-6-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f24-step-6-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f24-step-6-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f24-step-6-row { position:absolute; left:30px; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f24-step-6-prompt { position:absolute; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+</style>
+
+<div id="root" data-composition-id="24-step-6" data-duration="21.7" data-width="1920" data-height="1080">
+
+  <div class="clip f24-step-6-bg" data-start="0" data-duration="21.7" data-track-index="0"></div>
+
+  <div class="clip f24-step-6-scene" id="f24-step-6-scene" data-start="0" data-duration="21.7" data-track-index="1">
+  <div class="f24-step-6-kicker" id="f24-step-6-kicker">Step 6 · Unattended runs</div>
+  <div class="f24-step-6-spine" id="f24-step-6-spine">
+    <div class="f24-step-6-tick" id="f24-step-6-tick-6" data-plan-step="6" style="top:35px"></div>
+    <div class="f24-step-6-tick" id="f24-step-6-tick-7" data-plan-step="7" style="top:145px"></div>
+    <div class="f24-step-6-tick" id="f24-step-6-tick-8" data-plan-step="8" style="top:255px"></div>
+    <div class="f24-step-6-tick" id="f24-step-6-tick-9" data-plan-step="9" style="top:365px"></div>
+    <div class="f24-step-6-tick" id="f24-step-6-tick-10" data-plan-step="10" style="top:475px"></div>
+  </div>
+  <div class="f24-step-6-sheet" id="f24-step-6-cmd" style="left:200px; top:150px; width:1640px; height:120px">
+    <div class="f24-step-6-mono grey" style="left:30px; top:24px">today · started by the review server</div>
+    <div class="f24-step-6-mono" style="left:30px; top:70px">claude --permission-mode acceptEdits --allowedTools Bash -p</div>
+  </div>
+  <div class="f24-step-6-prompt" id="f24-step-6-prompt" style="left:200px; top:320px; width:500px; height:250px">
+    <div class="f24-step-6-row" style="top:40px">Allow this?</div>
+    <div class="f24-step-6-mono grey" style="left:30px; top:100px">a permission prompt</div>
+    <div class="f24-step-6-mono" id="f24-step-6-refused" style="left:30px; top:180px">nobody to answer: refused</div>
+  </div>
+  <div class="f24-step-6-sheet" id="f24-step-6-ok" style="left:760px; top:320px; width:520px; height:250px">
+    <div class="f24-step-6-mono grey" style="left:30px; top:30px">allowed</div>
+    <div class="f24-step-6-row" id="f24-step-6-ok1" style="top:90px">file edits</div>
+    <div class="f24-step-6-row" id="f24-step-6-ok2" style="top:146px">any shell command</div>
+  </div>
+  <div class="f24-step-6-sheet" id="f24-step-6-no" style="left:1320px; top:320px; width:520px; height:250px">
+    <div class="f24-step-6-mono grey" style="left:30px; top:30px">refused</div>
+    <div class="f24-step-6-row" id="f24-step-6-no1" style="top:90px">workers</div>
+    <div class="f24-step-6-row" id="f24-step-6-no2" style="top:146px">the web</div>
+    <div class="f24-step-6-row" id="f24-step-6-no3" style="top:202px">MCP tools</div>
+  </div>
+  <div class="f24-step-6-chip lit" id="f24-step-6-fence" style="left:760px; top:596px">no fence: any path, any host</div>
+  <div class="f24-step-6-chip" id="f24-step-6-set" style="left:200px; top:690px">the setting → config.json · reel init</div>
+  <div class="f24-step-6-chip grey" id="f24-step-6-proof" style="left:200px; top:750px">then: re-run the step 5 proof</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "24-step-6";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f24-step-6-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f24-step-6-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f24-step-6-slot-" + n + " .n, #f24-step-6-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f24-step-6-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f24-step-6-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  tickOn(tl, 6, 0.1);
+  pop(tl, $("cmd"), 1.12, 12);
+  pop(tl, $("prompt"), 4.45, 12);
+  gsap.set($("refused"), { opacity: 0 });
+  tl.to($("refused"), { opacity: 1, duration: 0.4 }, 7.22);
+  pop(tl, $("ok"), 8, 12);
+  gsap.set([$("ok1"), $("ok2"), $("no1"), $("no2"), $("no3")], { opacity: 0 });
+  tl.to($("ok1"), { opacity: 1, duration: 0.35 }, 8.9);
+  tl.to($("ok2"), { opacity: 1, duration: 0.35 }, 10.04);
+  pop(tl, $("no"), 11.06, 12);
+  tl.to($("no1"), { opacity: 1, duration: 0.35 }, 11.82);
+  tl.to($("no2"), { opacity: 1, duration: 0.35 }, 12.73);
+  tl.to($("no3"), { opacity: 1, duration: 0.35 }, 13.54);
+  pop(tl, $("fence"), 15.49, 8);
+  pop(tl, $("set"), 17.95, 8);
+  pop(tl, $("proof"), 19.57, 8);
+  tickDone(tl, 6, 15.49);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.199);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

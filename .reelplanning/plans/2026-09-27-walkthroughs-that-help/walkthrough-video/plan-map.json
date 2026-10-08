@@ -1,0 +1,2796 @@
+{
+  "project": "walkthrough-video",
+  "title": "Walkthroughs that help: what was built",
+  "planDir": ".reelplanning/plans/2026-09-27-walkthroughs-that-help",
+  "totalSeconds": 175.371,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "What was built",
+      "fromFrame": 1,
+      "toFrame": 1,
+      "start": 0,
+      "end": 10.453,
+      "linearSeconds": 10.453,
+      "watchedSeconds": 10.453,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 2: what pauses",
+      "fromFrame": 2,
+      "toFrame": 5,
+      "start": 10.453,
+      "end": 57.407,
+      "linearSeconds": 46.954,
+      "watchedSeconds": 46.954,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Steps 3 and 4",
+      "fromFrame": 6,
+      "toFrame": 7,
+      "start": 57.407,
+      "end": 86.1,
+      "linearSeconds": 28.693,
+      "watchedSeconds": 28.693,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 5: plan and built together",
+      "fromFrame": 8,
+      "toFrame": 9,
+      "start": 86.1,
+      "end": 108.841,
+      "linearSeconds": 22.741,
+      "watchedSeconds": 22.741,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Step 6: did it work?",
+      "fromFrame": 10,
+      "toFrame": 12,
+      "start": 108.841,
+      "end": 142.42,
+      "linearSeconds": 33.579,
+      "watchedSeconds": 33.579,
+      "decisions": []
+    },
+    {
+      "id": "ch6",
+      "title": "What ran",
+      "fromFrame": 13,
+      "toFrame": 15,
+      "start": 142.42,
+      "end": 175.371,
+      "linearSeconds": 32.951,
+      "watchedSeconds": 32.951,
+      "decisions": []
+    }
+  ],
+  "levels": null,
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 3,
+      "planStep": 2,
+      "question": "This build's choice A3 is labelled visible; its choice A2 only close. Which of them pauses this video?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Both of them",
+          "why": "A close label alone never pauses the video now; it goes on the list."
+        },
+        {
+          "id": "b",
+          "label": "Only choice A3",
+          "why": "Right: visible means you'd notice it, so it pauses; close alone goes on the list."
+        },
+        {
+          "id": "c",
+          "label": "Neither: both go on the list",
+          "why": "Visible is one of the two labels that pause; only the others go on the list."
+        }
+      ],
+      "answer": "b",
+      "explain": "A choice labelled visible pauses the video; a close one goes on the list at the end.",
+      "at": 31.821,
+      "explainedAt": 10.453,
+      "explainedFrame": 2,
+      "walkMeThrough": "A3 is labelled visible: you would notice it using the page, so it pauses, in the scene that shows it running. A2 is labelled only close: a reasonable person could pick the other way, but you would not notice it, so it goes on the list at the end. One pauses, one is listed."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 11,
+      "planStep": 6,
+      "question": "The review page looks just the same after this build. What does one saved answer look like in the review file now?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Just as before",
+          "why": "The page is the same, but what is saved is not: that is the change to predict."
+        },
+        {
+          "id": "b",
+          "label": "When its pause began, beside when you answered",
+          "why": "Right: shownAt, when the pause began, is saved beside judgedAt, when you answered."
+        },
+        {
+          "id": "c",
+          "label": "Only the seconds you took",
+          "why": "Both times are saved; the seconds are worked out from them later, by reel memory."
+        }
+      ],
+      "answer": "b",
+      "explain": "The page looks the same, but the saved file changes: each answer now keeps when its pause began, beside when you answered.",
+      "at": 129.826,
+      "explainedAt": 108.841,
+      "explainedFrame": 10,
+      "walkMeThrough": "Nothing on the page changed, so it is easy to think nothing did. But each answer in the saved review file now carries a second time: shownAt, when its pause began, beside judgedAt, when you answered. The seconds between them are what reel memory reads."
+    }
+  ],
+  "autonomy": [
+    {
+      "id": "a3",
+      "frameIndex": 5,
+      "planStep": 2,
+      "chose": "The list's sheet: one row per choice (its id, what it chose, \"instead of\" what) with only a Flag, and one Go on (key A) under the rows; no own words on it (words go in a comment, as on a grouped beat); on a frame that draws a card per choice, each Flag hangs from its card",
+      "insteadOf": "an Accept and a Flag per row, or the grouped beat's row of Flag buttons with the words only on hover",
+      "why": "the plan says each choice in one line with its own Flag, and Approve takes the rest; hover-only words were the thing that made choices hard to judge",
+      "check": "askList, listRows in packages/player/reelplanning-player.js; packages/player/test/list.spec.mjs",
+      "at": 57.357
+    },
+    {
+      "id": "a5",
+      "frameIndex": 6,
+      "planStep": 3,
+      "chose": "The open question is asked where the review is finished: first in a walkthrough's Finish panel, with a box for your words, the ending beat saying it aloud; the words are one note on no step (`open: true`), under \"Seeing it run\" in `reviews/<id>.md`",
+      "insteadOf": "a pause on the ending frame with its own box, or a new field in the review file",
+      "why": "the plan cuts pauses, and Finish is where every review ends anyway; a note needs no new field, reaches the agent like any comment, and counts as your words (so Finish suggests Request changes once you have written some)",
+      "check": "openQuestion, setOpenWords, showHandoff in packages/player/reelplanning-player.js; actOnMarkdown in scripts/lib/review-scope.mjs; packages/player/test/list.spec.mjs",
+      "at": 72.269
+    },
+    {
+      "id": "a6",
+      "frameIndex": 7,
+      "planStep": 4,
+      "chose": "A small PR's other choices go under a new \"## Other choices\" in the PR template, one line each (what it chose, instead of what); the maintainer accepts them by ticking \"The other choices above are accepted\", and `reel pr-check` waits until then (fails with `--merge`); a line that does not say \"instead of\" is a note, not a failure",
+      "insteadOf": "the choices in a comment on the PR, or no tick (reading them is accepting them)",
+      "why": "a line in the PR's text is where the plan puts them, and a tick is something `pr-check` can read, so accepting is never forgotten at merge",
+      "check": "templates/pull_request_template.md, .github/pull_request_template.md, scripts/pr-check.mjs (otherChoices), scripts/test/contributing.spec.mjs (\"D-223\")",
+      "at": 86.05
+    },
+    {
+      "id": "a8",
+      "frameIndex": 8,
+      "planStep": 5,
+      "chose": "One control: the header's Plan–Built switch is the jump (its Built segment is \"See it built\" on a plan scene, its Plan segment \"See the plan\" on the walkthrough), following the step on screen; no separate button laid on the scenes",
+      "insteadOf": "a \"See it built\" button on each plan scene beside the switch",
+      "why": "the owner asked for switching to be clean and obvious, with no competing links; the switch already says where you are, and the same click then lands on the same step",
+      "check": "#pb in scripts/bundle-player.mjs (LIBRARY_JS); packages/player/test/bundle.spec.mjs (\"the header's Plan–Built switch\")",
+      "at": 97.655
+    },
+    {
+      "id": "a9",
+      "frameIndex": 9,
+      "planStep": 5,
+      "chose": "The list's order: what needs you first (a plan waiting on you says what to review and how long), then the system video and the five newest plans, the rest behind \"Earlier plans (N)\" (open when the video playing is in it); each row one line (name, date, one word; changed before review, the lead's look: the word says what waits and on whom, every row waiting on you is under \"Needs you\" its video here or not, names wrap to two lines, and a row whose videos are not here says \"not on this page\" instead of a switch), and on a phone the word under the name",
+      "insteadOf": "every plan in date order, two rows each, or a search box",
+      "why": "the owner asked for what waits first and the rest folded; five is about the last week of plans here, and one word keeps a row on one line",
+      "check": "LIBRARY_JS, STATUS_WORD in scripts/bundle-player.mjs; packages/player/test/bundle.spec.mjs (\"Earlier plans (N)\")",
+      "at": 108.791
+    }
+  ],
+  "autonomyGroups": [
+    {
+      "id": "list-14",
+      "list": true,
+      "frameIndex": 14,
+      "planStep": null,
+      "ids": [
+        "a1",
+        "a2",
+        "a4",
+        "a7",
+        "a10"
+      ],
+      "calls": [
+        {
+          "id": "a1",
+          "planStep": 1,
+          "chose": "A walkthrough video's length: aim 1–2 minutes, \"long\" past 3, \"too long\" past 5 (both a △ after the build, never a stop)",
+          "insteadOf": "keeping \"too long\" at 10 minutes, or no \"too long\" at all",
+          "why": "the plan aims for about two minutes and the build warns past 3; a walkthrough past 5 is as long as today's, the thing this plan replaces, so it says so more firmly",
+          "check": "scripts/lib/length.mjs (BUDGET.walkthrough), scripts/test/build.spec.mjs (\"length: …\")"
+        },
+        {
+          "id": "a2",
+          "planStep": 2,
+          "chose": "The list is its own storyboard line, `- autonomy_list: a1, a4`, one beat at the end of the video; `- autonomy_group:` (one per chapter, Accept all) still plays in older videos",
+          "insteadOf": "reusing `- autonomy_group:` for the list, or no beat at all (the list only in the Finish panel)",
+          "why": "the list is judged differently from a grouped beat (Flag or leave, never Accept), so the player and `reel record` must tell them apart; older walkthroughs keep playing as they were",
+          "check": "scripts/plan-map.mjs (autonomyList, list: true), scripts/reel.mjs (stops), scripts/lib/autonomy.mjs (listedOf)"
+        },
+        {
+          "id": "a4",
+          "planStep": 2,
+          "chose": "\"Listed\" is recorded when the viewer presses Go on (every choice not flagged), and `reel record` lists a choice the viewer never reached only when the review approves; a review asking for changes leaves those \"never judged\"",
+          "insteadOf": "only at Approve, or listing unreached choices whatever the verdict",
+          "why": "Go on is the list's Accept all; \"Approve takes the rest\" is the plan's words, and a review asking for changes has not taken anything",
+          "check": "acceptGroup in packages/player/reelplanning-player.js; walkthroughScope in scripts/lib/review-scope.mjs; scripts/test/lifecycle.spec.mjs (\"reel record, the list\")"
+        },
+        {
+          "id": "a7",
+          "planStep": 5,
+          "chose": "The switch lands on the first scene tagged with that plan step (in the walkthrough, its running scene; in the plan video, the step's first scene), a tenth of a second in; a step the walkthrough tags no scene with is \"Nothing to run for this step\". `bundle-player` works the table out into `library.json` (`steps`)",
+          "insteadOf": "a scene the walkthrough marks as the step's running one, or the player fetching the other video's plan map as it plays",
+          "why": "every built walkthrough already tags its scenes by step, so older ones jump right too; the page is built from both maps anyway, and a tenth in keeps the seek off the scene before",
+          "check": "stepStarts in scripts/bundle-player.mjs; packages/player/test/bundle.spec.mjs (\"lands there\")"
+        },
+        {
+          "id": "a10",
+          "planStep": 6,
+          "chose": "The bar is judged per review, over the first three walkthrough reviews whose pauses are timed (`shownAt`): each clears it with a pause held 5 s or more (its middle value) and at least one flag, own words or comment; \"due\" only when all three miss",
+          "insteadOf": "pooling the three reviews' pauses into one middle value and one count, or counting reviews from before pauses were timed",
+          "why": "\"the next three walkthroughs\" means reviews made after this change, and \"3 of 3\" in the status message counts reviews; one review that was looked at is enough to keep the video",
+          "check": "walkthroughBar, clearsBar in scripts/lib/memory.mjs; scripts/test/memory.spec.mjs (\"walkthroughBar\")"
+        }
+      ],
+      "at": 167.821
+    }
+  ],
+  "openQuestion": {
+    "question": "Seeing it run, anything you'd change?",
+    "frameIndex": 15,
+    "at": 175.321
+  },
+  "watchedSeconds": 175.371,
+  "frames": [
+    {
+      "index": 1,
+      "title": "What was built: its map",
+      "compositionId": "01-built",
+      "type": "hook",
+      "durationSeconds": 10.453,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What was built",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "what-changed",
+      "options": [],
+      "narration": "Walkthroughs that help is built. This video is step one: the change running, in about two minutes, pausing only where you'd notice. It changed thirty-seven files; here are the places that carry it.",
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-5.23s.png",
+      "detail": "what-changed",
+      "terms": [
+        "walkthrough video",
+        "step"
+      ],
+      "defines": [
+        "walkthrough video"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
+    },
+    {
+      "index": 2,
+      "title": "Step 2: what pauses",
+      "compositionId": "02-step-2-rule",
+      "type": "feature_showcase",
+      "durationSeconds": 14.357,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: what pauses",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "pauses",
+      "options": [],
+      "narration": "Step two. A choice pauses the video only when you'd notice it, labelled visible, or can't easily undo it, labelled hard to undo; an off-plan change always pauses. Every other choice, labelled close or not at all, goes on one list at the end.",
+      "start": 10.453,
+      "thumb": "snapshots/frame-01-at-17.63s.png",
+      "detail": "pauses",
+      "terms": [
+        "the list",
+        "call",
+        "deviation",
+        "step"
+      ],
+      "defines": [
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 2
+      }
+    },
+    {
+      "index": 3,
+      "title": "Quick check: which pauses",
+      "compositionId": "03-quick-check-k1",
+      "type": "social_proof",
+      "durationSeconds": 7.061,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "This build's choice A3 is labelled visible; its choice A2 only close. Which of them pauses this video?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "b",
+      "explain": "A choice labelled visible pauses the video; a close one goes on the list at the end.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Both of them",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Only choice A3",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Neither: both go on the list",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. This build's choice A3 is labelled visible; its choice A2 only close. Which of them pauses this video?",
+      "start": 24.81,
+      "thumb": "snapshots/frame-02-at-28.34s.png",
+      "terms": [
+        "call",
+        "quick check",
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 3
+      }
+    },
+    {
+      "index": 4,
+      "title": "Step 2: the real run",
+      "compositionId": "04-step-2-reel-stops",
+      "type": "feature_showcase",
+      "durationSeconds": 11.008,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-2",
+      "options": [],
+      "narration": "Here is the real run of `reel stops` on this plan. Choice A3 pauses, and choice A2 is listed. Five choices pause, each in the scene that shows it running; the other five are the list.",
+      "start": 31.871,
+      "thumb": "snapshots/frame-03-at-37.63s.png",
+      "detail": "step-2",
+      "terms": [
+        "call",
+        "reel stops",
+        "beat",
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 4
+      }
+    },
+    {
+      "index": 5,
+      "title": "Step 2: the list, and choice A3",
+      "compositionId": "05-step-2-the-list",
+      "type": "cta",
+      "durationSeconds": 14.528,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a3",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "This is the list in the review player. Each choice is one line, what it chose instead of what, with its own Flag. Choice A3 made it this sheet: a Flag on each row and one Go on under them, not an Accept on every row. Go on lists the rest, not judged.",
+      "start": 42.879,
+      "thumb": "snapshots/frame-04-at-50.14s.png",
+      "terms": [
+        "review player",
+        "review",
+        "call",
+        "flag",
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 5
+      }
+    },
+    {
+      "index": 6,
+      "title": "Step 3: the open question, and choice A5",
+      "compositionId": "06-step-3-open-question",
+      "type": "cta",
+      "durationSeconds": 14.912,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Steps 3 and 4",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a5",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "checks",
+      "options": [],
+      "narration": "Step three. A quick check now comes only where the change has something to predict, just before it runs, like the one you just answered. And the walkthrough ends on one open question. Choice A5 asks it in Finish, where every review ends, instead of one more pause.",
+      "start": 57.407,
+      "thumb": "snapshots/frame-05-at-65.11s.png",
+      "detail": "checks",
+      "terms": [
+        "review",
+        "call",
+        "step",
+        "finish",
+        "quick check",
+        "walkthrough video"
+      ],
+      "change": {
+        "status": "restyled",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 6
+      }
+    },
+    {
+      "index": 7,
+      "title": "Step 4: other choices, and choice A6",
+      "compositionId": "07-step-4-pr-check",
+      "type": "cta",
+      "durationSeconds": 13.781,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a6",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "pull-requests",
+      "options": [],
+      "narration": "Step four. A small pull request needs the video only for a choice you'd notice. Any other choice is one line in its text. Choice A6: `reel pr-check` waits until a maintainer ticks them accepted. Here it waits; ticked, it passes.",
+      "start": 72.319,
+      "thumb": "snapshots/frame-06-at-79.21s.png",
+      "detail": "pull-requests",
+      "terms": [
+        "call",
+        "step",
+        "pull request",
+        "pr-check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      }
+    },
+    {
+      "index": 8,
+      "title": "Step 5: one row, and choice A8",
+      "compositionId": "08-step-5-the-switch",
+      "type": "cta",
+      "durationSeconds": 11.605,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5: plan and built together",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a8",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "one-row",
+      "options": [],
+      "narration": "Step five. Each plan now has one switch, Plan and Built, at the top of its page. Choice A8 makes that switch the jump itself: on a plan's step one, Built opens the walkthrough at step one, running.",
+      "start": 86.1,
+      "thumb": "snapshots/frame-07-at-92.15s.png",
+      "detail": "one-row",
+      "terms": [
+        "call",
+        "step",
+        "walkthrough video"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 8
+      }
+    },
+    {
+      "index": 9,
+      "title": "Your ask: the list of videos, and choice A9",
+      "compositionId": "09-step-5-the-videos",
+      "type": "cta",
+      "durationSeconds": 11.136,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": "a9",
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-5",
+      "options": [],
+      "narration": "You asked for the list of videos to be shorter. Now each plan is one row with that switch. Choice A9: what needs you first, then the five newest plans, the rest folded behind Earlier plans.",
+      "start": 97.705,
+      "thumb": "snapshots/frame-08-at-103.27s.png",
+      "detail": "step-5",
+      "terms": [
+        "call",
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 9
+      }
+    },
+    {
+      "index": 10,
+      "title": "Step 6: did it work?",
+      "compositionId": "10-step-6-rule",
+      "type": "feature_showcase",
+      "durationSeconds": 14.251,
+      "planStep": 6,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 6: did it work?",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "measure",
+      "options": [],
+      "narration": "Step six measures whether this helps. The review file now saves when each pause began, beside when you answered it. If three walkthroughs in a row are each answered in under five seconds, with nothing said, `reel status` says a plan to drop the video is due.",
+      "start": 108.841,
+      "thumb": "snapshots/frame-09-at-115.97s.png",
+      "detail": "measure",
+      "terms": [
+        "shownat",
+        "review",
+        "step",
+        "walkthrough video"
+      ],
+      "defines": [
+        "shownat"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 10
+      }
+    },
+    {
+      "index": 11,
+      "title": "Quick check: the saved file",
+      "compositionId": "11-quick-check-k2",
+      "type": "social_proof",
+      "durationSeconds": 6.784,
+      "planStep": 6,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The review page looks just the same after this build. What does one saved answer look like in the review file now?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "The page looks the same, but the saved file changes: each answer now keeps when its pause began, beside when you answered.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Just as before",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "When its pause began, beside when you answered",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Only the seconds you took",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. The review page looks just the same after this build. What does one saved answer look like in the review file now?",
+      "start": 123.092,
+      "thumb": "snapshots/frame-10-at-126.48s.png",
+      "terms": [
+        "review",
+        "quick check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 11
+      }
+    },
+    {
+      "index": 12,
+      "title": "Step 6: the saved file, before and after",
+      "compositionId": "12-step-6-saved-file",
+      "type": "feature_showcase",
+      "durationSeconds": 12.544,
+      "planStep": 6,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-6",
+      "options": [],
+      "narration": "Here is the real file, before and after. The new field, `shownAt`, sits beside `judgedAt`. And `reel memory` reads it: fifteen walkthrough reviews so far, none timed yet, nine sent before the video could have played through.",
+      "start": 129.876,
+      "thumb": "snapshots/frame-11-at-136.15s.png",
+      "detail": "step-6",
+      "terms": [
+        "review",
+        "memory",
+        "walkthrough video",
+        "shownat",
+        "judgedat"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 12
+      }
+    },
+    {
+      "index": 13,
+      "title": "What ran",
+      "compositionId": "13-what-ran",
+      "type": "benefit_highlight",
+      "durationSeconds": 13.803,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What ran",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "What ran: all twenty-nine fast test files pass. A second agent checked the code against the plan: six steps built, every decision held, one mistake in a test, now fixed. Not done: step seven, the system video, waits for your accept.",
+      "start": 142.42,
+      "thumb": "snapshots/frame-12-at-149.57s.png",
+      "terms": [
+        "code check",
+        "system video",
+        "step",
+        "agent"
+      ],
+      "defines": [
+        "code check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 13
+      }
+    },
+    {
+      "index": 14,
+      "title": "The list",
+      "compositionId": "14-the-list",
+      "type": "cta",
+      "durationSeconds": 11.648,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "autonomyList": [
+        "a1",
+        "a2",
+        "a4",
+        "a7",
+        "a10"
+      ],
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "choices",
+      "options": [],
+      "narration": "The other five choices are the list: the length a walkthrough aims for, how the list is written, when a choice counts as listed, where a step's jump lands, and the bar judged review by review. Flag any you'd change.",
+      "start": 156.223,
+      "thumb": "snapshots/frame-13-at-162.3s.png",
+      "detail": "choices",
+      "terms": [
+        "review",
+        "call",
+        "step",
+        "walkthrough video",
+        "flag",
+        "the list"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 14
+      }
+    },
+    {
+      "index": 15,
+      "title": "Seeing it run",
+      "compositionId": "15-end",
+      "type": "cta",
+      "durationSeconds": 7.5,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Seeing it run, anything you'd change? Say it in Finish, or approve the build.",
+      "start": 167.871,
+      "thumb": "snapshots/frame-14-at-171.62s.png",
+      "terms": [
+        "approve",
+        "finish"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 15
+      }
+    }
+  ],
+  "decisions": [],
+  "details": [
+    {
+      "name": "what-changed",
+      "src": "guide/what-changed.html",
+      "title": "What changed, in full",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every kind of change with its counts, each a click from its full diff.",
+      "frameIndex": 1,
+      "compositionId": "01-built",
+      "planStep": 1,
+      "start": 0,
+      "end": 10.453,
+      "autonomy": null
+    },
+    {
+      "name": "pauses",
+      "src": "guide/pauses.html",
+      "title": "The calls that pause",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every line of this kind of change, whole, and the runs that show it.",
+      "frameIndex": 2,
+      "compositionId": "02-step-2-rule",
+      "planStep": 2,
+      "start": 10.453,
+      "end": 24.81,
+      "autonomy": null
+    },
+    {
+      "name": "step-2",
+      "src": "guide/step-2.html",
+      "title": "Step 2 · A choice pauses the video when you'd notice it or can't easily undo it",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 4,
+      "compositionId": "04-step-2-reel-stops",
+      "planStep": 2,
+      "start": 31.871,
+      "end": 42.879,
+      "autonomy": null
+    },
+    {
+      "name": "checks",
+      "src": "guide/checks.html",
+      "title": "A check where there is something to predict",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every line of this kind of change, whole, and the runs that show it.",
+      "frameIndex": 6,
+      "compositionId": "06-step-3-open-question",
+      "planStep": 3,
+      "start": 57.407,
+      "end": 72.319,
+      "autonomy": "a5"
+    },
+    {
+      "name": "pull-requests",
+      "src": "guide/pull-requests.html",
+      "title": "Pull requests",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every line of this kind of change, whole, and the runs that show it.",
+      "frameIndex": 7,
+      "compositionId": "07-step-4-pr-check",
+      "planStep": 4,
+      "start": 72.319,
+      "end": 86.1,
+      "autonomy": "a6"
+    },
+    {
+      "name": "one-row",
+      "src": "guide/one-row.html",
+      "title": "One row, Plan and Built",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every line of this kind of change, whole, and the runs that show it.",
+      "frameIndex": 8,
+      "compositionId": "08-step-5-the-switch",
+      "planStep": 5,
+      "start": 86.1,
+      "end": 97.705,
+      "autonomy": "a8"
+    },
+    {
+      "name": "step-5",
+      "src": "guide/step-5.html",
+      "title": "Step 5 · The plan and what was built, in one row",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 9,
+      "compositionId": "09-step-5-the-videos",
+      "planStep": 5,
+      "start": 97.705,
+      "end": 108.841,
+      "autonomy": "a9"
+    },
+    {
+      "name": "measure",
+      "src": "guide/measure.html",
+      "title": "Did it work",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every line of this kind of change, whole, and the runs that show it.",
+      "frameIndex": 10,
+      "compositionId": "10-step-6-rule",
+      "planStep": 6,
+      "start": 108.841,
+      "end": 123.092,
+      "autonomy": null
+    },
+    {
+      "name": "step-6",
+      "src": "guide/step-6.html",
+      "title": "Step 6 · Measure whether it worked, and what happens if it didn't",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 12,
+      "compositionId": "12-step-6-saved-file",
+      "planStep": 6,
+      "start": 129.876,
+      "end": 142.42,
+      "autonomy": null
+    },
+    {
+      "name": "choices",
+      "src": "guide/choices.html",
+      "title": "Every choice the agent made",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every choice the agent made, by step.",
+      "frameIndex": 14,
+      "compositionId": "14-the-list",
+      "planStep": null,
+      "start": 156.223,
+      "end": 167.871,
+      "autonomy": null
+    }
+  ],
+  "guide": {
+    "parts": [
+      {
+        "name": "step-1",
+        "title": "Step 1 · The walkthrough shows the change running",
+        "planStep": 1,
+        "kind": "step",
+        "src": "guide/step-1.html"
+      },
+      {
+        "name": "step-2",
+        "title": "Step 2 · A choice pauses the video when you'd notice it or can't easily undo it",
+        "planStep": 2,
+        "kind": "step",
+        "src": "guide/step-2.html"
+      },
+      {
+        "name": "step-3",
+        "title": "Step 3 · A quick check where there is something to predict",
+        "planStep": 3,
+        "kind": "step",
+        "src": "guide/step-3.html"
+      },
+      {
+        "name": "step-4",
+        "title": "Step 4 · Pull requests get the short walkthrough",
+        "planStep": 4,
+        "kind": "step",
+        "src": "guide/step-4.html"
+      },
+      {
+        "name": "step-5",
+        "title": "Step 5 · The plan and what was built, in one row",
+        "planStep": 5,
+        "kind": "step",
+        "src": "guide/step-5.html"
+      },
+      {
+        "name": "step-6",
+        "title": "Step 6 · Measure whether it worked, and what happens if it didn't",
+        "planStep": 6,
+        "kind": "step",
+        "src": "guide/step-6.html"
+      },
+      {
+        "name": "step-7",
+        "title": "Step 7 · The system video says the new rule, a bit shorter",
+        "planStep": 7,
+        "kind": "step",
+        "src": "guide/step-7.html"
+      },
+      {
+        "name": "decisions",
+        "title": "Decisions in force",
+        "planStep": null,
+        "kind": "decisions",
+        "src": "guide/decisions.html"
+      },
+      {
+        "name": "what-changed",
+        "title": "What changed, in full",
+        "planStep": null,
+        "kind": "overview",
+        "src": "guide/what-changed.html"
+      },
+      {
+        "name": "two-minutes",
+        "title": "About two minutes",
+        "planStep": 1,
+        "kind": "category",
+        "src": "guide/two-minutes.html"
+      },
+      {
+        "name": "pauses",
+        "title": "The calls that pause",
+        "planStep": 2,
+        "kind": "category",
+        "src": "guide/pauses.html"
+      },
+      {
+        "name": "checks",
+        "title": "A check where there is something to predict",
+        "planStep": 3,
+        "kind": "category",
+        "src": "guide/checks.html"
+      },
+      {
+        "name": "pull-requests",
+        "title": "Pull requests",
+        "planStep": 4,
+        "kind": "category",
+        "src": "guide/pull-requests.html"
+      },
+      {
+        "name": "one-row",
+        "title": "One row, Plan and Built",
+        "planStep": 5,
+        "kind": "category",
+        "src": "guide/one-row.html"
+      },
+      {
+        "name": "measure",
+        "title": "Did it work",
+        "planStep": 6,
+        "kind": "category",
+        "src": "guide/measure.html"
+      },
+      {
+        "name": "choices",
+        "title": "Every choice the agent made",
+        "planStep": null,
+        "kind": "choices",
+        "src": "guide/choices.html"
+      }
+    ]
+  },
+  "plan": {
+    "title": "Walkthroughs that help: see the build run, stop only where you'd notice",
+    "problem": "The owner, after the last few walkthroughs:\n\n> \"i think one main thing too is that walkthroughs are not very helpful rn i just end up spamming accpet\n> maybe its just hard to make snese of them, or maybe it shoulnd really be a huge separate video at all?\n> idk this is something we need to plan better for\"\n\nToday, once a plan is built, the agent makes a second video, the walkthrough: about five minutes that go\nstep by step through what was built, pause at the choices the agent made on its own (Accept or Flag\neach), and ask quick checks. The review records say what happens to it.\n\n- **You accept everything, and faster each time.** In 15 walkthrough reviews you judged 191 choices:\n  183 accepted, 1 flagged, 7 answered in your own words, all 8 of those before 26 September. Since\n  then: 69 of 69 accepted. On one pause, several choices were accepted 0.3 s apart in better-visuals and 0.6 s apart in details-in-the-frame (4 s in videos-you-can-follow);\n  one choice's line takes longer than that to read.\n- **Two walkthroughs were approved without a look.** answer-in-the-frame (27 choices) was sent 15 s after\n  you pressed play; fewer-better-stops (10 choices) after 77 s. None of their choices was judged.\n- **You write on plans, not on walkthroughs.** On 26 and 27 September: 7 walkthrough reviews, 2 with\n  any words of yours (one comment, one note on a check); 9 plan reviews, 6 asking for changes, 7 with\n  your words (comments, answers in your words, notes on a check).\n- **The quick checks don't land.** 25 of 38 right across walkthroughs; the last two, 0 of 4 and 1 of 3,\n  with no words on any wrong one.\n- **Accepting didn't catch what was wrong.** 10 choices accepted in a walkthrough were changed later\n  anyway. 6 of them were about the answer bar and the plan text, things you see on the page, and they\n  were found by using it: answer-on-the-video's A5 went after you saw the video shrink and grow back.\n- **An accept is a decision.** 171 of the 218 entries in the decision log are walkthrough choices you\n  accepted, and a later plan that touches one is warned about it: this plan's own check lists 135.\n- **The accepts teach the wrong thing.** A label stops the video until it has been accepted ten times in\n  a row (D-084). Every label has now reached ten; in details-in-the-frame, only an old late fix still\n  made six choices stop.\n\nWhat you did catch, when you caught something, was something you could picture or that decides what runs\non your machine: Escape throwing away the words you typed (richer-review A10), which plan text shows\nbeside the video (deep-dives A8), what a run nobody is watching may do (revise-loop A11, A18, D2), where\nyour memory file goes when it can't be written (memory A15). None was about an inside detail, like a lint\nrule, a field in a JSON file or a file's name, and most choices are those.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "The walkthrough shows the change running",
+        "text": "*Independent. Decided: D-219.*\n\nAfter the build, the walkthrough shows each of the plan's changes running, before and after:\n\n- **On the screen**, when you'd see it: the review page before and after. Take details-in-the-frame: the\n  corner chip on an older scene, then the same scene with the tab on its code block, and a click opening\n  the page over the frame.\n- **In a real run**, when it happens behind the page: the saved file before and after (a review stored as\n  one file per review, then one per day), a command's real output in the terminal block, a migration run on\n  a copy of real data with the rows before and after.\n\nThen the pauses (step 2), and at the end what ran (the tests, the code check), what is not done, and the\nlist. It aims for about two minutes; `build` warns when it runs much longer. The brief picks every change\nscene as a real thing (D-166). `walkthrough.md` keeps its per-step record in text, and `reel audit` checks\nit as today. The file and folder names stay (`walkthrough.md`, `walkthrough-video/`), and so does the word\nwalkthrough."
+      },
+      {
+        "n": 2,
+        "title": "A choice pauses the video when you'd notice it or can't easily undo it",
+        "text": "*Independent. Decided: D-220, in your words: no fixed count; D-221, a listed choice is not judged.*\n\nWhich choices pause is a judgment, made for each build and said in `walkthrough.md`:\n\n- **An off-plan change always pauses**, as today.\n- **Another choice pauses when you'd notice it, or can't easily undo it, and the video can show it\n  running.** You'd notice it: it changes what you see or do (the Save button moves, Escape keeps your\n  words). You can't easily undo it: stored data and formats, permissions, something other people's code\n  relies on (old reviews deleted after a month; saved reviews moved to a new file layout). Both are shown\n  running: the page before and after, or the saved file before and after.\n- **Every other choice goes on the list.** The line: after the change, you see the same page, press the\n  same buttons, and the same data sits on disk. A long file split in two, a helper renamed: nothing you see\n  or do changes, so they go on the list. The list is one sheet at the end: each choice in one line (what it\n  chose, instead of what), each with its own Flag. Approve takes the rest, as Accept all does today.\n- **A listed choice is logged as \"listed, not judged\"** (D-221). A later plan that touches it is not warned\n  by it; a flag on it while it is on the list still gets it fixed.\n- **The ten-in-a-row rule goes** (it was D-084). Accepts a third of a second apart are not a judgment.\n\nNo count of pauses is fixed or capped. `reel stops` prints each choice with why it pauses or is listed,\nfrom its label: *visible* now means you'd see it and it can be shown running; *hard-to-undo* covers\nstored data and formats."
+      },
+      {
+        "n": 3,
+        "title": "A quick check where there is something to predict",
+        "text": "*Needs step 1's video. Decided: D-222.*\n\nA quick check comes where the built change has something to predict, asked just before the video shows it\nrunning:\n\n- **On the screen:** \"You have typed a note and press Escape: what happens?\", then the scene runs it and\n  you see the note kept.\n- **Behind the page:** \"After the change, what does the saved file look like?\", then the scene shows the\n  real file before and after the run; or \"The migration runs on a copy of last week's reviews: how many\n  are left unread?\", then the run prints it.\n\nOnly a change with no visible or runnable effect has nothing to predict: a rename, a split file. There is\nno fixed number of checks.\n\n**\"The page looks the same\" does not mean there is nothing to predict** (from the approval). A change to\nwhat is saved, or to what a command prints, is something to predict, and the walkthrough shows it by a real\nrun. Take a build that changes the saved review file so each date moves from one field to two, with the page\nlooking just as before: its walkthrough asks \"After the change, what does the saved file look like?\", then\nshows the real file before and after. Only when the screen, the saved files and every command's output all\nstay the same is there nothing to predict. Each check has its walk-through and a way back to where its rule was shown, as\nevery check does. The end of the walkthrough asks one open question too, with room for your words: \"Seeing\nit run, anything you'd change?\""
+      },
+      {
+        "n": 4,
+        "title": "Pull requests get the short walkthrough",
+        "text": "*Needs steps 1 and 2. Decided: D-223.*\n\n`CONTRIBUTING.md`, its template and the PR template keep who makes the video (D-200). The video is the short\none: \"the walkthrough video, which shows the change running and pauses at what you'd notice\". A pull request\nover 300 lines needs it. A smaller one needs it only for a choice you'd notice or can't easily undo (step\n2's test); any other choice is a line in the pull request's text that the maintainer accepts. `reel\npr-check` checks that line, and its check that the video is not stale follows step 2's rule."
+      },
+      {
+        "n": 5,
+        "title": "The plan and what was built, in one row",
+        "text": "*Needs step 1. Decided: D-224.*\n\nToday the review page lists each plan with two separate rows, \"Plan video\" and \"Walkthrough\" (`library.json`,\nwritten by `bundle-player`, keeps them as `<plan>` and `<plan>--walkthrough`), and each opens a page of its\nown. After this step:\n\n- **One row per plan**, with a Plan | Built switch at the top of its page.\n- **\"See it built\" jumps to the same step, running.** On step 6's plan scenes, See it built opens the\n  walkthrough at step 6's own running scene (`?project=<plan>--walkthrough&t=<that scene's start>`, from the\n  walkthrough's plan map, which says which step each scene belongs to), not at the walkthrough's start.\n  \"See the plan\" on that scene jumps back to step 6's plan scene. A step with nothing running (a step that\n  only changed wording, say) shows \"Nothing to run for this step\" instead of the button.\n- **The two reviews stay separate records** (`reviews/plan-*.json`, `reviews/walkthrough-*.json`)."
+      },
+      {
+        "n": 6,
+        "title": "Measure whether it worked, and what happens if it didn't",
+        "text": "*Needs step 2's pauses.*\n\nToday the review logs when you answered each choice, not when its pause began, so time spent reading can\nonly be guessed.\n\n- **The page logs when each pause began** (`shownAt` beside each choice's `judgedAt`).\n- **`reel memory` gains a line, `after-build`:** for each walkthrough review, the seconds from a pause to\n  each answer (the middle value), flags and answers in your words, written comments, and whether it was\n  sent before the video could have played through.\n- **The bar.** Over the next three walkthroughs: a pause holds you at least five seconds (the middle\n  value), and at least one flag, answer in your words or comment. Today: a third of a second, and nothing.\n- **When it's missed.** Both halves are needed. When the three walkthroughs miss either one:\n  - `reel status` says \"walkthroughs: still accepted without a look (3 of 3), a plan to drop the walkthrough\n    video is due\".\n  - The agent's next plan proposes it, as a plan you review like any other. Nothing changes until you\n    approve that plan; asking for changes, or never answering, keeps walkthrough videos as they are.\n  - What would go: the walkthrough video made after each build. What stays: the plan video, the code check\n    and `walkthrough.md`.\n  - What you'd get in its place, on the plan's row: a \"what changed\" section beside the plan video, a few\n    lines per change (what differs from the plan, each off-plan change), with the list and its Flags, and\n    Approve.\n- **Where to read it.** The step 6 scene opens a page, \"If the bar is missed\", with all of the above."
+      },
+      {
+        "n": 7,
+        "title": "The system video says the new rule, a bit shorter",
+        "text": "*Needs steps 1 to 3.*\n\nThe system video changes only the scenes the new rule makes wrong, and gets a bit shorter where the new\nrule makes a scene redundant:\n\n- \"Two videos for every plan\" says the walkthrough shows the change running.\n- \"What stops the walkthrough\" and \"One stop per step\" (37 s together) become one scene of about 20 s:\n  step 2's judgment and the list.\n- \"Fixing what you flagged\" loses its sentence on the grouped scene, which is gone.\n- Its last quick check (which asks the old pause count) asks step 2's judgment, on a new case, at the same\n  length.\n- The glossary rows for `reel stops`, the walkthrough video and the grouped scene change; \"accepted in a\n  row\" goes.\n\nThat takes it from 7:59 to about 7:40. Eight minutes stays a soft target, in your words: \"i dont want to\nbe too constrained then we'll just waste tokens on making it smaller where we dont really care if it is\nmuch bigger\". The build reports it as a warning only, and no plan trims a scene just to stay under it (it\nrelaxes D-133, which cut sentences to fit)."
+      }
+    ]
+  },
+  "slug": "2026-09-27-walkthroughs-that-help--walkthrough",
+  "prerequisites": [
+    {
+      "video": "system",
+      "title": "reelplanning: the whole system",
+      "gives": "what each part and word here is",
+      "seconds": 600.1,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all",
+        "plan.md",
+        "round",
+        "the author",
+        "style guide"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-27-walkthroughs-that-help",
+      "title": "Walkthroughs that help: see the build run, stop only where you'd notice",
+      "gives": "the plan this builds, and its words",
+      "seconds": 231.1,
+      "terms": [
+        "backend",
+        "the list",
+        "pr-check"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 5,
+      "partTitle": "The build",
+      "title": "reelplanning: the whole system",
+      "gives": "the build, with the reel CLI",
+      "seconds": 57.7,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all",
+        "plan.md",
+        "round",
+        "the author",
+        "style guide"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 6,
+      "partTitle": "The walkthrough",
+      "title": "reelplanning: the whole system",
+      "gives": "the walkthrough, with the reel CLI, the review player, the walkthrough fix step, the system video",
+      "seconds": 78.1,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all",
+        "plan.md",
+        "round",
+        "the author",
+        "style guide"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-contributing",
+      "title": "Several people, one repo: contributing with reelplanning",
+      "gives": "decisions D-200, D-202, D-213, D-215, D-201, D-214: how much does a PR ask of its contributor?; explains \"pull request\"",
+      "seconds": 288.4,
+      "terms": [
+        "pull request",
+        "contributor",
+        "maintainer",
+        "CI",
+        "CONTRIBUTING.md",
+        "pr-check",
+        "plan.md",
+        "terms index"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-better-visuals",
+      "title": "Better visuals: show the real thing, and a page that reads well",
+      "gives": "decisions D-166, D-142, D-167: which scenes must show the real thing?; explains \"the real thing\"",
+      "seconds": 253.3,
+      "terms": [
+        "the real thing",
+        "pinned word",
+        "camera",
+        "motion language",
+        "look",
+        "accent colour"
+      ],
+      "found": true
+    }
+  ],
+  "terms": [
+    "the list",
+    "shownAt",
+    "judgedAt",
+    "hard-to-undo",
+    "pr-check"
+  ],
+  "termMeanings": {
+    "the list": "one sheet at a walkthrough's end, the choices that do not pause, one line each with its own Flag, and Go on lists the rest, not judged",
+    "shownat": "when a pause began, saved beside each answer in the review file",
+    "judgedat": "when you answered, saved with each answer in the review file",
+    "hard-to-undo": "the label for a choice you can't easily undo, such as stored data and formats, permissions, or what other people's code relies on",
+    "pr-check": "the check of a pull request, whether it needs a video and what it carries (`reel pr-check`)"
+  },
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video (skills/plan-to-video/, made with HyperFrames: plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video.",
+      "files": [
+        "`skills/plan-to-video/`, made with HyperFrames: `plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanning build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result (finish-project: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check)",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result.",
+      "files": [
+        "`finish-project`: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "spec-diff",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanning spec-diff); it also names a row no scene explains yet",
+      "forms": [
+        "spec-diff"
+      ],
+      "said": "Which scenes of the system video a change to the system's description, its parts or this glossary reaches, so only those are rebuilt; it also names a row no scene explains yet.",
+      "files": [
+        "`spec.md`",
+        "`system.json`",
+        "`reelplanning spec-diff`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "This video catches up",
+        "start": 426.003,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "The video player on the review page (<reelplanning-player>). You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review",
+      "forms": [
+        "review player"
+      ],
+      "said": "The video player on the review page. You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review.",
+      "files": [
+        "`<reelplanning-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanning review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project's record: its plans, reviews and decisions (scripts/reel.mjs, in .reelplanning/). For example, reel record files a review and logs your answers, and reel status says what is waiting",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project's record: its plans, reviews and decisions. For example, `reel record` files a review and logs your answers, and `reel status` says what is waiting.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanning/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "What the agent does with your review of a plan (plan.md). If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "What the agent does with your review of a plan. If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "The agent building what the approved plan says (plan.md), and noting each choice the plan left open (in walkthrough.md). A second agent then checks the code against the plan: the code check",
+      "forms": [
+        "implement step"
+      ],
+      "said": "The agent building what the approved plan says, and noting each choice the plan left open. A second agent then checks the code against the plan: the code check.",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes (spec.md, system.json, this glossary)",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes.",
+      "files": [
+        "`spec.md`, `system.json`, this glossary"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Finish: approve, or request changes",
+        "start": 232.8,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed.",
+      "files": [
+        "`.reelplanning/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Handed on once, and fenced",
+        "start": 253.94,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 21,
+        "title": "Only the changes come back",
+        "start": 294.41,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 374.363,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanning/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "What your reviews teach",
+        "start": 452.453,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 374.363,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not.",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Every choice, written down",
+        "start": 316.69,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "said": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 374.363,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Every choice, written down",
+        "start": 316.69,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "What your reviews teach",
+        "start": 452.453,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "One stop per step",
+        "start": 393.063,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this.",
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Finish: approve, or request changes",
+        "start": 232.8,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: the record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it",
+      "forms": [
+        "decision log"
+      ],
+      "said": "The record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Your answers go on record",
+        "start": 267.78,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each question",
+        "start": 27.291,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "This video catches up",
+        "start": 426.003,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A part of the guide",
+      "meaning": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video (- guide: <part>, built by reelplanning guide; - detail:, from a template in templates/details/; the frame marks the thing with data-detail)",
+      "forms": [
+        "part of the guide",
+        "guide"
+      ],
+      "display": "Guide",
+      "said": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video.",
+      "files": [
+        "`- guide: <part>`, built by `reelplanning guide`; `- detail:`, from a template in `templates/details/`; the frame marks the thing with `data-detail`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip",
+      "forms": [
+        "open chip"
+      ],
+      "said": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here.",
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "What to watch first, and what words mean",
+        "start": 128.583,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words, shown beside the video with the current step highlighted (from plan.md). It is off until you turn it on with the Plan switch, or press L",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, shown beside the video with the current step highlighted. It is off until you turn it on with the Plan switch, or press L.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The details check / check-details",
+      "meaning": "The check that every detail page works and that each frame marks only its own scene's detail (check-details), run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build (under details_check: strict, so does a scene whose thing is marked nowhere)",
+      "forms": [
+        "details check",
+        "check-details"
+      ],
+      "said": "The check that every detail page works and that each frame marks only its own scene's detail, run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build.",
+      "files": [
+        "`check-details`",
+        "under `details_check: strict`, so does a scene whose thing is marked nowhere"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The agent",
+      "meaning": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses (config.json names its command)",
+      "forms": [
+        "agent"
+      ],
+      "said": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses.",
+      "files": [
+        "`config.json` names its command"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan video",
+      "meaning": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised",
+      "forms": [
+        "plan video"
+      ],
+      "said": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The walkthrough video / walkthrough",
+      "meaning": "The video made after the code is built: what was built, step by step, and each choice the agent made alone (listed in walkthrough.md). You accept or flag each choice, then approve the build or ask for changes",
+      "forms": [
+        "walkthrough video",
+        "walkthrough"
+      ],
+      "said": "The video made after the code is built: what was built, step by step, and each choice the agent made alone. You accept or flag each choice, then approve the build or ask for changes.",
+      "files": [
+        "listed in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The code check",
+      "meaning": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made (code-check, from a short brief)",
+      "forms": [
+        "code check"
+      ],
+      "said": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made.",
+      "files": [
+        "`code-check`, from a short brief"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "A second agent checks",
+        "start": 345.58,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "Fresh eyes",
+      "meaning": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you (reelplanning fresh-eyes; what is kept after the third look is said on Before you watch)",
+      "forms": [
+        "fresh eyes"
+      ],
+      "said": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you.",
+      "files": [
+        "`reelplanning fresh-eyes`; what is kept after the third look is said on Before you watch"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "Two fresh agents looked first",
+        "start": 140.631,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The frame rules",
+      "meaning": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven",
+      "forms": [
+        "frame rules"
+      ],
+      "said": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven.",
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "Seven rules for a frame",
+        "start": 159.596,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "frame-lint",
+      "meaning": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at (reelplanning frame-lint)",
+      "forms": [
+        "frame-lint"
+      ],
+      "said": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at.",
+      "files": [
+        "`reelplanning frame-lint`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "Seven rules for a frame",
+        "start": 159.596,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "Ask about this",
+      "meaning": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review",
+      "forms": [
+        "ask about this"
+      ],
+      "said": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "Ask about this",
+        "start": 181.207,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "A brief",
+      "meaning": "A short written description an agent starts from. A video's brief (BRIEF.md) says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare",
+      "forms": [
+        "brief"
+      ],
+      "said": "A short written description an agent starts from. A video's brief says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare.",
+      "files": [
+        "`BRIEF.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "A second agent checks",
+        "start": 345.58,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "The storyboard",
+      "meaning": "A video's plan, scene by scene (STORYBOARD.md): what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains",
+      "forms": [
+        "storyboard"
+      ],
+      "said": "A video's plan, scene by scene: what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains.",
+      "files": [
+        "`STORYBOARD.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "reel audit / audit",
+      "meaning": "The check on a walkthrough (reel audit): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked",
+      "forms": [
+        "reel audit",
+        "audit"
+      ],
+      "said": "The check on a walkthrough: it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked.",
+      "files": [
+        "`reel audit`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "The fifth choice is asked, not made",
+        "start": 333.02,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "The explainer",
+      "id": "explainer",
+      "meaning": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (reelplanning explain \"<what you asked>\" <source> …, in .reelplanning/explainers/; every fact from a named source, check-sources)",
+      "forms": [
+        "explainer"
+      ],
+      "said": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it.",
+      "files": [
+        "`reelplanning explain \"<what you asked>\" <source> …`, in `.reelplanning/explainers/`; every fact from a named source, `check-sources`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 37,
+        "title": "Explain first, before any plan",
+        "start": 516.013,
+        "chapter": 8,
+        "chapterTitle": "Explain first"
+      }
+    },
+    {
+      "term": "The guide",
+      "id": "guide",
+      "meaning": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from plan.md by reelplanning guide, never committed; D-264). Select any words on it to comment, suggest an edit or ask",
+      "forms": [
+        "guide"
+      ],
+      "said": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner. Select any words on it to comment, suggest an edit or ask.",
+      "files": [
+        "built from `plan.md` by `reelplanning guide`, never committed; D-264"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "A repo / repository",
+      "meaning": "A project's folder of code together with its whole history, kept with git (on GitHub, say)",
+      "forms": [
+        "repo",
+        "repository"
+      ],
+      "said": "A project's folder of code together with its whole history, kept with git (on GitHub, say).",
+      "other": true
+    },
+    {
+      "term": "A branch",
+      "meaning": "A line of work kept apart from the main code until it is merged",
+      "forms": [
+        "branch"
+      ],
+      "said": "A line of work kept apart from the main code until it is merged.",
+      "other": true
+    },
+    {
+      "term": "Merge",
+      "meaning": "To bring a branch's changes into the main code. A pull request is merged when it is accepted",
+      "forms": [
+        "merge"
+      ],
+      "said": "To bring a branch's changes into the main code. A pull request is merged when it is accepted.",
+      "other": true
+    },
+    {
+      "term": "A commit",
+      "meaning": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them",
+      "forms": [
+        "commit"
+      ],
+      "said": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them.",
+      "other": true
+    },
+    {
+      "term": "Clone",
+      "meaning": "To copy a repo, with its history, onto your own computer",
+      "forms": [
+        "clone"
+      ],
+      "said": "To copy a repo, with its history, onto your own computer.",
+      "other": true
+    },
+    {
+      "term": "A diff",
+      "meaning": "The lines a change adds and removes, shown together",
+      "forms": [
+        "diff"
+      ],
+      "said": "The lines a change adds and removes, shown together.",
+      "other": true
+    },
+    {
+      "term": "A pull request / PR",
+      "meaning": "A change someone asks to have merged into a repo; others read it and comment before it goes in",
+      "forms": [
+        "pull request",
+        "pr"
+      ],
+      "said": "A change someone asks to have merged into a repo; others read it and comment before it goes in.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 1,
+        "title": "One person per repo, then a shared one",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "One repo, several people"
+      }
+    },
+    {
+      "term": "Squash",
+      "meaning": "To merge a pull request's commits as one commit",
+      "forms": [
+        "squash"
+      ],
+      "said": "To merge a pull request's commits as one commit.",
+      "other": true
+    },
+    {
+      "term": "CI",
+      "meaning": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it",
+      "forms": [
+        "ci"
+      ],
+      "said": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 10,
+        "title": "Step 3: watching and checking, as decided",
+        "start": 145.322,
+        "chapter": 4,
+        "chapterTitle": "Step 3: watching, checking, and where the video lives"
+      }
+    },
+    {
+      "term": "A test suite",
+      "meaning": "All of a project's tests, run together to check that nothing broke",
+      "forms": [
+        "test suite"
+      ],
+      "said": "All of a project's tests, run together to check that nothing broke.",
+      "other": true
+    },
+    {
+      "term": "A spec",
+      "meaning": "Two meanings here: one file of tests (scripts/test/terms.spec.mjs), run with the others by npm test; or the system's own description of its parts, spec.md",
+      "forms": [
+        "spec"
+      ],
+      "said": "Two meanings here: one file of tests, run with the others by `npm test`; or the system's own description of its parts, `spec.md`.",
+      "files": [
+        "`scripts/test/terms.spec.mjs`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Lint / linter",
+      "meaning": "A check that reads code or files for mistakes without running them (frame-lint reads a video's scenes)",
+      "forms": [
+        "lint",
+        "linter"
+      ],
+      "said": "A check that reads code or files for mistakes without running them.",
+      "files": [
+        "`frame-lint` reads a video's scenes"
+      ],
+      "other": true
+    },
+    {
+      "term": "A flag",
+      "meaning": "In a command, an option written after its name (like --dry-run). On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept)",
+      "forms": [
+        "flag"
+      ],
+      "said": "In a command, an option written after its name. On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept).",
+      "files": [
+        "like `--dry-run`"
+      ],
+      "other": true
+    },
+    {
+      "term": "A prompt",
+      "meaning": "The words given to an agent to start it on a task",
+      "forms": [
+        "prompt"
+      ],
+      "said": "The words given to an agent to start it on a task.",
+      "other": true
+    },
+    {
+      "term": "A template",
+      "meaning": "A file to start from, filled in for each new use",
+      "forms": [
+        "template"
+      ],
+      "said": "A file to start from, filled in for each new use.",
+      "other": true
+    },
+    {
+      "term": "A dependency",
+      "meaning": "A package of someone else's code a project needs in order to run",
+      "forms": [
+        "dependency"
+      ],
+      "said": "A package of someone else's code a project needs in order to run.",
+      "other": true
+    },
+    {
+      "term": "A terminal",
+      "meaning": "The window where you type commands",
+      "forms": [
+        "terminal"
+      ],
+      "said": "The window where you type commands.",
+      "other": true
+    },
+    {
+      "term": "CLI",
+      "meaning": "A command-line tool: a program you run by typing its name and options in a terminal",
+      "forms": [
+        "cli"
+      ],
+      "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
+      "other": true
+    },
+    {
+      "term": "HTML",
+      "meaning": "The language web pages are written in; each scene of a video is an HTML page",
+      "forms": [
+        "html"
+      ],
+      "said": "The language web pages are written in; each scene of a video is an HTML page.",
+      "other": true
+    },
+    {
+      "term": "CSS",
+      "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
+      "forms": [
+        "css"
+      ],
+      "said": "The rules for how a web page looks: its colours, sizes and where things sit.",
+      "other": true
+    },
+    {
+      "term": "JSON",
+      "meaning": "A plain-text format for data a program reads (plan-map.json, say)",
+      "forms": [
+        "json"
+      ],
+      "said": "A plain-text format for data a program reads.",
+      "files": [
+        "`plan-map.json`, say"
+      ],
+      "other": true
+    },
+    {
+      "term": "TTS",
+      "meaning": "Text to speech: the voice made from a video's script",
+      "forms": [
+        "tts"
+      ],
+      "said": "Text to speech: the voice made from a video's script.",
+      "other": true
+    },
+    {
+      "term": "git",
+      "meaning": "The tool that keeps a repo's history: its commits and branches",
+      "forms": [
+        "git"
+      ],
+      "said": "The tool that keeps a repo's history: its commits and branches.",
+      "other": true
+    },
+    {
+      "term": "GitHub",
+      "meaning": "The website where many repos are kept and pull requests are reviewed",
+      "forms": [
+        "github"
+      ],
+      "said": "The website where many repos are kept and pull requests are reviewed.",
+      "other": true
+    },
+    {
+      "term": "npm",
+      "meaning": "The tool that installs a JavaScript project's packages and runs its scripts (npm test)",
+      "forms": [
+        "npm"
+      ],
+      "said": "The tool that installs a JavaScript project's packages and runs its scripts.",
+      "files": [
+        "`npm test`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "Claude Code's mode where the agent plans in chat and changes nothing until you approve",
+      "forms": [
+        "plan mode"
+      ],
+      "said": "Claude Code's mode where the agent plans in chat and changes nothing until you approve.",
+      "other": true
+    },
+    {
+      "term": "npx",
+      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanning@0.2.0 reel record …)",
+      "forms": [
+        "npx"
+      ],
+      "said": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it.",
+      "files": [
+        "`npx -y reelplanning@0.2.0 reel record …`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Recommended",
+      "meaning": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it",
+      "forms": [
+        "recommended"
+      ],
+      "said": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it.",
+      "other": true
+    },
+    {
+      "term": "The real thing",
+      "meaning": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it",
+      "forms": [
+        "real thing"
+      ],
+      "said": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-better-visuals",
+        "frame": 3,
+        "title": "What “the real thing” means",
+        "start": 27.2,
+        "chapter": 2,
+        "chapterTitle": "The real thing, even across ten files"
+      }
+    },
+    {
+      "term": "A hosted page",
+      "meaning": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account",
+      "forms": [
+        "hosted page"
+      ],
+      "said": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account.",
+      "other": true
+    },
+    {
+      "term": "Before you watch",
+      "meaning": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why",
+      "forms": [
+        "before you watch"
+      ],
+      "said": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why.",
+      "other": true
+    },
+    {
+      "term": "Walk me through it",
+      "meaning": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences",
+      "forms": [
+        "walk me through it"
+      ],
+      "said": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences.",
+      "other": true
+    }
+  ],
+  "ids": {
+    "A1": {
+      "kind": "choice",
+      "gloss": "A walkthrough video's length: aim 1–2 minutes, \"long\" past 3, \"too long\" past…"
+    },
+    "A10": {
+      "kind": "choice",
+      "gloss": "The bar is judged per review, over the first three walkthrough reviews whose…"
+    },
+    "A2": {
+      "kind": "choice",
+      "gloss": "The list is its own storyboard line, `- autonomy_list: a1, a4`, one beat at…"
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": "The list's sheet: one row per choice (its id, what it chose, \"instead of\"…"
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": "\"Listed\" is recorded when the viewer presses Go on (every choice not flagged)…"
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": "The open question is asked where the review is finished: first in a…"
+    },
+    "A6": {
+      "kind": "choice",
+      "gloss": "A small PR's other choices go under a new \"## Other choices\" in the PR…"
+    },
+    "A7": {
+      "kind": "choice",
+      "gloss": "The switch lands on the first scene tagged with that plan step (in the…"
+    },
+    "A8": {
+      "kind": "choice",
+      "gloss": "One control: the header's Plan–Built switch is the jump (its Built segment is…"
+    },
+    "A9": {
+      "kind": "choice",
+      "gloss": "The list's order: what needs you first (a plan waiting on you says what to…"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "This build's choice A3 is labelled visible; its choice A2 only close. Which of…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "The review page looks just the same after this build. What does one saved…"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": true,
+    "at": "2026-09-30T14:08:21.611Z",
+    "build": "8ae07a931801",
+    "added": 0,
+    "edited": 0,
+    "restyled": 1,
+    "retimed": 0,
+    "same": 14,
+    "removed": [],
+    "changedFrames": [],
+    "restyledFrames": [
+      6
+    ],
+    "changedSeconds": 0,
+    "totalSeconds": 175.371
+  }
+}

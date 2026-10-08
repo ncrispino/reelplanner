@@ -1,0 +1,188 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "29-the-plan",
+        "index": 29,
+        "title": "The plan"
+      },
+      "id": "amuj87hs6eynt",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2,
+          3
+        ],
+        "step": null
+      },
+      "t": 320.8
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 1,
+    "watchedPct": 100,
+    "wrongChecks": 1
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-27T02:54:11.631Z",
+      "id": "q1",
+      "label": "A tab, the whole time",
+      "option": "a",
+      "planStep": 2,
+      "question": "What shows that a thing on the frame opens a page?",
+      "recommended": true,
+      "t": 163.383
+    },
+    {
+      "decidedAt": "2026-09-27T02:54:43.409Z",
+      "id": "q2",
+      "label": "Over the frame, from the block",
+      "option": "b",
+      "planStep": 3,
+      "question": "Where does a detail open once you click the thing?",
+      "recommended": true,
+      "t": 225.138
+    },
+    {
+      "decidedAt": "2026-09-27T02:55:15.274Z",
+      "id": "q3",
+      "label": "It goes where a thing is marked",
+      "option": "b",
+      "planStep": 4,
+      "question": "What becomes of the corner chip on a rebuilt video?",
+      "recommended": true,
+      "t": 286.935
+    }
+  ],
+  "exportedAt": "2026-09-27T02:55:25.739Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-27T02:53:23.776Z",
+      "correct": true,
+      "id": "k1",
+      "t": 114.914
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-27T02:53:48.651Z",
+      "correct": false,
+      "id": "k2",
+      "t": 147.042,
+      "walked": true
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-27T02:54:25.265Z",
+      "correct": true,
+      "id": "k3",
+      "t": 203.463
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-27T02:54:57.810Z",
+      "correct": true,
+      "id": "k4",
+      "t": 268.418
+    }
+  ],
+  "src": "2026-09-27-details-in-the-frame/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 320.99,
+    "firstPlayAt": "2026-09-27T02:52:24.384Z",
+    "maxTimeReached": 320.99,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "video": "2026-09-27-details-in-the-frame"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

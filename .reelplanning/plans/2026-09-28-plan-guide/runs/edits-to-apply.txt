@@ -1,0 +1,11 @@
+$ cat .reelplanning/plans/2026-09-28-plan-guide/reviews/plan-20260929T210000Z.md   (its Edits to apply)
+## Edits to apply
+
+Apply each to `plan.md` exactly as written, then run `reel check`. One that would overturn a decision in force, or whose words `plan.md` no longer has, is not applied: the next version asks it as a question. Rebuilt: the guide, always; a scene only when its own words or frame show the words changed.
+
+- **Step 1 · Interface**: `--out <file>` → `--to <file>` → D-002
+  - rebuild: the guide, and scenes 12, 20, 21, 22, 23, 26 (their words or frame show it)
+- **Step 2 · Cases**: `a decision's ledger entry shown only on hover` → `a decision's ledger entry shown only on hover or on a long press` → D-003
+  - rebuild: the guide only: no scene says or shows these words
+
+exit 0

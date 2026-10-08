@@ -1,0 +1,109 @@
+{
+  "decisions": [
+    {
+      "id": "D-001",
+      "date": "2026-09-21",
+      "plan": "2026-09-21-review-page",
+      "step": 2,
+      "stepTitle": "Never crop the frame a decision is about",
+      "questionId": "q1",
+      "question": "When a decision is asked, what happens to the video?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The stage shrinks",
+          "why": "the whole frame stays visible above the sheet; the picture is smaller exactly when you are studying it",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The sheet overlays the lower third",
+          "why": "the picture keeps every pixel; the sheet covers the caption band and whatever sits low in the frame",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The video steps aside",
+          "why": "the clearest reading of the question; you lose the picture you are deciding about",
+          "recommended": false
+        }
+      ],
+      "chosen": "Overlay the lower third, but the question collapses and reopens",
+      "chosenId": "own",
+      "recommended": false,
+      "why": "",
+      "components": [
+        "stage",
+        "sheet"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-002",
+      "date": "2026-09-21",
+      "plan": "2026-09-21-review-page",
+      "step": 4,
+      "stepTitle": "Comment where attention already is",
+      "questionId": "q2",
+      "question": "Where do comments live?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Under the video",
+          "why": "always in view while watching; pushes the video up and competes with the toolbar",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "In the rail, at the top",
+          "why": "keeps the main column clean; on a narrow screen the rail is below the fold again",
+          "recommended": false
+        }
+      ],
+      "chosen": "Under the video",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "always in view while watching; pushes the video up and competes with the toolbar",
+      "components": [
+        "stage",
+        "composer"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-003",
+      "date": "2026-09-21",
+      "plan": "2026-09-21-review-page",
+      "step": 6,
+      "stepTitle": "On a phone, the video is the page",
+      "questionId": "q3",
+      "question": "On a phone, what happens to the rail?",
+      "options": [
+        {
+          "id": "a",
+          "label": "One sheet you pull up",
+          "why": "the video stays uncovered until you ask; everything is one pull away",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Tabs under the video",
+          "why": "one list is always visible; it always costs the video that strip",
+          "recommended": false
+        }
+      ],
+      "chosen": "One sheet you pull up",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "the video stays uncovered until you ask; everything is one pull away",
+      "components": [
+        "stage",
+        "page"
+      ],
+      "status": "active",
+      "supersedes": []
+    }
+  ]
+}

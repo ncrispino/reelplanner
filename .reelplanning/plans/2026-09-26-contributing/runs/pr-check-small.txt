@@ -1,0 +1,7 @@
+$ reel pr-check . --base origin/main --body-file ../pr.md --labels ""   (a scratch repo: a 25-line pull request adding --quiet, box not ticked)
+· under the line: a normal code review, no video (25 line(s) of 300, box not ticked, no `needs-video`)
+· size: 25 changed line(s) in 1 file(s)
+· seen in the diff, not a reason by itself: a new flag: `--quiet`
+· ids: none new; none names another entry
+✓ repo against origin/main: 0 problem(s), 0 waiting
+exit 0

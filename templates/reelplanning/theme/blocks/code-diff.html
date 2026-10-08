@@ -1,0 +1,83 @@
+<!-- CODE DIFF (the theme's fork of HyperFrames' code-diff block; better-visuals step 1).
+     Paste into your <template>, replace every FID with "f" + your frame_id, and put the REAL change in:
+     the file, the two commits, the removed lines and the added lines as the diff has them (a line may be
+     re-broken to fit; no token changes). Colours are theme tokens only (--rp-slab*, --rp-syn-*, --rp-coral),
+     so frame-lint's colour rule passes and the light/dark switch recolours it. The registry block
+     hard-codes 81 colours and a glow; this keeps its idea (a diff on a code surface) and none of those.
+
+     THE REAL THING. The slab is a `data-artifact`: its own words are the file's (check-terms reads them as
+     glossed in place). A word the video defines is PINNED on the token it names: a `data-gloss` label
+     (its text the plain word, its attribute the code's own word) with an underline drawn under the token.
+
+     HOW IT MOVES (motion-language.md): the cut lands close on the token the sentence is about and the
+     camera pulls back; removed lines are STRUCK and dim; added lines are WIPED in (a window slides while
+     the line counter-slides); a pinned word rises and its underline DRAWS. The camera is inside a view
+     clipped at y 900. Every tween has a literal duration and position; replace the times with your cues. -->
+<style>
+  .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .FID-place { position:absolute; left:80px; top:24px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+
+  .FID-slab { position:absolute; left:80px; top:70px; width:1760px; height:800px; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .FID-bar { position:absolute; left:0; top:0; width:1760px; height:56px; background:var(--rp-slab-bar); }
+  .FID-file { position:absolute; left:28px; top:15px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .FID-rev { position:absolute; right:28px; top:15px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.62); white-space:nowrap; }
+
+  /* a line: gutter sign, then the code; 72px rows leave room for a pinned word above a token */
+  .FID-ln { position:absolute; left:70px; font:400 28px/72px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .FID-ln.del { background:rgba(var(--rp-syn-del-rgb),0.12); }
+  .FID-ln.add { background:rgba(var(--rp-syn-add-rgb),0.12); }
+  .FID-sign { position:absolute; left:30px; font:700 28px/72px "JetBrains Mono"; }
+  .FID-sign.del { color:var(--rp-syn-del); } .FID-sign.add { color:var(--rp-syn-add); }
+  .FID-strike { position:absolute; left:0; right:0; top:35px; height:3px; background:rgba(var(--rp-slab-ink-rgb),0.9); transform-origin:0 50%; }
+  .FID-wipe { position:absolute; left:70px; width:1660px; height:72px; overflow:hidden; }   /* the window an added line slides in through */
+  .FID-wipe .FID-ln { left:0; top:0; }
+
+  /* syntax, by token only */
+  .FID-ln .k { color:var(--rp-syn-key); } .FID-ln .s { color:var(--rp-syn-str); } .FID-ln .n { color:var(--rp-syn-num); } .FID-ln .c { color:var(--rp-syn-com); }
+
+  /* a pinned word: on the token it names, never a card beside it */
+  .FID-tok { position:relative; display:inline-block; line-height:36px; }
+  .FID-ul { position:absolute; left:0; right:0; bottom:-3px; height:3px; background:rgba(var(--rp-slab-ink-rgb),0.85); transform-origin:0 50%; }
+  .FID-ul.hot { height:4px; background:var(--rp-coral); }
+  .FID-pin { position:absolute; left:-6px; bottom:100%; margin-bottom:2px; padding:0 10px; font:400 27px/34px "Inter"; font-style:normal; color:var(--rp-slab); background:var(--rp-slab-ink); border-radius:5px; white-space:nowrap; }
+  .FID-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+</style>
+
+<div class="FID-place" id="FID-place">scripts/lib/autonomy.mjs · missFor</div>   <!-- optional: a quiet place label -->
+<div class="FID-view" id="FID-view"><div class="FID-cam" id="FID-cam" data-camera>
+  <div class="FID-slab" id="FID-slab" data-artifact="scripts/lib/autonomy.mjs">
+    <div class="FID-bar"></div>
+    <div class="FID-file" id="FID-file">scripts/lib/autonomy.mjs</div>
+    <div class="FID-rev" id="FID-rev">c2f7fd2 → 6d411ec</div>
+
+    <div class="FID-ln" id="FID-L1" style="top:90px"><span class="k">export function</span> missFor(call, misses = []) {</div>
+    <div class="FID-sign del" id="FID-m1" style="top:162px">−</div>
+    <div class="FID-ln del" id="FID-L2" style="top:162px">  <span class="k">return</span> <span class="FID-tok" id="FID-t1">misses<i class="FID-ul" id="FID-u1"></i><em class="FID-pin" id="FID-p1" data-gloss="misses">late fixes</em></span>.find((m) =&gt; sameTag(m, call));<i class="FID-strike" id="FID-s2"></i></div>
+    <div class="FID-sign add" id="FID-a1" style="top:234px">+</div>
+    <div class="FID-wipe" id="FID-W3" style="top:234px"><div class="FID-ln add" id="FID-L3">  <span class="k">return</span> misses.find((m) =&gt; sameTag(m, call)) <span class="FID-tok" id="FID-t2">|| <span class="k">null</span><i class="FID-ul hot" id="FID-u2"></i><em class="FID-pin hot" id="FID-p2" data-gloss="null">nothing</em></span>;</div></div>
+    <div class="FID-ln" id="FID-L4" style="top:306px">}</div>
+  </div>
+</div></div>
+
+<script>
+  // inside the frame's (function () { … })(), after `var tl = gsap.timeline({ paused: true });`
+  // initial states, outside the timeline:
+  gsap.set("#FID-cam", { x: 208, y: 136, scale: 1.6 });            // landed close on the line the sentence is about
+  gsap.set(["#FID-p1", "#FID-p2"], { opacity: 0, y: 8 });
+  gsap.set(["#FID-u1", "#FID-u2", "#FID-s2"], { scaleX: 0 });
+  gsap.set(["#FID-m1", "#FID-a1"], { opacity: 0 });
+  gsap.set("#FID-W3", { x: -1660 }); gsap.set("#FID-L3", { x: 1660 });
+  // on the timeline, each at its word:
+  tl.to("#FID-cam", { x: 0, y: 0, scale: 1, duration: 1.5, ease: "expo.out" }, 0.05);        // the pull-back
+  tl.to("#FID-p1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 2.0);           // pinned: "late fixes"
+  tl.to("#FID-u1", { scaleX: 1, duration: 0.6, ease: "power1.inOut" }, 2.2);                 // drawn
+  tl.to("#FID-m1", { opacity: 1, duration: 0.15, ease: "none" }, 4.0);
+  tl.to("#FID-s2", { scaleX: 1, duration: 0.32, ease: "power1.inOut" }, 4.05);               // struck
+  tl.to("#FID-L2", { opacity: 0.4, duration: 0.4, ease: "power2.out" }, 4.4);
+  tl.to("#FID-a1", { opacity: 1, duration: 0.2, ease: "none" }, 4.9);
+  tl.to("#FID-W3", { x: 0, duration: 0.7, ease: "power2.inOut" }, 4.9);                      // wiped in
+  tl.to("#FID-L3", { x: 0, duration: 0.7, ease: "power2.inOut" }, 4.9);
+  tl.to("#FID-p2", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 6.2);           // pinned: "nothing", the frame's one coral
+  tl.to("#FID-u2", { scaleX: 1, duration: 0.3, ease: "power2.out" }, 6.2);
+</script>

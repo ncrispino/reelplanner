@@ -1,0 +1,264 @@
+# Several people, one repo: contributing with reelplanning
+
+## The problem
+
+The owner:
+
+> "Sure contributing is good we should specify that. Each PR above certain complexity we would prefer a
+> video for it and updated system video too? This is actually important, how do we use reelplanning to
+> plan (here, for this repo itself so it's kinda meta) when multiple users"
+
+This repo plans itself with `reelplanning`, and everything in `.reelplanning/` assumes one person: the
+owner writes each plan with their agent, reviews its videos, and merges, on one branch at a time. A
+second person breaks it in four places.
+
+- **Nothing says when a pull request (PR) needs videos.** There is no `CONTRIBUTING.md`, no PR template,
+  and no check. A contributor cannot tell whether a fix needs a plan, and the owner cannot check it.
+- **Nothing says who answers.** A plan's answers go into the decision log, and every later plan must
+  keep them. Today the reviewer is always the owner. With a contributor, the person who asked the agent
+  for the plan and the person who can merge it are two people.
+- **Nobody else can open the review page.** The hosted page is the owner's private claude.ai page;
+  a contributor's hosted page is private to them. Others cannot open either unless it is shared.
+- **The records collide.** The decision log numbers its entries in order across the repo (`reel record`
+  takes the next number). Two branches made from main at D-170 each record their own D-171. A real run,
+  in a scratch copy of this repo's `.reelplanning/` (two branches, one plan and one review each, then
+  both merged into main), stops at the second merge:
+
+  ```
+  CONFLICT (content): Merge conflict in .reelplanning/decisions.json
+  CONFLICT (content): Merge conflict in .reelplanning/decisions.md
+  <<<<<<< HEAD
+  | D-171 | 2026-09-27 | 2026-09-26-cache | 1 | q1 | **In the repo** | active |
+  =======
+  | D-171 | 2026-09-27 | 2026-09-26-port | 1 | q1 | **In the repo** | active |
+  >>>>>>> bob
+  ```
+
+  Keeping both lines, the obvious fix, leaves two D-171s, and a later plan that cites D-171 then means
+  two things. `terms-index.json` (written by every build) and the system video (brought up to date after
+  every accepted walkthrough, D-003) collide the same way.
+
+And there is no test job on a PR: `.github/workflows/publish.yml` runs on version tags only, and runs no
+tests.
+
+## What changes
+
+Three changes, in five steps.
+
+1. **A written rule for when a PR needs videos, and a check that holds it** (step 1): `CONTRIBUTING.md`,
+   a PR template, and `reel pr-check`.
+2. **Who reviews a contributor's videos, and where they watch them** (steps 2 and 3).
+3. **Records that merge, and what runs before and after a merge**: decision numbers and the generated
+   files across branches (step 4); a test job on every PR, the maintainer's checks, and the system
+   video rebuilt on main after the merge (step 5).
+
+Steps 1 to 4 each stand alone. Step 5 runs step 1's check and step 4's number check in CI.
+
+## Steps
+
+### Step 1 — When a PR needs videos: the rule, a PR template, and reel pr-check
+
+*Stands alone.*
+
+`CONTRIBUTING.md`, at the root, says it first. A PR needs videos when it does any of these:
+
+- **changes what a part does**: it changes the behaviour of an area in `system.json` (the review player,
+  the review server, the reel CLI, …), not only its tests, comments or docs;
+- **makes a choice a reviewer could make the other way**: a default, a command or flag, a file format,
+  a data shape, a dependency the package ships, or anything that would enter the decision log;
+- **is large**: over 300 changed lines outside tests, docs, videos and generated files.
+
+Such a PR comes with three things: **a plan and its plan video, reviewed before the code** (the plan
+folder `.reelplanning/plans/<date>-<name>/`, made the way this repo makes every plan); **a walkthrough
+video with the PR**; and **the system's description brought up to date** (`spec.md`, `system.json`,
+`glossary.md`; step 5 says who rebuilds the system video). A small fix needs none of them: a bug in one
+function with its test, docs, tests, a dependency bump, a video's frames or captions.
+
+`.github/pull_request_template.md` asks the contributor to tick one box: "This PR needs videos: plan
+folder `.reelplanning/plans/…`" or "Small fix: none of the three applies", and lists the maintainer's
+checks from step 5.
+
+`reel pr-check [--base origin/main] [--small-fix]` makes the rule checkable:
+
+1. It lists the files the branch changes against the base, the areas they belong to (each area's
+   `files` in `system.json`), and the changed lines outside tests, docs, videos and generated files.
+2. When an area's files change, or the count is over 300, the branch must add a plan folder whose
+   `plan.md` names those areas under **Components touched**, with a plan review whose verdict is
+   approve, dated before the first commit that changes an area's files; a `walkthrough.md`; a
+   walkthrough video; an accepted walkthrough review; and `reel audit` passing on it.
+3. `--small-fix` skips that and says so. CI passes it when the PR carries the `small-fix` label, which
+   only a maintainer can set: a contributor says "small fix" in the template, and the maintainer agrees
+   by adding the label.
+4. It prints what is missing, one line each, and exits non-zero.
+
+Example: a 20-line PR that changes the review server's default port changes an area's behaviour and a
+default, so it needs videos although it is small. A typo fix in `docs/lifecycle.md` needs none.
+
+### Step 2 — Who answers a contributor's plan, and who accepts the walkthrough
+
+*Stands alone.*
+
+`CONTRIBUTING.md` names two roles. A **contributor** opens a PR: they ask their agent for the plan with
+the plan-to-video skill, as it is, and do everything the skill says up to the PR (the code check, `reel
+audit`, the walkthrough video). A **maintainer** can merge. Maintainers are listed in
+`.reelplanning/config.json` as `maintainers`, each as `reel record` writes a reviewer: `owner`,
+`id:<id>` for a hosted page's viewer, or an email.
+
+What is kept as it is: every review is filed once, never overwritten, under its reviewer
+(`recorded.reviewer`). A contributor's review and a maintainer's review of the same video are two files
+side by side in the plan's `reviews/`.
+
+Question 1 decides who reviews each video and whose answer enters the decision log. Under the
+recommendation, `reel record` files a contributor's answers with the status `proposed`: in the log, not
+in force (like `flagged` today), and not counted by `reel stops` or `reel check`. A maintainer's review
+of the same video makes each one active: the same answer turns the proposed entry active; a different
+one adds the maintainer's entry, active, and marks the contributor's `overruled`, with its words kept.
+On the walkthrough, the contributor accepts or flags their agent's choices first and fixes the flags
+before opening the PR; the maintainer's verdicts are the ones in force.
+
+### Step 3 — Where a contributor's videos are watched
+
+*Stands alone.*
+
+What is kept as it is: the PR carries the plan folder with both video projects, their sources and voice
+files, as this repo commits them today, never a render. Anyone with the branch can play them with
+`reelplanning review`.
+
+Question 2 decides where the maintainer watches. Under the recommendation, `CONTRIBUTING.md` gives the
+maintainer three commands: `gh pr checkout 42`, then `reelplanning review
+.reelplanning/plans/<plan>/video --detach` (and the walkthrough video later). The page's Send puts the
+review in the maintainer's own inbox; `reel-intake` files it in the PR's plan folder; the maintainer
+commits it to the PR branch (GitHub's "allow edits by maintainers", on by default for a PR from a fork).
+The contributor pulls and acts on `reviews/<id>.md` as the skill says.
+
+### Step 4 — Records that merge: decision numbers, generated files, the glossary
+
+*Stands alone.*
+
+Question 3 decides how decision numbers survive two branches. Under the recommendation, numbers stay
+in order across the repo, and the PR merged second fixes the clash with one command:
+
+- `reel renumber` (on the branch, after `git rebase origin/main` stops at the conflict in
+  `decisions.json`): takes main's log as it is, adds the branch's own new entries after main's last
+  (D-171 becomes D-172), and rewrites their mentions in the branch's plan folder (`plan.md`,
+  `walkthrough.md`, `reviews/*.md`). It lists the video frames that say an old number; `reelplanning
+  build` rebuilds them.
+- `reel pr-check` (step 1) also fails when an id on the branch names a different entry on the base.
+- `docs/project-dir.md`'s first rule gains a line: an id is final once it is on main.
+
+The other records:
+
+- **Plan folders** are named by date and name, and `reel new-plan` refuses one that exists, so two
+  branches clash only on the same date and name: pick another name.
+- **Reviews** live in their plan's folder: no clash.
+- **`terms-index.json`** is written by every build. A conflict in it is never fixed by hand: take main's
+  copy and run `reelplanning terms-index`. `reel renumber` does this too.
+- **`glossary.md`, `spec.md`, `system.json`** are written by hand. A conflict keeps both rows; `reel
+  check` on the plan after.
+- **Memory** stays per person in each home folder (D-106). The repo's `you.pending.jsonl` holds one
+  reviewer's lines until they move into that reviewer's file; with several reviewers, a line moves only
+  into the file of the reviewer it names, and `.gitattributes` marks the file `merge=union` (both
+  sides' lines kept).
+
+### Step 5 — CI, the merge, and the system video
+
+*Needs step 1's `reel pr-check` and step 4's number check.*
+
+- **A fast job on every PR** (`.github/workflows/test.yml`): Node 20, `npm ci`, then `npm run
+  test:fast`, the 18 script specs (76 s on this machine), and, when the PR changes
+  `packages/player/`, three player specs in Chromium (player, decisions, quiz: 43 s here); then
+  `reel pr-check --base origin/main` (with `--small-fix` when the label is on). The answer-on-frame
+  spec took 14 minutes here, so it stays in the full suite.
+- **The full suite** (`npm test`, the 18 script specs and 23 player specs): nightly on main, and in
+  `publish.yml` before `npm publish`, which today runs no tests.
+- **Before merging**, the maintainer checks, as `CONTRIBUTING.md` and the PR template list them: CI
+  passes; the plan review was approved before the code; every finding of the code check is answered in
+  `walkthrough.md`; `reel audit` passes; the walkthrough is accepted (by a maintainer, if question 1
+  says so); `spec.md`, `system.json` and `glossary.md` say what changed.
+
+**The system video, on main after the merge.** The system video is still brought up to date after
+every accepted walkthrough (D-003); with several PRs open, it is done on main. A PR carries only the
+changes to what the video is made from: `spec.md`, `system.json` and `glossary.md`. After a merge the
+maintainer runs `reelplanning spec-diff` on main, rebuilds the frames it names with `reelplanning build
+.reelplanning/system-video`, and commits once for every PR merged since. The video is behind only
+between a merge and that commit, and `reel status` says so meanwhile. Why not in each PR: two PRs that
+touch one chapter conflict in its frames and voice files, which git cannot merge. Why not a CI job: it
+needs the voice and a browser in CI, several minutes per merge, for a rebuild one person can batch.
+
+## Components touched
+
+- **The reel CLI** — `reel pr-check` (step 1), `reel record`'s `proposed` and `overruled` entries and
+  the `maintainers` list (step 2), `reel renumber` and the number check (step 4)
+- **The plan-to-video skill** — a short "Several people" section in `SKILL.md` that points at
+  `CONTRIBUTING.md`: who reviews, where the videos are watched, `reel renumber` (steps 2 to 4)
+- **The system video** — brought up to date on main after the merge, once for every PR merged
+  since (step 5)
+
+New files that are not areas: `CONTRIBUTING.md`, `.github/pull_request_template.md`,
+`.github/workflows/test.yml`, `.gitattributes`. `docs/lifecycle.md` gains a section "Several people",
+`docs/project-dir.md` the rule on ids, `docs/releasing.md` the full suite before a tag, and
+`README.md` a link to `CONTRIBUTING.md`.
+
+## Open questions for the reviewer
+
+1. **Who reviews a contributor's videos, and whose answer counts?** (step 2)
+- **A · The contributor reviews; a maintainer merges.** Fastest; the decision log then holds answers
+  no maintainer gave, and every later plan must keep them.
+- **B · A maintainer reviews both videos; the contributor only builds.** One person answers for the
+  log; the contributor never checks their own agent's choices, and waits on the maintainer twice.
+- **C · Both review; the maintainer's answer counts.** The contributor answers and fixes first; the
+  maintainer's review then makes each answer active or overrules it. Two reviews per video.
+I recommend C: the contributor catches their agent's choices while the code is fresh, and what enters
+the log binds every later plan, so a maintainer gives it.
+
+2. **Where does the maintainer watch a contributor's videos?** (step 3)
+- **A · On their own machine: check out the PR, run `reelplanning review`.** Works today, nothing to
+  build; the review lands in their inbox and is filed like any other.
+- **B · On a page CI builds for each PR, linked on the PR.** No checkout; a PR from a fork cannot
+  deploy a site safely, so it is a download, and the review comes back as a file to record.
+- **C · On the contributor's hosted page, shared with the maintainer.** Nothing to install; the review
+  lands in the contributor's page, and their session files it.
+I recommend A: it needs nothing new, and the review reaches the person who merges.
+
+3. **How do decision numbers survive two branches?** (step 4)
+- **A · In order, with a merge rule.** The PR merged second runs `reel renumber`: D-171 becomes D-172,
+  and its mentions follow. A number never changes once it is on main.
+- **B · Numbered after the merge.** A branch writes `D-new-1`; a job on main gives the real numbers
+  after each merge, in a commit of its own.
+- **C · The plan's own numbers until the merge.** A branch writes `D-contributing-1`; the maintainer
+  runs `reel renumber` when merging.
+I recommend A: git already stops at the clash, one command fixes it, and only the second PR does any
+work.
+
+## Decisions in force
+
+- **D-003** The system video is brought up to date after every accepted walkthrough, mindful of the
+  cost: kept; with several PRs, the maintainer does it on main after the merge, one rebuild for every
+  PR merged since (step 5).
+- **D-065** A comment on the system video that asks for the system to change: a small fix goes
+  straight in, anything with a choice becomes a plan. Unchanged; a contributor follows it too.
+- **D-001** A second agent checks that the code followed the plan: the contributor runs it, and the
+  maintainer checks every finding is answered before merging (step 5).
+- **D-106** Memory across repos is a file in each person's home folder: kept per person (step 4).
+- **D-127** Plain words on screen: `CONTRIBUTING.md` and the PR template use them too.
+- **D-110** At a step's fifth choice the implementer asks: unchanged for a contributor's agent.
+- **D-082** A run nobody is watching stays in auto mode, inside the sandbox: untouched.
+- **D-083** A quick check per step, and wherever there is something to predict: a contributor's
+  videos keep them.
+- **D-084**, **D-109** What stops the walkthrough video: unchanged; `proposed` entries (step 2) do not
+  count toward it.
+- **D-128** "You watched it" is kept in the browser and in your own file: per person, untouched.
+- **D-129** Approving is never blocked by a wrong quick check: untouched.
+- **D-085** Less scaffolding: this plan adds two commands and four files, no new stage.
+- **D-107** A retro every five plans: untouched; a contributor's plans count like any other.
+- **D-024** Detail pages start from a template: untouched.
+- **D-169**, **D-170** How the case study's arms are reviewed and judged: untouched.
+
+## Not in this plan
+
+- Memory per reviewer: `reel stops` counts accepted choices in a row across the log, whoever accepted
+  them. With `proposed` entries not counted (step 2), only maintainers' verdicts count; a count per
+  reviewer is a later plan.
+- Branch protection and code owners on GitHub: the owner sets them in the repo's settings, once the
+  test job exists.
+- A hosted page several people can use at once.

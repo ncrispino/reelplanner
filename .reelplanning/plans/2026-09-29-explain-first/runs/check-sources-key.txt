@@ -1,0 +1,5 @@
+$ reelplanning check-sources .reelplanning/explainers/2026-09-29-experiment/video   (scene 3 quotes a transcript line holding a made-up GitHub token)
+✗ scene 3 · a GitHub token in its text (ghp_…): the build stops until the text itself is cut or masked (ghp_…REDACTED); a blur would leave it in the committed text
+△ ~/.claude/session.jsonl: ~/.claude/session.jsonl changed since it was pinned
+✗ check-sources: 1 failure(s), 1 warning(s) · 3 scenes, 5 quoted pieces against 5 pinned sources
+exit 1

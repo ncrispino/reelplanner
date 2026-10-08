@@ -1,0 +1,104 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d13-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d13-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d13-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d13-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d13-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d13-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d13-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d13-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d13-ring.hot { border-color:var(--rp-coral); }
+  .d13-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d13-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d13-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d13-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d13-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d13-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d13-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d13-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d13-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d13-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d13-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d13-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d13-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d13-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d13-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d13-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d13-case { position:absolute; }
+  .d13-u { background-image:linear-gradient(var(--rp-coral),var(--rp-coral)); background-repeat:no-repeat; background-position:0 100%; background-size:0% 4px; padding-bottom:3px; }
+  .d13-x { background-image:linear-gradient(var(--rp-ink),var(--rp-ink)); background-repeat:no-repeat; background-position:0 55%; background-size:0% 3px; }
+  .d13-tile { position:absolute; left:90px; width:520px; height:112px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .d13-tile .k { position:absolute; left:24px; top:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d13-tile .t { position:absolute; left:24px; top:56px; font:500 34px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d13-tile .t code { font:500 30px/1 "JetBrains Mono"; }
+  .d13-cf { outline:3px solid rgba(var(--rp-slab-ink-rgb),0); outline-offset:4px; border-radius:4px; }
+
+</style>
+
+<div id="root" data-composition-id="13-step-4-renumber" data-band="bottom" data-duration="22.763" data-width="1920" data-height="1080">
+
+  <div class="clip d13-bg" id="d13-bg" data-start="0" data-duration="22.763" data-track-index="0"></div>
+
+  <div class="clip d13-scene" id="d13-scene" data-start="0" data-duration="22.763" data-track-index="1">
+    <div class="d13-lab" id="d13-h" style="left:90px; top:60px">step 4 · two plans, one decision number</div>
+    <div class="d13-tile" id="d13-main" style="top:150px"><span class="k">main · the cache plan</span> <span class="t">decision <code>D-001</code></span></div>
+    <div class="d13-tile" id="d13-ana" style="top:290px"><span class="k">Ana&#39;s branch · the port plan</span> <span class="t">decision <code><span class="d13-x" id="d13-old">D-001</span> <span id="d13-new">D-002</span></code></span></div>
+    <div class="d13-slab" id="d13-rb" data-detail="renumber" data-artifact="git rebase origin/main on Ana&#x27;s branch in the scratch repo, stopping at decisions.json, then reel renumber . --base origin/main" style="left:650px; top:150px; width:1180px; height:560px"><div class="d13-sbar"></div><div class="d13-sbt">Ana&#x27;s branch, merged second</div><div class="d13-row" id="d13-rb-r0" style="top:62px; font-size:26px; line-height:40px"><span class="g">$</span><span id="d13-rb-c0"></span></div><div class="d13-row" id="d13-rb-r1" style="top:102px; font-size:26px; line-height:40px"><span class="d13-cf" id="d13-conf">CONFLICT (content): Merge conflict in .reelplanning/decisions.json</span></div><div class="d13-row" id="d13-rb-r2" style="top:142px; font-size:26px; line-height:40px"><span class="g">$</span><span id="d13-rb-c2"></span></div><div class="d13-row" id="d13-rb-r3" style="top:182px; font-size:26px; line-height:40px">✓ took origin/main's log (1 entries, the last D-001) and add</div><div class="d13-row" id="d13-rb-r4" style="top:222px; font-size:26px; line-height:40px">    this branch's 1 after it, read from the theirs side of the conflict</div><div class="d13-row" id="d13-rb-r5" style="top:262px; font-size:26px; line-height:40px">✓ renumbered: D-001 → <span class="d13-u" id="d13-d2">D-002</span></div><div class="d13-row" id="d13-rb-r6" style="top:302px; font-size:26px; line-height:40px">✓ rewrote their mentions in …/2026-09-27-port/walkthrough.md,</div><div class="d13-row" id="d13-rb-r7" style="top:342px; font-size:26px; line-height:40px">    …/2026-09-27-port/reviews/plan-20260927T110000Z.md</div><div class="d13-row" id="d13-rb-r8" style="top:382px; font-size:26px; line-height:40px">△ the videos still say an old id; change these lines, then</div><div class="d13-row" id="d13-rb-r9" style="top:422px; font-size:26px; line-height:40px">    `reelplanning build` their video:</div><div class="d13-row" id="d13-rb-r10" style="top:462px; font-size:26px; line-height:40px">  …/walkthrough-video/STORYBOARD.md:7 says D-001</div><div class="d13-row" id="d13-rb-r11" style="top:502px; font-size:26px; line-height:40px">✓ .reelplanning/decisions.json and decisions.md: 2 entries</div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "13-step-4-renumber";
+  var d13_rb_c0_d = { t: 0 }, d13_rb_c0_s = "git rebase origin/main";
+  var d13_rb_c2_d = { t: 0 }, d13_rb_c2_s = "reel renumber . --base origin/main";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d13-h", {"opacity": 0});
+  gsap.set("#d13-main", {"opacity": 0});
+  gsap.set("#d13-ana", {"opacity": 0});
+  gsap.set("#d13-new", { opacity: 0 });
+  gsap.set("#d13-rb", {"opacity": 0});
+  gsap.set("#d13-rb-r1", {"opacity": 0});
+  gsap.set("#d13-rb-r3", {"opacity": 0});
+  gsap.set("#d13-rb-r4", {"opacity": 0});
+  gsap.set("#d13-rb-r5", {"opacity": 0});
+  gsap.set("#d13-rb-r6", {"opacity": 0});
+  gsap.set("#d13-rb-r7", {"opacity": 0});
+  gsap.set("#d13-rb-r8", {"opacity": 0});
+  gsap.set("#d13-rb-r9", {"opacity": 0});
+  gsap.set("#d13-rb-r10", {"opacity": 0});
+  gsap.set("#d13-rb-r11", {"opacity": 0});
+  tl.to("#d13-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d13-main", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 2.5);
+  tl.to("#d13-ana", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 2.9);
+  tl.to("#d13-rb", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.7);
+  tl.to(d13_rb_c0_d, { t: 1, duration: 0.6, ease: "none", onUpdate: function () { document.getElementById("d13-rb-c0").textContent = d13_rb_c0_s.slice(0, Math.round(d13_rb_c0_d.t * d13_rb_c0_s.length)); } }, 6.8999999999999995);
+  tl.to("#d13-rb-r1", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 7.6);
+  tl.to("#d13-conf", { outlineColor: "rgba(var(--rp-slab-ink-rgb),0.9)", duration: 0.4 }, 8.55);
+  tl.to(d13_rb_c2_d, { t: 1, duration: 0.8, ease: "none", onUpdate: function () { document.getElementById("d13-rb-c2").textContent = d13_rb_c2_s.slice(0, Math.round(d13_rb_c2_d.t * d13_rb_c2_s.length)); } }, 11.11);
+  tl.to("#d13-rb-r3", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 12.01);
+  tl.to("#d13-rb-r4", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 12.09);
+  tl.to("#d13-rb-r5", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 14.899999999999999);
+  tl.to("#d13-d2", { backgroundSize: "100% 4px", duration: 0.5, ease: "power2.out" }, 15.2);
+  tl.to("#d13-old", { backgroundSize: "100% 3px", duration: 0.5, ease: "power2.out" }, 15.2);
+  tl.to("#d13-new", {"opacity": 1, "duration": 0.3, "ease": "power3.out"}, 15.5);
+  tl.to("#d13-rb-r6", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 19.34);
+  tl.to("#d13-rb-r7", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 19.419999999999998);
+  tl.to("#d13-rb-r8", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 20.169999999999998);
+  tl.to("#d13-rb-r9", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 20.27);
+  tl.to("#d13-rb-r10", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 20.37);
+  tl.to("#d13-rb-r11", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 20.97);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

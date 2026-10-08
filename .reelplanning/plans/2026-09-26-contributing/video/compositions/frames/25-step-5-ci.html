@@ -1,0 +1,155 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k27-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k27-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k27-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k27-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k27-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k27-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k27-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k27-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k27-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k27-ul.ink { background:var(--rp-ink); height:3px; }
+  .k27-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k27-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k27-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k27-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k27-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k27-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k27-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k27-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k27-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k27-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k27-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k27-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k27-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k27-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k27-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k27-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k27-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k27-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k27-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k27-chip code, .k27-name code, .k27-small code, .k27-td code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k27-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k27-line.hot { background:var(--rp-coral); }
+  .k27-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k27-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k27-kick { position:absolute; left:120px; top:70px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k27-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k27-win { position:absolute; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .k27-wbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .k27-dot { position:absolute; top:19px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .k27-wt { position:absolute; left:110px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k27-tl { position:absolute; left:36px; font:400 26px/42px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k27-tl .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k27-err { color:var(--rp-syn-del); } .k27-ok { color:var(--rp-syn-add); }
+  .k27-ring { position:absolute; box-sizing:border-box; border:3px solid var(--rp-coral); border-radius:8px; }
+  .k27-flow { position:absolute; display:flex; align-items:center; }
+  .k27-fc { position:relative; height:68px; padding:0 28px; box-sizing:border-box; font:400 36px/64px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:34px; white-space:nowrap; }
+  .k27-fc.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k27-fc code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k27-fl { position:relative; height:4px; margin:0 12px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k27-fl.hot { background:var(--rp-coral); }
+.k27-dt { position:absolute; width:22px; height:22px; border-radius:50%; background:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="25-step-5-ci" data-band="bottom" data-duration="16.683" data-width="1920" data-height="1080">
+
+  <div class="clip k27-bg" id="k27-bg" data-start="0" data-duration="16.683" data-track-index="0"></div>
+
+  <div class="clip k27-scene" id="k27-scene" data-start="0" data-duration="16.683" data-track-index="1">
+    <div class="k27-view" id="k27-view">
+    <div class="k27-name" id="k27-l1" style="left:100px; top:50px">every push</div>
+    <div class="k27-chip" id="k27-a0" style="left:100px; top:128px"><code>npm test</code> · 19 script + 8 player specs</div>
+    <div class="k27-chip" id="k27-a1" style="left:680px; top:128px"><code>reel pr-check</code> · <code>reel audit</code></div>
+    <div class="k27-name" id="k27-l2" style="left:100px; top:210px">before a merge</div>
+    <div class="k27-pin hot" id="k27-rq" style="left:470px; top:222px">required</div>
+    <div class="k27-chip hot" id="k27-b0" style="left:100px; top:288px"><code>npm run test:full</code></div>
+    <div class="k27-chip" id="k27-b1" style="left:470px; top:288px">every test · 19 + 23 specs</div>
+    <div class="k27-chip" id="k27-b2" style="left:910px; top:288px">about 5 minutes</div>
+    <div class="k27-name" id="k27-l3" style="left:100px; top:370px">the release tag</div>
+    <div class="k27-chip" id="k27-c0" style="left:100px; top:448px"><code>npm run test:full</code></div>
+    <div class="k27-line" id="k27-cg" style="left:440px; top:470px; width:60px"></div>
+    <div class="k27-chip" id="k27-c1" style="left:520px; top:448px"><code>npm publish</code></div>
+    <div class="k27-lab" id="k27-dk" style="left:100px; top:556px">decided · decision D-003 · the system video, after every accepted walkthrough</div>
+    <div class="k27-small" id="k27-ml" style="left:100px; top:668px; font-family:'JetBrains Mono'">main</div>
+    <div class="k27-line" id="k27-main" style="left:200px; top:686px; width:820px"></div>
+    <div class="k27-dt" id="k27-d0" style="left:380px; top:677px"></div>
+    <div class="k27-small" id="k27-t0" style="left:300px; top:720px">PR #41 merged</div>
+    <div class="k27-dt" id="k27-d1" style="left:700px; top:677px"></div>
+    <div class="k27-small" id="k27-t1" style="left:620px; top:720px">PR #42 merged</div>
+    <div class="k27-box" id="k27-rb" style="left:1060px; top:610px; width:760px; height:270px"></div>
+    <div class="k27-lab" id="k27-rl" style="left:1090px; top:636px">one rebuild, on main</div>
+    <div class="k27-chip" id="k27-r0" style="left:1090px; top:700px"><code>reelplanning spec-diff</code></div>
+    <div class="k27-chip hot" id="k27-r1" style="left:1090px; top:780px"><code>reelplanning build</code></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "25-step-5-ci";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k27-l1", { opacity: 0, y: 12 });
+  tl.to("#k27-l1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.45);
+  gsap.set("#k27-a0", { opacity: 0, y: 12 });
+  tl.to("#k27-a0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.57);
+  gsap.set("#k27-a1", { opacity: 0, y: 12 });
+  tl.to("#k27-a1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.07);
+  gsap.set("#k27-l2", { opacity: 0, y: 12 });
+  tl.to("#k27-l2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.73);
+  gsap.set("#k27-b0", { opacity: 0, y: 12 });
+  tl.to("#k27-b0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5);
+  gsap.set("#k27-b1", { opacity: 0, y: 12 });
+  tl.to("#k27-b1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.58);
+  gsap.set("#k27-b2", { opacity: 0, y: 12 });
+  tl.to("#k27-b2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.68);
+  gsap.set("#k27-rq", { opacity: 0, y: 12 });
+  tl.to("#k27-rq", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.94);
+  gsap.set("#k27-l3", { opacity: 0, y: 12 });
+  tl.to("#k27-l3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.87);
+  gsap.set("#k27-c0", { opacity: 0, y: 12 });
+  tl.to("#k27-c0", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 10.17);
+  gsap.set("#k27-cg", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k27-cg", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 10.47);
+  gsap.set("#k27-c1", { opacity: 0, y: 12 });
+  tl.to("#k27-c1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 10.67);
+  gsap.set("#k27-ml", { opacity: 0 });
+  tl.to("#k27-ml", { opacity: 1, duration: 0.3, ease: "power2.out" }, 11.3);
+  gsap.set("#k27-main", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k27-main", { scaleX: 1, duration: 0.8, ease: "power1.inOut" }, 11.4);
+  gsap.set("#k27-d0", { opacity: 0, y: 12 });
+  tl.to("#k27-d0", { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 13.35);
+  gsap.set("#k27-t0", { opacity: 0, y: 12 });
+  tl.to("#k27-t0", { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 13.45);
+  gsap.set("#k27-d1", { opacity: 0, y: 12 });
+  tl.to("#k27-d1", { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 13.65);
+  gsap.set("#k27-t1", { opacity: 0, y: 12 });
+  tl.to("#k27-t1", { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 13.75);
+  gsap.set("#k27-dk", { opacity: 0 });
+  tl.to("#k27-dk", { opacity: 1, duration: 0.3, ease: "power2.out" }, 14.09);
+  gsap.set("#k27-rb", { opacity: 0, y: 12 });
+  tl.to("#k27-rb", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.12);
+  gsap.set("#k27-rl", { opacity: 0 });
+  tl.to("#k27-rl", { opacity: 1, duration: 0.3, ease: "power2.out" }, 12.32);
+  gsap.set("#k27-r0", { opacity: 0, y: 12 });
+  tl.to("#k27-r0", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 12.52);
+  gsap.set("#k27-r1", { opacity: 0, y: 12 });
+  tl.to("#k27-r1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 12.92);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

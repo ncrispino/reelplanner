@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "project": "walkthrough-video",
+  "src": "2026-09-24-memory--walkthrough/index.html",
+  "source": "conversation",
+  "by": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+  "said": "for our stuff thats open, i think for this release lets just accept all the walkthru i dont wanna watch those really, we'll work on those later if needed.",
+  "submittedAt": "2026-10-05T03:22:00.000Z",
+  "verdict": "approve",
+  "annotations": [],
+  "autonomy": [
+    {
+      "id": "a15",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "Where your file cannot be written (a run fenced to the repo by D-082's sandbox, a read-only home), `reel record` records the review all the same and says, on its last line, that this one is not in your memory (**changed after review:** you answered \"we still want to write somewhere, just somewhere we can access\". The summary now goes to `.reelplanning/you.pending.jsonl` in the repo, once, and the line says so; the next `reel record` or `reel memory --you` that can write your file moves the pending lines in, deduplicated by repo, plan and review, and removes the file; until then `--you` reads both. The pending file is committed, not gitignored: a run fenced to the repo is the review server's headless run or a cloud session, and what reaches you from there is what it commits; a gitignored file would stay on that machine, gone with a cloud container. It holds nothing `reviews/` does not already carry. If two machines of yours pull it, the first that can write its home takes the lines)"
+    }
+  ],
+  "decisions": [],
+  "quizzes": [],
+  "questions": [],
+  "recorded": {
+    "reviewer": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "conversation",
+    "reelplanning": "0.2.0"
+  }
+}

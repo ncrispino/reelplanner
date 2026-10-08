@@ -1,0 +1,50 @@
+# Publish the reelplanning npm package when a version tag is pushed (docs/releasing.md).
+# Needs the repository secret NPM_TOKEN: an npm automation token with publish rights.
+name: publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write   # npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: The tag matches package.json, and every pinned version matches it
+        run: |
+          test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME" \
+            || { echo "tag $GITHUB_REF_NAME does not match package.json"; exit 1; }
+          node scripts/release/sync-version.mjs --check
+
+      - run: npm ci
+
+      # The full suite, exhaustive, before anything is published: the script specs and every player spec
+      # (headless Chromium, which Playwright installs here; scripts/lib/static-server.mjs serves the pages).
+      # Its package spec checks what goes in: everything the CLI needs, and no media, tests or plans.
+      - name: Chromium for the player specs
+        run: npx playwright-core install --with-deps chromium
+
+      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
+      # it for every user. No agent is on the runner, so name one: Codex reads ~/.agents/skills, where the pipeline reads them.
+      - name: HyperFrames' skills, at the pinned version
+        run: node bin/reelplanning.mjs hyperframes-skills
+        env:
+          REELPLANNING_SKILLS_AGENTS: codex
+
+      - name: The full test suite
+        run: npm run test:full
+
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

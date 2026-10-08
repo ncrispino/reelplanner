@@ -1,0 +1,177 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f18b-step-4-value-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f18b-step-4-value-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f18b-step-4-value-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f18b-step-4-value-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f18b-step-4-value-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f18b-step-4-value-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f18b-step-4-value-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-slot .d.lit { color:var(--rp-coral-deep); }
+  .f18b-step-4-value-slot:not([data-filled]) .n, .f18b-step-4-value-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f18b-step-4-value-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f18b-step-4-value-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f18b-step-4-value-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f18b-step-4-value-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f18b-step-4-value-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f18b-step-4-value-node.dim { opacity:0.72; }
+  .f18b-step-4-value-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f18b-step-4-value-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f18b-step-4-value-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f18b-step-4-value-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f18b-step-4-value-chip.lit { color:var(--rp-coral-deep); }
+  .f18b-step-4-value-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f18b-step-4-value-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f18b-step-4-value-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18b-step-4-value-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f18b-step-4-value-conn { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f18b-step-4-value-conn path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; }
+  .f18b-step-4-value-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  /* ---- prototypes of the player's own surfaces (§16): small text inside a depicted page is the page's own ---- */
+  .f18b-step-4-value-mockscreen { position:absolute; left:0; top:0; background:var(--rp-tile); overflow:hidden; }
+  .f18b-step-4-value-mockbar { position:absolute; left:0; height:70px; border-top:1px solid rgba(var(--rp-ink-rgb),0.15); background:var(--rp-paper); }
+  .f18b-step-4-value-mocktrack { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f18b-step-4-value-mockfill { position:absolute; height:4px; border-radius:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f18b-step-4-value-mockstat { position:absolute; font:500 24px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-mockk { position:absolute; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f18b-step-4-value-mockh { position:absolute; font:400 52px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-mocks { position:absolute; font:400 28px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-mockfile { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); white-space:nowrap; }
+  .f18b-step-4-value-mockcode { position:absolute; left:0; height:44px; font:400 24px/44px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; box-shadow:inset 5px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f18b-step-4-value-mockcode .ln { display:inline-block; width:56px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f18b-step-4-value-mockcode.sel { background:var(--rp-tile-2); box-shadow:inset 5px 0 0 var(--rp-ink); }
+  .f18b-step-4-value-mockcode.del { color:rgba(var(--rp-ink-rgb),0.5); text-decoration:line-through; text-decoration-color:rgba(var(--rp-ink-rgb),0.35); }
+  .f18b-step-4-value-mockcode.add { background:var(--rp-tile-2); }
+  .f18b-step-4-value-mockrow { position:absolute; left:0; height:36px; font:400 20px/36px "Inter"; color:var(--rp-ink); white-space:nowrap; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f18b-step-4-value-mockrow .lv { position:absolute; right:18px; font:500 18px/36px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f18b-step-4-value-mockbtn { position:absolute; height:48px; padding:0 20px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f18b-step-4-value-mockbar2 { position:absolute; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f18b-step-4-value-mocknote { position:absolute; height:52px; padding:0 18px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/50px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f18b-step-4-value-mocktab { position:absolute; top:0; height:48px; padding:0 22px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none; border-radius:8px 8px 0 0; font:500 22px/46px "Inter"; color:rgba(var(--rp-ink-rgb),0.6); background:var(--rp-tile); white-space:nowrap; }
+  .f18b-step-4-value-mocktab.on { background:var(--rp-paper); color:var(--rp-ink); }
+  /* option cards (decision beats): each carries a small prototype of what that option does */
+  .f18b-step-4-value-opt { position:absolute; top:190px; height:500px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18b-step-4-value-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f18b-step-4-value-opt .l { position:absolute; left:28px; top:66px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-opt .c { position:absolute; left:28px; top:440px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-mini { position:absolute; left:28px; top:140px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-paper); overflow:hidden; }
+
+  /* revise v6 additions: decided tags on rail slots (§14), part cells, headers over mocks */
+  .f18b-step-4-value-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f18b-step-4-value-slot.dec .n { top:13px; } .f18b-step-4-value-slot.dec .t { top:12px; } .f18b-step-4-value-slot.dec .dd { opacity:1; }
+  .f18b-step-4-value-hdr { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-cap { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18b-step-4-value-mockcell { position:absolute; width:74px; height:60px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 22px/58px "JetBrains Mono"; text-align:center; color:var(--rp-ink); background:var(--rp-paper); }
+  .f18b-step-4-value-mockcell.on { background:var(--rp-tile-2); border-color:rgba(var(--rp-ink-rgb),0.45); }
+  .f18b-step-4-value-big { position:absolute; font:400 88px/1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-t30 { position:absolute; font:400 30px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-mocklvl { position:absolute; height:36px; padding:0 12px; border-radius:18px; border:1px solid rgba(var(--rp-ink-rgb),0.35); font:500 20px/34px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-hl { background:var(--rp-tile-2); border-radius:3px; padding:0 2px; }
+  .f18b-step-4-value-sect { position:absolute; left:0; border-radius:8px; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f18b-step-4-value-row { position:absolute; left:0; height:66px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f18b-step-4-value-st { position:absolute; right:28px; top:20px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+
+  .f18b-step-4-value-evr { position:absolute; left:0; width:1640px; height:68px; border-top:1px solid rgba(var(--rp-ink-rgb),0.1); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f18b-step-4-value-evr span { position:absolute; top:0; font:500 34px/68px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f18b-step-4-value-evr span.tg { font:500 24px/68px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f18b-step-4-value-evr.mk { background:var(--rp-tile-2); }
+
+</style>
+
+<div id="root" data-composition-id="18b-step-4-value" data-duration="18.308" data-width="1920" data-height="1080">
+
+  <div class="clip f18b-step-4-value-bg" data-start="0" data-duration="18.308" data-track-index="0"></div>
+
+  <div class="clip f18b-step-4-value-scene" id="f18b-step-4-value-scene" data-start="0" data-duration="18.308" data-track-index="1">
+
+  <div class="f18b-step-4-value-kicker" id="f18b-step-4-value-kicker">Step 4 · What changed</div>
+  <div class="f18b-step-4-value-spine" id="f18b-step-4-value-spine">
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-1" data-plan-step="1" data-done style="top:35px"></div>
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-2" data-plan-step="2" data-done style="top:145px"></div>
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-3" data-plan-step="3" data-done style="top:255px"></div>
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-5" data-plan-step="5" style="top:475px"></div>
+    <div class="f18b-step-4-value-tick" id="f18b-step-4-value-tick-6" data-plan-step="6" style="top:585px"></div>
+  </div>
+  <div class="f18b-step-4-value-cap" id="f18b-step-4-value-line" style="left:200px; top:180px; color:var(--rp-ink)">a value the agent picked · call A1</div>
+  <div class="f18b-step-4-value-mocknote" id="f18b-step-4-value-c1" style="left:200px; top:236px">plan said · 8 MB</div>
+  <div class="f18b-step-4-value-mocknote" id="f18b-step-4-value-c2" style="left:500px; top:236px">agent picked · 16 MB</div>
+  <div class="f18b-step-4-value-page" id="f18b-step-4-value-ev" style="left:200px; top:320px; width:1640px; height:470px">
+    <div class="f18b-step-4-value-mockfile" style="left:40px; top:24px">details/a1-staging-runs.html</div>
+    <div style="position:absolute; left:0; top:64px; width:1640px; height:1px; background:rgba(var(--rp-ink-rgb),0.12)"></div>
+    <div class="f18b-step-4-value-mockh" style="left:40px; top:86px">16 MB parts lose less</div>
+    <div class="f18b-step-4-value-mockstat" style="left:1010px; top:110px">same 40 dropped connections</div>
+    <div class="f18b-step-4-value-mockk" style="left:40px; top:210px">part</div>
+    <div class="f18b-step-4-value-mockk" style="left:420px; top:210px">parts resent</div>
+    <div class="f18b-step-4-value-mockk" style="left:820px; top:210px">time to finish</div>
+    <div class="f18b-step-4-value-mockk" style="left:1220px; top:210px">retries</div>
+    <div class="f18b-step-4-value-evr" id="f18b-step-4-value-r1" style="top:246px"><span style="left:40px">8 MB</span><span style="left:420px">96</span><span style="left:820px">6:10</span><span style="left:1220px">131</span><span class="tg" style="left:190px">plan</span></div>
+    <div class="f18b-step-4-value-evr mk" id="f18b-step-4-value-r2" style="top:318px"><span style="left:40px">16 MB</span><span style="left:420px">52</span><span style="left:820px">4:40</span><span style="left:1220px">64</span><span class="tg" style="left:210px">picked</span></div>
+    <div class="f18b-step-4-value-evr" id="f18b-step-4-value-r3" style="top:390px"><span style="left:40px">32 MB</span><span style="left:420px">45</span><span style="left:820px">5:25</span><span style="left:1220px">58</span></div>
+  </div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "18b-step-4-value", P = "#f18b-step-4-value-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f18b-step-4-value-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f18b-step-4-value-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f18b-step-4-value-slot-" + n + " .n, #f18b-step-4-value-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f18b-step-4-value-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f18b-step-4-value-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  // swap one status text for another (both sit in the same place)
+  var swap = function (tl, a, b, at) { tl.to($(a), { opacity: 0, duration: 0.25 }, at); tl.fromTo($(b), { opacity: 0 }, { opacity: 1, duration: 0.25 }, at + 0.1); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+
+  gsap.set("#f18b-step-4-value-tick-4", { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("line"), 0.07, 8);
+  pop(tl, $("c1"), 4.66, 8);
+  pop(tl, $("c2"), 6.52, 8);
+  gsap.set([$("r1"), $("r2"), $("r3")], { opacity: 0 });
+  pop(tl, $("ev"), 8.78, 16);
+  pop(tl, $("r1"), 10.7, 6);
+  pop(tl, $("r2"), 11.16, 6);
+  pop(tl, $("r3"), 11.98, 6);
+  lit(tl, $("r2"), 15.89);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 17.807);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

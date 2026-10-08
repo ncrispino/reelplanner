@@ -1,0 +1,139 @@
+<template>
+<style>
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; }
+
+  /* ---- full-bleed ground (clip layer, never #root) ---- */
+  #f05-quiz-1-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+
+  /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+  .f05-quiz-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f05-quiz-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f05-quiz-1-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f05-quiz-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f05-quiz-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-quiz-1-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f05-quiz-1-slot.dim { opacity:0.72; }
+  .f05-quiz-1-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+  .f05-quiz-1-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f05-quiz-1-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f05-quiz-1-node.navy .l { color:var(--rp-on-ink); }
+  .f05-quiz-1-node.dim { opacity:0.72; }
+  .f05-quiz-1-node.navy.dim { opacity:1; }
+  .f05-quiz-1-node.active { border:3px solid var(--rp-coral); }
+  .f05-quiz-1-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f05-quiz-1-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f05-quiz-1-edges path.dim { opacity:0.35; }
+  .f05-quiz-1-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+
+  /* ---- frame-local: the deviation tag reads INK here (the one coral is the lit node) ---- */
+  #f05-quiz-1-slot-2 .d { color:var(--rp-ink); }
+
+  /* ---- the lit-node ring: the frame's ONE coral ---- */
+  #f05-quiz-1-ring { position:absolute; left:-1px; top:-1px; right:-1px; bottom:-1px; box-sizing:border-box; border:3px solid var(--rp-coral); border-radius:13px; pointer-events:none; }
+
+  /* ---- kicker ---- */
+  #f05-quiz-1-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); }
+
+  /* ---- quick check: question card + three chips (none marked) ---- */
+  #f05-quiz-1-qcard { position:absolute; left:700px; top:708px; width:1160px; height:90px; box-sizing:border-box; padding:0 28px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  #f05-quiz-1-qcard .q { font:400 34px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+  .f05-quiz-1-chip { position:absolute; top:808px; width:373px; height:84px; box-sizing:border-box; padding:0 18px 0 58px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+  .f05-quiz-1-chip .k { position:absolute; left:20px; top:14px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f05-quiz-1-chip .l { font:400 28px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; }
+</style>
+
+<div id="root" data-composition-id="05-quiz-1" data-duration="7.241" data-width="1920" data-height="1080">
+
+  <div class="clip" id="f05-quiz-1-bg" data-start="0" data-duration="7.241" data-track-index="0"></div>
+
+  <div id="f05-quiz-1-kicker">Quick check</div>
+
+  <div class="f05-quiz-1-rail" id="f05-quiz-1-rail">
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span><span class="d">16 MB</span></div>
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+    <div class="f05-quiz-1-slot" id="f05-quiz-1-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <div class="f05-quiz-1-node"      id="f05-quiz-1-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+  <div class="f05-quiz-1-node"      id="f05-quiz-1-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+  <div class="f05-quiz-1-node navy" id="f05-quiz-1-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+  <div class="f05-quiz-1-node"      id="f05-quiz-1-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span><span id="f05-quiz-1-ring"></span></div>
+  <div class="f05-quiz-1-node"      id="f05-quiz-1-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+  <div class="f05-quiz-1-node"      id="f05-quiz-1-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+  <svg class="f05-quiz-1-edges" id="f05-quiz-1-edges" viewBox="0 0 1920 1080">
+    <path id="f05-quiz-1-e-api-manifest"     d="M1300 460 L1330 460 L1330 305 L1360 305" />
+    <path id="f05-quiz-1-e-api-blob"         d="M1300 510 L1330 510 L1330 645 L1360 645" />
+    <path id="f05-quiz-1-e-sdk-api"          d="M970 485 L1030 485" />
+    <path id="f05-quiz-1-e-api-billing"      d="M1165 430 L1165 180 L1770 180 L1770 230" />
+    <path id="f05-quiz-1-e-sweeper-manifest" d="M1770 590 L1770 450 L1660 450 L1660 305 L1640 305" />
+    <path id="f05-quiz-1-e-sweeper-blob"     d="M1680 645 L1640 645" />
+  </svg>
+
+  <div id="f05-quiz-1-qcard"><span class="q">The client sends part 4 twice. What does the second PUT do?</span></div>
+
+  <div class="f05-quiz-1-chip" id="f05-quiz-1-chip-a" style="left:700px"><span class="k">A</span><span class="l">Stores it again</span></div>
+  <div class="f05-quiz-1-chip" id="f05-quiz-1-chip-b" style="left:1093px"><span class="k">B</span><span class="l">Sees the bit and does nothing</span></div>
+  <div class="f05-quiz-1-chip" id="f05-quiz-1-chip-c" style="left:1487px"><span class="k">C</span><span class="l">Fails the upload</span></div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var DUR = 6.741;
+  var q = function (s) { return document.querySelector(s); };
+  var many = function (list) { return list.map(q); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines["05-quiz-1"] = tl;
+
+  /* hold the full voice length so seeks past the last reveal land on the held read */
+  tl.to({ h: 0 }, { h: 1, duration: DUR, ease: "none" }, 0);
+
+  /* 0.04 "Quick" — the kicker */
+  tl.fromTo("#f05-quiz-1-kicker",
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.08);
+
+  /* 0.91 "the client" — the question card lands */
+  tl.fromTo("#f05-quiz-1-qcard",
+    { opacity: 0, y: 16 },
+    { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.898);
+
+  /* 1.55 "sends" — the map settles back so the store path carries the eye
+     (navy manifest tile never dims; the blob store stays at full) */
+  tl.fromTo(many([
+      "#f05-quiz-1-slot-1", "#f05-quiz-1-slot-3", "#f05-quiz-1-slot-4",
+      "#f05-quiz-1-slot-5", "#f05-quiz-1-slot-6",
+      "#f05-quiz-1-node-sdk", "#f05-quiz-1-node-api",
+      "#f05-quiz-1-node-billing", "#f05-quiz-1-node-sweeper"
+    ]),
+    { opacity: 1 },
+    { opacity: 0.72, duration: 0.6, ease: "power2.out" }, 1.478);
+
+  /* 2.52 "twice." — Blob store lights: the frame's ONE coral */
+  tl.fromTo("#f05-quiz-1-ring",
+    { opacity: 0 },
+    { opacity: 1, duration: 0.45, ease: "power3.out" }, 2.37);
+
+  /* 3.82 "store" / 4.58 "see" / 5.70 "fail" — the three chips, none marked */
+  tl.fromTo("#f05-quiz-1-chip-a",
+    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.856);
+  tl.fromTo("#f05-quiz-1-chip-b",
+    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.645);
+  tl.fromTo("#f05-quiz-1-chip-c",
+    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.814);
+})();
+</script>
+</template>

@@ -1,0 +1,119 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m29-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m29-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .m29-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .m29-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .m29-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m29-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .m29-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m29-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .m29-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .m29-ul.ink { background:var(--rp-ink); height:3px; }
+  .m29-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m29-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m29-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m29-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m29-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m29-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m29-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m29-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .m29-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .m29-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m29-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m29-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .m29-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .m29-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .m29-s { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m29-s .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m29-s .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m29-s .d, .m29-s .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .m29-s .r { border-color:transparent; color:rgba(var(--rp-ink-rgb),0.72); }
+  
+  .m29-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m29-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m29-h { position:absolute; font:400 44px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m29-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m29-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m29-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m29-t code, .m29-s code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m29-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .m29-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m29-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .m29-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .m29-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .m29-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .m29-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m29-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m29-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .m29-shot img { display:block; position:absolute; left:0; top:0; }
+  .m29-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:8px; }
+  .m29-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m29-pin.hot { background:var(--rp-coral); }
+  .m29-slab2 { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m29-bar2 { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m29-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m29-code { position:absolute; font:400 28px/1.3 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m29-code .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .m29-code .ok { color:var(--rp-syn-add); }
+  .m29-code .w { color:var(--rp-syn-num); }
+  .m29-code .x { color:var(--rp-syn-del); }
+  .m29-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m29-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .m29-btn { position:absolute; height:44px; padding:0 16px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m29-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); line-height:40px; }
+  .m29-cap { position:absolute; box-sizing:border-box; padding:14px 30px; border-radius:10px; background:var(--rp-slab); font:700 40px/1.25 "Inter"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .m29-cap .ul { text-decoration:underline dotted; text-decoration-thickness:4px; text-underline-offset:8px; }
+
+</style>
+
+<div id="root" data-composition-id="29-the-plan" data-band="bottom" data-duration="12.8" data-width="1920" data-height="1080">
+
+  <div class="clip m29-bg" id="m29-bg" data-start="0" data-duration="12.8" data-track-index="0"></div>
+
+  <div class="clip m29-scene" id="m29-scene" data-start="0" data-duration="12.8" data-track-index="1">
+    <div class="m29-lab" id="m29-h" style="left:160px; top:60px">The plan · 5 steps, 3 questions</div>
+    <div class="m29-s" id="m29-s0" data-plan-step="1" style="top:120px"><span class="n">Step 1</span><span class="t">Fresh eyes: a newcomer and a designer</span><span class="r">before you watch</span></div>
+    <div class="m29-s" id="m29-s1" data-plan-step="2" style="top:252px"><span class="n">Step 2</span><span class="t">Every finding answered</span><span class="d">question 1</span></div>
+    <div class="m29-s" id="m29-s2" data-plan-step="3" style="top:384px"><span class="n">Step 3</span><span class="t">A way to find out</span><span class="d">question 2</span></div>
+    <div class="m29-s" id="m29-s3" data-plan-step="4" style="top:516px"><span class="n">Step 4</span><span class="t">Frames that read: seven rules</span><span class="r">checked where they can be</span></div>
+    <div class="m29-s" id="m29-s4" data-plan-step="5" style="top:648px"><span class="n">Step 5</span><span class="t">Which videos get it</span><span class="d">question 3</span></div>
+    <div class="m29-lab" id="m29-ask" style="left:160px; top:820px">draw on a step to leave a note · or approve</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "29-the-plan";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m29-h", { opacity: 0 });
+  tl.to("#m29-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  gsap.set("#m29-s0", { opacity: 0, y: 12 });
+  tl.to("#m29-s0", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+  gsap.set("#m29-s1", { opacity: 0, y: 12 });
+  tl.to("#m29-s1", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.35);
+  gsap.set("#m29-s2", { opacity: 0, y: 12 });
+  tl.to("#m29-s2", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.5);
+  gsap.set("#m29-s3", { opacity: 0, y: 12 });
+  tl.to("#m29-s3", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.65);
+  gsap.set("#m29-s4", { opacity: 0, y: 12 });
+  tl.to("#m29-s4", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.8);
+  gsap.set("#m29-ask", { opacity: 0 });
+  tl.to("#m29-ask", { opacity: 1, duration: 0.4, ease: "power2.out" }, 7.46);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

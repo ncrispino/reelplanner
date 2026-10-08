@@ -1,0 +1,96 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f15-branch-2a-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f15-branch-2a-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+  .f15-branch-2a-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- rail: GONE (§18 v9). The consequence of option A is the whole beat, and the kicker
+     already says which step and which option, so the column takes the band 160..1860.
+     after-layout, column-relative:  title 0..44 · video 58..368 · merged row 380..428
+     (transport 0..920, tools 950..1700) · composer 440..580                                   */
+  .f15-branch-2a-col { position:absolute; left:160px; top:230px; width:1700px; height:620px; }
+  .f15-branch-2a-r { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f15-branch-2a-r .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+  .f15-branch-2a-vid { position:absolute; left:0; top:58px; width:1700px; height:310px; border-radius:5px; background:var(--rp-data); }
+  .f15-branch-2a-vid .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+  .f15-branch-2a-vid .mini { position:absolute; left:15%; top:54%; width:70%; height:6px; border-radius:3px; background:rgba(var(--rp-on-ink-rgb),0.35); }
+
+  /* the two rows that change width are BARE rects; their labels are siblings that only translate */
+  .f15-branch-2a-rect { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f15-branch-2a-flat { position:absolute; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+
+  /* the composer: it arrives under the frame it is about, and keeps its width throughout */
+  .f15-branch-2a-comp { position:absolute; left:0; top:440px; width:1700px; height:140px; border-radius:5px;
+    background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); opacity:0; }
+  .f15-branch-2a-comp .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+  .f15-branch-2a-comp .bar { position:absolute; left:16px; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.16); }
+  .f15-branch-2a-comp .btn { position:absolute; right:16px; top:86px; width:120px; height:34px; border-radius:5px; border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+
+  /* the frame's ONE coral: the merged transport + tools row */
+  .f15-branch-2a-lit { position:absolute; left:-3px; top:377px; width:1706px; height:54px; border-radius:7px; border:3px solid var(--rp-coral); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="15-branch-2a" data-duration="5.727" data-width="1920" data-height="1080">
+  <div class="f15-branch-2a-bg"></div>
+  <div class="f15-branch-2a-kicker" id="f15-branch-2a-kicker">✱ If A · under the frame</div>
+
+  <div class="f15-branch-2a-lbl" style="left:160px;top:180px">The main column</div>
+
+  <div class="f15-branch-2a-col" id="f15-branch-2a-col" data-plan-component="page">
+    <div class="f15-branch-2a-r" style="left:0;top:0;width:1700px;height:44px"><span class="cap">Title</span></div>
+    <div class="f15-branch-2a-vid" id="f15-branch-2a-vid" data-plan-component="stage"><span class="cap">The video</span><i class="mini"></i></div>
+
+    <div class="f15-branch-2a-rect" id="f15-branch-2a-transport" style="left:0;top:380px;width:1700px;height:48px;transform-origin:0 0"></div>
+    <span class="f15-branch-2a-flat" id="f15-branch-2a-tcap" style="left:16px;top:394px">Transport</span>
+
+    <div class="f15-branch-2a-rect" id="f15-branch-2a-tools" style="left:0;top:440px;width:1700px;height:48px;transform-origin:100% 50%"></div>
+    <span class="f15-branch-2a-flat" id="f15-branch-2a-kcap" style="left:16px;top:454px">Mark · Wait · Note · Approve</span>
+
+    <div class="f15-branch-2a-comp" id="f15-branch-2a-comp" data-plan-component="composer">
+      <span class="cap">Composer</span>
+      <i class="bar" style="top:56px;width:1180px"></i>
+      <i class="bar" style="top:78px;width:920px"></i>
+      <i class="btn"></i>
+    </div>
+
+    <div class="f15-branch-2a-lit" id="f15-branch-2a-lit"></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 5.227, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+  // the merged row, column-relative: transport 0..920, tools 950..1700, both 380..428
+  const SX_T = 920 / 1700, SX_K = 750 / 1700;
+
+  tl.fromTo("#f15-branch-2a-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.028);
+  tl.fromTo("#f15-branch-2a-col", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.7, ease: E, transformOrigin: "50% 40%" }, 0.151);
+
+  // "the composer is under the frame it is about" — it travels into the slot below the tools row
+  tl.fromTo("#f15-branch-2a-comp", { opacity: 0, y: 74 }, { opacity: 1, y: 60, duration: 0.8, ease: E }, 0.697);
+
+  // "the toolbar moves up beside the transport" — the tools strip shrinks to the transport row's
+  // right and rides up onto it; the transport rect gives up the width; the composer closes the gap
+  tl.to("#f15-branch-2a-tools", { y: -60, scaleX: SX_K, duration: 0.85, ease: E }, 3.243);
+  tl.to("#f15-branch-2a-kcap", { x: 950, y: -60, duration: 0.85, ease: E }, 3.243);
+  tl.to("#f15-branch-2a-transport", { scaleX: SX_T, duration: 0.85, ease: E }, 3.243);
+  tl.to("#f15-branch-2a-comp", { y: 0, duration: 0.85, ease: E }, 3.243);
+
+  // "beside the transport" — the merged row's border, the frame's one coral
+  tl.fromTo("#f15-branch-2a-lit", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: E }, 4.058);
+
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["15-branch-2a"] = tl;
+})();
+</script>
+</template>

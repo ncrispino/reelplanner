@@ -1,0 +1,12 @@
+$ grep -n -A9 '^## Frame 3 ' .reelplanning/plans/2026-09-27-walkthroughs-that-help/walkthrough-video/STORYBOARD.md   (this repo: the walkthrough video's first quick check, as its storyboard writes it)
+84:## Frame 3 — Quick check: which pauses
+85-
+86-- plan_step: 2
+87-- quiz: k1
+88-- question: This build's choice A3 is labelled visible; its choice A2 only close. Which of them pauses this video?
+89-- option_a: Both of them
+90-- option_b: Only choice A3
+91-- option_c: Neither: both go on the list
+92-- answer: b
+93-- explain: A choice labelled visible pauses the video; a close one goes on the list at the end.
+exit 0

@@ -1,0 +1,119 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w01-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w01-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w01-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w01-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w01-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w01-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w01-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w01-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w01-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w01-ul.ink { background:var(--rp-ink); height:3px; }
+  .w01-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w01-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w01-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w01-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w01-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w01-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w01-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w01-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w01-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w01-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w01-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w01-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w01-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w01-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w01-tab { position:absolute; left:120px; top:150px; width:1680px; }
+  .w01-hd { position:absolute; top:0; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w01-r { position:absolute; left:0; width:1680px; height:78px; border-top:1px solid rgba(var(--rp-ink-rgb),0.16); box-sizing:border-box; }
+  .w01-r .f { position:absolute; left:0; top:22px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .w01-r .n { position:absolute; left:760px; width:110px; text-align:right; top:20px; font:500 34px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .w01-r .p { position:absolute; left:930px; top:18px; font:400 36px/1.1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w01-r .p::before { content:"\00B7  "; color:rgba(var(--rp-ink-rgb),0.5); }
+  .w01-bar { position:absolute; left:-24px; width:8px; height:58px; border-radius:4px; background:var(--rp-coral); transform-origin:50% 50%; }
+  .w01-tot { position:absolute; left:0; font:400 64px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .w01-tot .u { font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); margin-left:14px; }
+
+</style>
+
+<div id="root" data-composition-id="01-the-map" data-band="bottom" data-duration="15.6" data-width="1920" data-height="1080">
+
+  <div class="clip w01-bg" id="w01-bg" data-start="0" data-duration="15.6" data-track-index="0"></div>
+
+  <div class="clip w01-scene" id="w01-scene" data-start="0" data-duration="15.6" data-track-index="1">
+    <div class="w01-lab" id="w01-h" style="left:120px; top:60px">git diff --stat b421610..d644b49 · by folder</div>
+    <div class="w01-view" id="w01-view"><div class="w01-cam" id="w01-cam">
+    <div class="w01-tab" data-artifact="git diff --stat b421610..d644b49, by folder">
+    <div class="w01-hd" style="left:0; top:0">folder</div><div class="w01-hd" style="left:790px">files</div><div class="w01-hd" style="left:930px">what changed there</div>
+    <div class="w01-r" id="w01-r0" style="top:44px"><span class="f">.reelplanning/system-video/</span><span class="n" id="w01-n0">129</span><span class="p">rebuilt once, whole</span></div>
+    <div class="w01-r" id="w01-r1" style="top:122px"><span class="f">scripts/</span><span class="n" id="w01-n1">22</span><span class="p">the checks; names in the captions</span></div>
+    <div class="w01-r" id="w01-r2" style="top:200px"><span class="f">packages/player/</span><span class="n" id="w01-n2">17</span><span class="p">fonts, inks, the coral; zoom; whys</span></div>
+    <div class="w01-r" id="w01-r3" style="top:278px"><span class="f">templates/</span><span class="n" id="w01-n3">11</span><span class="p">frame template, moves, code blocks</span></div>
+    <div class="w01-r" id="w01-r4" style="top:356px"><span class="f">.reelplanning/names.md, theme/</span><span class="n" id="w01-n4">4</span><span class="p">the names list; this repo's theme</span></div>
+    <div class="w01-r" id="w01-r5" style="top:434px"><span class="f">skills/plan-to-video/</span><span class="n" id="w01-n5">2</span><span class="p">the rules for a scene</span></div>
+    <div class="w01-r" id="w01-r6" style="top:512px"><span class="f">docs/, package.json</span><span class="n" id="w01-n6">2</span><span class="p">a note; the fonts in the package</span></div>
+    <div class="w01-bar" id="w01-bar" style="top:54px"></div>
+    <div class="w01-tot" id="w01-tot" style="top:616px"><span id="w01-tn">187</span><span class="u">files changed</span></div>
+    </div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "01-the-map";
+
+  var tn = document.getElementById("w01-tn"), c = { v: 0 };
+  function cnt() { tn.textContent = String(Math.round(c.v)); }
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w01-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#w01-h", { opacity: 0 });
+  gsap.set("#w01-tot", { opacity: 0 });
+  gsap.set("#w01-bar", { scaleY: 0 });
+  gsap.set("#w01-r0", { opacity: 0, y: 12 });
+  gsap.set("#w01-r1", { opacity: 0, y: 12 });
+  gsap.set("#w01-r2", { opacity: 0, y: 12 });
+  gsap.set("#w01-r3", { opacity: 0, y: 12 });
+  gsap.set("#w01-r4", { opacity: 0, y: 12 });
+  gsap.set("#w01-r5", { opacity: 0, y: 12 });
+  gsap.set("#w01-r6", { opacity: 0, y: 12 });
+  tl.to("#w01-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+  tl.to("#w01-tot", { opacity: 1, duration: 0.3, ease: "none" }, 6.07);
+  tl.to(c, { v: 187, duration: 1.2, ease: "power2.out", onUpdate: cnt }, 6.07);
+  tl.to("#w01-r0", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.09);
+  tl.to("#w01-r1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.25);
+  tl.to("#w01-r2", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.41);
+  tl.to("#w01-r3", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.57);
+  tl.to("#w01-r4", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.73);
+  tl.to("#w01-r5", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 9.89);
+  tl.to("#w01-r6", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 10.05);
+  tl.to("#w01-r1", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-r2", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-r3", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-r4", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-r5", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-r6", { opacity: 0.35, duration: 0.35, ease: "power2.out" }, 11.98);
+  tl.to("#w01-bar", { scaleY: 1, duration: 0.35, ease: "power3.out" }, 11.98);
+  tl.to("#w01-r1", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.01);
+  tl.to("#w01-r2", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.09);
+  tl.to("#w01-r3", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.17);
+  tl.to("#w01-r4", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.25);
+  tl.to("#w01-r5", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.33);
+  tl.to("#w01-r6", { opacity: 1, duration: 0.35, ease: "power2.out" }, 14.41);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

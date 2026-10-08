@@ -1,0 +1,8 @@
+$ reel pr-check . --base origin/main --body-file ../pr-ticked.md --labels "" --merge   (the same, as CI runs it once ready-to-merge is on)
+· over the line (ticked: a choice (the port by default, 8790))
+· size: 25 changed line(s) in 1 file(s)
+· seen in the diff, not a reason by itself: a new flag: `--quiet`
+· ids: none new; none names another entry
+✗ needs a video (ticked: a choice (the port by default, 8790)): the contributor brings one, or a maintainer's agent makes a walkthrough from the diff (the skill's "Several people"), or a maintainer adds `no-video`
+✗ repo against origin/main: 1 problem(s), 0 waiting (--merge: waiting fails)
+exit 1

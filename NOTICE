@@ -1,0 +1,16 @@
+reelplanning
+Copyright 2026 ncrispino and the reelplanning contributors
+Licensed under the Apache License, Version 2.0 (LICENSE).
+
+This repository and the npm package also carry third-party files under their own licences:
+
+- Inter, EB Garamond and JetBrains Mono typefaces (woff2 files from fontsource), under the SIL Open Font
+  License 1.1. Each copy sits beside its licence: packages/player/fonts/OFL-*.txt in the package, and
+  assets/fonts/OFL-*.txt in each video's folder (videos/ and .reelplanning/).
+
+- GSAP (https://gsap.com), under the GSAP Standard License (https://gsap.com/standard-license). Copies of
+  gsap.min.js, with its licence header, are in the example videos (videos/*/assets/vendor/); reelplanning
+  installs it as an npm dependency and copies it into a video's folder when it builds one.
+
+- HyperFrames (https://github.com/heygen-com/hyperframes), under the Apache License 2.0, is an npm
+  dependency; the review page reelplanning builds bundles its player and runtime.

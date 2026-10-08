@@ -1,0 +1,75 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "23-resolved",
+        "index": 23,
+        "title": "The plan, resolved"
+      },
+      "id": "amudcvdpwjt8z",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2
+        ],
+        "step": null
+      },
+      "t": 215.39
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-23T00:18:03.754Z",
+      "id": "q1",
+      "label": "One summary frame",
+      "option": "b",
+      "planStep": 2,
+      "recommended": true,
+      "t": 77.054
+    },
+    {
+      "decidedAt": "2026-09-23T00:19:11.495Z",
+      "id": "q2",
+      "label": "Automatic rewinds",
+      "option": "a",
+      "planStep": 6,
+      "recommended": true,
+      "t": 189.937
+    }
+  ],
+  "exportedAt": "2026-09-23T00:19:27.802Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-22-richer-review/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "durationSeconds": 215.39,
+    "firstPlayAt": "2026-09-23T00:16:54.193Z",
+    "maxTimeReached": 215.39
+  }
+}

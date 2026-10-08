@@ -1,0 +1,193 @@
+<template>
+<style>
+
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f22-deviation-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f22-deviation-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f22-deviation-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f22-deviation-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f22-deviation-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f22-deviation-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f22-deviation-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-slot .d.lit { color:var(--rp-coral-deep); }
+  .f22-deviation-slot:not([data-filled]) .n, .f22-deviation-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f22-deviation-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f22-deviation-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f22-deviation-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f22-deviation-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f22-deviation-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f22-deviation-node.dim { opacity:0.72; }
+  .f22-deviation-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f22-deviation-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f22-deviation-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f22-deviation-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f22-deviation-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f22-deviation-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-deviation-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-deviation-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f22-deviation-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  /* the player's question sheet, drawn as the page it is (a prototype of the player's own surface) */
+  .f22-deviation-q { position:absolute; font:400 48px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-qk { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f22-deviation-card { position:absolute; width:610px; height:130px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-deviation-card .k { position:absolute; left:24px; top:22px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-deviation-card .l { position:absolute; left:24px; top:62px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-card.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f22-deviation-card.ghost .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-deviation-box { position:absolute; left:24px; top:47px; width:36px; height:36px; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.55); background:var(--rp-paper); }
+  .f22-deviation-tickmark { position:absolute; left:7px; top:1px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); opacity:0; }
+  .f22-deviation-card .l.cb { left:84px; top:45px; }
+  .f22-deviation-btn { position:absolute; height:60px; padding:0 28px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  /* decision beats: three option cards, each carrying a small prototype of what that option does */
+  .f22-deviation-opt { position:absolute; top:300px; width:520px; height:330px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-deviation-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-deviation-opt .l { position:absolute; left:28px; top:70px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-fr { position:absolute; top:190px; height:84px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/82px "JetBrains Mono"; text-align:center; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-fr.q { background:var(--rp-paper); border-style:dashed; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-deviation-bar { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.25); }
+  .f22-deviation-mk { position:absolute; width:4px; height:28px; border-radius:2px; background:var(--rp-ink); }
+  .f22-deviation-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  .f22-deviation-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+
+
+  .f22-deviation-tick[data-live] { background:rgba(var(--rp-ink-rgb),0.72); border-color:transparent; }
+  .f22-deviation-node .l { font:500 30px/1.15 "Inter"; }
+  .f22-deviation-chipx { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-tile); border-radius:6px; padding:9px 12px; }
+  /* autonomy: the call's two cards, left column (above the player's sheet, which covers the lower third while it asks) */
+  .f22-deviation-call { position:absolute; left:172px; width:400px; height:160px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); }
+  .f22-deviation-call.ch { border:2px solid var(--rp-ink); }
+  .f22-deviation-call.io { border:1px solid rgba(var(--rp-ink-rgb),0.3); }
+  .f22-deviation-call .k { position:absolute; left:26px; top:24px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-deviation-call .l { position:absolute; left:26px; right:18px; top:64px; font:400 40px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f22-deviation-call.io .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f22-deviation-chk { position:absolute; left:172px; top:548px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; letter-spacing:0.12em; text-transform:uppercase; }
+  .f22-deviation-chkp { position:absolute; left:172px; top:586px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-herok2 { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-deviation-slot.lift { border:2px solid var(--rp-ink); }
+  /* prototypes (data-plan-component="page": a depicted screen, exempt from the chrome's 26 px mono floor) */
+  .f22-deviation-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f22-deviation-mock-k { position:absolute; left:36px; top:30px; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f22-deviation-sq { position:absolute; left:36px; top:72px; font:400 52px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-oc { position:absolute; height:118px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-deviation-oc .k { position:absolute; left:22px; top:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f22-deviation-oc .l { position:absolute; left:22px; top:52px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-oc .l.cb { left:84px; top:38px; }
+  .f22-deviation-cbx { position:absolute; left:24px; top:38px; width:38px; height:38px; box-sizing:border-box; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.62); background:var(--rp-paper); }
+  .f22-deviation-cbm { position:absolute; left:10px; top:2px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); }
+  .f22-deviation-btn { position:absolute; height:64px; padding:0 30px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f22-deviation-btnf { position:absolute; left:-2px; top:-2px; right:-2px; bottom:-2px; border-radius:8px; background:var(--rp-ink); color:var(--rp-on-ink); font:500 28px/64px "Inter"; text-align:center; }
+  .f22-deviation-row { position:absolute; height:70px; border-radius:8px; background:var(--rp-tile); font:500 26px/70px "JetBrains Mono"; padding:0 24px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-ink-rgb),0.72); }
+  .f22-deviation-term { position:absolute; background:var(--rp-slab); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 8px 24px rgba(var(--rp-shadow-rgb),0.10); overflow:hidden; }
+  .f22-deviation-termbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .f22-deviation-tl { position:absolute; left:40px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.9); white-space:pre; }
+  .f22-deviation-tl.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f22-deviation-tl .m { color:var(--rp-coral); }
+  .f22-deviation-kc { position:absolute; width:72px; height:72px; box-sizing:border-box; border-radius:10px; border:2px solid var(--rp-ink); border-bottom-width:5px; background:var(--rp-paper); font:500 34px/64px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f22-deviation-kl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-deviation-seg { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.22); }
+  .f22-deviation-seg.cur { background:var(--rp-ink); }
+  .f22-deviation-mock-pc { position:absolute; height:48px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/46px "Inter"; padding:0 14px 0 12px; box-sizing:border-box; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:var(--rp-paper); }
+  .f22-deviation-mock-pc b { font:500 22px/1 "JetBrains Mono"; margin-right:10px; color:var(--rp-ink); }
+  .f22-deviation-mock-pc.cur { background:var(--rp-tile); border-color:var(--rp-ink); color:var(--rp-ink); }
+  .f22-deviation-av { position:absolute; height:112px; box-sizing:border-box; border-radius:10px; border:1px solid rgba(var(--rp-ink-rgb),0.25); background:var(--rp-paper); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-deviation-av .kc2 { position:absolute; left:22px; top:22px; width:64px; height:64px; box-sizing:border-box; border-radius:8px; border:2px solid var(--rp-ink); border-bottom-width:4px; font:500 30px/56px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f22-deviation-av .t { position:absolute; left:108px; top:22px; font:500 32px/1.1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-av .s { position:absolute; left:108px; top:66px; font:400 24px/1.1 "Inter"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f22-deviation-field { position:absolute; height:70px; box-sizing:border-box; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.45); background:var(--rp-paper); font:400 30px/66px "Inter"; padding-left:20px; color:rgba(var(--rp-ink-rgb),0.5); white-space:nowrap; overflow:hidden; }
+  .f22-deviation-field .typed { color:var(--rp-ink); }
+  .f22-deviation-caret { display:inline-block; width:3px; height:34px; margin-left:2px; vertical-align:-7px; background:var(--rp-ink); }
+  .f22-deviation-res { position:absolute; top:260px; width:500px; height:330px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f22-deviation-res .big { position:absolute; left:40px; top:56px; font:400 104px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-res .cap { position:absolute; left:40px; top:210px; font:500 28px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-deviation-gap { position:absolute; top:300px; width:760px; height:220px; box-sizing:border-box; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f22-deviation-gap .l { position:absolute; left:40px; top:52px; font:400 56px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-gap .s { position:absolute; left:40px; top:142px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-deviation-ls { position:absolute; left:0; width:1100px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f22-deviation-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f22-deviation-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f22-deviation-fname { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-deviation-h { position:absolute; font:400 40px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-deviation-bar2 { position:absolute; height:16px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f22-deviation-drow { position:absolute; height:64px; border-radius:6px; background:var(--rp-tile); font:500 26px/64px "JetBrains Mono"; padding-left:22px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f22-deviation-mark { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+  .f22-deviation-mark path { fill:none; stroke:var(--rp-coral); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+  .f22-deviation-dec { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f22-deviation-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+</style>
+
+<div id="root" data-composition-id="22-deviation" data-duration="12.85" data-width="1920" data-height="1080">
+
+  <div class="clip f22-deviation-bg" id="f22-deviation-bg" data-start="0" data-duration="12.85" data-track-index="0"></div>
+
+  <div class="clip f22-deviation-scene" id="f22-deviation-scene" data-start="0" data-duration="12.85" data-track-index="1">
+
+  <div class="f22-deviation-kicker" id="f22-deviation-kicker">Deviation · Step 5</div>
+  <div class="f22-deviation-spine" id="f22-deviation-spine">
+    <div class="f22-deviation-tick" id="f22-deviation-tick-1" data-plan-step="1" data-done style="top:35px"></div>
+    <div class="f22-deviation-tick" id="f22-deviation-tick-2" data-plan-step="2" data-done style="top:145px"></div>
+    <div class="f22-deviation-tick" id="f22-deviation-tick-3" data-plan-step="3" data-done style="top:255px"></div>
+    <div class="f22-deviation-tick" id="f22-deviation-tick-4" data-plan-step="4" data-done style="top:365px"></div>
+    <div class="f22-deviation-tick" id="f22-deviation-tick-5" data-plan-step="5" data-done data-live style="top:475px"></div>
+    <div class="f22-deviation-tick" id="f22-deviation-tick-6" data-plan-step="6" data-done style="top:585px"></div>
+  </div>
+  <div class="f22-deviation-node" id="f22-deviation-node-skill" data-plan-component="skill" style="left:632px; top:175px; width:270px; height:110px"><span class="l">The plan-to-video skill</span></div>
+  <div class="f22-deviation-node dim" id="f22-deviation-node-resolve" data-plan-component="resolve" style="left:946px; top:175px; width:270px; height:110px"><span class="l">resolve-plan</span></div>
+  <div class="f22-deviation-node dim" id="f22-deviation-node-cli" data-plan-component="cli" style="left:1260px; top:175px; width:270px; height:110px"><span class="l">The reel CLI</span></div>
+  <div class="f22-deviation-node dim" id="f22-deviation-node-player" data-plan-component="player" style="left:946px; top:405px; width:270px; height:110px"><span class="l">The review player</span></div>
+  <div class="f22-deviation-node dim" id="f22-deviation-node-finish" data-plan-component="finish" style="left:1574px; top:405px; width:270px; height:110px"><span class="l">finish-project</span></div>
+  <svg class="f22-deviation-edges" id="f22-deviation-edges" viewBox="0 0 1920 1080">
+    <path id="f22-deviation-e-player-resolve" class="dim" d="M1081 405 L1081 285" />
+    <path id="f22-deviation-e-resolve-cli" class="dim" d="M1216 230 L1260 230" />
+  </svg>
+  <div class="f22-deviation-chipx" id="f22-deviation-ex" style="left:632px; top:119px">4 frames · 7 and 10 parts</div>
+  <div class="f22-deviation-call ch" id="f22-deviation-chose" data-plan-option="a" style="top:175px"><span class="k">Chose</span><span class="l">Left as they are</span></div>
+  <div class="f22-deviation-call io" id="f22-deviation-inst" data-plan-option="b" style="top:365px"><span class="k">Instead of</span><span class="l">Rebuilt here</span></div>
+  <div class="f22-deviation-chk" id="f22-deviation-chk">Check</div>
+  <div class="f22-deviation-chkp" id="f22-deviation-chkp">frame-lint on close-the-lifecycle/video</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "22-deviation";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], IR = __RP["ink-rgb"], TILE = __RP["tile"];
+  var $ = function (s) { return document.getElementById("f22-deviation-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to) { tl.fromTo(el, { opacity: 0 }, { opacity: to == null ? 1 : to, duration: 0.45, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, el, at, dur) { var L = lenOf(el); gsap.set(el, { strokeDasharray: L, strokeDashoffset: L }); tl.to(el, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f22-deviation-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.28)", borderColor: "rgba(0,0,0,0)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f22-deviation-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.72)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  pop(tl, $("kicker"), 0.1, 8);
+  tl.fromTo($("node-skill"), { outlineColor: OFF }, { outlineColor: C, duration: 0.35, ease: "power3.out" }, 0.35);
+  pop(tl, $("ex"), 1.51, 8);
+  pop(tl, $("chose"), 7.12, 14);
+  pop(tl, $("inst"), 8.89, 14);
+  fade(tl, $("chk"), 9.79);
+  fade(tl, $("chkp"), 9.79);
+
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 12.330);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

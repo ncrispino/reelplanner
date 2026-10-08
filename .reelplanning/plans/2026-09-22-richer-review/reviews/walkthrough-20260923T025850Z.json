@@ -1,0 +1,228 @@
+{
+  "annotations": [
+    {
+      "about": "On what the agent decided: Clicking away, or starting another mark, keeps the words you typed; only Escape discards them",
+      "comment": "maybe escape should keep them too, i dont wanna accidentally remove. just click an 'x' to remove or something?",
+      "frame": {
+        "compositionId": "19-call-a10",
+        "index": 19,
+        "title": "Call A10: clicking away keeps the words"
+      },
+      "id": "amudigt968axu",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 4
+      },
+      "t": 182.13
+    },
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "38-end",
+        "index": 38,
+        "title": "Flag a call, or accept"
+      },
+      "id": "amudikhzds1pr",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 358.7
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The player ignores the old saved mute setting and keeps mute under a new name",
+      "id": "a15",
+      "judgedAt": "2026-09-23T02:46:02.253Z",
+      "planStep": 4,
+      "t": 32.25,
+      "verdict": "accept"
+    },
+    {
+      "chose": "resolve-plan finds your chosen option by its letter when the label does not match",
+      "id": "a1",
+      "judgedAt": "2026-09-23T02:46:24.437Z",
+      "planStep": 1,
+      "t": 53.01,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Four options sit 2 × 2, and go 4 across only when the video is at least 1200 px wide",
+      "id": "a7",
+      "judgedAt": "2026-09-23T02:46:38.843Z",
+      "planStep": 1,
+      "t": 65.39,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A pick-all question has no branch beats; the video goes straight to its summary frame",
+      "id": "a2",
+      "judgedAt": "2026-09-23T02:47:20.683Z",
+      "planStep": 2,
+      "t": 99.55,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A pick-all answer is one entry in the decision ledger, holding every pick",
+      "id": "a3",
+      "judgedAt": "2026-09-23T02:47:38.326Z",
+      "planStep": 2,
+      "t": 109.86,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A summary frame shows the picks one line each in a list, or joined with commas anywhere else",
+      "id": "a8",
+      "judgedAt": "2026-09-23T02:47:51.130Z",
+      "planStep": 2,
+      "t": 121.36,
+      "verdict": "accept"
+    },
+    {
+      "chose": "On a replay, an answer with no branch of its own skips from the question to its summary",
+      "id": "a9",
+      "judgedAt": "2026-09-23T02:48:03.463Z",
+      "planStep": 2,
+      "t": 131.64,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Clicking away, or starting another mark, keeps the words you typed; only Escape discards them",
+      "id": "a10",
+      "judgedAt": "2026-09-23T02:55:57.978Z",
+      "own": "maybe escape should keep them too, i dont wanna accidentally remove. just click an 'x' to remove or something?",
+      "planStep": 4,
+      "t": 182.13,
+      "verdict": "own"
+    },
+    {
+      "chose": "The lint counts the parts named in a frame's code; a whole-system beat can opt out",
+      "id": "a5",
+      "judgedAt": "2026-09-23T02:56:16.291Z",
+      "planStep": 5,
+      "t": 202.78,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Four frames of the close-the-lifecycle video that now break the 6-part rule are left as they are",
+      "id": "d1",
+      "judgedAt": "2026-09-23T02:56:25.774Z",
+      "planStep": 5,
+      "t": 215.13,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A rewind is a scrub or a key press that goes back more than 2 s; jumps from the record do not count",
+      "id": "a11",
+      "judgedAt": "2026-09-23T02:56:52.758Z",
+      "planStep": 6,
+      "t": 248.89,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Speed changes within 3 s merge into one moment, and only slowing below 1× counts",
+      "id": "a12",
+      "judgedAt": "2026-09-23T02:57:03.228Z",
+      "planStep": 6,
+      "t": 259.28,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The resolved plan lists hard-to-follow moments by step, with their times",
+      "id": "a4",
+      "judgedAt": "2026-09-23T02:57:14.412Z",
+      "planStep": 6,
+      "t": 269.35,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A note on an answer sends its step to the revise step, just like a comment",
+      "id": "a6",
+      "judgedAt": "2026-09-23T02:57:52.810Z",
+      "planStep": 1,
+      "t": 306.46,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A note on its own still lets you approve when the review is finished",
+      "id": "a13",
+      "judgedAt": "2026-09-23T02:57:59.878Z",
+      "planStep": 1,
+      "t": 315.42,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Notes are offered on plan questions only, not on quick checks or on the agent's calls",
+      "id": "a14",
+      "judgedAt": "2026-09-23T02:58:19.882Z",
+      "planStep": 1,
+      "t": 325.88,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-23T02:58:50.991Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T02:48:14.788Z",
+      "correct": true,
+      "id": "k1",
+      "t": 140.41
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-23T02:57:21.274Z",
+      "correct": true,
+      "id": "k2",
+      "t": 278.25
+    }
+  ],
+  "src": "2026-09-22-richer-review--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "durationSeconds": 358.71,
+    "firstPlayAt": "2026-09-23T02:39:16.171Z",
+    "maxTimeReached": 358.7,
+    "moments": [
+      {
+        "frameIndex": 32,
+        "from": 302.53,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 292.7
+      }
+    ]
+  }
+}

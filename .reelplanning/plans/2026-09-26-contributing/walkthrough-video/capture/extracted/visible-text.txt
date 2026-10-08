@@ -1,0 +1,166 @@
+# Walkthrough: Several people, one repo: contributing with reelplanning
+
+**Status:** implemented on branch `claude/clever-knuth-b5gtcf` · **Plan:** `plan.md` (the approval folded
+into step 1, `61fafa1`) · **Started from:** `61fafa1` · **Decided:** choices or size only (D-214); asked,
+the maintainer can make it (D-200); the last answer (D-201); CI's checks and a code check (D-202); the built
+video never in git (D-213), on a throwaway branch (D-215); ids in order with a merge rule (D-171)
+
+## What was done, per step
+
+### Step 1 — When a PR gets a video, and who makes it ✅
+
+- **The templates:** `templates/CONTRIBUTING.md` (the section "Contributing with reelplanning": when a PR
+  gets a video, who makes it, who decides, what lands on main, where the built video goes, decision
+  numbers, before a merge) and `templates/pull_request_template.md` (the two boxes: "makes a choice a
+  reviewer could make the other way: <name it>" and "brings a video", and the maintainer's list). This repo
+  has both: `CONTRIBUTING.md` (a short part about this repo, then the template's section as it is) and
+  `.github/pull_request_template.md`. `README.md` links `CONTRIBUTING.md`.
+- **The line, as decided (D-214), with the approval folded in:** `reel pr-check` (`scripts/pr-check.mjs`,
+  `reel pr-check` in `scripts/reel.mjs`) crosses the line on the ticked box (naming the choice written after
+  it), the `needs-video` label, or over 300 changed lines outside tests, docs, videos and generated files
+  (A1). `no-video` waives it. A new flag, a new command (a file new under `bin/` or `scripts/`) or a new
+  dependency in `package.json` is only named, "seen in the diff, not a reason by itself": Omar's 25-line
+  `--quiet` passes on a normal code review. The PR's text and labels come from the GitHub event (CI), `gh
+  pr view`, or `--body-file` and `--labels`.
+- **Who makes the video (D-200):** over the line with no plan folder carrying a video's text, it says
+  "needs a video: the contributor brings one, or a maintainer's agent makes a walkthrough from the diff
+  (the skill's "Several people"), or a maintainer adds `no-video`", as waiting, not a failure (A2). The
+  box "brings a video" ticked with no such plan folder is a failure. The skill's new "Several people"
+  section (`skills/plan-to-video/SKILL.md`) tells the agent to copy the templates when a repo is shared,
+  and how to make a walkthrough of a PR with no video of its own (a plan folder `<date>-pr-<n>/` from `gh pr
+  diff` and `gh pr view`).
+- D-127: `CONTRIBUTING.md` and the PR template use plain words; D-085: the plan's two commands, one flag
+  and two labels, and nothing else new.
+
+### Step 2 — Who does what, and what lands on main ✅
+
+- **Maintainers:** `.reelplanning/config.json` lists `maintainers: ["owner"]` (A3); the template's
+  `templates/reelplanning/config.json` has an empty list, with a line saying what it is for. Read by
+  `maintainersOf` and `isMaintainer` in `scripts/lib/contributing.mjs`.
+- **A contributor's walkthrough review adds nothing to the log:** `reel record` (`scripts/reel.mjs`) files
+  it and writes its `reviews/<id>.md` as always, prints "a contributor's walkthrough review (… is not in
+  config.json's maintainers …): its accepts and flags help fix things before the PR, and add nothing to the
+  decision log", and adds none of its calls. A maintainer's accepted calls join the log. A plan review's
+  answers join it whoever gave them, and D-201 needs nothing new: the entry changed on the branch reads
+  the last answer, final once on main (D-171).
+- **What lands, what stays:** `reel pr-check` prints the two columns ("lands on main: … plan.md,
+  walkthrough.md, code-check/findings.md, the videos' text …, the log's new entries, the maintainer's
+  reviews"; "stays in the PR: the contributor's reviews"), and fails "not tidy" while a PR whose
+  walkthrough a maintainer accepted still carries a contributor's review. `--tidy` removes them (the
+  `.json` and its `.md`) in one commit, "tidy: the contributor's reviews stay in the PR's history", and
+  refuses before a maintainer has accepted a walkthrough. `CONTRIBUTING.md` says Squash and merge.
+- The ledger's writer moved into `writeLedger` (`scripts/lib/contributing.mjs`), shared by `reel record`
+  and `reel renumber`, writing the same `decisions.md` as before. D-106: the contributor's own memory stays
+  in their home folder; D-128 untouched.
+
+### Step 3 — Watching a contributor's video, checking it, and where it lives ✅
+
+- **Serving a packed folder:** `reelplanning review <folder>` (`scripts/review.mjs`) serves a folder
+  `bundle-player` packed (it has `library.json` and the player) as it is, packing nothing again; Send files
+  the review in the inbox of the repo it is run in. It compares each packed video's `plan-map.json` with the
+  checkout's (`plans/<plan>/video/` or `walkthrough-video/`) and says "its plan map is the checkout's", or
+  "this video was built from another version of the plan … ask for a rebuild", or that the checkout has
+  none (run it in the PR's checkout). With `--detach` while this repo's server already runs, it says to stop
+  that one first.
+- **CI's checks (D-202):** `reel pr-check` compares each video's plan map with `plan.md` by hash (the plan
+  text the map carries: title, problem and steps) and each row of `walkthrough.md` with its stop (chose,
+  instead of, why, check), and fails a video built before the last change to either (A4, A5); every stop
+  with no row and every row with no stop is named. On this repo's current walkthrough videos it reads
+  them all as built (better-visuals 29 rows, details-in-the-frame 10). `reel audit` runs in CI on each
+  plan folder the PR adds (`.github/workflows/ci.yml`). The maintainer's own code check (D-001) is in
+  `CONTRIBUTING.md` and the skill's section, not code.
+- **No media under a plan folder (D-213):** `reel pr-check` fails a PR that adds a voice file, an image or
+  a video under `.reelplanning/plans/` (`MEDIA` in `scripts/lib/contributing.mjs`). `templates/gitignore`
+  holds the lines that leave each video's `assets/`, `capture/` and audio metadata out; this repo's
+  `.gitignore` has them, with its plan folders from before kept as they are (A6).
+- **The throwaway branch (D-215):** the commands, as the plan gives them, are in `CONTRIBUTING.md` (from
+  the template) and the skill's "Several people" (documented steps, no new command, D-085). `reel pr-check`
+  looks for `video/pr-<n>` on the PR's own remote (`git ls-remote`) while a maintainer still has to watch
+  it, and says when it is missing. The job that deletes it when the PR closes is `video-branch` in
+  `.github/workflows/ci.yml`.
+
+### Step 4 — Records that merge: decision numbers, generated files, the glossary ✅
+
+- **`reel renumber` (D-171)** (`scripts/renumber.mjs`): takes the base's log as it is, adds the branch's
+  own entries after its last (A7), carries over a base entry the branch superseded, rewrites the new ids'
+  mentions in the branch's plan folders (`plan.md`, `walkthrough.md`, `reviews/*.md`, all at once so
+  D-194 → D-195 → D-196 never chain), lists the video lines that still say an old id, writes
+  `decisions.md` and runs `terms-index` again. It reads the branch's log from the file, or, while
+  `decisions.json` is in conflict, from the side that holds the branch's entries. `--dry-run` says what it
+  would do.
+- **`reel pr-check`** fails when an id on the branch names a different entry than on the base, or the log
+  holds an id twice.
+- `docs/project-dir.md`'s first rule gains the line: an id is final once it is on main; its tools table
+  has `pr-check` and `renumber`, and `config.json`'s `maintainers`.
+- **Memory with several reviewers:** a line waiting in `you.pending.jsonl` moves only into the file of the
+  reviewer it names (A8; `mineToMove` in `scripts/lib/memory.mjs`), and `.gitattributes` marks the file
+  `merge=union`. D-106 kept: memory stays per person.
+- Plan folders, reviews, `glossary.md`, `spec.md`, `system.json`: nothing new, as the plan says.
+
+### Step 5 — CI, the merge, and the system video ✅ (the workflow untested in CI)
+
+- **`.github/workflows/ci.yml`** (D1): `fast` runs `npm test` (Node 20, `npm ci`, Chromium) on every push
+  to main and every PR push; `reel pr-check` runs on every PR event but its closing (labels change what it
+  says), with `reel audit` on each plan folder the PR adds; `full` runs `npm run test:full` and `reel
+  pr-check --merge` once `ready-to-merge` is on the PR, on every push after it, and fails at once without
+  it (A9); `video-branch` deletes `video/pr-<n>` when a PR from this repo closes. The pr-check and full
+  jobs check out the PR's own last commit, not GitHub's merge with the base (a clash of decision ids would
+  leave no merge to check out).
+- **`publish.yml`** already runs `npm run test:full` on the tag; `docs/releasing.md` says the same suite is
+  the check before every merge.
+- **The system video (D-003)** is rebuilt on main after merges by a maintainer, once for every PR merged
+  since, as the plan says: not a workflow (it needs the voice engine, Kokoro, and a browser, several
+  minutes a merge). `CONTRIBUTING.md`, `docs/lifecycle.md`'s new "Several people" and the workflow's header
+  say so; `reel status` already says when the video is behind.
+- **Before merging** the maintainer's list is in `CONTRIBUTING.md` and the PR template.
+
+## Decisions in force
+
+- **D-214** holds: `scripts/pr-check.mjs` counts the box, `needs-video` and the 300 lines; a new flag is
+  named only (the approval, folded into step 1).
+- **D-200** holds: "needs a video" names both ways; the skill's "Several people" says how a maintainer's
+  agent makes a walkthrough from a PR (`skills/plan-to-video/SKILL.md`).
+- **D-201** holds: `reel record` adds a plan review's answers whoever gave them; the last answer is the
+  entry on the branch.
+- **D-202** holds: `reel pr-check` and `reel audit` in `.github/workflows/ci.yml`; the maintainer's code
+  check in `CONTRIBUTING.md`.
+- **D-213** holds, delivered by **D-215**: `templates/gitignore`, the media check, and the throwaway
+  branch's commands and delete job.
+- **D-171** holds: `scripts/renumber.mjs`, and the id check in `scripts/pr-check.mjs`.
+- **D-003** holds: the system video rebuilt on main after merges, documented, no workflow. **D-065**,
+  **D-001**, **D-106**, **D-127**, **D-110**, **D-083**, **D-085**, **D-107** hold as the plan says.
+- Untouched: **D-082**, **D-197**, **D-198**, **D-199**, **D-084**, **D-109**, **D-128**, **D-129**,
+  **D-024**, **D-194**, **D-195**, **D-196**, **D-169**, **D-170**, **D-216**, **D-217**, **D-218**.
+
+## The agent's own calls
+
+| id | step | chose | instead of | why | check |
+|---|---|---|---|---|---|
+| A1 | 1 | The 300 lines leave out tests (test folders, `*.spec.*`, `*.test.*`), docs (`docs/`, Markdown and text files, the licence), the whole `.reelplanning/` record, `videos/` and media, lockfiles and `dist/`, and any file `.gitattributes` marks `linguist-generated` or `linguist-documentation` [close] | a fixed list of test, doc, video and generated paths only | the record is plans, reviews, videos and the log, none of it code; the attributes let any repo mark its own generated files | `scripts/pr-check.mjs` (`NOT_CODE`, `attrs`) |
+| A2 | 1 | A PR over the line with no video, or still waiting for a maintainer to accept its walkthrough, prints △ and passes; `--merge`, in the full-suite job, makes it a failure [visible, close] | fail on every push until a video is reviewed | the plan says "needs a video" is what is missing, not the contributor's failure; the check required before a merge still holds it | `scripts/pr-check.mjs` (`waits`, `--merge`); `.github/workflows/ci.yml` (`full`) |
+| A3 | 2 | This repo's `maintainers` is `["owner"]`, no email: a review recorded by git's user.email (the local page's Send, filed on some machine) counts as a contributor's until that email is added; `reel record` says so, and recording it again then adds its calls [visible, close] | listing the owner's email, or the agent's git email | the owner reviews on the hosted page (19 reviews filed as `owner`); an email in a public `config.json` shows it to everyone, and the agent's email is every Claude session's | `.reelplanning/config.json`; `scripts/reel.mjs` (`record`) |
+| A4 | 3 | Each video is checked against its text only until it is approved: a plan video once a plan review approved it, a walkthrough once a maintainer accepted it [close] | check every video the PR carries, always | after an approval `plan.md` takes the folded comments and a row gets "(changed after review)", with no new video by design; checking then would fail every approved plan | `scripts/pr-check.mjs` (`done`) |
+| A5 | 3 | The hashes compare what the map already carries (the plan's title, problem and steps; each stop's chose, instead of, why and check) with `plan.md` and `walkthrough.md`; no new field in `plan-map.json` [close] | a hash of the whole of `plan.md` and `walkthrough.md`, written into the map by the build | a map built before this plan checks the same, and a line added to "How each was decided" changes nothing the video says, so should not fail it | `scripts/pr-check.mjs` (`hash`, `rowText`) |
+| A6 | 3 | This repo's plan folders dated up to 2026-09-27 keep their videos' media committed (negated lines in `.gitignore`); a plan started after that follows the rule [visible, hard-to-undo] | the template's lines alone, for every plan folder | a rebuild of an older video would leave its new voice files out while its committed `index.html` names them; the plan keeps this repo's committed videos as they are | `.gitignore` |
+| A7 | 4 | `reel renumber` takes an entry as the branch's own when the base holds none that decided the same thing (plan, question, date, answer), and reads the branch's log from whichever side of the conflict holds such entries [close] | the entries after the merge-base's last id | the same in a rebase (where ours and theirs swap) and a merge, with no merge-base to find while a rebase is under way | `scripts/renumber.mjs`; `scripts/lib/contributing.mjs` (`entryKey`) |
+| A8 | 4 | A pending memory line moves when it names no email, or this machine's git user.email; one naming `owner` or an id moves as before [close] | hold every line whose reviewer is not in `maintainers` | the hosted page calls whoever published it `owner`, on anyone's page, so only an email tells two people apart | `scripts/lib/memory.mjs` (`mineToMove`) |
+| D1 | 5 | The workflow is `.github/workflows/ci.yml` [deviation] | `.github/workflows/test.yml`, as the plan names it | the task named ci.yml; it runs more than the tests | `.github/workflows/ci.yml` |
+| A9 | 5 | The full-suite job runs on every PR event and fails at once without `ready-to-merge` [visible, close] | skip the job until the label is on | GitHub counts a skipped required check as passed, so a skipped full suite would let a PR merge untested | `.github/workflows/ci.yml` (`full`) |
+
+## Tests
+
+- `scripts/test/contributing.spec.mjs` (new, in `scripts/test/run.mjs`'s script list), 39 checks against a
+  scratch repo with a bare `origin`: the line (Omar's `--quiet` under it and named; the box, `needs-video`,
+  304 lines over it; `no-video`; `--merge`), a real rebase stopping at `decisions.json` and `reel renumber`
+  fixing it, media, a stale plan and a stale row, a contributor's and a maintainer's walkthrough reviews,
+  not tidy and `--tidy`, memory lines per reviewer, `.gitattributes`, and `review` serving a packed folder.
+- `scripts/test/memory.spec.mjs`: its copy of this repo's record drops `maintainers` (it is one person's
+  repo; with them its `owner@example.com` reviews read as a contributor's).
+- `npm test`: all 28 specs pass (88.8 s here).
+
+## Not done
+
+- The workflow has not run on GitHub: its YAML parses, and the commands it runs pass here. Marking `full
+  suite` required, and creating the labels `needs-video`, `no-video` and `ready-to-merge`, are the owner's,
+  in the repo's settings (Not in this plan: branch protection).
+- The code check and the walkthrough video (next).

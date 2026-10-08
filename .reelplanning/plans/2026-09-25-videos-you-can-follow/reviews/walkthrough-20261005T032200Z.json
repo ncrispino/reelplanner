@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "project": "walkthrough-video",
+  "src": "2026-09-25-videos-you-can-follow--walkthrough/index.html",
+  "source": "conversation",
+  "by": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+  "said": "for our stuff thats open, i think for this release lets just accept all the walkthru i dont wanna watch those really, we'll work on those later if needed.",
+  "submittedAt": "2026-10-05T03:22:00.000Z",
+  "verdict": "approve",
+  "annotations": [],
+  "autonomy": [
+    {
+      "id": "a7",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "`reel prereqs` writes the lines into the storyboard's front matter, replacing the `before:` lines there (`--dry-run` only prints; with no storyboard yet it prints them to paste), and keeps the files' `#part N` while reading `#chapter N` too (changed after review: it also writes a `recap:` line for every earlier video the plan builds on, the two on the card included, each with its plan's title and what it gives, so the recap scene sums up all of them in a line each and a viewer who watches none still has the gist; it named only the ones past two for the recap. The owner, on quick check k2: why not summarize everything if there is a summary anyway)"
+    }
+  ],
+  "decisions": [],
+  "quizzes": [],
+  "questions": [],
+  "recorded": {
+    "reviewer": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "conversation",
+    "reelplanning": "0.2.0"
+  }
+}

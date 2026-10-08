@@ -1,0 +1,78 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w03-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w03-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w03-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w03-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w03-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w03-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w03-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w03-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w03-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w03-ul.ink { background:var(--rp-ink); height:3px; }
+  .w03-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w03-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w03-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w03-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w03-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w03-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w03-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w03-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w03-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w03-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w03-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w03-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w03-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w03-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w03-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .w03-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w03-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w03-chip { position:absolute; height:48px; padding:0 18px; font:400 28px/46px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .w03-chip.hot { border-color:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="03-step-1-stops" data-band="bottom" data-duration="16.64" data-width="1920" data-height="1080">
+
+  <div class="clip w03-bg" id="w03-bg" data-start="0" data-duration="16.64" data-track-index="0"></div>
+
+  <div class="clip w03-scene" id="w03-scene" data-start="0" data-duration="16.64" data-track-index="1">
+    <div class="w03-lab" id="w03-h" style="left:120px; top:70px">walkthrough.md · step 1 · 3 of 7 choices stop</div>
+    <div class="w03-chip hot" id="w03-chip" style="left:960px; top:56px">you'll notice it · a late fix</div>
+    <div class="w03-card" id="w03-c0" data-call="a1" style="left:120px; top:180px; width:1340px"><span class="i">choice A1</span><span class="t">A pinned word names the file's own word</span></div>
+    <div class="w03-card" id="w03-c1" data-call="a3" style="left:120px; top:350px; width:1340px"><span class="i">choice A3</span><span class="t">The brief says medium, layouts, transition</span></div>
+    <div class="w03-card" id="w03-c2" data-call="a25" style="left:120px; top:520px; width:1340px"><span class="i">choice A25</span><span class="t">The build repeats the real-things line</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "03-step-1-stops";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w03-h", { opacity: 0 });
+  gsap.set("#w03-chip", { opacity: 0, y: 8 });
+  gsap.set("#w03-c0", { opacity: 0, x: -30 });
+  gsap.set("#w03-c1", { opacity: 0, x: -30 });
+  gsap.set("#w03-c2", { opacity: 0, x: -30 });
+  tl.to("#w03-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.2);
+  tl.to("#w03-chip", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 3.54);
+  tl.to("#w03-c0", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 5.41);
+  tl.to("#w03-c1", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 8.86);
+  tl.to("#w03-c2", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 13.19);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

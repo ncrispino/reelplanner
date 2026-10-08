@@ -1,0 +1,179 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f05-decision-1-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f05-decision-1-stage { position: absolute; inset: 0; }
+
+  /* ---- SHARED STAGE — decision beat: THE RAIL ONLY, plus the two prototypes. No chain:
+       a decision changes the PLAN, not what the build does. ---- */
+  .f05-decision-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f05-decision-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f05-decision-1-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f05-decision-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f05-decision-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-decision-1-slot:not([data-filled]) .n, .f05-decision-1-slot:not([data-filled]) .t { opacity:0; }
+
+  /* ---- kicker ---- */
+  .f05-decision-1-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+
+  /* ---- prototypes: two site-map mocks (700–1240 / 1300–1840, y 200–870) ---- */
+  .f05-decision-1-label { position:absolute; top:148px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-decision-1-cost { position:absolute; top:148px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-decision-1-opt { position:absolute; top:200px; width:540px; height:670px; box-sizing:border-box; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f05-decision-1-ring { position:absolute; inset:-1px; border-radius:9px; border:3px solid var(--rp-coral); opacity:0; pointer-events:none; }
+
+  /* a page row inside a mock: the album's real title, its song count at the right */
+  .f05-decision-1-list { position:absolute; left:28px; width:484px; }
+  .f05-decision-1-row { box-sizing:border-box; display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:8px; }
+  .f05-decision-1-row .pg { flex:1 1 auto; min-width:0; font:500 26px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .f05-decision-1-row .ct { flex:0 0 auto; margin-left:16px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+
+  /* A: ten rows, filling the box */
+  .f05-decision-1-list-a { top:30px; }
+  .f05-decision-1-list-a .f05-decision-1-row { height:52px; margin-bottom:10px; }
+  .f05-decision-1-list-a .f05-decision-1-row:last-child { margin-bottom:0; }
+
+  /* B: the same ten rows, tighter, then the thirty that are not written yet */
+  .f05-decision-1-list-b { top:28px; }
+  .f05-decision-1-list-b .f05-decision-1-row { height:34px; margin-bottom:4px; border-radius:6px; }
+  .f05-decision-1-list-b .f05-decision-1-row:last-child { margin-bottom:0; }
+  .f05-decision-1-note { position:absolute; left:28px; top:420px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f05-decision-1-empties { position:absolute; left:28px; top:462px; width:484px;
+    display:grid; grid-auto-flow:column; grid-template-columns:repeat(3, 150px); grid-template-rows:repeat(10, 14px);
+    column-gap:17px; row-gap:4.6px; }
+  .f05-decision-1-empties i { box-sizing:border-box; display:block; height:14px; border-radius:4px; border:1px dashed rgba(var(--rp-ink-rgb),0.28); }
+</style>
+
+<div id="root" data-composition-id="05-decision-1" data-duration="12.532" data-width="1920" data-height="1080">
+  <div class="clip f05-decision-1-bg" data-start="0" data-duration="12.532" data-track-index="0"></div>
+
+  <div class="clip f05-decision-1-stage" data-start="0" data-duration="12.532" data-track-index="1">
+
+    <div class="f05-decision-1-kicker" id="f05-decision-1-kicker">✱ Choice 1 · Step 1</div>
+
+    <!-- SHARED STAGE: rail only (prototype decision beat) -->
+    <div class="f05-decision-1-rail" id="f05-decision-1-rail">
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span></div>
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f05-decision-1-slot" id="f05-decision-1-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- DECISION PROTOTYPES: site-map mocks (A recommended) -->
+    <div class="f05-decision-1-label" id="f05-decision-1-label-a" style="left:700px">A · 10 albums</div>
+    <div class="f05-decision-1-label" id="f05-decision-1-label-b" style="left:1300px">B · All 40</div>
+    <div class="f05-decision-1-cost" id="f05-decision-1-cost-a" style="right:680px">2 weeks</div>
+    <div class="f05-decision-1-cost" id="f05-decision-1-cost-b" style="right:80px">1 month</div>
+
+    <!-- A · Ten albums — the ten pages we can write now, each with its song count -->
+    <div class="f05-decision-1-opt" id="f05-decision-1-opt-a" data-plan-option="a" style="left:700px">
+      <div class="f05-decision-1-list f05-decision-1-list-a" id="f05-decision-1-list-a">
+        <div class="f05-decision-1-row"><span class="pg">Bob Dylan</span><span class="ct">13</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Freewheelin’</span><span class="ct">13</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Times They Are a-Changin’</span><span class="ct">10</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Another Side</span><span class="ct">11</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Bringing It All Back Home</span><span class="ct">11</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Highway 61 Revisited</span><span class="ct">9</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Blonde on Blonde</span><span class="ct">14</span></div>
+        <div class="f05-decision-1-row"><span class="pg">John Wesley Harding</span><span class="ct">12</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Nashville Skyline</span><span class="ct">10</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Blood on the Tracks</span><span class="ct">10</span></div>
+      </div>
+      <div class="f05-decision-1-ring" id="f05-decision-1-ring-a"></div>
+    </div>
+
+    <!-- B · All forty — the same ten written pages, then thirty rows still to type -->
+    <div class="f05-decision-1-opt" id="f05-decision-1-opt-b" data-plan-option="b" style="left:1300px">
+      <div class="f05-decision-1-list f05-decision-1-list-b" id="f05-decision-1-list-b">
+        <div class="f05-decision-1-row"><span class="pg">Bob Dylan</span><span class="ct">13</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Freewheelin’</span><span class="ct">13</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Times They Are a-Changin’</span><span class="ct">10</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Another Side</span><span class="ct">11</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Bringing It All Back Home</span><span class="ct">11</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Highway 61 Revisited</span><span class="ct">9</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Blonde on Blonde</span><span class="ct">14</span></div>
+        <div class="f05-decision-1-row"><span class="pg">John Wesley Harding</span><span class="ct">12</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Nashville Skyline</span><span class="ct">10</span></div>
+        <div class="f05-decision-1-row"><span class="pg">Blood on the Tracks</span><span class="ct">10</span></div>
+      </div>
+      <div class="f05-decision-1-note" id="f05-decision-1-note-b">30 still to write</div>
+      <div class="f05-decision-1-empties" id="f05-decision-1-empties-b">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var P = "f05-decision-1";
+  var $ = function (id) { return document.getElementById(P + "-" + id); };
+  var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  var EASE = "power3.out";
+
+  var kicker  = $("kicker");
+  var optA    = $("opt-a"),   optB   = $("opt-b");
+  var labelA  = $("label-a"), labelB = $("label-b");
+  var costA   = $("cost-a"),  costB  = $("cost-b");
+  var ringA   = $("ring-a");
+  var noteB   = $("note-b");
+  var rowsA   = $$("#" + P + "-list-a ." + P + "-row");
+  var rowsB   = $$("#" + P + "-list-b ." + P + "-row");
+  var emptyB  = $$("#" + P + "-empties-b i");
+  var rest    = [2, 3, 4, 5, 6].map(function (i) { return $("slot-" + i); });
+
+  var tl = gsap.timeline({ paused: true });
+
+  // 0.10 "First choice" — the kicker settles in; the rail is already standing.
+  tl.fromTo(kicker, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: EASE }, 0.096);
+
+  // 1.19 "content" — two empty site-map frames: the scope question.
+  tl.fromTo([optA, optB], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55, ease: EASE, stagger: 0.08 }, 1.288);
+
+  // 1.19 "content" — the rail answers with the step under question: slot 1 (Content model) holds
+  // its weight while steps 2-6 recede. Nothing is decided yet, so no slot takes a tag.
+  tl.fromTo(rest, { opacity: 1 }, { opacity: 0.55, duration: 0.6, ease: EASE, stagger: 0.05 }, 1.288);
+
+  // 2.49 "10" / 2.74 "albums" — option A: label, then the ten album pages counted off.
+  tl.fromTo(labelA, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE }, 2.682);
+  tl.fromTo(rowsA, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: EASE, stagger: { amount: 0.5 } }, 2.682);
+
+  // 3.80 "two weeks" — cost line for A.
+  tl.fromTo(costA, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE }, 4);
+
+  // 5.85 "All" / 5.97 "40" — option B: the same ten pages, then the thirty blank rows.
+  tl.fromTo(labelB, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE }, 6.122);
+  tl.fromTo(rowsB, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3, ease: EASE, stagger: { amount: 0.3 } }, 6.122);
+  tl.fromTo(emptyB, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: EASE, stagger: { amount: 0.75 } }, 6.401);
+  tl.fromTo(noteB, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.35, ease: EASE }, 7.304);
+
+  // 6.63 "month" — cost line for B.
+  tl.fromTo(costB, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE }, 6.839);
+
+  // 9.50 "recommend" — option A takes the 3 px coral border: the frame's only coral.
+  tl.fromTo(ringA, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: EASE }, 9.944);
+
+  // 10.46 "which do you want?" — the whole rail comes back up: six steps waiting on one answer.
+  tl.fromTo(rest, { opacity: 0.55 }, { opacity: 1, duration: 0.6, ease: EASE, stagger: 0.04, immediateRender: false }, 10.996);
+
+  // 11.22 → 11.399 — held read: both site maps complete, A bordered coral.
+  tl.set({}, {}, 12.032);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["05-decision-1"] = tl;
+})();
+</script>
+</template>

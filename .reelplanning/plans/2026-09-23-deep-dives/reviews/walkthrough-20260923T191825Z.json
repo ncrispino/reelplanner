@@ -1,0 +1,244 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "41-end",
+        "index": 41,
+        "title": "Flag a call, or accept"
+      },
+      "id": "amuehk7va9h8i",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 393.3
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The Open chip's key is O; while a question sheet is up, O keeps meaning \"answer in my own words\", so the chip waits behind it",
+      "id": "a1",
+      "judgedAt": "2026-09-23T19:13:32.818Z",
+      "planStep": 1,
+      "t": 31.61,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from step 1: the Open chip's key is O",
+      "id": "d1",
+      "judgedAt": "2026-09-23T19:13:38.504Z",
+      "planStep": 1,
+      "t": 40.84,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The panel is fixed to the window's right edge, full height, min(560px, 44vw) wide, and the stage shrinks beside it; where that would leave the stage under 640 px (a window under about 1250 px) or on a phone, it covers the window",
+      "id": "a2",
+      "judgedAt": "2026-09-23T19:13:46.794Z",
+      "planStep": 1,
+      "t": 52.99,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Close plays again only if the video was playing when the detail opened and the playhead is still where it was; no seek back",
+      "id": "a4",
+      "judgedAt": "2026-09-23T19:13:51.891Z",
+      "planStep": 1,
+      "t": 62.26,
+      "verdict": "accept"
+    },
+    {
+      "chose": "While the panel is open the video's keys are off (no play, draw or answer); O and Esc close it",
+      "id": "a5",
+      "judgedAt": "2026-09-23T19:14:34.346Z",
+      "planStep": 1,
+      "t": 82.89,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A seventh template, fresh.html: the base styles, theme and bridge with an empty body, for kind fresh",
+      "id": "a10",
+      "judgedAt": "2026-09-23T19:14:49.036Z",
+      "planStep": 2,
+      "t": 106.4,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Data pages are filled by one JSON block (rp-data); a prototype by two slots, markup and behaviour; explore by one optional script",
+      "id": "a11",
+      "judgedAt": "2026-09-23T19:15:10.282Z",
+      "planStep": 2,
+      "t": 119.3,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Each template's sample is the uploads plan (risks, the 8/16/32 MB staging runs, parts.ts line 14, before/after drop, manifest explorer, a step's text), marked \"Sample content\"",
+      "id": "a12",
+      "judgedAt": "2026-09-23T19:15:15.878Z",
+      "planStep": 2,
+      "t": 129.4,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A detail comment is kind: \"note\" with detail: { name, anchor, text }; Enter or Esc keeps the words, the × discards them; a click on another anchor keeps what was typed on the first",
+      "id": "a6",
+      "judgedAt": "2026-09-23T19:16:02.488Z",
+      "planStep": 3,
+      "t": 171.88,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A click on a control (button, a, input, select, textarea, label, summary, [data-no-anchor]) inside an anchored element does not post an anchor; the anchor element itself does",
+      "id": "a9",
+      "judgedAt": "2026-09-23T19:16:06.586Z",
+      "planStep": 3,
+      "t": 179.34,
+      "verdict": "accept"
+    },
+    {
+      "chose": "plan-text renders a Markdown link as its text plus the address in grey, never an <a href>",
+      "id": "a15",
+      "judgedAt": "2026-09-23T19:16:11.934Z",
+      "planStep": 3,
+      "t": 188.25,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Accept / Flag in the panel are one-shot like the sheet's: once a verdict is on the record the buttons show it and are disabled; if that call's sheet is waiting, the panel's verdict answers it too",
+      "id": "a7",
+      "judgedAt": "2026-09-23T19:16:36.400Z",
+      "planStep": 4,
+      "t": 225.23,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The plan text goes beside the stage (a 340 px column) when the stage loses under 10 % of its width for it; otherwise it is a section in the record, under Steps",
+      "id": "a3",
+      "judgedAt": "2026-09-23T19:17:00.972Z",
+      "planStep": 5,
+      "t": 249.23,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Deviation from step 5: the plan text sits beside the stage when the window is wide, in the record otherwise (A3)",
+      "id": "d2",
+      "judgedAt": "2026-09-23T19:17:06.583Z",
+      "planStep": 5,
+      "t": 258.76,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The plan beside the video reads plan.md, never plan.resolved.md",
+      "id": "a8",
+      "judgedAt": "2026-09-23T19:17:18.472Z",
+      "planStep": 5,
+      "t": 280.05,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The check fails on eight more ways a page can break than the four named before the build (the detail lists every rule)",
+      "id": "a13",
+      "judgedAt": "2026-09-23T19:17:31.546Z",
+      "planStep": 6,
+      "t": 304.69,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Without playwright-core (or when Chromium will not start) the static checks still run and the result says the pages were not opened",
+      "id": "a14",
+      "judgedAt": "2026-09-23T19:17:37.364Z",
+      "planStep": 6,
+      "t": 314.81,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-23T19:18:25.036Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T19:15:22.151Z",
+      "correct": true,
+      "id": "k1",
+      "t": 138.43
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-23T19:16:16.966Z",
+      "correct": true,
+      "id": "k2",
+      "t": 196.7
+    }
+  ],
+  "src": "2026-09-23-deep-dives--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      }
+    ],
+    "completion": 1,
+    "details": [
+      {
+        "name": "keys-with-a-page-open",
+        "openedAt": "2026-09-23T19:14:01.933Z",
+        "seconds": 27.6
+      },
+      {
+        "name": "data-block-and-slots",
+        "openedAt": "2026-09-23T19:14:55.123Z",
+        "seconds": 13.2
+      },
+      {
+        "name": "plan-column-widths",
+        "openedAt": "2026-09-23T19:16:49.241Z",
+        "seconds": 9.1
+      },
+      {
+        "name": "code-check-bug",
+        "openedAt": "2026-09-23T19:17:48.249Z",
+        "seconds": 6.8
+      }
+    ],
+    "durationSeconds": 393.89,
+    "firstPlayAt": "2026-09-23T19:12:49.078Z",
+    "maxTimeReached": 393.89,
+    "moments": [
+      {
+        "frameIndex": 1,
+        "from": 148.87,
+        "kind": "rewind",
+        "planStep": null,
+        "t": 0
+      }
+    ]
+  }
+}

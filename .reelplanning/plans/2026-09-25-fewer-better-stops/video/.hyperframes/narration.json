@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "0fb0e7beb9a5cc76acd6",
+      "text": "Quick check. A recent miss is tagged close. A new call on the same part is tagged visible, and visible was accepted ten times running. Does it stop?",
+      "sha256": "d44dd56227fda4cff7b9f33921f4105bc4d78538848acd3e3d9d7406f130dcd9",
+      "duration_s": 8.747
+    },
+    "11": {
+      "key": "941eebaf7953f2244653",
+      "text": "So what may a miss with no tags stop? A: nothing directly; it still shapes the next plan's questions. B: the calls on its part tagged close, fifteen of that walkthrough's twenty-two. C: as now, every tagged call on its part. I recommend A: a part is too coarse to say what went wrong. What should it stop?",
+      "sha256": "5a0d37112e70f1cced320192c38364579603311d99605bb708a8c7a8c71575f0",
+      "duration_s": 16.917
+    },
+    "12": {
+      "key": "ad7a70851d3224428b56",
+      "text": "With A, step two matches a miss by its tags alone: D-056 stops nothing, and memory's call A12 changes.",
+      "sha256": "df1147e78daf758e4a948b7859a48372546f2e22eb2a836ed93d1cff97c063df",
+      "duration_s": 7.253
+    },
+    "13": {
+      "key": "8c840afc88cac54997c5",
+      "text": "With B, step two treats D-056 as a close miss on the review player: fifteen of the twenty-two calls stop on it.",
+      "sha256": "fb6a0546e85753cce57f4ec671c1b119d21bc91fb2adbd197924d1c86b4b8486",
+      "duration_s": 7.488
+    },
+    "14": {
+      "key": "64ad5d5dcf17200c25a1",
+      "text": "With C, step two keeps today's rule, and reel stops only says which rule stopped each call.",
+      "sha256": "c85baa52b3bbbf041db98ca47978f2265f6356646ad0260725edc5a868c5e94f",
+      "duration_s": 5.227
+    },
+    "15": {
+      "key": "9c7c078b62c50474f676",
+      "text": "Part four of four: step three, and a question.",
+      "sha256": "de3f60e8639a0563e33ea9d3ea8effd0fc7d60a88f197e8951b6be12c34e40a8",
+      "duration_s": 2.539
+    },
+    "16": {
+      "key": "cab8b4010630571dff7d",
+      "text": "Step three. Reel audit warns past twelve calls and names the step with the most: twenty-three calls, step two has eight. And the skill tells the plan writer: a step you expect to need five or more calls asks its biggest as a question instead.",
+      "sha256": "be13ed80d9b32154eb439608cd55ec693830666a5f5dca0d794a7d223898df10",
+      "duration_s": 14.016
+    },
+    "17": {
+      "key": "04e543881c2a920b9e22",
+      "text": "Quick check. The memory walkthrough has sixteen calls, and no step has more than four. What does reel audit say?",
+      "sha256": "d1aeeeb75332cadc41ea18dac5dd9e06476f41114dbce3f4edc75c677d196630",
+      "duration_s": 6.037
+    },
+    "18": {
+      "key": "b902ac873854feef5c4f",
+      "text": "One thing is left: a step reaches its fifth call during the build anyway. A: the implementer asks before going on; that step waits for your answer, and the others carry on. B: it builds on, and the walkthrough says so. I recommend A: six of the eight calls you did not simply accept came from such steps. Which one?",
+      "sha256": "8f260f5ff8e9cb71d2c228126042a6189b6008d3e0203d5032b588039a4de51e",
+      "duration_s": 17.387
+    },
+    "19": {
+      "key": "acff8f9108753f28c269",
+      "text": "With A, a fifth call in a step becomes a question in the plan, and that step waits for your answer.",
+      "sha256": "d630a1857b6d5776c1e7f7593b2178ce32f4d4980c76f56c5bb219bd410fc505",
+      "duration_s": 5.141
+    },
+    "20": {
+      "key": "fe5fadb2607984221523",
+      "text": "With B, nothing waits: the walkthrough opens with the count and the step.",
+      "sha256": "f65d3f677a008b894362d46c76546e65afaf27327e012d4cdfb82be0331c4bd4",
+      "duration_s": 3.563
+    },
+    "21": {
+      "key": "91e49f683ce81affb0fe",
+      "text": "That is the plan: three steps, each on its own, and two questions. Answer them, draw on any step to leave a note, or approve. The narration and visuals are AI-generated.",
+      "sha256": "ee9c661784e02ac1e6f2e390b55faab14179a1910b7c3259719e1664740116e6",
+      "duration_s": 9.749
+    },
+    "01": {
+      "key": "77dd946b05ad02575edb",
+      "text": "The answer-on-the-video walkthrough stops twenty-three times: every call the agent made, and a deviation, each with a beat of its own. It fits five minutes only with one sentence a call.",
+      "sha256": "37a83bc7d661ee1caad8ca8410b750814cb20d0a355e2ce8380c379c5e1fdce2",
+      "duration_s": 10.731
+    },
+    "02": {
+      "key": "7b9eb5bee71681464562",
+      "text": "Two rules make it so. You accept a tag ten times running before it stops no more, and every streak is zero now. And a miss with no tags reaches every tagged call on its part: one old miss on the review player, D-056, stops every player call.",
+      "sha256": "c6bcdff82ff52cff42683ef85751aaa77ac3c55c4f8796748cd81dd142597f4f",
+      "duration_s": 15.232
+    },
+    "03": {
+      "key": "8a64eed0b3c4b18966b0",
+      "text": "And plans leave too much open. The skill says a dozen calls is too many; every plan so far had more, fifteen to thirty-four. And six of the eight calls you did not simply accept came from steps with five or more calls.",
+      "sha256": "61730b0f0503a90426edcd5c9ffcc1c584d43255e3ac185b06ab9c62545ed1a4",
+      "duration_s": 12.544
+    },
+    "04": {
+      "key": "601c47f99d5ea55c0e58",
+      "text": "You take the recommendation on fifteen of fifteen, so the aim is not fewer stops for their own sake. Three changes, each on its own: one pause per step, a miss stops its own kind, and too many calls becomes a question.",
+      "sha256": "7dedab4ebe5cd02e7691c1ee9e05085acf4ee08b75de059c6364f6296b0d971a",
+      "duration_s": 12.608
+    },
+    "05": {
+      "key": "9068a2fb4e7b937ac986",
+      "text": "Part two of four: step one.",
+      "sha256": "361da11a15fa29ff502f43eab63d05467b3acfe135e2030f8cdec17155ab8e88",
+      "duration_s": 1.749
+    },
+    "06": {
+      "key": "8cd210f0f08ec7215e89",
+      "text": "Step one. Today, step two of that walkthrough pauses eight times, once per call. With this plan, the calls that stop in a step share one beat. The video pauses once, and the answer band, where D-108 put Accept and Flag, lists each call with its own, and no Accept all. A deviation keeps its own beat. Twenty-three pauses become five.",
+      "sha256": "c083512a98dc49d5c971af54792fc5cd430fcdf047cac74473964adf62fbf8b0",
+      "duration_s": 18.88
+    },
+    "07": {
+      "key": "7e0bb667efc4fe730c0c",
+      "text": "Quick check. In the memory walkthrough, step four has two calls that stop, and a deviation. How many times does the video pause there?",
+      "sha256": "7084a957c7b3bee214110c5cf0dcfb8bf577571188d89a4743e6f0ed758a65f3",
+      "duration_s": 7.467
+    },
+    "08": {
+      "key": "eb781a536c2400c06f49",
+      "text": "Part three of four: step two, and a question.",
+      "sha256": "2f8ae621fb0ba4fb6931b255677a3e5536e15d1fb73ed97474e047d9b640fc8b",
+      "duration_s": 2.539
+    },
+    "09": {
+      "key": "ad071885c4d68f177a37",
+      "text": "Step two. A recent miss that carries tags stops a call that shares one, as now, and D-084's streak of ten stays. What changes is a miss with no tags, like D-056, which today stops every call on its part. With every streak at zero, the count stays the same for now; this matters once a tag earns its ten.",
+      "sha256": "2dd8dcfa9f7d6e29c29196d577d50266dcae656f060b44896dfaa41438afad63",
+      "duration_s": 19.584
+    }
+  }
+}

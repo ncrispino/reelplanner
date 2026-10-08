@@ -1,0 +1,2217 @@
+{
+  "project": "walkthrough-video",
+  "title": "Videos you can follow: what was built",
+  "planDir": ".reelplanning/plans/2026-09-25-videos-you-can-follow",
+  "totalSeconds": 296.975,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "What was built, and the words for it",
+      "fromFrame": 1,
+      "toFrame": 4,
+      "start": 0,
+      "end": 49.472,
+      "linearSeconds": 49.472,
+      "watchedSeconds": 49.472,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 1: every word explained, one click away",
+      "fromFrame": 5,
+      "toFrame": 9,
+      "start": 49.472,
+      "end": 106.624,
+      "linearSeconds": 57.152,
+      "watchedSeconds": 57.152,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 2: what to watch first",
+      "fromFrame": 10,
+      "toFrame": 13,
+      "start": 106.624,
+      "end": 155.904,
+      "linearSeconds": 49.28,
+      "watchedSeconds": 49.28,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Step 3: where you got lost",
+      "fromFrame": 14,
+      "toFrame": 17,
+      "start": 155.904,
+      "end": 199.745,
+      "linearSeconds": 43.841,
+      "watchedSeconds": 43.841,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Step 4: checks on the case just shown",
+      "fromFrame": 18,
+      "toFrame": 21,
+      "start": 199.745,
+      "end": 242.326,
+      "linearSeconds": 42.581,
+      "watchedSeconds": 42.581,
+      "decisions": []
+    },
+    {
+      "id": "ch6",
+      "title": "What the code check found",
+      "fromFrame": 22,
+      "toFrame": 25,
+      "start": 242.326,
+      "end": 296.975,
+      "linearSeconds": 54.649,
+      "watchedSeconds": 54.649,
+      "decisions": []
+    }
+  ],
+  "levels": {
+    "new": 296.975,
+    "familiar": 287.332,
+    "owner": 287.332
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 9,
+      "planStep": 1,
+      "question": "You add a glossary row for sweep, and no scene of the system video explains it. What happens when the system video is built?",
+      "questionMore": "The system video's build, right after the new row is added to the glossary.",
+      "options": [
+        {
+          "id": "a",
+          "label": "It stops, and names sweep",
+          "more": "The build does not finish, and says which word no scene explains.",
+          "why": "Every glossary row needs a scene of the system video that explains it; a row with none stops its build, by name."
+        },
+        {
+          "id": "b",
+          "label": "It builds, with a warning",
+          "more": "The build finishes, and prints a line about the word.",
+          "why": "A warning would let the system video ship with sweep unexplained; step one makes it a stop."
+        },
+        {
+          "id": "c",
+          "label": "It builds; plan videos explain it",
+          "more": "The system video leaves the word to the plan videos that use it.",
+          "why": "Plan videos lean on the system video for glossary words; the promise is that it explains every one."
+        }
+      ],
+      "answer": "a",
+      "explain": "Every glossary row must have a scene of the system video that explains it, so a row with none stops that video's build, and the build names the word.",
+      "at": 106.574,
+      "explainedAt": 49.472,
+      "explainedFrame": 5,
+      "walkMeThrough": "The glossary now has a row for sweep. Building the system video checks every row for a scene that explains it. Sweep has none, so the build stops and says so, by name. Adding a scene that says what sweep means lets it pass."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 13,
+      "planStep": 2,
+      "question": "This video builds on six earlier videos. Besides the system video, how many does its card list?",
+      "questionMore": "Six earlier plans' videos made decisions this video builds on. The card lists what to watch before the first play.",
+      "options": [
+        {
+          "id": "a",
+          "label": "All six",
+          "more": "Every one of the six is on the card, after the system video.",
+          "why": "Past two, the card would ask too much before the first play; the rest are summed up in a short scene instead."
+        },
+        {
+          "id": "b",
+          "label": "Two; a short scene sums up the rest",
+          "more": "Two are on the card; the others are summed up inside this video.",
+          "why": "At most two earlier videos go on the card, besides the system video; a short scene near the start sums up the other four."
+        },
+        {
+          "id": "c",
+          "label": "None: only the system video",
+          "more": "The card lists only the system video.",
+          "why": "The earlier plans this one builds on are listed too, up to two of them."
+        }
+      ],
+      "answer": "b",
+      "explain": "The card lists at most two earlier videos besides the system video; past two, a short scene near the start sums up the rest.",
+      "at": 155.854,
+      "explainedAt": 106.624,
+      "explainedFrame": 10,
+      "walkMeThrough": "This video builds on decisions from six earlier videos. The card lists the system video, then at most two of them: the revise-loop plan and the memory plan. The other four are summed up in one short scene near the start, for newcomers. So the card has two besides the system video."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 17,
+      "planStep": 3,
+      "question": "You looked up label in two reviews already. In a third review, you look it up again. What happens?",
+      "questionMore": "The same word, label, opened for its meaning in three different reviews.",
+      "options": [
+        {
+          "id": "a",
+          "label": "A signal: its scene is rewritten",
+          "more": "It counts as a signal, and the retro asks for that word's scene to be rewritten.",
+          "why": "Three reviews looking up one word is a signal that its explanation is not working, so the retro lists it to rewrite its scene."
+        },
+        {
+          "id": "b",
+          "label": "Nothing: only a count goes up",
+          "more": "Memory's count of words looked up goes up by one, and nothing else.",
+          "why": "The count goes up too, but three of one kind is also a signal."
+        },
+        {
+          "id": "c",
+          "label": "Approve waits until you watch its scene",
+          "more": "Approve is held until you have played the scene that explains it.",
+          "why": "Approving is never blocked; what you looked up is recorded, not enforced."
+        }
+      ],
+      "answer": "a",
+      "explain": "One word looked up in three reviews is a signal that its explanation is not working, so the retro lists it to rewrite its scene.",
+      "at": 199.695,
+      "explainedAt": 155.904,
+      "explainedFrame": 14,
+      "walkMeThrough": "You looked up label in two reviews, and now in a third. Three of one kind is a signal. The retro lists label among the words looked up in three reviews, to rewrite its scene in the system video, or its glossary row. Nothing is blocked."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 21,
+      "planStep": 4,
+      "question": "A check has a walk-through, but its answer says twice, and the scene it names never does. What does the build do?",
+      "questionMore": "The check has its walk-through. Its right answer says twice; the scene it names as showing the answer never says twice.",
+      "options": [
+        {
+          "id": "a",
+          "label": "It warns: the answer was not shown",
+          "more": "The build goes on, and prints a line saying the answer was not shown.",
+          "why": "Only a missing walk-through fails; an answer whose words the scene never says is a warning."
+        },
+        {
+          "id": "b",
+          "label": "It fails the build",
+          "more": "The build stops at the check, as it does for a missing walk-through.",
+          "why": "The build fails only a check with no walk-through, and this one has one."
+        },
+        {
+          "id": "c",
+          "label": "Nothing: the check passes quietly",
+          "more": "The build says nothing about this check.",
+          "why": "The build reads the answer's words against the scene, and warns when one is never said."
+        }
+      ],
+      "answer": "a",
+      "explain": "A check with no walk-through fails the build; an answer whose words its scene never says is only a warning.",
+      "at": 242.276,
+      "explainedAt": 199.745,
+      "explainedFrame": 18,
+      "walkMeThrough": "The check has its walk-through, so nothing fails. Its right answer says twice, and the scene it names never says twice, so the answer was not shown there. The build prints a warning about it, and goes on."
+    },
+    {
+      "id": "k5",
+      "frameIndex": 24,
+      "planStep": null,
+      "question": "A scene of the system video is marked as explaining Finish, but it never says Finish. What does its build do now?",
+      "questionMore": "The scene carries the mark that says it explains Finish, but neither its voice nor its frame says the word.",
+      "options": [
+        {
+          "id": "a",
+          "label": "It fails, and names the scene",
+          "more": "The build stops, and says which scene never says its word.",
+          "why": "Since the code check, a scene that explains a word must say it; one that never does fails the build, by name."
+        },
+        {
+          "id": "b",
+          "label": "It warns, and builds",
+          "more": "The build finishes, with a line about the scene.",
+          "why": "That is how it worked before the code check: it only warned."
+        },
+        {
+          "id": "c",
+          "label": "Nothing: the mark is enough",
+          "more": "The mark alone counts as explaining the word.",
+          "why": "The promise is that the word is explained in that scene, so the scene has to say it."
+        }
+      ],
+      "answer": "a",
+      "explain": "A scene that explains a word must say it; since the code check, one that never does fails the build and names the scene.",
+      "at": 280.825,
+      "explainedAt": 259.222,
+      "explainedFrame": 23,
+      "walkMeThrough": "The scene is marked as explaining Finish, but its voice and frame never say Finish. The code check found that this only warned. Now it fails the system video's build, and names the scene, until the scene says the word."
+    }
+  ],
+  "autonomy": [],
+  "autonomyGroups": [
+    {
+      "id": "stop-8",
+      "stop": true,
+      "frameIndex": 8,
+      "planStep": 1,
+      "ids": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "calls": [
+        {
+          "id": "a1",
+          "planStep": 1,
+          "chose": "The glossary's plain words are a fifth column, \"On screen\", read into each plan map `glossary[]` row as `display` (only where a row has one), with the on-screen word's forms after the term's in `forms`, so `forms[0]` stays the key, plus `definedIn`",
+          "insteadOf": "a separate mapping file; or `display` on every row",
+          "why": "one table stays the one list of names (\"the glossary lists both\", D-127), and the player already reads `glossary[]`",
+          "check": ".reelplanning/glossary.md, scripts/lib/terms.mjs parseGlossary, addAccess"
+        },
+        {
+          "id": "a2",
+          "planStep": 1,
+          "chose": "Plain words beyond D-127's six: answer bar, off-plan change, grouped scene, and \"part of the system\" for an area",
+          "insteadOf": "only the six D-127 names; or \"part\" for an area",
+          "why": "the plan's own words for the first two; \"part of the system\", so an older video's \"Part two\" is never underlined as a piece of the system",
+          "check": ".reelplanning/glossary.md (On screen column)"
+        },
+        {
+          "id": "a3",
+          "planStep": 1,
+          "chose": "The list of which video explains each word is `.reelplanning/terms-index.json`, written by a new `reelplanning terms-index` that finish-project runs after the plan map, the system video's scenes first",
+          "insteadOf": "a list inside every plan map; or worked out by the player",
+          "why": "one file every tool reads (`reel prereqs`, the plan map's `definedIn`), rebuilt on every build",
+          "check": "scripts/terms-index.mjs, scripts/finish-project.sh, scripts/lib/terms.mjs definesIndex"
+        },
+        {
+          "id": "a4",
+          "planStep": 1,
+          "chose": "The system video says the plain words throughout, not only where it defines them (\"Chapter 2 of 5\", choices, labels, scenes, \"Question 1\" on the decision mock); to stay under eight minutes the headless-run scene lost two sentences, the review loop's scene its \"a plan's review hasn't made that trip yet\", and rule two its reopened-by-hand story",
+          "insteadOf": "rename only the defining scenes; or let it run past eight minutes",
+          "why": "D-127 is what you see and hear; the budget is the system video's",
+          "check": ".reelplanning/system-video/SCRIPT.md lines 16, 19 and 32; compositions/frames/18-review-loop.html, 30-rule-log.html"
+        }
+      ],
+      "at": 99.662
+    },
+    {
+      "id": "stop-12",
+      "stop": true,
+      "frameIndex": 12,
+      "planStep": 2,
+      "ids": [
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "calls": [
+        {
+          "id": "a5",
+          "planStep": 2,
+          "chose": "`reel prereqs` picks the system video's chapter by the words the plan's steps share with the chapter's scenes (and a second within 90% of it); the parts touched only break a tie",
+          "insteadOf": "the parts touched alone",
+          "why": "every chapter shows the review player or the reel CLI, so parts alone picked \"why a video\" for most plans; words pick the build loop for fewer-better-stops, the plan's example",
+          "check": "scripts/reel.mjs prereqs"
+        },
+        {
+          "id": "a6",
+          "planStep": 2,
+          "chose": "A plan it builds on: its \"Decisions in force\" and \"Supersedes\" ids, except a bullet that says \"not touched\"; most decisions first, then the one cited first; only earlier plans; a decision on a call points at that plan's walkthrough video",
+          "insteadOf": "every id cited; or the newest plan first",
+          "why": "plans list \"unchanged; not touched here\" decisions for completeness, not because the video leans on them; this gives the plan's example, the revise-loop video for fewer-better-stops",
+          "check": "scripts/reel.mjs prereqs"
+        },
+        {
+          "id": "a7",
+          "planStep": 2,
+          "chose": "`reel prereqs` writes the lines into the storyboard's front matter, replacing the `before:` lines there (`--dry-run` only prints; with no storyboard yet it prints them to paste), and keeps the files' `#part N` while reading `#chapter N` too",
+          "insteadOf": "print only, for the author to paste",
+          "why": "the plan says the author no longer guesses; the files keep their names (D-127)",
+          "check": "scripts/reel.mjs prereqs, scripts/lib/terms.mjs parseBefore"
+        }
+      ],
+      "at": 149.731
+    },
+    {
+      "id": "stop-16",
+      "stop": true,
+      "frameIndex": 16,
+      "planStep": 3,
+      "ids": [
+        "a8",
+        "a9",
+        "a10"
+      ],
+      "calls": [
+        {
+          "id": "a8",
+          "planStep": 3,
+          "chose": "`lost` is a sixth memory line beside `checks`, so `reel status` ends with at most six lines, not five; `checks` keeps the count, `lost` says it per plan with the rest",
+          "insteadOf": "`lost` replacing `checks`, keeping five lines",
+          "why": "D-115, an accepted call, names the five ids with `checks` among them, and the plan asks for a new line; the memory plan's \"at most five\" was written before there was a sixth thing to say",
+          "check": "scripts/lib/memory.mjs LINES, memoryLines"
+        },
+        {
+          "id": "a9",
+          "planStep": 3,
+          "chose": "Two review fields for the player to send: `confusion.termsLookedUp` (the glossary keys opened) and `watched` (`[{ video, seen?, sent? }]`, the browser's marks, on the review or on a hosted row beside it); the reviewed video counts as watched at 80%, the player's own rule",
+          "insteadOf": "a count only (today's `termsOpened`); or only the reviewed video",
+          "why": "three reviews looking up one word needs the word; D-128 needs the browser's list to reach your file",
+          "check": "scripts/lib/memory.mjs lostOf, watchedOf; scripts/reel.mjs record; scripts/reel-intake.mjs"
+        },
+        {
+          "id": "a10",
+          "planStep": 3,
+          "chose": "What your file knows (videos watched, words looked up) is the last line of `reel memory --you` and the \"(your file: watched)\" note of `reel prereqs`, not a memory line",
+          "insteadOf": "a memory line of its own",
+          "why": "memory's lines say what reviews show about plans; this is what you know",
+          "check": "scripts/reel.mjs memory, prereqs; scripts/lib/memory.mjs youKnows"
+        }
+      ],
+      "at": 194.724
+    },
+    {
+      "id": "stop-20",
+      "stop": true,
+      "frameIndex": 20,
+      "planStep": 4,
+      "ids": [
+        "a11",
+        "a12"
+      ],
+      "calls": [
+        {
+          "id": "a11",
+          "planStep": 4,
+          "chose": "\"The answer was not shown\": a word of the right answer (four letters or more, not a common word, stemmed, a number read as digits) that the `explained_at` scene, else the scene before the check, never says or shows; a warning",
+          "insteadOf": "an exact phrase; or any scene before the check",
+          "why": "it catches the plan's example (fewer-better-stops' \"Twice\") without asking for the answer's exact words",
+          "check": "scripts/check-terms.mjs (section 4)"
+        },
+        {
+          "id": "a12",
+          "planStep": 4,
+          "chose": "The id warning is for `explain` only; a `walk_me_through` may name a choice by its number beside its word (\"choice A3 moved…\")",
+          "insteadOf": "`explain` and `walk_me_through`",
+          "why": "the plan asks for `explain`'s reason in words; a walk-through works the case, and the bare-id rule still holds for what is said",
+          "check": "scripts/check-terms.mjs (section 4)"
+        }
+      ],
+      "at": 236.452
+    }
+  ],
+  "watchedSeconds": 296.975,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Videos you can follow, as built",
+      "compositionId": "01-built",
+      "type": "hook",
+      "durationSeconds": 11.797,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What was built, and the words for it",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-6.15s.png",
+      "terms": [
+        "chapter",
+        "step",
+        "quick check"
+      ],
+      "defines": [
+        "chapter"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "A choice, a label, accepted in a row",
+      "compositionId": "02-choice-label",
+      "type": "pain_point",
+      "durationSeconds": 15.723,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 11.797,
+      "thumb": "snapshots/frame-01-at-19.91s.png",
+      "terms": [
+        "choice",
+        "label",
+        "accepted in a row",
+        "call",
+        "tag"
+      ],
+      "defines": [
+        "choice",
+        "label",
+        "accepted in a row"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "A scene, and one pause per step",
+      "compositionId": "03-scene-pause",
+      "type": "pain_point",
+      "durationSeconds": 12.309,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 27.52,
+      "thumb": "snapshots/frame-02-at-33.92s.png",
+      "terms": [
+        "scene",
+        "off-plan change",
+        "call",
+        "deviation",
+        "beat",
+        "step",
+        "choice"
+      ],
+      "defines": [
+        "scene",
+        "off-plan change"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "Three earlier decisions that still hold",
+      "compositionId": "04-recap",
+      "type": "pain_point",
+      "durationSeconds": 9.643,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 39.829,
+      "thumb": "snapshots/frame-03-at-44.9s.png",
+      "terms": [
+        "system video",
+        "call",
+        "step",
+        "choice"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Step 1: every word explained once, and one click away",
+      "compositionId": "05-step-1",
+      "type": "feature_showcase",
+      "durationSeconds": 15.019,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 1: every word explained, one click away",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 49.472,
+      "thumb": "snapshots/frame-04-at-57.23s.png",
+      "terms": [
+        "system video",
+        "call",
+        "tag",
+        "beat",
+        "chapter",
+        "step",
+        "choice",
+        "label",
+        "scene"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "A word in the captions, clicked",
+      "compositionId": "06-shot-caption",
+      "type": "feature_showcase",
+      "durationSeconds": 11.477,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 64.491,
+      "thumb": "snapshots/frame-05-at-70.48s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "chapter",
+        "scene"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "The Terms panel",
+      "compositionId": "07-shot-terms",
+      "type": "feature_showcase",
+      "durationSeconds": 7.253,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 75.968,
+      "thumb": "snapshots/frame-06-at-79.84s.png",
+      "terms": [
+        "tag",
+        "beat",
+        "label",
+        "scene"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "Step 1's four choices, in one pause",
+      "compositionId": "08-stop-step-1",
+      "type": "cta",
+      "durationSeconds": 16.491,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 83.221,
+      "thumb": "snapshots/frame-07-at-91.72s.png",
+      "autonomyStop": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "terms": [
+        "system video",
+        "call",
+        "step",
+        "choice"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "Quick check: a row no scene explains",
+      "compositionId": "09-quiz-k1",
+      "type": "social_proof",
+      "durationSeconds": 6.912,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You add a glossary row for sweep, and no scene of the system video explains it. What happens when the system video is built?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "a",
+      "explain": "Every glossary row must have a scene of the system video that explains it, so a row with none stops that video's build, and the build names the word.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It stops, and names sweep",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "It builds, with a warning",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "It builds; plan videos explain it",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 99.712,
+      "thumb": "snapshots/frame-08-at-103.42s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "quick check",
+        "scene"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "Step 2: the tool picks what to watch first",
+      "compositionId": "10-step-2",
+      "type": "feature_showcase",
+      "durationSeconds": 15.808,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: what to watch first",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 106.624,
+      "thumb": "snapshots/frame-09-at-114.78s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "chapter",
+        "step",
+        "scene"
+      ]
+    },
+    {
+      "index": 11,
+      "title": "This video's own Before you watch card",
+      "compositionId": "11-shot-before",
+      "type": "feature_showcase",
+      "durationSeconds": 12.181,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 122.432,
+      "thumb": "snapshots/frame-10-at-128.77s.png",
+      "terms": [
+        "review",
+        "finish"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Step 2's three choices, in one pause",
+      "compositionId": "12-stop-step-2",
+      "type": "cta",
+      "durationSeconds": 15.168,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 134.613,
+      "thumb": "snapshots/frame-11-at-142.45s.png",
+      "autonomyStop": [
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "terms": [
+        "system video",
+        "call",
+        "chapter",
+        "step",
+        "choice"
+      ]
+    },
+    {
+      "index": 13,
+      "title": "Quick check: six earlier videos",
+      "compositionId": "13-quiz-k2",
+      "type": "social_proof",
+      "durationSeconds": 6.123,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "This video builds on six earlier videos. Besides the system video, how many does its card list?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "The card lists at most two earlier videos besides the system video; past two, a short scene near the start sums up the rest.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "All six",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Two; a short scene sums up the rest",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "None: only the system video",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 149.781,
+      "thumb": "snapshots/frame-12-at-153.09s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "quick check",
+        "scene"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "Step 3: the tool remembers where you got lost",
+      "compositionId": "14-step-3",
+      "type": "feature_showcase",
+      "durationSeconds": 16.192,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: where you got lost",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 155.904,
+      "thumb": "snapshots/frame-13-at-164.25s.png",
+      "terms": [
+        "review",
+        "memory",
+        "tag",
+        "beat",
+        "chapter",
+        "retro",
+        "step",
+        "label",
+        "scene"
+      ]
+    },
+    {
+      "index": 15,
+      "title": "Finish, with checks missed",
+      "compositionId": "15-shot-finish",
+      "type": "feature_showcase",
+      "durationSeconds": 9.579,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 172.096,
+      "thumb": "snapshots/frame-14-at-177.14s.png",
+      "terms": [
+        "finish"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "Step 3's three choices, in one pause",
+      "compositionId": "16-stop-step-3",
+      "type": "cta",
+      "durationSeconds": 13.099,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 181.675,
+      "thumb": "snapshots/frame-15-at-188.47s.png",
+      "autonomyStop": [
+        "a8",
+        "a9",
+        "a10"
+      ],
+      "terms": [
+        "review",
+        "call",
+        "memory",
+        "step",
+        "choice"
+      ]
+    },
+    {
+      "index": 17,
+      "title": "Quick check: one word, three reviews",
+      "compositionId": "17-quiz-k3",
+      "type": "social_proof",
+      "durationSeconds": 4.971,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You looked up label in two reviews already. In a third review, you look it up again. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "a",
+      "explain": "One word looked up in three reviews is a signal that its explanation is not working, so the retro lists it to rewrite its scene.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "A signal: its scene is rewritten",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Nothing: only a count goes up",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Approve waits until you watch its scene",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 194.774,
+      "thumb": "snapshots/frame-16-at-197.51s.png",
+      "terms": [
+        "review",
+        "tag",
+        "beat",
+        "retro",
+        "quick check",
+        "label",
+        "scene"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "Step 4: quick checks test the case just shown",
+      "compositionId": "18-step-4",
+      "type": "feature_showcase",
+      "durationSeconds": 14.72,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 4: checks on the case just shown",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 199.745,
+      "thumb": "snapshots/frame-17-at-207.36s.png",
+      "terms": [
+        "beat",
+        "chapter",
+        "step",
+        "quick check",
+        "scene"
+      ]
+    },
+    {
+      "index": 19,
+      "title": "A wrong answer, walked through",
+      "compositionId": "19-shot-walk",
+      "type": "feature_showcase",
+      "durationSeconds": 6.805,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 214.465,
+      "thumb": "snapshots/frame-18-at-218.12s.png"
+    },
+    {
+      "index": 20,
+      "title": "Step 4's two choices, in one pause",
+      "compositionId": "20-stop-step-4",
+      "type": "cta",
+      "durationSeconds": 15.232,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 221.27,
+      "thumb": "snapshots/frame-19-at-229.14s.png",
+      "autonomyStop": [
+        "a11",
+        "a12"
+      ],
+      "terms": [
+        "call",
+        "step",
+        "choice"
+      ]
+    },
+    {
+      "index": 21,
+      "title": "Quick check: an answer never shown",
+      "compositionId": "21-quiz-k4",
+      "type": "social_proof",
+      "durationSeconds": 5.824,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A check has a walk-through, but its answer says twice, and the scene it names never does. What does the build do?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "a",
+      "explain": "A check with no walk-through fails the build; an answer whose words its scene never says is only a warning.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It warns: the answer was not shown",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "It fails the build",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nothing: the check passes quietly",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 236.502,
+      "thumb": "snapshots/frame-20-at-239.66s.png",
+      "terms": [
+        "beat",
+        "quick check",
+        "scene"
+      ]
+    },
+    {
+      "index": 22,
+      "title": "The code check: two gaps in the steps",
+      "compositionId": "22-code-1",
+      "type": "benefit_highlight",
+      "durationSeconds": 16.896,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "What the code check found",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 242.326,
+      "thumb": "snapshots/frame-21-at-251.02s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "chapter",
+        "step",
+        "finish",
+        "decision log",
+        "scene"
+      ]
+    },
+    {
+      "index": 23,
+      "title": "The code check: plain words, approvals, and three more",
+      "compositionId": "23-code-2",
+      "type": "benefit_highlight",
+      "durationSeconds": 15.637,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 259.222,
+      "thumb": "snapshots/frame-22-at-267.29s.png",
+      "terms": [
+        "system video",
+        "memory",
+        "beat",
+        "step",
+        "scene"
+      ]
+    },
+    {
+      "index": 24,
+      "title": "Quick check: a scene that never says its word",
+      "compositionId": "24-quiz-k5",
+      "type": "social_proof",
+      "durationSeconds": 6.016,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A scene of the system video is marked as explaining Finish, but it never says Finish. What does its build do now?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "a",
+      "explain": "A scene that explains a word must say it; since the code check, one that never does fails the build and names the scene.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "It fails, and names the scene",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "It warns, and builds",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nothing: the mark is enough",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 274.859,
+      "thumb": "snapshots/frame-23-at-278.12s.png",
+      "terms": [
+        "system video",
+        "beat",
+        "finish",
+        "quick check",
+        "scene"
+      ]
+    },
+    {
+      "index": 25,
+      "title": "What ran; flag a step, or accept",
+      "compositionId": "25-end",
+      "type": "cta",
+      "durationSeconds": 16.1,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 280.875,
+      "thumb": "snapshots/frame-24-at-288.93s.png",
+      "terms": [
+        "system video",
+        "call",
+        "tag",
+        "step"
+      ]
+    }
+  ],
+  "decisions": [],
+  "details": [],
+  "plan": {
+    "title": "Videos you can follow",
+    "problem": "You approved the last plan (fewer, better stops) with all three of its quick checks answered\nwrong. Across every review so far, 12 of 36 quick checks were answered wrong. In your words: \"the\nworst case is I am just confused, so I approve everything.\" Three things cause it.\n\n- **Words are used before they are explained.** That video's second quick check asked about \"a\n  recent miss tagged close\" and a tag \"accepted ten times running\". The video never said what a\n  call, a tag, a streak or a miss is, and it named decisions by their numbers instead of what they\n  decided.\n- **Nothing says what to watch first.** Every plan video assumes you know how calls, tags and the\n  video's answer bar work. The system video (the one video on the whole tool) would help, but nothing\n  points to it, and nothing checks that it explains those words.\n- **Quick checks test a clause, not the idea.** The first check asked about an exception said in\n  passing (\"a deviation\", a change from the plan, \"keeps its own beat\"), while the beat before it\n  showed a different case.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Every word is explained once, in the system video, and one click away",
+        "text": "*Independent; step 2 builds on its list.*\n\n- **The glossary (the repo's list of words, one meaning each) is a promise the system video keeps.**\n  Every glossary row has a beat of the system video that explains it; that beat carries\n  `- defines: <term>`. The system video's build fails while a row has no such beat, and names it.\n  Example: no beat of the system video explains a streak (it never says \"ten in a row\"), so once the\n  glossary has a row for it, the system video's build stops on \"streak has no beat\" until one is added.\n- **The system video covers what you see and what is recorded:** a chapter, a beat, a step, a quick\n  check, the answer bar, a detail and Finish; the decision log, a call, a tag, a streak, a miss and\n  memory. A new glossary row marks the system video behind in `reel status`, as a changed spec\n  section does (D-003: the system video catches up after every accepted walkthrough).\n- **One list of which video explains each word.** finish-project reads every video's `defines:`\n  lines into a repo-wide list: word, video, beat.\n- **Words in the captions can be clicked.** In any video, a glossary word in the captions is\n  underlined; clicking it pauses the video and shows its one-line meaning inside the frame, above\n  the answer bar, with where it is explained (\"the system video, chapter 4\") and a link that plays\n  that beat.\n- **Plain words on screen; the files keep theirs (D-127).** What you see and hear says choice (not\n  call), label (not tag), \"accepted in a row\" (not streak), late fix (not miss), chapter (not part) and\n  scene (not beat). Files, commands and the decision log keep today's names. The glossary lists both:\n  each row's name for the files, and the word said on screen where it differs. The system video's\n  beats that explain a word explain it in the plain word, and the player's own text uses them too.\n- **Simple language in plans too** (the owner's note on D-127: \"in general we want simple language\n  too in our plans … dont make more complicated than it needs to be\"). The skill's \"A new plan\" and the\n  style guide say it: plain words, one idea a sentence, no more complicated than the plan needs to be."
+      },
+      {
+        "n": 2,
+        "title": "The tool picks what to watch first",
+        "text": "*Needs step 1's list.*\n\n`reel prereqs <plan-dir>` writes the storyboard's `before:` line; the video's author no longer\nguesses it.\n\n- **The system video, always,** named by the chapters that show the parts this plan touches.\n- **An earlier plan's video** when this plan builds on one of its decisions, or uses a word that only\n  that video explains (step 1's list).\n- **At most two** besides the system video. Past that, the video gets a short beat that sums up the\n  rest for new viewers (`- knowledge: new`) instead.\n- **What you have watched is ticked off.** With every video on the card watched, the video starts\n  without its beats for newcomers. \"Watched\" is kept in this browser at once, and in your file across\n  repos when you send a review (D-128): the page ticks a video off the moment you finish it; the review\n  you send carries what this browser has watched, and `reel record` adds it to your file, so any repo's\n  tool can read it.\n\nExample: the last plan (fewer, better stops) builds on the streak of ten (D-084), decided in the\nrevise-loop plan. Its card lists the system video's chapter on the build loop, then the revise-loop video."
+      },
+      {
+        "n": 3,
+        "title": "The tool remembers where you got lost",
+        "text": "*Independent.*\n\nMemory is what the tool learns from your reviews (`reel status` ends with it).\n\n- **A new line, `lost`:** per plan, the quick checks answered wrong, the explanations opened, the\n  words looked up, and approvals given with checks missed.\n- **The same word looked up in three reviews** is a signal (D-124: three of one kind make a retro due)\n  that its explanation is not working: the retro rewrites that word's beat in the system video, or its\n  glossary row.\n- **Your file across repos** (D-106: `~/.reelplanning/you.jsonl`) keeps the words you have looked up\n  and the videos you have watched, so the skill stops explaining words you know, in any repo.\n- **An approval with checks missed is recorded** (\"approved with 3 of 3 checks missed\"), and never\n  blocks (D-129): Approve works as always; the review says it, and memory's `lost` line counts it."
+      },
+      {
+        "n": 4,
+        "title": "Quick checks test the main idea, on the case just shown",
+        "text": "*Independent.*\n\nRules in the skill and the style guide's quick-check section, and a build check:\n\n- **A check tests the beat's main idea**, not a clause said in passing; on the exact case the beat\n  before it showed, with the same names and numbers; and it adds no new facts.\n- **Its `explain` gives the reason in words**, never an id; its `walk_me_through` walks the same case\n  in two to four sentences; its `explained_at` names the beat that shows the answer.\n- **The build warns** when a check's right answer uses words its `explained_at` beat never says (the\n  answer was not shown), and fails when a check has no `walk_me_through`.\n\nExample: the last plan's step 1 beat showed eight pauses in one step becoming one; its check asked\nabout a deviation (a change from the plan), said in one clause. Under this step the check asks:\neight calls stop in this step; how many times does the video pause?"
+      }
+    ]
+  },
+  "slug": "2026-09-25-videos-you-can-follow--walkthrough",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 5,
+      "partTitle": "The build",
+      "title": "reelplanning: the whole system",
+      "gives": "the build and the walkthrough, with the review player, the reel CLI, the system video, the plan-to-video skill",
+      "seconds": 55.5,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-22-m3-revise-loop",
+      "title": "The loop, what's left: an agent runs it in the background, narration redoes only what changed, and the system video can change the system",
+      "gives": "decisions D-083, D-084, D-065: how many quick checks does a video ask?",
+      "seconds": 428.4,
+      "terms": [],
+      "found": true
+    },
+    {
+      "video": "2026-09-24-memory",
+      "title": "Memory: learn which questions are the right ones",
+      "gives": "decisions D-106, D-107: where does your memory across repos live?",
+      "seconds": 357.1,
+      "terms": [],
+      "found": true
+    }
+  ],
+  "terms": [
+    "chapter",
+    "choice",
+    "label",
+    "accepted in a row",
+    "scene",
+    "off-plan change"
+  ],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns plan.md into a video via HyperFrames",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's command from config.json, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "scripts/reel.mjs; manages .reelplanning/; reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into plan.md; changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Implements plan.md and logs each call the plan did not cover into walkthrough.md, with tags; its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo from spec.md; rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once as reviews/<kind>-<time>.json with a .md of what to act on; never overwritten. The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Review loop, step 2: nobody waiting",
+        "start": 185.951,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Review loop, steps 5–6: rebuild, and you're told",
+        "start": 225.235,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover: one row in walkthrough.md. Labelled visible, hard-to-undo or close when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the ledger and reviews/, never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Next: chapter 2",
+        "start": 75.483,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Chapter 2 of 5",
+        "start": 79.483,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started by reel retro when reel status says one is due, and judged against a fixed benchmark",
+      "forms": [
+        "retro"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each choice",
+        "start": 26.069,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Build loop, step 6: this video catches up",
+        "start": 343.071,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold; started from a template in templates/details/",
+      "forms": [
+        "detail"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words from plan.md, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "check-details, run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    }
+  ],
+  "ids": {
+    "A1": {
+      "kind": "choice",
+      "gloss": "The glossary's plain words are a fifth column, \"On screen\", read into each…"
+    },
+    "A10": {
+      "kind": "choice",
+      "gloss": "What your file knows (videos watched, words looked up) is the last line of…"
+    },
+    "A11": {
+      "kind": "choice",
+      "gloss": "\"The answer was not shown\": a word of the right answer (four letters or more…"
+    },
+    "A12": {
+      "kind": "choice",
+      "gloss": "The id warning is for `explain` only; a `walk_me_through` may name a choice by…"
+    },
+    "A2": {
+      "kind": "choice",
+      "gloss": "Plain words beyond D-127's six: answer bar, off-plan change, grouped scene…"
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": "The list of which video explains each word is `.reelplanning…"
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": "The system video says the plain words throughout, not only where it defines…"
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": "`reel prereqs` picks the system video's chapter by the words the plan's steps…"
+    },
+    "A6": {
+      "kind": "choice",
+      "gloss": "A plan it builds on: its \"Decisions in force\" and \"Supersedes\" ids, except a…"
+    },
+    "A7": {
+      "kind": "choice",
+      "gloss": "`reel prereqs` writes the lines into the storyboard's front matter, replacing…"
+    },
+    "A8": {
+      "kind": "choice",
+      "gloss": "`lost` is a sixth memory line beside `checks`, so `reel status` ends with at…"
+    },
+    "A9": {
+      "kind": "choice",
+      "gloss": "Two review fields for the player to send: `confusion.termsLookedUp` (the…"
+    },
+    "D-127": {
+      "kind": "decision",
+      "gloss": "Which words does the viewer see: plain new ones, or today's, explained? Plain…"
+    },
+    "D-128": {
+      "kind": "decision",
+      "gloss": "Where is \"you watched it\" kept? This browser, and your file"
+    },
+    "D-129": {
+      "kind": "decision",
+      "gloss": "Can approving ever be blocked when you answered checks wrong? Never; it is…"
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "You add a glossary row for sweep, and no scene of the system video explains…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "This video builds on six earlier videos. Besides the system video, how many…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "You looked up label in two reviews already. In a third review, you look it up…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "A check has a walk-through, but its answer says twice, and the scene it names…"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "A scene of the system video is marked as explaining Finish, but it never says…"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": false,
+    "note": "no previous build to compare against"
+  }
+}

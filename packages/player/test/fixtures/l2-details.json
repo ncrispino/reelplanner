@@ -1,0 +1,943 @@
+{
+ "project": "l2-upload-resume",
+ "title": "Richer review fixture: four options, pick all that apply",
+ "planDir": "eval/projects/media-service/.reelplanning/plans/2026-09-12-upload-resume",
+ "totalSeconds": 216.491,
+ "chapters": [
+  {
+   "id": "ch1",
+   "title": "The problem and step 1",
+   "fromFrame": 1,
+   "toFrame": 7,
+   "start": 0,
+   "end": 70.293,
+   "linearSeconds": 70.293,
+   "watchedSeconds": 64.533,
+   "decisions": [
+    "q1"
+   ]
+  },
+  {
+   "id": "ch2",
+   "title": "Steps 2 to 4",
+   "fromFrame": 8,
+   "toFrame": 13,
+   "start": 70.293,
+   "end": 153.473,
+   "linearSeconds": 83.18,
+   "watchedSeconds": 74.625,
+   "decisions": [
+    "q2"
+   ]
+  },
+  {
+   "id": "ch3",
+   "title": "Steps 5 and 6, and the resolved plan",
+   "fromFrame": 14,
+   "toFrame": 19,
+   "start": 153.473,
+   "end": 216.491,
+   "linearSeconds": 63.018,
+   "watchedSeconds": 57.898,
+   "decisions": [
+    "q3"
+   ]
+  }
+ ],
+ "quizzes": [
+  {
+   "id": "ktest",
+   "frameIndex": 8,
+   "planStep": 2,
+   "question": "Send part one twice. What does the second PUT do?",
+   "options": [
+    {
+     "id": "a",
+     "label": "stores it again"
+    },
+    {
+     "id": "b",
+     "label": "sees the bit and does nothing"
+    },
+    {
+     "id": "c",
+     "label": "fails the upload"
+    }
+   ],
+   "answer": "b",
+   "explain": "the bit is already set; the PUT is idempotent",
+   "at": 81.224
+  }
+ ],
+ "autonomy": [
+  {
+   "id": "atest",
+   "frameIndex": 9,
+   "planStep": 3,
+   "chose": "complete returns 409 when bits are missing",
+   "insteadOf": "400",
+   "why": "409 reads as a state conflict, which it is",
+   "check": "src/upload/complete.ts",
+   "at": 96.367
+  }
+ ],
+ "watchedSeconds": 197.056,
+ "frames": [
+  {
+   "index": 1,
+   "title": "The upload that dies at 90 percent",
+   "compositionId": "01-hook",
+   "type": "hook",
+   "durationSeconds": 8.363,
+   "planStep": null,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": "The problem and step 1",
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 0,
+   "thumb": "snapshots/frame-00-at-4.28s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 1
+   }
+  },
+  {
+   "index": 2,
+   "title": "The fix you'd reach for",
+   "compositionId": "02-tension",
+   "type": "pain_point",
+   "durationSeconds": 9.301,
+   "planStep": null,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 8.363,
+   "thumb": "snapshots/frame-01-at-12.8s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 2
+   }
+  },
+  {
+   "index": 3,
+   "title": "6 pieces",
+   "compositionId": "03-pretrain",
+   "type": "product_intro",
+   "durationSeconds": 7.68,
+   "planStep": null,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": [
+    "new",
+    "familiar"
+   ],
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 17.664,
+   "thumb": "snapshots/frame-02-at-20.92s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 3
+   }
+  },
+  {
+   "index": 4,
+   "title": "Step 1: write the manifest first",
+   "compositionId": "04-step-1",
+   "type": "feature_showcase",
+   "durationSeconds": 15.403,
+   "planStep": 1,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 25.344,
+   "thumb": "snapshots/frame-03-at-31.83s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 4
+   }
+  },
+  {
+   "index": 5,
+   "title": "Where does the manifest live?",
+   "compositionId": "05-decision-1",
+   "type": "cta",
+   "durationSeconds": 17.749,
+   "planStep": 1,
+   "planQuestions": [],
+   "decision": "q1",
+   "branch": null,
+   "question": "Where does the manifest live?",
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [
+    {
+     "id": "a",
+     "label": "Postgres",
+     "why": "parts_done flips in the same transaction as the part write; one more table to migrate",
+     "recommended": true
+    },
+    {
+     "id": "b",
+     "label": "S3 object",
+     "why": "all upload state in one system; every part becomes an ETag-conditional write with retries, about a day more in step 2",
+     "recommended": false
+    }
+   ],
+   "start": 40.747,
+   "thumb": "snapshots/frame-04-at-47.57s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 5
+   }
+  },
+  {
+   "index": 6,
+   "title": "If Postgres",
+   "compositionId": "06-branch-1a",
+   "type": "benefit_highlight",
+   "durationSeconds": 6.037,
+   "planStep": 1,
+   "planQuestions": [],
+   "decision": null,
+   "branch": "q1=a",
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 58.496,
+   "thumb": "snapshots/frame-05-at-58.86s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 6
+   }
+  },
+  {
+   "index": 7,
+   "title": "If S3",
+   "compositionId": "07-branch-1b",
+   "type": "benefit_highlight",
+   "durationSeconds": 5.76,
+   "planStep": 1,
+   "planQuestions": [],
+   "decision": null,
+   "branch": "q1=b",
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 64.533,
+   "thumb": "snapshots/frame-06-at-64.45s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 7
+   }
+  },
+  {
+   "index": 8,
+   "title": "Step 2: chunked, idempotent parts",
+   "compositionId": "08-step-2",
+   "type": "feature_showcase",
+   "durationSeconds": 15.211,
+   "planStep": 2,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": "Steps 2 to 4",
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 70.293,
+   "thumb": "snapshots/frame-07-at-74.37s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 8
+   },
+   "detail": "parts-runs"
+  },
+  {
+   "index": 9,
+   "title": "Step 3: resume",
+   "compositionId": "09-step-3",
+   "type": "feature_showcase",
+   "durationSeconds": 15.915,
+   "planStep": 3,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 85.504,
+   "thumb": "snapshots/frame-08-at-89.1s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 9
+   },
+   "detail": "complete-409"
+  },
+  {
+   "index": 10,
+   "title": "Step 4: bill on completion, once",
+   "compositionId": "10-step-4",
+   "type": "feature_showcase",
+   "durationSeconds": 14.891,
+   "planStep": 4,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 101.419,
+   "thumb": "snapshots/frame-09-at-103.6s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 10
+   }
+  },
+  {
+   "index": 11,
+   "title": "Who owns the idempotency key?",
+   "compositionId": "11-decision-2",
+   "type": "cta",
+   "durationSeconds": 23.232,
+   "planStep": 4,
+   "planQuestions": [],
+   "decision": "q2",
+   "branch": null,
+   "question": "Who owns the idempotency key?",
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [
+    {
+     "id": "a",
+     "label": "Server id",
+     "why": "the manifest id is the key; no SDK change beyond step 6; a client that loses it starts over and pays once per completed file",
+     "recommended": true
+    },
+    {
+     "id": "b",
+     "label": "Client key",
+     "why": "survives a client that retries POST /uploads itself; costs a (customer, key) unique index, a 409 path, and SDK changes in every language",
+     "recommended": false
+    }
+   ],
+   "start": 116.31,
+   "thumb": "snapshots/frame-10-at-121.43s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 11
+   }
+  },
+  {
+   "index": 12,
+   "title": "If server id",
+   "compositionId": "12-branch-2a",
+   "type": "benefit_highlight",
+   "durationSeconds": 5.376,
+   "planStep": 4,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 139.542,
+   "thumb": "snapshots/frame-12-at-141.43s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 12
+   }
+  },
+  {
+   "index": 13,
+   "title": "If client key",
+   "compositionId": "13-branch-2b",
+   "type": "benefit_highlight",
+   "durationSeconds": 8.555,
+   "planStep": 4,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 144.918,
+   "thumb": "snapshots/frame-13-at-153.74s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 13
+   },
+   "summary": "q2"
+  },
+  {
+   "index": 14,
+   "title": "Step 5: the sweeper",
+   "compositionId": "14-step-5",
+   "type": "feature_showcase",
+   "durationSeconds": 17.429,
+   "planStep": 5,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": "Steps 5 and 6, and the resolved plan",
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 153.473,
+   "thumb": "snapshots/frame-13-at-153.74s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 14
+   }
+  },
+  {
+   "index": 15,
+   "title": "How long before an upload is abandoned?",
+   "compositionId": "15-decision-3",
+   "type": "cta",
+   "durationSeconds": 20.949,
+   "planStep": 5,
+   "planQuestions": [],
+   "decision": "q3",
+   "branch": null,
+   "question": "How long before an upload is abandoned?",
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [
+    {
+     "id": "a",
+     "label": "24 hours",
+     "why": "bounds blob storage at one day of interrupted uploads; mobile clients on flaky networks almost always retry within hours",
+     "recommended": true
+    },
+    {
+     "id": "b",
+     "label": "7 days",
+     "why": "safer for very large uploads over bad links; up to a week of orphaned parts per abandoned upload and a sweeper scan that grows with it",
+     "recommended": false
+    }
+   ],
+   "start": 170.902,
+   "thumb": "snapshots/frame-14-at-171.74s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 15
+   }
+  },
+  {
+   "index": 16,
+   "title": "If 24 hours",
+   "compositionId": "16-branch-3a",
+   "type": "benefit_highlight",
+   "durationSeconds": 5.547,
+   "planStep": 5,
+   "planQuestions": [],
+   "decision": null,
+   "branch": "q3=a",
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 191.851,
+   "thumb": "snapshots/frame-17-at-195.6s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 16
+   }
+  },
+  {
+   "index": 17,
+   "title": "If 7 days",
+   "compositionId": "17-branch-3b",
+   "type": "benefit_highlight",
+   "durationSeconds": 5.12,
+   "planStep": 5,
+   "planQuestions": [],
+   "decision": null,
+   "branch": "q3=b",
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 197.398,
+   "thumb": "snapshots/frame-19-at-203.07s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 17
+   }
+  },
+  {
+   "index": 18,
+   "title": "Step 6: the SDK resumes",
+   "compositionId": "18-step-6",
+   "type": "feature_showcase",
+   "durationSeconds": 8.448,
+   "planStep": 6,
+   "planQuestions": [],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 202.518,
+   "thumb": "snapshots/frame-19-at-203.07s.png",
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 18
+   }
+  },
+  {
+   "index": 19,
+   "title": "The plan, resolved",
+   "compositionId": "19-resolved",
+   "type": "cta",
+   "durationSeconds": 5.525,
+   "planStep": null,
+   "planQuestions": [
+    1,
+    2,
+    3
+   ],
+   "decision": null,
+   "branch": null,
+   "question": null,
+   "chapterStart": null,
+   "knowledge": null,
+   "quiz": null,
+   "answer": null,
+   "explain": null,
+   "autonomy": null,
+   "chose": null,
+   "insteadOf": null,
+   "why": null,
+   "check": null,
+   "options": [],
+   "start": 210.966,
+   "change": {
+    "status": "restyled",
+    "said": false,
+    "shown": false,
+    "retimed": true,
+    "wasIndex": 19
+   }
+  }
+ ],
+ "decisions": [
+  {
+   "id": "q1",
+   "frameIndex": 5,
+   "compositionId": "05-decision-1",
+   "planStep": 1,
+   "question": "Where does the manifest live?",
+   "at": 58.446,
+   "resumeAt": 70.293,
+   "options": [
+    {
+     "id": "a",
+     "label": "Postgres",
+     "why": "parts_done flips in the same transaction as the part write; one more table to migrate",
+     "recommended": true,
+     "branch": {
+      "frameIndex": 6,
+      "compositionId": "06-branch-1a",
+      "start": 58.496,
+      "end": 64.533
+     }
+    },
+    {
+     "id": "b",
+     "label": "S3 object",
+     "why": "all upload state in one system; every part becomes an ETag-conditional write with retries, about a day more in step 2",
+     "recommended": false,
+     "branch": {
+      "frameIndex": 7,
+      "compositionId": "07-branch-1b",
+      "start": 64.533,
+      "end": 70.293
+     }
+    },
+    {
+     "id": "c",
+     "label": "Redis with a TTL",
+     "why": "fast writes and expiry for free; the manifest is lost if Redis restarts before the upload completes",
+     "recommended": false,
+     "branch": null
+    },
+    {
+     "id": "d",
+     "label": "A file next to the parts",
+     "why": "no new service at all; listing a million uploads means listing a million prefixes",
+     "recommended": false,
+     "branch": null
+    }
+   ],
+   "kind": "one",
+   "summary": null
+  },
+  {
+   "id": "q2",
+   "frameIndex": 11,
+   "compositionId": "11-decision-2",
+   "planStep": 4,
+   "question": "Which clients get resume first?",
+   "at": 139.492,
+   "resumeAt": 153.473,
+   "options": [
+    {
+     "id": "a",
+     "label": "Web uploader",
+     "why": "most of the failed uploads today; one codebase",
+     "recommended": true,
+     "branch": null
+    },
+    {
+     "id": "b",
+     "label": "iOS app",
+     "why": "flaky networks, the longest uploads; needs a background session",
+     "recommended": false,
+     "branch": null
+    },
+    {
+     "id": "c",
+     "label": "Android app",
+     "why": "same failure mode as iOS; the upload library already retries parts",
+     "recommended": false,
+     "branch": null
+    },
+    {
+     "id": "d",
+     "label": "Public API and SDKs",
+     "why": "customers who script uploads; every SDK needs the manifest id",
+     "recommended": false,
+     "branch": null
+    }
+   ],
+   "kind": "multi",
+   "summary": {
+    "frameIndex": 13,
+    "compositionId": "13-branch-2b",
+    "start": 144.918,
+    "end": 153.473
+   }
+  },
+  {
+   "id": "q3",
+   "frameIndex": 15,
+   "compositionId": "15-decision-3",
+   "planStep": 5,
+   "question": "How long before an upload is abandoned?",
+   "at": 191.801,
+   "resumeAt": 202.518,
+   "options": [
+    {
+     "id": "a",
+     "label": "24 hours",
+     "why": "bounds blob storage at one day of interrupted uploads; mobile clients on flaky networks almost always retry within hours",
+     "recommended": true,
+     "branch": {
+      "frameIndex": 16,
+      "compositionId": "16-branch-3a",
+      "start": 191.851,
+      "end": 197.398
+     }
+    },
+    {
+     "id": "b",
+     "label": "7 days",
+     "why": "safer for very large uploads over bad links; up to a week of orphaned parts per abandoned upload and a sweeper scan that grows with it",
+     "recommended": false,
+     "branch": {
+      "frameIndex": 17,
+      "compositionId": "17-branch-3b",
+      "start": 197.398,
+      "end": 202.518
+     }
+    }
+   ],
+   "kind": "one",
+   "summary": null
+  }
+ ],
+ "plan": {
+  "title": "Make uploads survive a server restart",
+  "problem": "A file upload that is interrupted by a server restart, deploy, or crash resumes from where it left off instead of failing and forcing the client to start over. Today a 2 GB upload that dies at 90% restarts from zero, and if the client's retry happens to succeed twice we bill the customer for two uploads.",
+  "steps": [
+   {
+    "n": 1,
+    "title": "Write-ahead upload manifest",
+    "text": "**What:** Add a `upload_manifests` table (Postgres) with columns `id`, `file_size`, `part_size`, `parts_done` (bitmap), `created_at`, `completed_at`. `POST /uploads` inserts a manifest row **before** returning the upload id to the client, and before any byte is accepted.\n\n**Why:** A crash at any later point leaves a durable record we can resume from. If we wrote the manifest after the first part, a crash during the first part would be invisible.\n\n**Alternatives considered:** write the manifest after the first part lands (simpler, but a crash during part 1 is invisible); keep upload state only in the client (loses it on app restart).\n\n**Files:** `src/upload/manifest.ts`, `migrations/0042_upload_manifests.sql`\n\n**Risk:** low. **Depends on:** nothing."
+   },
+   {
+    "n": 2,
+    "title": "Chunked parts with idempotent PUT",
+    "text": "**What:** Replace the single-stream `POST` body with `PUT /uploads/:id/parts/:n`. Each part is written to the blob store under `uploads/<id>/<n>` and the manifest's `parts_done` bit is set in the same transaction. A repeated PUT for a part already marked done returns 200 without rewriting.\n\n**Why:** Parts are the unit of resumption. Idempotent PUT means the client can blindly re-send any part after a reconnect and never corrupt state.\n\n**Alternatives considered:** keep a single streaming POST with HTTP Range resume (S3 multipart cannot append to a stream, and range semantics on a live object are undefined); smaller 1 MB parts (below the 5 MB S3 minimum, and 2,000 manifest bits per 2 GB file).\n\n**Files:** `src/upload/parts.ts`, `src/blob/put.ts`\n\n**Risk:** medium. The part size (8 MB default) interacts with S3 multipart minimums; below 5 MB S3 rejects the part.\n\n**Depends on:** Step 1."
+   },
+   {
+    "n": 3,
+    "title": "Resume endpoint",
+    "text": "**What:** `GET /uploads/:id` returns the manifest's `parts_done` so a reconnecting client knows which parts to skip. `POST /uploads/:id/complete` verifies all bits set, issues the S3 CompleteMultipartUpload, and stamps `completed_at`.\n\n**Why:** Resumption is a client-side decision informed by server-side truth. The server never guesses which parts arrived.\n\n**Alternatives considered:** let the client track its own sent parts (drifts from server truth after a crash); infer completion server-side on the last PUT (races when parts arrive out of order).\n\n**Files:** `src/upload/resume.ts`, `src/upload/complete.ts`\n\n**Risk:** low. **Depends on:** Steps 1, 2."
+   },
+   {
+    "n": 4,
+    "title": "Move billing to manifest completion",
+    "text": "**What:** The billing hook moves from the `POST /uploads` handler to the `complete` handler, keyed on the manifest id. A `completed_at` that is already set makes `complete` a no-op and emits no billing event.\n\n**Why:** This is what kills the double-charge. Billing fires exactly once per manifest, and the manifest id is the idempotency key.\n\n**Alternatives considered:** dedupe in the billing service by file hash (needs the whole file hashed twice, and legitimate duplicate uploads would be dropped); keep billing on POST and refund duplicates (customer sees two charges first).\n\n**Files:** `src/billing/onUploadComplete.ts`\n\n**Risk:** medium. There is a window between the S3 complete call and the `completed_at` write; if we crash inside it, a second `complete` would re-issue the S3 call, which S3 rejects with `NoSuchUpload`. We treat that error as success.\n\n**Depends on:** Step 3."
+   },
+   {
+    "n": 5,
+    "title": "Sweeper for abandoned manifests",
+    "text": "**What:** A job in `src/jobs/sweepUploads.ts` runs hourly, finds manifests older than 24h with no `completed_at`, aborts the S3 multipart upload, deletes the parts, and marks the manifest `abandoned`.\n\n**Why:** Without it, every interrupted upload that never resumes leaks blob storage forever and the manifests table grows without bound.\n\n**Alternatives considered:** S3 lifecycle rules on the parts prefix (cleans blobs but never the manifest rows, and the window is per-bucket not per-upload); sweep on the next resume attempt (never runs for clients that never come back).\n\n**Files:** `src/jobs/sweepUploads.ts`\n\n**Risk:** low. **Depends on:** Steps 1, 2."
+   },
+   {
+    "n": 6,
+    "title": "SDK resume support",
+    "text": "**What:** `packages/sdk/upload.ts` persists the upload id locally, calls `GET /uploads/:id` on reconnect, and re-sends only the missing parts.\n\n**Why:** Nothing above helps if the client throws away the upload id.\n\n**Alternatives considered:** server-issued resume tokens in a cookie (breaks for non-browser clients); no SDK change and document the endpoints (nobody resumes in practice).\n\n**Files:** `packages/sdk/upload.ts`\n\n**Risk:** low. **Depends on:** Step 3."
+   }
+  ]
+ },
+ "details": [
+  {
+   "name": "parts-runs",
+   "src": "details/parts-runs.html",
+   "title": "The staging runs behind 8 MB parts",
+   "kind": "evidence",
+   "why": "The runs themselves: three part sizes through the same 40 dropped connections",
+   "frameIndex": 8,
+   "compositionId": "08-step-2",
+   "planStep": 2,
+   "start": 70.293,
+   "end": 85.504,
+   "autonomy": null
+  },
+  {
+   "name": "complete-409",
+   "src": "details/complete-409.html",
+   "title": "complete() when parts are missing",
+   "kind": "code",
+   "why": "The handler, with the lines that return 409 marked",
+   "frameIndex": 9,
+   "compositionId": "09-step-3",
+   "planStep": 3,
+   "start": 85.504,
+   "end": 101.419,
+   "autonomy": "atest"
+  }
+ ]
+}

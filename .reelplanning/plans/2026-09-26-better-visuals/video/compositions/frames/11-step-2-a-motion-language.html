@@ -1,0 +1,143 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b11-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b11-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b11-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b11-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b11-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b11-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b11-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b11-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b11-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b11-ul.ink { background:var(--rp-ink); height:3px; }
+  .b11-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b11-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b11-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b11-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b11-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b11-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b11-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b11-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b11-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b11-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b11-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b11-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b11-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b11-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b11-mf { position:absolute; left:270px; width:240px; height:135px; overflow:hidden; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.5); box-sizing:border-box; background:var(--rp-paper); }
+  .b11-ms { position:absolute; left:0; top:0; width:240px; height:135px; transform-origin:50% 50%; }
+  .b11-bar { position:absolute; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.55); }
+  .b11-blk { position:absolute; border-radius:4px; background:var(--rp-tile-2); border:2px solid rgba(var(--rp-ink-rgb),0.45); box-sizing:border-box; }
+  .b11-mv { position:absolute; left:580px; font:400 52px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .b11-me { position:absolute; left:800px; font:400 32px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.82); white-space:nowrap; }
+  .b11-hl { position:absolute; left:230px; width:1440px; height:150px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.07); transform-origin:0 50%; }
+  .b11-dot { position:absolute; left:383px; width:14px; height:14px; border-radius:50%; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="11-step-2-a-motion-language" data-band="bottom" data-duration="15.4" data-width="1920" data-height="1080">
+
+  <div class="clip b11-bg" id="b11-bg" data-start="0" data-duration="15.4" data-track-index="0"></div>
+
+  <div class="clip b11-scene" id="b11-scene" data-start="0" data-duration="15.4" data-track-index="1">
+    <div class="b11-lab" id="b11-anchor" style="left:200px; top:34px">Step 2 · motion with a meaning</div>
+    <div class="b11-view" id="b11-view"><div class="b11-cam" id="b11-cam">
+    <div class="b11-doc" id="b11-doc" style="left:200px; top:90px; width:1520px; height:790px"></div>
+    <div class="b11-lab" id="b11-file" style="left:270px; top:128px">motion-language.md · draft</div>
+    <div class="b11-hl" id="b11-hl0" style="top:192px"></div>
+    <div class="b11-mf" id="b11-mf0" style="top:200px"><div class="b11-ms" id="b11-a0"><i class="b11-bar" style="left:18px; top:18px; width:90px; height:12px"></i><i class="b11-bar" style="left:18px; top:48px; width:190px; height:9px; opacity:.6"></i><i class="b11-bar" style="left:18px; top:68px; width:150px; height:9px; opacity:.6"></i><i class="b11-blk" style="left:130px; top:86px; width:80px; height:34px"></i></div><div class="b11-ms" id="b11-b0"><i class="b11-blk" style="left:18px; top:18px; width:204px; height:99px"></i><i class="b11-bar" style="left:36px; top:40px; width:110px; height:12px"></i></div></div>
+    <div class="b11-mv" id="b11-mv0" style="top:230px">camera</div>
+    <div class="b11-me" id="b11-me0" style="top:240px">push in to a detail, pull back</div>
+    <div class="b11-hl" id="b11-hl1" style="top:352px"></div>
+    <div class="b11-mf" id="b11-mf1" style="top:360px"><div class="b11-ms" id="b11-a1"><i class="b11-bar" style="left:18px; top:18px; width:90px; height:12px"></i><i class="b11-bar" style="left:18px; top:48px; width:190px; height:9px; opacity:.6"></i><i class="b11-bar" style="left:18px; top:68px; width:150px; height:9px; opacity:.6"></i><i class="b11-blk" style="left:130px; top:86px; width:80px; height:34px"></i></div><div class="b11-ms" id="b11-b1"><i class="b11-blk" style="left:18px; top:18px; width:204px; height:99px"></i><i class="b11-bar" style="left:36px; top:40px; width:110px; height:12px"></i></div></div>
+    <div class="b11-mv" id="b11-mv1" style="top:390px">cut</div>
+    <div class="b11-me" id="b11-me1" style="top:400px">a new chapter, or a quick check</div>
+    <div class="b11-hl" id="b11-hl2" style="top:512px"></div>
+    <div class="b11-mf" id="b11-mf2" style="top:520px"><div class="b11-ms" id="b11-a2"><i class="b11-bar" style="left:18px; top:18px; width:90px; height:12px"></i><i class="b11-bar" style="left:18px; top:48px; width:190px; height:9px; opacity:.6"></i><i class="b11-bar" style="left:18px; top:68px; width:150px; height:9px; opacity:.6"></i><i class="b11-blk" style="left:130px; top:86px; width:80px; height:34px"></i></div><div class="b11-ms" id="b11-b2"><i class="b11-blk" style="left:18px; top:18px; width:204px; height:99px"></i><i class="b11-bar" style="left:36px; top:40px; width:110px; height:12px"></i></div></div>
+    <div class="b11-mv" id="b11-mv2" style="top:550px">push</div>
+    <div class="b11-me" id="b11-me2" style="top:560px">the next scene, same chapter</div>
+    <div class="b11-hl" id="b11-hl3" style="top:672px"></div>
+    <div class="b11-mf" id="b11-mf3" style="top:680px"><div class="b11-ms" id="b11-a3"><i class="b11-bar" style="left:18px; top:18px; width:90px; height:12px"></i><i class="b11-bar" style="left:18px; top:48px; width:190px; height:9px; opacity:.6"></i><i class="b11-bar" style="left:18px; top:68px; width:150px; height:9px; opacity:.6"></i><i class="b11-blk" style="left:130px; top:86px; width:80px; height:34px"></i></div><div class="b11-ms" id="b11-b3"><i class="b11-blk" style="left:18px; top:18px; width:204px; height:99px"></i><i class="b11-bar" style="left:36px; top:40px; width:110px; height:12px"></i></div></div>
+    <div class="b11-mv" id="b11-mv3" style="top:710px">fade</div>
+    <div class="b11-me" id="b11-me3" style="top:720px">the same place, later</div>
+    <div class="b11-dot" id="b11-dot" style="top:280px"></div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "11-step-2-a-motion-language";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b11-cam", { x: -96, y: -34, scale: 1.1 });
+  gsap.set("#b11-hl0", { scaleX: 0 });
+  gsap.set("#b11-mf0", { opacity: 0, x: -16 });
+  gsap.set("#b11-mv0", { opacity: 0, x: -16 });
+  gsap.set("#b11-me0", { opacity: 0, x: -16 });
+  gsap.set("#b11-b0", { opacity: 0 });
+  gsap.set("#b11-hl1", { scaleX: 0 });
+  gsap.set("#b11-mf1", { opacity: 0, x: -16 });
+  gsap.set("#b11-mv1", { opacity: 0, x: -16 });
+  gsap.set("#b11-me1", { opacity: 0, x: -16 });
+  gsap.set("#b11-b1", { opacity: 0 });
+  gsap.set("#b11-hl2", { scaleX: 0 });
+  gsap.set("#b11-mf2", { opacity: 0, x: -16 });
+  gsap.set("#b11-mv2", { opacity: 0, x: -16 });
+  gsap.set("#b11-me2", { opacity: 0, x: -16 });
+  gsap.set("#b11-b2", { opacity: 0 });
+  gsap.set("#b11-hl3", { scaleX: 0 });
+  gsap.set("#b11-mf3", { opacity: 0, x: -16 });
+  gsap.set("#b11-mv3", { opacity: 0, x: -16 });
+  gsap.set("#b11-me3", { opacity: 0, x: -16 });
+  gsap.set("#b11-b3", { opacity: 0 });
+  gsap.set("#b11-dot", { opacity: 0 });
+  tl.to("#b11-mf0", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.9);
+  tl.to("#b11-mv0", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.96);
+  tl.to("#b11-me0", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.02);
+  tl.to("#b11-mf1", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.12);
+  tl.to("#b11-mv1", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.18);
+  tl.to("#b11-me1", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.24);
+  tl.to("#b11-mf2", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.34);
+  tl.to("#b11-mv2", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.4);
+  tl.to("#b11-me2", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.46);
+  tl.to("#b11-mf3", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.56);
+  tl.to("#b11-mv3", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.62);
+  tl.to("#b11-me3", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.68);
+  tl.to("#b11-cam", { x: 0, y: 0, scale: 1, duration: 1.4, ease: "sine.inOut" }, 0.9);
+  tl.to("#b11-hl0", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 3.53);
+  tl.to("#b11-a0", { scale: 2.1, x: -60, y: -40, duration: 0.9, ease: "power3.inOut" }, 5.81);
+  tl.to("#b11-a0", { scale: 1, x: 0, y: 0, duration: 0.9, ease: "power3.inOut" }, 7.11);
+  tl.to("#b11-dot", { opacity: 1, duration: 0.3, ease: "none" }, 5.81);
+  tl.to("#b11-cam", { x: -440, y: -90, scale: 2, duration: 1, ease: "power3.inOut" }, 5.81);
+  tl.to("#b11-cam", { x: 0, y: 0, scale: 1, duration: 1, ease: "power3.inOut" }, 7.11);
+  tl.to("#b11-dot", { opacity: 0, duration: 0.3, ease: "none" }, 7.91);
+  tl.to("#b11-hl0", { opacity: 0, duration: 0.3, ease: "none" }, 8.67);
+  tl.to("#b11-hl1", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 8.67);
+  tl.set("#b11-a1", { opacity: 0 }, 9.17);
+  tl.set("#b11-b1", { opacity: 1 }, 9.17);
+  tl.to("#b11-hl1", { opacity: 0, duration: 0.3, ease: "none" }, 11.01);
+  tl.to("#b11-hl2", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 11.01);
+  tl.set("#b11-b2", { opacity: 1, x: 240 }, 11.21);
+  tl.to("#b11-a2", { x: -240, duration: 0.7, ease: "power2.inOut" }, 11.26);
+  tl.to("#b11-b2", { x: 0, duration: 0.7, ease: "power2.inOut" }, 11.26);
+  tl.to("#b11-hl2", { opacity: 0, duration: 0.3, ease: "none" }, 12.49);
+  tl.to("#b11-hl3", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 12.49);
+  tl.to("#b11-a3", { opacity: 0, duration: 0.9, ease: "sine.inOut" }, 12.69);
+  tl.to("#b11-b3", { opacity: 1, duration: 0.9, ease: "sine.inOut" }, 12.69);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,211 @@
+# A case study for any plan: text only, HTML and ours, from one prompt to a finished site
+
+## The problem
+
+The owner:
+
+> "plan out how we do full example? remember we want for any plan to write up case study comparison of
+> text only vs html vs ours. and the start is bob dylan site. we start with same prompt from user, same
+> files (here, none bc greenfield) and then compare all of them, go thru full lifecycle especially on
+> ours. and we compare where we end up."
+
+What we have today stops short of that.
+
+- **One prompt, three starts, one finish.** `eval/bob-dylan-site/` holds the prompt (`prompt.md`), a
+  checklist for a full run of our way (`RUN.md`, stages 1 to 10), and two other plans from the same
+  prompt: Claude Code's plan mode (`baselines/plan-mode.md`) and an HTML plan (`baselines/html-plan.html`).
+  Both of those stop at the plan. Nobody reviewed them, nothing was built from them, so there is nothing
+  to set beside our finished site.
+- **They were not made the way a person would make them.** Both ran headless with `claude -p` on
+  claude-sonnet-5, so plan mode asked no questions and nobody approved anything. A fair comparison needs
+  the same agent, the same model and a person at the keyboard, in every arm.
+- **Nothing says what "better" means.** `RUN.md` ends with "Totals and comparison" and three loose
+  lines. `eval/metrics.md` has an older idea (a planted flaw, three formats) but no measures for a
+  finished site. Without the measures fixed before the runs, any result is easy to doubt.
+- **It is one-off.** The owner wants this for any plan, not just this site. Today every piece is
+  written by hand for Bob Dylan.
+
+The retro's benchmark (`reel retro`) already points at this run, so what we build here is also how a
+later change to the skill is judged.
+
+## What changes
+
+Three changes, in four steps.
+
+1. **A kit any plan can use** (step 1): a write-up template, one capture sheet per arm, a rubric, the
+   blind judge's prompt, and `reel case-study`, a command that sets up the folders. The agent builds
+   all of it here, now.
+2. **Three arms from the same start, each to a finished site** (steps 2 and 3). An arm is one way of
+   working, from the prompt to a site you would ship: text only, HTML, and ours. The owner runs them on
+   their own machine; ours goes through every stage of the lifecycle.
+3. **Where each ends up, compared and written up** (step 4): the same measures on all three, a judge
+   who does not know which site came from which arm, the owner's own ranking, and a page that shows it.
+
+## Steps
+
+### Step 1 — The kit: a template, three capture sheets, a rubric, and a command that sets it up
+
+*Independent. The agent builds this now, before any run.*
+
+`reel case-study bob-dylan-site --prompt eval/bob-dylan-site/prompt.md` makes
+`eval/case-studies/bob-dylan-site/`:
+
+- `prompt.md`, the user's words, byte for byte, and `start/`, the starting files (empty here: the site
+  is greenfield; for a plan in an existing repo, `--from <commit>` records the commit and its file list).
+- `arms/text/`, `arms/html/`, `arms/ours/`, each with a `SHEET.md`: the exact prompts to type, the
+  stages, and what to capture at each (time on the clock and your own time, every question asked and
+  your answer, screenshots named `NN-stage.png`, the cost the agent reports).
+- `README.md` from `eval/case-studies/TEMPLATE.md`, the write-up with its blanks: the setup table, one
+  section per arm, the comparison table, the sites side by side, what each review caught and what
+  slipped through, and what we would change in reelplanning.
+- `RUBRIC.md` and `JUDGE.md`, copied from the templates (below), so a later case study is judged the
+  same way.
+
+The arms share the same seven stages, so the times line up: **plan, review, revise, build, check the
+result, fix, done**. What happens at each:
+
+| Stage | Text only | HTML | Ours |
+|---|---|---|---|
+| plan | plan mode, the prompt as typed | the prompt, plus the HTML paragraph already in `html-plan.prompt.md` | "Use reelplanning to plan: " and the prompt |
+| review | read the plan, answer its questions in chat | read `plan.html` in a browser, notes in chat | the plan video on the hosted review page |
+| revise | the agent edits the plan | the agent edits `plan.html` | revised steps, rebuilt scenes |
+| build | approve; it builds | "build plan.html" | build, choices recorded, stop at a step's fifth |
+| check the result | its closing summary and `git diff --stat` | a `report.html` it writes (new prompt, same article's words) | code check by a fresh agent, `reel audit`, the walkthrough video |
+| fix | ask in chat | ask in chat | flags on the walkthrough, fixes |
+| done | you would ship it | you would ship it | accepted; the system video current |
+
+**The same start for every arm:** a fresh Claude Code session, the same version and model, an empty
+folder with `git init`, no `CLAUDE.md` above it. Ours keeps reelplanning's own memory of the reviewer,
+since that is part of what is being tested, and the write-up says so. Every arm stops at "you would ship
+it", or after two rounds of fixes, whichever comes first.
+
+**The rubric** scores each finished site 1 to 5 on five things, each with what a 1, a 3 and a 5 look
+like: does what the prompt asked (eras, albums, songs and how they connect); more engaging than a
+Wikipedia article (you can wander sideways, not only down); works on a phone (390 px wide, no sideways
+scroll, taps land); facts right (ten facts checked against a source); easy to change (add one album
+without touching code).
+
+**The judge's prompt** is for a fresh agent that sees three folders named X, Y and Z, shuffled, with
+everything that names an arm taken out (`.reelplanning/`, `plan.html`, `report.html`, the plan files, the
+git history squashed to one commit). It runs each site, takes phone and desktop screenshots, scores
+each on the rubric with a line of evidence per score, and ranks them. The key from X, Y, Z to the arms
+stays with the owner until the scores are in.
+
+`reel retro`'s benchmark reads this folder too, so a retro is checked against all three arms.
+
+### Step 2 — The text-only and HTML arms, from the same prompt to a finished site
+
+*Needs step 1's sheets. The owner runs it, on their own machine.*
+
+Two fresh sessions, one per arm, each in its own empty folder, following its `SHEET.md`:
+
+- **Text only.** `claude --permission-mode plan`, the prompt as typed. Plan mode asks its questions in
+  chat; answer them, read the plan, ask for changes, approve. It builds. Check the result from what it
+  says it did and from `git diff --stat`, then open the site. Ask for fixes in chat.
+- **HTML.** The prompt with the HTML paragraph from `html-plan.prompt.md`, unchanged. Read `plan.html` in
+  a browser, give notes in chat, have it revise the page, then "build what plan.html says". Then ask for
+  `report.html`: what was built, the choices it made that the plan did not cover, and how to check each
+  (the agent writes this prompt in step 1, in the words of the article the HTML arm follows). Ask for
+  fixes in chat.
+
+Each arm's folder is committed as it ends, with its sheet filled in. The two headless baselines stay
+where they are, as "the plan with nobody asked", for reference.
+
+Whether these two arms go all the way to a finished site, or stop at the approved plan, is question 1.
+
+### Step 3 — Our arm: the whole lifecycle, every stage captured
+
+*Needs step 1's sheet (today's `RUN.md`, made the `ours` sheet). The owner runs it; it needs the hosted
+review page.*
+
+In a fresh session and an empty folder, "Use reelplanning to plan:" and the prompt, then every stage as
+the skill runs it: the plan, the plan video, the review on the hosted page, the revised plan, the build
+with its choices recorded (stopping at a step's fifth), the code check by a fresh agent, `reel audit`,
+the walkthrough video, each choice accepted or flagged, the fixes, and the system video it leaves
+behind. The sheet captures each stage as `RUN.md` does today: the commands typed, your words verbatim,
+the links to the videos and the review page, and the time.
+
+Which arm the owner runs first matters: what is learned on one arm helps the next (question 2).
+
+### Step 4 — Where each ends up: measured the same way, judged blind, written up
+
+*Needs steps 2 and 3.*
+
+The agent fills the write-up from the three arm folders:
+
+- **Time**, per stage: the owner's and the agent's, from the sheets.
+- **Questions asked and answered**, and **decisions recorded**: each arm's decisions listed from its
+  plan and chat. Then **did the code hold to them?** A fresh agent checks every arm's code against its
+  own decisions (the check our arm already has, run on all three).
+- **What each review caught** (what changed between the first plan and the approved one) and **what
+  slipped through**: defects found after "done" by the same sweep on all three (phone at 390 px, desktop
+  at 1440 px, errors in the console, broken links, the ten facts), and drift between plan and site.
+- **The sites side by side**, phone and desktop, the same three screens each.
+- **What the reviewer understood**: a day after each arm ends, five questions about what was built,
+  answered from memory ("What happens when you tap a song on a phone?", "How would you add an album?"),
+  scored against the code.
+- **Where each ends up** is judged by the rubric and the blind judge, and by the owner's ranking, made
+  before seeing the judge's scores (question 3).
+
+The write-up is `eval/case-studies/bob-dylan-site/README.md`, with the screenshots beside it. It is also
+published as a page: the three sites side by side, the comparison table, and a line on what each review
+caught. A video of the result can come later, once there is a result to show.
+
+## Components touched
+
+- **The reel CLI** — `reel case-study`, which sets up a case study's folders and sheets, and `reel
+  retro`'s benchmark, which reads them (step 1)
+
+`eval/case-studies/` is a folder of results and templates, not a part of the system, so it adds no area
+to the system map. The skill is not changed: a case study runs the skill as it is, and `reel case-study`
+prints what to do next.
+
+## Open questions for the reviewer
+
+1. **Do the text-only and HTML arms go all the way to a finished site?** (step 2)
+- **A · All the way, fixes included.** A fair comparison of where each ends up; about two more builds
+  and two more fix rounds of your time.
+- **B · Stop at the approved plan.** Cheap; compares plans only, so "where we end up" is ours alone.
+- **C · Build once, no fixes.** Shows what slipped through the first build at half the cost; the end
+  point is not what you would ship.
+I recommend A: where each ends up is the question you asked, and only a finished site answers it.
+
+2. **Who reviews each arm, and in what order?** (step 3)
+- **A · You, all three, ours last.** One reviewer, one taste; but by ours you have seen the prompt
+  twice, which helps ours.
+- **B · You, all three, ours first.** What you learn on ours helps the two others, so a win for ours is
+  not from practice. A day between arms.
+- **C · You do ours; a second person does both others.** Nothing carries over; but two people differ in
+  taste and speed, which muddies the times.
+I recommend B: the learning goes against ours, so what ours wins it wins on its own.
+
+3. **How is "where we end up" judged?** (step 4)
+- **A · The rubric, a blind judge, and your ranking.** Three views that can disagree; you rank before
+  you see the judge's scores.
+- **B · You alone, with the rubric.** Fast; but you built ours, so the result is easy to doubt.
+- **C · A blind judge alone.** The same for any plan and cheap to repeat; misses what only a person
+  using the site notices.
+I recommend A: the blind judge makes it fair and your ranking makes it real; where they disagree is
+worth a line in the write-up.
+
+## Decisions in force
+
+- **D-127** Plain words on screen: the sheets, the rubric and the write-up use them too.
+- **D-001** A second agent checks that the code followed the plan: step 4 runs that check on all three
+  arms, not only ours.
+- **D-003** The system video updates after every accepted walkthrough: our arm ends with it current.
+- **D-107** A retro is suggested every five plans; its benchmark now reads the case study (step 1).
+- **D-106** Your memory across repos is a file in your home folder: our arm keeps it, and the write-up
+  says so.
+- **D-110** At a step's fifth choice the implementer asks: our arm's build keeps it.
+- **D-083** A quick check per step: our arm's videos keep them.
+- **D-084**, **D-109** What stops the walkthrough: untouched; our arm's walkthrough follows them.
+- **D-129** Approving is never blocked: untouched.
+- **D-082** A run nobody is watching stays in auto mode, inside the sandbox: untouched.
+- **D-085** Less scaffolding: this plan adds templates and one command, no new stages.
+- **D-024** Detail pages start from a template: untouched.
+
+## Not in this plan
+
+Changing the product because of the result: what the case study finds becomes the next plan, reviewed
+like any other. More prompts than this one. A study with many reviewers.

@@ -1,0 +1,134 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .p12-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .p12-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .p12-lab { position:absolute; font:500 26px/1.2 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .p12-lab b { font-weight:500; color:var(--rp-coral-deep); }
+  .p12-h { position:absolute; font:400 46px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .p12-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .p12-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .p12-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .p12-t code, .p12-s code, .p12-h code, .p12-hl code, .p12-q code, .p12-opt code, .p12-ctx code, .p12-pin code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .p12-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .p12-u { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:4px; text-underline-offset:8px; }
+  .p12-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 8px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .p12-shot img { display:block; width:100%; height:100%; }
+  .p12-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .p12-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .p12-pin.hot { background:var(--rp-coral); }
+  .p12-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 30px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:26px; white-space:nowrap; }
+  .p12-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .p12-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .p12-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); padding:22px 26px; }
+  .p12-box .bt { font:600 34px/1.2 "Inter"; color:var(--rp-ink); }
+  .p12-box .bs { margin-top:8px; font:400 26px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .p12-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; padding:70px 28px 20px; }
+  .p12-slab .bar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .p12-slab .bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.7); white-space:nowrap; }
+  .p12-slab .ln { font:400 27px/42px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .p12-slab .x { color:var(--rp-syn-del); } .p12-slab .ok { color:var(--rp-syn-add); } .p12-slab .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .p12-arrow { position:absolute; overflow:visible; }
+  .p12-arrow path { fill:none; stroke:var(--rp-ink); stroke-width:3; }
+  .p12-arrow .hd { fill:var(--rp-ink); stroke:none; }
+  .p12-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .p12-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .p12-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .p12-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .p12-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.25 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .p12-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .p12-ctx { position:absolute; left:180px; top:80px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  table.p12-tb { position:absolute; border-collapse:collapse; font:400 27px/1.3 "Inter"; color:var(--rp-ink); background:var(--rp-paper); }
+  table.p12-tb th { text-align:left; font:600 24px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); padding:10px 14px; background:var(--rp-tile); border-bottom:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  table.p12-tb td { padding:10px 14px; vertical-align:top; border-top:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  table.p12-tb td:first-child { font-weight:700; }
+  table.p12-tb code { font-family:"JetBrains Mono"; font-size:0.86em; }
+  .p12-s5 { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .p12-s5 .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
+  .p12-s5 .t code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .p12-s5 .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .p12-s5 .d, .p12-s5 .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .p12-s5 .r { border-color:transparent; color:rgba(var(--rp-ink-rgb),0.76); }
+
+</style>
+
+<div id="root" data-composition-id="12-step-2-complete" data-band="bottom" data-duration="29.413" data-width="1920" data-height="1080">
+
+  <div class="clip p12-bg" id="p12-bg" data-start="0" data-duration="29.413" data-track-index="0"></div>
+
+  <div class="clip p12-scene" id="p12-scene" data-start="0" data-duration="29.413" data-track-index="1">
+    <div class="p12-lab" id="p12-hd" style="left:120px; top:60px;">Step 2 · four blocks a step, and the checks</div>
+    <div data-artifact="plan.md" id="p12-doc" style="left:100px; top:110px; width:1100px; position:absolute;">
+      <div class="p12-lab" style="position:relative; color:var(--rp-ink); margin-bottom:14px;">plan.md · step 4 · #### Cases</div>
+      <table class="p12-tb" style="position:relative; width:1100px;"><tr><th style="width:270px">Case</th><th style="width:330px">Example</th><th>What happens</th></tr>
+      <tr><td>A comment on a line</td><td>“why 375 px?” on step 2's check</td><td>a comment on step 2, acted on by the revise step</td></tr><tr><td>A suggested edit, request changes</td><td>step 1's flag <code>--out</code> renamed <code>--to</code></td><td>applied to <code>plan.md</code>; the guide is rebuilt; scene 6, which shows the command, is rebuilt</td></tr><tr><td>A suggested edit, approve</td><td>a case row's words changed</td><td>applied to <code>plan.md</code>; the guide is rebuilt; no scene</td></tr><tr><td>An edit that overturns a decision</td><td>removing D-213's “never committed”</td><td>not applied; the next version asks it as a question</td></tr></table>
+      <div id="p12-m1" style="position:relative; margin-top:22px;"><div class="p12-lab" style="position:relative; color:var(--rp-ink);">#### Interface</div><div class="p12-lab" style="position:relative; margin-top:8px; font-size:22px;">reviews/&lt;id&gt;.md   ## Edits to apply · Step 1 · Interface: --out → --to …</div></div>
+      <div id="p12-m2" style="position:relative; margin-top:16px;"><div class="p12-lab" style="position:relative; color:var(--rp-ink);">#### Example</div><div class="p12-t" style="position:relative; margin-top:6px; font-size:24px;">You change step 1's <code>--out &lt;file&gt;</code> to <code>--to &lt;file&gt;</code> and ask for changes. …</div></div>
+      <div id="p12-m3" style="position:relative; margin-top:16px;"><div class="p12-lab" style="position:relative; color:var(--rp-ink);">#### Decisions · generated from “Decisions in force”</div></div>
+    </div>
+    <div class="p12-lab" id="p12-pl" style="left:1260px; top:60px;">planned</div>
+    <div class="p12-slab" id="p12-term" style="left:1260px; top:110px; width:580px; height:560px;"><div class="bar"></div><div class="bt">reel check</div>
+      <div class="ln" id="p12-t0"><span class="d">$</span> reel check &lt;plan&gt;</div>
+      <div class="ln" id="p12-t1"><span class="x">✗</span> step 3: no cases</div>
+      <div class="ln" id="p12-t2"><span class="x">✗</span> step 4: no interface,</div>
+      <div class="ln" id="p12-t3">  and no line like</div>
+      <div class="ln" id="p12-t4">  "No interface:</div>
+      <div class="ln" id="p12-t5">   wording only"</div>
+      <div class="ln" id="p12-t6" style="margin-top:14px"><span class="d">$</span> reelplanning guide --check</div>
+      <div class="ln" id="p12-t9"><span class="d">△</span> step 3 · case 2: no trace</div>
+      <div class="ln" id="p12-t7"><span class="x">✗</span> step 4, case 2: only</div>
+      <div class="ln" id="p12-t8">  in the animation</div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "12-step-2-complete";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#p12-hd", { opacity: 0 });
+  tl.to("#p12-hd", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.10);
+  gsap.set("#p12-doc", { opacity: 0, y: 12 });
+  tl.to("#p12-doc", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.10);
+  gsap.set("#p12-m1", { opacity: 0 });
+  tl.to("#p12-m1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 8.10);
+  gsap.set("#p12-m2", { opacity: 0 });
+  tl.to("#p12-m2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 11.81);
+  gsap.set("#p12-m3", { opacity: 0 });
+  tl.to("#p12-m3", { opacity: 1, duration: 0.4, ease: "power2.out" }, 12.62);
+  gsap.set("#p12-pl", { opacity: 0 });
+  tl.to("#p12-pl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 15.18);
+  gsap.set("#p12-term", { opacity: 0, y: 12 });
+  tl.to("#p12-term", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.18);
+  gsap.set("#p12-t0", { opacity: 0 });
+  tl.to("#p12-t0", { opacity: 1, duration: 0.3, ease: "steps(3)" }, 15.18);
+  gsap.set("#p12-t1", { opacity: 0 });
+  tl.to("#p12-t1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 16.48);
+  gsap.set("#p12-t2", { opacity: 0 });
+  tl.to("#p12-t2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 17.21);
+  gsap.set("#p12-t3", { opacity: 0 });
+  tl.to("#p12-t3", { opacity: 1, duration: 0.4, ease: "power2.out" }, 18.42);
+  gsap.set("#p12-t4", { opacity: 0 });
+  tl.to("#p12-t4", { opacity: 1, duration: 0.4, ease: "power2.out" }, 19.78);
+  gsap.set("#p12-t5", { opacity: 0 });
+  tl.to("#p12-t5", { opacity: 1, duration: 0.4, ease: "power2.out" }, 19.98);
+  gsap.set("#p12-t6", { opacity: 0 });
+  tl.to("#p12-t6", { opacity: 1, duration: 0.3, ease: "steps(3)" }, 22.18);
+  gsap.set("#p12-t9", { opacity: 0 });
+  tl.to("#p12-t9", { opacity: 1, duration: 0.4, ease: "power2.out" }, 24.71);
+  gsap.set("#p12-t7", { opacity: 0 });
+  tl.to("#p12-t7", { opacity: 1, duration: 0.4, ease: "power2.out" }, 26.21);
+  gsap.set("#p12-t8", { opacity: 0 });
+  tl.to("#p12-t8", { opacity: 1, duration: 0.4, ease: "power2.out" }, 26.21);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

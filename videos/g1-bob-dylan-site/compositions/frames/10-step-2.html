@@ -1,0 +1,185 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 600; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; container-type:size; }
+  .f10-step-2-bg { position:absolute; inset:0; background:var(--rp-paper); }
+  .f10-step-2-stage { position:absolute; inset:0; }
+
+  /* ---- the rail: the plan (shared stage, law) ---- */
+  .f10-step-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f10-step-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f10-step-2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f10-step-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f10-step-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f10-step-2-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f10-step-2-slot.dim { opacity:0.72; }
+  /* slot 2 fills on its cue: the filled look is a layer over the dashed outline */
+  .f10-step-2-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+  /* empty slots show only the dashed outline */
+  #f10-step-2-slot-2 .n, #f10-step-2-slot-2 .t,
+  #f10-step-2-slot-3 .n, #f10-step-2-slot-3 .t,
+  #f10-step-2-slot-4 .n, #f10-step-2-slot-4 .t,
+  #f10-step-2-slot-5 .n, #f10-step-2-slot-5 .t,
+  #f10-step-2-slot-6 .n, #f10-step-2-slot-6 .t { opacity:0; }
+
+  /* ---- section labels above each stretch of the chain ---- */
+  .f10-step-2-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- sources: real file names, stacked ---- */
+  .f10-step-2-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); opacity:0.72; }
+
+  /* ---- the one process ---- */
+  .f10-step-2-build { position:absolute; left:980px; top:400px; width:200px; height:126px; border-radius:12px; background:var(--rp-data); border:3px solid rgba(var(--rp-coral-rgb),0); display:flex; align-items:center; justify-content:center; }
+  .f10-step-2-build .l { font:500 32px/1.15 "Inter"; color:var(--rp-on-ink); }
+
+  .f10-step-2-arrow { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f10-step-2-arrow::after { content:""; position:absolute; right:-2px; top:-8px; border-left:16px solid rgba(var(--rp-ink-rgb),0.4); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+
+  /* ---- the output IS pages, so it is drawn as pages ---- */
+  .f10-step-2-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f10-step-2-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  .f10-step-2-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f10-step-2-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* ---- worked example: mono chips under Build, left-aligned to its left edge ---- */
+  .f10-step-2-chip { position:absolute; left:980px; height:40px; box-sizing:border-box; padding:6px 12px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f10-step-2-strike { position:absolute; left:10px; right:10px; top:50%; margin-top:-1px; height:2px; background:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="10-step-2" data-duration="15.561" data-width="1920" data-height="1080">
+  <div class="clip f10-step-2-bg" id="f10-step-2-bg" data-start="0" data-duration="15.561" data-track-index="0"></div>
+
+  <div class="clip f10-step-2-stage" id="f10-step-2-stage" data-start="0" data-duration="15.561" data-track-index="1">
+
+    <div class="f10-step-2-rail" id="f10-step-2-rail">
+      <div class="f10-step-2-slot dim" id="f10-step-2-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1" style="color:var(--rp-ink)">10 albums</span></div>
+      <div class="f10-step-2-slot" id="f10-step-2-slot-2" data-plan-step="2" style="top:110px"><div class="f10-step-2-fill" id="f10-step-2-fill-2"></div><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f10-step-2-slot" id="f10-step-2-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f10-step-2-slot" id="f10-step-2-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f10-step-2-slot" id="f10-step-2-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f10-step-2-slot" id="f10-step-2-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- THE CHAIN: content files -> Build -> pages. Step 2 is what makes the pages exist. -->
+    <div class="f10-step-2-lbl" style="left:660px;top:300px">Content files</div>
+    <div class="f10-step-2-file" id="f10-step-2-file-1" style="top:346px">albums/</div>
+    <div class="f10-step-2-file" id="f10-step-2-file-2" style="top:432px">songs/</div>
+    <div class="f10-step-2-file" id="f10-step-2-file-3" style="top:518px">events/</div>
+
+    <div class="f10-step-2-arrow" id="f10-step-2-arrow-1" style="left:900px;top:462px;width:60px"></div>
+
+    <div class="f10-step-2-lbl" id="f10-step-2-lbl-build" style="left:980px;top:300px">Build</div>
+    <div class="f10-step-2-build" id="f10-step-2-build" data-plan-component="build"><span class="l">Build</span></div>
+
+    <div class="f10-step-2-arrow" id="f10-step-2-arrow-2" style="left:1200px;top:462px;width:60px"></div>
+
+    <div class="f10-step-2-lbl" id="f10-step-2-lbl-pages" style="left:1258px;top:300px">Pages</div>
+    <div class="f10-step-2-page" id="f10-step-2-page-album" style="left:1258px"><h>Bringing It All Back Home</h><div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div><span class="cap">album</span></div>
+    <div class="f10-step-2-page" id="f10-step-2-page-era" style="left:1448px"><h>Going Electric, 1965</h><div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div><div class="bar" id="f10-step-2-era-bar-1" style="width:66%"></div><div class="bar" id="f10-step-2-era-bar-2" style="width:44%"></div><span class="cap">era</span></div>
+    <div class="f10-step-2-page" id="f10-step-2-page-song" style="left:1638px"><h>Like a Rolling Stone</h><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><span class="cap">song</span></div>
+
+    <!-- what the build writes, and the reference that breaks it -->
+    <div class="f10-step-2-chip" id="f10-step-2-chip-index" style="top:542px">site.json</div>
+    <div class="f10-step-2-chip" id="f10-step-2-chip-miss" style="top:594px">missing album<div class="f10-step-2-strike" id="f10-step-2-strike"></div></div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var INK   = __RP["ink-rgb"];
+  var CORAL = __RP["coral-rgb"];
+
+  var fill2  = q("f10-step-2-fill-2");
+  var slot2  = q("f10-step-2-slot-2");
+  var s2n    = slot2.querySelector(".n");
+  var s2t    = slot2.querySelector(".t");
+  var files  = [q("f10-step-2-file-1"), q("f10-step-2-file-2"), q("f10-step-2-file-3")];
+  var lblB   = q("f10-step-2-lbl-build");
+  var build  = q("f10-step-2-build");
+  var arrow1 = q("f10-step-2-arrow-1");
+  var arrow2 = q("f10-step-2-arrow-2");
+  var lblP   = q("f10-step-2-lbl-pages");
+  var pAlbum = q("f10-step-2-page-album");
+  var pEra   = q("f10-step-2-page-era");
+  var pSong  = q("f10-step-2-page-song");
+  var eraB1  = q("f10-step-2-era-bar-1");
+  var eraB2  = q("f10-step-2-era-bar-2");
+  var index  = q("f10-step-2-chip-index");
+  var miss   = q("f10-step-2-chip-miss");
+  var strike = q("f10-step-2-strike");
+
+  // nothing is on screen before the word that names it
+  gsap.set([lblB, build, index, miss], { opacity: 0 });
+  gsap.set([arrow1, arrow2], { opacity: 0, width: 0 });
+  gsap.set([lblP, pAlbum, pEra, pSong], { opacity: 0 });
+  gsap.set([eraB1, eraB2], { opacity: 0 });
+  gsap.set(strike, { scaleX: 0, transformOrigin: "left center" });
+
+  var tl = gsap.timeline({ paused: true });
+
+  // 0.26 "two" — rail slot 2 fills
+  tl.fromTo(fill2, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power3.out" }, 0.316);
+  tl.fromTo(s2n,   { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.316);
+  tl.fromTo(s2t,   { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.534);
+
+  // 1.02 "build." — the one process lands
+  tl.fromTo(lblB,  { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, 1.155);
+  tl.fromTo(build, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 1.155);
+
+  // 1.68 "reads every file" — the three files brighten in sequence as they are read
+  tl.fromTo(files[0], { opacity: 0.72, borderColor: "rgba(" + INK + ",0.12)" },
+                      { opacity: 1,    borderColor: "rgba(" + INK + ",0.38)", duration: 0.45, ease: "power3.out" }, 1.89);
+  tl.fromTo(files[1], { opacity: 0.72, borderColor: "rgba(" + INK + ",0.12)" },
+                      { opacity: 1,    borderColor: "rgba(" + INK + ",0.38)", duration: 0.45, ease: "power3.out" }, 2.216);
+  tl.fromTo(files[2], { opacity: 0.72, borderColor: "rgba(" + INK + ",0.12)" },
+                      { opacity: 1,    borderColor: "rgba(" + INK + ",0.38)", duration: 0.45, ease: "power3.out" }, 2.55);
+
+  // 2.65 "follows every reference" — the files reach the build
+  tl.fromTo(arrow1, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 2.962);
+  tl.fromTo(arrow1, { width: 0 }, { width: 60, duration: 0.65, ease: "power3.out" }, 2.962);
+
+  // 5.00 "site.json" — the one index the build writes
+  tl.fromTo(index, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 5.44);
+
+  // 6.81 "album" — the build reaches the pages, and the pages land
+  tl.fromTo(arrow2, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 7.272);
+  tl.fromTo(arrow2, { width: 0 }, { width: 60, duration: 0.6, ease: "power3.out" }, 7.272);
+  tl.fromTo(lblP,   { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, 7.272);
+  tl.fromTo(pAlbum, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 7.405);
+
+  // 7.81 "songs." / 8.38 "era" — each page lands on the word that names it
+  tl.fromTo(pSong, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 8.262);
+  tl.fromTo(pEra,  { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 8.834);
+
+  // 9.21 "albums" / 9.89 "events" — the era page gains the rows it knows about
+  tl.fromTo(eraB1, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power3.out" }, 9.641);
+  tl.fromTo(eraB2, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power3.out" }, 10.501);
+
+  // 10.66 "A song that names a missing album" — the Build tile takes the frame's ONE coral
+  tl.fromTo(build, { borderColor: "rgba(" + CORAL + ",0)" },
+                   { borderColor: "rgba(" + CORAL + ",1)", duration: 0.5, ease: "power3.out" }, 11.055);
+
+  // 11.47 "missing album" — the broken reference, named under the build
+  tl.fromTo(miss, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.48, ease: "power3.out" }, 11.888);
+
+  // 12.21 "fails the build here" — the reference is struck and the pages never get made
+  tl.fromTo(strike, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 12.841);
+  tl.to([pAlbum, pEra, pSong], { opacity: 0.72, duration: 0.5, ease: "power3.out" }, 12.841);
+
+  // held read to the end of the voice
+  tl.to({}, { duration: 0.001 }, 15.06);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["10-step-2"] = tl;
+})();
+</script>
+</template>

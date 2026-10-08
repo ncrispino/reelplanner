@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "e052dcedd2519a94415d",
+      "text": "With B, you see call and tag, and each is explained.",
+      "sha256": "4d1ba2099efdb9b6674c893ef0f320b19393178b97c88d71e989111fbdfce73e",
+      "duration_s": 2.837
+    },
+    "11": {
+      "key": "5ecea6ffc76ea911dfb9",
+      "text": "Step two. Today, prerequisites are guessed; now the tool picks them: the system video, plus up to two videos of plans this one builds on. The last plan builds on the streak of ten, decided in the revise-loop plan, so its card lists the system video, then the revise-loop video.",
+      "sha256": "0500cefd98b9b9895da13df82704697c6db39a7563b1bee3a0b605ff52124557",
+      "duration_s": 15.936
+    },
+    "12": {
+      "key": "5d868fdc5dd12a98b579",
+      "text": "Quick check. The last plan builds on the streak of ten, decided in the revise-loop plan. Which videos does its card list?",
+      "sha256": "f4c0bf05814f5ff239cc03334b6887969bc7e981c1892e956c6916aff273dd33",
+      "duration_s": 6.891
+    },
+    "13": {
+      "key": "ce2615db5a39061b7e51",
+      "text": "Question two: the card ticks what you've watched. Where is that kept? A: this browser at once, and your own file, read by every repo, once you send a review. B: only the reviews you send. I recommend A: the card needs it at once, the tool in every repo. Which one?",
+      "sha256": "06ff7dd20e819bf12c2a84cfd0f92132a3138b1d2cb7f1caf395343bdba7a1ad",
+      "duration_s": 15.04
+    },
+    "14": {
+      "key": "4d246c6c05f9aff0b748",
+      "text": "With A, a finished video is ticked at once, and in every repo once sent.",
+      "sha256": "32445c3e318a9083148e8afe6389e0fa93c872116e2c9b047fe54eda073bbae6",
+      "duration_s": 3.968
+    },
+    "15": {
+      "key": "ac2967a64671087375f9",
+      "text": "With B, a video counts as watched once you send its review.",
+      "sha256": "6953566d7c94ef04175c33d8a7996729a38b398eacd0c7101fae86fecf291143",
+      "duration_s": 3.2
+    },
+    "16": {
+      "key": "33891d495e7e884d8102",
+      "text": "Step three. Memory is what the tool learns from your reviews. It gains a line for getting lost: checks wrong, explanations opened, words looked up, approvals with checks missed. A word looked up in three reviews gets its beat marked for a rewrite.",
+      "sha256": "a562005f51e0ed00b44374e61c2fc629ac02b85a465a9164132e8102db4f71fc",
+      "duration_s": 14.293
+    },
+    "17": {
+      "key": "e3aec00a55a82bed7d56",
+      "text": "Quick check. You look up streak in three reviews. What happens?",
+      "sha256": "9da67d2e3915e2dac521fa1f1433b3b7d65bc223db44bb2763a22743771c520e",
+      "duration_s": 3.2
+    },
+    "18": {
+      "key": "a325e9a2ac5e3d772b8a",
+      "text": "Question three: can approving be blocked when you answered checks wrong? A: never; the review records approved with three of three missed. B: blocked when all were missed, until you open each explanation. I recommend A: a record fixes the next video; a block just teaches clicking through. Which one?",
+      "sha256": "1afb326786853042ae51d2d687e77912c8d06e36e6100740f1ba4d6f7611c05d",
+      "duration_s": 15.915
+    },
+    "19": {
+      "key": "8ea549f8adfad8e8ec8e",
+      "text": "With A, you can always approve, and the record shows what you missed.",
+      "sha256": "0204b6c59d830b10fad1f61aee4895eb6c2e9f12eff822f9a6a56a75216901fe",
+      "duration_s": 3.52
+    },
+    "20": {
+      "key": "7e615bd154c39e43e6ed",
+      "text": "With B, three of three missed means three explanations before approving.",
+      "sha256": "2c6c8ace0561c6dadace72c22f67040b5f494a326e12eb32cdacfbeca911cff2",
+      "duration_s": 3.904
+    },
+    "21": {
+      "key": "50a676bb5be6769e5265",
+      "text": "Step four. A quick check tests its beat's main idea, on the case the beat just showed, with nothing new. The last plan's first check asked about an exception said in passing; its beat showed eight pauses becoming one. Now the check asks about those eight. The build warns when an answer isn't in its beat.",
+      "sha256": "6c7a793715042a1f593900e723b1288846086cc2acac855b22e777db890c611c",
+      "duration_s": 16.661
+    },
+    "22": {
+      "key": "8566bdb8db5c143d7de5",
+      "text": "Quick check. A beat shows eight pauses in one step becoming one. Which check follows step four?",
+      "sha256": "bfb8dfa3ac9be40a0f76ec1a6ac04d1a0f8c2b285e623625147ebb49b2dd18b7",
+      "duration_s": 5.291
+    },
+    "23": {
+      "key": "c70187433a1881a34caf",
+      "text": "That's the plan: every word explained once, prerequisites the tool picks, a memory of where you got lost, and checks on the main idea. Draw on a step to leave a note, or approve. Narration and visuals are AI-generated.",
+      "sha256": "d252613428cc34085dfd6d56971d4d4359c730850142823d3d67305274090350",
+      "duration_s": 12.651
+    },
+    "01": {
+      "key": "1f5f4532a0188e924ca7",
+      "text": "You approved the last plan with all three quick checks wrong. A quick check is the video's question on what the plan will do. The second one used four words the video never explained.",
+      "sha256": "6a0ddb7b2b278510cf52411ea39b99823dac5542956518e5f20213b9247c4179",
+      "duration_s": 10.048
+    },
+    "02": {
+      "key": "59677e039c83ef1d5ad5",
+      "text": "A call is a choice the agent makes on its own, outside the plan. A tag says why you might look at a call: visible, hard to undo, or close, meaning either way is reasonable.",
+      "sha256": "fe5a43131dae7b0daba1d71f589a3beb38a6ffbe564557b9581d10074efd384f",
+      "duration_s": 10.219
+    },
+    "03": {
+      "key": "9e0b6ec7e71206788b89",
+      "text": "A streak counts calls with one tag accepted in a row; at ten, they stop pausing the video. A miss is something a review let through, fixed later. Without them, the check can't be read.",
+      "sha256": "8b167689f207c049fa7fe6fab459e5817bbb17a457a926a2d7ce6542ab68cb44",
+      "duration_s": 10.261
+    },
+    "04": {
+      "key": "f3ab1ca6ccf8948aab3f",
+      "text": "Some fixes are built separately, not asked here. A card before each video lists its prerequisites, the videos to watch first; by default, the system video, which explains the whole tool. A panel lists the video's words. No decision is named by its number alone. A wrong answer can be walked through. Approving notes missed checks. The build flags unexplained words.",
+      "sha256": "d14f0d8c24c9ac5518031b67fcea8833b819ed90fdf1954cefc4d9ff6890ee64",
+      "duration_s": 20.331
+    },
+    "05": {
+      "key": "4f16946b9f2f2c7ba263",
+      "text": "Four steps go deeper. One: every word explained once, one click away. Two: the tool picks what to watch first. Three: it remembers where you got lost. Four: checks test the main idea. Step two needs step one; three and four stand alone.",
+      "sha256": "d3b3be29c8eaba9ce46d789e65fea5d123e4e3faccb42c987b32cf73f62d345d",
+      "duration_s": 14.165
+    },
+    "06": {
+      "key": "3e224c48547c7a0ff5a7",
+      "text": "Step one. The glossary is the repo's list of words, one meaning each. Each gets a beat of the system video that explains it; a beat is one short scene. No beat explains a streak yet, so the system video's build stops and names it. And clicking a word in the captions shows its meaning.",
+      "sha256": "f8631848515adc9bc0d0d6e565ae4348b86b3eb3f6ca4dbdf8c7cdbad9200f14",
+      "duration_s": 15.595
+    },
+    "07": {
+      "key": "947de40b96c48959bbec",
+      "text": "Quick check. The glossary has streak, and no beat of the system video explains it. What happens when the system video is built?",
+      "sha256": "44cb2b89e5941c49de0f8fc89f2ebc02f7ca69b9dc659a3b1cfc44c1d9b11dbc",
+      "duration_s": 6.549
+    },
+    "08": {
+      "key": "ad405ec34546577568a9",
+      "text": "Question one: which words should you see? A: plain ones, like choice for call and label for tag; the files keep theirs. B: today's words, each explained. I recommend A: a word that says what it means needs no explaining. Which one?",
+      "sha256": "560551f7ae0dce26f16b4812421c4c936b41d65fbd8a2c402018c4dfe0f9ce40",
+      "duration_s": 13.227
+    },
+    "09": {
+      "key": "1e1edeb853dc39f290cf",
+      "text": "With A, you see choice and label; the files still say call and tag.",
+      "sha256": "6d82501afc22b5ade6baedc3447354dccdb9efe7a8cceb0cebe8d3f3719ca8c4",
+      "duration_s": 3.627
+    }
+  }
+}

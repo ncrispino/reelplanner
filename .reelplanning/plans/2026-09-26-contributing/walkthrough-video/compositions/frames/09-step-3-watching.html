@@ -1,0 +1,93 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d09-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d09-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d09-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d09-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d09-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d09-ring.hot { border-color:var(--rp-coral); }
+  .d09-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d09-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d09-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d09-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d09-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d09-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d09-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d09-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d09-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d09-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d09-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d09-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d09-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d09-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d09-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d09-case { position:absolute; }
+  .d09-u { background-image:linear-gradient(var(--rp-coral),var(--rp-coral)); background-repeat:no-repeat; background-position:0 100%; background-size:0% 4px; padding-bottom:3px; }
+  .d09-x { background-image:linear-gradient(var(--rp-ink),var(--rp-ink)); background-repeat:no-repeat; background-position:0 55%; background-size:0% 3px; }
+
+</style>
+
+<div id="root" data-composition-id="09-step-3-watching" data-band="bottom" data-duration="21.632" data-width="1920" data-height="1080">
+
+  <div class="clip d09-bg" id="d09-bg" data-start="0" data-duration="21.632" data-track-index="0"></div>
+
+  <div class="clip d09-scene" id="d09-scene" data-start="0" data-duration="21.632" data-track-index="1">
+    <div class="d09-lab" id="d09-h" style="left:90px; top:60px">step 3 · pull request 42 · the maintainer</div>
+    <div class="d09-slab" id="d09-m" data-detail="watching" data-artifact="gh pr checkout 42, the clone of video/pr-42, and reelplanning review ../pr-42-video run in this checkout on the contributing plan&#x27;s video, packed by bundle-player" style="left:90px; top:150px; width:1060px; height:400px"><div class="d09-sbar"></div><div class="d09-sbt">the maintainer, in the pull request&#x27;s checkout</div><div class="d09-row" id="d09-m-r0" style="top:62px; font-size:26px; line-height:40px"><span class="g">$</span><span id="d09-m-c0"></span></div><div class="d09-row" id="d09-m-r1" style="top:102px; font-size:26px; line-height:40px"><span class="g">$</span><span id="d09-m-c1"></span></div><div class="d09-row" id="d09-m-r2" style="top:142px; font-size:26px; line-height:40px"><span class="g">$</span><span id="d09-m-c2"></span></div><div class="d09-row" id="d09-m-r3" style="top:182px; font-size:26px; line-height:40px">· ../pr-42-video: packed already (1 video),</div><div class="d09-row" id="d09-m-r4" style="top:222px; font-size:26px; line-height:40px">    served as it is</div><div class="d09-row" id="d09-m-r5" style="top:262px; font-size:26px; line-height:40px">✓ 2026-09-26-contributing: its plan map is</div><div class="d09-row" id="d09-m-r6" style="top:302px; font-size:26px; line-height:40px">    <span class="d09-u" id="d09-same">the checkout's</span> …/video/plan-map.json</div><div class="d09-row" id="d09-m-r7" style="top:342px; font-size:26px; line-height:40px">✓ review page: http://127.0.0.1:18977/?project=…</div></div>
+    <div class="d09-slab" id="d09-old" data-artifact="reelplanning review ../pr-42-video, the same folder with the plan map this plan&#x27;s video had at 6ffbc60" style="left:90px; top:580px; width:1060px; height:200px"><div class="d09-sbar"></div><div class="d09-sbt">reelplanning review · a pack with an older plan map</div><div class="d09-row" id="d09-old-r0" style="top:62px; font-size:26px; line-height:40px">△ 2026-09-26-contributing: its plan map is not the checkout's …:</div><div class="d09-row" id="d09-old-r1" style="top:102px; font-size:26px; line-height:40px">    this video was built from another version of the plan …;</div><div class="d09-row" id="d09-old-r2" style="top:142px; font-size:26px; line-height:40px">    ask for a rebuild before trusting it</div></div>
+    <div class="d09-shotbox" id="d09-shot" data-artifact="the review page reelplanning review serves from the packed folder, 1440 × 900" style="left:1180px; top:150px; width:650px; height:406px"><img src="assets/shots/review-page.jpg" alt=""></div>
+    <div class="d09-tag" id="d09-st" style="left:1180px; top:576px">the page it serves · 1440 × 900</div>
+    <div class="d09-chip" id="d09-git" style="left:1180px; top:646px"><code>git</code>: the videos' text only</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-step-3-watching";
+  var d09_m_c0_d = { t: 0 }, d09_m_c0_s = "gh pr checkout 42";
+  var d09_m_c1_d = { t: 0 }, d09_m_c1_s = "git clone -q --depth 1 -b video/pr-42 <url> ../pr-42-video";
+  var d09_m_c2_d = { t: 0 }, d09_m_c2_s = "reelplanning review ../pr-42-video";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d09-h", {"opacity": 0});
+  gsap.set("#d09-git", {"opacity": 0, "y": 8});
+  gsap.set("#d09-m", {"opacity": 0});
+  gsap.set("#d09-m-r3", {"opacity": 0});
+  gsap.set("#d09-m-r4", {"opacity": 0});
+  gsap.set("#d09-m-r5", {"opacity": 0});
+  gsap.set("#d09-m-r6", {"opacity": 0});
+  gsap.set("#d09-m-r7", {"opacity": 0});
+  gsap.set("#d09-shot", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#d09-st", {"opacity": 0});
+  gsap.set("#d09-old", {"opacity": 0});
+  tl.to("#d09-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d09-git", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 2.53);
+  tl.to("#d09-m", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 8.27);
+  tl.to(d09_m_c0_d, { t: 1, duration: 0.6, ease: "none", onUpdate: function () { document.getElementById("d09-m-c0").textContent = d09_m_c0_s.slice(0, Math.round(d09_m_c0_d.t * d09_m_c0_s.length)); } }, 8.67);
+  tl.to(d09_m_c1_d, { t: 1, duration: 0.9, ease: "none", onUpdate: function () { document.getElementById("d09-m-c1").textContent = d09_m_c1_s.slice(0, Math.round(d09_m_c1_d.t * d09_m_c1_s.length)); } }, 10.66);
+  tl.to(d09_m_c2_d, { t: 1, duration: 0.7, ease: "none", onUpdate: function () { document.getElementById("d09-m-c2").textContent = d09_m_c2_s.slice(0, Math.round(d09_m_c2_d.t * d09_m_c2_s.length)); } }, 13.17);
+  tl.to("#d09-m-r3", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 13.97);
+  tl.to("#d09-m-r4", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 14.05);
+  tl.to("#d09-m-r5", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 14.13);
+  tl.to("#d09-shot", { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "power2.inOut" }, 14.16);
+  tl.to("#d09-m-r6", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 14.21);
+  tl.to("#d09-m-r7", {"opacity": 1, "duration": 0.1, "ease": "power3.out"}, 14.290000000000001);
+  tl.to("#d09-st", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 14.66);
+  tl.to("#d09-same", { backgroundSize: "100% 4px", duration: 0.5, ease: "power2.out" }, 17.28);
+  tl.to("#d09-old", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 19.34);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

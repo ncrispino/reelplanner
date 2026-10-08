@@ -1,0 +1,118 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f03-step-1-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f03-step-1-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f03-step-1-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-kicker b { color:var(--rp-coral); font-weight:500; }
+  .f03-step-1-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f03-step-1-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f03-step-1-chip.lbl { letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); background:transparent; }
+  .f03-step-1-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-num { position:absolute; font:400 150px/1 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-num.xl { font-size:230px; }
+  .f03-step-1-unit { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03-step-1-mid { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-mid.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f03-step-1-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f03-step-1-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f03-step-1-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f03-step-1-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f03-step-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f03-step-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f03-step-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f03-step-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-slot .d { position:absolute; right:-46px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f03-step-1-slot.dim { opacity:0.55; }
+  .f03-step-1-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f03-step-1-card.chose { border:2px solid var(--rp-ink); }
+  .f03-step-1-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f03-step-1-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f03-step-1-card .l { display:block; margin-top:18px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f03-step-1-card .s { display:block; margin-top:22px; font:500 30px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f03-step-1-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f03-step-1-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f03-step-1-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f03-step-1-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f03-step-1-term { position:absolute; box-sizing:border-box; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f03-step-1-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f03-step-1-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f03-step-1-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f03-step-1-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f03-step-1-file { position:absolute; box-sizing:border-box; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f03-step-1-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f03-step-1-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-file .row.dim { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f03-step-1-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f03-step-1-tile.dim { opacity:0.5; }
+  .f03-step-1-tile .id { position:absolute; left:26px; top:28px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-tile .mono { position:absolute; left:26px; top:26px; font:500 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-tile .t { position:absolute; left:120px; top:25px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f03-step-1-tile .t.at0 { left:26px; }
+  .f03-step-1-tile .t2 { position:absolute; left:26px; font:500 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03-step-1-tile .d { position:absolute; right:26px; top:30px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f03-step-1-pill { position:absolute; box-sizing:border-box; height:70px; padding:0 26px; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.35); font:500 32px/66px "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f03-step-1-pill.ink { background:var(--rp-ink); color:var(--rp-paper); border-color:var(--rp-ink); }
+  .f03-step-1-sq { position:absolute; box-sizing:border-box; width:80px; height:80px; border-radius:10px; background:rgba(var(--rp-ink-rgb),0.55); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; }
+  .f03-step-1-sq.sm { width:40px; height:40px; border-radius:6px; }
+  .f03-step-1-hl { position:absolute; box-sizing:border-box; border-radius:10px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f03-step-1-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:3px solid var(--rp-ink); }
+  .f03-step-1-strike { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f03-step-1-note { position:absolute; right:80px; top:830px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="03-step-1" data-band="bottom" data-duration="8.4" data-width="1920" data-height="1080">
+
+  <div class="clip f03-step-1-bg" id="f03-step-1-bg" data-start="0" data-duration="8.4" data-track-index="0"></div>
+
+  <div class="clip f03-step-1-scene" id="f03-step-1-scene" data-start="0" data-duration="8.4" data-track-index="1">
+  <div class="f03-step-1-kicker" id="f03-step-1-kicker">Step 1 · Who, and which skill</div>
+  <div class="f03-step-1-spine" id="f03-step-1-spine"><div class="f03-step-1-tick live" id="f03-step-1-tick-1" data-plan-step="1" style="top:35px"></div><div class="f03-step-1-tick" id="f03-step-1-tick-2" data-plan-step="2" style="top:145px"></div><div class="f03-step-1-tick" id="f03-step-1-tick-3" data-plan-step="3" style="top:255px"></div><div class="f03-step-1-tick" id="f03-step-1-tick-4" data-plan-step="4" style="top:365px"></div><div class="f03-step-1-tick" id="f03-step-1-tick-5" data-plan-step="5" style="top:475px"></div></div>
+  <div class="f03-step-1-file" id="f03-step-1-rev" style="left:200px; top:170px; width:1100px; height:600px"><span class="fn">reviews/walkthrough-20260924T192645Z.json</span><div class="rule"></div><span class="row dim" id="f03-step-1-rev-r0" style="top:96px">"project": "walkthrough-video",</span><span class="row dim" id="f03-step-1-rev-r1" style="top:158px">"verdict": "approve",</span><span class="row" id="f03-step-1-rev-r2" style="top:220px">"recorded": {</span><span class="row" id="f03-step-1-rev-r3" style="top:282px">  "reviewer": "noreply@anthropic.com",</span><span class="row" id="f03-step-1-rev-r4" style="top:344px">  "via": "git user.email",</span><span class="row" id="f03-step-1-rev-r5" style="top:406px">  "reelplanning": "0.1.0"</span><span class="row" id="f03-step-1-rev-r6" style="top:468px">}</span></div>
+  <div class="f03-step-1-hl" id="f03-step-1-h1" style="left:214px; top:440px; width:1072px; height:56px"></div>
+  <div class="f03-step-1-hl" id="f03-step-1-h2" style="left:214px; top:502px; width:1072px; height:56px"></div>
+  <div class="f03-step-1-hl" id="f03-step-1-h3" style="left:214px; top:564px; width:1072px; height:56px"></div>
+  <div class="f03-step-1-chip grey" id="f03-step-1-first" style="left:1370px; top:200px">m3-revise-loop's review</div>
+  <div class="f03-step-1-chip grey" id="f03-step-1-first2" style="left:1370px; top:250px">the first one stamped</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "03-step-1";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f03-step-1-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("rev"), 1.03, 10);
+  lit(tl, $("h1"), 4.06);
+  unlit(tl, $("h1"), 4.45);
+  lit(tl, $("h2"), 4.45);
+  unlit(tl, $("h2"), 6.87);
+  lit(tl, $("h3"), 6.87);
+  pop(tl, $("first"), 7.30, 8);
+  pop(tl, $("first2"), 7.30, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 7.400);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

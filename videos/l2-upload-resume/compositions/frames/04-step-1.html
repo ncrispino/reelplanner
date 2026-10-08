@@ -1,0 +1,195 @@
+<template>
+  <style>
+    @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+    @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+    #root { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+    #f04-step-1-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+    #f04-step-1-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+    /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+    .f04-step-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+    .f04-step-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+    .f04-step-1-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+    .f04-step-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+    .f04-step-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+    .f04-step-1-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+    .f04-step-1-slot.dim { opacity:0.72; }
+    .f04-step-1-slot.empty .n, .f04-step-1-slot.empty .t { opacity:0; }
+    .f04-step-1-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+    .f04-step-1-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+    .f04-step-1-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f04-step-1-node.navy .l { color:var(--rp-on-ink); }
+    .f04-step-1-node.dim { opacity:0.72; }
+  .f04-step-1-node.navy.dim { opacity:1; }
+    .f04-step-1-node.active { border:3px solid var(--rp-coral); }
+    .f04-step-1-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f04-step-1-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .f04-step-1-edges path.dim { opacity:0.35; }
+    .f04-step-1-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+    .f04-step-1-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; }
+    .f04-step-1-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; }
+    .f04-step-1-opt.rec { border:3px solid var(--rp-coral); }
+    .f04-step-1-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+    /* ---- end shared stage ---- */
+
+    /* the beat's worked example: ONE 26px mono chip 16px under the Manifest node (bottom edge y 380 → chip top 396),
+       left-aligned to the node's left edge (x 1360); ink on a tile background with the hairline border. The node itself
+       stays a title only. The chip carries a transparent outline so the "crash" beat can pulse it coral without a layout shift. */
+    .f04-step-1-chip { position:absolute; left:1360px; top:396px; height:44px; box-sizing:border-box; padding:0 12px; display:inline-flex; align-items:center; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); outline:2px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; font:400 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+    .f04-step-1-chipcur { display:inline-block; width:6px; height:26px; margin-left:4px; background:var(--rp-ink); opacity:0; }
+
+    /* the why-not ghost: ONE 26px mono chip 16px under the Upload API node (bottom edge y 540 → chip top 556),
+       left-aligned to the node's left edge (x 1030), ink-55% on the tile; it gets a level strike on "leaves".
+       No second path into the store: the frame's edge set is exactly the three dim edges + api→manifest. */
+    .f04-step-1-ghostchip { position:absolute; left:1030px; top:556px; height:44px; box-sizing:border-box; padding:0 12px; display:inline-flex; align-items:center; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); font:400 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; opacity:0; }
+    .f04-step-1-ghostchip .gw { position:relative; display:inline-block; }
+    #f04-step-1-strike { position:absolute; left:-2px; right:-2px; top:calc(50% - 1px); height:2px; background:var(--rp-ink); transform:scaleX(0); transform-origin:left center; }
+  </style>
+
+  <div id="root" data-composition-id="04-step-1" data-width="1920" data-height="1080" data-duration="15.903">
+    <div class="clip" id="f04-step-1-bg" data-start="0" data-duration="15.903" data-track-index="0"></div>
+
+    <div class="clip" id="f04-step-1-stage" data-start="0" data-duration="15.903" data-track-index="1">
+      <div class="f04-step-1-rail" id="f04-step-1-rail">
+        <div class="f04-step-1-slot" id="f04-step-1-slot-1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+        <div class="f04-step-1-slot empty" id="f04-step-1-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f04-step-1-slot empty" id="f04-step-1-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f04-step-1-slot empty" id="f04-step-1-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+        <div class="f04-step-1-slot empty" id="f04-step-1-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+        <div class="f04-step-1-slot empty" id="f04-step-1-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+      </div>
+
+      <div class="f04-step-1-node dim"      id="f04-step-1-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span></div>
+      <div class="f04-step-1-node dim"      id="f04-step-1-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span></div>
+      <div class="f04-step-1-node navy dim" id="f04-step-1-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span></div>
+      <div class="f04-step-1-node dim"      id="f04-step-1-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span></div>
+      <div class="f04-step-1-node dim"      id="f04-step-1-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span></div>
+      <div class="f04-step-1-node dim"      id="f04-step-1-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span></div>
+
+      <!-- brownfield: the three edges that exist today are inherited from the cast beat, dim from t=0;
+           api→manifest is the one this step ADDS, so it alone is drawn (coral while drawing) -->
+      <svg class="f04-step-1-edges" id="f04-step-1-edges" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <path id="f04-step-1-e-sdk-api"      class="dim"    d="M970 485 L1030 485" />
+        <path id="f04-step-1-e-api-blob"     class="dim"    d="M1300 510 L1330 510 L1330 645 L1360 645" />
+        <path id="f04-step-1-e-api-billing"  class="dim"    d="M1165 430 L1165 180 L1770 180 L1770 230" />
+        <path id="f04-step-1-e-api-manifest" class="active" d="M1300 460 L1330 460 L1330 305 L1360 305" />
+      </svg>
+
+      <div class="f04-step-1-chip" id="f04-step-1-chip"><span id="f04-step-1-chiptext"></span><span class="f04-step-1-chipcur" id="f04-step-1-chipcur"></span></div>
+
+      <!-- the why-not: a ghost chip under Upload API, struck level on "leaves" -->
+      <div class="f04-step-1-ghostchip" id="f04-step-1-ghost-chip"><span class="gw">after part 1<span id="f04-step-1-strike"></span></span></div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var FID = "f04-step-1";
+      var DUR = 15.403; // voice duration from the cue sheet
+      var q = function (id) { return document.getElementById(FID + "-" + id); };
+
+      var slot1 = q("slot-1");
+      var slot1N = slot1.querySelector(".n");
+      var slot1T = slot1.querySelector(".t");
+      var nodeManifest = q("node-manifest");
+      var nodeApi = q("node-api");
+      var chip = q("chip");
+      var chipText = q("chiptext");
+      var chipCur = q("chipcur");
+      var edge = q("e-api-manifest");
+      var ghostChip = q("ghost-chip");
+      var strike = q("strike");
+
+      // svg-path-draw setup: measured length (slight overestimate so no round-cap dot shows at the start)
+      function prepDraw(p, fallback) {
+        var len = 0;
+        try { len = p.getTotalLength(); } catch (e) { len = 0; }
+        if (!len || !isFinite(len)) len = fallback;
+        len = len * 1.05;
+        p.style.strokeDasharray = len + "";
+        p.style.strokeDashoffset = len + "";
+      }
+      prepDraw(edge, 215);
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- "Step" 0.03 / "one" 0.46 — slot 1 fills, the coral lands on the Manifest node ---------- */
+      tl.set(slot1, { attr: { "data-filled": "" } }, 0.07);
+      tl.fromTo(slot1,
+        { backgroundColor: `rgba(${__RP["tile-rgb"]},0)`, borderStyle: "dashed", borderColor: `rgba(${__RP["ink-rgb"]},0.18)`,
+          boxShadow: `0 1px 3px rgba(${__RP["shadow-rgb"]},0), 0 4px 16px rgba(${__RP["shadow-rgb"]},0)` },
+        { backgroundColor: __RP["tile"], borderStyle: "solid", borderColor: `rgba(${__RP["ink-rgb"]},0.12)`,
+          boxShadow: `0 1px 3px rgba(${__RP["shadow-rgb"]},0.08), 0 4px 16px rgba(${__RP["shadow-rgb"]},0.04)`,
+          duration: 0.35, ease: "power2.out" }, 0.07);
+      tl.fromTo([slot1N, slot1T],
+        { opacity: 0, y: 8, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out", stagger: 0.06 }, 0.128);
+
+      tl.to(nodeManifest, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.57);
+      tl.to(nodeManifest, { borderColor: __RP["coral"], borderWidth: 3, duration: 0.3, ease: "power3.out" }, 0.57);
+
+      /* ---------- "API" 1.65 — the API node lifts to full opacity ---------- */
+      tl.to(nodeApi, { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.8);
+
+      /* ---------- "writes one manifest row" 3.00 — svg-path-draw: the API → Manifest edge draws on and takes the coral ---------- */
+      tl.to(edge, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 3.11);
+      // the Manifest border hands the coral to the edge (one coral at a time); the label never moves
+      tl.to(nodeManifest, { borderColor: `rgba(${__RP["on-ink-rgb"]},0.14)`, borderWidth: 1, duration: 0.35, ease: "power2.out" }, 3.136);
+
+      /* ---------- "Upload" 4.69 — the empty chip (cursor only) settles in under the node ---------- */
+      tl.fromTo(chip, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.06);
+
+      // discrete-text-sequence, absolute frame seconds: each segment types on the word that names it —
+      //   "seven" 5.13 / "F3A" 5.72 → 7f3a · "two" 6.31 / "gigabytes" 6.48 → 2 GB · "no" 7.21 / "parts" 7.34 → no parts
+      var CURSOR_END = 8.05;
+      var SEQUENCE = [
+        { t: 0.00, text: "" },
+        { t: 5.13, text: "7" },
+        { t: 5.40, text: "7f" },
+        { t: 5.72, text: "7f3" },
+        { t: 5.88, text: "7f3a" },
+        { t: 6.31, text: "7f3a · 2" },
+        { t: 6.48, text: "7f3a · 2 GB" },
+        { t: 7.21, text: "7f3a · 2 GB · no" },
+        { t: 7.34, text: "7f3a · 2 GB · no pa" },
+        { t: 7.46, text: "7f3a · 2 GB · no parts" }
+      ];
+      function textAt(time) {
+        for (var i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time >= SEQUENCE[i].t) return SEQUENCE[i].text;
+        }
+        return "";
+      }
+      var driver = { t: 0 };
+      function renderChip() {
+        chipText.textContent = textAt(driver.t);
+        var on = driver.t >= 4.69 && driver.t < CURSOR_END && Math.sin(driver.t * Math.PI * 2 / 0.6) > 0;
+        chipCur.style.opacity = on ? "1" : "0";
+      }
+      renderChip();
+      tl.fromTo(driver, { t: 0 }, { t: DUR, duration: DUR, ease: "none", onUpdate: renderChip }, 0);
+
+      /* ---------- "crash" 9.17 … "behind" 10.27 — the chip gets a brief coral outline pulse, then back ---------- */
+      // the edge lends its coral to the chip for the beat (still one coral at a time), then takes it back
+      tl.to(edge, { stroke: __RP["ink"], strokeWidth: 3, duration: 0.25, ease: "power2.out" }, 9.66);
+      tl.to(chip, { outlineColor: __RP["coral"], duration: 0.2, ease: "power2.out" }, 9.66);
+      tl.to(chip, { outlineColor: `rgba(${__RP["coral-rgb"]},0)`, duration: 0.4, ease: "power2.out" }, 10.71);
+      tl.to(edge, { stroke: __RP["coral"], strokeWidth: 4, duration: 0.3, ease: "power2.out" }, 10.79);
+
+      /* ---------- "after" 11.31 — the ghost chip settles in under Upload API; "leaves" 13.82 — it gets struck (level); hold ---------- */
+      tl.fromTo(ghostChip, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 11.84);
+      tl.to(strike, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 14.55);
+
+      // hold the read to the frame's end (14.547s)
+      tl.to({}, { duration: 0.01 }, DUR - 0.01);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["04-step-1"] = tl;
+    })();
+  </script>
+</template>

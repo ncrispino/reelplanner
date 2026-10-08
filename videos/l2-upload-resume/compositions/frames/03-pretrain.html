@@ -1,0 +1,153 @@
+<template>
+  <style>
+    @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+    @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+    .clip { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    #f03-pretrain-ground { background: var(--rp-paper); }
+
+    /* ---- SHARED STAGE v2 (positions/sizes are law) ---- */
+    .f03-pretrain-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+    .f03-pretrain-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+    .f03-pretrain-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+    .f03-pretrain-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+    .f03-pretrain-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+    .f03-pretrain-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+    .f03-pretrain-slot.dim { opacity:0.72; }
+    /* nodes are a title, nothing else: fixed height, centred label, the label never shifts between frames */
+    .f03-pretrain-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; }
+    .f03-pretrain-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+    .f03-pretrain-node.navy { background:var(--rp-data); border-color:rgba(var(--rp-on-ink-rgb),0.14); } .f03-pretrain-node.navy .l { color:var(--rp-on-ink); }
+    .f03-pretrain-node.dim { opacity:0.72; }
+  .f03-pretrain-node.navy.dim { opacity:1; }
+    .f03-pretrain-node.active { border:3px solid var(--rp-coral); }
+    .f03-pretrain-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+    .f03-pretrain-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .f03-pretrain-edges path.dim { opacity:0.35; }
+    .f03-pretrain-edges path.active { stroke:var(--rp-coral); stroke-width:4; }
+    /* ---- end shared stage ---- */
+
+    /* this frame: every rail slot is empty (not yet reached) — dashed outline only */
+    .f03-pretrain-slot .n, .f03-pretrain-slot .t { opacity: 0; }
+
+    /* the coral "named right now" ring: same geometry as .active (3px from the box edge),
+       drawn as an overlay so the node box never changes size while it fades.
+       It is the frame's ONE coral, handed name to name. */
+    .f03-pretrain-ring { position:absolute; inset:-1px; border-radius:12px; border:3px solid var(--rp-coral); pointer-events:none; }
+
+    /* kicker at the shared position (top:96px in every frame that has one); the ✱ is ink, never coral */
+    .f03-pretrain-kicker { position:absolute; left:700px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+    .f03-pretrain-kicker .s { display:inline-block; color:var(--rp-ink); margin-right:14px; }
+  </style>
+
+  <div id="root" data-composition-id="03-pretrain" data-width="1920" data-height="1080" data-duration="8.18">
+    <div class="clip" id="f03-pretrain-ground" data-start="0" data-duration="8.18" data-track-index="0"></div>
+
+    <div class="clip" id="f03-pretrain-stage" data-start="0" data-duration="8.18" data-track-index="1">
+      <div class="f03-pretrain-kicker" id="f03-pretrain-kicker"><span class="s" id="f03-pretrain-spike">✱</span>6 pieces</div>
+
+      <div class="f03-pretrain-rail" id="f03-pretrain-rail">
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Write-ahead</span></div>
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Bill once</span></div>
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Sweeper</span></div>
+        <div class="f03-pretrain-slot" id="f03-pretrain-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">SDK resume</span></div>
+      </div>
+
+      <!-- the three edges that exist today (brownfield): sdk→api, api→blob, api→billing.
+           Hidden (opacity 0) until the cast is named, then drawn as a beat of their own, dim.
+           The edges the plan ADDS (api→manifest, sweeper→manifest, sweeper→blob) are not in this frame. -->
+      <svg class="f03-pretrain-edges" id="f03-pretrain-edges" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <path id="f03-pretrain-e-sdk-api"     class="dim" d="M970 485 L1030 485" style="opacity:0" />
+        <path id="f03-pretrain-e-api-blob"    class="dim" d="M1300 510 L1330 510 L1330 645 L1360 645" style="opacity:0" />
+        <path id="f03-pretrain-e-api-billing" class="dim" d="M1165 430 L1165 180 L1770 180 L1770 230" style="opacity:0" />
+      </svg>
+
+      <!-- nodes are a title only: no rows, chips or icons inside; the label stays centred in every frame -->
+      <div class="f03-pretrain-node"      id="f03-pretrain-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:430px; width:270px; height:110px"><span class="l">Client SDK</span><span class="f03-pretrain-ring"></span></div>
+      <div class="f03-pretrain-node"      id="f03-pretrain-node-api"      data-plan-component="api"      style="left:1030px; top:430px; width:270px; height:110px"><span class="l">Upload API</span><span class="f03-pretrain-ring"></span></div>
+      <div class="f03-pretrain-node navy" id="f03-pretrain-node-manifest" data-plan-component="manifest" style="left:1360px; top:230px; width:280px; height:150px"><span class="l">Manifest store</span><span class="f03-pretrain-ring"></span></div>
+      <div class="f03-pretrain-node"      id="f03-pretrain-node-blob"     data-plan-component="blob"     style="left:1360px; top:590px; width:280px; height:110px"><span class="l">Blob store</span><span class="f03-pretrain-ring"></span></div>
+      <div class="f03-pretrain-node"      id="f03-pretrain-node-billing"  data-plan-component="billing"  style="left:1680px; top:230px; width:180px; height:150px"><span class="l">Billing</span><span class="f03-pretrain-ring"></span></div>
+      <div class="f03-pretrain-node"      id="f03-pretrain-node-sweeper"  data-plan-component="sweeper"  style="left:1680px; top:590px; width:180px; height:110px"><span class="l">Sweeper</span><span class="f03-pretrain-ring"></span></div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var ID = "03-pretrain";
+      var root = document.querySelector('[data-composition-id="' + ID + '"]');
+      var q = function (s) { return root.querySelector(s); };
+      var qa = function (s) { return Array.prototype.slice.call(root.querySelectorAll(s)); };
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines[ID] = tl;
+
+      var EASE = "power3.out";
+      var DIM = 0.72;
+      var EDGE_DIM = 0.35;   // .dim edge opacity (the class value; set inline because the path starts hidden)
+
+      /* ---- Scene 1 (0.0–1.6s): cream ground; the six empty rail slots fade in; kicker on "six" (0.86) ---- */
+      var slots = qa(".f03-pretrain-slot");
+      slots.forEach(function (el, i) {
+        tl.fromTo(el, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.55, ease: EASE }, 0.05 + i * 0.06);
+      });
+      tl.fromTo(q("#f03-pretrain-kicker"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: EASE }, 0.894);
+
+      /* ---- Scene 2 (1.77–7.15s): nodes assemble one per spoken cue (cue sheet 03.md), the ring handed name to name ---- */
+      // Each node fades in where it lives (opacity 0 -> 1, y 8 -> 0): no slide, no scale — motion is not the thing looked at.
+      var nodes = [
+        { sel: "#f03-pretrain-node-sdk",      at: 1.77 },  // "client SDK"
+        { sel: "#f03-pretrain-node-api",      at: 3.14 },  // "upload API"
+        { sel: "#f03-pretrain-node-manifest", at: 4.23 },  // "manifest store"
+        { sel: "#f03-pretrain-node-blob",     at: 5.20 },  // "blob store"
+        { sel: "#f03-pretrain-node-billing",  at: 5.86 },  // "billing"
+        { sel: "#f03-pretrain-node-sweeper",  at: 6.60 }   // "sweeper"
+      ];
+
+      var ENTER = 0.55;     // fade-in duration
+      var RING_HOLD = 0.30; // the coral instant
+      var RING_FADE = 0.25; // settle: coral off + node to dim
+
+      nodes.forEach(function (n) {
+        var el = q(n.sel);
+        var ring = el.querySelector(".f03-pretrain-ring");
+
+        // fade in place, out-eased only
+        tl.fromTo(el,
+          { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: ENTER, ease: EASE },
+          n.at);
+        // the named node carries the one coral (its ring) for that instant...
+        tl.fromTo(ring, { opacity: 1 }, { opacity: 0, duration: RING_FADE, ease: "power2.out" }, n.at + RING_HOLD);
+        // ...then settles to the dim read (0.72) as the voice moves on; the ring is gone before the next name
+        tl.to(el, { opacity: DIM, duration: RING_FADE, ease: "power2.out" }, n.at + RING_HOLD);
+      });
+
+      /* ---- Scene 3 (6.38–7.07s): the edges that exist today draw as a beat of their own, dim, no coral ---- */
+      // Starts 0.6 s earlier than the old 6.98 so the frame holds a read (~0.7 s) after the last edge lands.
+      // svg-path-draw: hidden until now, draw length from getTotalLength() so no partial path ever shows
+      var edges = [
+        { el: q("#f03-pretrain-e-sdk-api"),     fallback: 60,  at: 6.38 },
+        { el: q("#f03-pretrain-e-api-blob"),    fallback: 195, at: 6.50 },
+        { el: q("#f03-pretrain-e-api-billing"), fallback: 905, at: 6.62 }
+      ];
+      edges.forEach(function (e) {
+        var len = e.fallback;
+        try { len = e.el.getTotalLength() || e.fallback; } catch (err) {}
+        gsap.set(e.el, { opacity: 0, strokeDasharray: len, strokeDashoffset: len });
+        tl.set(e.el, { opacity: EDGE_DIM }, e.at);
+        tl.fromTo(e.el, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, e.at);
+      });
+
+      /* held read to the end of the frame: six nodes at 0.72, three dim edges, no coral */
+      tl.set({}, {}, 8.209);
+    })();
+  </script>
+</template>

@@ -1,0 +1,136 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k04-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k04-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k04-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k04-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k04-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k04-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k04-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k04-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k04-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k04-ul.ink { background:var(--rp-ink); height:3px; }
+  .k04-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k04-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k04-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k04-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k04-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k04-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k04-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k04-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k04-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k04-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k04-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k04-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k04-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k04-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k04-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k04-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k04-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k04-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k04-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k04-chip code, .k04-name code, .k04-small code, .k04-lab code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k04-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k04-line.hot { background:var(--rp-coral); }
+  .k04-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k04-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k04-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k04-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k04-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; }
+  .k04-shot img { display:block; width:100%; height:auto; }
+  .k04-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k04-rg.hot { border-color:var(--rp-coral); }
+  .k04-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k04-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k04-tab b { font-weight:700; }
+  .k04-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k04-kbd { position:absolute; height:56px; min-width:56px; padding:0 16px; box-sizing:border-box; font:500 28px/52px "JetBrains Mono"; color:var(--rp-ink); text-align:center; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-bottom-width:5px; border-radius:8px; }
+  .k04-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k04-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k04-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k04-band { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.1); border-top:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .k04-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k04-blk { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k04-blk i { position:absolute; left:18px; height:10px; border-radius:5px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k04-mk { position:absolute; font:700 40px/1 "Inter"; }
+  .k04-mk.no { color:var(--rp-coral-deep); } .k04-mk.ok { color:var(--rp-ink); }
+.k04-tag { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="04-what-changes" data-band="bottom" data-duration="13.897" data-width="1920" data-height="1080">
+
+  <div class="clip k04-bg" id="k04-bg" data-start="0" data-duration="13.897" data-track-index="0"></div>
+
+  <div class="clip k04-scene" id="k04-scene" data-start="0" data-duration="13.897" data-track-index="1">
+    <div class="k04-box" id="k04-b0" style="left:120px; top:250px; width:520px; height:360px"></div>
+    <div class="k04-tag" id="k04-t0" style="left:152px; top:290px">step 1</div>
+    <div class="k04-name" id="k04-n0" style="left:152px; top:340px; font-size:46px">the frame marks it</div>
+    <div class="k04-box" id="k04-b1" style="left:700px; top:250px; width:520px; height:360px"></div>
+    <div class="k04-tag" id="k04-t1" style="left:732px; top:290px">steps 2, 3</div>
+    <div class="k04-name" id="k04-n1" style="left:732px; top:340px; font-size:46px">the thing is the button</div>
+    <div class="k04-box" id="k04-b2" style="left:1280px; top:250px; width:520px; height:360px"></div>
+    <div class="k04-tag" id="k04-t2" style="left:1312px; top:290px">step 4</div>
+    <div class="k04-name" id="k04-n2" style="left:1312px; top:340px; font-size:46px">the chip, a fallback</div>
+    <div class="k04-blk" id="k04-m0" style="left:152px; top:430px; width:300px; height:140px"><i style="top:20px; width:185px"></i><i style="top:46px; width:119px"></i><i style="top:72px; width:145px"></i><i style="top:98px; width:92px"></i></div>
+    <div class="k04-rg" id="k04-m0r" style="left:144px; top:422px; width:316px; height:156px"></div>
+    <div class="k04-blk" id="k04-m1" style="left:732px; top:430px; width:300px; height:140px"><i style="top:20px; width:185px"></i><i style="top:46px; width:119px"></i><i style="top:72px; width:145px"></i><i style="top:98px; width:92px"></i></div>
+    <div class="k04-rg hot" id="k04-m1r" style="left:724px; top:422px; width:316px; height:156px"></div>
+    <div class="k04-tab" id="k04-m1t" style="left:744px; top:402px">Open</div>
+    <div class="k04-chip" id="k04-m2" style="left:1312px; top:470px">Open · O</div>
+    <div class="k04-line" id="k04-a" style="left:640px; top:430px; width:60px"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "04-what-changes";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k04-b0", { opacity: 0, y: 12 });
+  tl.to("#k04-b0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.82);
+  gsap.set("#k04-t0", { opacity: 0, y: 12 });
+  tl.to("#k04-t0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.92);
+  gsap.set("#k04-n0", { opacity: 0, y: 12 });
+  tl.to("#k04-n0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.02);
+  gsap.set("#k04-b1", { opacity: 0, y: 12 });
+  tl.to("#k04-b1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.36);
+  gsap.set("#k04-t1", { opacity: 0, y: 12 });
+  tl.to("#k04-t1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.46);
+  gsap.set("#k04-n1", { opacity: 0, y: 12 });
+  tl.to("#k04-n1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.56);
+  gsap.set("#k04-b2", { opacity: 0, y: 12 });
+  tl.to("#k04-b2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.85);
+  gsap.set("#k04-t2", { opacity: 0, y: 12 });
+  tl.to("#k04-t2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.95);
+  gsap.set("#k04-n2", { opacity: 0, y: 12 });
+  tl.to("#k04-n2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.05);
+  gsap.set("#k04-m0", { opacity: 0, y: 12 });
+  tl.to("#k04-m0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.42);
+  gsap.set("#k04-m0r", { opacity: 0, scale: 1.04 });
+  tl.to("#k04-m0r", { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 2.92);
+  gsap.set("#k04-a", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#k04-a", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 7.26);
+  gsap.set("#k04-m1", { opacity: 0, y: 12 });
+  tl.to("#k04-m1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.76);
+  gsap.set("#k04-m1r", { opacity: 0, scale: 1.04 });
+  tl.to("#k04-m1r", { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 8.16);
+  gsap.set("#k04-m1t", { opacity: 0, y: 12 });
+  tl.to("#k04-m1t", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 8.36);
+  gsap.set("#k04-m2", { opacity: 0, y: 12 });
+  tl.to("#k04-m2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.35);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

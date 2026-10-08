@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "472a2fd2f8c4547d6ed8",
+      "text": "Step six measures whether this helps. The review file now saves when each pause began, beside when you answered it. If three walkthroughs in a row are each answered in under five seconds, with nothing said, `reel status` says a plan to drop the video is due.",
+      "sha256": "4e39b29110ada6b7ff6a43e77247a400af5322e872e4aa0a57b7dff49abd74dd",
+      "duration_s": 14.251
+    },
+    "11": {
+      "key": "b84e25939cf4daf6c19f",
+      "text": "Quick check. The review page looks just the same after this build. What does one saved answer look like in the review file now?",
+      "sha256": "34328d3898276765900805b396733959c99efb051ea4f65d669b8afb2deabfac",
+      "duration_s": 6.784
+    },
+    "12": {
+      "key": "9fa0e5f94422909b1220",
+      "text": "Here is the real file, before and after. The new field, `shownAt`, sits beside `judgedAt`. And `reel memory` reads it: fifteen walkthrough reviews so far, none timed yet, nine sent before the video could have played through.",
+      "sha256": "44ccf110a301d6ad5db03b723a21118b303bb8c1d044a804f0d185a5dffc0cd2",
+      "duration_s": 12.544
+    },
+    "13": {
+      "key": "1992c2e9b8736afa973c",
+      "text": "What ran: all twenty-nine fast test files pass. A second agent checked the code against the plan: six steps built, every decision held, one mistake in a test, now fixed. Not done: step seven, the system video, waits for your accept.",
+      "sha256": "7c555fe4b4282242f5c985ce62a21fa820c9c852fde9ae472abba8a303122c54",
+      "duration_s": 13.803
+    },
+    "14": {
+      "key": "29d07e9eab20fc6f79d6",
+      "text": "The other five choices are the list: the length a walkthrough aims for, how the list is written, when a choice counts as listed, where a step's jump lands, and the bar judged review by review. Flag any you'd change.",
+      "sha256": "b7ce5ce863a5eb46d71884767c21d0272316d26fc1987cab3d9acae300160fed",
+      "duration_s": 11.648
+    },
+    "15": {
+      "key": "c6767d7577be222a9365",
+      "text": "Seeing it run, anything you'd change? Say it in Finish, or approve the build.",
+      "sha256": "6adcf8eeb3d1822d4bd62668dd993c3e1cff7a2a390889b9d264e0f1885d363f",
+      "duration_s": 3.904
+    },
+    "01": {
+      "key": "dbc31344d44c1c2b8622",
+      "text": "Walkthroughs that help is built. This video is step one: the change running, in about two minutes, pausing only where you'd notice. It changed thirty-seven files; here are the places that carry it.",
+      "sha256": "8bd12ad94802174b06797ddc420f958795d72c4a8e3689f8a3d40347110229ca",
+      "duration_s": 10.453
+    },
+    "02": {
+      "key": "130b514cda2f273af083",
+      "text": "Step two. A choice pauses the video only when you'd notice it, labelled visible, or can't easily undo it, labelled hard to undo; an off-plan change always pauses. Every other choice, labelled close or not at all, goes on one list at the end.",
+      "sha256": "270d1e596e94bedb218dd641f1f465be8fd27cefdd41dc9bfaf788e74a3150bb",
+      "duration_s": 14.357
+    },
+    "03": {
+      "key": "8bf5d95535574d57abe8",
+      "text": "Quick check. This build's choice A3 is labelled visible; its choice A2 only close. Which of them pauses this video?",
+      "sha256": "1452837f94f85e02465588b1efc8c1e4b01ec69b11cc8c9de90191bc18125e53",
+      "duration_s": 7.061
+    },
+    "04": {
+      "key": "0363bec03dd68d8677c8",
+      "text": "Here is the real run of `reel stops` on this plan. Choice A3 pauses, and choice A2 is listed. Five choices pause, each in the scene that shows it running; the other five are the list.",
+      "sha256": "c0492652211f90e06a9fd7aaf19f345abfb7487904a82fb26445da64fbd330c7",
+      "duration_s": 11.008
+    },
+    "05": {
+      "key": "ca67689d7c0f5e0c8735",
+      "text": "This is the list in the review player. Each choice is one line, what it chose instead of what, with its own Flag. Choice A3 made it this sheet: a Flag on each row and one Go on under them, not an Accept on every row. Go on lists the rest, not judged.",
+      "sha256": "8a9a3e06345f6310f3e679f3321b4481e1bfbe942f08adce959e9a0740364edb",
+      "duration_s": 14.528
+    },
+    "06": {
+      "key": "c219a422c4db9d0684c4",
+      "text": "Step three. A quick check now comes only where the change has something to predict, just before it runs, like the one you just answered. And the walkthrough ends on one open question. Choice A5 asks it in Finish, where every review ends, instead of one more pause.",
+      "sha256": "47095edd1dd2472030b42c60346e81e07c2e3db4ff28514eacff81e056f11693",
+      "duration_s": 14.912
+    },
+    "07": {
+      "key": "5e067181f9e642d261fa",
+      "text": "Step four. A small pull request needs the video only for a choice you'd notice. Any other choice is one line in its text. Choice A6: `reel pr-check` waits until a maintainer ticks them accepted. Here it waits; ticked, it passes.",
+      "sha256": "8383aa8e70eacd8f77f43783d0cc13222b146955b619a2e62bffff0435fccc74",
+      "duration_s": 13.781
+    },
+    "08": {
+      "key": "a42ee89fedc86cbbdb64",
+      "text": "Step five. Each plan now has one switch, Plan and Built, at the top of its page. Choice A8 makes that switch the jump itself: on a plan's step one, Built opens the walkthrough at step one, running.",
+      "sha256": "60926bc5c681cdce20400b54d386cb1c784a52dd39baa1f18572c3d04a747c93",
+      "duration_s": 11.605
+    },
+    "09": {
+      "key": "485a4a3ce57825494bcc",
+      "text": "You asked for the list of videos to be shorter. Now each plan is one row with that switch. Choice A9: what needs you first, then the five newest plans, the rest folded behind Earlier plans.",
+      "sha256": "d2213fc977cfee31c107d76e31ed8912384cb5e9575f87bd064dbe3cda1281d1",
+      "duration_s": 11.136
+    }
+  }
+}

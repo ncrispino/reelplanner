@@ -1,0 +1,135 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f04-step-1-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f04-step-1-stage { position: absolute; inset: 0; }
+
+  /* ---- the rail: the plan (shared stage, positions are law) ---- */
+  .f04-step-1-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f04-step-1-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f04-step-1-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); z-index:1; }
+  .f04-step-1-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; z-index:1; }
+  /* empty slots show only the dashed outline */
+  .f04-step-1-slot.empty .n, .f04-step-1-slot.empty .t { opacity:0; }
+  /* step 1's fill: painted on cue over the dashed outline, landing identical to a filled slot */
+  .f04-step-1-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+
+  /* ---- section label above the stretch of the chain this beat draws ---- */
+  .f04-step-1-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; opacity:0; }
+
+  /* ---- sources: real file names, stacked. This step IS the content model, so the files are it. ---- */
+  .f04-step-1-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); opacity:0; }
+
+  /* ---- the validator link: songs/ names its album, so a hairline runs songs/ → albums/ ---- */
+  .f04-step-1-links { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f04-step-1-links path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.4); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* ---- supporting mono, never below 26 px ---- */
+  .f04-step-1-tag { position:absolute; left:980px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; opacity:0; }
+  .f04-step-1-note { position:absolute; left:980px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+  /* the rejected alternative: a light-ink label that a 2 px ink line strikes through on cue */
+  .f04-step-1-ghost { position:absolute; left:660px; top:620px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; opacity:0; }
+  .f04-step-1-ghost .s { position:absolute; left:-4px; right:-4px; top:12px; height:2px; background:var(--rp-ink); }
+  /* who edits this, under the stack */
+  .f04-step-1-chip { position:absolute; left:660px; top:686px; padding:9px 14px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:6px; white-space:nowrap; opacity:0; }
+</style>
+
+<div id="root" data-composition-id="04-step-1" data-duration="12.767" data-width="1920" data-height="1080">
+  <div class="clip f04-step-1-bg" data-start="0" data-duration="12.767" data-track-index="0"></div>
+
+  <div class="clip f04-step-1-stage" data-start="0" data-duration="12.767" data-track-index="1">
+
+    <div class="f04-step-1-rail" id="f04-step-1-rail">
+      <div class="f04-step-1-slot" id="f04-step-1-slot-1" data-plan-step="1" style="top:0px"><div class="f04-step-1-fill" id="f04-step-1-fill-1"></div><span class="n" id="f04-step-1-n1">1</span><span class="t" id="f04-step-1-t1">Content model</span></div>
+      <div class="f04-step-1-slot empty" id="f04-step-1-slot-2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f04-step-1-slot empty" id="f04-step-1-slot-3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f04-step-1-slot empty" id="f04-step-1-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f04-step-1-slot empty" id="f04-step-1-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f04-step-1-slot empty" id="f04-step-1-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- FILES ONLY: no Build, no pages, no chain arrows — step 1 is the content model itself -->
+    <div class="f04-step-1-lbl" id="f04-step-1-lbl" style="left:660px;top:300px">Content files</div>
+    <div class="f04-step-1-file" id="f04-step-1-file-albums" style="top:346px">albums/</div>
+    <div class="f04-step-1-file" id="f04-step-1-file-songs"  style="top:432px">songs/</div>
+    <div class="f04-step-1-file" id="f04-step-1-file-events" style="top:518px">events/</div>
+
+    <!-- songs/ (right edge 880, centre y 463) elbows out to x 940 and lands on albums/ (centre y 377) -->
+    <svg class="f04-step-1-links" viewBox="0 0 1920 1080">
+      <path id="f04-step-1-link" d="M880 463 L940 463 L940 377 L884 377 M896 371 L884 377 L896 383" style="opacity:0" />
+    </svg>
+
+    <div class="f04-step-1-tag"  id="f04-step-1-tag-validator" style="top:364px">validator</div>
+    <div class="f04-step-1-note" id="f04-step-1-note-fail"     style="top:450px">missing album → build fails</div>
+
+    <div class="f04-step-1-ghost" id="f04-step-1-ghost">CMS<div class="s" id="f04-step-1-strike"></div></div>
+    <div class="f04-step-1-chip"  id="f04-step-1-chip-editors">2 editors</div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var q = function (id) { return document.getElementById(id); };
+  var CORAL = __RP["coral"];
+  var HAIR  = "rgba(" + __RP["ink-rgb"] + ",0.4)";
+
+  var link = q("f04-step-1-link");
+  var L = 228.8;                                   // shaft 60+86+56 plus the two head strokes
+  try { var m = link.getTotalLength(); if (m && isFinite(m) && m > 1) L = m; } catch (err) {}
+  var RET = Math.min(L * 0.5, 83);                 // head + the segment that lands on albums/
+
+  var out = "power3.out";
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["04-step-1"] = tl;
+
+  // starting state (seek-safe): the link is an undrawn hairline
+  tl.set(link, { opacity: 0, stroke: HAIR, strokeWidth: 2, strokeDasharray: L, strokeDashoffset: L }, 0);
+  tl.set(q("f04-step-1-strike"), { scaleX: 0, transformOrigin: "left center" }, 0);
+
+  // 0.05 "Step" — slot 1 fills; 0.26 "one," — its index; 0.82 "content" — its title
+  tl.fromTo(q("f04-step-1-fill-1"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: out }, 0.132);
+  tl.fromTo(q("f04-step-1-n1"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 0.316);
+  tl.fromTo(q("f04-step-1-t1"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 0.875);
+
+  // 1.66 "One file per…" — the stack is named, then one file per spoken kind
+  tl.fromTo(q("f04-step-1-lbl"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 1.834);
+  tl.fromTo(q("f04-step-1-file-albums"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 2.458);  // "album,"
+  tl.fromTo(q("f04-step-1-file-songs"),  { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 2.958);  // "song,"
+  tl.fromTo(q("f04-step-1-file-events"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 3.59);  // "event."
+
+  // 4.77 "names" — the link draws from songs/ up onto albums/, arriving on "album," at 5.66
+  tl.set(link, { opacity: 1 }, 4.982);
+  tl.to(link, { strokeDashoffset: 0, duration: 0.85, ease: "power2.inOut" }, 4.982);
+
+  // 6.13 "validator" — the link is named
+  tl.fromTo(q("f04-step-1-tag-validator"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 6.422);
+
+  // 6.59 "fails" — the link takes the frame's one coral; 7.03 "build" — the note lands under it
+  tl.to(link, { stroke: CORAL, strokeWidth: 3, duration: 0.45, ease: out }, 6.808);
+  tl.fromTo(q("f04-step-1-note-fail"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 7.268);
+
+  // 8.11 "does not exist." — the head pulls back off albums/: the reference points at nothing
+  tl.to(link, { strokeDashoffset: RET, duration: 0.5, ease: "power3.inOut" }, 8.338);
+
+  // 9.66 "CMS." — the rejected alternative appears, then an ink line strikes it
+  tl.fromTo(q("f04-step-1-ghost"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 9.916);
+  tl.fromTo(q("f04-step-1-strike"), { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.4, ease: "power3.inOut" }, 10.362);
+
+  // 11.11 "two editors." — who actually edits this
+  tl.fromTo(q("f04-step-1-chip-editors"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 11.428);
+
+  // held read to the end of the voice
+  tl.to({}, { duration: 0.01 }, 12.251);
+})();
+</script>
+</template>

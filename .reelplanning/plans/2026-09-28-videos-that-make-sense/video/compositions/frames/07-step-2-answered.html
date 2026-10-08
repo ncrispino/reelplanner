@@ -1,0 +1,155 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m07-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m07-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .m07-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .m07-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .m07-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m07-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .m07-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m07-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .m07-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .m07-ul.ink { background:var(--rp-ink); height:3px; }
+  .m07-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m07-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m07-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m07-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m07-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m07-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m07-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m07-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .m07-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .m07-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m07-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m07-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .m07-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .m07-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .m07-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m07-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m07-h { position:absolute; font:400 44px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m07-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m07-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m07-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m07-t code, .m07-s code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m07-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .m07-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m07-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .m07-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .m07-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .m07-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .m07-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m07-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m07-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .m07-shot img { display:block; position:absolute; left:0; top:0; }
+  .m07-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:8px; }
+  .m07-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m07-pin.hot { background:var(--rp-coral); }
+  .m07-slab2 { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m07-bar2 { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m07-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m07-code { position:absolute; font:400 28px/1.3 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m07-code .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .m07-code .ok { color:var(--rp-syn-add); }
+  .m07-code .w { color:var(--rp-syn-num); }
+  .m07-code .x { color:var(--rp-syn-del); }
+  .m07-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m07-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .m07-btn { position:absolute; height:44px; padding:0 16px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m07-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); line-height:40px; }
+  .m07-cap { position:absolute; box-sizing:border-box; padding:14px 30px; border-radius:10px; background:var(--rp-slab); font:700 40px/1.25 "Inter"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .m07-cap .ul { text-decoration:underline dotted; text-decoration-thickness:4px; text-underline-offset:8px; }
+
+  .m07-f { position:absolute; left:130px; width:760px; font:400 28px/1.3 "Inter"; color:var(--rp-ink); }
+  .m07-f b { font:500 27px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); margin-right:12px; }
+  .m07-a { position:absolute; left:1080px; width:700px; font:400 28px/1.3 "Inter"; color:var(--rp-ink); }
+  .m07-a .tg { display:inline-block; font:500 26px/40px "JetBrains Mono"; padding:0 12px; border-radius:6px; background:var(--rp-ink); color:var(--rp-on-ink); margin-right:14px; }
+</style>
+
+<div id="root" data-composition-id="07-step-2-answered" data-band="bottom" data-duration="16.457" data-width="1920" data-height="1080">
+
+  <div class="clip m07-bg" id="m07-bg" data-start="0" data-duration="16.457" data-track-index="0"></div>
+
+  <div class="clip m07-scene" id="m07-scene" data-start="0" data-duration="16.457" data-track-index="1">
+    <div class="m07-view" id="m07-view">
+    <div class="m07-lab" id="m07-k" style="left:100px; top:60px;">step 2 · newcomer.md, answered</div>
+    <div class="m07-plan" id="m07-pl" style="left:700px; top:52px">planned</div>
+    <div class="m07-card" id="m07-doc" style="left:100px; top:120px; width:1720px; height:500px"></div>
+    <div class="m07-lab" id="m07-c1" style="left:130px; top:150px;">finding</div>
+    <div class="m07-lab" id="m07-c2" style="left:1080px; top:150px;">answer</div>
+    <div class="m07-f" id="m07-f0" style="top:220px"><b>N1</b>scene 13 · “drops the video”: which video?</div>
+    <div class="m07-a" id="m07-a0" style="top:216px"><span class="tg">fixed</span>scene 13 now says: the walkthrough video, made after each build</div>
+    <div class="m07-hair" id="m07-h0" style="left:130px; top:320px; width:1660px"></div>
+    <div class="m07-f" id="m07-f1" style="top:350px"><b>N2</b>scene 10 · “saved review file”: which file?</div>
+    <div class="m07-a" id="m07-a1" style="top:346px"><span class="tg">meaning</span>added under the glossary's Other words</div>
+    <div class="m07-hair" id="m07-h1" style="left:130px; top:450px; width:1660px"></div>
+    <div class="m07-f" id="m07-f2" style="top:480px"><b>N3</b>scene 13 · “the bar”: what bar?</div>
+    <div class="m07-a" id="m07-a2" style="top:476px"><span class="tg">kept</span>scene 14 says what the bar is</div>
+    <div class="m07-hair" id="m07-h2" style="left:130px; top:580px; width:1660px"></div>
+    <div class="m07-lab" id="m07-rl" style="left:100px; top:690px;">each look, by two new agents</div>
+    <div class="m07-chip" id="m07-r0" style="left:100px; top:750px;">look 1 · 5 found</div>
+    <div class="m07-chip" id="m07-r1" style="left:360px; top:750px;">look 2 · 1 found</div>
+    <div class="m07-chip" id="m07-r2" style="left:620px; top:750px;">look 3 · 0 found</div>
+    <div class="m07-chip" id="m07-op" style="left:900px; top:750px;">then the page opens</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "07-step-2-answered";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m07-k", { opacity: 0 });
+  tl.to("#m07-k", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  gsap.set("#m07-pl", { opacity: 0 });
+  tl.to("#m07-pl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  gsap.set("#m07-doc", { opacity: 0 });
+  tl.to("#m07-doc", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.2);
+  gsap.set("#m07-c1", { opacity: 0 });
+  tl.to("#m07-c1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+  gsap.set("#m07-c2", { opacity: 0 });
+  tl.to("#m07-c2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+  gsap.set("#m07-f0", { opacity: 0 });
+  tl.to("#m07-f0", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.4);
+  gsap.set("#m07-f1", { opacity: 0 });
+  tl.to("#m07-f1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.55);
+  gsap.set("#m07-f2", { opacity: 0 });
+  tl.to("#m07-f2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.7);
+  gsap.set("#m07-a0", { opacity: 0, y: 12 });
+  tl.to("#m07-a0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.65);
+  gsap.set("#m07-h0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m07-h0", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 2.65);
+  gsap.set("#m07-a1", { opacity: 0, y: 12 });
+  tl.to("#m07-a1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.96);
+  gsap.set("#m07-h1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m07-h1", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 4.96);
+  gsap.set("#m07-a2", { opacity: 0, y: 12 });
+  tl.to("#m07-a2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.29);
+  gsap.set("#m07-h2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m07-h2", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 7.29);
+  gsap.set("#m07-rl", { opacity: 0 });
+  tl.to("#m07-rl", { opacity: 1, duration: 0.3, ease: "power2.out" }, 12.25);
+  gsap.set("#m07-r0", { opacity: 0, y: 12 });
+  tl.to("#m07-r0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.55);
+  gsap.set("#m07-r1", { opacity: 0, y: 12 });
+  tl.to("#m07-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.9);
+  gsap.set("#m07-r2", { opacity: 0, y: 12 });
+  tl.to("#m07-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.25);
+  gsap.set("#m07-op", { opacity: 0, y: 12 });
+  tl.to("#m07-op", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.11);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

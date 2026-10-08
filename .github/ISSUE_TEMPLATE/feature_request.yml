@@ -1,0 +1,38 @@
+name: Idea or feature
+description: Something reelplanning could do, or do differently.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you were trying to do
+      description: The plan, review or video where you missed it. Start from the problem, not the fix.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: What you would see or run instead. If you have weighed other ways, name them and what each costs.
+    validations:
+      required: true
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part
+      options:
+        - the plan-to-video skill or its style guide
+        - the review player (the page you watch and review in)
+        - the project record (`reel`, `.reelplanning/`, the decision log)
+        - building a video (narrate, build, frames)
+        - support for another agent (docs/agents.md)
+        - docs
+        - not sure
+    validations:
+      required: false
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: A pull request?
+      options:
+        - label: I'd like to open the PR for this myself (.github/CONTRIBUTING.md says how, and when a PR gets a video; the PR says "Closes #" and this issue's number)

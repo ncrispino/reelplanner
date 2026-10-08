@@ -1,0 +1,97 @@
+# Richer review: more kinds of question, comments on marks, diagrams a newcomer can follow
+
+## The problem
+
+The first real review of a reelplanning video (the close-the-lifecycle plan, 2026-09-22) found
+limits in the review format itself, not in that plan:
+
+- **Every question has two options.** Real choices sometimes have three or four, and some are "pick
+  all that apply". The player only knows "pick one of two".
+- **Every plan seems to have three questions.** Nothing requires it, but the videos so far all
+  landed there, so it reads as a rule. The number of questions should follow the plan.
+- **A mark has no words.** You draw on the frame, then go to the comment box and type what you
+  meant. The drawing and its meaning end up in two places.
+- **The diagrams got too dense.** The resolved-plan frame showed the whole pipeline at once, and
+  the reviewer could not follow it. A video that the viewer cannot follow is no better than text.
+- **The review asks only what text could ask.** A video knows where you paused, rewound or slowed
+  down. None of that reaches the agent.
+
+## Steps
+
+### Step 1 — Questions with up to four options
+
+A decision beat can carry two, three or four options: `- option_a:` to `- option_d:` in the
+storyboard, each with its `why_`, and one branch beat per option. The player lays the option cards
+out in a grid that fits four without shrinking the text. `plan-map.json`, `resolve-plan` and the
+ledger already store options as a list; they are checked with four. The style guide says when a
+third or fourth option earns its place: when it is a real alternative someone would argue for,
+not a variation of another option.
+
+### Step 2 — Pick-all-that-apply questions
+
+A decision beat can be `- kind: multi`: the reviewer ticks any number of options and confirms. The
+ledger records the set; `resolve-plan` lists every picked option under its step. How the video
+plays after a multi-select answer is the open question below.
+
+### Step 3 — As many questions as the plan needs
+
+The style guide drops its implicit "about three". A plan asks every question it genuinely leaves
+open. The budget moves from the whole video to the part: at most one decision per part of about a
+minute, so a plan with five open questions becomes five parts, not a crammed three. `reel check`
+warns when a plan has more than six open questions, because a plan that open is not ready to review.
+
+### Step 4 — Type on the mark
+
+When you finish a mark (a freehand stroke, an arrow or a box), a small text box opens right beside
+it on the video, and the video stays paused. Type and press Enter: the words are saved as that
+mark's comment, anchored to the same moment and plan step. Escape leaves the mark without words,
+as today. The comment appears in the record under the mark, as now.
+
+### Step 5 — Diagrams a newcomer can follow
+
+The stage gets a density rule, enforced by the frame lint rather than just asked for: at most six
+parts on screen at once, one new thing per beat, and every part named in words a newcomer knows (its
+glossary line, not its script name). The resolved-plan ending shows the steps and the choices, not
+the whole pipeline; the full diagram stays in the system video, where there is time to build it up.
+The design critique loop gains a check: can someone new to the repo say what each box on screen
+does?
+
+### Step 6 — Feedback only a video can give
+
+The player already records where you paused, rewound and changed speed. The review sends a summary
+of that to the agent: the moments you went back to or slowed down on are marked in the resolved plan
+as "hard to follow here", attached to their step. Those moments are signals, not comments, and the
+agent treats them as prompts to explain a step more plainly.
+
+## Components touched
+
+- **The review player** — option grids, multi-select, the text box on a mark, the watch summary
+- **The plan-to-video skill** — the style guide's question rules and density rule
+- **resolve-plan** — multi-select answers, "hard to follow here" moments
+- **The reel CLI** — `check` warns past six open questions
+
+## Open questions for the reviewer
+
+1. **After a pick-all-that-apply answer, what does the video play?** (step 2)
+- **A · Every picked option's branch, one after another.** You see the consequence of each
+  pick. Costs watch time that grows with every tick.
+- **B · One summary frame of the picks, then on.** Short and always the same length. Costs seeing
+  what each pick means in the plan.
+- **C · Multi-select only on questions that have no branches.** Simplest to build and to watch.
+  Costs the richer questions that need branches.
+I recommend B: a pick-all answer is usually about scope, and a list of what is in scope is what
+the reviewer needs to see.
+
+2. **Which video-only feedback comes first?** (step 6)
+- **A · The rewind and slow-down moments, sent automatically.** No extra effort from the reviewer.
+  Costs precision: a rewind can mean "interesting" as well as "lost me".
+- **B · A one-tap "lost me here" button.** Clear intent. Costs a button the reviewer has to remember
+  to press (the old "Wait, what?" button was dropped for being unused).
+- **C · Both.** The most signal. Costs the most to build and to read.
+I recommend A: it asks nothing of the reviewer, and step 6 already treats the moments as prompts,
+not verdicts.
+
+## Not in this plan
+
+Voice notes as comments. Several reviewers on one video. Anything in the close-the-lifecycle plan
+(implementing, walkthroughs, the system video).

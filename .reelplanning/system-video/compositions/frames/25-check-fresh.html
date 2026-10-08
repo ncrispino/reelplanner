@@ -1,0 +1,84 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .q3-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .q3-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .q3-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .q3-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .q3-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .q3-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .q3-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .q3-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .q3-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .q3-ul.ink { background:var(--rp-ink); height:3px; }
+  .q3-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .q3-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .q3-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .q3-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .q3-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .q3-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .q3-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .q3-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .q3-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .q3-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .q3-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .q3-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .q3-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .q3-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+.q3-sc { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:3px solid rgba(var(--rp-ink-rgb),0.28); }
+  .q3-sl { position:absolute; font:500 36px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .q3-ph { position:absolute; font:400 72px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .q3-rg { position:absolute; box-sizing:border-box; border:6px solid var(--rp-coral); border-radius:12px; }
+  .q3-say { position:absolute; box-sizing:border-box; padding:20px 30px; border-radius:14px; background:var(--rp-ink); color:var(--rp-on-ink); font:400 48px/1.1 "Inter"; white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="25-check-fresh" data-band="bottom" data-duration="9.141" data-width="1920" data-height="1080">
+
+  <div class="clip q3-bg" id="q3-bg" data-start="0" data-duration="9.141" data-track-index="0"></div>
+
+  <div class="clip q3-scene" id="q3-scene" data-start="0" data-duration="9.141" data-track-index="1">
+    <div class="q3-view" id="q3-view"><div class="q3-cam" id="q3-cam"><div id="q3-case">
+    <div class="q3-sc" id="q3-sc" style="left:100px; top:120px; width:1000px; height:340px"></div>
+    <div class="q3-sl" id="q3-sl" style="left:140px; top:150px">another plan's video</div>
+    <div class="q3-ph" id="q3-ph" style="left:180px; top:270px">the stage map</div>
+    <div class="q3-rg" id="q3-rg" style="left:160px; top:250px; width:520px; height:110px"></div>
+    <div class="q3-say" id="q3-say" style="left:1200px; top:230px">the author: “it's clear”</div>
+    </div></div></div>
+    <div class="q3-q" id="q3-q" data-question style="left:180px; top:300px; width:1560px">In another plan's video, fresh eyes flag the phrase “stage map”, and its author thinks it's clear. What happens before the review page opens?</div>
+    <div class="q3-opt" id="q3-opt-a" data-option="a" style="left:180px; top:480px; width:500px; height:280px"><span class="k">A</span><span class="l">Nothing: it opens as it is</span></div>
+    <div class="q3-opt" id="q3-opt-b" data-option="b" style="left:710px; top:480px; width:500px; height:280px"><span class="k">B</span><span class="l">The author answers it: fixed, a meaning, or kept with the reason</span></div>
+    <div class="q3-opt" id="q3-opt-c" data-option="c" style="left:1240px; top:480px; width:500px; height:280px"><span class="k">C</span><span class="l">The build waits for you to decide</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "25-check-fresh";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#q3-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#q3-case", { opacity: 1, transformOrigin: "0 0" });
+  tl.to("#q3-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#q3-case", { scale: 0.6, x: 40, y: 0, opacity: 0.92, duration: 1, ease: "power3.inOut" }, 1);
+  gsap.set("#q3-q", { opacity: 0, x: -24 });
+  tl.to("#q3-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.1);
+  gsap.set("#q3-opt-a", { opacity: 0, y: 28 });
+  tl.to("#q3-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 7.12);
+  gsap.set("#q3-opt-b", { opacity: 0, y: 28 });
+  tl.to("#q3-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 7.24);
+  gsap.set("#q3-opt-c", { opacity: 0, y: 28 });
+  tl.to("#q3-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 7.36);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

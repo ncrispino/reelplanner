@@ -1,0 +1,235 @@
+{
+  "name": "bob-dylan-site",
+  "kind": "greenfield",
+  "components": [
+    {
+      "id": "content",
+      "name": "Content",
+      "kind": "store",
+      "files": [
+        "content/"
+      ],
+      "aliases": [
+        "content model",
+        "records",
+        "YAML"
+      ],
+      "stage": {
+        "x": 700,
+        "y": 430,
+        "w": 270,
+        "h": 110,
+        "navy": true
+      },
+      "role": "chain"
+    },
+    {
+      "id": "build",
+      "name": "Data build",
+      "kind": "build",
+      "files": [
+        "scripts/build-data.ts"
+      ],
+      "aliases": [
+        "site.json",
+        "data build"
+      ],
+      "stage": {
+        "x": 1030,
+        "y": 430,
+        "w": 270,
+        "h": 110
+      },
+      "role": "chain"
+    },
+    {
+      "id": "generator",
+      "name": "Generator",
+      "kind": "build",
+      "files": [
+        "src/pages/",
+        "astro.config.mjs"
+      ],
+      "aliases": [
+        "site generator",
+        "Astro",
+        "templates"
+      ],
+      "stage": {
+        "x": 1360,
+        "y": 230,
+        "w": 280,
+        "h": 150
+      },
+      "role": "chain"
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "kind": "page",
+      "files": [
+        "src/search/"
+      ],
+      "aliases": [
+        "search index"
+      ],
+      "stage": {
+        "x": 1360,
+        "y": 590,
+        "w": 280,
+        "h": 110
+      },
+      "role": "property"
+    },
+    {
+      "id": "hosting",
+      "name": "Hosting",
+      "kind": "external",
+      "files": [
+        ".github/workflows/deploy.yml"
+      ],
+      "aliases": [
+        "deploy",
+        "CDN"
+      ],
+      "stage": {
+        "x": 1680,
+        "y": 230,
+        "w": 180,
+        "h": 150
+      },
+      "role": "property"
+    },
+    {
+      "id": "design",
+      "name": "Design",
+      "kind": "page",
+      "files": [
+        "src/styles/",
+        "src/layouts/"
+      ],
+      "aliases": [
+        "design system",
+        "layouts"
+      ],
+      "stage": {
+        "x": 1680,
+        "y": 590,
+        "w": 180,
+        "h": 110
+      },
+      "role": "property"
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "publish",
+      "name": "From a YAML file to a live page",
+      "edges": [
+        "content-build",
+        "build-generator",
+        "generator-hosting"
+      ]
+    },
+    {
+      "id": "search",
+      "name": "A search on the site",
+      "edges": [
+        "build-search",
+        "search-generator"
+      ]
+    }
+  ],
+  "stage": {
+    "kind": "pipeline",
+    "why": "This plan produces a static site: content files go through one build and come out as pages. Nothing here exchanges data at runtime, so a node graph with edges would assert something false. The stage reads left to right and ends in the real pages, because pages are what the plan makes. (style guide \u00a718)",
+    "chain": [
+      {
+        "id": "sources",
+        "label": "Content files",
+        "shows": [
+          "albums/",
+          "songs/",
+          "events/",
+          "search.json"
+        ]
+      },
+      {
+        "id": "build",
+        "label": "Build",
+        "shows": [
+          "site.json"
+        ]
+      },
+      {
+        "id": "pages",
+        "label": "Pages",
+        "shows": [
+          "era",
+          "album",
+          "song"
+        ]
+      }
+    ],
+    "properties": [
+      {
+        "id": "design",
+        "of": "pages",
+        "shows": "the pages restyle (serif headings, looser leading)"
+      },
+      {
+        "id": "search",
+        "of": "pages",
+        "shows": "search.json joins the sources; a search field appears on the song page"
+      },
+      {
+        "id": "hosting",
+        "of": "pages",
+        "shows": "a host bar above the pages"
+      }
+    ],
+    "rail": {
+      "x": 80,
+      "y": 150,
+      "w": 500,
+      "slotH": 90,
+      "gap": 20,
+      "slots": 6
+    }
+  },
+  "edges_retired": {
+    "why": "design\u2192generator and search\u2192generator were build-time relationships drawn as dataflow. Replaced by stage.chain (\u00a718).",
+    "was": [
+      {
+        "from": "content",
+        "to": "build",
+        "path": "M970 485 L1030 485"
+      },
+      {
+        "from": "build",
+        "to": "generator",
+        "path": "M1300 460 L1330 460 L1330 305 L1360 305"
+      },
+      {
+        "from": "build",
+        "to": "search",
+        "path": "M1300 510 L1330 510 L1330 645 L1360 645"
+      },
+      {
+        "from": "generator",
+        "to": "hosting",
+        "path": "M1640 305 L1680 305"
+      },
+      {
+        "from": "design",
+        "to": "generator",
+        "path": "M1770 590 L1770 450 L1600 450 L1600 380"
+      },
+      {
+        "from": "search",
+        "to": "generator",
+        "path": "M1500 590 L1500 380"
+      }
+    ]
+  }
+}

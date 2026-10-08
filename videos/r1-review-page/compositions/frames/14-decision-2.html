@@ -1,0 +1,85 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f14-decision-2-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f14-decision-2-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  /* ---- rail: GONE (§18 v9). This beat is a decision and its kicker already names the step, so
+     the two option mocks take the whole subject band, 160..1880, at 780 wide apiece. ---- */
+  .f14-decision-2-q { position:absolute; left:160px; top:180px; width:1500px; font:400 52px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); opacity:0; }
+
+  /* ---- the two options: each a mini wireframe of the layout that option produces ---- */
+  .f14-decision-2-opt { position:absolute; top:330px; width:780px; height:460px; border-radius:8px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); opacity:0;
+    box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f14-decision-2-opt .k { position:absolute; left:0; top:-46px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f14-decision-2-opt .l { position:absolute; left:0; top:476px; width:780px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); }
+  .f14-decision-2-opt .c { position:absolute; left:0; top:514px; width:780px; font:400 26px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f14-decision-2-vid { position:absolute; border-radius:4px; background:var(--rp-data); }
+  .f14-decision-2-vid span { position:absolute; left:14px; top:14px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+  .f14-decision-2-sheet { position:absolute; border-radius:4px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .f14-decision-2-sheet span { position:absolute; left:14px; top:14px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+  .f14-decision-2-sheet i { position:absolute; left:14px; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.16); }
+
+  /* the frame's ONE coral: the recommended card's border */
+  .f14-decision-2-rec { position:absolute; left:-3px; top:-3px; width:786px; height:466px; border-radius:9px; border:3px solid var(--rp-coral); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="14-decision-2" data-duration="17.225" data-width="1920" data-height="1080">
+  <div class="f14-decision-2-bg"></div>
+  <div class="f14-decision-2-kicker" id="f14-decision-2-kicker">✱ Your call · step 4</div>
+
+  <div class="f14-decision-2-q" id="f14-decision-2-q">Where do comments live?</div>
+
+  <!-- A · under the video, in the main column: the composer is a strip below the frame -->
+  <div class="f14-decision-2-opt" id="f14-decision-2-opt-a" data-plan-option="a" style="left:160px">
+    <span class="k">A</span>
+    <i class="f14-decision-2-vid" style="left:20px;top:20px;width:740px;height:240px"><span>The video</span></i>
+    <i class="f14-decision-2-sheet" style="left:20px;top:272px;width:740px;height:168px"><span>Composer</span><i style="top:62px;width:560px"></i><i style="top:88px;width:480px"></i></i>
+    <i class="f14-decision-2-rec" id="f14-decision-2-rec"></i>
+    <span class="l">Under the video</span>
+    <span class="c">-40 px of video</span>
+  </div>
+
+  <!-- B · in the rail, at the top: the composer sits in the side column -->
+  <div class="f14-decision-2-opt" id="f14-decision-2-opt-b" data-plan-option="b" style="left:1100px">
+    <span class="k">B</span>
+    <i class="f14-decision-2-vid" style="left:20px;top:20px;width:480px;height:420px"><span>The video</span></i>
+    <i class="f14-decision-2-sheet" style="left:516px;top:20px;width:244px;height:200px"><span>Composer</span><i style="top:62px;width:180px"></i><i style="top:88px;width:150px"></i></i>
+    <i class="f14-decision-2-sheet" style="left:516px;top:236px;width:244px;height:204px"><span>Comments</span></i>
+    <span class="l">In the rail, at the top</span>
+    <span class="c">below the fold at 430 px</span>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 16.725, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f14-decision-2-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.054);
+
+  // "where do comments live?"
+  tl.fromTo("#f14-decision-2-q", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55, ease: E }, 0.13);
+
+  // each option arrives on the letter that names it
+  tl.fromTo("#f14-decision-2-opt-a", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 1.62);
+  tl.fromTo("#f14-decision-2-opt-b", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 8.858);
+
+  // "I recommend A" — the one coral, and the only signal
+  tl.fromTo("#f14-decision-2-rec", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: E }, 14.748);
+
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["14-decision-2"] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,288 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #141413;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* full-bleed cream ground — its own clip, never the root */
+    #f01-hook-ground {
+      position: absolute;
+      inset: 0;
+      background: #FAF9F5;
+    }
+
+    #f01-hook-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ── kicker-spike ─────────────────────────────────────────── */
+    #f01-hook-kicker {
+      position: absolute;
+      left: 80px;
+      top: 80px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: #141413;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+    #f01-hook-kicker .f01-hook-spike {
+      color: #CC785C;
+      margin-right: 0.45em;
+    }
+
+    /* ── tile panel holding the two bars ──────────────────────── */
+    #f01-hook-panel {
+      position: absolute;
+      left: 80px;
+      top: 340px;
+      width: 1200px;
+      height: 280px;
+      background: #EFE9DE;
+      border: 1px solid rgba(20, 20, 19, 0.12);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(20, 20, 19, 0.08), 0 4px 16px rgba(20, 20, 19, 0.04);
+      will-change: transform, opacity;
+    }
+
+    .f01-hook-row {
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      will-change: transform, opacity;
+    }
+    #f01-hook-row1 { top: 62px; }
+    #f01-hook-row2 { top: 170px; }
+
+    .f01-hook-tag {
+      position: relative;
+      width: 210px;
+      flex: 0 0 210px;
+      height: 32px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 32px;
+      color: rgba(20, 20, 19, 0.62);
+      white-space: nowrap;
+    }
+    .f01-hook-tag span {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .f01-hook-track {
+      position: relative;
+      flex: 1 1 auto;
+      height: 10px;
+      background: #ECE3D4;
+      border: 1px solid rgba(20, 20, 19, 0.2);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .f01-hook-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #141413;
+      border-radius: 9999px;
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .f01-hook-pct {
+      flex: 0 0 130px;
+      width: 130px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      color: #141413;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* ── number-lockup payoff: serif figure + mono unit ─────────── */
+    #f01-hook-lockup {
+      position: absolute;
+      left: 1340px;
+      top: 340px;
+      width: 500px;
+      height: 280px;
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 22px;
+      padding-top: 56px;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+      white-space: nowrap;
+    }
+    #f01-hook-lockup-spike {
+      font-family: "EB Garamond", Georgia, serif;
+      font-size: 60px;
+      line-height: 1;
+      color: #CC785C;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+      align-self: center;
+    }
+    #f01-hook-figure {
+      font-family: "EB Garamond", Georgia, serif;
+      font-size: 180px;
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      color: #141413;
+    }
+    #f01-hook-unit {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      color: #141413;
+      padding-bottom: 8px;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-hook" data-width="1920" data-height="1080" data-duration="9.097">
+    <div id="f01-hook-ground" class="clip" data-start="0" data-duration="9.097" data-track-index="0"></div>
+
+    <div id="f01-hook-stage" class="clip" data-start="0" data-duration="9.097" data-track-index="1">
+      <div id="f01-hook-kicker"><span class="f01-hook-spike">&#x2731;</span>Upload &middot; 2 GB</div>
+
+      <div id="f01-hook-panel">
+        <div class="f01-hook-row" id="f01-hook-row1">
+          <div class="f01-hook-tag"><span>Attempt 1</span></div>
+          <div class="f01-hook-track"><div class="f01-hook-fill" id="f01-hook-fill1"></div></div>
+          <div class="f01-hook-pct" id="f01-hook-pct1">0%</div>
+        </div>
+        <div class="f01-hook-row" id="f01-hook-row2">
+          <div class="f01-hook-tag">
+            <span id="f01-hook-tag2a">Attempt 2</span>
+            <span id="f01-hook-tag2b">Retry</span>
+          </div>
+          <div class="f01-hook-track"><div class="f01-hook-fill" id="f01-hook-fill2"></div></div>
+          <div class="f01-hook-pct" id="f01-hook-pct2">0%</div>
+        </div>
+      </div>
+
+      <div id="f01-hook-lockup">
+        <span id="f01-hook-lockup-spike">&#x2731;</span>
+        <span id="f01-hook-figure">&times;2</span>
+        <span id="f01-hook-unit">billed</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var DUR = 8.597;
+      var pct1 = document.getElementById("f01-hook-pct1");
+      var pct2 = document.getElementById("f01-hook-pct2");
+      var c1 = { v: 0 };
+      var c2 = { v: 0 };
+      var last1 = -1, last2 = -1;
+      function paint() {
+        var a = Math.round(c1.v);
+        var b = Math.round(c2.v);
+        if (a !== last1) { last1 = a; pct1.textContent = a + "%"; }
+        if (b !== last2) { last2 = b; pct2.textContent = b + "%"; }
+      }
+
+      var tl = gsap.timeline({ paused: true, onUpdate: paint });
+
+      /* ── Scene 1 (0.0–2.4s): kicker + panel land, bar 1 climbs to 90% ── */
+      tl.fromTo("#f01-hook-kicker",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo("#f01-hook-panel",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.1);
+      tl.fromTo("#f01-hook-row1",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.2);
+
+      /* progress fill (scaleX from a left origin) + the ticking mono figure share ease + window */
+      tl.fromTo("#f01-hook-fill1",
+        { scaleX: 0 },
+        { scaleX: 0.9, duration: 1.9, ease: "power2.out" }, 0.3);
+      tl.to(c1, { v: 90, duration: 1.9, ease: "power2.out", onUpdate: paint }, 0.3);
+
+      /* ── Scene 2 (2.4–4.6s): hard snap to 0%, second bar slides in beneath ── */
+      tl.to("#f01-hook-fill1", { scaleX: 0, duration: 0.04, ease: "none" }, 2.52);
+      tl.to(c1, { v: 0, duration: 0.04, ease: "none", onUpdate: paint }, 2.52);
+
+      /* restart from zero: bar 1 crawls back up for the rest of the shot */
+      tl.to("#f01-hook-fill1", { scaleX: 0.5, duration: 5.5, ease: "none" }, 3.0);
+      tl.to(c1, { v: 50, duration: 5.5, ease: "none", onUpdate: paint }, 3.0);
+
+      tl.fromTo("#f01-hook-row2",
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.9);
+      tl.fromTo("#f01-hook-fill2",
+        { scaleX: 0 },
+        { scaleX: 0.16, duration: 1.55, ease: "none" }, 3.2);
+      tl.to(c2, { v: 16, duration: 1.55, ease: "none", onUpdate: paint }, 3.2);
+
+      /* ── Scene 3 (4.6–7.0s): the retry races, then "×2 billed" pops on "twice" ── */
+      tl.fromTo("#f01-hook-tag2b", { opacity: 0 }, { opacity: 0, duration: 0.001 }, 0);
+      tl.set("#f01-hook-tag2a", { opacity: 0 }, 4.75);
+      tl.set("#f01-hook-tag2b", { opacity: 1 }, 4.75);
+      tl.to("#f01-hook-fill2", { scaleX: 0.62, duration: 3.75, ease: "none" }, 4.75);
+      tl.to(c2, { v: 62, duration: 3.75, ease: "none", onUpdate: paint }, 4.75);
+
+      /* spring-pop-entrance: smooth power3 long-tail settle, no overshoot */
+      tl.fromTo("#f01-hook-lockup",
+        { scale: 0, opacity: 0, y: 12 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 6.35);
+      /* spike-mark: fades + scales 0.92→1 on the one emphasis beat */
+      tl.fromTo("#f01-hook-lockup-spike",
+        { opacity: 0, scale: 0.92 },
+        { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 6.55);
+
+      /* hold through DUR (bars keep crawling underneath) */
+      tl.set({}, {}, DUR);
+
+      paint();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["01-hook"] = tl;
+    })();
+  </script>
+</template>

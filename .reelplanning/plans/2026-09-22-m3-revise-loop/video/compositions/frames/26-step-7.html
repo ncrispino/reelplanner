@@ -1,0 +1,151 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f26-step-7-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f26-step-7-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f26-step-7-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f26-step-7-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f26-step-7-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f26-step-7-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f26-step-7-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-slot:not([data-filled]) .n, .f26-step-7-slot:not([data-filled]) .t { opacity:0; }
+  .f26-step-7-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f26-step-7-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f26-step-7-slot.dec .n { top:13px; } .f26-step-7-slot.dec .t { top:12px; } .f26-step-7-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f26-step-7-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f26-step-7-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f26-step-7-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f26-step-7-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f26-step-7-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f26-step-7-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f26-step-7-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f26-step-7-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f26-step-7-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f26-step-7-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f26-step-7-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f26-step-7-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f26-step-7-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f26-step-7-chip.lit { color:var(--rp-coral-deep); }
+  .f26-step-7-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f26-step-7-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f26-step-7-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f26-step-7-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f26-step-7-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f26-step-7-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f26-step-7-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f26-step-7-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f26-step-7-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f26-step-7-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f26-step-7-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f26-step-7-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f26-step-7-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f26-step-7-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f26-step-7-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f26-step-7-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f26-step-7-row { position:absolute; left:30px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f26-step-7-o { position:absolute; left:30px; width:840px; height:48px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f26-step-7-o .k { position:absolute; left:16px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f26-step-7-o .v { position:absolute; left:60px; top:8px; font:500 30px/1.1 "Inter"; color:var(--rp-ink); }
+  .f26-step-7-o .tg { position:absolute; right:16px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f26-step-7-box { position:absolute; border-radius:10px; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f26-step-7-mark { position:absolute; width:16px; height:40px; border-radius:3px; background:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="26-step-7" data-duration="21.7" data-width="1920" data-height="1080">
+
+  <div class="clip f26-step-7-bg" data-start="0" data-duration="21.7" data-track-index="0"></div>
+
+  <div class="clip f26-step-7-scene" id="f26-step-7-scene" data-start="0" data-duration="21.7" data-track-index="1">
+  <div class="f26-step-7-kicker" id="f26-step-7-kicker">Step 7 · More quick checks</div>
+  <div class="f26-step-7-spine" id="f26-step-7-spine">
+    <div class="f26-step-7-tick" id="f26-step-7-tick-6" data-plan-step="6" style="top:35px"></div>
+    <div class="f26-step-7-tick" id="f26-step-7-tick-7" data-plan-step="7" style="top:145px"></div>
+    <div class="f26-step-7-tick" id="f26-step-7-tick-8" data-plan-step="8" style="top:255px"></div>
+    <div class="f26-step-7-tick" id="f26-step-7-tick-9" data-plan-step="9" style="top:365px"></div>
+    <div class="f26-step-7-tick" id="f26-step-7-tick-10" data-plan-step="10" style="top:475px"></div>
+  </div>
+  <div class="f26-step-7-sheet" id="f26-step-7-sheet" style="left:200px; top:150px; width:900px; height:400px">
+    <div class="f26-step-7-mono grey" style="left:30px; top:30px">Quick check · step 3</div>
+    <div class="f26-step-7-row" style="top:80px">You press Send twice.</div>
+    <div class="f26-step-7-row" style="top:126px">How many runs start?</div>
+    <div class="f26-step-7-o" id="f26-step-7-oa" style="top:200px"><span class="k">A</span><span class="v">2</span><span class="tg" id="f26-step-7-mine">your answer</span></div>
+    <div class="f26-step-7-o" id="f26-step-7-ob" style="top:262px"><span class="k">B</span><span class="v">1</span><span class="tg" id="f26-step-7-right">the answer</span></div>
+    <div class="f26-step-7-o" style="top:324px"><span class="k">C</span><span class="v">None</span></div>
+  </div>
+  <div class="f26-step-7-box" id="f26-step-7-box" style="left:200px; top:590px; width:900px; height:160px">
+    <div class="f26-step-7-mono grey" style="left:30px; top:28px">Expected something else? Say how it should work</div>
+    <div class="f26-step-7-row" id="f26-step-7-typed" style="top:84px; font-size:30px">A second Send should say: already sent</div>
+  </div>
+  <div class="f26-step-7-mono grey" id="f26-step-7-wl" style="left:1180px; top:170px">6-min walkthrough</div>
+  <div id="f26-step-7-strip" style="position:absolute; left:1180px; top:240px; width:640px; height:3px; background:rgba(var(--rp-ink-rgb),0.25)"></div>
+  <div class="f26-step-7-mark" id="f26-step-7-m1" style="left:1380px; top:222px"></div>
+  <div class="f26-step-7-mark" id="f26-step-7-m2" style="left:1620px; top:222px"></div>
+  <div class="f26-step-7-chip" id="f26-step-7-two" style="left:1180px; top:290px">2 quick checks</div>
+  <div class="f26-step-7-chip grey" id="f26-step-7-kind" style="left:1180px; top:430px">this step: how many, what kind</div>
+  <svg class="f26-step-7-edges" id="f26-step-7-edges" viewBox="0 0 1920 1080">
+    <path id="f26-step-7-e" d="M1100 670 L1166 670" /><path class="head" id="f26-step-7-eh" d="M1180 670 L1167 660.9 L1167 679.1 Z" />
+  </svg>
+  <div class="f26-step-7-chip lit" id="f26-step-7-cmt" style="left:1196px; top:654px">a comment on step 3 → the agent</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "26-step-7";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f26-step-7-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f26-step-7-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f26-step-7-slot-" + n + " .n, #f26-step-7-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f26-step-7-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f26-step-7-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  tickOn(tl, 7, 0.1);
+  pop(tl, $("sheet"), 1.83, 12);
+  gsap.set([$("mine"), $("right")], { opacity: 0 });
+  tl.to($("mine"), { opacity: 1, duration: 0.35 }, 5.58);
+  tl.to($("right"), { opacity: 1, duration: 0.35 }, 5.88);
+  tl.to($("oa"), { borderColor: INK, duration: 0.3 }, 5.58);
+  pop(tl, $("wl"), 9.56, 6);
+  tl.fromTo($("strip"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 9.66);
+  pop(tl, $("m1"), 10.28, 6); pop(tl, $("m2"), 10.43, 6);
+  pop(tl, $("two"), 10.54, 8);
+  pop(tl, $("box"), 12.03, 12);
+  gsap.set($("typed"), { opacity: 0 });
+  tl.to($("typed"), { opacity: 1, duration: 0.5 }, 12.39);
+  gsap.set($("eh"), { opacity: 0 });
+  tl.set($("e"), { opacity: 1 }, 15.28); draw(tl, "e", 15.28, 0.3); tl.to($("eh"), { opacity: 1, duration: 0.1 }, 15.53);
+  pop(tl, $("cmt"), 15.48, 8);
+  pop(tl, $("kind"), 18.74, 8);
+  tickDone(tl, 7, 15.48);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.199);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

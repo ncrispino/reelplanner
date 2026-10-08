@@ -1,0 +1,125 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f38-ran-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f38-ran-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f38-ran-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-chip { position:absolute; font:500 26px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 10px; margin-left:-10px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f38-ran-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f38-ran-chip.big { font:500 32px/1.2 "Inter"; border:2px solid var(--rp-ink); padding:14px 20px; }
+  .f38-ran-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-quote { position:absolute; font:italic 400 66px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f38-ran-q { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f38-ran-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f38-ran-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f38-ran-tick.ink { background:var(--rp-ink); border-color:var(--rp-ink); }
+  .f38-ran-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f38-ran-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f38-ran-slot.live { outline-color:var(--rp-coral); }
+  .f38-ran-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f38-ran-slot .t { position:absolute; left:76px; top:14px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-slot .d { position:absolute; left:76px; top:54px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-slot.plain .t { top:27px; }
+  .f38-ran-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); padding:24px 28px; }
+  .f38-ran-card.chose { border:2px solid var(--rp-ink); }
+  .f38-ran-card.instead { border:1px solid rgba(var(--rp-ink-rgb),0.25); }
+  .f38-ran-card .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f38-ran-card .l { display:block; margin-top:18px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f38-ran-card.instead .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f38-ran-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f38-ran-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f38-ran-opt .l { position:absolute; left:28px; top:70px; right:24px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f38-ran-shot { position:absolute; border-radius:10px; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.06); background:var(--rp-paper); }
+  .f38-ran-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .f38-ran-hl { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .f38-ran-panel { position:absolute; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:var(--rp-paper); }
+  .f38-ran-panel .plab { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f38-ran-pcard { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f38-ran-pcard .k { position:absolute; left:24px; top:22px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f38-ran-hitbox { position:absolute; box-sizing:border-box; border-radius:16px; border:3px dashed rgba(var(--rp-ink-rgb),0.55); }
+  .f38-ran-hitbox.ring { border:5px solid var(--rp-coral); }
+  .f38-ran-row { position:absolute; box-sizing:border-box; height:96px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f38-ran-row .n { position:absolute; left:28px; top:32px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f38-ran-row .t { position:absolute; left:90px; top:32px; font:500 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-row .t.nonum { left:32px; }
+  .f38-ran-row .v { position:absolute; right:30px; top:34px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-row.dim .t, .f38-ran-row.dim .n { color:rgba(var(--rp-ink-rgb),0.5); }
+  .f38-ran-mini { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.15); }
+  .f38-ran-mini.gap { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f38-ran-mini .k { position:absolute; left:20px; top:18px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f38-ran-fig { position:absolute; font:400 200px/0.95 "EB Garamond"; letter-spacing:-0.025em; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-unit { position:absolute; font:500 48px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-lab { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-rule { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.2); transform-origin:0 50%; }
+  .f38-ran-coralrule { position:absolute; height:3px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f38-ran-frame { position:absolute; box-sizing:border-box; border-radius:10px; border:2px solid rgba(var(--rp-ink-rgb),0.45); background:var(--rp-paper); }
+  .f38-ran-block { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f38-ran-eighth { position:absolute; box-sizing:border-box; border:2px dashed rgba(var(--rp-ink-rgb),0.45); border-radius:0 0 8px 8px; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f38-ran-eighth span { position:absolute; left:24px; top:14px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-code { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); padding:18px 24px; font:500 28px/1.2 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f38-ran-track { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f38-ran-marker { position:absolute; width:28px; height:28px; border-radius:50%; background:var(--rp-ink); }
+  .f38-ran-arrow { position:absolute; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-vtile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f38-ran-vtile .t { position:absolute; left:30px; top:36px; font:400 48px/1.05 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-vtile .d { position:absolute; left:30px; top:120px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-tally { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f38-ran-tally .n { position:absolute; left:34px; top:40px; font:400 96px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-tally .l { position:absolute; left:34px; top:170px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-ls { position:absolute; box-sizing:border-box; height:92px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f38-ran-ls .n { position:absolute; left:30px; top:32px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f38-ran-ls .t { position:absolute; left:96px; top:26px; font:500 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f38-ran-ls .d { position:absolute; right:30px; top:32px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f38-ran-ls .c { position:absolute; right:190px; top:32px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="38-ran" data-band="bottom" data-duration="9.716" data-width="1920" data-height="1080">
+
+  <div class="clip f38-ran-bg" id="f38-ran-bg" data-start="0" data-duration="9.72" data-track-index="0"></div>
+
+  <div class="clip f38-ran-scene" id="f38-ran-scene" data-start="0" data-duration="9.72" data-track-index="1">
+  <div class="f38-ran-kicker" id="f38-ran-kicker">What ran · what is not done</div>
+  <div class="f38-ran-spine" id="f38-ran-spine"><div class="f38-ran-tick" id="f38-ran-tick-1" data-plan-step="1" style="top:35px"></div><div class="f38-ran-tick" id="f38-ran-tick-2" data-plan-step="2" style="top:145px"></div><div class="f38-ran-tick" id="f38-ran-tick-3" data-plan-step="3" style="top:255px"></div><div class="f38-ran-tick ink" id="f38-ran-tick-4" data-plan-step="4" style="top:365px"></div><div class="f38-ran-tick" id="f38-ran-tick-5" data-plan-step="5" style="top:475px"></div></div>
+  <div class="f38-ran-tally" id="f38-ran-t0" style="left:200px; top:250px; width:520px; height:240px"><span class="n">1480</span><span class="l">checks · npm test</span></div>
+  <div class="f38-ran-tally" id="f38-ran-t1" style="left:760px; top:250px; width:520px; height:240px"><span class="n">0 ✗</span><span class="l">code check</span></div>
+  <div class="f38-ran-tally" id="f38-ran-t2" style="left:1320px; top:250px; width:520px; height:240px"><span class="n">1</span><span class="l">not done · hosted send</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "38-ran";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f38-ran-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+  // the capture that matches the video's theme: dark when the ink is light
+  var dark = parseInt(String(__RP["ink-rgb"] || "0"), 10) > 128;
+  [].forEach(function (s) { var l = $(s + "-l"), d = $(s + "-d"); if (l) l.style.display = dark ? "none" : "block"; if (d) d.style.display = dark ? "block" : "none"; });
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 8);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("t0"), 1.70, 10);
+  pop(tl, $("t1"), 5.17, 10);
+  pop(tl, $("t2"), 6.36, 10);
+  lit(tl, $("t1"), 5.47);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 9.070);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

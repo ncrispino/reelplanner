@@ -1,0 +1,34 @@
+# Fresh eyes: designer · round 2 · stamp 68d56f018b08
+
+- G1 · scene 12 · "reel status · walkthroughs: still accepted without a look": the screenshot text is about 10px, so the demo frame the scene is about is hard to read (rule 6); enlarge the crop to just the bar, the question and the grey lines
+  - Answer: kept: the crop keeps the part of the older frame with the two faults frame-lint finds, each ringed and named (as in earlier rounds)
+- G2 · scene 12 · "you approve, or not": the pill is cut off at the right edge of the screenshot, and it is itself the rule 4 break (a question that doesn't say what you decide) yet carries no annotation, while rules 1 and 5 do (rules 4, 7); show it whole, or drop it from the crop
+  - Answer: kept: only the two faults frame-lint can see are marked, the scene's point; a rule 4 fault is one a person sees (as in earlier rounds)
+- G3 · scene 14 · "a part of the guide, over the frame": the label sits on the top edge of the left screenshot, not on the guide part it names (rule 3); the details table inside is unreadable (rule 6). Put the label on the panel, and crop to the panel at a readable size
+  - Answer: kept: the tag sits above the page that grows over the frame, clear of its words, and the camera is on that page as it is said
+- G4 · scene 14 · "Open chip": two small screenshots with wide empty bands above and below, so the frame is unbalanced and there's no focal point (rules 6, 7); make the screenshots larger, or show one at a time in the order the narration says
+  - Answer: kept: the camera moves across the four screens one at a time, in the narration's order; the picture is the last moment, pulled back over all of them
+- G5 · scene 14 · "Press L, and the plan text ... sits beside the video": the opening sentence has nothing on screen. The two shots show the guide part and the Open tab, and no plan text beside the video (rule 2); show the L view first, or mark it
+  - Answer: kept: the plan text is the first screen, with "plan text" pinned on it as it is said
+- G6 · scene 37 · "no kind of explainer: your question, your sources": this white annotation is set on the same line as the command, right after "--slug after-send", so it reads as part of the command (rules 5, 3); move it above or beside the block
+  - Answer: fixed: the note is now a light label on the dark terminal (the theme's slab label), set apart from the command's text
+- G7 · scene 37 · "needs a guide part": orphan wrapped lines under the "sequence" and "review.mjs" rows; the code text is small, and there are three sizes and styles mixed (rule 6, 7); keep one row per source, and shorten the lines
+  - Answer: kept: it is the real run, its lines as printed, wrapped where the terminal wraps them
+- G8 · scene 37 · "files", "sequence", "table", "text": the underlined shape words are the point of the narration but are the same size as the rest of the terminal text (rules 6, 7); make them the focal point, for example by larger type or a legend
+  - Answer: kept: each shape word is marked in coral in the run as it is said; the run's own size is kept, as for every terminal in this video
+- G9 · scene 38 · "from what you did": the black chip and its underline sit over the "Explain more" card's words ("the file made only once, the part you rewound"), so words are covered (rule 5); move the label into the empty margin, with a line to the phrase
+  - Answer: kept: the label sits in the Done card's empty space, clear of the Explain more card's words, with a line under the phrase it names
+- G10 · scene 38 · "your comment": the chip sits over the left edge of the first suggestion row and its underline runs through the "your comment on scene 5" sub-line (rules 5, 3); put it in the empty margin
+  - Answer: fixed: "your comment" now sits right after the line "your comment on scene 5", and its underline runs under that line, not through it
+- G11 · scene 38 · "Nothing goes into the decision log: an explainer asks no questions, and only an answer is a decision.": the screenshot is cropped at the top and bottom ("Your 2 comments go with it." is cut off), and the small red line carries the key point in about 9px text (rules 6, 7); enlarge it, and crop cleanly
+  - Answer: kept: the camera moves in on the red line as it is said; the last line under the box is not what the scene names
+- G12 · scene 38 · "a plan, from here": the red label sits at the far left, apart from the text box it labels, with an underline running the box's full width (rule 3); attach it to the box
+  - Answer: fixed: "a plan, from here" now sits inside the box, right after the words it labels, underlined under them
+- G13 · scene 39 · "card picked": two identical chips with a "question" tag, and the answer cards have empty lower halves. The chips add nothing a viewer can compare (rules 1, 7); say which two questions and what the pick was, or fill the space
+  - Answer: kept: the case is drawn as the question says it; which card was picked is not part of it (as answered in round 1)
+- G14 · scene 40 · "scene 3: your question, no answer": the chip text is cramped in three lines with a tiny tag at the bottom, and the first two chips read as blank stand-ins ("scene 1", "scene 2" with "watched") (rules 1, 6); make the chips uniform and legible
+  - Answer: fixed: the three tiles now read alike, "scene 1", "scene 2", "scene 3", and the third says "your question: no answer" in larger coral type
+- G15 · scene 41 · "at the top of the review page.": the narration points to Videos at the top of the review page, but the frame shows a small system diagram and an 8-item list, with "The reel CLI" highlighted for no reason narration gives (rules 2, 7); show the Videos row at the top of the review page, or highlight what the sentence names
+  - Answer: kept: scene 38 shows Videos at the top of the review page; the ending sums the whole system up on its map
+- G16 · scene 41 · "The system video": the diagram's box text is about 9px and the frame has an empty right half under the list, so no single focal point (rules 6, 7); enlarge the diagram or drop it for the closing shot
+  - Answer: kept: the ending's map is the one from scenes 5 to 8, shown here as the shape of the whole beside the chapters

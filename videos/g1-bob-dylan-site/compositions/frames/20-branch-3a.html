@@ -1,0 +1,126 @@
+<template>
+<style>
+  @font-face { font-family:"EB Garamond"; font-weight:400; font-style:normal; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family:"EB Garamond"; font-weight:700; font-style:normal; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+  @font-face { font-family:"Inter"; font-weight:400; font-style:normal; src:url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family:"Inter"; font-weight:700; font-style:normal; src:url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family:"JetBrains Mono"; font-weight:400; font-style:normal; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family:"JetBrains Mono"; font-weight:700; font-style:normal; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; container-type:size; }
+  .f20-branch-3a-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f20-branch-3a-stage { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+
+  /* ---- the rail: the plan (geometry is law) ---- */
+  .f20-branch-3a-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f20-branch-3a-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f20-branch-3a-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f20-branch-3a-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f20-branch-3a-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f20-branch-3a-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f20-branch-3a-slot .d.ink { color:var(--rp-ink); }      /* the one coral is on the page, not the rail */
+  .f20-branch-3a-slot.empty .n, .f20-branch-3a-slot.empty .t { opacity:0; }
+
+  /* ---- section label over the pages ---- */
+  .f20-branch-3a-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the output IS pages, so it is drawn as pages (positions are law) ---- */
+  .f20-branch-3a-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f20-branch-3a-page .hwrap { position:relative; height:40px; margin-bottom:9px; }
+  .f20-branch-3a-page .hwrap h { position:absolute; left:0; right:0; top:0; display:block; color:var(--rp-ink); }
+  .f20-branch-3a-page .hwrap h.sans { font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; }
+  .f20-branch-3a-page .hwrap h.serif { font:400 17px/1.2 "EB Garamond"; letter-spacing:0; }   /* step 4, book-like */
+  .f20-branch-3a-col { }                                  /* the text column: step 4 widens its margins */
+  /* the book rhythm is the final state: thinner bar, looser gap. The pre-book rhythm (5px bar, 7px gap)
+     is reached by transform only — scaleY 1.25 and a 1px-per-bar y offset — so no layout tween is needed. */
+  .f20-branch-3a-page .bar { height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:9px; }
+  /* the frame's ONE coral: an overlay ring, so nothing reflows under it (as in 18 and 22) */
+  .f20-branch-3a-page .lit { position:absolute; inset:-1px; border-radius:6px; border:3px solid var(--rp-coral); opacity:0; pointer-events:none; }
+  .f20-branch-3a-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* ---- the read, in words ---- */
+  .f20-branch-3a-note { position:absolute; left:1258px; top:670px; width:552px; text-align:center; font:400 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="20-branch-3a" data-duration="5.7" data-width="1920" data-height="1080">
+  <div class="clip f20-branch-3a-bg" id="f20-branch-3a-bg" data-start="0" data-duration="5.7" data-track-index="0"></div>
+
+  <div class="clip f20-branch-3a-stage" id="f20-branch-3a-stage" data-start="0" data-duration="5.7" data-track-index="1">
+    <div class="f20-branch-3a-rail" id="f20-branch-3a-rail">
+      <div class="f20-branch-3a-slot" id="f20-branch-3a-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d ink" data-plan-question="1">10 albums</span></div>
+      <div class="f20-branch-3a-slot" id="f20-branch-3a-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f20-branch-3a-slot" id="f20-branch-3a-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d ink" data-plan-question="2">Timeline</span></div>
+      <div class="f20-branch-3a-slot" id="f20-branch-3a-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Design system</span><span class="d ink" id="f20-branch-3a-tag" data-plan-question="3">Book-like</span></div>
+      <div class="f20-branch-3a-slot empty" id="f20-branch-3a-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f20-branch-3a-slot empty" id="f20-branch-3a-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <div class="f20-branch-3a-lbl" style="left:1258px;top:300px">Pages</div>
+
+    <div class="f20-branch-3a-page" id="f20-branch-3a-page-album" style="left:1258px">
+      <div class="hwrap"><h class="sans">Bringing It All Back Home</h><h class="serif">Bringing It All Back Home</h></div>
+      <div class="f20-branch-3a-col">
+        <div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div>
+      </div>
+      <span class="cap">album</span>
+      <div class="lit" id="f20-branch-3a-lit"></div>
+    </div>
+
+    <div class="f20-branch-3a-page" id="f20-branch-3a-page-era" style="left:1448px">
+      <div class="hwrap"><h class="sans">Going Electric, 1965</h><h class="serif">Going Electric, 1965</h></div>
+      <div class="f20-branch-3a-col">
+        <div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div>
+      </div>
+      <span class="cap">era</span>
+    </div>
+
+    <div class="f20-branch-3a-page" id="f20-branch-3a-page-song" style="left:1638px">
+      <div class="hwrap"><h class="sans">Like a Rolling Stone</h><h class="serif">Like a Rolling Stone</h></div>
+      <div class="f20-branch-3a-col">
+        <div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div>
+      </div>
+      <span class="cap">song</span>
+    </div>
+
+    <div class="f20-branch-3a-note" id="f20-branch-3a-note">no photographs to clear</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var id = "20-branch-3a", P = "f20-branch-3a-";
+  var q = function (s) { return document.getElementById(P + s); };
+  var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+  // t=0 — the three pages arrive with the crossfade, still in the plain house style
+  tl.fromTo("." + P + "page", { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, immediateRender: true }, 0);
+
+  // 0.06 "Book-like," — slot 4 takes its tag
+  tl.fromTo(q("tag"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: true }, 0.037);
+
+  // 0.97 "serif face," — every heading changes face, and the text settles to a book rhythm
+  tl.fromTo("." + P + "page .hwrap h.serif", { opacity: 0 },
+            { opacity: 1, duration: 0.45, stagger: 0.08, immediateRender: true }, 0.952);
+  tl.fromTo("." + P + "page .hwrap h.sans", { opacity: 1 },
+            { opacity: 0, duration: 0.45, stagger: 0.08, immediateRender: true }, 0.952);
+  tl.fromTo("." + P + "page .bar",
+            { scaleY: 1.25, y: function (i) { return -(i % 4); }, transformOrigin: "50% 0%" },
+            { scaleY: 1, y: 0, duration: 0.5, stagger: 0.02, immediateRender: true }, 0.952);
+
+  // 1.82 "wide margins," — the measure narrows; white space opens either side
+  tl.fromTo("." + P + "col", { scaleX: 1, transformOrigin: "50% 0%" },
+            { scaleX: 0.76, duration: 0.6, stagger: 0.06, immediateRender: true }, 1.826);
+
+  // 3.03 "photographs" — the cost line, which here is an absence
+  tl.fromTo(q("note"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: true }, 2.958);
+
+  // 3.62 "clear." — the album page settles as the worked example: the frame's ONE coral
+  tl.fromTo(q("lit"), { opacity: 0 }, { opacity: 1, duration: 0.55, immediateRender: true }, 3.724);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines[id] = tl;
+})();
+</script>
+</template>

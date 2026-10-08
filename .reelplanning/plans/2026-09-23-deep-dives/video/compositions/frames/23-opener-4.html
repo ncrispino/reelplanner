@@ -1,0 +1,150 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f23-opener-4-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f23-opener-4-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f23-opener-4-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f23-opener-4-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f23-opener-4-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f23-opener-4-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f23-opener-4-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-slot .d.lit { color:var(--rp-coral-deep); }
+  .f23-opener-4-slot:not([data-filled]) .n, .f23-opener-4-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f23-opener-4-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f23-opener-4-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f23-opener-4-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f23-opener-4-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f23-opener-4-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f23-opener-4-node.dim { opacity:0.72; }
+  .f23-opener-4-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f23-opener-4-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f23-opener-4-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f23-opener-4-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f23-opener-4-chip.lit { color:var(--rp-coral-deep); }
+  .f23-opener-4-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f23-opener-4-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f23-opener-4-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-opener-4-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f23-opener-4-conn { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f23-opener-4-conn path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; }
+  .f23-opener-4-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  /* ---- prototypes of the player's own surfaces (§16): small text inside a depicted page is the page's own ---- */
+  .f23-opener-4-mockscreen { position:absolute; left:0; top:0; background:var(--rp-tile); overflow:hidden; }
+  .f23-opener-4-mockbar { position:absolute; left:0; height:70px; border-top:1px solid rgba(var(--rp-ink-rgb),0.15); background:var(--rp-paper); }
+  .f23-opener-4-mocktrack { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f23-opener-4-mockfill { position:absolute; height:4px; border-radius:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f23-opener-4-mockstat { position:absolute; font:500 24px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-mockk { position:absolute; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f23-opener-4-mockh { position:absolute; font:400 52px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-mocks { position:absolute; font:400 28px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-mockfile { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); white-space:nowrap; }
+  .f23-opener-4-mockcode { position:absolute; left:0; height:44px; font:400 24px/44px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; box-shadow:inset 5px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f23-opener-4-mockcode .ln { display:inline-block; width:56px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f23-opener-4-mockcode.sel { background:var(--rp-tile-2); box-shadow:inset 5px 0 0 var(--rp-ink); }
+  .f23-opener-4-mockcode.del { color:rgba(var(--rp-ink-rgb),0.5); text-decoration:line-through; text-decoration-color:rgba(var(--rp-ink-rgb),0.35); }
+  .f23-opener-4-mockcode.add { background:var(--rp-tile-2); }
+  .f23-opener-4-mockrow { position:absolute; left:0; height:36px; font:400 20px/36px "Inter"; color:var(--rp-ink); white-space:nowrap; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f23-opener-4-mockrow .lv { position:absolute; right:18px; font:500 18px/36px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f23-opener-4-mockbtn { position:absolute; height:48px; padding:0 20px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f23-opener-4-mockbar2 { position:absolute; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f23-opener-4-mocknote { position:absolute; height:52px; padding:0 18px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/50px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f23-opener-4-mocktab { position:absolute; top:0; height:48px; padding:0 22px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-bottom:none; border-radius:8px 8px 0 0; font:500 22px/46px "Inter"; color:rgba(var(--rp-ink-rgb),0.6); background:var(--rp-tile); white-space:nowrap; }
+  .f23-opener-4-mocktab.on { background:var(--rp-paper); color:var(--rp-ink); }
+  /* option cards (decision beats): each carries a small prototype of what that option does */
+  .f23-opener-4-opt { position:absolute; top:190px; height:500px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-opener-4-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f23-opener-4-opt .l { position:absolute; left:28px; top:66px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-opt .c { position:absolute; left:28px; top:440px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-mini { position:absolute; left:28px; top:140px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-paper); overflow:hidden; }
+
+  /* revise v6 additions: decided tags on rail slots (§14), part cells, headers over mocks */
+  .f23-opener-4-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f23-opener-4-slot.dec .n { top:13px; } .f23-opener-4-slot.dec .t { top:12px; } .f23-opener-4-slot.dec .dd { opacity:1; }
+  .f23-opener-4-hdr { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-cap { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-opener-4-mockcell { position:absolute; width:74px; height:60px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 22px/58px "JetBrains Mono"; text-align:center; color:var(--rp-ink); background:var(--rp-paper); }
+  .f23-opener-4-mockcell.on { background:var(--rp-tile-2); border-color:rgba(var(--rp-ink-rgb),0.45); }
+  .f23-opener-4-big { position:absolute; font:400 88px/1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-t30 { position:absolute; font:400 30px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-mocklvl { position:absolute; height:36px; padding:0 12px; border-radius:18px; border:1px solid rgba(var(--rp-ink-rgb),0.35); font:500 20px/34px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f23-opener-4-hl { background:var(--rp-tile-2); border-radius:3px; padding:0 2px; }
+  .f23-opener-4-sect { position:absolute; left:0; border-radius:8px; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f23-opener-4-row { position:absolute; left:0; height:66px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f23-opener-4-st { position:absolute; right:28px; top:20px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="23-opener-4" data-duration="7.092" data-width="1920" data-height="1080">
+
+  <div class="clip f23-opener-4-bg" data-start="0" data-duration="7.092" data-track-index="0"></div>
+
+  <div class="clip f23-opener-4-scene" id="f23-opener-4-scene" data-start="0" data-duration="7.092" data-track-index="1">
+
+  <div class="f23-opener-4-kicker" id="f23-opener-4-kicker">Part 3 of 3</div>
+  <div class="f23-opener-4-rail" id="f23-opener-4-rail">
+    <div class="f23-opener-4-slot dec" id="f23-opener-4-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Deep-dive beats</span><span class="dd" id="f23-opener-4-dd-1">decided · D-021</span></div>
+    <div class="f23-opener-4-slot dec" id="f23-opener-4-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Detail kinds</span><span class="dd" id="f23-opener-4-dd-2">decided · D-024</span></div>
+    <div class="f23-opener-4-slot" id="f23-opener-4-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Comments inside</span></div>
+    <div class="f23-opener-4-slot dec" id="f23-opener-4-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">What changed</span><span class="dd" id="f23-opener-4-dd-4">decided · D-023</span></div>
+    <div class="f23-opener-4-slot" id="f23-opener-4-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Plan below video</span></div>
+    <div class="f23-opener-4-slot" id="f23-opener-4-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">Checked first</span></div>
+  </div>
+  <div class="f23-opener-4-hero" id="f23-opener-4-hero" style="top:390px">Each call opens what changed</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "23-opener-4", P = "#f23-opener-4-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f23-opener-4-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f23-opener-4-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f23-opener-4-slot-" + n + " .n, #f23-opener-4-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  // the spine's live tick: coral while the step is being named, then it hands the coral on
+  var tickOn = function (tl, n, at) { tl.fromTo("#f23-opener-4-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + __RP["ink-rgb"] + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f23-opener-4-tick-" + n, { backgroundColor: "rgba(" + __RP["ink-rgb"] + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  // swap one status text for another (both sit in the same place)
+  var swap = function (tl, a, b, at) { tl.to($(a), { opacity: 0, duration: 0.25 }, at); tl.fromTo($(b), { opacity: 0 }, { opacity: 1, duration: 0.25 }, at + 0.1); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("hero"), 0.3, 12);
+  fill(tl, 5, 5.07);
+  fill(tl, 6, 5.07 + 0.25);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 6.591);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

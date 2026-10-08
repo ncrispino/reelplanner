@@ -1,0 +1,109 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f12-quiz-k2-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f12-quiz-k2-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f12-quiz-k2-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-chip { position:absolute; font:500 28px/1.3 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:8px 12px; margin-left:-12px; border-radius:6px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f12-quiz-k2-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f12-quiz-k2-chip.big { font:500 34px/1.2 "Inter"; border:2px solid var(--rp-ink); padding:14px 22px; }
+  .f12-quiz-k2-chip.coral { font:500 34px/1.2 "Inter"; border:2px solid var(--rp-ink); padding:14px 22px; }
+  .f12-quiz-k2-def { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid var(--rp-ink); }
+  .f12-quiz-k2-def .k { position:absolute; right:26px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f12-quiz-k2-def .t { position:absolute; left:28px; top:20px; font:400 60px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-def .m { position:absolute; left:28px; top:98px; right:28px; font:400 34px/1.25 "Inter"; color:var(--rp-ink); }
+  .f12-quiz-k2-quote { position:absolute; font:400 64px/1.2 "EB Garamond"; letter-spacing:-0.01em; color:var(--rp-ink); }
+  .f12-quiz-k2-quote .hl { border-bottom:5px solid rgba(var(--rp-coral-rgb),0); }
+  .f12-quiz-k2-quote .hl.on { border-bottom-color:var(--rp-coral); }
+  .f12-quiz-k2-ticks { position:absolute; width:440px; height:52px; }
+  .f12-quiz-k2-ticks i { position:absolute; top:0; width:28px; height:52px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.62); }
+  .f12-quiz-k2-pcard { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f12-quiz-k2-pcard .h { position:absolute; left:32px; top:30px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f12-quiz-k2-pcard .v { position:absolute; left:32px; top:90px; font:400 64px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-pcard .g { position:absolute; left:32px; top:180px; right:32px; font:400 32px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f12-quiz-k2-row { position:absolute; box-sizing:border-box; height:84px; padding:22px 28px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f12-quiz-k2-ls { position:absolute; box-sizing:border-box; height:100px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f12-quiz-k2-ls .n { position:absolute; left:30px; top:35px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f12-quiz-k2-ls .t { position:absolute; left:96px; top:30px; font:500 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-ls .d { position:absolute; right:30px; top:35px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f12-quiz-k2-ls.dim .t, .f12-quiz-k2-ls.dim .n { color:rgba(var(--rp-ink-rgb),0.5); }
+  .f12-quiz-k2-spine { position:absolute; left:80px; top:170px; width:44px; height:420px; }
+  .f12-quiz-k2-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f12-quiz-k2-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  .f12-quiz-k2-q { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-q.s { font-size:52px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f12-quiz-k2-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f12-quiz-k2-opt .k { position:absolute; left:30px; top:28px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f12-quiz-k2-opt .l { position:absolute; left:30px; top:76px; right:26px; font:400 52px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f12-quiz-k2-opt .x { position:absolute; left:30px; font:500 30px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-opt .c { position:absolute; left:30px; bottom:30px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f12-quiz-k2-gloss { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f12-quiz-k2-gloss .h { position:absolute; left:30px; top:28px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f12-quiz-k2-gloss .w { position:absolute; left:30px; font:400 52px/1 "EB Garamond"; color:var(--rp-ink); }
+  .f12-quiz-k2-mark { position:absolute; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-mark.bad { font-weight:700; }
+  .f12-quiz-k2-slab { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f12-quiz-k2-slab .ln { position:absolute; left:34px; font:500 32px/1.2 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f12-quiz-k2-ln { position:absolute; font:500 30px/1.2 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; }
+  .f12-quiz-k2-cap { position:absolute; box-sizing:border-box; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f12-quiz-k2-cap .line { position:absolute; left:28px; bottom:26px; font:400 40px/1.2 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-cap .line u { text-decoration-thickness:3px; text-underline-offset:6px; }
+  .f12-quiz-k2-cap .pop { position:absolute; left:28px; right:28px; top:22px; box-sizing:border-box; padding:14px 18px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:400 28px/1.3 "Inter"; color:var(--rp-ink); }
+  .f12-quiz-k2-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:2px; }
+  .f12-quiz-k2-box .t { position:absolute; left:30px; top:26px; font:400 52px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f12-quiz-k2-box .m { position:absolute; left:30px; top:92px; right:30px; font:500 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f12-quiz-k2-box.dim .t, .f12-quiz-k2-box.dim .m { color:rgba(var(--rp-ink-rgb),0.5); }
+  .f12-quiz-k2-track { position:absolute; left:30px; right:30px; top:210px; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f12-quiz-k2-pm { position:absolute; width:14px; height:56px; border-radius:3px; background:var(--rp-ink); }
+  .f12-quiz-k2-arrow { position:absolute; font:500 48px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f12-quiz-k2-tickmark { position:absolute; font:500 40px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f12-quiz-k2-ask { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="12-quiz-k2" data-band="bottom" data-duration="7.391" data-width="1920" data-height="1080">
+
+  <div class="clip f12-quiz-k2-bg" id="f12-quiz-k2-bg" data-start="0" data-duration="7.391" data-track-index="0"></div>
+
+  <div class="clip f12-quiz-k2-scene" id="f12-quiz-k2-scene" data-start="0" data-duration="7.391" data-track-index="1">
+  <div class="f12-quiz-k2-kicker" id="f12-quiz-k2-kicker">Quick check · Step 2</div>
+  <div class="f12-quiz-k2-spine" id="f12-quiz-k2-spine"><div class="f12-quiz-k2-tick" id="f12-quiz-k2-tick-1" data-plan-step="1" style="top:20px"></div><div class="f12-quiz-k2-tick live" id="f12-quiz-k2-tick-2" data-plan-step="2" style="top:130px"></div><div class="f12-quiz-k2-tick" id="f12-quiz-k2-tick-3" data-plan-step="3" style="top:240px"></div><div class="f12-quiz-k2-tick" id="f12-quiz-k2-tick-4" data-plan-step="4" style="top:350px"></div></div>
+  <div class="f12-quiz-k2-q" id="f12-quiz-k2-q" style="left:200px; top:170px">The last plan builds on the streak of ten.</div>
+  <div class="f12-quiz-k2-q s" id="f12-quiz-k2-q2" style="left:200px; top:280px">Its card lists…</div>
+  <div class="f12-quiz-k2-opt" id="f12-quiz-k2-opt-a" data-option="a" style="left:200px; top:430px; width:520px; height:300px"><span class="k">A</span><span class="l">Only the system video</span></div>
+  <div class="f12-quiz-k2-opt" id="f12-quiz-k2-opt-b" data-option="b" style="left:760px; top:430px; width:520px; height:300px"><span class="k">B</span><span class="l">The system video, then revise-loop</span></div>
+  <div class="f12-quiz-k2-opt" id="f12-quiz-k2-opt-c" data-option="c" style="left:1320px; top:430px; width:520px; height:300px"><span class="k">C</span><span class="l">Every earlier plan's video</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "12-quiz-k2";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f12-quiz-k2-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at) { tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.10, 10);
+  fade(tl, $("spine"), 0.15);
+  pop(tl, $("q"), 0.25, 10);
+  pop(tl, $("q2"), 5.23, 10);
+  pop(tl, $("opt-a"), 6.46, 10);
+  pop(tl, $("opt-b"), 6.58, 10);
+  pop(tl, $("opt-c"), 6.70, 10);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 6.741);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

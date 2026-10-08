@@ -1,0 +1,122 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b05e-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b05e-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b05e-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b05e-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b05e-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b05e-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b05e-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b05e-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b05e-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b05e-ul.ink { background:var(--rp-ink); height:3px; }
+  .b05e-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b05e-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b05e-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b05e-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b05e-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b05e-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b05e-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b05e-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b05e-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b05e-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b05e-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b05e-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b05e-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b05e-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b05e-f { position:absolute; top:430px; width:300px; height:190px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.24); }
+  .b05e-fn { position:absolute; top:640px; width:300px; text-align:center; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b05e-w { position:absolute; top:494px; height:56px; padding:0 20px; font:400 36px/56px "EB Garamond"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:28px; box-sizing:border-box; white-space:nowrap; }
+  .b05e-say { position:absolute; top:690px; font:400 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .b05e-ul { position:absolute; top:556px; height:5px; background:var(--rp-ink); transform-origin:0 50%; }
+  .b05e-arc { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:visible; }
+  .b05e-arc path { fill:none; stroke:var(--rp-coral); stroke-width:6; stroke-linecap:round; }
+  .b05e-warn { position:absolute; top:228px; padding:0 16px; font:400 30px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:6px; white-space:nowrap; }
+  .b05e-hd { position:absolute; left:130px; top:120px; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="05e-where-a-picture-explains-it-better" data-band="bottom" data-duration="14.8" data-width="1920" data-height="1080">
+
+  <div class="clip b05e-bg" id="b05e-bg" data-start="0" data-duration="14.8" data-track-index="0"></div>
+
+  <div class="clip b05e-scene" id="b05e-scene" data-start="0" data-duration="14.8" data-track-index="1">
+    <div class="b05e-lab" id="b05e-anchor" style="left:130px; top:34px">the terms check, as a picture</div>
+    <div class="b05e-hd" id="b05e-hd">A word said before it is explained</div>
+    <div class="b05e-f" id="b05e-f0" style="left:130px"></div>
+    <div class="b05e-fn" id="b05e-fn0" style="left:130px">scene 1</div>
+    <div class="b05e-f" id="b05e-f1" style="left:470px"></div>
+    <div class="b05e-fn" id="b05e-fn1" style="left:470px">scene 2</div>
+    <div class="b05e-f" id="b05e-f2" style="left:810px"></div>
+    <div class="b05e-fn" id="b05e-fn2" style="left:810px">scene 3</div>
+    <div class="b05e-f" id="b05e-f3" style="left:1150px"></div>
+    <div class="b05e-fn" id="b05e-fn3" style="left:1150px">scene 4</div>
+    <div class="b05e-f" id="b05e-f4" style="left:1490px"></div>
+    <div class="b05e-fn" id="b05e-fn4" style="left:1490px">scene 5</div>
+    <div class="b05e-w" id="b05e-w1" style="left:560px">label</div>
+    <div class="b05e-w" id="b05e-w3" style="left:1240px">label</div>
+    <div class="b05e-say" id="b05e-s1" style="left:550px">said</div>
+    <div class="b05e-say" id="b05e-s3" style="left:1200px">explained</div>
+    <div class="b05e-ul" id="b05e-u3" style="left:1240px; width:120px"></div>
+    <svg class="b05e-arc" viewBox="0 0 1920 900"><path id="b05e-arc" d="M 1300 480 C 1300 300, 620 300, 620 476" pathLength="1" style="stroke-dasharray:1; stroke-dashoffset:1"/><path id="b05e-head" d="M 604 450 L 620 476 L 636 450" pathLength="1" style="stroke-dasharray:1; stroke-dashoffset:1"/></svg>
+    <div class="b05e-warn" id="b05e-warn" style="left:780px">warning: said too early</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "05e-where-a-picture-explains-it-better";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b05e-f0", { opacity: 0, y: 20 });
+  gsap.set("#b05e-fn0", { opacity: 0 });
+  gsap.set("#b05e-f1", { opacity: 0, y: 20 });
+  gsap.set("#b05e-fn1", { opacity: 0 });
+  gsap.set("#b05e-f2", { opacity: 0, y: 20 });
+  gsap.set("#b05e-fn2", { opacity: 0 });
+  gsap.set("#b05e-f3", { opacity: 0, y: 20 });
+  gsap.set("#b05e-fn3", { opacity: 0 });
+  gsap.set("#b05e-f4", { opacity: 0, y: 20 });
+  gsap.set("#b05e-fn4", { opacity: 0 });
+  gsap.set("#b05e-w1", { opacity: 0, y: 10 });
+  gsap.set("#b05e-w3", { opacity: 0, y: 10 });
+  gsap.set("#b05e-s1", { opacity: 0, y: 10 });
+  gsap.set("#b05e-s3", { opacity: 0, y: 10 });
+  gsap.set("#b05e-warn", { opacity: 0, y: 10 });
+  gsap.set("#b05e-hd", { opacity: 0, y: 10 });
+  gsap.set("#b05e-u3", { scaleX: 0 });
+  tl.to("#b05e-hd", { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.46);
+  tl.to("#b05e-f0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.76);
+  tl.to("#b05e-fn0", { opacity: 1, duration: 0.3, ease: "none" }, 1.96);
+  tl.to("#b05e-f1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.86);
+  tl.to("#b05e-fn1", { opacity: 1, duration: 0.3, ease: "none" }, 2.06);
+  tl.to("#b05e-f2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.96);
+  tl.to("#b05e-fn2", { opacity: 1, duration: 0.3, ease: "none" }, 2.16);
+  tl.to("#b05e-f3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.06);
+  tl.to("#b05e-fn3", { opacity: 1, duration: 0.3, ease: "none" }, 2.26);
+  tl.to("#b05e-f4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.16);
+  tl.to("#b05e-fn4", { opacity: 1, duration: 0.3, ease: "none" }, 2.36);
+  tl.to("#b05e-w1", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 4.13);
+  tl.to("#b05e-s1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4.56);
+  tl.to("#b05e-w3", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.85);
+  tl.to("#b05e-s3", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.95);
+  tl.to("#b05e-u3", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.15);
+  tl.to("#b05e-arc", { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 7.77);
+  tl.to("#b05e-head", { strokeDashoffset: 0, duration: 0.25, ease: "power2.out" }, 8.57);
+  tl.to("#b05e-warn", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 8.27);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

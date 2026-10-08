@@ -1,0 +1,7 @@
+$ node scripts/test/run.mjs answer-on-frame
+fast run: 1 specs, 4 at a time (npm run test:full for everything)
+
+✓ packages/player/test/answer-on-frame.spec.mjs    61.2 s  107 checks
+
+✓ all 1 passed in 61.3 s (the slowest, packages/player/test/answer-on-frame.spec.mjs, 61.2 s)
+exit 0

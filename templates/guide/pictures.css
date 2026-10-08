@@ -1,0 +1,25 @@
+/* The guide's pictures and their lightbox (templates/guide/pictures.css, with pictures.js). A picture is a link to its
+   whole file; the lightbox is dark in either theme, the picture's own colours on it, its controls in a corner. */
+a.zoom{display:block;cursor:zoom-in;border-radius:10px;-webkit-tap-highlight-color:transparent}
+a.zoom:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+a.zoom img{margin:0 auto;height:auto}
+/* a step's picture, taken in both themes: the page's theme shows its own (guide.js sets data-theme on the page) */
+a.zoom.themed .pic-dark{display:none}
+:root[data-theme="dark"] a.zoom.themed .pic-light{display:none}
+:root[data-theme="dark"] a.zoom.themed .pic-dark{display:block}
+:root[data-theme="dark"] a.zoom img{box-shadow:0 0 0 1px rgba(242,239,232,.12);border-radius:inherit}
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(12,11,10,.96);overflow:hidden;touch-action:none;overscroll-behavior:contain;cursor:grab;
+  -webkit-user-select:none;user-select:none}
+.lb[hidden]{display:none}
+.lb.drag{cursor:grabbing}
+/* its edge: a 1 px hairline on screen whatever the zoom (--lb-s, the picture's scale), so a dark picture never merges into
+   the dark backdrop */
+.lb-img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;will-change:transform;box-shadow:0 0 0 calc(1px / var(--lb-s,1)) rgba(242,239,232,.24),0 24px 70px rgba(0,0,0,.55);-webkit-user-drag:none}
+.lb-bar{position:absolute;top:12px;right:12px;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(24,23,21,.86);box-shadow:0 0 0 1px rgba(255,255,255,.14);cursor:default}
+.lb-bar button{min-width:40px;height:36px;padding:0 10px;border:0;border-radius:7px;background:transparent;color:#F2EFE8;font:500 16px/1 var(--sans);cursor:pointer;font-variant-numeric:tabular-nums}
+.lb-bar .lb-pct{min-width:62px;font-size:14px}
+.lb-bar button:hover{background:rgba(255,255,255,.12)}
+.lb-bar button:focus-visible{outline:2px solid #D2693F;outline-offset:1px}
+.lb-hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);margin:0;padding:6px 12px;border-radius:999px;background:rgba(24,23,21,.86);color:#CFCAC1;
+  font:13px/1.35 var(--sans);white-space:nowrap;pointer-events:none}
+@media (max-width:600px){.lb-hint{white-space:normal;width:max-content;max-width:calc(100% - 32px);text-align:center}}

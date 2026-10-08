@@ -1,0 +1,74 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v16-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v16-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v16-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v16-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v16-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v16-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v16-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v16-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v16-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v16-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v16-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v16-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v16-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v16-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v16-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v16-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v16-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v16-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v16-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v16-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v16-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v16-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v16-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v16-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v16-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v16-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v16-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v16-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v16-txt code, .v16-mrow code, .v16-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="16-the-list" data-band="bottom" data-duration="12.66" data-width="1920" data-height="1080">
+  <div class="clip v16-bg" id="v16-bg" data-start="0" data-duration="12.66" data-track-index="0"></div>
+  <div class="clip v16-scene" id="v16-scene" data-start="0" data-duration="12.66" data-track-index="1">
+    <div class="v16-h" id="v16-lab" data-detail="choices" style="left:120px; top:80px">The list: four choices that don't pause, each with its own Flag</div>
+    <div class="v16-lrow" id="v16-l0" data-call="a5" style="top:220px"><span class="a">A5</span><span class="b">the four blocks: plans dated the thirtieth of September on</span></div>
+    <div class="v16-lrow" id="v16-l1" data-call="a6" style="top:340px"><span class="a">A6</span><span class="b">an example: a value, a quote, a command or a number</span></div>
+    <div class="v16-lrow" id="v16-l2" data-call="a7" style="top:460px"><span class="a">A7</span><span class="b">saying the video again: a sentence of eight words or more</span></div>
+    <div class="v16-lrow" id="v16-l3" data-call="a14" style="top:580px"><span class="a">A14</span><span class="b">a part its frame doesn't mark: a warning, even when strict</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "16-the-list";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v16-lab", { opacity: 0, y: 12 });
+  gsap.set("#v16-l0", { opacity: 0, y: 12 });
+  gsap.set("#v16-l1", { opacity: 0, y: 12 });
+  gsap.set("#v16-l2", { opacity: 0, y: 12 });
+  gsap.set("#v16-l3", { opacity: 0, y: 12 });
+  tl.to("#v16-lab", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.10);
+  tl.to("#v16-l0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.30);
+  tl.to("#v16-l1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.42);
+  tl.to("#v16-l2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.54);
+  tl.to("#v16-l3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.66);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

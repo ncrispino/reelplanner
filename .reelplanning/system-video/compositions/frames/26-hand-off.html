@@ -1,0 +1,178 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .s26-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .s26-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .s26-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .s26-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .s26-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .s26-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .s26-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .s26-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s26-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .s26-ul.ink { background:var(--rp-ink); height:3px; }
+  .s26-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s26-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .s26-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .s26-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s26-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .s26-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .s26-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .s26-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .s26-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .s26-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s26-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .s26-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s26-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .s26-lab { background:var(--rp-paper); padding:6px 12px; margin:-6px -12px; border-radius:6px; z-index:5; }
+  .s26-img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .s26-img.s26-dk { display:none; }
+  :root[data-theme="dark"] .s26-img.s26-lt { display:none; }
+  :root[data-theme="dark"] .s26-img.s26-dk { display:block; }
+  .s26-scr { position:absolute; border-radius:8px; overflow:hidden; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s26-wp { position:absolute; overflow:hidden; }
+  .s26-wi { position:absolute; left:0; top:0; }
+  .s26-gp { position:absolute; padding:0 0.42em; font-family:"Inter"; font-weight:400; font-style:normal; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; box-shadow:0 2px 8px rgba(var(--rp-shadow-rgb),0.18); }
+  .s26-gp.slab { background:var(--rp-slab-ink); color:var(--rp-slab); }
+  .s26-gp.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .s26-gu { position:absolute; background:var(--rp-ink); transform-origin:0 50%; border-radius:2px; }
+  .s26-gu.slab { background:var(--rp-slab-ink); }
+  .s26-gu.hot { background:var(--rp-coral); }
+  .s26-ring2 { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:10px; }
+  .s26-term { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .s26-tbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .s26-tdot { position:absolute; top:20px; width:13px; height:13px; border-radius:50%; background:rgba(var(--rp-slab-ink-rgb),0.3); }
+  .s26-ttl { position:absolute; left:110px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .s26-cmd { position:absolute; font:400 28px/46px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26-cmd .g { color:rgba(var(--rp-slab-ink-rgb),0.6); font-weight:700; margin-right:0.6em; }
+  .s26-out { position:absolute; font:400 27px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26-out .ln { display:block; position:relative; }
+  .s26-out .ok { color:var(--rp-syn-add); } .s26-out .warn { color:var(--rp-syn-num); } .s26-out .err { color:var(--rp-syn-del); } .s26-out .dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .s26-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .s26-hl { position:absolute; background:rgba(var(--rp-coral-rgb),0.22); border-left:5px solid var(--rp-coral); transform-origin:0 50%; }
+  .s26-page { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .s26-md { position:absolute; font:400 27px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .s26-md .ln { display:block; position:relative; }
+  .s26-md .h { font-weight:700; }
+  .s26-md .mu { color:rgba(var(--rp-ink-rgb),0.62); }
+  .s26-bar { display:inline-block; height:12px; border-radius:6px; background:rgba(var(--rp-ink-rgb),0.16); vertical-align:middle; }
+  .s26-strike { position:absolute; left:0; height:3px; top:50%; background:var(--rp-ink); transform-origin:0 50%; }
+  .s26-chip { position:absolute; padding:0 18px; font:400 30px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); border-radius:28px; white-space:nowrap; }
+  .s26-chip.hot { border:3px solid var(--rp-coral); }
+  .s26-say { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+
+  .s26-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .s26-h { position:absolute; font:400 48px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .s26-hl { position:absolute; font:400 64px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .s26-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .s26-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .s26-t code, .s26-s code, .s26-node code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .s26-node { position:absolute; box-sizing:border-box; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 18px; border-radius:12px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.3); font:500 30px/1.2 "Inter"; color:var(--rp-ink); }
+  .s26-node.hot { border:4px solid var(--rp-coral); }
+  .s26-node.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .s26-node .sub { display:block; font:400 24px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); margin-top:6px; }
+  .s26-arrow { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.5); border-radius:2px; }
+  .s26-arrow.v { width:4px; height:auto; }
+  .s26-arrow.hot { background:var(--rp-coral); }
+  .s26-arrow i { position:absolute; right:-6px; top:-6px; width:0; height:0; border-left:14px solid rgba(var(--rp-ink-rgb),0.5); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  .s26-arrow.v i { right:auto; top:auto; left:-6px; bottom:-10px; border-left:8px solid transparent; border-right:8px solid transparent; border-top:14px solid rgba(var(--rp-ink-rgb),0.5); border-bottom:0; }
+  .s26-arrow.hot i { border-left-color:var(--rp-coral); }
+  .s26-arrow.v.hot i { border-left-color:transparent; border-top-color:var(--rp-coral); }
+  .s26-tag { position:absolute; height:48px; padding:0 18px; box-sizing:border-box; font:500 28px/48px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:8px; white-space:nowrap; }
+  .s26-tag.ink { background:var(--rp-ink); }
+  .s26-tag.ghost { background:var(--rp-paper); color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.45); line-height:44px; }
+  .s26-fence { position:absolute; box-sizing:border-box; border:3px dashed var(--rp-coral); border-radius:16px; }
+  .s26-crop { position:absolute; overflow:hidden; border-radius:8px; box-shadow:0 0 0 1px rgba(var(--rp-ink-rgb),0.18), 0 6px 24px rgba(var(--rp-shadow-rgb),0.10); background:var(--rp-paper); }
+  .s26-crop img { position:absolute; display:block; }
+  .s26-crop img.s26-dk { display:none; }
+  :root[data-theme="dark"] .s26-crop img.s26-lt { display:none; }
+  :root[data-theme="dark"] .s26-crop img.s26-dk { display:block; }
+  .s26-gut { color:rgba(var(--rp-ink-rgb),0.45); display:inline-block; width:3.2em; text-align:right; margin-right:1.1em; }
+  .s26-agent { position:absolute; height:46px; padding:0 18px; box-sizing:border-box; font:500 25px/42px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:23px; white-space:nowrap; z-index:6; }
+  .s26-agent::before { content:""; display:inline-block; width:10px; height:10px; margin-right:10px; border-radius:50%; background:var(--rp-ink); vertical-align:2px; }
+
+  .s26-fl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .s26-node { font-size:29px; }
+  .s26-node.dim { border-style:dashed; }
+  .s26-or { position:absolute; font:400 25px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="26-hand-off" data-band="bottom" data-duration="16.319" data-width="1920" data-height="1080">
+
+  <div class="clip s26-bg" id="s26-bg" data-start="0" data-duration="16.319" data-track-index="0"></div>
+
+  <div class="clip s26-scene" id="s26-scene" data-start="0" data-duration="16.319" data-track-index="1">
+    <div class="s26-view" id="s26-view"><div class="s26-cam" id="s26-cam">
+    <div class="s26-kick" id="s26-in" style="left:60px; top:130px;">sent on your machine</div>
+    <div class="s26-node ink" id="s26-send" style="left:60px; top:190px; width:300px; height:110px">Send</div>
+    <div class="s26-arrow" id="s26-a0" style="left:368px; top:243px; width:60px"><i></i></div>
+    <div class="s26-node" id="s26-srv" style="left:440px; top:180px; width:300px; height:130px">the review server</div>
+    <div class="s26-arrow" id="s26-a1" style="left:748px; top:243px; width:60px"><i></i></div>
+    <div class="s26-node" id="s26-inb" style="left:820px; top:180px; width:270px; height:130px">the inbox</div>
+    <div class="s26-tag" id="s26-once" style="left:820px; top:110px">exactly once</div>
+    <div class="s26-arrow" id="s26-a2" style="left:1096px; top:225px; width:200px; transform:rotate(-38deg); transform-origin:0 50%"><i></i></div>
+    <div class="s26-arrow" id="s26-a3" style="left:1096px; top:262px; width:140px; transform:rotate(30deg); transform-origin:0 50%"><i></i></div>
+    <div class="s26-arrow" id="s26-a4" style="left:1096px; top:290px; width:470px; transform:rotate(71deg); transform-origin:0 50%"><i></i></div>
+    <div class="s26-node" id="s26-ses" style="left:1260px; top:40px; width:600px; height:100px">your agent's session, waiting</div>
+    <div class="s26-fence" id="s26-fen" style="left:1230px; top:250px; width:660px; height:330px"></div>
+    <div class="s26-node" id="s26-hl" style="left:1260px; top:290px; width:600px; height:100px">else: the headless run</div>
+    <div class="s26-fl" id="s26-fll" style="left:1260px; top:440px">the sandbox:</div><div class="s26-fl" id="s26-fl2" style="left:1260px; top:484px">writes stay in your repo</div>
+    <div class="s26-node dim" id="s26-nx" style="left:1260px; top:700px; width:600px; height:100px">else: waits for your next session</div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "26-hand-off";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#s26-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#s26-in", { opacity: 0 });
+  tl.to("#s26-in", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.1);
+  gsap.set("#s26-send", { opacity: 0, y: 12 });
+  tl.to("#s26-send", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.2);
+  gsap.set("#s26-a0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26-a0", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 1);
+  gsap.set("#s26-srv", { opacity: 0, y: 12 });
+  tl.to("#s26-srv", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.3);
+  gsap.set("#s26-a1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26-a1", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 2.59);
+  gsap.set("#s26-inb", { opacity: 0, y: 12 });
+  tl.to("#s26-inb", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.89);
+  gsap.set("#s26-once", { opacity: 0, y: 12 });
+  tl.to("#s26-once", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.86);
+  gsap.set("#s26-a2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26-a2", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 4.92);
+  gsap.set("#s26-ses", { opacity: 0, y: 12 });
+  tl.to("#s26-ses", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.22);
+  gsap.set("#s26-a3", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26-a3", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 7.26);
+  gsap.set("#s26-hl", { opacity: 0, y: 12 });
+  tl.to("#s26-hl", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.56);
+  gsap.set("#s26-fen", { opacity: 0 });
+  tl.to("#s26-fen", { opacity: 1, duration: 0.5, ease: "power2.out" }, 10.01);
+  gsap.set("#s26-fll", { opacity: 0 });
+  tl.to("#s26-fll", { opacity: 1, duration: 0.4, ease: "power2.out" }, 10.01);
+  gsap.set("#s26-fl2", { opacity: 0 });
+  tl.to("#s26-fl2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 11.19);
+  gsap.set("#s26-a4", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#s26-a4", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 13.58);
+  gsap.set("#s26-nx", { opacity: 0, y: 12 });
+  tl.to("#s26-nx", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.98);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

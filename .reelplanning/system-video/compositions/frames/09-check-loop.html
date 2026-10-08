@@ -1,0 +1,82 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .q1-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .q1-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .q1-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .q1-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .q1-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .q1-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .q1-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .q1-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .q1-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .q1-ul.ink { background:var(--rp-ink); height:3px; }
+  .q1-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .q1-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .q1-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .q1-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .q1-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .q1-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .q1-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .q1-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .q1-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .q1-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .q1-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .q1-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .q1-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .q1-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+.q1-card { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:3px solid rgba(var(--rp-ink-rgb),0.28); padding:24px 28px; font:400 52px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .q1-card span { display:block; margin-top:14px; font:500 34px/1 "JetBrains Mono"; color:var(--rp-coral-deep); }
+  .q1-bar { position:absolute; height:40px; border-radius:20px; background:var(--rp-ink); }
+  .q1-bl { position:absolute; font:500 36px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="09-check-loop" data-band="bottom" data-duration="6.859" data-width="1920" data-height="1080">
+
+  <div class="clip q1-bg" id="q1-bg" data-start="0" data-duration="6.859" data-track-index="0"></div>
+
+  <div class="clip q1-scene" id="q1-scene" data-start="0" data-duration="6.859" data-track-index="1">
+    <div class="q1-view" id="q1-view"><div class="q1-cam" id="q1-cam"><div id="q1-case">
+    <div class="q1-card" id="q1-plan" style="left:100px; top:120px; width:620px; height:200px">the login page's plan<span>✓ approved</span></div>
+    <div class="q1-bl" id="q1-bl" style="left:820px; top:150px">the build</div>
+    <div class="q1-bar" id="q1-bar" style="left:820px; top:210px; width:960px"></div>
+    <div class="q1-bl" id="q1-done" style="left:1640px; top:280px">done</div>
+    </div></div></div>
+    <div class="q1-q" id="q1-q" data-question style="left:180px; top:300px; width:1560px">Your agent has finished building a login page you approved. Which video do you watch next?</div>
+    <div class="q1-opt" id="q1-opt-a" data-option="a" style="left:180px; top:480px; width:500px; height:280px"><span class="k">A</span><span class="l">The plan video, revised</span></div>
+    <div class="q1-opt" id="q1-opt-b" data-option="b" style="left:710px; top:480px; width:500px; height:280px"><span class="k">B</span><span class="l">The walkthrough video: the page running</span></div>
+    <div class="q1-opt" id="q1-opt-c" data-option="c" style="left:1240px; top:480px; width:500px; height:280px"><span class="k">C</span><span class="l">The system video</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-check-loop";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#q1-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#q1-case", { opacity: 1, transformOrigin: "0 0" });
+  tl.to("#q1-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#q1-case", { scale: 0.6, x: 40, y: 0, opacity: 0.92, duration: 1, ease: "power3.inOut" }, 1);
+  gsap.set("#q1-q", { opacity: 0, x: -24 });
+  tl.to("#q1-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.1);
+  gsap.set("#q1-opt-a", { opacity: 0, y: 28 });
+  tl.to("#q1-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 4.8);
+  gsap.set("#q1-opt-b", { opacity: 0, y: 28 });
+  tl.to("#q1-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 4.92);
+  gsap.set("#q1-opt-c", { opacity: 0, y: 28 });
+  tl.to("#q1-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.04);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

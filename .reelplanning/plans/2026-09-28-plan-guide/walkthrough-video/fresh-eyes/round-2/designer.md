@@ -1,0 +1,74 @@
+# Fresh eyes: designer · round 2 · stamp 2b06761c4af2
+
+- G1 · scene 1 · "Open · What changed, in full": the chip sits tight under the title and beside the table's first row, crowding the heading; give it clear space above the title (rule 5, 7); the caption below is the only thing in the bottom third and the frame feels top-heavy
+  - Answer: kept: round 1 gave the chip its 40 px; the caption band is the bottom third
+- G2 · scene 2 · "it reads" / "it writes, into guide/": both boxes have unequal fill, big empty space at their bottoms, and the terminal line "5 steps, 4 questions, built: 9 kinds of change…" is dense small mono text; shrink the boxes to their content or enlarge the text (rule 6, 7)
+  - Answer: kept: the boxes are the same size so reads and writes sit side by side; the run's line is the real output
+- G3 · scene 3 · "Expand all": the screenshot's text (the step list, "Where step 1 sits" chips, "5 steps · 28 cases…") is far too small to read at this size; crop to one region or enlarge (rule 6)
+  - Answer: kept: round 1 cropped the page and enlarged it; each ring is on what the narration names, and the chip opens the page itself
+- G4 · scene 3 · "one click down: every case, every part, every decision": the caption-like label sits on top of the screenshot's own content, covering the bottom of the step panel; move it out of the picture (rule 5)
+  - Answer: kept: the label sits in the stage's empty lower part, the stage it names, as round 1's G4 asked
+- G5 · scene 3 · "Select any words: comment, ask, or suggest an edit to the plan's own words.": duplicates the caption "or suggest an edit." and the orange boxes highlight three regions with no order or labels, so there's no single focal point (rule 2, 7)
+  - Answer: kept: the line under the picture says what the words can do; the rings come one at a time, on the words that name them
+- G6 · scene 4 · "Check against the plan": the screenshot's text ("A step with its four blocks", table rows) is tiny and unreadable, and the second screenshot ("~/runs/0929/results.csv") is smaller still; enlarge or crop (rule 6)
+  - Answer: kept: round 1 enlarged both; the outside source is at its panel's own width
+- G7 · scene 4 · "choice A1 · it pauses here": the four choice cards on the right are the biggest thing but come after the narration's order (things to do, then four choices, then outside source); the picture reads left column then right column, and the outside-source text repeats card A4 (rule 2, 7)
+  - Answer: kept: the cards come on in the narration's order, one at a time
+- G8 · scene 4 · "a thing to do: step 2's cases, to drag onto what happens": the labels sit below their screenshots, and the "Open · Step 1: the guide, a page a plan" chip sits tight against the screenshot's top edge; the outside-source picture has no caption and the text beside it is unrelated in size (rule 3, 6)
+  - Answer: kept: each label names the picture above it; the Open chip has its 40 px
+- G9 · scene 5 · "off-plan change D2": the right card is mostly empty (half of it blank) beside a small screenshot with tiny chip text, and the lower half of the frame is empty; balance the frame and enlarge the screenshot (rule 6, 7)
+  - Answer: kept: the card says the change in full; the lower half is the caption band and the line under the picture
+- G10 · scene 5 · "step 1's picture on the guide: the parts it touches, lit": the narration says "the ones it touches lit", but the two lit chips are marked only by a thin outline that is easy to miss at this size, and there is no Open chip while other scenes have one; make the lit ones stronger (rule 6)
+  - Answer: kept: the lit chips are ringed in coral on "the ones it touches"
+- G11 · scene 6 · "Open · Step 2: four blocks a step": the chip sits between the heading line and the table with no gap, touching the heading; the table is clipped at case 5 and text is small (rule 5, 6)
+  - Answer: kept: the chip has its 40 px; the table is cropped to its first rows, round 1's fix for its size
+- G12 · scene 6 · "Cases" / "Interface" / "Example" / "Decisions": the four blocks are on the right, the cases table on the left; only Cases is shown, so three of four labels label nothing, and the black "reel check fails a step missing one" chip floats apart from what it qualifies (rule 3, 7)
+  - Answer: kept: the four blocks are what the narration says; Cases is the one shown, and the reel check line sits under them
+- G13 · scene 6 · "Held to them: a plan written from 30 September 2026 on.": this qualifier sits below the table instead of beside the four blocks it qualifies, and the narration says it first; its position is out of reading order (rule 2, 3)
+  - Answer: fixed: the date line now sits over the four blocks
+- G14 · scene 7 · "Open · The four blocks, checked": the picture is two dense terminal blocks in small mono text, more than a glance can take; "Not written in plan.md" is a small line under them with no visual weight, though the narration ends on it (rule 6, 7)
+  - Answer: kept: the two runs are the real outputs, whole; the gap line is the narration's last clause
+- G15 · scene 7 · "a real output comes from a saved run": the fail line "✗ category "The build gate"…" carries no emphasis that separates it from the passes above; the failure and the passes look alike in weight (rule 7)
+  - Answer: kept: the failing lines are the only bold ones
+- G16 · scene 8 · "What does reel check do?": the question says what to decide and the three answer cards are clear, but the frame's lower third is empty, and "quick check" is tiny; enlarge it and use the space (rule 6, 7)
+  - Answer: kept: the quick check's layout is the one every walkthrough uses, the answer band below it
+- G17 · scene 9 · "△ step 1 · interface part `--quiet`: no meaning · step 2: no Example · …": the warning line is truncated with "…" and is the only item not boxed, and the narration never mentions it; either show it in full or drop it (rule 1, 6)
+  - Answer: kept: the △ line is the run's own, shown as it printed; the narration names the three failures, each ringed
+- G18 · scene 9 · "step 2 has no Cases table": the narration says the second step has neither cases nor an interface, and three failures are boxed; the terminal text is small and the lower third of the frame is empty (rule 6, 7)
+  - Answer: kept: the run is shown whole at the size of every terminal in the video
+- G19 · scene 10 · "Open the full guide": the screenshot's text ("The new command", "8 files · +673 -2", "Built") is unreadable at this size; crop to the button and one part (rule 6)
+  - Answer: kept: round 1 cropped it to the part's header and first rows; the ring is on Open the full guide
+- G20 · scene 10 · "choice A8 · it pauses here": the two cards on the right have very different heights of blank space and the frame's lower half is empty; the narration says "Two choices" but the open-part screenshot is the focal point, while the cards outrank it in type size (rule 7)
+  - Answer: kept: the cards are the same height (round 1); their text is the choices in words
+- G21 · scene 11 · "off-plan change D1": the right card has half its height blank and the lower right of the frame is empty; the tiny "Open · Step 3: a part over the frame" chip is tight against the code box (rule 5, 7)
+  - Answer: kept: the card says the change in full; the chip has its 40 px
+- G22 · scene 11 · "plan-map.json · a scene's part": the bold "src" and "guide" lines are the point, but the narration is about the gitignore block below, so the top block competes for the focal point (rule 2, 7)
+  - Answer: kept: the plan map's entry is the thing the change is about (its path), the .gitignore why it is never committed; each is lit on its words
+- G23 · scene 11 · "not with the details, because the guide is built each time and never committed.": the caption runs to two lines and is wide, sitting close to the bottom of the code box; too heavy for the frame (rule 7)
+  - Answer: kept: the caption is the player's
+- G24 · scene 12 · "You suggest an edit to a case that no scene shows.": the answer cards are hollow with a lot of dead space, and the question is small; the lower half of the frame is empty (rule 6, 7)
+  - Answer: kept: the quick check's layout is the one every walkthrough uses, the answer band below it
+- G25 · scene 13 · "two new decisions: an edit each": this label sits on top of the terminal output, over the end of the line "D-002 --to <file>;", covering content; move it below the block (rule 5)
+  - Answer: fixed: the pin moved to the end of the first line, clear of the ledger's words
+- G26 · scene 13 · "choice A10 · it pauses here": the two cards on the right are tall with mostly blank space, and the narration says "Two choices" after the edits, while the picture's first read is the terminal (rule 2, 7)
+  - Answer: kept: the cards come on as the narration says each choice
+- G27 · scene 13 · "rebuild: the guide, and scenes 12, 20, 21, 22, 23, 26 (their words or frame show it)": the "scene numbers: the plan video's" note in the heading is easy to miss, and scene numbers here differ from this video's own scene numbers, so a newcomer sees numbers that match nothing on screen (rule 1, 3)
+  - Answer: kept: the heading says whose scene numbers they are
+- G28 · scene 14 · "Changes only": the screenshot's file list, diff lines and header are tiny (about 8 px) and cut off at the right edge ("plan.md (each step's prose and its four blocks), the led…"); crop and enlarge (rule 6)
+  - Answer: kept: round 1 cropped it to the builder's files and lines; the run's lines are cut by the page's own column
+- G29 · scene 14 · "Every file whole": the orange boxes highlight the header and the diff but the narration names "every kind of change, its files, every changed line, and its runs"; runs are not shown, and the caption "not shown." at the end refers to something that is not in the picture (rule 1, 2)
+  - Answer: kept: the rings are on its files and its lines; its runs are on the part the chip opens
+- G30 · scene 14 · "choice A12 · it pauses here": both cards have empty space at the bottom; A12 and A13 make four type sizes with the mono label, the serif card text and the tiny screenshot text (rule 6, 7)
+  - Answer: kept: the cards are the choices in words
+- G31 · scene 15 · "Open · Tests": the chip sits directly above "npm test", between the heading and the first row, and crowds it; the rows are the same size and no one row is the focal point, so "a fresh agent's code check" never appears by that name, only "code check" (rule 5, 7)
+  - Answer: kept: the chip has its room; the rows are the runs, one each
+- G32 · scene 15 · "code check": the narration says the check "found one thing step five asked for that's missing, two hand-made things to do", and the picture says only "two hand-made things to do: missing", dropping the "one thing"; the rows do not say the same as the narration (rule 2)
+  - Answer: kept: the row names the one thing: step 5's two hand-made things to do
+- G33 · scene 15 · "four more written in: A13 and A14, and two small ones": the "two small ones" are not named here, and scene 16 lists A5, A6, A7, A14 as the four instead, so the count and the ids disagree (rule 1)
+  - Answer: fixed: the row now says which: A13 (paused), A14 (on the list), two small
+- G34 · scene 16 · "The list: four choices that don't pause, each with its own Flag": there is no Flag control on screen, only a caption that says "Flag any you'd change."; the words "each with its own Flag" point to nothing the viewer can see (rule 1)
+  - Answer: kept: on the review page the player lays each row's Flag on the frame by its data-call
+- G35 · scene 16 · "A5" / "A6" / "A7" / "A14": the ids sit apart from their rows, small and grey, and the text is left-aligned in a wide row with half the width empty; the chip "Open · Every choice the agent made" sits tight against the heading (rule 3, 5, 7)
+  - Answer: kept: the ids are the list's labels, as on every walkthrough's list
+- G36 · scene 17 · "Seeing it run, anything you'd change?": the question says what to decide, but "Say it in Finish, or approve the build" is small, and "Finish" is not shown as a place on screen; the frame is empty apart from the centre lines, so there is no button or sign of where to act (rule 1, 4)
+  - Answer: kept: Finish and Approve are the player's own, below the video

@@ -1,0 +1,75 @@
+<!-- SHARED STAGE (v2, style guide §5) for g1-bob-dylan-site. Paste into your <template> and replace
+     every FID with "f" + your frame_id. Positions and sizes are LAW.
+
+     WHY THIS SHAPE. This plan produces a static site: content files go through one build and come out
+     as pages. Nothing here exchanges data at runtime, so there is no node graph and there are no
+     edges. The chain reads left to right and ENDS IN THE REAL THING — three page mocks, because
+     "pages" is what the plan makes.
+
+     Design, search and hosting are NOT boxes. They are properties of the pages, and each shows up ON
+     the page it changes (a restyle, a search field, a host bar). If a step has no place on the chain
+     and no place on a page, it belongs in the rail and nowhere else.
+
+     PRESENCE. Do not draw the whole chain out of habit — it is context, not the subject:
+       · full chain (files + build + pages) .. only the cast beat, step 2, and the resolved plan
+       · files only ......................... step 1, which is about the content model
+       · pages only ......................... any beat that changes what a page IS (steps 3-6, branches)
+       · rail only .......................... openers, closers, decisions, quizzes
+     Colours are tokens so the video can be recoloured at runtime; never hardcode a hex. -->
+<style>
+  /* ---- the rail: the plan. Unchanged from v1; it may stay on every beat. ---- */
+  .FID-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .FID-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .FID-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .FID-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .FID-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .FID-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .FID-slot.dim { opacity:0.72; }
+
+  /* ---- section labels above each stretch of the chain ---- */
+  .FID-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- sources: real file names, stacked ---- */
+  .FID-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  /* tops: 346 / 432 / 518 / 604 — at most four, in the order the plan introduces them */
+
+  /* ---- the one process ---- */
+  .FID-build { position:absolute; left:980px; top:400px; width:200px; height:126px; border-radius:12px; background:var(--rp-data); display:flex; align-items:center; justify-content:center; }
+  .FID-build .l { font:500 32px/1.15 "Inter"; color:var(--rp-on-ink); }
+
+  .FID-arrow { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.4); }
+  .FID-arrow::after { content:""; position:absolute; right:-2px; top:-8px; border-left:16px solid rgba(var(--rp-ink-rgb),0.4); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  /* the two arrows, when the full chain is shown: left:900px;top:462px;width:60px and left:1200px;top:462px;width:60px */
+
+  /* ---- the output IS pages, so it is drawn as pages ---- */
+  .FID-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  /* lefts: 1258 / 1448 / 1638 — era, album, song (the kinds step 3 names) */
+  .FID-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; }
+  /* a page's own words, a line or two (the style guide's §5, rule 1: never grey bars standing for words) */
+  .FID-page .ln { display:block; font:400 15px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); margin-bottom:4px; }
+  .FID-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .FID-page.lit { border:3px solid var(--rp-coral); padding:12px 12px 0; }   /* the frame's ONE coral */
+
+  /* ---- step 4: the design system is a restyle OF the pages, not a box ---- */
+  .FID-page.book h { font:600 15px/1.15 "EB Garamond"; letter-spacing:0; }
+  .FID-page.book .ln { font-family:"EB Garamond"; font-size:16px; }
+  /* ---- step 5: search is a field on the page that gets it ---- */
+  .FID-find { height:18px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.35); margin-bottom:10px; position:relative; }
+  .FID-find::after { content:""; position:absolute; left:6px; top:5px; width:7px; height:7px; border-radius:50%; border:1.5px solid rgba(var(--rp-ink-rgb),0.5); }
+  /* ---- step 6: hosting is where the pages are served from ---- */
+  .FID-host { position:absolute; top:300px; left:1258px; width:552px; height:34px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 14px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+</style>
+
+<!-- MARKUP, full chain. Drop the stretches your beat does not need. -->
+<div class="FID-lbl" style="left:660px;top:300px">Content files</div>
+<div class="FID-file" style="top:346px">albums/</div>
+<div class="FID-file" style="top:432px">songs/</div>
+<div class="FID-file" style="top:518px">events/</div>
+<div class="FID-arrow" style="left:900px;top:462px;width:60px"></div>
+<div class="FID-lbl" style="left:980px;top:300px">Build</div>
+<div class="FID-build"><span class="l">Build</span></div>
+<div class="FID-arrow" style="left:1200px;top:462px;width:60px"></div>
+<div class="FID-lbl" style="left:1258px;top:300px">Pages</div>
+<div class="FID-page" style="left:1258px"><h>Bringing It All Back Home</h><span class="ln">March 1965</span><span class="ln">11 songs</span><span class="cap">album</span></div>
+<div class="FID-page" style="left:1448px"><h>Going Electric, 1965</h><span class="ln">Newport, July</span><span class="ln">3 albums</span><span class="cap">era</span></div>
+<div class="FID-page" style="left:1638px"><h>Like a Rolling Stone</h><span class="ln">6:13</span><span class="ln">on Highway 61</span><span class="cap">song</span></div>

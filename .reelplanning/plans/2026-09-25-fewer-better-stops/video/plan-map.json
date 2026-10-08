@@ -1,0 +1,1830 @@
+{
+  "project": "video",
+  "title": "The right calls stop, and the walkthrough stays short",
+  "planDir": ".reelplanning/plans/2026-09-25-fewer-better-stops",
+  "totalSeconds": 231.705,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "The problem, and what changes",
+      "fromFrame": 1,
+      "toFrame": 4,
+      "start": 0,
+      "end": 57.11,
+      "linearSeconds": 57.11,
+      "watchedSeconds": 57.11,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Step 1: one pause per step",
+      "fromFrame": 5,
+      "toFrame": 7,
+      "start": 57.11,
+      "end": 89.457,
+      "linearSeconds": 32.347,
+      "watchedSeconds": 32.347,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Step 2: a miss stops its own kind",
+      "fromFrame": 8,
+      "toFrame": 14,
+      "start": 89.457,
+      "end": 163.671,
+      "linearSeconds": 74.214,
+      "watchedSeconds": 59.494,
+      "decisions": [
+        "q1"
+      ]
+    },
+    {
+      "id": "ch4",
+      "title": "Step 3: too many calls becomes a question",
+      "fromFrame": 15,
+      "toFrame": 21,
+      "start": 163.671,
+      "end": 231.705,
+      "linearSeconds": 68.034,
+      "watchedSeconds": 62.534,
+      "decisions": [
+        "q2"
+      ]
+    }
+  ],
+  "levels": null,
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 7,
+      "planStep": 1,
+      "question": "In the memory walkthrough, step 4 has two calls that stop, A11 and A12, and a deviation, D1. How many times does the video pause there?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Once: all three share the step's beat"
+        },
+        {
+          "id": "b",
+          "label": "Twice: the two calls share a beat, and D1 has its own"
+        },
+        {
+          "id": "c",
+          "label": "Three times, one per call, as now"
+        }
+      ],
+      "answer": "b",
+      "explain": "The two calls share the step's stop beat; a deviation always keeps its own beat, so step 4 pauses twice.",
+      "at": 89.407,
+      "explainedAt": 61.61,
+      "explainedFrame": 6
+    },
+    {
+      "id": "k2",
+      "frameIndex": 10,
+      "planStep": 2,
+      "question": "A recent miss is tagged close. A new call on the same part is tagged visible, and visible was accepted ten times running. Does it stop?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: it is on the same part as the miss"
+        },
+        {
+          "id": "b",
+          "label": "No: it shares no tag with the miss, and its tag has its ten"
+        },
+        {
+          "id": "c",
+          "label": "Yes: a recent miss stops every call"
+        }
+      ],
+      "answer": "b",
+      "explain": "A miss that carries tags reaches only calls sharing one of them; visible has its ten accepts, so the call joins the grouped beat.",
+      "at": 123.734,
+      "explainedAt": 93.957,
+      "explainedFrame": 9
+    },
+    {
+      "id": "k3",
+      "frameIndex": 17,
+      "planStep": 3,
+      "question": "The memory walkthrough has sixteen calls, and no step has more than four. What does reel audit say?",
+      "options": [
+        {
+          "id": "a",
+          "label": "A warning: 16 calls; step 1 has 4"
+        },
+        {
+          "id": "b",
+          "label": "Nothing: no step reaches five"
+        },
+        {
+          "id": "c",
+          "label": "It fails the audit"
+        }
+      ],
+      "answer": "a",
+      "explain": "It warns past twelve calls in all and names the step with the most, whether or not a step reaches five; it is a warning, never a failure.",
+      "at": 189.678,
+      "explainedAt": 168.171,
+      "explainedFrame": 16
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 211.485,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Twenty-three stops",
+      "compositionId": "01-hook",
+      "type": "hook",
+      "durationSeconds": 12.23,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "The problem, and what changes",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-6.37s.png",
+      "terms": [
+        "call",
+        "deviation",
+        "beat"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "Two rules make it so",
+      "compositionId": "02-causes",
+      "type": "pain_point",
+      "durationSeconds": 16.73,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 12.23,
+      "thumb": "snapshots/frame-01-at-20.84s.png",
+      "terms": [
+        "review player",
+        "review",
+        "call",
+        "miss",
+        "tag",
+        "streak"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "Plans leave too much open",
+      "compositionId": "03-too-many",
+      "type": "pain_point",
+      "durationSeconds": 14.04,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 28.96,
+      "thumb": "snapshots/frame-02-at-36.23s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "What changes: three steps, each on its own",
+      "compositionId": "04-overview",
+      "type": "product_intro",
+      "durationSeconds": 14.11,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 43,
+      "thumb": "snapshots/frame-03-at-50.3s.png",
+      "terms": [
+        "call",
+        "miss",
+        "step"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Part 2 of 4",
+      "compositionId": "05-opener-2",
+      "type": "product_intro",
+      "durationSeconds": 4.5,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 1: one pause per step",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 57.11,
+      "thumb": "snapshots/frame-04-at-59.61s.png",
+      "terms": [
+        "step"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "Step 1: the calls that stop in a step share one beat",
+      "compositionId": "06-step-1",
+      "type": "feature_showcase",
+      "durationSeconds": 20.38,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 61.61,
+      "thumb": "snapshots/frame-05-at-72.05s.png",
+      "terms": [
+        "call",
+        "deviation",
+        "beat",
+        "step",
+        "answer band"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "Quick check: a step with a deviation",
+      "compositionId": "07-quiz-k1",
+      "type": "social_proof",
+      "durationSeconds": 7.467,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "In the memory walkthrough, step 4 has two calls that stop, A11 and A12, and a deviation, D1. How many times does the video pause there?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "b",
+      "explain": "The two calls share the step's stop beat; a deviation always keeps its own beat, so step 4 pauses twice.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Once: all three share the step's beat",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Twice: the two calls share a beat, and D1 has its own",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Three times, one per call, as now",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 81.99,
+      "thumb": "snapshots/frame-06-at-85.97s.png",
+      "terms": [
+        "call",
+        "memory",
+        "deviation",
+        "beat",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "Part 3 of 4",
+      "compositionId": "08-opener-3",
+      "type": "product_intro",
+      "durationSeconds": 4.5,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 2: a miss stops its own kind",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 89.457,
+      "thumb": "snapshots/frame-07-at-91.96s.png",
+      "terms": [
+        "step"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "Step 2: a miss stops calls of its own kind",
+      "compositionId": "09-step-2",
+      "type": "feature_showcase",
+      "durationSeconds": 21.08,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 93.957,
+      "thumb": "snapshots/frame-08-at-104.75s.png",
+      "terms": [
+        "call",
+        "miss",
+        "tag",
+        "streak",
+        "step"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "Quick check: a miss with a different tag",
+      "compositionId": "10-quiz-k2",
+      "type": "social_proof",
+      "durationSeconds": 8.747,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A recent miss is tagged close. A new call on the same part is tagged visible, and visible was accepted ten times running. Does it stop?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "A miss that carries tags reaches only calls sharing one of them; visible has its ten accepts, so the call joins the grouped beat.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes: it is on the same part as the miss",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "No: it shares no tag with the miss, and its tag has its ten",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Yes: a recent miss stops every call",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 115.037,
+      "thumb": "snapshots/frame-09-at-119.66s.png",
+      "terms": [
+        "call",
+        "miss",
+        "tag",
+        "beat",
+        "grouped beat",
+        "quick check"
+      ]
+    },
+    {
+      "index": 11,
+      "title": "Question 1: what may a miss with no tags stop?",
+      "compositionId": "11-decision-q1",
+      "type": "cta",
+      "durationSeconds": 16.917,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q1",
+      "branch": null,
+      "question": "What may a miss with no tags stop?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing directly",
+          "why": "A miss stops only calls that share one of its tags; a miss with no tags still shapes the next plan's questions (memory step 4), but stops no call.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Close calls on its part",
+          "why": "It counts as a close miss on its components: it stops the calls there tagged close (15 of the answer-on-the-video's 22).",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "As now",
+          "why": "Every tagged call on its components stops, for five plans.",
+          "recommended": false
+        }
+      ],
+      "start": 123.784,
+      "thumb": "snapshots/frame-10-at-132.49s.png",
+      "terms": [
+        "call",
+        "miss",
+        "tag"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "If A: tags only",
+      "compositionId": "12-branch-q1-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 8.25,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 140.701,
+      "thumb": "snapshots/frame-11-at-145.08s.png",
+      "terms": [
+        "call",
+        "memory",
+        "miss",
+        "tag",
+        "step"
+      ]
+    },
+    {
+      "index": 13,
+      "title": "If B: close calls on its part",
+      "compositionId": "13-branch-q1-b",
+      "type": "benefit_highlight",
+      "durationSeconds": 8.49,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 148.951,
+      "thumb": "snapshots/frame-12-at-153.45s.png",
+      "terms": [
+        "review player",
+        "review",
+        "call",
+        "miss",
+        "step"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "If C: as now",
+      "compositionId": "14-branch-q1-c",
+      "type": "benefit_highlight",
+      "durationSeconds": 6.23,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 157.441,
+      "thumb": "snapshots/frame-13-at-160.81s.png",
+      "terms": [
+        "call",
+        "reel stops",
+        "step"
+      ]
+    },
+    {
+      "index": 15,
+      "title": "Part 4 of 4",
+      "compositionId": "15-opener-4",
+      "type": "product_intro",
+      "durationSeconds": 4.5,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: too many calls becomes a question",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 163.671,
+      "thumb": "snapshots/frame-14-at-166.17s.png",
+      "terms": [
+        "step"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "Step 3: too many calls in one step is asked, not made",
+      "compositionId": "16-step-3",
+      "type": "feature_showcase",
+      "durationSeconds": 15.52,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 168.171,
+      "thumb": "snapshots/frame-15-at-176.18s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 17,
+      "title": "Quick check: sixteen calls, four at most",
+      "compositionId": "17-quiz-k3",
+      "type": "social_proof",
+      "durationSeconds": 6.037,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "The memory walkthrough has sixteen calls, and no step has more than four. What does reel audit say?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "a",
+      "explain": "It warns past twelve calls in all and names the step with the most, whether or not a step reaches five; it is a warning, never a failure.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "A warning: 16 calls; step 1 has 4",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Nothing: no step reaches five",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "It fails the audit",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "start": 183.691,
+      "thumb": "snapshots/frame-16-at-186.96s.png",
+      "terms": [
+        "call",
+        "memory",
+        "step",
+        "quick check"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "Question 2: a fifth call during the build",
+      "compositionId": "18-decision-q2",
+      "type": "cta",
+      "durationSeconds": 17.387,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q2",
+      "branch": null,
+      "question": "A step reaches its fifth call during the build. What does the implementer do?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Asks before going on",
+          "why": "That step waits; its biggest open choice goes into plan.md as a question for you, and the other steps carry on.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Builds on, and says so",
+          "why": "The walkthrough opens with the count and the step; reel audit warns.",
+          "recommended": false
+        }
+      ],
+      "start": 189.728,
+      "thumb": "snapshots/frame-17-at-198.67s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 19,
+      "title": "If A: the step waits for a question",
+      "compositionId": "19-branch-q2-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 6.14,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 207.115,
+      "thumb": "snapshots/frame-18-at-210.44s.png",
+      "terms": [
+        "call",
+        "step"
+      ]
+    },
+    {
+      "index": 20,
+      "title": "If B: build on, and say so",
+      "compositionId": "20-branch-q2-b",
+      "type": "benefit_highlight",
+      "durationSeconds": 5.5,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 213.255,
+      "thumb": "snapshots/frame-19-at-216.25s.png",
+      "terms": [
+        "step"
+      ]
+    },
+    {
+      "index": 21,
+      "title": "The plan, resolved",
+      "compositionId": "21-resolved",
+      "type": "cta",
+      "durationSeconds": 12.95,
+      "planStep": null,
+      "planQuestions": [
+        1,
+        2
+      ],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "start": 218.755,
+      "thumb": "snapshots/frame-20-at-225.23s.png",
+      "terms": [
+        "approve",
+        "step"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "q1",
+      "kind": "one",
+      "frameIndex": 11,
+      "compositionId": "11-decision-q1",
+      "planStep": 2,
+      "question": "What may a miss with no tags stop?",
+      "at": 140.651,
+      "resumeAt": 163.671,
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing directly",
+          "why": "A miss stops only calls that share one of its tags; a miss with no tags still shapes the next plan's questions (memory step 4), but stops no call.",
+          "recommended": true,
+          "branch": {
+            "frameIndex": 12,
+            "compositionId": "12-branch-q1-a",
+            "start": 140.701,
+            "end": 148.951
+          }
+        },
+        {
+          "id": "b",
+          "label": "Close calls on its part",
+          "why": "It counts as a close miss on its components: it stops the calls there tagged close (15 of the answer-on-the-video's 22).",
+          "recommended": false,
+          "branch": {
+            "frameIndex": 13,
+            "compositionId": "13-branch-q1-b",
+            "start": 148.951,
+            "end": 157.441
+          }
+        },
+        {
+          "id": "c",
+          "label": "As now",
+          "why": "Every tagged call on its components stops, for five plans.",
+          "recommended": false,
+          "branch": {
+            "frameIndex": 14,
+            "compositionId": "14-branch-q1-c",
+            "start": 157.441,
+            "end": 163.671
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q2",
+      "kind": "one",
+      "frameIndex": 18,
+      "compositionId": "18-decision-q2",
+      "planStep": 3,
+      "question": "A step reaches its fifth call during the build. What does the implementer do?",
+      "at": 207.065,
+      "resumeAt": 218.755,
+      "options": [
+        {
+          "id": "a",
+          "label": "Asks before going on",
+          "why": "That step waits; its biggest open choice goes into plan.md as a question for you, and the other steps carry on.",
+          "recommended": true,
+          "branch": {
+            "frameIndex": 19,
+            "compositionId": "19-branch-q2-a",
+            "start": 207.115,
+            "end": 213.255
+          }
+        },
+        {
+          "id": "b",
+          "label": "Builds on, and says so",
+          "why": "The walkthrough opens with the count and the step; reel audit warns.",
+          "recommended": false,
+          "branch": {
+            "frameIndex": 20,
+            "compositionId": "20-branch-q2-b",
+            "start": 213.255,
+            "end": 218.755
+          }
+        }
+      ],
+      "summary": null
+    }
+  ],
+  "details": [],
+  "plan": {
+    "title": "The right calls stop, and the walkthrough stays short",
+    "problem": "Every call in the answer-on-the-video walkthrough stops the video: 23 of 23 (22 calls and a\ndeviation), each with a beat of its own, so the walkthrough fits five minutes only with one sentence\na call. The memory walkthrough: 14 of 16. Three things cause it.\n\n- **Every tag's streak is 0.** D-084 lets a tag stop no more once you have accepted it ten times\n  running; the three own-words answers at the end of the revise-loop review (D-103 to D-105) reset\n  `visible`, `close` and `hard-to-undo`.\n- **A miss with no tags reaches every call on its component.** Memory's call A12: one old miss (D-056,\n  a width limit for the plan text, on the review player) makes every tagged player call stop, and the\n  quick-check miss on revise-loop step 6 names five components, so it reaches nearly every call.\n- **Plans leave too much open.** The skill says a dozen calls is too many; every plan so far had more\n  (15 to 34), and nothing acts on it. In the four walkthroughs you reviewed, steps with five or more\n  calls hold 38 of the 84 calls, and 6 of the 8 you flagged, answered in your own words or saw\n  changed later.\n\nYou take the recommendation (15 of 15 answered from the options) and accept most calls the first\ntime (84 of 91). So the aim is not fewer stops for their own sake: the calls that stop should be the\nones you might overturn, and a stop should cost a clause, not a beat.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "The calls that stop in a step share one beat",
+        "text": "*Independent.*\n\nToday every call that stops has a beat of its own, so the video pauses once per call. After this\nstep it pauses once per step for that step's calls, and once more for each deviation:\n\n- **The step's calls share one beat.** The walkthrough gives each step one stop beat that names all\n  of that step's calls that stop: `- autonomy: a3, a4, a5` (a beat with one id still works). The\n  narration gives each call a clause; its why and where to check are in its row.\n- **The video pauses once, at the end of that beat.** The answer band lists each call (what it chose,\n  and instead of what) with its own Accept and Flag. It is like the grouped sheet, with no Accept\n  all. The video goes on once every call on the list has a verdict.\n- **A deviation keeps its own beat.** It is never on the step's list: it pauses the video on its own,\n  as now. Example: memory's step 4 has two calls that stop, A11 and A12, and a deviation, D1. The\n  video pauses **twice** there: once for A11 and A12 together, once for D1.\n\n`reel stops` prints the beats by step (the shared beat's ids, then each deviation's own beat), and\nthe skill and style guide replace \"one beat per call\" with this. On the two walkthroughs waiting for\nreview, 23 pauses become 5 and 14 become 6."
+      },
+      {
+        "n": 2,
+        "title": "A miss stops calls of its own kind",
+        "text": "*Independent.*\n\nA call stops for a recent miss only when it shares a tag with that miss. The component no longer\nmatters. So a call that shares no tag with any recent miss is judged by its own tags' streaks alone,\nas if there were no miss:\n\n- A recent miss is tagged `close`. A new call on the same part is tagged `close`: it stops, however\n  long `close`'s streak (as now).\n- The same miss, and a new call on the same part tagged `visible`, where `visible` has been accepted\n  ten times running: it does **not** stop. It shares no tag with the miss, and its tag has its ten.\n- A miss with no tags (a plan question's miss, or a call from before tags) stops nothing directly\n  (D-109). It still shapes the next plan's questions (memory step 4).\n\n`reel stops` says which rule stopped a call (a deviation, a tag's streak short of ten, or a miss\nsharing a tag). Memory's call A12 changes before its review, and its row says so. Today this changes\nwhy calls stop, not how many (every streak is 0), and it matters once a tag earns its ten."
+      },
+      {
+        "n": 3,
+        "title": "Too many calls in one step is asked, not made",
+        "text": "*Independent.*\n\nTwo rules, one for the whole plan and one for a step:\n\n- **The whole plan: `reel audit` warns past 12 calls.** It counts every call and deviation in the\n  walkthrough, whichever steps they are in, and names the step with the most (\"23 calls; step 2 has\n  8\"). It warns even when no step reaches five. Example: the memory walkthrough has sixteen calls\n  and no step has more than four, and `reel audit` says \"16 calls; step 1 has 4\". The warning does not\n  fail the audit.\n- **A step: five calls is a question.** The skill tells the plan writer: a step you expect to need\n  five or more calls asks its biggest as a question instead. When a step reaches its fifth call\n  anyway during the build, the implementer asks before going on (D-110): that step waits, its\n  biggest open choice goes into `plan.md` as a question for you, and the other steps carry on."
+      }
+    ]
+  },
+  "slug": "2026-09-25-fewer-better-stops",
+  "prerequisites": [
+    {
+      "video": "system",
+      "title": "reelplanning: the whole system",
+      "gives": "what the parts are and how a review goes",
+      "seconds": 478.3,
+      "terms": [
+        "beat",
+        "plan text",
+        "open chip",
+        "detail",
+        "side panel",
+        "answer band",
+        "call",
+        "quick check",
+        "plan video",
+        "walkthrough",
+        "chapter",
+        "area",
+        "plan-to-video skill",
+        "narrate",
+        "finish-project",
+        "plan-diff",
+        "details check",
+        "review player",
+        "review server",
+        "inbox",
+        "headless run",
+        "reel cli",
+        "decision log",
+        "revise step",
+        "implement step",
+        "walkthrough fix step",
+        "system video",
+        "approve",
+        "sandbox",
+        "review",
+        "notification",
+        "tag",
+        "deviation",
+        "reel stops",
+        "streak",
+        "id",
+        "grouped beat",
+        "own words",
+        "accept all",
+        "system-review",
+        "memory",
+        "miss",
+        "retro",
+        "step",
+        "finish"
+      ],
+      "found": true,
+      "default": true
+    }
+  ],
+  "terms": [],
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns plan.md into a video via HyperFrames",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's command from config.json, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "scripts/reel.mjs; manages .reelplanning/; reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into plan.md; changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Implements plan.md and logs each call the plan did not cover into walkthrough.md, with tags; its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo from spec.md; rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Four act on your answers",
+        "start": 124.988,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once as reviews/<kind>-<time>.json with a .md of what to act on; never overwritten. The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Four carry your answers back",
+        "start": 105.648,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Review loop, step 2: nobody waiting",
+        "start": 185.951,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Review loop, steps 5–6: rebuild, and you're told",
+        "start": 225.235,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover: one row in walkthrough.md. Labelled visible, hard-to-undo or close when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the ledger and reviews/, never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Build loop, step 1: build, and log each call",
+        "start": 273.264,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Next: chapter 2",
+        "start": 75.483,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Chapter 2 of 5",
+        "start": 79.483,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started by reel retro when reel status says one is due, and judged against a fixed benchmark",
+      "forms": [
+        "retro"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "What your reviews teach",
+        "start": 361.818,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "Build loop, step 3: the walkthrough video",
+        "start": 301.802,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "Review loop, steps 1–2: finish, then send",
+        "start": 167.531,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "Review loop, steps 3–4: record, then revise",
+        "start": 203.055,
+        "chapter": 3,
+        "chapterTitle": "The review loop"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos per plan",
+        "start": 45.84,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each choice",
+        "start": 26.069,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Build loop, step 6: this video catches up",
+        "start": 343.071,
+        "chapter": 4,
+        "chapterTitle": "The build loop"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens beside the paused video, for what the video cannot hold; started from a template in templates/details/",
+      "forms": [
+        "detail"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "Shows on a frame with a detail; click it or press O to open the detail",
+      "forms": [
+        "open chip"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where a detail opens: beside the stage on a wide window, covering it otherwise",
+      "forms": [
+        "side panel"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words from plan.md, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Review it by watching",
+        "start": 8.469,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The details check",
+      "meaning": "check-details, run by finish-project and verify; a broken detail page stops the build",
+      "forms": [
+        "details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 8,
+        "title": "Four parts make the video",
+        "start": 84.896,
+        "chapter": 2,
+        "chapterTitle": "The parts"
+      }
+    }
+  ],
+  "ids": {
+    "A11": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A12": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A13": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A14": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A15": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A16": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A3": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A4": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "A5": {
+      "kind": "choice",
+      "gloss": null
+    },
+    "D-056": {
+      "kind": "decision",
+      "gloss": "The plan text goes beside the stage (a 340 px column) when the stage loses…"
+    },
+    "D-084": {
+      "kind": "decision",
+      "gloss": "Does your own record also decide what stops? The tags, and your record"
+    },
+    "D-108": {
+      "kind": "decision",
+      "gloss": "Where do the answers the frame can't take go? i like the pricnicple of A, not…"
+    },
+    "D1": {
+      "kind": "off-plan change",
+      "gloss": null
+    },
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "In the memory walkthrough, step 4 has two calls that stop, A11 and A12, and a…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "A recent miss is tagged close. A new call on the same part is tagged visible…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "The memory walkthrough has sixteen calls, and no step has more than four. What…"
+    },
+    "q1": {
+      "kind": "question",
+      "n": 1,
+      "gloss": "What may a miss with no tags stop?"
+    },
+    "q2": {
+      "kind": "question",
+      "n": 2,
+      "gloss": "A step reaches its fifth call during the build. What does the implementer do?"
+    }
+  }
+}

@@ -1,0 +1,150 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f23-step-4-stops-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f23-step-4-stops-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f23-step-4-stops-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f23-step-4-stops-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f23-step-4-stops-chip.lit { color:var(--rp-coral-deep); }
+  .f23-step-4-stops-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f23-step-4-stops-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-step-4-stops-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-step-4-stops-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f23-step-4-stops-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f23-step-4-stops-lines path.ink { stroke:var(--rp-ink); }
+  .f23-step-4-stops-lines path.dashed { stroke-dasharray:10 10; }
+  .f23-step-4-stops-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f23-step-4-stops-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f23-step-4-stops-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f23-step-4-stops-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f23-step-4-stops-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f23-step-4-stops-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f23-step-4-stops-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f23-step-4-stops-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f23-step-4-stops-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f23-step-4-stops-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f23-step-4-stops-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f23-step-4-stops-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f23-step-4-stops-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-step-4-stops-slot.dec .n { top:13px; } .f23-step-4-stops-slot.dec .t { top:12px; }
+  .f23-step-4-stops-slot:not([data-filled]) .n, .f23-step-4-stops-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f23-step-4-stops-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-step-4-stops-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f23-step-4-stops-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f23-step-4-stops-opt.row .k { top:30px; } .f23-step-4-stops-opt.row .l { left:84px; top:22px; }
+  .f23-step-4-stops-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f23-step-4-stops-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-step-4-stops-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f23-step-4-stops-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f23-step-4-stops-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f23-step-4-stops-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-step-4-stops-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f23-step-4-stops-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f23-step-4-stops-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f23-step-4-stops-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f23-step-4-stops-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f23-step-4-stops-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f23-step-4-stops-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f23-step-4-stops-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f23-step-4-stops-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f23-step-4-stops-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f23-step-4-stops-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f23-step-4-stops-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f23-step-4-stops-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f23-step-4-stops-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f23-step-4-stops-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f23-step-4-stops-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f23-step-4-stops-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f23-step-4-stops-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f23-step-4-stops-box.center { justify-content:center; }
+  .f23-step-4-stops-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f23-step-4-stops-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f23-step-4-stops-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f23-step-4-stops-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f23-step-4-stops-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f23-step-4-stops-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f23-step-4-stops-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f23-step-4-stops-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f23-step-4-stops-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f23-step-4-stops-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f23-step-4-stops-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="23-step-4-stops" data-duration="17.61" data-width="1920" data-height="1080">
+
+  <div class="clip f23-step-4-stops-bg" id="f23-step-4-stops-bg" data-start="0" data-duration="17.61" data-track-index="0"></div>
+
+  <div class="clip f23-step-4-stops-scene" id="f23-step-4-stops-scene" data-start="0" data-duration="17.61" data-track-index="1">
+  <div class="f23-step-4-stops-kicker" id="f23-step-4-stops-kicker">Step 4 · What a miss stops</div>
+  <div class="f23-step-4-stops-spine" id="f23-step-4-stops-spine">
+    <div class="f23-step-4-stops-tick done" id="f23-step-4-stops-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f23-step-4-stops-tick done" id="f23-step-4-stops-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f23-step-4-stops-tick done" id="f23-step-4-stops-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f23-step-4-stops-tick live" id="f23-step-4-stops-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f23-step-4-stops-tick" id="f23-step-4-stops-tick-5" data-plan-step="5" style="top:475px"></div>
+  </div>
+  <div class="f23-step-4-stops-chip grey" id="f23-step-4-stops-tag" style="left:200px; top:230px">hard-to-undo</div>
+  <div id="f23-step-4-stops-ticks"><div class="f23-step-4-stops-box mono paper center" style="left:200px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:318px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:436px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:554px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:672px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:790px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:908px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:1026px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:1144px; top:280px; width:106px; height:80px; padding:0">ok</div><div class="f23-step-4-stops-box mono paper center" style="left:1262px; top:280px; width:106px; height:80px; padding:0">ok</div></div>
+  <div class="f23-step-4-stops-chip grey" id="f23-step-4-stops-grp" style="left:200px; top:386px">10 accepts · grouped, no stop</div>
+  <div class="f23-step-4-stops-box mono data center" id="f23-step-4-stops-miss" style="left:1390px; top:280px; width:130px; height:80px; padding:0">miss</div>
+  <div class="f23-step-4-stops-box col" id="f23-step-4-stops-next" style="left:1560px; top:262px; width:280px; height:116px"><span class="s">next call</span><span>hard-to-undo</span></div>
+  <div class="f23-step-4-stops-chip lit" id="f23-step-4-stops-stops" style="left:1560px; top:396px">stops</div>
+  <div class="f23-step-4-stops-chip grey" id="f23-step-4-stops-dec" style="left:1100px; top:150px">decided · D-084, + 1 exception</div>
+  <div class="f23-step-4-stops-file" id="f23-step-4-stops-plan" style="left:200px; top:520px; width:900px; height:250px"><span class="fn">next plan</span><div class="rule"></div><span class="row" style="top:100px">touches: the sandbox</span><span class="row" id="f23-step-4-stops-asks" style="top:160px">asks: that kind of question</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "23-step-4-stops";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f23-step-4-stops-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("tag"), 0.11);
+  fade(tl, $("ticks"), 0.11);
+  pop(tl, $("grp"), 2.96, 8);
+  pop(tl, $("miss"), 4.5);
+  pop(tl, $("next"), 7.03);
+  lit(tl, $("next"), 7.03);
+  pop(tl, $("stops"), 7.23, 8);
+  pop(tl, $("dec"), 10.94, 8);
+  pop(tl, $("plan"), 13.57);
+  pop(tl, $("asks"), 15.11, 6);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 17.109);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

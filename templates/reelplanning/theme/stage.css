@@ -1,0 +1,23 @@
+.FID-rail { position:absolute; height:640px; }
+.FID-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(20,20,19,0.18); }
+.FID-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE; box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+.FID-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:#141413; }
+.FID-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; white-space:nowrap; }
+.FID-slot .d { position:absolute; right:20px; top:31px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.04em; color:#9C4524; }  /* the chosen option, resolved-plan frame only */
+.FID-slot.dim { opacity:0.72; }
+.FID-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12); box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); display:flex; align-items:center; justify-content:center; }
+.FID-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:#141413; text-align:center; padding:0 16px; }
+.FID-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); } .FID-node.navy .l { color:#FAF9F5; }
+.FID-node.dim { opacity:0.72; }
+.FID-node.navy.dim { opacity:1; }  /* the navy tile is the map's landmark: it never dims, it never flips shade between frames */
+.FID-node.active { border:3px solid #B8552E; }
+.FID-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+.FID-edges path { fill:none; stroke:#141413; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.FID-edges path.dim { opacity:0.35; }
+.FID-edges path.active { stroke:#B8552E; stroke-width:4; }
+/* decision beats: two option cards under the diagram; the recommended one carries the coral border */
+.FID-opt { position:absolute; top:770px; width:540px; height:100px; border-radius:12px; background:#FAF9F5; border:1px solid rgba(20,20,19,0.2); display:flex; align-items:center; justify-content:center; }
+.FID-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:#141413; text-align:center; }
+.FID-q { position:absolute; top:680px; width:1160px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.018em; color:#141413; white-space:nowrap; }   /* a decision beat's heading: the player shows "Full question" by it */
+.FID-opt.rec { border:3px solid #B8552E; }
+.FID-opt .k { position:absolute; left:20px; top:12px; font:500 16px/1 "JetBrains Mono"; letter-spacing:0.16em; color:#9C4524; }

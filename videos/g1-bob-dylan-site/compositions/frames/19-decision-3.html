@@ -1,0 +1,220 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f19-decision-3-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+
+  /* ---- shared stage: rail only (positions/sizes are law) ---- */
+  .f19-decision-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f19-decision-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f19-decision-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f19-decision-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f19-decision-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f19-decision-3-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); } /* ink tags in this frame */
+  .f19-decision-3-slot.dim { opacity:0.72; }
+  .f19-decision-3-slot.empty .n, .f19-decision-3-slot.empty .t { opacity:0; }
+
+  /* ---- chrome ---- */
+  .f19-decision-3-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f19-decision-3-lab { position:absolute; top:86px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+
+  /* ---- prototypes: two album-page mocks ---- */
+  .f19-decision-3-mock { position:absolute; top:120px; width:560px; height:760px; box-sizing:border-box; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:8px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f19-decision-3-mock .rec { position:absolute; inset:-1px; border:3px solid var(--rp-coral); border-radius:9px; pointer-events:none; opacity:0; }
+  .f19-decision-3-mock .bar { height:16px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f19-decision-3-mock .col { display:flex; flex-direction:column; gap:10px; }
+  .f19-decision-3-mock .rule { height:1px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+  /* A · Book-like */
+  .f19-decision-3-pageA { position:absolute; left:56px; top:60px; width:448px; }
+  .f19-decision-3-pageA .title { margin:0; font:400 34px/1.1 "EB Garamond"; letter-spacing:-0.018em; color:var(--rp-ink); white-space:nowrap; }
+  .f19-decision-3-pageA .rule { margin:14px 0 18px; }
+  .f19-decision-3-pageA .imgrow { display:flex; gap:16px; height:104px; }
+  .f19-decision-3-pageA .imgbox { flex:0 0 150px; height:104px; box-sizing:border-box; background:var(--rp-tile-2); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:6px; }
+  .f19-decision-3-pageA .imgrow .col { flex:1 1 auto; }
+  .f19-decision-3-pageA .para { margin-top:16px; }
+  .f19-decision-3-pageA .tracks { margin-top:22px; }
+  .f19-decision-3-pageA .thead { display:flex; align-items:center; height:22px; }
+  .f19-decision-3-pageA .thead .bar { height:10px; }
+  .f19-decision-3-pageA .trow { display:flex; align-items:center; height:24px; border-top:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f19-decision-3-pageA .no { flex:0 0 40px; display:flex; align-items:center; }
+  .f19-decision-3-pageA .trow .bar { height:14px; }
+  .f19-decision-3-pageA .tm { flex:0 0 36px; margin-left:auto; }
+
+  /* B · Magazine */
+  .f19-decision-3-photo { position:absolute; left:0; top:0; width:560px; height:330px; background:var(--rp-slab); }
+  .f19-decision-3-photo .yr { position:absolute; left:36px; bottom:148px; font:400 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-slab-ink-rgb),0.72); }
+  .f19-decision-3-photo .hl { position:absolute; left:36px; bottom:30px; margin:0; font:700 46px/1.02 "Inter"; letter-spacing:-0.02em; color:var(--rp-slab-ink); }
+  .f19-decision-3-photo .rights { position:absolute; right:24px; top:22px; padding:8px 14px; border:1px solid rgba(var(--rp-slab-ink-rgb),0.4); border-radius:6px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-slab-ink); }
+  .f19-decision-3-pageB { position:absolute; left:36px; top:358px; width:488px; }
+  .f19-decision-3-pageB .cols { display:flex; gap:20px; }
+  .f19-decision-3-pageB .cols .col { flex:1 1 0; gap:8px; }
+  .f19-decision-3-pageB .cols .bar { height:14px; }
+  .f19-decision-3-pageB .quote { position:relative; margin-top:24px; padding:10px 0 10px 56px; border-top:1px solid rgba(var(--rp-ink-rgb),0.12); border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f19-decision-3-pageB .quote .qm { position:absolute; left:0; top:-2px; font:400 84px/1 "EB Garamond"; font-style:italic; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f19-decision-3-pageB .quote .col { gap:10px; }
+  .f19-decision-3-pageB .quote .bar { height:18px; }
+  .f19-decision-3-pageB .cols2 { margin-top:24px; }
+</style>
+
+<div id="root" data-composition-id="19-decision-3" data-duration="17.417" data-width="1920" data-height="1080">
+  <div class="clip f19-decision-3-bg" data-start="0" data-duration="17.417" data-track-index="0"></div>
+
+  <div class="f19-decision-3-kicker" id="f19-decision-3-kicker">✱ Choice 3 · Step 4</div>
+
+  <!-- shared stage: rail only -->
+  <div class="f19-decision-3-rail" id="f19-decision-3-rail">
+    <div class="f19-decision-3-slot dim" id="f19-decision-3-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+    <div class="f19-decision-3-slot dim" id="f19-decision-3-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+    <div class="f19-decision-3-slot dim" id="f19-decision-3-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d" data-plan-question="2">Timeline</span></div>
+    <div class="f19-decision-3-slot" id="f19-decision-3-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+    <div class="f19-decision-3-slot empty" id="f19-decision-3-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+    <div class="f19-decision-3-slot empty" id="f19-decision-3-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+  </div>
+
+  <!-- option labels -->
+  <div class="f19-decision-3-lab" id="f19-decision-3-lab-a" style="left:700px">A · Book-like</div>
+  <div class="f19-decision-3-lab" id="f19-decision-3-lab-b" style="left:1300px">B · Magazine</div>
+
+  <!-- A · Book-like -->
+  <div class="f19-decision-3-mock" id="f19-decision-3-opt-a" data-plan-option="a" style="left:700px">
+    <div class="f19-decision-3-pageA">
+      <h1 class="title">Highway 61 Revisited · 1965</h1>
+      <div class="rule"></div>
+      <div class="imgrow">
+        <div class="imgbox"></div>
+        <div class="col">
+          <div class="bar" style="width:100%"></div>
+          <div class="bar" style="width:96%"></div>
+          <div class="bar" style="width:100%"></div>
+          <div class="bar" style="width:58%"></div>
+        </div>
+      </div>
+      <div class="col para">
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:97%"></div>
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:94%"></div>
+        <div class="bar" style="width:66%"></div>
+      </div>
+      <div class="col para">
+        <div class="bar" style="width:100%"></div>
+        <div class="bar" style="width:98%"></div>
+        <div class="bar" style="width:42%"></div>
+      </div>
+      <div class="tracks">
+        <div class="thead"><span class="bar" style="width:26px"></span><span class="bar" style="width:64px; margin-left:14px"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:52%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:38%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:70%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:34%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:46%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:56%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:48%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:60%"></span><span class="bar tm"></span></div>
+        <div class="trow"><span class="no"><span class="bar" style="width:18px"></span></span><span class="bar" style="width:36%"></span><span class="bar tm"></span></div>
+      </div>
+    </div>
+    <div class="rec" id="f19-decision-3-rec"></div>
+  </div>
+
+  <!-- B · Magazine -->
+  <div class="f19-decision-3-mock" id="f19-decision-3-opt-b" data-plan-option="b" style="left:1300px">
+    <div class="f19-decision-3-photo" id="f19-decision-3-photo">
+      <div class="yr" id="f19-decision-3-yr">1965</div>
+      <h1 class="hl" id="f19-decision-3-hl">Highway 61<br>Revisited</h1>
+      <div class="rights" id="f19-decision-3-rights">rights?</div>
+    </div>
+    <div class="f19-decision-3-pageB">
+      <div class="cols">
+        <div class="col">
+          <div class="bar" style="width:100%"></div><div class="bar" style="width:92%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:96%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:88%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:54%"></div>
+        </div>
+        <div class="col">
+          <div class="bar" style="width:100%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:90%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:98%"></div><div class="bar" style="width:40%"></div>
+        </div>
+        <div class="col">
+          <div class="bar" style="width:96%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:92%"></div><div class="bar" style="width:62%"></div>
+        </div>
+      </div>
+      <div class="quote" id="f19-decision-3-quote">
+        <span class="qm">“</span>
+        <div class="col">
+          <div class="bar" style="width:100%"></div>
+          <div class="bar" style="width:94%"></div>
+          <div class="bar" style="width:58%"></div>
+        </div>
+      </div>
+      <div class="cols cols2">
+        <div class="col"><div class="bar" style="width:100%"></div><div class="bar" style="width:96%"></div><div class="bar" style="width:70%"></div></div>
+        <div class="col"><div class="bar" style="width:100%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:48%"></div></div>
+        <div class="col"><div class="bar" style="width:92%"></div><div class="bar" style="width:100%"></div><div class="bar" style="width:76%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var root = document.querySelector('[data-composition-id="19-decision-3"]');
+  var q  = function (s) { return root.querySelectorAll(s); };
+  var q1 = function (s) { return root.querySelector(s); };
+  var E = "power3.out";
+  var tl = gsap.timeline({ paused: true });
+
+  // 0.11 "Third choice" — kicker
+  tl.fromTo(q1("#f19-decision-3-kicker"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 0.066);
+
+  // 1.50 "reading pages" — two blank page shells arrive from opposite wings (comparison-split, no tilt)
+  tl.fromTo(q1("#f19-decision-3-opt-a"), { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.7, ease: E }, 1.35);
+  tl.fromTo(q1("#f19-decision-3-opt-b"), { opacity: 0, x: 28 },  { opacity: 1, x: 0, duration: 0.7, ease: E }, 1.502);
+
+  // 3.01 / 3.43 "side by side" — labels
+  tl.fromTo(q1("#f19-decision-3-lab-a"), { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 2.958);
+  tl.fromTo(q1("#f19-decision-3-lab-b"), { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 3.395);
+
+  // 4.07 "Booklike" / 4.76 "serif" — the serif title and its rule
+  tl.fromTo(q1("#f19-decision-3-opt-a .title"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 4.018);
+  tl.fromTo(q1("#f19-decision-3-opt-a .rule"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: E }, 4.79);
+
+  // 5.18 "wide margins" — the one narrow column of text bars
+  tl.fromTo(q("#f19-decision-3-opt-a .imgrow .bar, #f19-decision-3-opt-a .para .bar"), { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.045, ease: E }, 5.206);
+
+  // 6.27 "few images" — the one small image box
+  tl.fromTo(q1("#f19-decision-3-opt-a .imgbox"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: E }, 6.292);
+
+  // 6.93 "cheap to do well" — the nine-row track table
+  tl.fromTo(q("#f19-decision-3-opt-a .thead, #f19-decision-3-opt-a .trow"), { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: E }, 6.955);
+
+  // 8.19 "Magazine" / 8.77 "big photographs" — the full-bleed dark photo box
+  tl.fromTo(q1("#f19-decision-3-photo"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 8.165);
+
+  // 9.95 "bold headings" — the bold sans headline over the photo
+  tl.fromTo(q("#f19-decision-3-yr, #f19-decision-3-hl"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: E }, 10.012);
+
+  // 10.75 "Striking" — three columns of text bars, then the large pull-quote
+  tl.fromTo(q("#f19-decision-3-opt-b .cols:not(.cols2) .bar"), { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.02, ease: E }, 10.846);
+  tl.fromTo(q1("#f19-decision-3-quote"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 11.197);
+  tl.fromTo(q("#f19-decision-3-opt-b .cols2 .bar"), { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.03, ease: E }, 11.452);
+
+  // 12.08 "copyrighted" — the rights? tag lands on the photo
+  tl.fromTo(q1("#f19-decision-3-rights"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 12.26);
+
+  // 14.51 "recommend" — the coral border lands on A (the frame's one coral from here on)
+  tl.fromTo(q1("#f19-decision-3-rec"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: E }, 14.797);
+
+  // held read to the end of the voice
+  tl.to({}, { duration: 0.01 }, 16.914);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["19-decision-3"] = tl;
+})();
+</script>
+</template>

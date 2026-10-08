@@ -1,0 +1,340 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "oh and btw we also want to ensure with all this stuff we are doing, when we have a non-claude harness what happens??? we dont wanna make too harness specific",
+      "frame": {
+        "compositionId": "46-limits-decided",
+        "index": 46,
+        "title": "Step 6: its three limits, as you decided"
+      },
+      "id": "amuf6wksqhz2q",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 6
+      },
+      "t": 453.67
+    },
+    {
+      "about": "On what the agent decided: failIfUnavailable: true: where the sandbox cannot run (native Windows, Linux without bubblewrap), there is no headless run at all",
+      "comment": "ah there should be one just we should note this in the readme or something and hwen running so ppl are aware of that",
+      "frame": {
+        "compositionId": "49-call-a18",
+        "index": 49,
+        "title": "Call A18: no sandbox, no run"
+      },
+      "id": "amuf6xtcgvfw4",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 6
+      },
+      "t": 497.28
+    },
+    {
+      "about": "On what the agent decided: Codex's equivalent is codex exec --sandbox workspace-write, not the plan's codex exec --full-auto",
+      "comment": "i believe codex has an auto mode type permission too; we'll leave that for when the codex agent actually works on this",
+      "frame": {
+        "compositionId": "52-deviation-codex",
+        "index": 52,
+        "title": "Deviation D2: Codex's flag"
+      },
+      "id": "amuf6ywsblvoa",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 6
+      },
+      "t": 535.46
+    },
+    {
+      "about": "On what the agent decided: CLAUDE.md also tells an agent here to run this checkout's tooling rather than the published $RP",
+      "comment": "confused here, i guess this is about doing a local vs npx one? its fine to allow both, and ofc local used when we are editing",
+      "frame": {
+        "compositionId": "70-call-a29",
+        "index": 70,
+        "title": "Call A29: this checkout's tooling, in this repo"
+      },
+      "id": "amuf73ky6vu4s",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 9
+      },
+      "t": 706.19
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "Deviation from step 6: the re-run of the step 5 proof used enableWeakerNestedSandbox, which the shipped setting does not carry, because this container runs as root and the strict sandbox leaves such a run with no working shell",
+      "id": "d4",
+      "judgedAt": "2026-09-24T07:08:08.913Z",
+      "planStep": 6,
+      "t": 476.73,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The sandbox settings are inline in the command's --settings, not a committed .claude/settings.json",
+      "id": "a17",
+      "judgedAt": "2026-09-24T07:08:21.431Z",
+      "planStep": 6,
+      "t": 487.11,
+      "verdict": "accept"
+    },
+    {
+      "chose": "failIfUnavailable: true: where the sandbox cannot run (native Windows, Linux without bubblewrap), there is no headless run at all",
+      "id": "a18",
+      "judgedAt": "2026-09-24T07:08:48.208Z",
+      "own": "ah there should be one just we should note this in the readme or something and hwen running so ppl are aware of that",
+      "planStep": 6,
+      "t": 497.28,
+      "verdict": "own"
+    },
+    {
+      "chose": "allowUnsandboxedCommands: false: nothing runs outside the fence, so a commit signed through a local agent fails",
+      "id": "a19",
+      "judgedAt": "2026-09-24T07:09:01.641Z",
+      "planStep": 6,
+      "t": 510.65,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The review server tells the reviewer when the run it started ends (ready, or stopped with its log); review --detach inside a run does nothing",
+      "id": "a20",
+      "judgedAt": "2026-09-24T07:09:11.821Z",
+      "planStep": 6,
+      "t": 523.29,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Codex's equivalent is codex exec --sandbox workspace-write, not the plan's codex exec --full-auto",
+      "id": "d2",
+      "judgedAt": "2026-09-24T07:09:39.323Z",
+      "own": "i believe codex has an auto mode type permission too; we'll leave that for when the codex agent actually works on this",
+      "planStep": 6,
+      "t": 535.46,
+      "verdict": "own"
+    },
+    {
+      "chose": "No list of allowed hosts: in auto mode the classifier reviews each host a command names",
+      "id": "d3",
+      "judgedAt": "2026-09-24T07:09:56.306Z",
+      "planStep": 6,
+      "t": 549.19,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Flagged and own-words calls enter the ledger with status flagged/own; a new verdict on a call supersedes its earlier accept",
+      "id": "a22",
+      "judgedAt": "2026-09-24T07:11:24.408Z",
+      "planStep": 8,
+      "t": 616.16,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The grouped sheet has a Flag per call and one Accept all (A), no own-words box; taking a flag back clears the verdict",
+      "id": "a24",
+      "judgedAt": "2026-09-24T07:11:32.963Z",
+      "planStep": 8,
+      "t": 627.69,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Tags go in brackets at the end of the \"chose\" cell",
+      "id": "a21",
+      "judgedAt": "2026-09-24T07:12:01.118Z",
+      "planStep": 8,
+      "t": 641.39,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A tag's run of accepts counts across all plans in the order they were judged; entries without tags count for nothing",
+      "id": "a23",
+      "judgedAt": "2026-09-24T07:12:01.119Z",
+      "planStep": 8,
+      "t": 641.39,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Reviews are filed as reviews/plan-<time>.json / walkthrough-<time>.json with an .md beside each, and migrate-reviews ships as a command that moved all six plans",
+      "id": "a25",
+      "judgedAt": "2026-09-24T07:12:33.701Z",
+      "planStep": 9,
+      "t": 684.04,
+      "verdict": "accept"
+    },
+    {
+      "chose": "resolve-plan and resolve-walkthrough are deleted; revise-scope and walkthrough-scope stay as JSON printers",
+      "id": "a26",
+      "judgedAt": "2026-09-24T07:12:41.331Z",
+      "planStep": 9,
+      "t": 695.7,
+      "verdict": "accept"
+    },
+    {
+      "chose": "CLAUDE.md also tells an agent here to run this checkout's tooling rather than the published $RP",
+      "id": "a29",
+      "judgedAt": "2026-09-24T07:13:17.262Z",
+      "own": "confused here, i guess this is about doing a local vs npx one? its fine to allow both, and ofc local used when we are editing",
+      "planStep": 9,
+      "t": 706.19,
+      "verdict": "own"
+    },
+    {
+      "chose": "detail_kind is free-form and detail new --kind <anything> starts from the blank page; --step is gone",
+      "id": "a30",
+      "judgedAt": "2026-09-24T07:13:24.640Z",
+      "planStep": 9,
+      "t": 716.89,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Two details on one beat warn instead of failing the build; the last one opens",
+      "id": "a31",
+      "judgedAt": "2026-09-24T07:13:32.106Z",
+      "planStep": 9,
+      "t": 728.34,
+      "verdict": "accept"
+    },
+    {
+      "chose": "detail new with no --kind starts from the blank page (fresh)",
+      "id": "a32",
+      "judgedAt": "2026-09-24T07:13:39.794Z",
+      "planStep": 9,
+      "t": 737.5,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`build` retimes against the narration the frames were timed to, kept in `.hyperframes/frames-timed-to.json` until retime passes",
+      "id": "a27",
+      "judgedAt": "2026-09-24T07:16:23.100Z",
+      "planStep": 9,
+      "t": 746.04,
+      "verdict": "accept"
+    },
+    {
+      "chose": "One on-screen budget: five new words per beat beyond labels",
+      "id": "a28",
+      "judgedAt": "2026-09-24T07:16:23.103Z",
+      "planStep": 9,
+      "t": 746.04,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Step 5's second proof is still owed: only the system video's review has been through a headless run and timed (9 min 13 s, then 12 min 20 s on step 6's command); a review of a plan's walkthrough has not",
+      "id": "d5",
+      "judgedAt": "2026-09-24T07:16:46.216Z",
+      "planStep": 5,
+      "t": 783.54,
+      "verdict": "accept"
+    }
+  ],
+  "decisions": [],
+  "exportedAt": "2026-09-24T07:17:28.724Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T07:06:28.719Z",
+      "correct": false,
+      "id": "k3",
+      "note": "oh i mean i think we'd expect the other tools to do this too then, not write outside repo? how about you add permissions to the filesystem tools then?",
+      "t": 445.88
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T07:10:51.136Z",
+      "correct": true,
+      "id": "k4",
+      "t": 579.29
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T07:11:10.924Z",
+      "correct": true,
+      "id": "k5",
+      "t": 603.67
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T07:11:42.321Z",
+      "correct": false,
+      "id": "k6",
+      "t": 633.58
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T07:12:20.580Z",
+      "correct": false,
+      "id": "k7",
+      "t": 671.63
+    }
+  ],
+  "src": "2026-09-22-m3-revise-loop--walkthrough/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      },
+      {
+        "completion": 1,
+        "id": "ch7"
+      },
+      {
+        "completion": 1,
+        "id": "ch8"
+      },
+      {
+        "completion": 1,
+        "id": "ch9"
+      },
+      {
+        "completion": 1,
+        "id": "ch10"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 816.21,
+    "firstPlayAt": "2026-09-24T07:05:38.902Z",
+    "maxTimeReached": 816.2,
+    "moments": [
+      {
+        "frameIndex": 56,
+        "from": 579.27,
+        "kind": "rewind",
+        "planStep": 7,
+        "t": 567.76
+      }
+    ]
+  }
+}

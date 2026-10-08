@@ -1,0 +1,226 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "25-end",
+        "index": 25,
+        "title": "What ran; flag a step, or accept"
+      },
+      "id": "amuhwh1iv5rw7",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 296.97
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The glossary's plain words are a fifth column, \"On screen\", read into each plan map `glossary[]` row as `display` (only where a row has one), with the on-screen word's forms after the term's in `forms`, so `forms[0]` stays the key, plus `definedIn`",
+      "id": "a1",
+      "judgedAt": "2026-09-26T04:33:21.771Z",
+      "planStep": 1,
+      "t": 99.662,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Plain words beyond D-127's six: answer bar, off-plan change, grouped scene, and \"part of the system\" for an area",
+      "id": "a2",
+      "judgedAt": "2026-09-26T04:33:30.611Z",
+      "planStep": 1,
+      "t": 99.662,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The list of which video explains each word is `.reelplanning/terms-index.json`, written by a new `reelplanning terms-index` that finish-project runs after the plan map, the system video's scenes first",
+      "id": "a3",
+      "judgedAt": "2026-09-26T04:33:34.597Z",
+      "planStep": 1,
+      "t": 99.662,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The system video says the plain words throughout, not only where it defines them (\"Chapter 2 of 5\", choices, labels, scenes, \"Question 1\" on the decision mock); to stay under eight minutes the headless-run scene lost two sentences, the review loop's scene its \"a plan's review hasn't made that trip yet\", and rule two its reopened-by-hand story",
+      "id": "a4",
+      "judgedAt": "2026-09-26T04:33:37.256Z",
+      "planStep": 1,
+      "t": 99.662,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`reel prereqs` picks the system video's chapter by the words the plan's steps share with the chapter's scenes (and a second within 90% of it); the parts touched only break a tie",
+      "id": "a5",
+      "judgedAt": "2026-09-26T04:35:32.273Z",
+      "planStep": 2,
+      "t": 149.731,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A plan it builds on: its \"Decisions in force\" and \"Supersedes\" ids, except a bullet that says \"not touched\"; most decisions first, then the one cited first; only earlier plans; a decision on a call points at that plan's walkthrough video",
+      "id": "a6",
+      "judgedAt": "2026-09-26T04:35:38.466Z",
+      "planStep": 2,
+      "t": 149.731,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`reel prereqs` writes the lines into the storyboard's front matter, replacing the `before:` lines there (`--dry-run` only prints; with no storyboard yet it prints them to paste), and keeps the files' `#part N` while reading `#chapter N` too",
+      "id": "a7",
+      "judgedAt": "2026-09-26T04:35:43.101Z",
+      "planStep": 2,
+      "t": 149.731,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`lost` is a sixth memory line beside `checks`, so `reel status` ends with at most six lines, not five; `checks` keeps the count, `lost` says it per plan with the rest",
+      "id": "a8",
+      "judgedAt": "2026-09-26T04:37:24.913Z",
+      "planStep": 3,
+      "t": 194.724,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Two review fields for the player to send: `confusion.termsLookedUp` (the glossary keys opened) and `watched` (`[{ video, seen?, sent? }]`, the browser's marks, on the review or on a hosted row beside it); the reviewed video counts as watched at 80%, the player's own rule",
+      "id": "a9",
+      "judgedAt": "2026-09-26T04:37:26.029Z",
+      "planStep": 3,
+      "t": 194.724,
+      "verdict": "accept"
+    },
+    {
+      "chose": "What your file knows (videos watched, words looked up) is the last line of `reel memory --you` and the \"(your file: watched)\" note of `reel prereqs`, not a memory line",
+      "id": "a10",
+      "judgedAt": "2026-09-26T04:37:29.788Z",
+      "planStep": 3,
+      "t": 194.724,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"The answer was not shown\": a word of the right answer (four letters or more, not a common word, stemmed, a number read as digits) that the `explained_at` scene, else the scene before the check, never says or shows; a warning",
+      "id": "a11",
+      "judgedAt": "2026-09-26T04:38:11.360Z",
+      "planStep": 4,
+      "t": 236.452,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The id warning is for `explain` only; a `walk_me_through` may name a choice by its number beside its word (\"choice A3 moved…\")",
+      "id": "a12",
+      "judgedAt": "2026-09-26T04:38:18.109Z",
+      "planStep": 4,
+      "t": 236.452,
+      "verdict": "accept"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [
+      "choice",
+      "system video",
+      "scene"
+    ],
+    "termsOpened": 4,
+    "walked": 1,
+    "watchedPct": 100,
+    "wrongChecks": 1
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-26T04:39:08.946Z",
+  "knowledgeLevel": "new",
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T04:34:20.290Z",
+      "correct": true,
+      "id": "k1",
+      "t": 106.574
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T04:36:18.254Z",
+      "correct": false,
+      "id": "k2",
+      "note": "why woulndt it also juts summarize everything in this case? we can point to some higher priortiy to watch but why woulndt all be summarized if we do summary anyway?",
+      "t": 155.854,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T04:37:44.017Z",
+      "correct": true,
+      "id": "k3",
+      "t": 199.695
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T04:38:23.341Z",
+      "correct": true,
+      "id": "k4",
+      "t": 242.276
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T04:38:56.822Z",
+      "correct": true,
+      "id": "k5",
+      "t": 280.825
+    }
+  ],
+  "src": "2026-09-25-videos-you-can-follow--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 296.98,
+    "firstPlayAt": "2026-09-26T04:31:59.550Z",
+    "maxTimeReached": 296.97,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

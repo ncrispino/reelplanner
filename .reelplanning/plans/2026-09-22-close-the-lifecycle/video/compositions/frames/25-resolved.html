@@ -1,0 +1,114 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f25-resolved-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f25-resolved-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f25-resolved-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f25-resolved-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f25-resolved-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f25-resolved-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f25-resolved-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f25-resolved-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f25-resolved-slot .d.lit { color:var(--rp-coral-deep); }
+  .f25-resolved-slot:not([data-filled]) .n, .f25-resolved-slot:not([data-filled]) .t { opacity:0; }
+  .f25-resolved-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f25-resolved-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f25-resolved-node.dim { opacity:0.72; }
+  .f25-resolved-hole { position:absolute; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f25-resolved-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f25-resolved-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f25-resolved-edges path.dim { opacity:0.35; }
+  .f25-resolved-opt { position:absolute; top:790px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f25-resolved-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; margin-top:18px; }
+  .f25-resolved-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* ---- /SHARED STAGE ---- */
+  .f25-resolved-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f25-resolved-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f25-resolved-chip.r { margin-left:0; margin-right:-6px; }
+  .f25-resolved-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f25-resolved-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f25-resolved-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f25-resolved-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f25-resolved-bar { position:absolute; height:16px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+
+  /* decided in force (§14): the slot's title lifts and a small mono tag sits under it */
+  .f25-resolved-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-coral-deep); white-space:nowrap; opacity:0; }
+  .f25-resolved-slot.dec .n { top:13px; } .f25-resolved-slot.dec .t { top:12px; } .f25-resolved-slot.dec .dd { opacity:1; }
+
+  .f25-resolved-h { position:absolute; left:680px; top:150px; font:400 56px/1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f25-resolved-card { position:absolute; left:680px; width:1160px; height:150px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f25-resolved-card .k { position:absolute; left:36px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f25-resolved-card .m { position:absolute; left:36px; top:70px; font:400 50px/1.05 "EB Garamond"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="25-resolved" data-duration="8.7" data-width="1920" data-height="1080">
+
+  <div class="clip f25-resolved-bg" data-start="0" data-duration="8.7" data-track-index="0"></div>
+
+  <div class="clip f25-resolved-scene" id="f25-resolved-scene" data-start="0" data-duration="8.7" data-track-index="1">
+
+  <div class="f25-resolved-rail" id="f25-resolved-rail">
+    <div class="f25-resolved-slot" id="f25-resolved-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">System video</span></div>
+    <div class="f25-resolved-slot" id="f25-resolved-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Implement + log</span></div>
+    <div class="f25-resolved-slot dec" id="f25-resolved-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Check the diff</span><span class="dd" id="f25-resolved-dd-3">decided · D-001</span></div>
+    <div class="f25-resolved-slot" id="f25-resolved-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Walk through</span></div>
+    <div class="f25-resolved-slot dec" id="f25-resolved-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Act on verdicts</span><span class="dd" id="f25-resolved-dd-5">decided · D-002</span></div>
+    <div class="f25-resolved-slot dec" id="f25-resolved-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">Stay current</span><span class="dd" id="f25-resolved-dd-6">decided · D-003</span></div>
+  </div>
+  <div class="f25-resolved-h" id="f25-resolved-h">Decided in the review</div>
+  <div class="f25-resolved-card" id="f25-resolved-d1" data-plan-step="3" style="top:250px"><span class="k">D-001 · STEP 3</span><span class="m">A second agent checks the diff</span></div>
+  <div class="f25-resolved-card" id="f25-resolved-d2" data-plan-step="5" style="top:424px"><span class="k">D-002 · STEP 5</span><span class="m">A flagged call is fixed, and its beat rebuilt</span></div>
+  <div class="f25-resolved-card" id="f25-resolved-d3" data-plan-step="6" style="top:598px"><span class="k">D-003 · STEP 6</span><span class="m">The system video updates on every accept, cheaply</span></div>
+  <div class="f25-resolved-note" id="f25-resolved-note">AI-generated narration and visuals</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "25-resolved", P = "#f25-resolved-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f25-resolved-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f25-resolved-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f25-resolved-slot-" + n + " .n, #f25-resolved-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  // a decision in force lands on its slot: title lifts, 'decided · D-00n' under it
+  var dec = function (tl, n, at) {
+    tl.to(["#f25-resolved-slot-" + n + " .n", "#f25-resolved-slot-" + n + " .t"], { y: -15, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f25-resolved-slot-" + n + " .dd", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at + 0.1);
+  };
+
+  tl.fromTo("#f25-resolved-rail", { opacity: 0.7 }, { opacity: 1, duration: 0.6, ease: "power3.out" }, 0);
+  tl.fromTo(["#f25-resolved-h", "#f25-resolved-d1", "#f25-resolved-d2", "#f25-resolved-d3"], { opacity: 0.4 }, { opacity: 1, duration: 0.6, ease: "power3.out" }, 0);
+  pop(tl, $("note"), 0.4, 6);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 8.199);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

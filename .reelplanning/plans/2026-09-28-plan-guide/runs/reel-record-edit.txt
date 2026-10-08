@@ -1,0 +1,6 @@
+$ reel record .reelplanning/plans/2026-09-28-plan-guide review.json
+✓ .reelplanning/plans/2026-09-28-plan-guide/reviews/plan-20260929T210000Z.json, a plan review, by demo@example.com (reelplanning 0.2.0)
+✓ .reelplanning/plans/2026-09-28-plan-guide/reviews/plan-20260929T210000Z.md: what to act on
+✓ ledger: +2 (D-002 --to <file>; D-003 a decision's ledger entry shown only on hover or on a long press), 3 total
+✓ your memory: a summary of this review added to ~/.reelplanning/you.jsonl (reel memory --you)
+exit 0

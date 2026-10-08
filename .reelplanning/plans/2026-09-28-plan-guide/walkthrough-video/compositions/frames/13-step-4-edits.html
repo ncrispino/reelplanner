@@ -1,0 +1,77 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v13-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v13-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v13-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v13-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v13-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v13-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v13-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v13-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v13-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v13-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v13-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v13-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v13-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v13-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v13-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v13-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v13-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v13-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v13-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v13-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v13-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v13-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v13-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v13-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v13-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v13-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v13-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v13-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v13-txt code, .v13-mrow code, .v13-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="13-step-4-edits" data-band="bottom" data-duration="18.923" data-width="1920" data-height="1080">
+  <div class="clip v13-bg" id="v13-bg" data-start="0" data-duration="18.923" data-track-index="0"></div>
+  <div class="clip v13-scene" id="v13-scene" data-start="0" data-duration="18.923" data-track-index="1">
+    <div class="v13-slab" id="v13-s" data-artifact="reel record on a review with two suggested edits, in a scratch repo: its real output (runs/reel-record-edit.txt)" style="left:120px; top:60px; width:1080px; height:270px"><div class="v13-sbar"></div><div class="v13-sbt">$ reel record …/2026-09-28-plan-guide review.json</div><div class="v13-row" style="top:72px">✓ …/reviews/plan-20260929T210000Z.json</div><div class="v13-row hot" style="top:116px">✓ ledger: +2 (D-002 --to &lt;file&gt;;</div><div class="v13-row hot" style="top:160px">  D-003 a decision's ledger entry shown</div><div class="v13-row hot" style="top:204px">  only on hover or on a long press)</div></div>
+    <div class="v13-paper" id="v13-md" data-artifact="the filed review's Edits to apply (runs/edits-to-apply.txt)" data-detail="edits" style="left:120px; top:390px; width:1080px; height:450px"><div class="v13-prow" style="top:24px">## Edits to apply   (scene numbers: the plan video's)</div><div class="v13-prow" style="top:74px">- Step 1 · Interface: --out &lt;file&gt; → --to &lt;file&gt;</div><div class="v13-prow" style="top:124px">  rebuild: the guide, and scenes 12, 20, 21,</div><div class="v13-prow" style="top:174px">  22, 23, 26 (their words or frame show it)</div><div class="v13-prow" style="top:224px">- Step 2 · Cases: …shown only on hover</div><div class="v13-prow" style="top:274px">  → …shown only on hover or on a long press</div><div class="v13-prow" style="top:324px">  rebuild: the guide only: no scene says or</div><div class="v13-prow" style="top:374px">  shows these words</div></div>
+    <div class="v13-ring" id="v13-r1" style="left:128px; top:508px; width:1060px; height:104px"></div>
+    <div class="v13-ring" id="v13-r2" style="left:128px; top:708px; width:1060px; height:104px"></div>
+    <div class="v13-card" id="v13-a10" data-call="a10" style="left:1240px; top:60px; width:560px; height:380px"><span class="i">choice A10 · it pauses here</span><span class="t" style="font-size:42px">An edit is a decision log entry of its own kind: your words chosen</span></div>
+    <div class="v13-card" id="v13-a11" data-call="a11" style="left:1240px; top:460px; width:560px; height:380px"><span class="i">choice A11 · it pauses here</span><span class="t" style="font-size:42px">An answer given on the guide counts on the video too</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "13-step-4-edits";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v13-s", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v13-md", { opacity: 0, y: 12 });
+  gsap.set("#v13-r1", { opacity: 0, y: 12 });
+  gsap.set("#v13-r2", { opacity: 0, y: 12 });
+  gsap.set("#v13-a10", { opacity: 0, y: 12 });
+  gsap.set("#v13-a11", { opacity: 0, y: 12 });
+  tl.to("#v13-s", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 1.59);
+  tl.to("#v13-md", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.95);
+  tl.to("#v13-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.18);
+  tl.to("#v13-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.82);
+  tl.to("#v13-a10", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.30);
+  tl.to("#v13-a11", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.72);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

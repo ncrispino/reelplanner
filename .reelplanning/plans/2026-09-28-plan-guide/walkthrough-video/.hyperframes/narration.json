@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "6b116945cd5a5b8d76fe",
+      "text": "Step three. A scene names its part of the guide, and in the player the part opens over the frame. The guide holds every word of the plan; a scene only its own. Two choices. The player offers a part only once the guide is built. And the videos on the review page open the builder's parts now, not the prototype's pages.",
+      "sha256": "e6e17316233ac63ce56d57e3af6c758a13dde352e7c74c64db680d18e480f989",
+      "duration_s": 18.368
+    },
+    "11": {
+      "key": "23fc301586a6cd9bcaf8",
+      "text": "One more change from the plan: a part sits in the guide's own folder, not with the details, because the guide is built each time and never committed.",
+      "sha256": "bf49e52b42abfe32b394075245c8505f486499829581a59a1d609aeedb98958d",
+      "duration_s": 8.149
+    },
+    "12": {
+      "key": "a3ee8c7be4379e29a7aa",
+      "text": "Quick check. You suggest an edit to a case that no scene shows. What does the revise rebuild?",
+      "sha256": "12f84cb7a9470a46abea787a844e2882676aba896ba640d0588934a53d318217",
+      "duration_s": 5.227
+    },
+    "13": {
+      "key": "6f29c74b6ed1c41a687d",
+      "text": "Step four. `reel record` files each suggested edit in the decision log, your words chosen over the plan's, and lists it under Edits to apply, with what it rebuilds: the scenes that say those words, or the guide only. Two choices. An edit is a log entry of its own kind. And an answer given on the guide counts on the video too.",
+      "sha256": "652d3d69813307c0d7702aa409e44a075d83ed1bd1f23188a7e389751fbc9fa6",
+      "duration_s": 18.923
+    },
+    "14": {
+      "key": "9a6ef3a3c21916e001eb",
+      "text": "Step five. After the build, each step has a Built side: every kind of change, its files, every changed line with the file around it, and its runs, whole. Two choices. The walkthrough names each kind of change once, and what none claims is Everything else. A file the build writes is listed with its counts, not shown.",
+      "sha256": "27f6efc1c0fa7a55a12ff25732416910b554875625c098b1f4f18bd67bc394f3",
+      "duration_s": 17.387
+    },
+    "15": {
+      "key": "8a626a257c06b10eebb9",
+      "text": "What ran: every fast test, with a new spec; guides for five plans' nine videos, each checked in a browser; and a fresh agent's code check. It found one thing step five asked for that's missing, two hand-made things to do, now under Not done, and four choices to add to the table.",
+      "sha256": "41fe02fdb033ef8df03a934faf6c1471a9f4e653c5e893c0b0fa23bab9419fd0",
+      "duration_s": 15.936
+    },
+    "16": {
+      "key": "27575e42d4a04cf45b8b",
+      "text": "The other four choices are the list: the plans the four blocks hold, what counts as an example, what counts as saying the video's words again, and a part its frame doesn't mark only warning. Flag any you'd change.",
+      "sha256": "b87f325898ca8d423eedd58b35b0b044dcf22cd251e6940fb67c7197263886c2",
+      "duration_s": 12.16
+    },
+    "17": {
+      "key": "c6767d7577be222a9365",
+      "text": "Seeing it run, anything you'd change? Say it in Finish, or approve the build.",
+      "sha256": "6adcf8eeb3d1822d4bd62668dd993c3e1cff7a2a390889b9d264e0f1885d363f",
+      "duration_s": 3.904
+    },
+    "01": {
+      "key": "cc88191a04f5703ecdd9",
+      "text": "The plan guide, built. Every plan video now has a page behind it, the guide: the whole plan to read, check and edit, a click from the scene you're watching. Seven places carry it, one line each.",
+      "sha256": "322e52900a80835e0644856bc640570036c2c65ade5c2af0c68d9b4772b2b886",
+      "duration_s": 11.008
+    },
+    "02": {
+      "key": "a739d0866ed8242681bc",
+      "text": "Step one, running. The new guide command reads a video's plan, its decisions and its scenes; after the build, the walkthrough, git and the saved runs as well. It writes one page, and a part for each step and each kind of change. The build runs it, and nothing it writes is committed.",
+      "sha256": "9fcc7550cda3bc2f016535a22d8ad9dd060bf83d4447903f7be91fc0a09e4c99",
+      "duration_s": 15.232
+    },
+    "03": {
+      "key": "932ae7bc1af1dbc67430",
+      "text": "Here is the page. The steps down the left; each step a column of short beats beside the real thing. Every case, every part of the interface and every decision is one click down. Expand all opens every one. Select any words to comment, ask, or suggest an edit.",
+      "sha256": "b34c0df2a2863cf355767c7e446ed13fddf5ed1d2871dfe7edc0a6776e300afa",
+      "duration_s": 15.637
+    },
+    "04": {
+      "key": "c24efd157a1b7742fc0c",
+      "text": "Things to do come from the plan itself: drag each case onto what happens, fill in what a command prints, predict a question's answer. Four choices. Each video has a guide of its own. The page is one flow, not boxes. No thing to do is written by hand. And an explainer's source kept outside the repo shows its path and size, never its text.",
+      "sha256": "ff7b96bdc8254940a6d0a1c285a2bbfdb319910d3408e7a6ae761465122c02cc",
+      "duration_s": 19.648
+    },
+    "05": {
+      "key": "0fb880d3ebda783eda02",
+      "text": "One change from the plan. A step's picture is the system's parts as names, the ones it touches lit, instead of the stage drawn for the video: that drawing is sized for a whole frame, not a column.",
+      "sha256": "0963dd2587b4d7aee0b04c98fda8052831e8f217c4b0c5ab589d4c40490a7e1d",
+      "duration_s": 11.413
+    },
+    "06": {
+      "key": "98663ce62a9a58e70292",
+      "text": "Step two. A plan written from the thirtieth of September, twenty twenty-six, on holds every step to four blocks: its cases, each with an example and what happens; its interface, each part with its meaning; an example to follow; and the decisions it answers. `reel check` fails a step missing one, and names it.",
+      "sha256": "04d8d191ef27487d96fa80dd58fe25220cf1da19c4b251927be98379544d0c15",
+      "duration_s": 17.131
+    },
+    "07": {
+      "key": "5a75ca00c1c5bc312125",
+      "text": "The guide is checked too. Every paragraph of the plan has to be on the page, and every layer has a button that opens it. A run shown as real must be one that was saved: name one nobody saved, and the check fails. What the plan leaves out is listed as a gap, never made up.",
+      "sha256": "d11fb91de59f3f4318c9f9821b875882a403a56b0add576294472ba477d7e3c4",
+      "duration_s": 15.552
+    },
+    "08": {
+      "key": "1f46261acd700951f0f5",
+      "text": "Quick check. A plan dated October the first has a step with cases, but no interface and no line saying it has none. What does `reel check` do?",
+      "sha256": "c27a8b5a6c96eb8207e511813b17ff5065a8eb584d82c2e833ee2603a2aba888",
+      "duration_s": 8.299
+    },
+    "09": {
+      "key": "e9786ba2914e0f793daa",
+      "text": "Here it is, on a new plan in a scratch repo. Its second step has neither cases nor an interface, and one option has no example, so `reel check` fails on all three and says which. An older plan passes as it did.",
+      "sha256": "fa99404f033f6fca52e8900e88c8f706e33623b9cc3f66248046671088d5b1db",
+      "duration_s": 12.565
+    }
+  }
+}

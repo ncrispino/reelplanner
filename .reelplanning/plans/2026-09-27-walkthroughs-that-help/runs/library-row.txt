@@ -1,0 +1,38 @@
+$ node -p "JSON.stringify(require('../wth-review/library.json').plans, null, 2)"   (this repo: the plan's one row in that page's library.json)
+[
+  {
+    "plan": "2026-09-27-walkthroughs-that-help",
+    "date": "2026-09-27",
+    "title": "Walkthroughs that help: see the build run, stop only where you'd notice",
+    "video": "2026-09-27-walkthroughs-that-help",
+    "walkthrough": "2026-09-27-walkthroughs-that-help--walkthrough",
+    "status": "walkthrough to review",
+    "guide": "2026-09-27-walkthroughs-that-help--walkthrough",
+    "steps": {
+      "plan": {
+        "1": 49.43,
+        "2": 66.454,
+        "3": 88.641,
+        "4": 114.881,
+        "5": 137.964,
+        "6": 156.097,
+        "7": 185.751
+      },
+      "built": {
+        "1": 0,
+        "2": 10.453,
+        "3": 57.407,
+        "4": 72.319,
+        "5": 86.1,
+        "6": 108.841
+      }
+    },
+    "stages": {
+      "decided": true,
+      "built": true,
+      "reviewed": false,
+      "stage": "walkthrough to review"
+    }
+  }
+]
+exit 0

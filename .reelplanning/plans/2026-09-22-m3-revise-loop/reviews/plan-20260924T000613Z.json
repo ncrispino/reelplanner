@@ -1,0 +1,91 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "just a general thing about the video: this is not really ordered, some tasks are indepndent of others, how do we organize the plan better to understand it? i am having some trouble getting it on a high level first, what exactly we want to change, and here it seems like plan step i always depends on plan step i - 1, whicdh is not necessarily the case. deal with that and making them easier to understand",
+      "frame": {
+        "compositionId": "21-resolved",
+        "index": 21,
+        "title": "The plan, resolved"
+      },
+      "id": "amueru74ipwu9",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2
+        ],
+        "step": null
+      },
+      "t": 221.4
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-24T00:03:56.311Z",
+      "id": "q1",
+      "label": "A background agent that owns it",
+      "note": "would this be supported on other clis too besides just claude? like codex, opencode? just want to make sure we are not adding too much here. i know all have ability to be backgrounded. but not sure about hooks",
+      "option": "a",
+      "planStep": 3,
+      "question": "Who runs the loop between your reviews?",
+      "recommended": true,
+      "t": 115.655
+    },
+    {
+      "decidedAt": "2026-09-24T00:04:33.306Z",
+      "id": "q2",
+      "label": "Small fixes go straight in; anything with a choice becomes a plan",
+      "option": "a",
+      "planStep": 4,
+      "question": "When a system-video comment asks for the system itself to change, what happens?",
+      "recommended": true,
+      "t": 182.415
+    }
+  ],
+  "exportedAt": "2026-09-24T00:06:13.076Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-22-m3-revise-loop/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      }
+    ],
+    "completion": 1,
+    "details": [
+      {
+        "name": "loop-options",
+        "openedAt": "2026-09-24T00:02:58.956Z",
+        "seconds": 22.5
+      }
+    ],
+    "durationSeconds": 224.85,
+    "firstPlayAt": "2026-09-24T00:01:39.917Z",
+    "maxTimeReached": 224.85,
+    "moments": [
+      {
+        "frameIndex": 20,
+        "from": 218.67,
+        "kind": "rewind",
+        "planStep": 5,
+        "t": 202.98
+      }
+    ]
+  }
+}

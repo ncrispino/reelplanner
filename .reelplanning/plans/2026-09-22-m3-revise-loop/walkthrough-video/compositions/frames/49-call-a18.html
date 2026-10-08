@@ -1,0 +1,247 @@
+<template>
+<style>
+
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f49-call-a18-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f49-call-a18-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f49-call-a18-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f49-call-a18-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f49-call-a18-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f49-call-a18-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f49-call-a18-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-slot .d.lit { color:var(--rp-coral-deep); }
+  .f49-call-a18-slot:not([data-filled]) .n, .f49-call-a18-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f49-call-a18-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f49-call-a18-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f49-call-a18-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f49-call-a18-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f49-call-a18-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f49-call-a18-node.dim { opacity:0.72; }
+  .f49-call-a18-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f49-call-a18-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f49-call-a18-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f49-call-a18-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f49-call-a18-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f49-call-a18-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f49-call-a18-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  /* the player's question sheet, drawn as the page it is (a prototype of the player's own surface) */
+  .f49-call-a18-q { position:absolute; font:400 48px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-qk { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f49-call-a18-card { position:absolute; width:610px; height:130px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-card .k { position:absolute; left:24px; top:22px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f49-call-a18-card .l { position:absolute; left:24px; top:62px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-card.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f49-call-a18-card.ghost .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f49-call-a18-box { position:absolute; left:24px; top:47px; width:36px; height:36px; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.55); background:var(--rp-paper); }
+  .f49-call-a18-tickmark { position:absolute; left:7px; top:1px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); opacity:0; }
+  .f49-call-a18-card .l.cb { left:84px; top:45px; }
+  .f49-call-a18-btn { position:absolute; height:60px; padding:0 28px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  /* decision beats: three option cards, each carrying a small prototype of what that option does */
+  .f49-call-a18-opt { position:absolute; top:300px; width:520px; height:330px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f49-call-a18-opt .l { position:absolute; left:28px; top:70px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-fr { position:absolute; top:190px; height:84px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/82px "JetBrains Mono"; text-align:center; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-fr.q { background:var(--rp-paper); border-style:dashed; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-bar { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.25); }
+  .f49-call-a18-mk { position:absolute; width:4px; height:28px; border-radius:2px; background:var(--rp-ink); }
+  .f49-call-a18-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  .f49-call-a18-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+
+
+  .f49-call-a18-tick[data-live] { background:rgba(var(--rp-ink-rgb),0.72); border-color:transparent; }
+  .f49-call-a18-node .l { font:500 30px/1.15 "Inter"; }
+  .f49-call-a18-chipx { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-tile); border-radius:6px; padding:9px 12px; }
+  /* autonomy: the call's two cards, left column (above the player's sheet, which covers the lower third while it asks) */
+  .f49-call-a18-call { position:absolute; left:172px; width:400px; height:160px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); }
+  .f49-call-a18-call.ch { border:2px solid var(--rp-ink); }
+  .f49-call-a18-call.io { border:1px solid rgba(var(--rp-ink-rgb),0.3); }
+  .f49-call-a18-call .k { position:absolute; left:26px; top:24px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-call .l { position:absolute; left:26px; right:18px; top:64px; font:400 40px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f49-call-a18-call.io .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f49-call-a18-chk { position:absolute; left:172px; top:548px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; letter-spacing:0.12em; text-transform:uppercase; }
+  .f49-call-a18-chkp { position:absolute; left:172px; top:586px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-herok2 { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-slot.lift { border:2px solid var(--rp-ink); }
+  /* prototypes (data-plan-component="page": a depicted screen, exempt from the chrome's 26 px mono floor) */
+  .f49-call-a18-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f49-call-a18-mock-k { position:absolute; left:36px; top:30px; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f49-call-a18-sq { position:absolute; left:36px; top:72px; font:400 52px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-oc { position:absolute; height:118px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-oc .k { position:absolute; left:22px; top:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f49-call-a18-oc .l { position:absolute; left:22px; top:52px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-oc .l.cb { left:84px; top:38px; }
+  .f49-call-a18-cbx { position:absolute; left:24px; top:38px; width:38px; height:38px; box-sizing:border-box; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.62); background:var(--rp-paper); }
+  .f49-call-a18-cbm { position:absolute; left:10px; top:2px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); }
+  .f49-call-a18-btn { position:absolute; height:64px; padding:0 30px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f49-call-a18-btnf { position:absolute; left:-2px; top:-2px; right:-2px; bottom:-2px; border-radius:8px; background:var(--rp-ink); color:var(--rp-on-ink); font:500 28px/64px "Inter"; text-align:center; }
+  .f49-call-a18-row { position:absolute; height:70px; border-radius:8px; background:var(--rp-tile); font:500 26px/70px "JetBrains Mono"; padding:0 24px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-term { position:absolute; background:var(--rp-slab); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 8px 24px rgba(var(--rp-shadow-rgb),0.10); overflow:hidden; }
+  .f49-call-a18-termbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .f49-call-a18-tl { position:absolute; left:40px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.9); white-space:pre; }
+  .f49-call-a18-tl.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f49-call-a18-tl .m { color:var(--rp-coral); }
+  .f49-call-a18-kc { position:absolute; width:72px; height:72px; box-sizing:border-box; border-radius:10px; border:2px solid var(--rp-ink); border-bottom-width:5px; background:var(--rp-paper); font:500 34px/64px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f49-call-a18-kl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-seg { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.22); }
+  .f49-call-a18-seg.cur { background:var(--rp-ink); }
+  .f49-call-a18-mock-pc { position:absolute; height:48px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/46px "Inter"; padding:0 14px 0 12px; box-sizing:border-box; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:var(--rp-paper); }
+  .f49-call-a18-mock-pc b { font:500 22px/1 "JetBrains Mono"; margin-right:10px; color:var(--rp-ink); }
+  .f49-call-a18-mock-pc.cur { background:var(--rp-tile); border-color:var(--rp-ink); color:var(--rp-ink); }
+  .f49-call-a18-av { position:absolute; height:112px; box-sizing:border-box; border-radius:10px; border:1px solid rgba(var(--rp-ink-rgb),0.25); background:var(--rp-paper); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-av .kc2 { position:absolute; left:22px; top:22px; width:64px; height:64px; box-sizing:border-box; border-radius:8px; border:2px solid var(--rp-ink); border-bottom-width:4px; font:500 30px/56px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f49-call-a18-av .t { position:absolute; left:108px; top:22px; font:500 32px/1.1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-av .s { position:absolute; left:108px; top:66px; font:400 24px/1.1 "Inter"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f49-call-a18-field { position:absolute; height:70px; box-sizing:border-box; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.45); background:var(--rp-paper); font:400 30px/66px "Inter"; padding-left:20px; color:rgba(var(--rp-ink-rgb),0.5); white-space:nowrap; overflow:hidden; }
+  .f49-call-a18-field .typed { color:var(--rp-ink); }
+  .f49-call-a18-caret { display:inline-block; width:3px; height:34px; margin-left:2px; vertical-align:-7px; background:var(--rp-ink); }
+  .f49-call-a18-res { position:absolute; top:260px; width:500px; height:330px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f49-call-a18-res .big { position:absolute; left:40px; top:56px; font:400 96px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-res .cap { position:absolute; left:40px; top:210px; font:500 28px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-gap { position:absolute; top:300px; width:760px; height:220px; box-sizing:border-box; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f49-call-a18-gap .l { position:absolute; left:40px; top:52px; font:400 56px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-gap .s { position:absolute; left:40px; top:142px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-ls { position:absolute; left:0; width:1100px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f49-call-a18-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f49-call-a18-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f49-call-a18-fname { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-h { position:absolute; font:400 40px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-bar2 { position:absolute; height:16px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f49-call-a18-drow { position:absolute; height:64px; border-radius:6px; background:var(--rp-tile); font:500 26px/64px "JetBrains Mono"; padding-left:22px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f49-call-a18-mark { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+  .f49-call-a18-mark path { fill:none; stroke:var(--rp-coral); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+  .f49-call-a18-dec { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f49-call-a18-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  /* ---- prototypes of the review player's own surfaces (data-plan-component="page": a depicted screen, small text is the page's own) ---- */
+  .f49-call-a18-pg { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f49-call-a18-lit { outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f49-call-a18-scr { position:absolute; background:var(--rp-tile); overflow:hidden; }
+  .f49-call-a18-mockmk { position:absolute; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.58); white-space:nowrap; }
+  .f49-call-a18-mh { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-ms { position:absolute; font:400 26px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-mt { position:absolute; font:400 24px/1.35 "Inter"; color:var(--rp-ink); }
+  .f49-call-a18-mockmm { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-mockmb { position:absolute; height:48px; padding:0 18px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; box-sizing:border-box; }
+  .f49-call-a18-mockmb.f { background:var(--rp-ink); color:var(--rp-on-ink); }
+  .f49-call-a18-mockmb.off { opacity:0.45; }
+  .f49-call-a18-mockmchip { position:absolute; height:50px; padding:0 16px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.25); border-left:5px solid var(--rp-ink); background:var(--rp-paper); font:500 22px/48px "Inter"; color:var(--rp-ink); white-space:nowrap; box-sizing:border-box; }
+  .f49-call-a18-mockmchip kbd, .f49-call-a18-mockmb kbd { font:500 18px/1 "JetBrains Mono"; border:1px solid rgba(var(--rp-ink-rgb),0.3); border-bottom-width:3px; border-radius:4px; padding:2px 6px; margin-left:10px; }
+  .f49-call-a18-mockmrow { position:absolute; left:0; right:0; height:46px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.1); font:400 22px/46px "Inter"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; padding:0 20px; box-sizing:border-box; box-shadow:inset 6px 0 0 rgba(var(--rp-ink-rgb),0); }
+  .f49-call-a18-mockmrow .r { position:absolute; right:20px; font:500 20px/46px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f49-call-a18-mockmrow.h { font:500 18px/46px "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.58); background:var(--rp-tile); }
+  .f49-call-a18-mockmcode { position:absolute; left:0; right:0; height:42px; font:400 22px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; overflow:hidden; }
+  .f49-call-a18-mockmcode .n { display:inline-block; width:64px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f49-call-a18-mbar { position:absolute; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f49-call-a18-mfill { position:absolute; height:6px; border-radius:3px; background:var(--rp-ink); }
+  .f49-call-a18-sec { position:absolute; left:0; right:0; padding:14px 22px 14px 26px; box-sizing:border-box; border-left:5px solid rgba(var(--rp-ink-rgb),0); }
+  .f49-call-a18-sec .t { font:600 22px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-sec .b { margin-top:10px; height:12px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f49-call-a18-mockfc { position:absolute; top:0; width:196px; height:236px; box-sizing:border-box; border-radius:10px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); }
+  .f49-call-a18-mockfc .k { position:absolute; left:18px; top:20px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.1em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f49-call-a18-mockfc .l { position:absolute; left:18px; right:14px; top:58px; font:400 32px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .f49-call-a18-mockfc .g { position:absolute; left:18px; right:18px; height:10px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+  .f49-call-a18-grey { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f49-call-a18-trk { position:absolute; right:80px; top:92px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; text-align:right; }
+  .f49-call-a18-lane { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-lane .n { position:absolute; left:32px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f49-call-a18-lane .t { position:absolute; left:84px; font:500 40px/1.2 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-st { position:absolute; width:180px; height:70px; box-sizing:border-box; border-radius:10px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); display:flex; align-items:center; justify-content:center; font:500 30px/1 "Inter"; color:var(--rp-ink); }
+  .f49-call-a18-ind { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; transform:translateX(-100%); }
+  .f49-call-a18-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; padding:0 28px; font:500 32px/1.15 "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f49-call-a18-tile .k { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); margin-right:18px; }
+  .f49-call-a18-cell { position:absolute; box-sizing:border-box; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-tile); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); display:flex; align-items:center; justify-content:center; }
+  .f49-call-a18-big { position:absolute; font:400 88px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-kv { position:absolute; left:28px; right:28px; height:56px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 26px/56px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f49-call-a18-kv b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); display:inline-block; width:130px; }
+  .f49-call-a18-ln { position:absolute; left:0; right:0; height:52px; padding:0 28px; box-sizing:border-box; font:500 24px/52px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f49-call-a18-ln .r { position:absolute; right:28px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f49-call-a18-ln .bug { color:var(--rp-ink); }
+  .f49-call-a18-slot.dec .n { top:13px; } .f49-call-a18-slot.dec .t { top:12px; } .f49-call-a18-slot.dec .d { top:57px; left:76px; right:auto; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f49-call-a18-mockmk { color:rgba(var(--rp-ink-rgb),0.68); }
+  .f49-call-a18-ln.f49-call-a18-lit, .f49-call-a18-mockmcode.f49-call-a18-lit { outline-offset:-3px; }
+  .f49-call-a18-grid60 { position:absolute; width:70px; height:56px; box-sizing:border-box; border-radius:6px; }
+</style>
+
+<div id="root" data-composition-id="49-call-a18" data-duration="18.64" data-width="1920" data-height="1080" data-plan-step="6">
+
+  <div class="clip f49-call-a18-bg" id="f49-call-a18-bg" data-start="0" data-duration="18.64" data-track-index="0"></div>
+
+  <div class="clip f49-call-a18-scene" id="f49-call-a18-scene" data-start="0" data-duration="18.64" data-track-index="1">
+
+  <div class="f49-call-a18-kicker" id="f49-call-a18-kicker">Call A18 · Step 6</div>
+  <div class="f49-call-a18-spine" id="f49-call-a18-spine">
+    <div class="f49-call-a18-tick" id="f49-call-a18-tick-6" data-plan-step="6" data-done data-live style="top:35px"></div>
+    <div class="f49-call-a18-tick" id="f49-call-a18-tick-7" data-plan-step="7" data-done style="top:145px"></div>
+    <div class="f49-call-a18-tick" id="f49-call-a18-tick-8" data-plan-step="8" data-done style="top:255px"></div>
+    <div class="f49-call-a18-tick" id="f49-call-a18-tick-9" data-plan-step="9" data-done style="top:365px"></div>
+    <div class="f49-call-a18-tick" id="f49-call-a18-tick-10" data-plan-step="10" data-done style="top:475px"></div>
+  </div>
+  <div class="f49-call-a18-pg" id="f49-call-a18-proto" data-plan-component="page" style="left:640px; top:150px; width:1180px; height:410px">
+<div class="f49-call-a18-mt" style="left:28px; top:22px; font:400 36px/1.1 'EB Garamond'; white-space:nowrap">Where a review starts a run</div>
+    <div style="position:absolute; left:0; right:0; top:92px">
+      <div class="f49-call-a18-ln" style="top:0; font-size:20px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.58); background:var(--rp-tile)">machine<span class="r">headless run</span></div>
+      <div class="f49-call-a18-ln" style="top:60px; height:60px; line-height:60px">macOS<span class="r">in the sandbox</span></div>
+      <div class="f49-call-a18-ln" style="top:124px; height:60px; line-height:60px">Linux with bubblewrap<span class="r">in the sandbox</span></div>
+      <div class="f49-call-a18-ln f49-call-a18-lit" id="f49-call-a18-lit" style="top:188px; height:60px; line-height:60px">Linux without bubblewrap<span class="r">none</span></div>
+      <div class="f49-call-a18-ln" style="top:252px; height:60px; line-height:60px">native Windows<span class="r">none</span></div>
+    </div>
+  </div>
+  <div class="f49-call-a18-chipx" id="f49-call-a18-ex" style="left:640px; top:584px">no bubblewrap → no run</div>
+  <div class="f49-call-a18-call ch" id="f49-call-a18-chose" data-plan-option="a" style="top:175px"><span class="k">Chose</span><span class="l">No sandbox: no run</span></div>
+  <div class="f49-call-a18-call io" id="f49-call-a18-inst" data-plan-option="b" style="top:365px"><span class="k">Instead of</span><span class="l">Run unfenced, warn</span></div>
+  <div class="f49-call-a18-chk" id="f49-call-a18-chk">Check</div>
+  <div class="f49-call-a18-chkp" id="f49-call-a18-chkp">failIfUnavailable</div>
+  <div class="f49-call-a18-chipx" id="f49-call-a18-readme" style="left:640px; top:660px">README · Unattended runs need Claude Code's sandbox</div>
+  <div class="f49-call-a18-term" id="f49-call-a18-term" style="left:640px; top:720px; width:1180px; height:162px"><div class="f49-call-a18-termbar" style="height:36px"></div><div class="f49-call-a18-tl" style="left:32px; top:52px; font-size:26px">$ reelplanning review --detach</div><div class="f49-call-a18-tl" style="left:32px; top:88px; font-size:26px">△ unattended runs are off on this machine:</div><div class="f49-call-a18-tl dim" style="left:32px; top:124px; font-size:26px">  Claude Code's sandbox can't run on this machine (…)</div></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "49-call-a18";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], IR = __RP["ink-rgb"], TILE = __RP["tile"];
+  var $ = function (s) { return document.getElementById("f49-call-a18-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to) { tl.fromTo(el, { opacity: 0 }, { opacity: to == null ? 1 : to, duration: 0.45, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, el, at, dur) { var L = lenOf(el); gsap.set(el, { strokeDasharray: L, strokeDashoffset: L }); tl.to(el, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f49-call-a18-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.28)", borderColor: "rgba(0,0,0,0)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f49-call-a18-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.72)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("proto"), 0.25, 12);
+  tl.fromTo($("lit"), { outlineColor: OFF }, { outlineColor: C, duration: 0.35, ease: "power3.out" }, 3.71);
+  pop(tl, $("ex"), 3.81, 8);
+  pop(tl, $("chose"), 5.01, 14);
+  pop(tl, $("inst"), 6.14, 14);
+  fade(tl, $("chk"), 7.0);
+  fade(tl, $("chkp"), 7.0);
+  pop(tl, $("readme"), 12.03, 8);
+  pop(tl, $("term"), 14.51, 10);
+
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 18.120);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

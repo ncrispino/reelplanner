@@ -1,0 +1,213 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "29-the-plan",
+        "index": 29,
+        "title": "The plan"
+      },
+      "id": "amukrdxltzrb7",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2,
+          3
+        ],
+        "step": null
+      },
+      "t": 328.4
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 3,
+    "watchedPct": 100,
+    "wrongChecks": 3
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-28T04:37:46.287Z",
+      "id": "q1",
+      "label": "Answered before you see it",
+      "option": "a",
+      "planStep": 2,
+      "question": "What becomes of a fresh-eyes finding nobody has answered?",
+      "recommended": true,
+      "t": 129.144
+    },
+    {
+      "decidedAt": "2026-09-28T04:38:36.225Z",
+      "id": "q2",
+      "label": "Those, and Ask about this",
+      "option": "b",
+      "planStep": 3,
+      "question": "How do you find out what a phrase means?",
+      "recommended": true,
+      "t": 190.011
+    },
+    {
+      "decidedAt": "2026-09-28T04:39:39.362Z",
+      "id": "q3",
+      "label": "Every new one, and the system video now",
+      "option": "a",
+      "planStep": 5,
+      "question": "Which videos get fresh eyes?",
+      "recommended": true,
+      "t": 287.591
+    }
+  ],
+  "exportedAt": "2026-09-28T04:40:04.799Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-28T04:37:58.934Z",
+      "correct": true,
+      "id": "k1",
+      "t": 149.627
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-28T04:38:50.515Z",
+      "correct": false,
+      "id": "k2",
+      "t": 213.8,
+      "walked": true
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-28T04:39:18.199Z",
+      "correct": true,
+      "id": "k3",
+      "t": 254.461
+    },
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-28T04:39:48.203Z",
+      "correct": false,
+      "id": "k4",
+      "t": 309.972,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-28T04:39:53.274Z",
+      "correct": false,
+      "id": "k5",
+      "t": 317.033,
+      "walked": true
+    }
+  ],
+  "src": "2026-09-28-videos-that-make-sense/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 329.88,
+    "firstPlayAt": "2026-09-28T04:36:01.854Z",
+    "maxTimeReached": 329.87,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T23:18:09.177Z",
+      "video": "2026-09-26-contributing--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    },
+    {
+      "seen": "2026-09-28T04:39:23.180Z",
+      "video": "2026-09-28-videos-that-make-sense"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

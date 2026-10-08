@@ -1,0 +1,71 @@
+# no slash: a node_modules that is a symlink (a worktree sharing the main checkout's) is kept out too
+node_modules
+.DS_Store
+*.log
+# Claude Code's worktrees, made inside the checkout
+.claude/worktrees/
+# HyperFrames per-project scratch (kept out; renders are re-creatable via scripts/verify.sh)…
+videos/**/.hyperframes/*
+# …but not the video's record in it, committed as a plan video's is: its narration, held beats, stage and caption
+# skin, and the prompts its frames were written from
+!videos/**/.hyperframes/narration.json
+!videos/**/.hyperframes/holds.json
+!videos/**/.hyperframes/stage-snippet.html
+!videos/**/.hyperframes/caption-skin.html
+!videos/**/.hyperframes/dispatch-*.md
+videos/**/.producer/
+videos/**/.debug/
+videos/**/node_modules/
+.media/
+/tmp/
+
+# no voice file or render is committed anywhere (D-305): a finished video people should watch goes up as a
+# release file or on the hosted page. The worked examples under videos/ play their narration from the committed
+# .mp3 beside each line; the .wav narrate makes stays on disk.
+*.wav
+*.mp4
+renders/
+dist/
+
+# scratch files workers write while verifying a frame headlessly
+videos/*/__*.html
+videos/*/.index.*.bak
+packages/player/test/last-run.png
+# the pictures fresh eyes looked at (made again by each run)
+videos/*/fresh-eyes/shots/
+
+# reelplanning in a shared repo (templates/gitignore; the contributing plan, D-213): a plan folder carries
+# only its videos' text, and a PR's built video goes on video/pr-<n>, never merged
+.reelplanning/plans/*/*video/assets/
+.reelplanning/plans/*/*video/capture/
+.reelplanning/plans/*/*video/audio_meta.json
+.reelplanning/plans/*/*video/audio_engine_meta.json
+# this repo's plans from before that rule keep their videos' other assets committed as they are; their voice and
+# renders are not (D-305 ended that exception: .reelplanning/.gitignore and the lines above leave them out)
+!.reelplanning/plans/2026-09-2[0-7]-*/*video/assets/
+!.reelplanning/plans/2026-09-2[0-7]-*/*video/capture/
+!.reelplanning/plans/2026-09-2[0-7]-*/*video/audio_meta.json
+!.reelplanning/plans/2026-09-2[0-7]-*/*video/audio_engine_meta.json
+# an explainer (explain-first step 5, D-249): its text goes into git (explain.md, sources.json, the storyboard,
+# script and frames, its reviews), never a transcript or its built video (voice, images, captures)
+.reelplanning/explainers/*/video/assets/
+.reelplanning/explainers/*/video/capture/
+.reelplanning/explainers/*/video/audio_meta.json
+.reelplanning/explainers/*/video/audio_engine_meta.json
+
+# the plan guide: a video's guide (its full page and its parts) is built from plan.md, git and the runs by `reelplanning
+# guide`, never committed (like a render, D-213); a plan with no video yet gets <plan-dir>/guide/index.html, the same.
+# A step's picture fragment the agent writes (<plan-dir>/guide/step-<n>.html) is committed.
+.reelplanning/plans/*/*video/guide/
+.reelplanning/explainers/*/video/guide/
+.reelplanning/plans/*/guide/index.html
+.reelplanning/plans/*/guide/parts.json
+.reelplanning/plans/*/guide/.cache/
+
+# keys (narration-check, narrate): never committed
+.env
+
+# what each reviewed version was built from that nothing makes again (screenshots, captured text), kept small and
+# committed so `reel rebuild` can build it again (scripts/lib/versions.mjs); never a voice file or a video
+!.reelplanning/media/**
+!.reelplanning/**/versions/**

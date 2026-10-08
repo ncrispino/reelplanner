@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "73cb6c94d7575e63070d",
+      "text": "Chapter three: step two. The tool now writes what to watch first into the storyboard, the video's plan: the system video at its closest chapter, then at most two earlier plans. This video builds on six: the card lists two, and a short scene near the start sums up the rest.",
+      "sha256": "1d3a90ad4bec2c394285cbbb3a91f62ee8b72b498b3c3c7b476e2bbc8609d258",
+      "duration_s": 15.808
+    },
+    "11": {
+      "key": "f5a2fc7a1f47bfa9ac87",
+      "text": "Here is that card, on this very video: each video, what it gives, its length, and whether you watched it. It is ticked off once you finish it, in this browser, and in your file across repos when you send a review, as you decided.",
+      "sha256": "e340ee289de3ed64387ab2079fd75e4ba2ce060068f18f221478f451c6a77436",
+      "duration_s": 12.181
+    },
+    "12": {
+      "key": "5adeb7052a451a2b0210",
+      "text": "Step two's three choices stop here. First: the system video's chapter is picked by the words it shares with the plan. Second: an earlier plan counts when this one keeps or replaces its decisions. Third: the lines are written into the storyboard, not printed to paste.",
+      "sha256": "c96c459968f13fe46c0a12ad3f84f63d606eeab050fa91042c575e77d243ea5b",
+      "duration_s": 15.168
+    },
+    "13": {
+      "key": "b2b8a4b6e5c4770f3b6f",
+      "text": "Quick check. This video builds on six earlier videos. Besides the system video, how many does its card list?",
+      "sha256": "938e206ba655c3762ce9e9cd8e1e97c1e091aa628fcf8d21587c90d64a3e8951",
+      "duration_s": 6.123
+    },
+    "14": {
+      "key": "327e8e16493556ce2905",
+      "text": "Chapter four: step three. Memory, what the tool learns from your reviews, has a new line: where you got lost. Here: most in the revise-loop plan, and the last plan, three of three wrong, approved anyway. One word looked up in three reviews, say label, is a signal: the retro rewrites its scene.",
+      "sha256": "6ef02a1fe572cd6247c543b98ee134a5fbd6ec823c4d7bccbf8f43dbd8c40034",
+      "duration_s": 16.192
+    },
+    "15": {
+      "key": "0962817a612aa1f30410",
+      "text": "Approving is never blocked, as you decided. At Finish, one quiet line says how many checks you missed, with a way to walk through them or ask the agent to explain again.",
+      "sha256": "0ff973c8c0aee5e23dd2a5278552e221b75b45d07246e372980ad4679b079586",
+      "duration_s": 9.579
+    },
+    "16": {
+      "key": "4e6bfd28abd2e50876e0",
+      "text": "Step three's three choices stop here. First: where you got lost is a sixth memory line. Second: a review now carries the words you looked up and the videos you watched. Third: what your file knows ends your memory across repos.",
+      "sha256": "b462fbf92917e054003e47cad473959d3194da618b4a73d5d0b6a8e84a9f8a0b",
+      "duration_s": 13.099
+    },
+    "17": {
+      "key": "19aa927e990801fcd50a",
+      "text": "Quick check. You looked up label in two reviews; in a third, you look it up again. What happens?",
+      "sha256": "9bb6ea13f561266402893af713be558d67acb68e4d3487b3e7e149bca978ffa5",
+      "duration_s": 4.971
+    },
+    "18": {
+      "key": "9aac318c8e4efa7a48a9",
+      "text": "Chapter five: step four. A quick check now tests the main idea, on the case just shown. The build fails a check with no walk-through, and warns when the answer uses words its scene never says: the last plan's first check says twice, and its scene never does.",
+      "sha256": "ce7af7f9c4bd325dc6d6c9d21c22bae1e31143cd93067ba1a0c3a11b971dbed1",
+      "duration_s": 14.72
+    },
+    "19": {
+      "key": "352cb98601f67a4cb223",
+      "text": "And when you answer one wrong, its walk-through opens on the frame, working the same case through, and the video waits while you read.",
+      "sha256": "a481599116d6695306e2e6845c3cc2d7c0e16a50b48d49f9241dea280e51bc6c",
+      "duration_s": 6.805
+    },
+    "20": {
+      "key": "7ac82ff5528b7ddf570a",
+      "text": "Step four's two choices stop here. First: an answer counts as not shown when any longer word of it goes unsaid, not only its exact phrase. Second: only a check's reason is warned for naming an id; a walk-through may name a choice by its number beside what it is.",
+      "sha256": "f5fbf1c39d04671b7a53dcacb31e120ae605cf418c09cd3e260e4b4fa067f3dc",
+      "duration_s": 15.232
+    },
+    "21": {
+      "key": "a18f08824c989abe2725",
+      "text": "Quick check. A check has a walk-through, but its answer says twice, and its scene never does. What does the build do?",
+      "sha256": "379a79a78fa38693f9565da2379ce6005e8a8cb1c5618ce08692e81765e35ec0",
+      "duration_s": 5.824
+    },
+    "22": {
+      "key": "d98145d80945d2866003",
+      "text": "Chapter six: the code check. A second agent, which had not seen the build, checked it against the plan and found two gaps. The system video had no scene for a step or Finish, and the decision log had no glossary row: all three have one now. And the skill now drops an explanation you already know.",
+      "sha256": "da244148de40ed234ca0b0dc4c9ab7a9411bb00bd715491ae503784c392ed7b3",
+      "duration_s": 16.896
+    },
+    "23": {
+      "key": "cdbbe7d8a47dd7f6b193",
+      "text": "It found your plain-words decision broken in three system-video scenes: fixed. Memory counted one way of approving; now both. Outside the steps: the card rules are the player's work, and a scene that explains a word but never says it now fails the build, and names the scene.",
+      "sha256": "8673ee23c855be055a62b51feafd6861a1ffcf83847aafff0b24aeb20c03de9b",
+      "duration_s": 15.637
+    },
+    "24": {
+      "key": "fed82b4453bbd544b635",
+      "text": "Quick check. A system-video scene is marked as explaining Finish, but never says it. What does its build do now?",
+      "sha256": "1fa864c885641b9cb9dca5a28dd922d403ca805ceee805be7c377893d4c324d9",
+      "duration_s": 6.016
+    },
+    "25": {
+      "key": "35f4a25475d5b26cbe4a",
+      "text": "What ran: every test, all passing, and the system video, rebuilt under eight minutes. Not done: older videos still say call and tag until they are rebuilt. The narration and visuals are AI-generated. Flag a step, or accept.",
+      "sha256": "9d9f80c526addd1ed1465118216643ad05eae6f38d515322c964fb8a334fead0",
+      "duration_s": 13.099
+    },
+    "01": {
+      "key": "2bd304c4de302e9601a3",
+      "text": "The plan for videos you can follow is built, all four steps. You approved the last plan with all three quick checks wrong; this is the fix. Six chapters: the words, one per step, then a second agent's check.",
+      "sha256": "d6abce566d90c9a2c9412220efb4e1284eeff487dffdfc9a2e82db6a5d647b49",
+      "duration_s": 11.797
+    },
+    "02": {
+      "key": "abe1dcb444b83bf42daa",
+      "text": "A choice is something the agent decided alone, that the plan did not spell out: this build made twelve. A label is a note on a choice worth a look: you'll notice it, toss-up, or hard-to-undo. A labelled choice stops the video until its label is accepted ten times in a row.",
+      "sha256": "9c05396c7fa77818fb5d8179961806d08db70a93b10cf3cbfb0090cd9a4da61a",
+      "duration_s": 15.723
+    },
+    "03": {
+      "key": "8b3049f0fe922771b1cc",
+      "text": "Choices that stop in one step share one scene, a picture and a sentence or two, and the video pauses once: twelve choices, four pauses. An off-plan change, something other than the plan said, would pause alone; there are none.",
+      "sha256": "6f91636e76f9515a3bbe9b3f5c4646cd9d32db5ef9b2e1f5c551a7132e9ee2a7",
+      "duration_s": 12.309
+    },
+    "04": {
+      "key": "105278fa39c4b1296237",
+      "text": "Three earlier decisions still hold: the system video catches up after each accepted walkthrough; a step's fifth choice is asked first; and three of one kind is a signal.",
+      "sha256": "4601263d8cdd3cc3e5101510100b211e0c096516ab48f614a1b5523ba81fa256",
+      "duration_s": 9.643
+    },
+    "05": {
+      "key": "346e485bf410a11c026a",
+      "text": "Chapter two: step one. The glossary, the repo's list of words, now gives each a plain word for the screen, as you decided: choice for call, label for tag. All forty rows have a scene in the system video; add a row with none, say sweep, and its build stops and names it.",
+      "sha256": "0ed5bc2aed178cd670b5398a322cdd8105bce1b83d3b9559329161d51f49812d",
+      "duration_s": 15.019
+    },
+    "06": {
+      "key": "047565c02589bdd2387d",
+      "text": "In any video, a glossary word in the captions is underlined. Click it: the video waits, and its meaning shows with where it is explained, here the system video, chapter one, and a link that plays that scene.",
+      "sha256": "b1c881ab372e0cc78d341e626bc221b0792766eeb08ed94864aba2b3aaf099ae",
+      "duration_s": 11.477
+    },
+    "07": {
+      "key": "b5927f36b6e3bedbabda",
+      "text": "Press G for the Terms panel: this scene's words, each in the word said on screen, then the files' name: label, in the files a tag.",
+      "sha256": "e6b0c9b77918e7a444bb8d844a8c89a17fce710dc0364992ab5871003aeb080c",
+      "duration_s": 7.253
+    },
+    "08": {
+      "key": "c44b2b137f0328a08f77",
+      "text": "Step one's four choices stop here. First: plain words are a new glossary column, not a separate file. Second: three more of them than you decided. Third: one list, for the whole repo, of which video explains each word. Fourth: plain words throughout the system video, cutting three passages.",
+      "sha256": "3eda13c5f428eb173858e1bc66106e80aaaad933087c8faceff1cbe7a122b2c6",
+      "duration_s": 16.491
+    },
+    "09": {
+      "key": "8b3ee69591821dd9951d",
+      "text": "Quick check. A glossary row for sweep, and no scene of the system video explains it. What happens when the system video is built?",
+      "sha256": "16ae2491ab1bde9dfdc0099e57ed80002fbaebb0db9ddd92a3aa61750bb8feab",
+      "duration_s": 6.912
+    }
+  }
+}

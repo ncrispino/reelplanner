@@ -1,0 +1,128 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .f13-decision-2-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f13-decision-2-stage { position: absolute; inset: 0; }
+
+  /* ---- SHARED STAGE — decision beat: THE RAIL ONLY (no chain, no build, no pages) ---- */
+  .f13-decision-2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f13-decision-2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f13-decision-2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f13-decision-2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f13-decision-2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-decision-2-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+  .f13-decision-2-slot.dim { opacity:0.72; }
+  .f13-decision-2-slot:not([data-filled]) .n, .f13-decision-2-slot:not([data-filled]) .t { opacity:0; }
+
+  /* ---- kicker ---- */
+  .f13-decision-2-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+
+  /* ---- the two option cards (700–1240 / 1300–1840, y 200–820) ---- */
+  .f13-decision-2-label { position:absolute; top:148px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-decision-2-opt { position:absolute; top:200px; width:540px; height:620px; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f13-decision-2-ring { position:absolute; inset:-1px; border-radius:9px; border:3px solid var(--rp-coral); opacity:0; pointer-events:none; }
+
+  /* the mono cost line, at the head of its card */
+  .f13-decision-2-cost { position:absolute; left:28px; top:40px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f13-decision-2-rule { position:absolute; left:28px; top:96px; width:484px; height:1px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+  /* what the card costs, line by line */
+  .f13-decision-2-row { position:absolute; left:28px; width:484px; }
+  .f13-decision-2-row .k { display:block; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f13-decision-2-row .v { display:block; margin-top:16px; font:500 32px/1.25 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="13-decision-2" data-duration="13.62" data-width="1920" data-height="1080">
+  <div class="clip f13-decision-2-bg" data-start="0" data-duration="13.62" data-track-index="0"></div>
+
+  <div class="clip f13-decision-2-stage" id="f13-decision-2-stage" data-start="0" data-duration="13.62" data-track-index="1">
+
+    <div class="f13-decision-2-kicker" id="f13-decision-2-kicker">✱ Choice 2 · Step 3</div>
+
+    <!-- SHARED STAGE: rail only — slots 1–3 filled; slot 1 carries its ink decision tag -->
+    <div class="f13-decision-2-rail" id="f13-decision-2-rail">
+      <div class="f13-decision-2-slot dim" id="f13-decision-2-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+      <div class="f13-decision-2-slot dim" id="f13-decision-2-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f13-decision-2-slot dim" id="f13-decision-2-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span></div>
+      <div class="f13-decision-2-slot" id="f13-decision-2-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+      <div class="f13-decision-2-slot" id="f13-decision-2-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f13-decision-2-slot" id="f13-decision-2-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- OPTION CARDS: A recommended -->
+    <div class="f13-decision-2-label" id="f13-decision-2-label-a" style="left:700px">A · Yes, a list by year</div>
+    <div class="f13-decision-2-label" id="f13-decision-2-label-b" style="left:1300px">B · No, eras and albums only</div>
+
+    <div class="f13-decision-2-opt" id="f13-decision-2-opt-a" data-plan-option="a" style="left:700px">
+      <div class="f13-decision-2-cost" id="f13-decision-2-cost-a">Cost · 1 template</div>
+      <div class="f13-decision-2-rule" id="f13-decision-2-rule-a"></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-a1" style="top:150px"><span class="k">Build</span><span class="v">One template</span></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-a2" style="top:320px"><span class="k">Content</span><span class="v">Events already exist</span></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-a3" style="top:490px"><span class="k">Era pages</span><span class="v">Keep their year links</span></div>
+      <div class="f13-decision-2-ring" id="f13-decision-2-ring-a"></div>
+    </div>
+
+    <div class="f13-decision-2-opt" id="f13-decision-2-opt-b" data-plan-option="b" style="left:1300px">
+      <div class="f13-decision-2-cost" id="f13-decision-2-cost-b">Cost · no new work</div>
+      <div class="f13-decision-2-rule" id="f13-decision-2-rule-b"></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-b1" style="top:150px"><span class="k">Build</span><span class="v">Nothing new</span></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-b2" style="top:320px"><span class="k">Content</span><span class="v">Nothing new</span></div>
+      <div class="f13-decision-2-row" id="f13-decision-2-row-b3" style="top:490px"><span class="k">Era pages</span><span class="v">Lose their year links</span></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var P = "f13-decision-2";
+  var q = function (id) { return document.getElementById(P + "-" + id); };
+  var out = "power3.out";
+
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines = window.__timelines || {};
+  window.__timelines["13-decision-2"] = tl;
+
+  // t=0 — the rail is already standing: slots 1–3 filled, slot 1 tagged in ink. No coral yet.
+
+  // 0.06 "Second" — the kicker settles in.
+  tl.fromTo(q("kicker"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: out }, 0.074);
+
+  // 1.26 "timeline" — the two cards arrive side by side: the question.
+  tl.fromTo([q("opt-a"), q("opt-b")], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55, ease: out, stagger: 0.08 }, 1.274);
+
+  // 3.16 "As a list by year" — option A names itself.
+  tl.fromTo(q("label-a"), { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 3.22);
+
+  // 4.36 "one" / 4.50 "template" — A's cost line, then the build row it pays for.
+  tl.fromTo(q("cost-a"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 4.5);
+  tl.fromTo(q("rule-a"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: out }, 4.5);
+  tl.fromTo(q("row-a1"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 4.704);
+
+  // 5.38 "events" — the content row: nothing new to write.
+  tl.fromTo(q("row-a2"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 5.624);
+
+  // 6.78 "Without" — option B names itself; 7.14 "it" — its cost line and its two empty rows.
+  tl.fromTo(q("label-b"), { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 7.075);
+  tl.fromTo(q("cost-b"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, 7.515);
+  tl.fromTo(q("rule-b"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: out }, 7.515);
+  tl.fromTo([q("row-b1"), q("row-b2")], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out, stagger: 0.14 }, 7.748);
+
+  // 8.67 "links" — what A keeps; 9.23 "years" — what B loses.
+  tl.fromTo(q("row-a3"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 9.097);
+  tl.fromTo(q("row-b3"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: out }, 9.588);
+
+  // 10.65 "recommend" — card A takes the 3 px coral border: the frame's only coral.
+  tl.fromTo(q("ring-a"), { opacity: 0 }, { opacity: 1, duration: 0.35, ease: out }, 11.012);
+
+  // 11.00 → 13.064 — held read: both cards complete, A bordered coral.
+  tl.set({}, {}, 13.642);
+})();
+</script>
+</template>

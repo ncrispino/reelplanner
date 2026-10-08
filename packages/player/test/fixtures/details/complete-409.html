@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>complete() when parts are missing</title>
+<!-- Test fixture (packages/player/test/details.spec.mjs): a "code" detail tied to the agent's call
+     atest, with the bridge from the deep-dives contract, section 3. -->
+<style>
+  :root { --paper:#FAF9F5; --tile:#EFE9DE; --ink:#141413; --ink-rgb:20,20,19; --accent:#CC785C; }
+  :root[data-theme="dark"] { --paper:#141310; --tile:#232120; --ink:#F2EFE8; --ink-rgb:242,239,232; }
+  body { margin:0; padding:20px; background:var(--paper); color:var(--ink); font:14px/1.5 ui-sans-serif, system-ui, sans-serif; }
+  h1 { font:400 20px/1.3 Georgia, serif; margin:0 0 4px; }
+  p { margin:0 0 16px; color:rgba(var(--ink-rgb),.72); }
+  pre { margin:0; padding:10px 0; background:var(--tile); border-radius:6px; font:13px/1.6 ui-monospace, monospace; overflow:auto; }
+  .ln { display:block; padding:0 12px; }
+  .ln::before { content:attr(data-n); display:inline-block; width:2.5em; color:rgba(var(--ink-rgb),.4); }
+  .ln.mark { box-shadow:inset 2px 0 0 var(--accent); background:rgba(204,120,92,.12); }
+  [data-anchor] { cursor:pointer; }
+  [data-anchor]:hover { outline:1px solid rgba(var(--ink-rgb),.2); outline-offset:-1px; }
+</style>
+</head>
+<body>
+<h1>src/upload/complete.ts</h1>
+<p>The lines that carry the call are marked. Click a line to comment on it.</p>
+<pre><code><span class="ln" data-n="12" data-anchor="complete.ts:12">export async function complete(id: string) {</span><span class="ln" data-n="13" data-anchor="complete.ts:13">  const m = await manifests.get(id);</span><span class="ln mark" data-n="14" data-anchor="complete.ts:14">  if (m.partsDone.missing().length)</span><span class="ln mark" data-n="15" data-anchor="complete.ts:15">    return conflict(409, "parts missing");</span><span class="ln" data-n="16" data-anchor="complete.ts:16">  return finish(m);</span><span class="ln" data-n="17" data-anchor="complete.ts:17">}</span></code></pre>
+<script>
+/* reelplanning detail bridge (contract §3) */
+(() => {
+  const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.slice(1));
+  if ((q.get("theme") || h.get("theme")) === "dark") document.documentElement.dataset.theme = "dark";
+  const post = (m) => parent.postMessage({ type: "rp-detail", ...m }, "*");
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-anchor]"); if (!el) return;
+    const sel = String(getSelection() || "").trim();
+    post({ event: "anchor", anchor: el.dataset.anchor, text: (sel || el.innerText.replace(/\s+/g, " ").trim()).slice(0, 200) });
+  });
+  addEventListener("load", () => post({ event: "ready", title: document.title }));
+})();
+</script>
+</body>
+</html>

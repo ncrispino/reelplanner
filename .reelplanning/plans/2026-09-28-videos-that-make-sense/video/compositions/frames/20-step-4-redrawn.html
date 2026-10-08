@@ -1,0 +1,157 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m20-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m20-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .m20-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .m20-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .m20-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m20-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .m20-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m20-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .m20-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .m20-ul.ink { background:var(--rp-ink); height:3px; }
+  .m20-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m20-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m20-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m20-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m20-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m20-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m20-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m20-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .m20-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .m20-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m20-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m20-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .m20-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .m20-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .m20-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m20-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m20-h { position:absolute; font:400 44px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m20-hl { position:absolute; font:400 56px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m20-t { position:absolute; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m20-s { position:absolute; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m20-t code, .m20-s code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m20-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .m20-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m20-chip.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .m20-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .m20-hair { position:absolute; height:1px; background:rgba(var(--rp-ink-rgb),0.18); }
+  .m20-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .m20-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m20-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m20-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; background:var(--rp-paper); }
+  .m20-shot img { display:block; position:absolute; left:0; top:0; }
+  .m20-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:8px; }
+  .m20-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m20-pin.hot { background:var(--rp-coral); }
+  .m20-slab2 { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m20-bar2 { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m20-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .m20-code { position:absolute; font:400 28px/1.3 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m20-code .d { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .m20-code .ok { color:var(--rp-syn-add); }
+  .m20-code .w { color:var(--rp-syn-num); }
+  .m20-code .x { color:var(--rp-syn-del); }
+  .m20-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m20-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .m20-btn { position:absolute; height:44px; padding:0 16px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m20-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); line-height:40px; }
+  .m20-cap { position:absolute; box-sizing:border-box; padding:14px 30px; border-radius:10px; background:var(--rp-slab); font:700 40px/1.25 "Inter"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .m20-cap .ul { text-decoration:underline dotted; text-decoration-thickness:4px; text-underline-offset:8px; }
+
+  .m20-bar { position:absolute; left:120px; top:120px; width:1680px; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m20-st { position:absolute; left:120px; top:250px; width:1140px; height:68px; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); padding:0 26px; font:400 28px/68px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .m20-q { position:absolute; left:120px; top:362px; font:400 50px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .m20-ah { position:absolute; font:700 28px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-row { position:absolute; left:120px; top:500px; width:1060px; height:370px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .m20-rt { position:absolute; font:400 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-wc { position:absolute; font:400 40px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-li { position:absolute; font:400 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .m20-no { position:absolute; left:1260px; top:530px; width:560px; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="20-step-4-redrawn" data-band="bottom" data-duration="16.555" data-width="1920" data-height="1080">
+
+  <div class="clip m20-bg" id="m20-bg" data-start="0" data-duration="16.555" data-track-index="0"></div>
+
+  <div class="clip m20-scene" id="m20-scene" data-start="0" data-duration="16.555" data-track-index="1">
+    <div class="m20-view" id="m20-view">
+    <div class="m20-lab" id="m20-k" style="left:120px; top:56px;">step 6 · measure it · redrawn</div>
+    <div class="m20-plan" id="m20-pl" style="left:720px; top:48px">planned</div>
+    <div class="m20-bar" id="m20-br">The bar, over three walkthroughs: a pause holds you 5 s or more, and something is flagged or said.</div>
+    <div class="m20-st" id="m20-st">reel status · walkthroughs: still accepted without a look (3 of 3)</div>
+    <div class="m20-q" id="m20-q">Next plan: drop the walkthrough video after each build?</div>
+    <div class="m20-ah" id="m20-a1" style="left:120px; top:460px">If you approve it</div>
+    <div class="m20-row" id="m20-row"></div>
+    <div class="m20-rt" id="m20-r1" style="left:150px; top:530px">Plan video · stays</div>
+    <div class="m20-rt" id="m20-r2" style="left:520px; top:530px">Code check · stays</div>
+    <div class="m20-rt" id="m20-r3" style="left:890px; top:530px">Walkthrough · goes</div>
+    <div class="m20-hair" id="m20-hr" style="left:150px; top:590px; width:1000px"></div>
+    <div class="m20-wc" id="m20-wc" style="left:150px; top:620px">What changed</div>
+    <div class="m20-li" id="m20-l1" style="left:150px; top:690px">Save moved to the top</div>
+    <div class="m20-btn ghost" id="m20-f1" style="left:1040px; top:682px">Flag</div>
+    <div class="m20-li" id="m20-l2" style="left:150px; top:760px">Reviews stored one file a day</div>
+    <div class="m20-btn ghost" id="m20-f2" style="left:1040px; top:752px">Flag</div>
+    <div class="m20-ah" id="m20-a2" style="left:1260px; top:460px">If you ask for changes, or don't answer</div>
+    <div class="m20-no" id="m20-no">Nothing changes: the walkthrough video stays as it is.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "20-step-4-redrawn";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m20-k", { opacity: 0 });
+  tl.to("#m20-k", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  gsap.set("#m20-pl", { opacity: 0 });
+  tl.to("#m20-pl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  gsap.set("#m20-br", { opacity: 0 });
+  tl.to("#m20-br", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+  gsap.set("#m20-st", { opacity: 0 });
+  tl.to("#m20-st", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.5);
+  gsap.set("#m20-q", { opacity: 0, y: 12 });
+  tl.to("#m20-q", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.49);
+  gsap.set("#m20-a1", { opacity: 0, y: 12 });
+  tl.to("#m20-a1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.81);
+  gsap.set("#m20-row", { opacity: 0 });
+  tl.to("#m20-row", { opacity: 1, duration: 0.4, ease: "power2.out" }, 4.91);
+  gsap.set("#m20-a2", { opacity: 0, y: 12 });
+  tl.to("#m20-a2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.31);
+  gsap.set("#m20-no", { opacity: 0 });
+  tl.to("#m20-no", { opacity: 1, duration: 0.4, ease: "power2.out" }, 5.51);
+  gsap.set("#m20-wc", { opacity: 0, y: 12 });
+  tl.to("#m20-wc", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.37);
+  gsap.set("#m20-hr", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m20-hr", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 6.37);
+  gsap.set("#m20-l1", { opacity: 0, y: 12 });
+  tl.to("#m20-l1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.77);
+  gsap.set("#m20-f1", { opacity: 0, y: 12 });
+  tl.to("#m20-f1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.87);
+  gsap.set("#m20-l2", { opacity: 0, y: 12 });
+  tl.to("#m20-l2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.17);
+  gsap.set("#m20-f2", { opacity: 0, y: 12 });
+  tl.to("#m20-f2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.27);
+  gsap.set("#m20-r1", { opacity: 0, y: 12 });
+  tl.to("#m20-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.57);
+  gsap.set("#m20-r2", { opacity: 0, y: 12 });
+  tl.to("#m20-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.77);
+  gsap.set("#m20-r3", { opacity: 0, y: 12 });
+  tl.to("#m20-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.97);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

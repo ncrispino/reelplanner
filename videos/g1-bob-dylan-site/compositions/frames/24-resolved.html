@@ -1,0 +1,151 @@
+<template>
+<style>
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-style: normal; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f24-resolved-ground { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f24-resolved-stage { position: absolute; inset: 0; }
+
+  /* kicker — ink only (the resolved frame spends no coral) */
+  .f24-resolved-kicker { position: absolute; left: 80px; top: 96px; font: 500 28px/1 "JetBrains Mono"; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rp-ink); white-space: nowrap; opacity: 0; }
+  .f24-resolved-kicker .m { color: var(--rp-ink); margin-right: 0.5em; }
+
+  /* disclosure note — bottom right, above the caption keep-out */
+  .f24-resolved-note { position: absolute; right: 80px; top: 846px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.02em; color: rgba(var(--rp-ink-rgb),0.55); white-space: nowrap; opacity: 0; }
+
+  /* ---- SHARED PIPELINE STAGE (positions and sizes are law) ---- */
+  .f24-resolved-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f24-resolved-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f24-resolved-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f24-resolved-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f24-resolved-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  /* decision tags: ink on the resolved frame — settled, no longer the live choice */
+  .f24-resolved-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); opacity:0; }
+  .f24-resolved-slot.dim { opacity:0.72; }
+
+  /* ---- section labels above each stretch of the chain ---- */
+  .f24-resolved-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; opacity:0; }
+
+  /* ---- sources: real file names, stacked ---- */
+  .f24-resolved-file { position:absolute; left:660px; width:220px; height:62px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 18px; font:400 26px/1 "JetBrains Mono"; color:var(--rp-ink); opacity:0; }
+
+  /* ---- the one process ---- */
+  .f24-resolved-build { position:absolute; left:980px; top:400px; width:200px; height:126px; border-radius:12px; background:var(--rp-data); display:flex; align-items:center; justify-content:center; opacity:0; }
+  .f24-resolved-build .l { font:500 32px/1.15 "Inter"; color:var(--rp-on-ink); }
+
+  .f24-resolved-arrow { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.4); opacity:0; }
+  .f24-resolved-arrow::after { content:""; position:absolute; right:-2px; top:-8px; border-left:16px solid rgba(var(--rp-ink-rgb),0.4); border-top:8px solid transparent; border-bottom:8px solid transparent; }
+
+  /* ---- the output IS pages, so it is drawn as pages ---- */
+  .f24-resolved-page { position:absolute; top:346px; width:172px; height:250px; border-radius:6px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); padding:14px 14px 0; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f24-resolved-page.dim { opacity:0.72; }
+  .f24-resolved-page h { display:block; font:600 15px/1.15 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); margin-bottom:9px; opacity:0; }
+  .f24-resolved-page .bar { height:5px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }
+  .f24-resolved-page .cap { position:absolute; left:0; right:0; bottom:-42px; text-align:center; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+
+  /* ---- step 4: the design system is a restyle OF the pages, not a box ---- */
+  .f24-resolved-page.book h { font:600 15px/1.15 "EB Garamond"; letter-spacing:0; }
+  .f24-resolved-page.book .bar { height:4px; margin-bottom:9px; }
+  /* ---- step 3 (timeline): the era page carries a year strip ---- */
+  .f24-resolved-years { height:16px; border-radius:3px; border:1px solid rgba(var(--rp-ink-rgb),0.22); margin-bottom:9px; display:flex; align-items:center; justify-content:space-around; font:600 11px/1 "Inter"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); opacity:0; }
+  /* ---- step 5: search is a field on the page that gets it ---- */
+  .f24-resolved-find { height:18px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.35); margin-bottom:10px; position:relative; opacity:0; }
+  .f24-resolved-find::after { content:""; position:absolute; left:6px; top:5px; width:7px; height:7px; border-radius:50%; border:1.5px solid rgba(var(--rp-ink-rgb),0.5); }
+  /* ---- step 6: hosting is where the pages are served from ---- */
+  .f24-resolved-host { position:absolute; top:300px; left:1258px; width:552px; height:34px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; padding:0 14px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="24-resolved" data-duration="10" data-width="1920" data-height="1080">
+
+  <div class="clip f24-resolved-ground" id="f24-resolved-ground" data-start="0" data-duration="10" data-track-index="0"></div>
+
+  <div class="clip f24-resolved-stage" id="f24-resolved-stage" data-start="0" data-duration="10" data-track-index="1">
+
+    <div class="f24-resolved-kicker" id="f24-resolved-kicker"><span class="m">✱</span>The plan</div>
+
+    <div class="f24-resolved-rail" id="f24-resolved-rail">
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" id="f24-resolved-tag-1" data-plan-question="1">10 albums</span></div>
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d" id="f24-resolved-tag-2" data-plan-question="2">Timeline</span></div>
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-4" data-plan-step="4" data-filled style="top:330px"><span class="n">4</span><span class="t">Design system</span><span class="d" id="f24-resolved-tag-3" data-plan-question="3">Book-like</span></div>
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-5" data-plan-step="5" data-filled style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+      <div class="f24-resolved-slot dim" id="f24-resolved-slot-6" data-plan-step="6" data-filled style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+    </div>
+
+    <!-- content files -> build -> pages -->
+    <div class="f24-resolved-lbl" id="f24-resolved-lbl-files" style="left:660px;top:300px">Content files</div>
+    <div class="f24-resolved-file" id="f24-resolved-file-1" style="top:346px">albums/</div>
+    <div class="f24-resolved-file" id="f24-resolved-file-2" style="top:432px">songs/</div>
+    <div class="f24-resolved-file" id="f24-resolved-file-3" style="top:518px">events/</div>
+    <div class="f24-resolved-arrow" id="f24-resolved-arrow-1" style="left:900px;top:462px;width:60px"></div>
+    <div class="f24-resolved-lbl" id="f24-resolved-lbl-build" style="left:980px;top:300px">Build</div>
+    <div class="f24-resolved-build" id="f24-resolved-build"><span class="l">Build</span></div>
+    <div class="f24-resolved-arrow" id="f24-resolved-arrow-2" style="left:1200px;top:462px;width:60px"></div>
+
+    <!-- step 6: the row of pages is served from somewhere -->
+    <div class="f24-resolved-host" id="f24-resolved-host">push to main &rarr; deploy</div>
+
+    <div class="f24-resolved-page book dim" id="f24-resolved-page-album" style="left:1258px"><h id="f24-resolved-h-album">Bringing It All Back Home</h><div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:86%"></div><div class="bar" style="width:40%"></div><span class="cap">album</span></div>
+    <div class="f24-resolved-page book dim" id="f24-resolved-page-era" style="left:1448px"><h id="f24-resolved-h-era">Going Electric, 1965</h><div class="f24-resolved-years" id="f24-resolved-years"><span>1965</span><span>1966</span></div><div class="bar" style="width:88%"></div><div class="bar" style="width:94%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:52%"></div><span class="cap">era</span></div>
+    <div class="f24-resolved-page book dim" id="f24-resolved-page-song" style="left:1638px"><div class="f24-resolved-find" id="f24-resolved-find"></div><h id="f24-resolved-h-song">Like a Rolling Stone</h><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><div class="bar" style="width:64%"></div><span class="cap">song</span></div>
+
+    <div class="f24-resolved-note" id="f24-resolved-note">AI-generated narration and visuals</div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  window.__timelines = window.__timelines || {};
+  var ease = "power3.out";
+  var DIM = 0.72;
+  var tl = gsap.timeline({ paused: true });
+
+  // t=0 — inherited from step 6: the rail (all six slots filled) and the three pages, dim.
+
+  // 0.06 "That" — the kicker settles
+  tl.fromTo("#f24-resolved-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: ease }, 0.044);
+
+  // 0.61 "plan" — the left half of the chain returns: the files that feed the build
+  tl.fromTo(["#f24-resolved-lbl-files", "#f24-resolved-file-1", "#f24-resolved-file-2", "#f24-resolved-file-3"],
+    { opacity: 0, y: 10 }, { opacity: DIM, y: 0, duration: 0.5, ease: ease, stagger: 0.06 }, 0.602);
+  tl.fromTo("#f24-resolved-arrow-1", { opacity: 0, width: 0 }, { opacity: DIM, width: 60, duration: 0.45, ease: ease }, 0.788);
+  tl.fromTo("#f24-resolved-lbl-build", { opacity: 0, y: 10 }, { opacity: DIM, y: 0, duration: 0.5, ease: ease }, 0.835);
+  tl.fromTo("#f24-resolved-build", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: ease }, 0.884);
+  tl.fromTo("#f24-resolved-arrow-2", { opacity: 0, width: 0 }, { opacity: DIM, width: 60, duration: 0.45, ease: ease }, 1.112);
+
+  // 1.43 "three" / 1.76 "choices" — the three decisions land on their slots, one at a time
+  tl.fromTo("#f24-resolved-tag-1", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: ease }, 1.409);
+  tl.fromTo("#f24-resolved-tag-2", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: ease }, 1.75);
+  tl.fromTo("#f24-resolved-tag-3", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: ease }, 2.066);
+
+  // 2.38–4.21 "Draw on any step to ask for a change, or" — each step's mark appears on the page it changed
+  tl.fromTo("#f24-resolved-years", { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.5, ease: ease }, 2.96);           // step 3
+  tl.fromTo(["#f24-resolved-h-album", "#f24-resolved-h-era", "#f24-resolved-h-song"],
+    { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.5, ease: ease, stagger: 0.08 }, 3.4);                            // step 4
+  tl.fromTo("#f24-resolved-find", { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.45, ease: ease }, 3.901);           // step 5
+  tl.fromTo("#f24-resolved-host", { opacity: 0, y: 8 }, { opacity: DIM, y: 0, duration: 0.45, ease: ease }, 4.401);         // step 6
+
+  // 4.67 "approve" — the whole picture lifts out of dim: the plan, resolved
+  tl.to(["#f24-resolved-rail .f24-resolved-slot", "#f24-resolved-lbl-files", "#f24-resolved-file-1",
+         "#f24-resolved-file-2", "#f24-resolved-file-3", "#f24-resolved-arrow-1", "#f24-resolved-lbl-build",
+         "#f24-resolved-arrow-2", "#f24-resolved-host", "#f24-resolved-page-album", "#f24-resolved-page-era",
+         "#f24-resolved-page-song"],
+    { opacity: 1, duration: 0.7, ease: ease }, 4.659);
+
+  // 6.40 — the disclosure line is the last thing to land, then the frame is still
+  tl.fromTo("#f24-resolved-note", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: ease }, 6.609);
+
+  // 7.00 → 10.00: dead hold, no drift, no exits
+  tl.to({}, { duration: 0.01 }, 10.316);
+
+  window.__timelines["24-resolved"] = tl;
+})();
+</script>
+</template>

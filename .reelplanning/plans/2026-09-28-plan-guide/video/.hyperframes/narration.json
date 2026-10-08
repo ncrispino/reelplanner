@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "987dc66d02e354c20564",
+      "text": "With B, the guide is the file you review, and plan.md follows it.",
+      "said": "With B, the guide is the file you review, and plan dot md follows it.",
+      "sha256": "fd58b868d6420f84ff965f4ac751e91d4e42f9a412a3a77683e3fa7aee898b1e",
+      "duration_s": 4.075
+    },
+    "11": {
+      "key": "c0925d873868dce3b026",
+      "text": "With C, both are written, and the check says when they differ.",
+      "sha256": "98659755a0272876aeb7cace92bf8cde8e4b849e85d26d7094a30a597f97bd5a",
+      "duration_s": 3.008
+    },
+    "12": {
+      "key": "eec702da855dddbe3b9a",
+      "text": "Step two: complete, and checked. Each step in plan.md gets four blocks: its cases, each with its trace, step by step; its interface, every flag and field with a one-line meaning; one worked example; and its decisions, which the guide works out. reel check fails a step with no cases, or no interface and no line like: no interface, wording only. The guide's own check lists what's missing, like a case with no trace, and fails on a detail you can't open, or one only in an animation.",
+      "said": "Step two: complete, and checked. Each step in plan dot md gets four blocks: its cases, each with its trace, step by step; its interface, every flag and field with a one-line meaning; one worked example; and its decisions, which the guide works out. reel check fails a step with no cases, or no interface and no line like: no interface, wording only. The guide's own check lists what's missing, like a case with no trace, and fails on a detail you can't open, or one only in an animation.",
+      "sha256": "8e85e7fce7bb4af35cca7bcdbc757165eb689d8b469b24c0e8a535550700488a",
+      "duration_s": 29.413
+    },
+    "13": {
+      "key": "1d7ba788beeda8d8f70a",
+      "text": "Quick check. The agent rewrites step two in plan.md and runs the build. What does the guide show?",
+      "said": "Quick check. The agent rewrites step two in plan dot md and runs the build. What does the guide show?",
+      "sha256": "5f54dc7cb8769124441330ebde582e1b681e27084bcb164aba87c32440c8dfea",
+      "duration_s": 5.76
+    },
+    "14": {
+      "key": "10eea3fc1a1aa91c03bd",
+      "text": "Step three: the video and the guide point at each other. At each scene, more on the guide opens its step's part of the guide. Each part has watch this part, which plays its first scene. And each plan's row on the review page gets Guide, beside Plan and Built.",
+      "sha256": "a34bc10abfa5de845b7b24c9be107a8c591231db26e3cb620a456d928096275a",
+      "duration_s": 14.485
+    },
+    "15": {
+      "key": "ef19366ff8517f0100f0",
+      "text": "Question two. You're on step three and want its cases. A: the guide takes the plan text's place beside the video, as narrow as a phone. B: its own page, a click away, and your notes go out with the same Send. C: it grows over the frame, like a detail page. I recommend B: the guide needs the room. Where should it open?",
+      "sha256": "156435ad459e9768bf79d2f37bfbc12e876be010d1771dcc9e0f3b50c37437e7",
+      "duration_s": 18.069
+    },
+    "16": {
+      "key": "9b80cf52f1057c0e9aa3",
+      "text": "With A, the guide scrolls in the narrow column beside the video.",
+      "sha256": "3cd3d04227634e3ebfb2fd03cda6deae04cbc52ba605ce0cb8302a56f0beb8a9",
+      "duration_s": 3.264
+    },
+    "17": {
+      "key": "ad332c21687764d0aea5",
+      "text": "With B, the guide opens in its own tab, and watch this part brings you back.",
+      "sha256": "d0bb86fd2d2d7cd0bf665cf210693b1e13b4d2a89ce16414052b533a4bb2184f",
+      "duration_s": 4.245
+    },
+    "18": {
+      "key": "85f97224ba1a0daf3d28",
+      "text": "With C, the guide covers the paused video until you close it.",
+      "sha256": "2ec8896fcbcc41c11cc997801b8ea238f992d1fd44019e4bff94978030631d38",
+      "duration_s": 3.179
+    },
+    "19": {
+      "key": "f6eb75e47b14c66b8205",
+      "text": "Quick check. A step has its cases, and only rewords some help text: no command, file or function. What else does reel check need?",
+      "sha256": "4b56cff85e59f9c7acc7ca9cbc88b81acbf9e10327d477c2422002bd2e2abee1",
+      "duration_s": 7.616
+    },
+    "20": {
+      "key": "a90a3eccc852c4451d4f",
+      "text": "Step four: you answer, comment and edit right on the guide. Pick an option on a question, and it's answered, as on the video. Click any line to leave a note. Or suggest an edit: here, in step one's command, the option --out becomes --to, in place. The agent puts exactly that into plan.md, the decision log keeps it, and only the scenes that show it are rebuilt.",
+      "said": "Step four: you answer, comment and edit right on the guide. Pick an option on a question, and it's answered, as on the video. Click any line to leave a note. Or suggest an edit: here, in step one's command, the option dash dash out becomes dash dash to, in place. The agent puts exactly that into plan dot md, the decision log keeps it, and only the scenes that show it are rebuilt.",
+      "sha256": "49dd78b101094d6b78dedb7e4462a7d6b48cc8215ddb888b5e9fb5e1089fd0cc",
+      "duration_s": 20.693
+    },
+    "21": {
+      "key": "6250119cb7d36fa958c2",
+      "text": "Question three. You want --out to be --to. A: you write a comment, and the agent rewrites the step as it reads it. B: you change it in place, and exactly that goes into plan.md, checked against the decisions. C: the page on your own machine writes plan.md itself, unchecked. I recommend B. What does an edit do?",
+      "said": "Question three. You want dash dash out to be dash dash to. A: you write a comment, and the agent rewrites the step as it reads it. B: you change it in place, and exactly that goes into plan dot md, checked against the decisions. C: the page on your own machine writes plan dot md itself, unchecked. I recommend B. What does an edit do?",
+      "sha256": "d95422b4bb1dcd6a50cd1313f4e87ffa32424a465d792c1f6c50fa6fe70f33b0",
+      "duration_s": 19.072
+    },
+    "22": {
+      "key": "65f22112dd9f4d204967",
+      "text": "With A, your comment is the instruction; the words are the agent's.",
+      "sha256": "633cbea80b2963555c9a72abc3e410da6f6c52d21ec2a6070c4aae26b1e383ed",
+      "duration_s": 3.435
+    },
+    "23": {
+      "key": "610a20746e2de02a8fd6",
+      "text": "With B, plan.md says --to, as you wrote it, and the log keeps it.",
+      "said": "With B, plan dot md says dash dash to, as you wrote it, and the log keeps it.",
+      "sha256": "6c3cabe6771a71a2e920e8ee11e989125347f322d7d64d00b85a41441ba1c5b8",
+      "duration_s": 4.565
+    },
+    "24": {
+      "key": "f9206862ca8a0aefed4c",
+      "text": "With C, the page commits your change, on your own machine only.",
+      "sha256": "875d89afdea22e5f4e42cad580c0304e646c0c4013a8ecf33abe5cbbb1005328",
+      "duration_s": 3.456
+    },
+    "25": {
+      "key": "ea98b26455ac8dab5e48",
+      "text": "Quick check. You're reading step five's section on the guide and press watch this part. What plays?",
+      "sha256": "7488b2e7ae28d055c23e0bd081b4633faa861519c063ace8be8e4da93971390b",
+      "duration_s": 4.992
+    },
+    "26": {
+      "key": "6fa6b9c5bdf4762cadfd",
+      "text": "Step five: after the build, each section gets a Built side: what landed, and the interface as built beside the planned one: both, the difference marked. The cost: this plan's blocks added a thousand words, a quarter more; by our estimate, ten minutes and twenty thousand tokens a plan.",
+      "sha256": "8e6d605fd811a19bf78a3432b0e1fa864e9676692dae5e9693035c427d24e1b1",
+      "duration_s": 15.531
+    },
+    "27": {
+      "key": "1dd4c7a428490c55a6fc",
+      "text": "Question four. Say a one-step plan that renames a flag, and a six-step plan. A: both get a guide; after the build, walkthrough.md stays text. B: both, and each section gets its Built side. C: only the big plan. I recommend B: before and after, in one place. How much guide?",
+      "said": "Question four. Say a one-step plan that renames a flag, and a six-step plan. A: both get a guide; after the build, walkthrough dot md stays text. B: both, and each section gets its Built side. C: only the big plan. I recommend B: before and after, in one place. How much guide?",
+      "sha256": "c1f5bf8c040934f88be3e02d5550c50ddf67a82e76d69eefe6e355d1158d0699",
+      "duration_s": 16.832
+    },
+    "28": {
+      "key": "81875c2919a74304bbdc",
+      "text": "With A, what landed stays in walkthrough.md, as text.",
+      "said": "With A, what landed stays in walkthrough dot md, as text.",
+      "sha256": "a1a114abef2efbe28f80b50ff7ebe7b588584c9583daf056ab3a37b8375b63e9",
+      "duration_s": 3.307
+    },
+    "29": {
+      "key": "3e81651bf6955c3a8620",
+      "text": "With B, each section switches between Plan and Built.",
+      "sha256": "204fcfc98990b1665ac282b4e7f8eaa9bb116a5c3e39f131eb51f9a38caa2588",
+      "duration_s": 2.752
+    },
+    "30": {
+      "key": "845b64195c7a4fc81e65",
+      "text": "With C, the one-step plan is its video and plan.md.",
+      "said": "With C, the one-step plan is its video and plan dot md.",
+      "sha256": "80f19b97925a2f4e43e714039da201d869ddc2263c7098f960e617b7724e885e",
+      "duration_s": 3.328
+    },
+    "31": {
+      "key": "3056fe1fcd59553d89b7",
+      "text": "Quick check. You change one row of step two's cases table, a row no scene shows, and ask for changes. What's rebuilt?",
+      "sha256": "72597fd785bc836f522e97d1cc31fd47df3186f2597f4d046ef7fcf280be0808",
+      "duration_s": 6.976
+    },
+    "32": {
+      "key": "41b97e890bcf07cdb339",
+      "text": "Quick check. After the build, step three's command landed with a different flag. You switch its section to Built. What do you see?",
+      "sha256": "72c6274a0449ecf028e343719a04cf62c87291a1183c9ab808a900e8451eea75",
+      "duration_s": 6.635
+    },
+    "33": {
+      "key": "63f20fa11efda58a7c5f",
+      "text": "That's the plan: the guide, built from plan.md; complete, and checked; the video and the guide pointing at each other; edits applied exactly; and a Built side. Draw on any step to leave a note, or approve.",
+      "said": "That's the plan: the guide, built from plan dot md; complete, and checked; the video and the guide pointing at each other; edits applied exactly; and a Built side. Draw on any step to leave a note, or approve.",
+      "sha256": "565530005073a25f830f0253cbde33a8b7a715d0908d0f5edc3b4fff6796a404",
+      "duration_s": 11.84
+    },
+    "01": {
+      "key": "7d386341688f513f1a3d",
+      "text": "You said the video should stay the first place to go. But say a step has three classes of change: what happens in each, and what's the interface? A video can't hold all of that, so you're left with open questions, and less of a say.",
+      "sha256": "91a1fb56d16100d87dd167d2a2f3f3cd34c19c4eaf9dd843986e5259d3610670",
+      "duration_s": 12.416
+    },
+    "02": {
+      "key": "aad5117f74f2015b4b50",
+      "text": "The reviews show it. Seven times, you answered a question with explain this more, instead of a choice, and four plans were reviewed three or four times. The last plan was three thousand words; its video said a thousand. The rest had nowhere to go.",
+      "sha256": "a96094c2f25b379ef0b587497871e957d79e23bcaa10d7f95ed94f3bebebf1b8",
+      "duration_s": 13.653
+    },
+    "03": {
+      "key": "35ac392625e364603918",
+      "text": "Today, plan.md holds the whole plan, as text, and the plan text beside the video shows the same words. A detail page opens over one scene; the last seven videos opened two.",
+      "said": "Today, plan dot md holds the whole plan, as text, and the plan text beside the video shows the same words. A detail page opens over one scene; the last seven videos opened two.",
+      "sha256": "a0ee374c5161a999ed08a5ff9f77f44af1effca4f97e5f6fc02725b765a73b5d",
+      "duration_s": 11.243
+    },
+    "04": {
+      "key": "be4d60c9a4bc87c67b6c",
+      "text": "So, a page behind the video: the guide, which holds the whole plan, and where things happen as you scroll. Steps one and two: a guide for each plan, complete and checked. Step three: the video and the guide point at each other. Step four: you edit the plan on the guide. Step five: after the build, and which plans get one.",
+      "sha256": "0824829cb3c26707dadcb57880c49f9dcdff9076108684f2c553c5fd666e57bd",
+      "duration_s": 17.493
+    },
+    "05": {
+      "key": "e073f824abe418a95471",
+      "text": "It works beside the plan before it, videos that make sense, now approved. Its two fresh agents read the guide too, and its Ask about this box answers with a link into the guide. A meaning you can click is the same on both. Neither plan needs the other.",
+      "sha256": "c77eb585cbe5ed06ec572596115a80af6af39be6e6334754099c85c1fa6ae426",
+      "duration_s": 14.293
+    },
+    "06": {
+      "key": "611d525d57d41a00c561",
+      "text": "Step one: the guide isn't the video replayed. The video tells the story. The guide opens with a short one, then holds the whole plan: every case, interface, example and decision, in layers you open. It's built from plan.md each time the video is built. Click the page to try this plan's guide, a prototype.",
+      "said": "Step one: the guide isn't the video replayed. The video tells the story. The guide opens with a short one, then holds the whole plan: every case, interface, example and decision, in layers you open. It's built from plan dot md each time the video is built. Click the page to try this plan's guide, a prototype.",
+      "sha256": "5d7e4aa20bb25088ed8a17ce90cf9fb74c809f596cfe54b3ac6a4e03cafd447c",
+      "duration_s": 18.24
+    },
+    "07": {
+      "key": "f974433b44d74ef537e1",
+      "text": "As you scroll, the story at the top changes a picture at a time. Then each step has its section, with a picture that reacts. Each case has its trace, the example step by step, and it opens in place, right under its row. Nothing is only in the motion: Expand all opens every layer at once.",
+      "sha256": "53faa078d9b628248b1d80dc42cf711dc07bd60ee50f9bb582e2ed892745c544",
+      "duration_s": 16.427
+    },
+    "08": {
+      "key": "1b421cf4c00ff642a240",
+      "text": "Question one. Say step three needs its three cases. A: they go in plan.md, and the guide is built from it; every command that reads plan.md today keeps working. B: the agent writes the guide by hand, and plan.md is taken from it: any page, at twice the time. C: both, kept the same by a check. I recommend A. Which is the source?",
+      "said": "Question one. Say step three needs its three cases. A: they go in plan dot md, and the guide is built from it; every command that reads plan dot md today keeps working. B: the agent writes the guide by hand, and plan dot md is taken from it: any page, at twice the time. C: both, kept the same by a check. I recommend A. Which is the source?",
+      "sha256": "a1def62c145105a03b59daca0014dc197ee569d3c667c6763f7ae4fdb4d62de0",
+      "duration_s": 20.309
+    },
+    "09": {
+      "key": "91d5ad824972a5b96621",
+      "text": "With A, the cases are a table in plan.md, and the build draws them.",
+      "said": "With A, the cases are a table in plan dot md, and the build draws them.",
+      "sha256": "c9c7c0da783f6a170a943a75d57512103c1d72cfe6e78d330996545bb79dbc90",
+      "duration_s": 4.16
+    }
+  }
+}

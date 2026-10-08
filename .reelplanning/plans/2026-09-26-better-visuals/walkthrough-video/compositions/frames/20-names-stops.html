@@ -1,0 +1,78 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w20-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w20-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w20-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w20-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w20-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w20-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w20-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w20-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w20-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w20-ul.ink { background:var(--rp-ink); height:3px; }
+  .w20-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w20-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w20-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w20-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w20-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w20-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w20-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w20-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w20-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w20-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w20-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w20-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w20-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w20-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w20-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .w20-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w20-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w20-chip { position:absolute; height:48px; padding:0 18px; font:400 28px/46px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .w20-chip.hot { border-color:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="20-names-stops" data-band="bottom" data-duration="14.772" data-width="1920" data-height="1080">
+
+  <div class="clip w20-bg" id="w20-bg" data-start="0" data-duration="14.772" data-track-index="0"></div>
+
+  <div class="clip w20-scene" id="w20-scene" data-start="0" data-duration="14.772" data-track-index="1">
+    <div class="w20-lab" id="w20-h" style="left:120px; top:70px">walkthrough.md · the names · 4 of 4 choices stop</div>
+    <div class="w20-card" id="w20-c0" data-call="a40" style="left:120px; top:160px; width:1340px"><span class="i">choice A40</span><span class="t">The names list is its own file</span></div>
+    <div class="w20-card" id="w20-c1" data-call="a41" style="left:120px; top:330px; width:1340px"><span class="i">choice A41</span><span class="t">Which names are code; the rest, capitals fixed</span></div>
+    <div class="w20-card" id="w20-c2" data-call="a42" style="left:120px; top:500px; width:1340px"><span class="i">choice A42</span><span class="t">A command's next words join its chip</span></div>
+    <div class="w20-card" id="w20-c3" data-call="a43" style="left:120px; top:670px; width:1340px"><span class="i">choice A43</span><span class="t">A name outside code on a frame: a warning</span></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "20-names-stops";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w20-h", { opacity: 0 });
+  gsap.set("#w20-c0", { opacity: 0, x: -30 });
+  gsap.set("#w20-c1", { opacity: 0, x: -30 });
+  gsap.set("#w20-c2", { opacity: 0, x: -30 });
+  gsap.set("#w20-c3", { opacity: 0, x: -30 });
+  tl.to("#w20-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.2);
+  tl.to("#w20-c0", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 2.2);
+  tl.to("#w20-c1", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 4.83);
+  tl.to("#w20-c2", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 7.56);
+  tl.to("#w20-c3", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 11.13);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

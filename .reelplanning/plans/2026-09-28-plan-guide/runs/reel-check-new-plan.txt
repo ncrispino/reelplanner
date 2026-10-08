@@ -1,0 +1,7 @@
+$ reel check .reelplanning/plans/2026-10-01-quiet-output
+✗ step 2 has no Cases table (a table under "#### Cases", one row a case)
+✗ step 2 has no Interface block (a fenced block under "#### Interface", or the line "No interface: …")
+✗ question 1's option B has no example (a value, a quote, a command or a number: what happens in the question's example)
+△ step 1 · interface part `reelplanning build <dir>`: no meaning · step 1 · interface part `--quiet`: no meaning · step 2: no Example · D-001: no step
+✗ 2026-10-01-quiet-output: 2 steps, touches [cli], 1 in force, 0 superseded, 3 failure(s), 1 warning(s)
+exit 1

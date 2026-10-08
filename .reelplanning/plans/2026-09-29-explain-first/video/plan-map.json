@@ -1,0 +1,3530 @@
+{
+  "project": "video",
+  "title": "Explain first: a video of what is going on, before any plan",
+  "planDir": ".reelplanning/plans/2026-09-29-explain-first",
+  "totalSeconds": 322.961,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "Explain first",
+      "fromFrame": 1,
+      "toFrame": 4,
+      "start": 0,
+      "end": 61.61,
+      "linearSeconds": 61.61,
+      "watchedSeconds": 61.61,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Steps 1 and 2: ask for one",
+      "fromFrame": 5,
+      "toFrame": 11,
+      "start": 61.61,
+      "end": 145.346,
+      "linearSeconds": 83.736,
+      "watchedSeconds": 73.736,
+      "decisions": [
+        "q1"
+      ]
+    },
+    {
+      "id": "ch3",
+      "title": "Steps 3 and 4: review it, then plan it",
+      "fromFrame": 12,
+      "toFrame": 19,
+      "start": 145.346,
+      "end": 229.359,
+      "linearSeconds": 84.013,
+      "watchedSeconds": 74.013,
+      "decisions": [
+        "q2"
+      ]
+    },
+    {
+      "id": "ch4",
+      "title": "Step 5: honest and private",
+      "fromFrame": 20,
+      "toFrame": 28,
+      "start": 229.359,
+      "end": 322.961,
+      "linearSeconds": 93.602,
+      "watchedSeconds": 83.602,
+      "decisions": [
+        "q3"
+      ]
+    }
+  ],
+  "levels": {
+    "new": 322.961,
+    "familiar": 305.788,
+    "owner": 305.788
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 11,
+      "planStep": 1,
+      "question": "You ask: why did last night's CI run fail? What does the explainer read?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The run's log",
+          "why": "Right: a run that failed is the transcript-or-log kind, and its log is the record of what ran."
+        },
+        {
+          "id": "b",
+          "label": "The branch's diff",
+          "why": "The diff says what the code changed, not what the run did or where it stopped."
+        },
+        {
+          "id": "c",
+          "label": "Every commit since yesterday",
+          "why": "That is a period; the question is about one run."
+        }
+      ],
+      "answer": "a",
+      "explain": "A run that failed is the transcript-or-log kind: its log is the record of what ran, in order, and where it stopped.",
+      "at": 145.296,
+      "explainedAt": 61.61,
+      "explainedFrame": 5,
+      "walkMeThrough": "A CI run is something that happened, like a session, so it is the transcript-or-log kind. Its record is the run's log: what ran, in order, and where it stopped. So the explainer reads the log, and the commit it ran on."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 13,
+      "planStep": 2,
+      "question": "On Monday you ask about the review server; by Friday, seven commits have changed it. What plays on Friday?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Monday's video, “7 commits since”",
+          "why": "Right: its sources were pinned on Monday, so it plays as it was built, and the row says how far the repo has moved."
+        },
+        {
+          "id": "b",
+          "label": "A video rebuilt from Friday's code",
+          "why": "Nothing rebuilds it on its own: it says only what its pinned sources said."
+        },
+        {
+          "id": "c",
+          "label": "Nothing: it is out of date",
+          "why": "It stays in the library; the row only says how many commits have landed since."
+        }
+      ],
+      "answer": "a",
+      "explain": "Its sources were pinned when it was made, so it plays as it was built, and its row says how many commits have landed since.",
+      "at": 174.117,
+      "explainedAt": 120.301,
+      "explainedFrame": 10,
+      "walkMeThrough": "The explainer pinned Monday's sources: the commit, and each file as it was. So on Friday it plays Monday's video, unchanged. Its row says seven commits have landed since; ask again for Friday's."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 19,
+      "planStep": 3,
+      "question": "You comment “this looks wrong” on a branch's explainer and press Done. What goes into the decision log?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing",
+          "why": "Right: only an answer is a decision, and an explainer asks none; the comment is filed with the review."
+        },
+        {
+          "id": "b",
+          "label": "One entry, for the comment",
+          "why": "A comment is not an answer; it is kept with the review."
+        },
+        {
+          "id": "c",
+          "label": "A question for the next plan",
+          "why": "Done starts nothing more; Plan this would take your comment into a plan."
+        }
+      ],
+      "answer": "a",
+      "explain": "Only an answer is a decision, and an explainer asks none: the comment is filed with the review, and the decision log gets nothing.",
+      "at": 229.309,
+      "explainedAt": 145.346,
+      "explainedFrame": 12,
+      "walkMeThrough": "An explainer asks nothing to decide, so there is no answer to log. Your comment is filed with the review, and Done starts nothing more. So the decision log is as it was."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 26,
+      "planStep": 4,
+      "question": "You asked one question with Ask about this, left two comments, and press Plan this. Where does the question go?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Quoted in the new plan's problem",
+          "why": "Right: Plan this quotes your comments and your questions in the plan's problem."
+        },
+        {
+          "id": "b",
+          "label": "Into the decision log",
+          "why": "A question is not an answer; the decision log does not change."
+        },
+        {
+          "id": "c",
+          "label": "Nowhere: the page answered it",
+          "why": "Answered or not, it is quoted in the plan, with its answer."
+        }
+      ],
+      "answer": "a",
+      "explain": "Plan this writes the plan from what you said: your comments by scene and your questions, quoted in its problem.",
+      "at": 304.81,
+      "explainedAt": 174.167,
+      "explainedFrame": 14,
+      "walkMeThrough": "Plan this starts a plan from what you said on the explainer. The two comments and the one question, answered or not, are quoted in the new plan's problem. A question is not an answer, so the decision log does not change."
+    },
+    {
+      "id": "k5",
+      "frameIndex": 27,
+      "planStep": 5,
+      "question": "A CI log's explainer quotes a line holding a GitHub access key. What does the build do?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Stops until it is masked",
+          "why": "Right: a quoted line that looks like a key stops the build, whichever kind of explainer it is in."
+        },
+        {
+          "id": "b",
+          "label": "Blurs it on the scene",
+          "why": "Nothing is blurred: the line itself would still be in the scene's text, and in git."
+        },
+        {
+          "id": "c",
+          "label": "Goes on: git keeps it safe",
+          "why": "Git keeps it for good, which is why the build stops first."
+        }
+      ],
+      "answer": "a",
+      "explain": "A quoted line that looks like a key stops the build until it is masked.",
+      "at": 310.911,
+      "explainedAt": 248.559,
+      "explainedFrame": 21,
+      "walkMeThrough": "A quoted line that looks like a key or a password stops the build, whichever kind of explainer quotes it. The agent masks it, so only its first letters show, and builds again. Nothing is blurred, and nothing goes on as it was."
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 292.961,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Explain first",
+      "compositionId": "01-explain-first",
+      "type": "hook",
+      "durationSeconds": 10.261,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Explain first",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "You asked for this: sometimes you just want to know what's going on, in the repo or in a transcript, and then decide whether a plan follows. Today, every video needs a plan first.",
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-5.38s.png",
+      "terms": [
+        "repo",
+        "transcript"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "Today, every video hangs off a plan",
+      "compositionId": "02-today",
+      "type": "pain_point",
+      "durationSeconds": 16.384,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Every video today hangs off something: the system video off the whole repo, and the plan video and the walkthrough off a plan. So what does the review server do? What happened in this session? What does this branch change? What changed since Monday? None of these has a video. The agent answers in chat, in text.",
+      "start": 10.261,
+      "thumb": "snapshots/frame-01-at-18.7s.png",
+      "terms": [
+        "review server",
+        "system video",
+        "review",
+        "agent",
+        "plan video",
+        "walkthrough video",
+        "repo",
+        "branch"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "Earlier plans",
+      "compositionId": "03-earlier-plans",
+      "type": "pain_point",
+      "durationSeconds": 17.173,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Earlier plans lead here. Videos that make sense added fresh eyes, two fresh agents that look at a video before you do, and Ask about this. The plan guide puts the whole plan behind its video. Walkthroughs that help ask a quick check only where there's something to predict. Better visuals put the real thing on screen.",
+      "start": 26.645,
+      "thumb": "snapshots/frame-02-at-35.48s.png",
+      "terms": [
+        "quick check",
+        "agent",
+        "walkthrough video",
+        "fresh eyes",
+        "ask about this",
+        "real thing",
+        "guide"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "What changes",
+      "compositionId": "04-what-changes",
+      "type": "product_intro",
+      "durationSeconds": 17.792,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Three changes. Steps one and two: you can ask for an explainer, a video of something that's there, with no plan behind it and nothing to decide. Steps three and four: you review it on the same page, and a plan can follow. Step five: it stays honest, every fact from its sources, and private, a transcript kept out of the repo.",
+      "start": 43.818,
+      "thumb": "snapshots/frame-03-at-52.71s.png",
+      "terms": [
+        "explainer",
+        "review",
+        "step",
+        "repo",
+        "transcript",
+        "source"
+      ],
+      "defines": [
+        "explainer"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Step 1: four kinds",
+      "compositionId": "05-step-1-four-kinds",
+      "type": "feature_showcase",
+      "durationSeconds": 23.36,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Steps 1 and 2: ask for one",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Step one: four kinds of explainer. A part of the repo: the review server is six files and five decisions. A transcript or a log, the record of a session or a run: the session building this repo since last Tuesday is over twenty-one thousand lines. A change: a branch of thirty-three files. A period: since Monday, thirty commits and nineteen decisions. Each runs two to five minutes, and shows the real thing: the code, the lines, the diff.",
+      "start": 61.61,
+      "thumb": "snapshots/frame-04-at-73.54s.png",
+      "terms": [
+        "transcript",
+        "review server",
+        "review",
+        "step",
+        "repo",
+        "branch",
+        "commit",
+        "diff",
+        "real thing",
+        "explainer",
+        "decision"
+      ],
+      "defines": [
+        "transcript"
+      ],
+      "guide": "step-1",
+      "detail": "step-1"
+    },
+    {
+      "index": 6,
+      "title": "Question 1: the whole source behind it",
+      "compositionId": "06-q1-whole-source",
+      "type": "cta",
+      "durationSeconds": 20.331,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q1",
+      "branch": null,
+      "question": "Is an explainer's whole source there to read, behind the video?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "No guide",
+          "why": "The explainer is its video; the rest of the transcript or the diff is not shown.",
+          "recommended": false
+        },
+        {
+          "id": "b",
+          "label": "Transcripts and changes",
+          "why": "A transcript or a change gets a guide with the whole of it, a click from each moment.",
+          "recommended": true
+        },
+        {
+          "id": "c",
+          "label": "Every kind",
+          "why": "Every explainer gets a guide, a part's files and a period's commits included.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question one. That session is over twenty-one thousand lines, and its video quotes a dozen. A: no guide; you get the video. B: a guide for a transcript and a change: the whole transcript, organized, or the full diff, a click from each moment. C: a guide for every kind. I recommend B: the two with far more than a video can hold. Is the whole source there to read?",
+      "start": 84.97,
+      "thumb": "snapshots/frame-05-at-95.39s.png",
+      "terms": [
+        "diff",
+        "explainer",
+        "transcript",
+        "source",
+        "guide"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "If A: the video only",
+      "compositionId": "07-branch-q1-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, the session is only the lines its scenes quote.",
+      "start": 105.301,
+      "thumb": "snapshots/frame-06-at-108.05s.png",
+      "terms": [
+        "beat"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "If B: a guide for a transcript and a change",
+      "compositionId": "08-branch-q1-b",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, each moment of the session's video opens its turns on the guide.",
+      "start": 110.301,
+      "thumb": "snapshots/frame-07-at-113.05s.png",
+      "terms": [
+        "guide",
+        "turn"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "If C: a guide for every kind",
+      "compositionId": "09-branch-q1-c",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, a part's guide also holds its files, and a period's its commits.",
+      "start": 115.301,
+      "thumb": "snapshots/frame-08-at-118.05s.png",
+      "terms": [
+        "commit",
+        "guide"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "Step 2: ask for one",
+      "compositionId": "10-step-2-ask",
+      "type": "feature_showcase",
+      "durationSeconds": 20.288,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Step two: you ask in your own words, and the agent runs one command. It gathers the sources and pins them: the commit, and each file as it was, so the video can say only what they say. It isn't rebuilt on its own; ask again for a new one. The explainer gets a folder of its own, and a row of its own on the review page, which says how many commits have landed since.",
+      "start": 120.301,
+      "thumb": "snapshots/frame-09-at-130.44s.png",
+      "terms": [
+        "pinned",
+        "review",
+        "step",
+        "agent",
+        "commit",
+        "explainer",
+        "source"
+      ],
+      "defines": [
+        "pinned"
+      ],
+      "guide": "step-2",
+      "detail": "step-2"
+    },
+    {
+      "index": 11,
+      "title": "Quick check: last night's run",
+      "compositionId": "11-qc-last-nights-run",
+      "type": "social_proof",
+      "durationSeconds": 4.757,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You ask: why did last night's CI run fail? What does the explainer read?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "a",
+      "explain": "A run that failed is the transcript-or-log kind: its log is the record of what ran, in order, and where it stopped.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The run's log",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The branch's diff",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Every commit since yesterday",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. You ask: why did last night's CI run fail? What does the explainer read?",
+      "start": 140.589,
+      "thumb": "snapshots/frame-10-at-142.97s.png",
+      "terms": [
+        "quick check",
+        "ci",
+        "explainer"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Step 3: review it",
+      "compositionId": "12-step-3-review",
+      "type": "feature_showcase",
+      "durationSeconds": 22.101,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Steps 3 and 4: review it, then plan it",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Step three: you review it on the same page, with marks, comments and Ask about this, and a quick check only where there's something to predict. It asks nothing to decide, so in place of Approve and Request changes, Finish has three ends: Done; Explain more, which rebuilds the scenes you asked about; or Plan this. The review is filed, and your memory learns what you watched. The decision log gets nothing: only an answer is a decision.",
+      "start": 145.346,
+      "thumb": "snapshots/frame-11-at-156.4s.png",
+      "terms": [
+        "review",
+        "approve",
+        "memory",
+        "beat",
+        "step",
+        "finish",
+        "decision log",
+        "quick check",
+        "ask about this",
+        "plan this",
+        "explain more",
+        "done",
+        "decision"
+      ],
+      "guide": "step-3",
+      "detail": "step-3"
+    },
+    {
+      "index": 13,
+      "title": "Quick check: seven commits later",
+      "compositionId": "13-qc-seven-commits",
+      "type": "social_proof",
+      "durationSeconds": 6.72,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "On Monday you ask about the review server; by Friday, seven commits have changed it. What plays on Friday?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "a",
+      "explain": "Its sources were pinned when it was made, so it plays as it was built, and its row says how many commits have landed since.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Monday's video, “7 commits since”",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A video rebuilt from Friday's code",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nothing: it is out of date",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. On Monday you ask about the review server; by Friday, seven commits have changed it. What plays on Friday?",
+      "start": 167.447,
+      "thumb": "snapshots/frame-12-at-171.06s.png",
+      "terms": [
+        "review server",
+        "review",
+        "quick check",
+        "commit",
+        "pinned",
+        "source"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "Step 4: Plan this",
+      "compositionId": "14-step-4-plan-this",
+      "type": "feature_showcase",
+      "durationSeconds": 17.152,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Step four: Plan this. The agent writes a plan from what you said: your comments by scene and your questions, quoted in the plan's problem section, under a first line naming the explainer. From there it's an ordinary plan, with its review and its decisions, and its video lists the explainer under Before you watch.",
+      "start": 174.167,
+      "thumb": "snapshots/frame-13-at-182.99s.png",
+      "terms": [
+        "review",
+        "beat",
+        "step",
+        "agent",
+        "before you watch",
+        "explainer",
+        "plan this",
+        "decision"
+      ],
+      "guide": "step-4",
+      "detail": "step-4"
+    },
+    {
+      "index": 15,
+      "title": "Question 2: how far the plan leans on it",
+      "compositionId": "15-q2-lean-on-it",
+      "type": "cta",
+      "durationSeconds": 17.173,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q2",
+      "branch": null,
+      "question": "After Plan this, how far does the plan lean on the explainer?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Lean on it",
+          "why": "The plan's video starts at what changes; the explainer is under Before you watch, with two lines for new viewers.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A recap chapter",
+          "why": "About 40 seconds of the explainer's scenes open the plan's video.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Stand alone",
+          "why": "The plan's video explains it all again, about a minute.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question two: how much does the plan's video say again? A: it leans on the explainer, with two lines for a new viewer. B: a recap chapter, about forty seconds of the explainer's scenes. C: it stands alone and explains it all again, about a minute. I recommend A: you just watched it. How far does it lean?",
+      "start": 191.319,
+      "thumb": "snapshots/frame-14-at-200.16s.png",
+      "terms": [
+        "beat",
+        "chapter",
+        "explainer",
+        "plan this",
+        "lean on"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "If A: lean on it",
+      "compositionId": "16-branch-q2-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, the plan's video starts at what changes.",
+      "start": 208.492,
+      "thumb": "snapshots/frame-15-at-211.24s.png"
+    },
+    {
+      "index": 17,
+      "title": "If B: a recap chapter",
+      "compositionId": "17-branch-q2-b",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, its first forty seconds are the explainer's scenes, cut down.",
+      "start": 213.492,
+      "thumb": "snapshots/frame-16-at-216.24s.png",
+      "terms": [
+        "beat",
+        "explainer"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "If C: stand alone",
+      "compositionId": "18-branch-q2-c",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, a minute of the plan's video explains the server again.",
+      "start": 218.492,
+      "thumb": "snapshots/frame-17-at-220.99s.png"
+    },
+    {
+      "index": 19,
+      "title": "Quick check: a comment, then Done",
+      "compositionId": "19-qc-this-looks-wrong",
+      "type": "social_proof",
+      "durationSeconds": 5.867,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You comment “this looks wrong” on a branch's explainer and press Done. What goes into the decision log?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "a",
+      "explain": "Only an answer is a decision, and an explainer asks none: the comment is filed with the review, and the decision log gets nothing.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Nothing",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "One entry, for the comment",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "A question for the next plan",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. You comment on a branch's explainer, this looks wrong, and press Done. What goes into the decision log?",
+      "start": 223.492,
+      "thumb": "snapshots/frame-18-at-226.43s.png",
+      "terms": [
+        "review",
+        "decision log",
+        "quick check",
+        "branch",
+        "explainer",
+        "done",
+        "decision"
+      ]
+    },
+    {
+      "index": 20,
+      "title": "Step 5: honest",
+      "compositionId": "20-step-5-honest",
+      "type": "feature_showcase",
+      "durationSeconds": 19.2,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5: honest and private",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Step five: honest. Each scene names where its facts come from, and a new check fails a quoted line its source doesn't hold word for word. Fresh eyes look at it, as at every video. For a transcript or a change, a third fresh agent, the fact check, reads the narration against the sources, since the agent that did the work is the worst judge of it.",
+      "start": 229.359,
+      "thumb": "snapshots/frame-19-at-239.21s.png",
+      "terms": [
+        "fact check",
+        "beat",
+        "step",
+        "agent",
+        "fresh eyes",
+        "transcript",
+        "source"
+      ],
+      "defines": [
+        "fact check"
+      ],
+      "guide": "step-5",
+      "detail": "step-5"
+    },
+    {
+      "index": 21,
+      "title": "Step 5: private",
+      "compositionId": "21-step-5-private",
+      "type": "feature_showcase",
+      "durationSeconds": 13.333,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "And private. A transcript is read where it is, and never copied into the repo: the folder keeps its path and a fingerprint of it. A quoted line that looks like a key or a password, or holds an email address, stops the build until it's masked.",
+      "start": 248.559,
+      "thumb": "snapshots/frame-20-at-255.48s.png",
+      "terms": [
+        "repo",
+        "transcript",
+        "fingerprint",
+        "masked",
+        "keep"
+      ]
+    },
+    {
+      "index": 22,
+      "title": "Question 3: what goes into git",
+      "compositionId": "22-q3-into-git",
+      "type": "cta",
+      "durationSeconds": 21.269,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q3",
+      "branch": null,
+      "question": "What of an explainer goes into git?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Its text, never the transcript",
+          "why": "The explainer's text is committed, with its 12 quoted lines; the transcript never is.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The transcript too",
+          "why": "All 21,562 lines are committed, for a teammate to read.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nothing, until kept",
+          "why": "Nothing is committed until you keep the explainer or plan from it.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question three. The session's explainer quotes twelve lines of over twenty-one thousand. A: its text goes into git, those twelve lines included, never the transcript. B: the whole transcript too, for a teammate to read. C: nothing, until you press a new Keep button, or Plan this. I recommend A: it's committed and shared like a plan's video, and the transcript stays yours. What goes into git?",
+      "start": 261.892,
+      "thumb": "snapshots/frame-21-at-272.78s.png",
+      "terms": [
+        "git",
+        "explainer",
+        "transcript",
+        "plan this",
+        "keep"
+      ]
+    },
+    {
+      "index": 23,
+      "title": "If A: its text",
+      "compositionId": "23-branch-q3-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, the repo holds the explainer and twelve lines; the transcript stays on your machine.",
+      "start": 283.161,
+      "thumb": "snapshots/frame-22-at-285.91s.png",
+      "terms": [
+        "repo",
+        "explainer",
+        "transcript"
+      ]
+    },
+    {
+      "index": 24,
+      "title": "If B: the whole transcript",
+      "compositionId": "24-branch-q3-b",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, every line of the session is in the repo's history.",
+      "start": 288.161,
+      "thumb": "snapshots/frame-23-at-290.91s.png",
+      "terms": [
+        "repo"
+      ]
+    },
+    {
+      "index": 25,
+      "title": "If C: nothing until kept",
+      "compositionId": "25-branch-q3-c",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, an explainer you press Done on stays on one machine.",
+      "start": 293.161,
+      "thumb": "snapshots/frame-24-at-295.66s.png",
+      "terms": [
+        "explainer",
+        "done"
+      ]
+    },
+    {
+      "index": 26,
+      "title": "Quick check: a question, then Plan this",
+      "compositionId": "26-qc-one-question",
+      "type": "social_proof",
+      "durationSeconds": 6.699,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You asked one question with Ask about this, left two comments, and press Plan this. Where does the question go?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "a",
+      "explain": "Plan this writes the plan from what you said: your comments by scene and your questions, quoted in its problem.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Quoted in the new plan's problem",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Into the decision log",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Nowhere: the page answered it",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. You asked one question with Ask about this, left two comments, and press Plan this. Where does the question go?",
+      "start": 298.161,
+      "thumb": "snapshots/frame-25-at-301.51s.png",
+      "terms": [
+        "beat",
+        "quick check",
+        "ask about this",
+        "plan this"
+      ]
+    },
+    {
+      "index": 27,
+      "title": "Quick check: an access key in a log",
+      "compositionId": "27-qc-an-access-key",
+      "type": "social_proof",
+      "durationSeconds": 6.101,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A CI log's explainer quotes a line holding a GitHub access key. What does the build do?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "a",
+      "explain": "A quoted line that looks like a key stops the build until it is masked.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Stops until it is masked",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Blurs it on the scene",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Goes on: git keeps it safe",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Last check. A CI log's explainer quotes a line holding a GitHub access key. What does the build do?",
+      "start": 304.86,
+      "thumb": "snapshots/frame-26-at-308.16s.png",
+      "terms": [
+        "ci",
+        "github",
+        "explainer",
+        "masked"
+      ]
+    },
+    {
+      "index": 28,
+      "title": "The plan",
+      "compositionId": "28-the-plan",
+      "type": "cta",
+      "durationSeconds": 12,
+      "planStep": null,
+      "planQuestions": [
+        1,
+        2,
+        3
+      ],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "That's the plan: four kinds of explainer, asked for in your own words, reviewed on the same page, a plan when you want one, and honest and private. Draw on any step to leave a note, or approve.",
+      "start": 310.961,
+      "thumb": "snapshots/frame-27-at-316.96s.png",
+      "terms": [
+        "approve",
+        "step",
+        "explainer"
+      ],
+      "guide": "decisions",
+      "detail": "decisions"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "q1",
+      "kind": "one",
+      "frameIndex": 6,
+      "compositionId": "06-q1-whole-source",
+      "planStep": 1,
+      "question": "Is an explainer's whole source there to read, behind the video?",
+      "questionMore": "Say you asked 'what happened in this session?' (21,562 lines, of which the video quotes a dozen) and 'explain this branch' (33 files, of which the video opens two).",
+      "at": 105.251,
+      "resumeAt": 120.301,
+      "options": [
+        {
+          "id": "a",
+          "label": "No guide",
+          "why": "The explainer is its video; the rest of the transcript or the diff is not shown.",
+          "recommended": false,
+          "more": "Each explainer is its video, with a detail page where one scene needs more. Nothing new to build; you see only what the scenes quote.",
+          "branch": {
+            "frameIndex": 7,
+            "compositionId": "07-branch-q1-a",
+            "start": 105.301,
+            "end": 110.301
+          }
+        },
+        {
+          "id": "b",
+          "label": "Transcripts and changes",
+          "why": "A transcript or a change gets a guide with the whole of it, a click from each moment.",
+          "recommended": true,
+          "more": "A transcript's explainer gets a guide: every turn, organized, tool calls folded, errors marked, each moment of the video opening its turns. A change's gets its full diff in categories. A part and a period stay a video. Needs the plan guide's builder first.",
+          "branch": {
+            "frameIndex": 8,
+            "compositionId": "08-branch-q1-b",
+            "start": 110.301,
+            "end": 115.301
+          }
+        },
+        {
+          "id": "c",
+          "label": "Every kind",
+          "why": "Every explainer gets a guide, a part's files and a period's commits included.",
+          "recommended": false,
+          "more": "B, and a part's guide holds its files whole, a period's its commits and decisions. Two more sections, which repeat what the files and git log already show.",
+          "branch": {
+            "frameIndex": 9,
+            "compositionId": "09-branch-q1-c",
+            "start": 115.301,
+            "end": 120.301
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q2",
+      "kind": "one",
+      "frameIndex": 15,
+      "compositionId": "15-q2-lean-on-it",
+      "planStep": 4,
+      "question": "After Plan this, how far does the plan lean on the explainer?",
+      "questionMore": "Say you watched the review server's explainer and pressed Plan this. How much does the new plan's video say again of what the explainer said?",
+      "at": 208.442,
+      "resumeAt": 223.492,
+      "options": [
+        {
+          "id": "a",
+          "label": "Lean on it",
+          "why": "The plan's video starts at what changes; the explainer is under Before you watch, with two lines for new viewers.",
+          "recommended": true,
+          "more": "The plan's video lists the explainer first under Before you watch, and one scene for new viewers says it in two lines; the video starts at what changes. A teammate who skips the explainer gets two lines.",
+          "branch": {
+            "frameIndex": 16,
+            "compositionId": "16-branch-q2-a",
+            "start": 208.492,
+            "end": 213.492
+          }
+        },
+        {
+          "id": "b",
+          "label": "A recap chapter",
+          "why": "About 40 seconds of the explainer's scenes open the plan's video.",
+          "recommended": false,
+          "more": "The explainer's key scenes, cut down to about 40 seconds, open the plan's video. 40 seconds more, of what you just watched.",
+          "branch": {
+            "frameIndex": 17,
+            "compositionId": "17-branch-q2-b",
+            "start": 213.492,
+            "end": 218.492
+          }
+        },
+        {
+          "id": "c",
+          "label": "Stand alone",
+          "why": "The plan's video explains it all again, about a minute.",
+          "recommended": false,
+          "more": "The plan's video explains the server from scratch, as a plan video does today. About a minute said twice.",
+          "branch": {
+            "frameIndex": 18,
+            "compositionId": "18-branch-q2-c",
+            "start": 218.492,
+            "end": 223.492
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q3",
+      "kind": "one",
+      "frameIndex": 22,
+      "compositionId": "22-q3-into-git",
+      "planStep": 5,
+      "question": "What of an explainer goes into git?",
+      "questionMore": "Say the session's explainer quotes 12 lines of a 21,562-line transcript. The repo is shared with the people who work on it.",
+      "at": 283.111,
+      "resumeAt": 298.161,
+      "options": [
+        {
+          "id": "a",
+          "label": "Its text, never the transcript",
+          "why": "The explainer's text is committed, with its 12 quoted lines; the transcript never is.",
+          "recommended": true,
+          "more": "explain.md, sources.json (paths and fingerprints), the storyboard, script and scenes, so the 12 quoted lines, checked for keys, and the reviews: kept as a plan's video is. The transcript stays on your machine.",
+          "branch": {
+            "frameIndex": 23,
+            "compositionId": "23-branch-q3-a",
+            "start": 283.161,
+            "end": 288.161
+          }
+        },
+        {
+          "id": "b",
+          "label": "The transcript too",
+          "why": "All 21,562 lines are committed, for a teammate to read.",
+          "recommended": false,
+          "more": "The transcript, organized, is committed beside the explainer, so a teammate can read the whole session. Everything said in it stays in the repo's history.",
+          "branch": {
+            "frameIndex": 24,
+            "compositionId": "24-branch-q3-b",
+            "start": 288.161,
+            "end": 293.161
+          }
+        },
+        {
+          "id": "c",
+          "label": "Nothing, until kept",
+          "why": "Nothing is committed until you keep the explainer or plan from it.",
+          "recommended": false,
+          "more": "The explainer's folder is left out of git; a new Finish button, Keep, or Plan this, commits it. An explainer you pressed Done on lives on one machine.",
+          "branch": {
+            "frameIndex": 25,
+            "compositionId": "25-branch-q3-c",
+            "start": 293.161,
+            "end": 298.161
+          }
+        }
+      ],
+      "summary": null
+    }
+  ],
+  "details": [
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html",
+      "title": "Step 1 · What an explainer is for, and what it shows (question 1)",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 5,
+      "compositionId": "05-step-1-four-kinds",
+      "planStep": 1,
+      "start": 61.61,
+      "end": 84.97,
+      "autonomy": null
+    },
+    {
+      "name": "step-2",
+      "src": "guide/step-2.html",
+      "title": "Step 2 · Ask for one: the skill, a command, and a folder of its own",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 10,
+      "compositionId": "10-step-2-ask",
+      "planStep": 2,
+      "start": 120.301,
+      "end": 140.589,
+      "autonomy": null
+    },
+    {
+      "name": "step-3",
+      "src": "guide/step-3.html",
+      "title": "Step 3 · Review it: the same player, and Finish says what comes next",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 12,
+      "compositionId": "12-step-3-review",
+      "planStep": 3,
+      "start": 145.346,
+      "end": 167.447,
+      "autonomy": null
+    },
+    {
+      "name": "step-4",
+      "src": "guide/step-4.html",
+      "title": "Step 4 · Plan this: a plan that starts from the explainer (question 2)",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 14,
+      "compositionId": "14-step-4-plan-this",
+      "planStep": 4,
+      "start": 174.167,
+      "end": 191.319,
+      "autonomy": null
+    },
+    {
+      "name": "step-5",
+      "src": "guide/step-5.html",
+      "title": "Step 5 · Honest and private: facts from their sources, a transcript kept out of git (question 3)",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 20,
+      "compositionId": "20-step-5-honest",
+      "planStep": 5,
+      "start": 229.359,
+      "end": 248.559,
+      "autonomy": null
+    },
+    {
+      "name": "decisions",
+      "src": "guide/decisions.html",
+      "title": "Decisions in force",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every decision in force, each with its ledger entry.",
+      "frameIndex": 28,
+      "compositionId": "28-the-plan",
+      "planStep": null,
+      "start": 310.961,
+      "end": 322.961,
+      "autonomy": null
+    }
+  ],
+  "plan": {
+    "title": "Explain first: a video of what is going on, before any plan",
+    "problem": "The owner:\n\n> \"i do think we have various stages where we want to just know whats going on in the repo, or transcripts\n> that result, etc, instead of a video always based on a plan, like i might just ask for a video for\n> explaining first then we can decide if we want a plan too\"\n\n### What we have\n\nEvery video hangs off a plan, or off the whole system:\n\n- **The plan video** is made before the code, from `plan.md`, and asks the plan's questions.\n- **The walkthrough video** is made after the code, from `walkthrough.md`, and asks you to accept or flag\n  the choices the agent made alone.\n- **The system video** explains the whole repo from `spec.md`, `system.json` and `glossary.md`\n  (`.reelplanning/system-video/`, 5–8 minutes), kept current after every accepted walkthrough (D-003).\n\nSo a question like \"what does the review server do?\", \"what happened in this session?\", \"what does this\nbranch change?\" or \"what changed since Monday?\" has no video. Today the agent answers it in chat, in text,\nor it becomes a plan before anyone has seen what is there. The pieces a video of it would need already exist:\n\n- `reelplanning build` turns any `STORYBOARD.md` and `SCRIPT.md` into a video, checks it (the terms, the\n  frames, the details) and says its length; fresh eyes look at it before you do (D-227).\n- The review page plays any built video, with marks, comments and Ask about this (D-226). Its library lists\n  the system video and each plan's two videos, one row a plan (D-224).\n- `reel record` files a review under a plan's `reviews/`, and adds what you watched and looked up to your\n  memory, `~/.reelplanning/you.jsonl` (D-106, D-218).\n- The skill already makes a one-off video under `videos/<slug>/` when someone declines to set up\n  `.reelplanning/`, but nothing lists it, reviews it or leads anywhere from it.\n- The plan guide (approved, not built: D-228, D-229, D-230) puts the whole of a plan behind its video: the\n  full diff and the real outputs, a click away from the moment that shows them.\n\n### Real sizes, today\n\n- **A part of the repo:** the review server is six files, 951 lines (`scripts/review.mjs` and five more), with\n  five decisions in force on it.\n- **A transcript:** the Claude Code session that has been building this repo since 2026-09-22 (the one this\n  plan was written in): 21,562 lines, 101 MB of JSONL.\n- **A change:** videos-that-make-sense's five build commits (`4dc6bfc` to `cc0dde0`): 33 files, 1,433 lines\n  added and 50 removed outside the plan folders.\n- **A period:** since Monday (2026-09-28): 30 commits, 19 decisions logged, three plans moved.",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Four kinds of explainer, and what each shows (question 1)",
+        "text": "*Independent.*\n\nAn **explainer** is a video that explains something that is there: a part of the repo, a transcript, a\nchange or a period. It asks no plan questions and changes nothing. It is 2–4 minutes (a transcript up to 5),\none to three chapters, and it shows the real thing wherever it can (D-166): the code at the one or two places\nthat carry the idea, a real run, the transcript's own lines, the diff, the ledger's rows.\n\n| Kind | You ask | It reads | It shows |\n|---|---|---|---|\n| **A part** | \"explain the review server\", \"what's going on in this repo\" | the part's files (from `system.json`), its `spec.md` section, its glossary rows, the decisions on it | what it is for, one real run through it, where it sits among the parts, what is decided and what is open |\n| **A transcript or log** | \"what happened in this session\", \"why did last night's CI run fail\" | the session's JSONL (Claude Code keeps it under `~/.claude/projects/`), or a CI log (`gh run view <id> --log`) | what was asked, what was done in order, the turning points (an error, a change of course), the choices the agent made alone, what is left |\n| **A change** | \"explain this branch\", \"explain PR 42\" | the diff (`git diff`, `gh pr diff`), the commits' messages, the tests that ran | what it changes, as a map of its files, each with one line; then the one or two places that carry the idea; what it chose |\n| **A period** | \"what changed since Monday\" | `git log` over the period, the decision log's rows in it, the reviews filed in it | the plans that moved, the decisions made, what shipped, what is waiting on you |\n\n**Not the system video.** A part explainer is narrower and made when you ask; the system video stays the one\nthat is kept current (D-003). \"What's going on in this repo\", asked where the system video is current, opens\nthe system video; where it is behind, the explainer is of what changed since it was last current (a period). An explainer is a snapshot: it says which commit it explains, and the page says\nhow many commits have landed since.\n\n**Not the walkthrough.** A change explainer has no plan to compare with, so it has no choices to accept or\nflag. A pull request that needs a walkthrough still gets its plan folder (D-200).\n\nWhether an explainer has a guide behind it, the whole transcript or the whole diff a click from its moment,\nis question 1. The guide is the plan guide's: its parts open from the video over the paused frame, and the full\npage opens from them (D-228, D-246; the plan guide's fifth prototype). A plan's guide is built from `plan.md`\n(D-244); an explainer's would be built from its pinned sources. Until the guide is built, an explainer is its\nvideo, with a detail where one scene needs more.\n\n#### Cases\n\n| Case | Example | What happens |\n|---|---|---|\n| A part | \"explain the review server\" | reads its six files and five decisions; about 3 minutes; one real run of a review landing in the inbox |\n| The whole repo | \"what's going on in this repo\" | the system video, when it is current; when it is behind, a period explainer of what changed since |\n| A transcript | \"what happened in this session\" | reads the session's JSONL (21,562 lines); up to 5 minutes; its turning points, with their own lines |\n| A log | \"why did last night's CI run fail\" | reads the run's log; about 2 minutes; the failing line, and the commit it ran on |\n| A change | \"explain this branch\" | reads the diff (33 files); about 3 minutes; the map, then the two places that carry it |\n| A period | \"what changed since Monday\" | reads 30 commits and 19 decisions; about 3 minutes; the plans that moved, what waits on you |\n\n#### Interface\n\n```\nexplain.md      # what you asked, in your words; the kind; what it will cover and leave out\nsources.json    # each source pinned: the commit, the paths and their hashes, a transcript's path, hash and lines\nSTORYBOARD.md   # kind: explainer (front matter); no decision beats; - source: on each scene (step 5)\n```\n\n#### Example\n\nYou ask \"explain the review server\". The agent reads its six files, its `spec.md` section, and the five\ndecisions on it, and makes a three-minute video in two chapters: what the server is for, and one review\ngoing from Send into the inbox and on to a waiting session. It shows `scripts/review.mjs` at the place a\nreview is handed on, and a real run in a scratch clone."
+      },
+      {
+        "n": 2,
+        "title": "Ask for one: the skill, a command, and a folder of its own",
+        "text": "*Needs step 1.*\n\n**You ask in your own words.** The skill's triggers gain \"explain …\", \"what's going on in …\", \"what happened\nin …\", \"walk me through this branch\" and \"what changed since …\". The agent runs the command, builds the video\nas it builds any other (`reelplanning build`, fresh eyes, the page), and opens it. No plan is written.\n\n**The command** gathers and pins the sources, so the video can only say what they say:\n\n```\nreelplanning explain part \"the review server\"\nreelplanning explain transcript <file.jsonl | this-session | ci:<run-id>>\nreelplanning explain change <branch | commit..commit | pr:<n>>\nreelplanning explain since <date>\n```\n\nIt makes `.reelplanning/explainers/<date>-<slug>/` with `explain.md` (your words, the kind, what it will\ncover), `sources.json` (the commit it starts from, each file's path and hash; for a transcript, its path, hash\nand line count, never its text) and the video's start (`video/`, its brief with `kind: explainer`). The agent\nwrites the storyboard from the sources and builds; `build` holds it to 2–4 minutes (5 for a transcript), a\nwarning past that, as for any video.\n\n**On the review page** an explainer is a row of its own kind, **Explainer**, beside the plans' rows: its\ntitle, its length, \"explained at `dee5830`, 12 commits since\", and what came of it (Done, or \"planned: <the\nplan>\"). The review server serves it as it serves the plans' videos.\n\n#### Cases\n\n| Case | Example | What happens |\n|---|---|---|\n| Asked in chat | \"what changed since Monday?\" | the agent runs `reelplanning explain since 2026-09-28` and builds |\n| Asked by command | `reelplanning explain change 4dc6bfc~1..cc0dde0` | the folder and its sources; the agent is asked to write the video |\n| Opened after the repo moved | the review server explainer, 12 commits later | it plays as it was built; the row says \"12 commits since\" |\n| Asked again | \"explain the review server\" a week later | a new folder, a new date; the old one stays |\n\n#### Interface\n\n```\nreelplanning explain <kind> <what> [--slug <slug>]\n  ✓ .reelplanning/explainers/2026-09-29-review-server/ · part · 6 files, 5 decisions, pinned at dee5830\nreview page row   Explainer · the review server · 3:10 · explained at dee5830, 12 commits since · Done\n```\n\n#### Example\n\n\"What changed since Monday?\" makes `2026-09-29-since-monday/`: 30 commits, 19 decisions, three plans. The\nvideo, three minutes: videos-that-make-sense built and accepted, the plan guide approved, 19 decisions, and\nwhat waits on you (the plan guide's question 1, left unanswered)."
+      },
+      {
+        "n": 3,
+        "title": "Review it: the same player, and Finish says what comes next",
+        "text": "*Needs step 2.*\n\n**The same player.** You mark, comment, look words up and Ask about this, as on any video. Ask about this\nanswers from the explainer's sources, the glossary and the scene (\"from `scripts/lib/inbox.mjs`, line 56\").\n\n**No plan questions.** An explainer asks nothing to decide: `build` fails a `- decision:` scene in a video\nof kind `explainer`. A quick check goes where there is something to predict, asked just before the scene\nthat shows it, as in a walkthrough (D-222): \"you press Send twice on the same review: how many runs\nstart?\", then the run shows it. Many explainers have none.\n\n**Finish** has three ends instead of Approve and Request changes:\n\n- **Done**: you know what you wanted to know.\n- **Explain more**: your comments and questions come back as the next version: the scenes they are on\n  rebuilt, and a scene for each question, with fresh eyes again.\n- **Plan this**: a plan starts from what you said (step 4).\n\n**What a review of it produces.** `reel record <explainer-dir>` files it, as every review, under the\nexplainer's `reviews/`, with a `.md` of your comments by scene and your questions, answered or not. Your\nmemory gets what you watched and looked up (D-218: a word you know stops being underlined). **Nothing goes\ninto the decision log**, since only an answer is a decision, and an explainer asks none; a comment like \"this\nlooks wrong\" is kept with the review, and goes into a plan if you press Plan this.\n\n#### Cases\n\n| Case | Example | What happens |\n|---|---|---|\n| Done, with comments | two comments on the review server's scene 4 | filed; memory updated; no decision logged |\n| Explain more | \"why does Send twice start one run?\" asked on scene 4 | the next version: scene 4 rebuilt, a scene answering it |\n| Plan this | \"make a waiting review easy to see\" in your own words | filed; step 4 |\n| A quick check | \"Send pressed twice: how many runs start?\" | answered, then the scene runs it; memory counts it |\n\n#### Interface\n\n```\nFinish            Done · Explain more · Plan this        (in place of Approve · Request changes)\nreviews/explainer-<time>.json   { kind: \"explainer\", end: \"done\" | \"more\" | \"plan\", comments, questions, ... }\nreviews/explainer-<time>.md     ## Comments by scene · ## Questions you asked · ## What you want next\n```\n\n#### Example\n\nYou watch the review server explainer, ask \"why does a second Send not start a second run?\" on scene 4, and\npress Done. The page answered it from `scripts/lib/inbox.mjs`; the review is filed with the question and its\nanswer; the decision log does not change."
+      },
+      {
+        "n": 4,
+        "title": "Plan this: a plan that starts from the explainer (question 2)",
+        "text": "*Needs step 3.*\n\n**Plan this** files the review, then the agent writes a plan, as it would when asked in chat, with the\nexplainer as its start:\n\n- `reel new-plan … --from <explainer-dir>` makes the plan folder, and `plan.md` opens with a line naming the\n  explainer, \"Explained first: `2026-09-29-review-server`\".\n- **The problem** quotes you: your comments by scene, the questions you asked, and what you wrote under \"What\n  you want next\". The agent writes the steps from there and the check runs as for any plan (`reel check`).\n- **The plan video leans on the explainer.** `reel prereqs` puts it first under Before you watch, like any\n  video the plan builds on. How much the plan video says again is question 2.\n\nA plan started this way is an ordinary plan from then on: its review, its decisions, its walkthrough. The\nexplainer's row says \"planned: <the plan>\", and the plan's row links back to it.\n\n#### Cases\n\n| Case | Example | What happens |\n|---|---|---|\n| Plan this with comments | two comments on scene 4 | both quoted in the plan's problem, with their scene |\n| Plan this with a question | \"why does Send twice start one run?\" answered on the page | the question and its answer quoted |\n| A plan video after it | the waiting-reviews plan | Before you watch lists the explainer first |\n| Plan this twice | a second plan from the same explainer | a second plan folder; the row lists both |\n\n#### Interface\n\n```\nreel new-plan <repo> <slug> --from <explainer-dir>\nplan.md         Explained first: `2026-09-29-review-server` (its review: reviews/explainer-<time>.md)\nSTORYBOARD.md   before: explainer:2026-09-29-review-server | what the review server does, and your two comments\n```\n\n#### Example\n\nYou press Plan this on the review server explainer, with \"make a waiting review easy to see\" on scene 4. The\nplan `2026-09-30-waiting-reviews` opens with that comment in its problem; its video starts on what changes, and its\nBefore you watch lists the explainer (3:10) first."
+      },
+      {
+        "n": 5,
+        "title": "Honest and private: facts from their sources, a transcript kept out of git (question 3)",
+        "text": "*Needs steps 1 and 2.*\n\n**Facts from the sources, and only them.** Each scene that says a fact names where it comes from, `- source:`\n(`scripts/review.mjs:200-230`, `transcript:turns 212-240`, `git:4dc6bfc`, `D-233`). A new check in the build,\n`check-sources`, fails a quoted line (inside a `data-artifact`) that its source does not hold word for word,\nand a source that is not pinned in `sources.json`; a scene that states a number with no source is a warning,\na failure under `sources_check: strict` (every new explainer carries it).\n\n**Fresh eyes, as for every video** (D-227): the newcomer and the designer, and every finding answered before\nthe page opens. An explainer of a transcript or a change also gets a **fact check**: a third fresh agent reads\nthe narration against the sources, never the agent's own account, and lists each sentence they do not\nsupport. It is the code check's reason (D-001): the agent that did the work is the worst judge of its story.\n\n**Private.** A transcript is read where it is and never copied into the repo; `sources.json` keeps its path,\nhash and line count. A quoted line that looks like a secret (a key such as `sk-…` or `ghp_…`, a private key, a\n`password=`) or holds an email address stops the build until it is cut or masked (`sk-…REDACTED`); a path in\nyour home is shown as `~/…`. What else goes into git is question 3; with its recommendation, `.gitignore` keeps\nan explainer's voice files and render out, as it does a plan's video's (D-213).\n\n#### Cases\n\n| Case | Example | What happens |\n|---|---|---|\n| A quoted line its source holds | `export function claim(rp, id, by, extra = {})` from `scripts/lib/inbox.mjs` | passes |\n| A quoted line changed by hand | the line retyped with a word missing | `check-sources` fails: not in its source |\n| A number with no source | \"the server retried three times\" | a warning; fails under strict |\n| A key in a quoted line | `OPENAI_API_KEY=sk-proj-…` in turn 212 | the build stops until it is masked |\n| A sentence the sources do not say | \"the run was slow because of the network\" | the fact check lists it; it is fixed, or kept with a reason |\n\n#### Interface\n\n```\nSTORYBOARD.md    - source: scripts/lib/inbox.mjs:50-80            (each scene that says a fact)\n                 sources_check: strict                             (front matter)\nreelplanning check-sources <video-dir>                             (run by build)\n  ✗ scene 5 · quoted line not in scripts/lib/inbox.mjs: \"claim(rp, id)\"\n  ✗ scene 7 · a key in a quoted line (transcript:turn 212): mask it\n  △ scene 3 · \"three times\" with no source\nreelplanning fresh-eyes <video-dir> --prompt checker               (transcripts and changes)\n```\n\n#### Example\n\nThe session explainer quotes turn 212, where a command printed an API key. The build stops on it; the agent\nmasks it (`sk-…REDACTED`) and builds again. The fact check finds \"the tests passed first time\" in scene 6; the\ntranscript shows two runs, so the line becomes \"the tests passed on the second run\"."
+      }
+    ]
+  },
+  "slug": "2026-09-29-explain-first",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 3,
+      "partTitle": "The review page",
+      "title": "reelplanning: the whole system",
+      "gives": "the review page, with the review player, the plan-to-video skill, the review server, finish-project",
+      "seconds": 124.7,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all",
+        "plan.md",
+        "round",
+        "the author",
+        "style guide"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 7,
+      "partTitle": "Memory, and six rules",
+      "title": "reelplanning: the whole system",
+      "gives": "memory, and six rules, with the reel CLI, the plan-to-video skill, the review player",
+      "seconds": 87.7,
+      "terms": [
+        "plan video",
+        "walkthrough video",
+        "own words",
+        "reel audit",
+        "accept all",
+        "plan.md",
+        "round",
+        "the author",
+        "style guide"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-better-visuals",
+      "title": "Better visuals: show the real thing, and a page that reads well",
+      "gives": "decisions D-166, D-142, D-167: which scenes must show the real thing?; explains \"real thing\"",
+      "seconds": 253.3,
+      "terms": [
+        "the real thing",
+        "pinned word",
+        "camera",
+        "motion language",
+        "look",
+        "accent colour"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-27-walkthroughs-that-help",
+      "title": "Walkthroughs that help: see the build run, stop only where you'd notice",
+      "gives": "decisions D-222, D-224, D-219, D-221, D-223: does the walkthrough test you?",
+      "seconds": 231.1,
+      "terms": [
+        "backend",
+        "the list",
+        "pr-check"
+      ],
+      "found": true
+    }
+  ],
+  "terms": [
+    "explainer",
+    "transcript",
+    "pinned",
+    "fingerprint",
+    "source",
+    "fact check",
+    "Plan this",
+    "Explain more",
+    "Done",
+    "guide",
+    "masked",
+    "check-sources",
+    "sources.json",
+    "explain.md",
+    "snapshot",
+    "decision",
+    "turn",
+    "planned",
+    "Explained first",
+    "draw on a step",
+    "Keep",
+    "library",
+    "lean on"
+  ],
+  "termMeanings": {
+    "explainer": "a video that explains something that is there (a part of the repo, a transcript or log, a change, a period of time), with no plan behind it and nothing to decide",
+    "transcript": "the record of a whole session with an agent, or of a run: every message and command in order (Claude Code keeps each session as a file on your machine)",
+    "pinned": "kept as it was when the explainer was made (the commit, and a fingerprint of each file), so the video says only what those sources said",
+    "fingerprint": "a short code worked out from a file's contents (its hash), which changes if one character changes",
+    "source": "a file, commit, transcript or log that a scene's facts come from",
+    "fact check": "a third fresh agent, for a transcript or a change, that reads the narration against the sources and lists each sentence they do not support",
+    "plan this": "the Finish button on an explainer that starts a plan from what you said on it",
+    "explain more": "the Finish button on an explainer that brings its next version, with the scenes you commented or asked on rebuilt",
+    "done": "the Finish button on an explainer that ends it: you know what you wanted",
+    "guide": "the plan guide's page: the video at the top, and the whole of what it shows behind it (full diffs, real outputs), a click from each moment",
+    "masked": "cut down so only its first letters show (sk-…REDACTED)",
+    "check-sources": "the build's new check that a quoted line is in its source word for word",
+    "sources.json": "the explainer's list of its sources, each pinned",
+    "explain.md": "the explainer's first file: what you asked, in your words, and what it will cover",
+    "snapshot": "a picture of something as it was at one moment, not kept up to date",
+    "decision": "a choice recorded in the decision log (decisions.md): each answer to a plan's question, and each choice of the agent's you accepted",
+    "turn": "one message in a session: yours, or the agent's with the commands it ran",
+    "planned": "a picture of what this plan would build: it does not exist yet",
+    "explained first": "a plan's first line when it started from an explainer, naming it, so its video lists that explainer under Before you watch",
+    "draw on a step": "mark the step's row with the player's pen, to leave a note on that step",
+    "keep": "a new Finish button, only with question 3's option C: it commits the explainer to the repo",
+    "library": "the review page's list of every video in the repo: the system video, and a row for each plan",
+    "lean on": "count on the viewer having the explainer to watch, and so not say its content again"
+  },
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "Turns a plan into a video, via HyperFrames (plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "Turns a plan into a video, via HyperFrames.",
+      "files": [
+        "`plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanning build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The assembly tail: captions → index → plan-map → the terms index (which video explains each word) → plan-diff → the details check.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "spec-diff",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanning spec-diff); it also names a row no scene explains yet",
+      "forms": [
+        "spec-diff"
+      ],
+      "said": "Which scenes of the system video a change to the system's description, its parts or this glossary reaches, so only those are rebuilt; it also names a row no scene explains yet.",
+      "files": [
+        "`spec.md`",
+        "`system.json`",
+        "`reelplanning spec-diff`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "This video catches up",
+        "start": 425.342,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "<reelplanning-player>: where you watch, answer on the frame, mark, and press Finish",
+      "forms": [
+        "review player"
+      ],
+      "said": "Where you watch, answer on the frame, mark, and press Finish.",
+      "files": [
+        "`<reelplanning-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanning review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project record (scripts/reel.mjs, in .reelplanning/): reel record logs a review's answers and files the review; reel status ends with memory",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project record: `reel record` logs a review's answers and files the review; `reel status` ends with memory.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanning/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "Acts on a plan review: approved, folds the comments into the plan (plan.md); changes requested, rewrites the steps a comment touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "Acts on a plan review: approved, folds the comments into the plan; changes requested, rewrites the steps a comment touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "Builds what the plan says (plan.md) and logs each call the plan did not cover, with tags (in walkthrough.md); its diff is then checked by a second, fresh agent (the code check)",
+      "forms": [
+        "implement step"
+      ],
+      "said": "Builds what the plan says and logs each call the plan did not cover, with tags; its diff is then checked by a second, fresh agent (the code check).",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video explaining the whole repo (from spec.md); rebuilt where the spec changes",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video explaining the whole repo; rebuilt where the spec changes.",
+      "files": [
+        "from `spec.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 7,
+        "title": "Four act on your answers",
+        "start": 93.008,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Finish: approve, or request changes",
+        "start": 232.139,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed.",
+      "files": [
+        "`.reelplanning/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "Four carry your answers back",
+        "start": 77.018,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "Handed on once, and fenced",
+        "start": 253.279,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 21,
+        "title": "Only the changes come back",
+        "start": 293.749,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices stop the walkthrough video: an off-plan change always, an unlabelled choice never, a labelled one until you have accepted that label ten times in a row, or again after a recent late fix with that label.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 373.702,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanning/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "What your reviews teach",
+        "start": 451.792,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label stop the video again, however many were accepted in a row.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 373.702,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A labelled choice stops the walkthrough video; an unlabelled one does not.",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Every choice, written down",
+        "start": 316.029,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A streak",
+      "meaning": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero",
+      "forms": [
+        "streak",
+        "accepted in a row"
+      ],
+      "display": "accepted in a row",
+      "said": "How many times in a row you accepted choices with the same label. At ten accepted in a row, choices with that label no longer stop the video; one flag starts the count again from zero.",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "What stops the walkthrough",
+        "start": 373.702,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 23,
+        "title": "Every choice, written down",
+        "start": 316.029,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "Watch it instead",
+        "start": 12.901,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "What your reviews teach",
+        "start": 451.792,
+        "chapter": 7,
+        "chapterTitle": "Memory, and six rules"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "One scene per chapter for the choices that don't stop: each can be flagged, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 28,
+        "title": "One stop per step",
+        "start": 392.402,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked.",
+      "definedIn": {
+        "video": "system",
+        "frame": 16,
+        "title": "Finish: approve, or request changes",
+        "start": 232.139,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded",
+      "forms": [
+        "decision log"
+      ],
+      "said": "Every answer you gave and every choice you accepted, one entry each, numbered across the repo (D-056); an entry is never edited, only added to or marked superseded.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Your answers go on record",
+        "start": 267.119,
+        "chapter": 4,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A question on what the plan or the code will do; \"Expected something else?\" sends your words to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "It stops at each question",
+        "start": 27.291,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 30,
+        "title": "This video catches up",
+        "start": 425.342,
+        "chapter": 6,
+        "chapterTitle": "The walkthrough"
+      }
+    },
+    {
+      "term": "A detail",
+      "meaning": "A page a beat opens over the paused frame, grown out of the thing it explains, for what the video cannot hold (started from a template in templates/details/). The frame marks that thing (data-detail); on the review page it is a button with a tab, \"Open · <the page's title>\": click it, or press O",
+      "forms": [
+        "detail"
+      ],
+      "said": "A page a beat opens over the paused frame, grown out of the thing it explains, for what the video cannot hold. The frame marks that thing; on the review page it is a button with a tab, \"Open · <the page's title>\": click it, or press O.",
+      "files": [
+        "started from a template in `templates/details/`",
+        "`data-detail`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip",
+      "forms": [
+        "open chip"
+      ],
+      "said": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here.",
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "What to watch first, and what words mean",
+        "start": 128.583,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words (from plan.md), one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, one section per step, with the current step lit; off until the Plan switch (L) turns it on, then beside the video or in the record.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The details check / check-details",
+      "meaning": "The check that every detail page works and that each frame marks only its own scene's detail (check-details), run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build (under details_check: strict, so does a scene whose thing is marked nowhere)",
+      "forms": [
+        "details check",
+        "check-details"
+      ],
+      "said": "The check that every detail page works and that each frame marks only its own scene's detail, run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build.",
+      "files": [
+        "`check-details`",
+        "under `details_check: strict`, so does a scene whose thing is marked nowhere"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "The plan beside it, and a page from the thing itself",
+        "start": 200.044,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The agent",
+      "meaning": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses (config.json names its command)",
+      "forms": [
+        "agent"
+      ],
+      "said": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses.",
+      "files": [
+        "`config.json` names its command"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A plan nobody answered",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The plan video",
+      "meaning": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised",
+      "forms": [
+        "plan video"
+      ],
+      "said": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised.",
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The walkthrough video / walkthrough",
+      "meaning": "The video made after the code is built: what was built, step by step, and each choice the agent made alone (listed in walkthrough.md). You accept or flag each choice, then approve the build or ask for changes",
+      "forms": [
+        "walkthrough video",
+        "walkthrough"
+      ],
+      "said": "The video made after the code is built: what was built, step by step, and each choice the agent made alone. You accept or flag each choice, then approve the build or ask for changes.",
+      "files": [
+        "listed in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "Two videos for every plan",
+        "start": 40.831,
+        "chapter": 1,
+        "chapterTitle": "Why a video"
+      }
+    },
+    {
+      "term": "The code check",
+      "meaning": "A second, fresh agent that reads the built code against the plan and the decision log, from a short brief, and says where they differ; each finding is answered before the walkthrough video is made (code-check)",
+      "forms": [
+        "code check"
+      ],
+      "said": "A second, fresh agent that reads the built code against the plan and the decision log, from a short brief, and says where they differ; each finding is answered before the walkthrough video is made.",
+      "files": [
+        "`code-check`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "A second agent checks",
+        "start": 344.919,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "Fresh eyes",
+      "meaning": "Two fresh agents that look at every new or rebuilt video before you do (reelplanning fresh-eyes), from a brief and a picture of each scene, never the plan: a newcomer, who lists what it could not follow, and a designer, who lists what breaks the frame rules. Every finding is answered before the page opens: fixed, given a meaning, or kept with a reason; what is kept after the third look is said on Before you watch",
+      "forms": [
+        "fresh eyes"
+      ],
+      "said": "Two fresh agents that look at every new or rebuilt video before you do, from a brief and a picture of each scene, never the plan: a newcomer, who lists what it could not follow, and a designer, who lists what breaks the frame rules. Every finding is answered before the page opens: fixed, given a meaning, or kept with a reason; what is kept after the third look is said on Before you watch.",
+      "files": [
+        "`reelplanning fresh-eyes`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 11,
+        "title": "Two fresh agents looked first",
+        "start": 140.631,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "The frame rules",
+      "meaning": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven",
+      "forms": [
+        "frame rules"
+      ],
+      "said": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven.",
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "Seven rules for a frame",
+        "start": 159.596,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "frame-lint",
+      "meaning": "The check that reads a video's frames for what a program can see (reelplanning frame-lint): among them, empty bars standing where words go, and anything in the room above a thing the player's Open tab sits on",
+      "forms": [
+        "frame-lint"
+      ],
+      "said": "The check that reads a video's frames for what a program can see: among them, empty bars standing where words go, and anything in the room above a thing the player's Open tab sits on.",
+      "files": [
+        "`reelplanning frame-lint`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 12,
+        "title": "Seven rules for a frame",
+        "start": 159.596,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "Ask about this",
+      "meaning": "In the player, paused on any scene: press Q, or click a caption word, and type a question. On a hosted page Claude answers from the plan, the glossary and the scene, and says where from; on your own machine the agent session waiting on the page answers, or, with none waiting, the question goes with your review. Every question is kept in the review",
+      "forms": [
+        "ask about this"
+      ],
+      "said": "In the player, paused on any scene: press Q, or click a caption word, and type a question. On a hosted page Claude answers from the plan, the glossary and the scene, and says where from; on your own machine the agent session waiting on the page answers, or, with none waiting, the question goes with your review. Every question is kept in the review.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "Ask about this",
+        "start": 181.207,
+        "chapter": 3,
+        "chapterTitle": "The review page"
+      }
+    },
+    {
+      "term": "A brief",
+      "meaning": "A short written description an agent starts from. A video's brief (BRIEF.md) says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare",
+      "forms": [
+        "brief"
+      ],
+      "said": "A short written description an agent starts from. A video's brief says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare.",
+      "files": [
+        "`BRIEF.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 25,
+        "title": "A second agent checks",
+        "start": 344.919,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "The storyboard",
+      "meaning": "A video's plan, scene by scene (STORYBOARD.md): what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains",
+      "forms": [
+        "storyboard"
+      ],
+      "said": "A video's plan, scene by scene: what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains.",
+      "files": [
+        "`STORYBOARD.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "Four parts make the video",
+        "start": 58.741,
+        "chapter": 2,
+        "chapterTitle": "Twelve parts, two loops"
+      }
+    },
+    {
+      "term": "reel audit / audit",
+      "meaning": "The check on a walkthrough (reel audit): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked",
+      "forms": [
+        "reel audit",
+        "audit"
+      ],
+      "said": "The check on a walkthrough: it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked.",
+      "files": [
+        "`reel audit`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "The fifth choice is asked, not made",
+        "start": 332.359,
+        "chapter": 5,
+        "chapterTitle": "The build"
+      }
+    },
+    {
+      "term": "A repo / repository",
+      "meaning": "A project's folder of code together with its whole history, kept with git (on GitHub, say)",
+      "forms": [
+        "repo",
+        "repository"
+      ],
+      "said": "A project's folder of code together with its whole history, kept with git (on GitHub, say).",
+      "other": true
+    },
+    {
+      "term": "A branch",
+      "meaning": "A line of work kept apart from the main code until it is merged",
+      "forms": [
+        "branch"
+      ],
+      "said": "A line of work kept apart from the main code until it is merged.",
+      "other": true
+    },
+    {
+      "term": "Merge",
+      "meaning": "To bring a branch's changes into the main code. A pull request is merged when it is accepted",
+      "forms": [
+        "merge"
+      ],
+      "said": "To bring a branch's changes into the main code. A pull request is merged when it is accepted.",
+      "other": true
+    },
+    {
+      "term": "A commit",
+      "meaning": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them",
+      "forms": [
+        "commit"
+      ],
+      "said": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them.",
+      "other": true
+    },
+    {
+      "term": "Clone",
+      "meaning": "To copy a repo, with its history, onto your own computer",
+      "forms": [
+        "clone"
+      ],
+      "said": "To copy a repo, with its history, onto your own computer.",
+      "other": true
+    },
+    {
+      "term": "A diff",
+      "meaning": "The lines a change adds and removes, shown together",
+      "forms": [
+        "diff"
+      ],
+      "said": "The lines a change adds and removes, shown together.",
+      "other": true
+    },
+    {
+      "term": "A pull request / PR",
+      "meaning": "A change someone asks to have merged into a repo; others read it and comment before it goes in",
+      "forms": [
+        "pull request",
+        "pr"
+      ],
+      "said": "A change someone asks to have merged into a repo; others read it and comment before it goes in.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 1,
+        "title": "One person per repo, then a shared one",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "One repo, several people"
+      }
+    },
+    {
+      "term": "Squash",
+      "meaning": "To merge a pull request's commits as one commit",
+      "forms": [
+        "squash"
+      ],
+      "said": "To merge a pull request's commits as one commit.",
+      "other": true
+    },
+    {
+      "term": "CI",
+      "meaning": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it",
+      "forms": [
+        "ci"
+      ],
+      "said": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 10,
+        "title": "Step 3: watching and checking, as decided",
+        "start": 145.322,
+        "chapter": 4,
+        "chapterTitle": "Step 3: watching, checking, and where the video lives"
+      }
+    },
+    {
+      "term": "A test suite",
+      "meaning": "All of a project's tests, run together to check that nothing broke",
+      "forms": [
+        "test suite"
+      ],
+      "said": "All of a project's tests, run together to check that nothing broke.",
+      "other": true
+    },
+    {
+      "term": "A spec",
+      "meaning": "Two meanings here: one file of tests (scripts/test/terms.spec.mjs), run with the others by npm test; or the system's own description of its parts, spec.md",
+      "forms": [
+        "spec"
+      ],
+      "said": "Two meanings here: one file of tests, run with the others by `npm test`; or the system's own description of its parts, `spec.md`.",
+      "files": [
+        "`scripts/test/terms.spec.mjs`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Lint / linter",
+      "meaning": "A check that reads code or files for mistakes without running them (frame-lint reads a video's scenes)",
+      "forms": [
+        "lint",
+        "linter"
+      ],
+      "said": "A check that reads code or files for mistakes without running them.",
+      "files": [
+        "`frame-lint` reads a video's scenes"
+      ],
+      "other": true
+    },
+    {
+      "term": "A flag",
+      "meaning": "In a command, an option written after its name (like --dry-run). On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept)",
+      "forms": [
+        "flag"
+      ],
+      "said": "In a command, an option written after its name. On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept).",
+      "files": [
+        "like `--dry-run`"
+      ],
+      "other": true
+    },
+    {
+      "term": "A prompt",
+      "meaning": "The words given to an agent to start it on a task",
+      "forms": [
+        "prompt"
+      ],
+      "said": "The words given to an agent to start it on a task.",
+      "other": true
+    },
+    {
+      "term": "A template",
+      "meaning": "A file to start from, filled in for each new use",
+      "forms": [
+        "template"
+      ],
+      "said": "A file to start from, filled in for each new use.",
+      "other": true
+    },
+    {
+      "term": "A dependency",
+      "meaning": "A package of someone else's code a project needs in order to run",
+      "forms": [
+        "dependency"
+      ],
+      "said": "A package of someone else's code a project needs in order to run.",
+      "other": true
+    },
+    {
+      "term": "A terminal",
+      "meaning": "The window where you type commands",
+      "forms": [
+        "terminal"
+      ],
+      "said": "The window where you type commands.",
+      "other": true
+    },
+    {
+      "term": "CLI",
+      "meaning": "A command-line tool: a program you run by typing its name and options in a terminal",
+      "forms": [
+        "cli"
+      ],
+      "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
+      "other": true
+    },
+    {
+      "term": "HTML",
+      "meaning": "The language web pages are written in; each scene of a video is an HTML page",
+      "forms": [
+        "html"
+      ],
+      "said": "The language web pages are written in; each scene of a video is an HTML page.",
+      "other": true
+    },
+    {
+      "term": "CSS",
+      "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
+      "forms": [
+        "css"
+      ],
+      "said": "The rules for how a web page looks: its colours, sizes and where things sit.",
+      "other": true
+    },
+    {
+      "term": "JSON",
+      "meaning": "A plain-text format for data a program reads (plan-map.json, say)",
+      "forms": [
+        "json"
+      ],
+      "said": "A plain-text format for data a program reads.",
+      "files": [
+        "`plan-map.json`, say"
+      ],
+      "other": true
+    },
+    {
+      "term": "TTS",
+      "meaning": "Text to speech: the voice made from a video's script",
+      "forms": [
+        "tts"
+      ],
+      "said": "Text to speech: the voice made from a video's script.",
+      "other": true
+    },
+    {
+      "term": "git",
+      "meaning": "The tool that keeps a repo's history: its commits and branches",
+      "forms": [
+        "git"
+      ],
+      "said": "The tool that keeps a repo's history: its commits and branches.",
+      "other": true
+    },
+    {
+      "term": "GitHub",
+      "meaning": "The website where many repos are kept and pull requests are reviewed",
+      "forms": [
+        "github"
+      ],
+      "said": "The website where many repos are kept and pull requests are reviewed.",
+      "other": true
+    },
+    {
+      "term": "npm",
+      "meaning": "The tool that installs a JavaScript project's packages and runs its scripts (npm test)",
+      "forms": [
+        "npm"
+      ],
+      "said": "The tool that installs a JavaScript project's packages and runs its scripts.",
+      "files": [
+        "`npm test`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "Claude Code's mode where the agent plans in chat and changes nothing until you approve",
+      "forms": [
+        "plan mode"
+      ],
+      "said": "Claude Code's mode where the agent plans in chat and changes nothing until you approve.",
+      "other": true
+    },
+    {
+      "term": "npx",
+      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanning@0.2.0 reel record …)",
+      "forms": [
+        "npx"
+      ],
+      "said": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it.",
+      "files": [
+        "`npx -y reelplanning@0.2.0 reel record …`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Recommended",
+      "meaning": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it",
+      "forms": [
+        "recommended"
+      ],
+      "said": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it.",
+      "other": true
+    },
+    {
+      "term": "The real thing",
+      "meaning": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it",
+      "forms": [
+        "real thing"
+      ],
+      "said": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-better-visuals",
+        "frame": 3,
+        "title": "What “the real thing” means",
+        "start": 27.2,
+        "chapter": 2,
+        "chapterTitle": "The real thing, even across ten files"
+      }
+    },
+    {
+      "term": "A hosted page",
+      "meaning": "The review page published online as a Claude Artifact and opened from a link, not served from your own machine; there, Ask about this is answered by Claude, on your own account",
+      "forms": [
+        "hosted page"
+      ],
+      "said": "The review page published online as a Claude Artifact and opened from a link, not served from your own machine; there, Ask about this is answered by Claude, on your own account.",
+      "other": true
+    },
+    {
+      "term": "Before you watch",
+      "meaning": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why",
+      "forms": [
+        "before you watch"
+      ],
+      "said": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why.",
+      "other": true
+    },
+    {
+      "term": "Walk me through it",
+      "meaning": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences",
+      "forms": [
+        "walk me through it"
+      ],
+      "said": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences.",
+      "other": true
+    }
+  ],
+  "ids": {
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "You ask: why did last night's CI run fail? What does the explainer read?"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "On Monday you ask about the review server; by Friday, seven commits have…"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "You comment “this looks wrong” on a branch's explainer and press Done. What…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "You asked one question with Ask about this, left two comments, and press Plan…"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "A CI log's explainer quotes a line holding a GitHub access key. What does the…"
+    },
+    "q1": {
+      "kind": "question",
+      "n": 1,
+      "gloss": "Is an explainer's whole source there to read, behind the video?"
+    },
+    "q2": {
+      "kind": "question",
+      "n": 2,
+      "gloss": "After Plan this, how far does the plan lean on the explainer?"
+    },
+    "q3": {
+      "kind": "question",
+      "n": 3,
+      "gloss": "What of an explainer goes into git?"
+    }
+  },
+  "termsCheck": "strict",
+  "freshEyes": {
+    "rounds": 3,
+    "left": [
+      {
+        "id": "N1",
+        "role": "newcomer",
+        "scene": 2,
+        "what": "scene 2 · \"this session\" / \"this branch\": the four example questions never say whose session or which branch; I guessed the current chat with the agent and the git branch I'm on. Matters because scene 5 later treats \"the session\" as a 21,562-line file, and I did not know a session is a saved file.",
+        "why": "the narration names both as the viewer's own (\"this session\", \"this branch\"), and scene 5 says a transcript is \"the record of a session\", with its meaning in the terms (Claude Code keeps each session as a file on your machine)"
+      },
+      {
+        "id": "N2",
+        "role": "newcomer",
+        "scene": 5,
+        "what": "scene 5 · \"A part\": \"a part of the repo\" here, but the glossary's \"part of the system\" is a box in the system video. I guessed a part is a folder or component like the review server; I could not tell whether it is the same \"part\" or a different one.",
+        "why": "it is the same part of the system the glossary names (the review server is one), which is the example scene 5 gives"
+      },
+      {
+        "id": "N3",
+        "role": "newcomer",
+        "scene": 5,
+        "what": "scene 5 · \"it would read, measured today\": what does an explainer \"read\", and who measures it? I guessed it is the size of the sources the agent would gather. Also \"3 min / 5 min\" is the video length, but the column header does not say so.",
+        "why": "the columns are what you ask, what it would read and about how long; the narration says \"Each runs two to five minutes\", so \"about\" is the video's length"
+      },
+      {
+        "id": "N4",
+        "role": "newcomer",
+        "scene": 6,
+        "what": "scene 6 · \"guide\" (turns 212-240): the glossary defines guide, but this video never shows one until scene 8, and \"turn\" is used on screen in scene 7 before any scene says a turn is one message. I guessed turn = one line of the session. It matters because question 1 asks me to choose between guides I have not yet seen.",
+        "why": "question 1 describes its options in its own narration (\"the whole transcript, organized, or the full diff, a click from each moment\"), and turn has its meaning in the terms"
+      },
+      {
+        "id": "N5",
+        "role": "newcomer",
+        "scene": 7,
+        "what": "scene 7 · \"… 21,560 lines not shown\": the caption says the video quotes only 2 lines here, but question 3 later says 12 are quoted. I could not tell whether 2 is an example or the real amount, or where the \"21,560\" is stored.",
+        "why": "the kicker says \"an example\", and question 3's 12 lines are another example; the count is the transcript's, which sources.json keeps (scene 21)"
+      },
+      {
+        "id": "N6",
+        "role": "newcomer",
+        "scene": 10,
+        "what": "scene 10 · \"It isn't rebuilt on its own; ask again for a new one\": this seems to conflict with scene 12, where \"Explain more\" brings a next version. I guessed Explain more is the \"ask again\" button. The video never says so, and I could not tell what a new ask versus Explain more does.",
+        "why": "Explain more answers your comments on this explainer (its next version); asking again makes a new one for a later commit; scene 12 says what Explain more rebuilds"
+      },
+      {
+        "id": "N8",
+        "role": "newcomer",
+        "scene": 11,
+        "what": "scene 11 · \"why did last night's CI run fail?\": the answers say \"the run's log\", but the video never says how the explainer would get a CI log, or how it is told which run. I guessed a log is a file I hand over. Also the tag \"quick check · step 1\" points to step 1 but the answer is not visible in step 1's scene.",
+        "why": "how a CI log is fetched is the plan's (step 1's table, `gh run view <id> --log`), not the video's; the check applies scene 5's rule, \"a transcript or a log, the record of a session or a run\", which is step 1's scene"
+      },
+      {
+        "id": "N11",
+        "role": "newcomer",
+        "scene": 14,
+        "what": "scene 14 · \"## The problem\" / \"plan.md\": \"the plan's problem section\" is never introduced. I guessed every plan has a section called The problem that holds the reason for the plan. Also \"scene 4 · 'make a waiting review easy to see'\" doesn't say which video's scene 4 this is.",
+        "why": "the narration says \"the plan's problem section\"; the scene 4 is the explainer's, which the left card's file, reviews/explainer-<time>.md, says"
+      },
+      {
+        "id": "N12",
+        "role": "newcomer",
+        "scene": 15,
+        "what": "scene 15 · \"lean on it\" / \"Before you watch, and two lines\": \"how far does the plan lean on the explainer\" is a plain phrase with no meaning given. I guessed lean means \"assume you already watched it\". \"two lines\" for a new viewer is unclear: two lines of what, and where?",
+        "why": "the option is named in plain words; lean on is now in the storyboard's terms (\"count on the viewer having the explainer to watch, and so not say its content again\"); option A says the two lines are for a new viewer, under Before you watch"
+      },
+      {
+        "id": "N13",
+        "role": "newcomer",
+        "scene": 16,
+        "what": "scene 16 · \"What changes\": chapter 1 of the plan's video is called \"What changes\" and the plan's video is never shown before. I guessed it is the first chapter of any plan video. I could not tell what a plan video normally opens with, so I could not compare A, B and C.",
+        "why": "every plan video opens on what changes (scene 4 of this one is its own); the three options differ in what comes before it, which each branch shows"
+      },
+      {
+        "id": "N14",
+        "role": "newcomer",
+        "scene": 19,
+        "what": "scene 19 · \"A question for the next plan\": I do not know what it would mean for the decision log to hold a question, or what \"the next plan\" is. I guessed it is a follow-up plan started later. Also I could not tell whether my \"this looks wrong\" comment is kept anywhere after Done.",
+        "why": "C is a reasonable wrong answer; the check's why for it says Done starts nothing more, and the comment is filed with the review (scene 12: \"The review is filed\")"
+      },
+      {
+        "id": "N15",
+        "role": "newcomer",
+        "scene": 20,
+        "what": "scene 20 · \"Frame 5 — Where a review waits\" and \"source: scripts/lib/inbox.mjs:50-80\": the storyboard calls a scene a \"frame\", and the file path with \":50-80\" is never explained. I guessed the numbers are line numbers. \"warns scene 3 · 'three times': no source\" is also unexplained: what is a warn versus a fail, and what did \"three times\" quote?",
+        "why": "the storyboard's own word is Frame (the glossary's \"A beat\" row: scene); \"lines 50–80\" is pinned under the source line; ✗ fails and △ warns are labelled on the run"
+      },
+      {
+        "id": "N16",
+        "role": "newcomer",
+        "scene": 21,
+        "what": "scene 21 · \"sha256:…\" and \"masked by the agent, then built again\": \"the build stops\" is shown, but I don't know who runs a build or when (I assumed it is the reelplanning build). The masked line still looks like \"OPENAI_API_KEY\", so I couldn't tell what the mask hides.",
+        "why": "the build is the explainer's, the one this scene is about; the mask hides the key after its first letters (sk-…REDACTED), as masked's meaning in the terms says"
+      },
+      {
+        "id": "N17",
+        "role": "newcomer",
+        "scene": 22,
+        "what": "scene 22 · \"committed and shared like a plan's video\": the recommendation assumes a plan's video is already committed to the repo. That was never said in this video. I also could not tell what \"its text\" means: the narration says its scenes and its quoted lines, but the option card says \"Its text, never the transcript\".",
+        "why": "option A's card says \"its scenes and 12 lines\"; that a plan's video is committed is the repo's way today (the contributing plan, before this one); the narration states it as the comparison"
+      },
+      {
+        "id": "N19",
+        "role": "newcomer",
+        "scene": 28,
+        "what": "scene 28 · \"approve\": this plan closes with \"or approve\", but the video never said that a plan review has Approve. It only said explainers do not. I guessed approving is what turns the plan into a build, which is not shown.",
+        "why": "Approve is the glossary's \"Approve / Request changes\" row, every plan video's ending, and scene 12 names it as what an explainer has in its place"
+      },
+      {
+        "id": "G3",
+        "role": "designer",
+        "scene": 7,
+        "what": "scene 7 · \"turn 212 · $ npm test\": the dark box is a thin strip in the top half and the lower half is empty, so the frame is unbalanced and the quoted text is smallish; breaks rule 7 and rule 6; bigger box and text, centred vertically",
+        "why": "the block is centred with its kicker (round 1); it quotes two lines on purpose, the point of the branch"
+      },
+      {
+        "id": "G4",
+        "role": "designer",
+        "scene": 8,
+        "what": "scene 8 · \"the tests fail\": the left card has a big empty gap between its one line and the \"open turns 212–240 →\" chip, and the arrow to the guide is a thin 40px line that is easy to miss; breaks rule 7; pull the chip up under the words, give the arrow more weight",
+        "why": "the chip is where the player puts a moment's link, at the card's foot; the arrow has its head (round 2)"
+      },
+      {
+        "id": "G6",
+        "role": "designer",
+        "scene": 10,
+        "what": "scene 10 · \"pinned: kept as it was\": the red chip is squeezed inside the terminal box under \"pinned at dee5830\", near the box edge, and the small terminal text is hard to read at this size; breaks rule 6 and rule 3; enlarge the terminal text, give the chip clear room or set it outside the box",
+        "why": "round 2 put the pin inside the terminal, on the line it explains, after round 1 asked for it on its line"
+      },
+      {
+        "id": "G7",
+        "role": "designer",
+        "scene": 12,
+        "what": "scene 12 · \"Approve · Request changes\": the strikethrough line runs through the middle of the words and makes them hard to read, and the whole frame sits high with an empty bottom fifth; breaks rule 6 and rule 7; strike more lightly or grey the words out, and use the space below",
+        "why": "the struck words are read as struck (round 2 made them 85% ink under a 5 px line); the right column fills the lower part"
+      },
+      {
+        "id": "G8",
+        "role": "designer",
+        "scene": 13,
+        "what": "scene 13 · \"A / B / C\" cards: each card is half empty under its text and a third of the frame below the cards is bare; breaks rule 7; shorter cards, or move the block down to the middle",
+        "why": "the cards leave room for the why the player puts under each once answered"
+      },
+      {
+        "id": "G9",
+        "role": "designer",
+        "scene": 14,
+        "what": "scene 14 · \"reviews/explainer-<time>.md\" → \"plan.md\": the connecting arrow is a tiny 35px stub jammed between the two boxes, and the left box is emptier than the right; breaks rule 2 and rule 7; a longer, clearer arrow and balanced box contents",
+        "why": "the arrow joins the two files at their middle (round 2); the right holds more because it quotes the left"
+      },
+      {
+        "id": "G10",
+        "role": "designer",
+        "scene": 16,
+        "what": "scene 16 · \"What changes\": the chapter box is nearly empty, the frame is top-heavy with the lower 40% blank, and the arrow is a thin stub; breaks rule 7; centre the pair vertically, bigger arrow",
+        "why": "the pair is centred with its kicker (round 1) and the arrow has its head (round 2); the chapter holds its title only, as the plan video's does"
+      },
+      {
+        "id": "G11",
+        "role": "designer",
+        "scene": 17,
+        "what": "scene 17 · \"Recap: the explainer's scenes, cut down\": the two chapter boxes are different widths (about 340px and 610px) though the recap is the long part of the story, so the boxes do not show the 40 s split and the frame is top-heavy; breaks rule 7; size the boxes to their share and use the empty lower half",
+        "why": "chapter 1 is narrower than chapter 2 on purpose: 0:40 is the shorter part of the plan video"
+      },
+      {
+        "id": "G12",
+        "role": "designer",
+        "scene": 18,
+        "what": "scene 18 · \"The review server, explained again\": same top-heavy frame with the lower 40% empty, and it looks near-identical to scenes 16 and 17 so the three options are hard to tell apart at a glance; breaks rule 7; make the difference the focal point (for example widths or a bar for 1:00 against 0:40)",
+        "why": "the widths now differ between B (0:40) and C (1:00) (round 2), and each branch plays alone after its answer, so they are never side by side"
+      },
+      {
+        "id": "G13",
+        "role": "designer",
+        "scene": 20,
+        "what": "scene 20 · \"where its facts come from: lines 50–80\": the small caption chip inside the dark box is tiny and low contrast, the dark boxes stop at about two-thirds width and leave the right third empty, and the \"fresh eyes\" chips sit apart from what they name in a row of unequal chips; breaks rule 6, rule 3 and rule 7; larger annotation, widen the boxes, group the chips with the sentence they belong to",
+        "why": "the pin is the theme's pin size; the fresh-eyes row reads in the narration's order after the two blocks (round 2)"
+      },
+      {
+        "id": "G14",
+        "role": "designer",
+        "scene": 21,
+        "what": "scene 21 · \"or holds an email address\": the narration says a key, a password or an email stops the build, but the picture shows only an \"OPENAI_API_KEY\" line, no password and no email; breaks rule 1; show an email line stopping the build too",
+        "why": "the narration names three cases and the frame shows one example of the rule, as round 1 and 2 answered"
+      },
+      {
+        "id": "G16",
+        "role": "designer",
+        "scene": 24,
+        "what": "scene 24 · \"and the explainer\": the chip that qualifies \"every line of the session\" sits alone at the bottom-left of a wide box with a blank gap above it, and the lower half of the frame is empty; breaks rule 3 and rule 7; put it with the words it adds to, and shrink or centre the box",
+        "why": "the chip adds the explainer to what is in the history, at the card's foot where the theme puts a card's extra"
+      },
+      {
+        "id": "G17",
+        "role": "designer",
+        "scene": 25,
+        "what": "scene 25 · \"after Done\" / \"after a new Keep button, or Plan this\": the two boxes are top-heavy with a blank lower half, and their small grey headings carry the whole \"when\" difference in tiny text; breaks rule 6 and rule 7; larger condition text and vertical balance",
+        "why": "the \"when\" is each card's label, the theme's label size; the what is the large line"
+      },
+      {
+        "id": "G18",
+        "role": "designer",
+        "scene": 28,
+        "what": "scene 28 · \"question 1\" / \"Done · Explain more · Plan this\": the chips sit 700px from the step names they belong to, at the far right edge, so it reads as a column of chips apart from its rows; the note chip below hangs alone and the bottom of the frame is empty; breaks rule 3 and rule 7; put each chip right beside its step title and space the block down the frame",
+        "why": "a step's question slot sits at the row's end, where the player writes the reviewer's pick into it (data-plan-step)"
+      }
+    ],
+    "again": [
+      {
+        "id": "N7",
+        "role": "newcomer",
+        "scene": 10,
+        "what": "scene 10 · \"reelplanning explain part \"the review server\"\" and \".reelplanning/explainers/2026-09-29-review-server/\": what is \"reelplanning\" (the tool name) and is this the agent's command or mine? The narration says the agent runs it. I guessed the agent types it after I ask in chat.",
+        "why": "the narration says the agent runs the command after you ask in your own words; reelplanning is the product, named in names.md and the system video",
+        "as": "round 2 · N6"
+      },
+      {
+        "id": "N9",
+        "role": "newcomer",
+        "scene": 12,
+        "what": "scene 12 · \"reviews/ filed\" and \"your memory: what you watched\": \"reviews/\" is a folder shown with no earlier introduction. I guessed it is where review files are saved, and that \"memory\" is the glossary's Memory. \"Filed\" is never explained on the frame.",
+        "why": "the frame shows where the review goes, reviews/; memory is the glossary's row (Before you watch: the system video's part 7)",
+        "as": "round 2 · N8"
+      },
+      {
+        "id": "N10",
+        "role": "newcomer",
+        "scene": 13,
+        "what": "scene 13 · \"What plays on Friday?\": option A says Monday's video \"7 commits since\", which I could not link to the row in scene 10 without going back. The narration does not say what \"out of date\" would look like or who decides. I guessed the row's commit count is the only warning.",
+        "why": "scene 10 says the row \"says how many commits have landed since\", and that it isn't rebuilt on its own; the check asks you to put the two together",
+        "as": "round 2 · N9"
+      },
+      {
+        "id": "N18",
+        "role": "newcomer",
+        "scene": 25,
+        "what": "scene 25 · \"after Done: the explainer: this machine only\": I could not tell whether it is deleted or just not shared once I press Done. I guessed it stays as files on my computer. The narration only says it \"stays on one machine\".",
+        "why": "the branch says \"stays on one machine\", which is not deleted; it is option C's cost",
+        "as": "round 2 · N16"
+      },
+      {
+        "id": "G1",
+        "role": "designer",
+        "scene": 4,
+        "what": "scene 4 · \"steps 1, 2\" / \"steps 3, 4\" / \"step 5\": the small grey step labels float in a column at mid-width, about 350px from the titles they qualify, and the rows are tall with a bare band below; breaks rule 3 and rule 7; put each label right after its title and tighten the rows",
+        "why": "as rounds 1 and 2, the step numbers are one column, read as a table's",
+        "as": "round 2 · G1"
+      },
+      {
+        "id": "G2",
+        "role": "designer",
+        "scene": 5,
+        "what": "scene 5 · \"it would read, measured today\": the small grey column headers are tiny and the long header runs almost into \"about\", while the lower third of the frame is empty; breaks rule 6 and rule 7; larger headers, shorter header text, more room",
+        "why": "as rounds 1 and 2, the theme's label size; the header says what the column holds",
+        "as": "round 2 · G2"
+      },
+      {
+        "id": "G15",
+        "role": "designer",
+        "scene": 21,
+        "what": "scene 21 · \"fingerprint\": the label chip sits below the `\"hash\"` line inside the dark box rather than on the hash value it names, and the \"planned\" chip floats above the box on its own; breaks rule 3; put the label on the hash value and the chip in the box header",
+        "why": "fingerprint is inside sources.json under the hash (round 2); \"planned\" labels the in-the-repo side it sits over",
+        "as": "round 2 · G14"
+      }
+    ]
+  },
+  "changes": {
+    "against": "HEAD",
+    "baseline": false,
+    "build": "first",
+    "note": "no previous build to compare against"
+  },
+  "guide": {
+    "parts": [
+      {
+        "name": "step-1",
+        "title": "Step 1 · What an explainer is for, and what it shows (question 1)",
+        "planStep": 1,
+        "kind": "step",
+        "src": "guide/step-1.html"
+      },
+      {
+        "name": "step-2",
+        "title": "Step 2 · Ask for one: the skill, a command, and a folder of its own",
+        "planStep": 2,
+        "kind": "step",
+        "src": "guide/step-2.html"
+      },
+      {
+        "name": "step-3",
+        "title": "Step 3 · Review it: the same player, and Finish says what comes next",
+        "planStep": 3,
+        "kind": "step",
+        "src": "guide/step-3.html"
+      },
+      {
+        "name": "step-4",
+        "title": "Step 4 · Plan this: a plan that starts from the explainer (question 2)",
+        "planStep": 4,
+        "kind": "step",
+        "src": "guide/step-4.html"
+      },
+      {
+        "name": "step-5",
+        "title": "Step 5 · Honest and private: facts from their sources, a transcript kept out of git (question 3)",
+        "planStep": 5,
+        "kind": "step",
+        "src": "guide/step-5.html"
+      },
+      {
+        "name": "decisions",
+        "title": "Decisions in force",
+        "planStep": null,
+        "kind": "decisions",
+        "src": "guide/decisions.html"
+      },
+      {
+        "name": "what-changed",
+        "title": "What changed, in full",
+        "planStep": null,
+        "kind": "overview",
+        "src": "guide/what-changed.html"
+      },
+      {
+        "name": "explain",
+        "title": "The explain command",
+        "planStep": null,
+        "kind": "category",
+        "src": "guide/explain.html"
+      },
+      {
+        "name": "explainer-row",
+        "title": "The Explainer row",
+        "planStep": 2,
+        "kind": "category",
+        "src": "guide/explainer-row.html"
+      },
+      {
+        "name": "finish",
+        "title": "Finish's three ends",
+        "planStep": 3,
+        "kind": "category",
+        "src": "guide/finish.html"
+      },
+      {
+        "name": "plan-this",
+        "title": "Plan this",
+        "planStep": 4,
+        "kind": "category",
+        "src": "guide/plan-this.html"
+      },
+      {
+        "name": "check-sources",
+        "title": "Facts from their sources",
+        "planStep": 5,
+        "kind": "category",
+        "src": "guide/check-sources.html"
+      },
+      {
+        "name": "skill",
+        "title": "The skill",
+        "planStep": null,
+        "kind": "category",
+        "src": "guide/skill.html"
+      },
+      {
+        "name": "tests",
+        "title": "Tests",
+        "planStep": null,
+        "kind": "category",
+        "src": "guide/tests.html"
+      },
+      {
+        "name": "choices",
+        "title": "Every choice the agent made",
+        "planStep": null,
+        "kind": "choices",
+        "src": "guide/choices.html"
+      }
+    ]
+  }
+}

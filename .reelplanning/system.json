@@ -1,0 +1,180 @@
+{
+  "name": "reelplanning",
+  "kind": "brownfield",
+  "components": [
+    {
+      "id": "skill",
+      "name": "The plan-to-video skill",
+      "role": "authoring",
+      "files": ["skills/plan-to-video/SKILL.md", "skills/plan-to-video/references/style-guide.md", "templates/details/", "scripts/detail.mjs", "scripts/fresh-eyes.mjs", "scripts/lib/fresh-eyes.mjs", "scripts/frame-lint.mjs"],
+      "stage": { "x": 1574, "y": 30, "w": 270, "h": 100 }
+    },
+    {
+      "id": "narrate",
+      "name": "narrate",
+      "role": "pipeline-step",
+      "files": ["scripts/narrate.mjs", "scripts/lib/narration.mjs", "scripts/build.mjs"],
+      "stage": { "x": 1574, "y": 405, "w": 270, "h": 110 }
+    },
+    {
+      "id": "finish",
+      "name": "finish-project",
+      "role": "pipeline-step",
+      "files": ["scripts/finish-project.sh", "scripts/plan-map.mjs", "scripts/check-details.mjs"],
+      "stage": { "x": 1574, "y": 625, "w": 270, "h": 110 }
+    },
+    {
+      "id": "diff",
+      "name": "plan-diff",
+      "role": "pipeline-step",
+      "files": ["scripts/plan-diff.mjs"],
+      "stage": { "x": 632, "y": 625, "w": 270, "h": 110 }
+    },
+    {
+      "id": "player",
+      "name": "The review player",
+      "role": "artifact",
+      "files": ["packages/player/reelplanning-player.js"],
+      "stage": { "x": 632, "y": 405, "w": 270, "h": 110 }
+    },
+    {
+      "id": "server",
+      "name": "The review server",
+      "role": "automation",
+      "files": ["scripts/review.mjs", "scripts/inbox.mjs", "scripts/lib/inbox.mjs", "scripts/notify.mjs", "scripts/lib/notify.mjs", "scripts/reel-intake.mjs"],
+      "stage": { "x": 632, "y": 175, "w": 270, "h": 110 }
+    },
+    {
+      "id": "headless",
+      "name": "The headless run",
+      "role": "automation",
+      "files": [".reelplanning/config.json", "templates/reelplanning/config.json", "scripts/lib/inbox.mjs", "scripts/lib/sandbox.mjs"],
+      "stage": { "x": 946, "y": 175, "w": 270, "h": 110 }
+    },
+    {
+      "id": "cli",
+      "name": "The reel CLI",
+      "role": "tooling",
+      "files": ["scripts/reel.mjs", "scripts/lib/reviews.mjs", "scripts/lib/review-scope.mjs", "scripts/lib/autonomy.mjs", "scripts/lib/memory.mjs"],
+      "stage": { "x": 1260, "y": 175, "w": 270, "h": 110 }
+    },
+    {
+      "id": "revise",
+      "name": "The revise step",
+      "role": "authoring",
+      "files": ["skills/plan-to-video/SKILL.md", "scripts/revise-scope.mjs"],
+      "stage": { "x": 1574, "y": 175, "w": 270, "h": 110 }
+    },
+    {
+      "id": "implement-step",
+      "name": "The implement step",
+      "role": "authoring",
+      "files": ["skills/plan-to-video/SKILL.md", "scripts/code-check.mjs"],
+      "stage": { "x": 946, "y": 405, "w": 270, "h": 110 }
+    },
+    {
+      "id": "fix-step",
+      "name": "The walkthrough fix step",
+      "role": "authoring",
+      "files": ["scripts/walkthrough-scope.mjs", "skills/plan-to-video/SKILL.md"],
+      "stage": { "x": 1260, "y": 405, "w": 270, "h": 110 }
+    },
+    {
+      "id": "system-video",
+      "name": "The system video",
+      "role": "artifact",
+      "files": [".reelplanning/system-video/", "scripts/spec-diff.mjs", "scripts/system-review.mjs"],
+      "stage": { "x": 1260, "y": 30, "w": 270, "h": 100 }
+    },
+    {
+      "id": "explainer",
+      "name": "The explainer",
+      "role": "authoring",
+      "files": ["scripts/explain.mjs", "scripts/check-sources.mjs", "scripts/lib/explainer.mjs"]
+    },
+    {
+      "id": "guide",
+      "name": "The guide",
+      "role": "artifact",
+      "files": ["scripts/guide.mjs", "scripts/lib/guide/", "templates/guide/", "packages/player/guide-review.js"]
+    }
+  ],
+  "retired": [
+    {
+      "id": "action",
+      "name": "The push-triggered workflow",
+      "files": [".github/workflows/reelplanning-revise.yml"],
+      "on": "2026-09-24",
+      "plan": "2026-09-22-m3-revise-loop",
+      "why": "revise-loop step 5: a review reaches a waiting session, or the review server starts the headless run",
+      "now": ["server", "headless"]
+    },
+    {
+      "id": "resolve",
+      "name": "resolve-plan",
+      "files": ["scripts/resolve-plan.mjs"],
+      "on": "2026-09-24",
+      "plan": "2026-09-22-m3-revise-loop",
+      "decision": "D-096",
+      "why": "revise-loop step 9: reel record files the review and writes what to act on; revise-scope keeps the sorting",
+      "now": ["cli", "revise"]
+    },
+    {
+      "id": "resolve-walk",
+      "name": "resolve-walkthrough",
+      "files": ["scripts/resolve-walkthrough.mjs"],
+      "on": "2026-09-24",
+      "plan": "2026-09-22-m3-revise-loop",
+      "decision": "D-096",
+      "why": "revise-loop step 9: reel record files the walkthrough review and writes what to act on; walkthrough-scope keeps the sorting",
+      "now": ["cli", "fix-step"]
+    }
+  ],
+  "edges": [
+    { "from": "finish", "to": "guide" },
+    { "from": "guide", "to": "player" },
+    { "from": "player", "to": "server" },
+    { "from": "server", "to": "headless" },
+    { "from": "headless", "to": "cli" },
+    { "from": "cli", "to": "revise" },
+    { "from": "revise", "to": "narrate" },
+    { "from": "narrate", "to": "finish" },
+    { "from": "finish", "to": "diff" },
+    { "from": "diff", "to": "player" },
+    { "from": "implement-step", "to": "player" },
+    { "from": "cli", "to": "fix-step" },
+    { "from": "fix-step", "to": "narrate" },
+    { "from": "cli", "to": "system-video" }
+  ],
+  "pipelines": [
+    {
+      "id": "review-loop",
+      "name": "The review loop",
+      "steps": [
+        "a reviewer marks, comments and decides in the player, then presses Finish: approve, or request changes",
+        "the review server keeps the review in the inbox and hands it to a waiting session, or starts the headless run",
+        "reel record adds the answers to the decision log and files the review, with what to act on",
+        "the revise step folds the comments into the plan, or rewrites only the steps they touched",
+        "narrate voices only the changed lines, finish-project reassembles the video, and plan-diff flags what changed",
+        "a notification says the video is ready, and the player plays just the changes"
+      ]
+    },
+    {
+      "id": "build-loop",
+      "name": "The build loop",
+      "steps": [
+        "the implement step builds from the approved plan and logs every call the plan did not cover, tagging the ones a reviewer might overturn",
+        "a second agent checks the diff against the plan and the ledger",
+        "the walkthrough video shows each change running and pauses at the calls reel stops names; the others are one list at the end",
+        "the reviewer accepts or requests changes, and the review reaches the agent as in the review loop",
+        "the walkthrough fix step changes what was flagged and, when changes were requested, rebuilds only those beats",
+        "spec.md is updated and the system video rebuilds only the frames it affects"
+      ]
+    }
+  ],
+  "stage": {
+    "kind": "dataflow",
+    "why": "reelplanning is two loops over the same parts, and only a graph with return edges can show a loop. The edges are real hand-offs, each carrying something to the next part (the review, the inbox row, reviews/<kind>-<time>.md, the script, the video). The review loop runs round the outside: along the top from the review server to the revise step, down the right to finish-project, back along the bottom to plan-diff and up to the review player. The build loop starts inside, at the implement step, and takes the same path, with the walkthrough fix step in place of the revise step. The headless run sits on the review's path because a review nobody is waiting for goes through it; a session that is waiting takes it instead. The system video hangs off the reel CLI above the top row, and the plan-to-video skill, which makes every video but hands no file along an edge, stands apart beside it.",
+    "rail": { "x": 80, "y": 150, "w": 500, "slotH": 90, "gap": 20, "slots": 6 }
+  }
+}

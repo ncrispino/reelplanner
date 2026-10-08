@@ -1,0 +1,258 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 700;
+      font-style: normal;
+      src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* full-bleed cream ground — a clip, never painted on #root */
+    .f01-hook-ground {
+      position: absolute;
+      inset: 0;
+      background: var(--rp-paper);
+    }
+
+    .f01-hook-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* kicker-spike: ✱ + JetBrains Mono uppercase, indexical */
+    .f01-hook-kicker {
+      position: absolute;
+      left: 80px;
+      top: 96px;   /* kicker line: top 96px in every frame that has one */
+      font: 700 28px/1 "JetBrains Mono";
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    /* spike drawn as inline SVG (no shipped font carries U+2731); ink — the ✱ is never coral */
+    .f01-hook-ast { display: block; width: 100%; height: 100%; }
+    .f01-hook-kicker .f01-hook-kspike {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      vertical-align: -2px;
+      margin-right: 14px;
+      color: var(--rp-ink);
+    }
+
+    /* progress bars — hairline tracks, ink fills, 1300px wide, centred */
+    .f01-hook-bar {
+      position: absolute;
+      left: 310px;
+      width: 1300px;
+      height: 28px;
+    }
+    .f01-hook-bar-1 { top: 426px; }   /* centre y ≈ 440 */
+    .f01-hook-bar-2 { top: 486px; }   /* centre y ≈ 500 */
+
+    .f01-hook-track {
+      position: absolute;
+      inset: 0;
+      background: var(--rp-tile);
+      border: 1px solid rgba(var(--rp-ink-rgb), 0.2);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .f01-hook-fill {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--rp-ink);
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    /* mono percentage label sitting off the bar's right end */
+    .f01-hook-pct {
+      position: absolute;
+      left: 1334px;
+      width: 120px;
+      top: 0;
+      height: 28px;
+      font: 400 28px/28px "JetBrains Mono";
+      letter-spacing: 0.02em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+
+    /* supporting tag off the retry bar's left end — 26 px mono, sentence case */
+    .f01-hook-tag {
+      position: absolute;
+      right: 1324px;
+      top: 1px;
+      font: 400 26px/26px "JetBrains Mono";
+      letter-spacing: 0.02em;
+      color: rgba(var(--rp-ink-rgb), 0.72);
+      white-space: nowrap;
+    }
+
+    /* number-lockup: EB Garamond figure + mono unit, centred under the bars */
+    .f01-hook-lockup {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 596px;   /* figure row ≈ 596–767, unit ends ≈ 835 — above the 860 line */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .f01-hook-figure-row {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .f01-hook-spike {
+      display: block;
+      width: 72px;
+      height: 72px;
+      color: var(--rp-ink);
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .f01-hook-figure {
+      font: 400 9.4cqw/0.95 "EB Garamond";
+      letter-spacing: -0.025em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    .f01-hook-unit {
+      margin-top: 26px;
+      font: 400 2.08cqw/1 "JetBrains Mono";
+      letter-spacing: 0.02em;
+      color: var(--rp-ink);
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-hook" data-width="1920" data-height="1080" data-duration="8.863">
+    <div class="clip f01-hook-ground" data-start="0" data-duration="8.863" data-track-index="0"></div>
+
+    <div class="clip f01-hook-layer" data-start="0" data-duration="8.863" data-track-index="1">
+      <div class="f01-hook-kicker" id="f01-hook-kicker"><span class="f01-hook-kspike" id="f01-hook-kspike"><svg class="f01-hook-ast" viewBox="0 0 100 100" aria-hidden="true"><g stroke="currentColor" stroke-width="15" stroke-linecap="round" fill="none"><line x1="50" y1="8" x2="50" y2="92"/><line x1="8" y1="50" x2="92" y2="50"/><line x1="20.3" y1="20.3" x2="79.7" y2="79.7"/><line x1="79.7" y1="20.3" x2="20.3" y2="79.7"/></g></svg></span>2 GB upload</div>
+
+      <div class="f01-hook-bar f01-hook-bar-1" id="f01-hook-bar-1">
+        <div class="f01-hook-track"><div class="f01-hook-fill" id="f01-hook-fill-1"></div></div>
+        <div class="f01-hook-pct" id="f01-hook-pct-1">0%</div>
+      </div>
+
+      <div class="f01-hook-bar f01-hook-bar-2" id="f01-hook-bar-2">
+        <div class="f01-hook-tag" id="f01-hook-tag-2">retry</div>
+        <div class="f01-hook-track"><div class="f01-hook-fill" id="f01-hook-fill-2"></div></div>
+        <div class="f01-hook-pct" id="f01-hook-pct-2">0%</div>
+      </div>
+
+      <div class="f01-hook-lockup" id="f01-hook-lockup">
+        <div class="f01-hook-figure-row" id="f01-hook-figure-row">
+          <span class="f01-hook-spike" id="f01-hook-spike"><svg class="f01-hook-ast" viewBox="0 0 100 100" aria-hidden="true"><g stroke="currentColor" stroke-width="15" stroke-linecap="round" fill="none"><line x1="50" y1="8" x2="50" y2="92"/><line x1="8" y1="50" x2="92" y2="50"/><line x1="20.3" y1="20.3" x2="79.7" y2="79.7"/><line x1="79.7" y1="20.3" x2="20.3" y2="79.7"/></g></svg></span>
+          <span class="f01-hook-figure" id="f01-hook-figure">×2</span>
+        </div>
+        <div class="f01-hook-unit" id="f01-hook-unit">billed</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["01-hook"] = tl;
+
+      var pct1 = document.getElementById("f01-hook-pct-1");
+      var pct2 = document.getElementById("f01-hook-pct-2");
+      var n1 = { v: 0 };
+      var n2 = { v: 0 };
+      var write1 = function () { pct1.textContent = Math.round(n1.v) + "%"; };
+      var write2 = function () { pct2.textContent = Math.round(n2.v) + "%"; };
+
+      /* Cue sheet (cues/01.md, voice 8.053s):
+         0.10 A / 2 · 0.40 GB · 0.58 upload · 1.30 fails · 1.86 90% · 2.96 Today · 3.84 starts
+         4.19 again · 4.78 zero · 5.76 retries · 6.08 twice · 6.66 bill · 7.01 customer · 7.44 twice */
+
+      /* ---------- Scene 1 (0.0–1.9s): kicker, then the one bar climbs to 90% over "2 GB upload fails at 90%" ---------- */
+      tl.fromTo("#f01-hook-kicker",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.021);
+
+      // hero visible by 0.5s — lands on "A 2" (0.10)
+      tl.fromTo("#f01-hook-bar-1",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.084);
+
+      // stat-bars-and-fills: scaleX from a left origin, never width; counter shares start + ease.
+      // Fill runs from "GB" (0.40) and peaks exactly as "90%" is spoken (1.86).
+      tl.fromTo("#f01-hook-fill-1",
+        { scaleX: 0 },
+        { scaleX: 0.9, duration: 1.46, ease: "power2.out" }, 0.36);
+      tl.fromTo(n1,
+        { v: 0 },
+        { v: 90, duration: 1.46, ease: "power2.out", onUpdate: write1 }, 0.36);
+
+      /* ---------- Scene 2 (3.84–5.76s): "starts again from zero" — hard snap to 0%, the dead attempt dims ---------- */
+      // hard state swap on "starts" (3.84) — zero-duration, seek-safe
+      tl.fromTo("#f01-hook-fill-1", { scaleX: 0.9 }, { scaleX: 0, duration: 0.01, ease: "none" }, 3.99);
+      tl.fromTo(n1, { v: 90 }, { v: 0, duration: 0.01, ease: "none", onUpdate: write1 }, 3.99);
+      // on "zero" (4.78) the emptied bar dims back — the wasted attempt
+      tl.fromTo("#f01-hook-bar-1",
+        { opacity: 1 },
+        { opacity: 0.72, duration: 0.4, ease: "power3.out" }, 5.006);
+
+      /* ---------- Scene 3 (5.76–6.66s): "retries" — the second bar arrives beneath and starts filling ---------- */
+      tl.fromTo("#f01-hook-bar-2",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.8);
+      // the racing retry keeps climbing to the last frame (8.053) — never finishes
+      tl.fromTo("#f01-hook-fill-2",
+        { scaleX: 0 },
+        { scaleX: 0.6, duration: 2.25, ease: "power1.out" }, 5.866);
+      tl.fromTo(n2,
+        { v: 0 },
+        { v: 60, duration: 2.25, ease: "power1.out", onUpdate: write2 }, 5.866);
+
+      /* ---------- Scene 4 (6.66–end): "bill the customer twice" — ×2 / billed settle in; both ✱ are ink, no coral in this frame ---------- */
+      // power3 settle from 0.92, no scale pop, no overshoot
+      tl.fromTo("#f01-hook-figure-row",
+        { scale: 0.92, opacity: 0, y: 24 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 6.935);
+      tl.fromTo("#f01-hook-unit",
+        { scale: 0.92, opacity: 0, y: 16 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 7.065);
+      // spike-mark: fades + scales 0.92→1 on the emphasis beat — the closing "twice" (7.44)
+      tl.fromTo("#f01-hook-spike",
+        { scale: 0.92, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 8.25);
+
+      // held read from ~7.9s to the end of the frame (8.053s); no exit
+    })();
+  </script>
+</template>

@@ -1,0 +1,105 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .k14-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .k14-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .k14-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .k14-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .k14-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .k14-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .k14-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k14-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .k14-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .k14-ul.ink { background:var(--rp-ink); height:3px; }
+  .k14-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .k14-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .k14-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .k14-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .k14-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .k14-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .k14-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .k14-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k14-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .k14-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .k14-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k14-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .k14-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .k14-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .k14-box { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .k14-name { position:absolute; font:400 48px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .k14-small { position:absolute; font:400 30px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .k14-chip { position:absolute; height:48px; padding:0 20px; box-sizing:border-box; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:24px; white-space:nowrap; }
+  .k14-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .k14-chip code, .k14-name code, .k14-small code, .k14-lab code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .k14-line { position:absolute; height:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k14-line.hot { background:var(--rp-coral); }
+  .k14-vl { position:absolute; width:4px; background:rgba(var(--rp-ink-rgb),0.55); border-radius:2px; }
+  .k14-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .k14-kick { position:absolute; left:120px; top:60px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .k14-kick b { color:var(--rp-coral-deep); font-weight:500; }
+  .k14-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; overflow:hidden; }
+  .k14-shot img { display:block; width:100%; height:auto; }
+  .k14-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:10px; }
+  .k14-rg.hot { border-color:var(--rp-coral); }
+  .k14-rg.dash { border-style:dashed; border-color:rgba(var(--rp-ink-rgb),0.6); border-width:3px; }
+  .k14-tab { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 24px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .k14-tab b { font-weight:700; }
+  .k14-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .k14-kbd { position:absolute; height:56px; min-width:56px; padding:0 16px; box-sizing:border-box; font:500 28px/52px "JetBrains Mono"; color:var(--rp-ink); text-align:center; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-bottom-width:5px; border-radius:8px; }
+  .k14-slab2 { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .k14-code { position:absolute; font:400 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .k14-fr { position:absolute; box-sizing:border-box; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:6px; background:var(--rp-paper); }
+  .k14-band { position:absolute; box-sizing:border-box; background:rgba(var(--rp-ink-rgb),0.1); border-top:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .k14-bl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
+  .k14-blk { position:absolute; box-sizing:border-box; border-radius:8px; background:var(--rp-tile); border:2px solid rgba(var(--rp-ink-rgb),0.4); }
+  .k14-blk i { position:absolute; left:18px; height:10px; border-radius:5px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .k14-mk { position:absolute; font:700 40px/1 "Inter"; }
+  .k14-mk.no { color:var(--rp-coral-deep); } .k14-mk.ok { color:var(--rp-ink); }
+
+</style>
+
+<div id="root" data-composition-id="14-branch-q1-a" data-band="bottom" data-duration="6.5" data-width="1920" data-height="1080">
+
+  <div class="clip k14-bg" id="k14-bg" data-start="0" data-duration="6.5" data-track-index="0"></div>
+
+  <div class="clip k14-scene" id="k14-scene" data-start="0" data-duration="6.5" data-track-index="1">
+    <div class="k14-kick" id="k14-k">Question 1 · <b>If A · a tab, the whole time</b></div>
+    <div class="k14-view" id="k14-view">
+    <div class="k14-blk" id="k14-b" style="left:560px; top:250px; width:700px; height:240px"><i style="top:20px; width:465px"></i><i style="top:46px; width:299px"></i><i style="top:72px; width:365px"></i><i style="top:98px; width:232px"></i><i style="top:124px; width:332px"></i></div>
+    <div class="k14-rg" id="k14-r" style="left:552px; top:242px; width:716px; height:256px; border-width:2px; border-color:rgba(var(--rp-ink-rgb),0.35)"></div>
+    <div class="k14-tab" id="k14-t" style="left:580px; top:222px"><b>Open</b> · The data block and the slots</div>
+    <div class="k14-small" id="k14-s" style="left:560px; top:560px; color:rgba(var(--rp-ink-rgb),0.75)">shown from the moment it lands</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "14-branch-q1-a";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#k14-b", { opacity: 0, y: 12 });
+  tl.to("#k14-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.4);
+  gsap.set("#k14-t", { opacity: 0, y: 12 });
+  tl.to("#k14-t", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.6);
+  gsap.set("#k14-r", { opacity: 0 });
+  tl.to("#k14-r", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.6);
+  gsap.set("#k14-s", { opacity: 0 });
+  tl.to("#k14-s", { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.2);
+  gsap.set("#k14-k", { opacity: 0, y: 12 });
+  tl.to("#k14-k", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.1);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

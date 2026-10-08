@@ -1,0 +1,74 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v09-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v09-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v09-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v09-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v09-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v09-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v09-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v09-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v09-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v09-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v09-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v09-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v09-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v09-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v09-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v09-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v09-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v09-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v09-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v09-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v09-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-txt code, .v09-mrow code, .v09-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="09-step-2-reel-check" data-band="bottom" data-duration="12.565" data-width="1920" data-height="1080">
+  <div class="clip v09-bg" id="v09-bg" data-start="0" data-duration="12.565" data-track-index="0"></div>
+  <div class="clip v09-scene" id="v09-scene" data-start="0" data-duration="12.565" data-track-index="1">
+    <div class="v09-slab" id="v09-slab" data-artifact="reel check on a new plan with no blocks in its second step: its real output (runs/reel-check-new-plan.txt)" style="left:120px; top:70px; width:1680px; height:490px"><div class="v09-sbar"></div><div class="v09-sbt">$ reel check .reelplanning/plans/2026-10-01-quiet-output   (a new plan, in a scratch repo)</div><div class="v09-row hot" style="top:72px">✗ step 2 has no Cases table (a table under &quot;#### Cases&quot;, one row a case)</div><div class="v09-row hot" style="top:116px">✗ step 2 has no Interface block (a fenced block under &quot;#### Interface&quot;,</div><div class="v09-row hot" style="top:160px">  or the line &quot;No interface: …&quot;)</div><div class="v09-row hot" style="top:204px">✗ question 1's option B has no example (a value, a quote, a command or</div><div class="v09-row hot" style="top:248px">  a number: what happens in the question's example)</div><div class="v09-row" style="top:292px">△ step 1 · interface part `--quiet`: no meaning · step 2: no Example · …</div><div class="v09-row" style="top:336px">✗ 2026-10-01-quiet-output: 2 steps, touches [cli], 1 in force,</div><div class="v09-row" style="top:380px">  0 superseded, 3 failure(s), 1 warning(s)</div><div class="v09-row dim" style="top:424px">exit 1</div></div>
+    <div class="v09-ring" id="v09-r1" style="left:124px; top:136px; width:1260px; height:48px"></div>
+    <div class="v09-ring" id="v09-r1b" style="left:124px; top:184px; width:1260px; height:88px"></div>
+    <div class="v09-ring" id="v09-r2" style="left:124px; top:276px; width:1260px; height:90px"></div>
+    <div class="v09-txt" id="v09-old" style="left:120px; top:640px">An older plan, written before 30 September 2026, passes as it did.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-step-2-reel-check";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v09-slab", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v09-r1", { opacity: 0, y: 12 });
+  gsap.set("#v09-r1b", { opacity: 0, y: 12 });
+  gsap.set("#v09-r2", { opacity: 0, y: 12 });
+  gsap.set("#v09-old", { opacity: 0, y: 12 });
+  tl.to("#v09-slab", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 0.12);
+  tl.to("#v09-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.75);
+  tl.to("#v09-r1b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.75);
+  tl.to("#v09-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.74);
+  tl.to("#v09-old", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.36);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

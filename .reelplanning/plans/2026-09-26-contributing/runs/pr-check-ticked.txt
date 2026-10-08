@@ -1,0 +1,8 @@
+$ reel pr-check . --base origin/main --body-file ../pr-ticked.md --labels ""   (the same pull request, its box ticked: a choice you'd notice)
+· over the line (ticked: a choice (the port by default, 8790))
+· size: 25 changed line(s) in 1 file(s)
+· seen in the diff, not a reason by itself: a new flag: `--quiet`
+· ids: none new; none names another entry
+△ needs a video (ticked: a choice (the port by default, 8790)): the contributor brings one, or a maintainer's agent makes a walkthrough from the diff (the skill's "Several people"), or a maintainer adds `no-video`
+△ repo against origin/main: 0 problem(s), 1 waiting
+exit 0

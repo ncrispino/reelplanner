@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "2cc6750804ea0a2fc2f6",
+      "text": "Choice A6 stops. This repo's plan folders up to September the twenty-seventh keep their voice files and pictures in git; later plans follow the rule. So a rebuild of an older video never leaves out voice files its page names.",
+      "sha256": "068cd48f4db9aa9fd56a9a69c2ef85969772ee52feb5ec5bd9a5511a5d7ae0f0",
+      "duration_s": 13.419
+    },
+    "11": {
+      "key": "018e1b10b3b66332f7d8",
+      "text": "Quick check. Sam is not a maintainer. In his own walkthrough review, he accepts all four choices his agent made. How many join the decision log?",
+      "sha256": "94e8163bd1f47ea2991d6a3d4d760e1a6e240bbba3d7a6307470075c61f04389",
+      "duration_s": 8.469
+    },
+    "12": {
+      "key": "9ab20c1ca49ba2c6d4be",
+      "text": "Two choices in step three don't stop. Each video is also checked against the text it was built from. Choice A4: only until it is approved. Choice A5: by what its plan map already carries.",
+      "sha256": "ccb5edbebdb66cb0c5f406bad9fc80e0c5309f8c4c919fad1869de4932121026",
+      "duration_s": 11.733
+    },
+    "13": {
+      "key": "a6ae3bc05b3369e0e271",
+      "text": "Step four. Main's cache plan and Ana's port plan both made decision D-001. Ana's branch, merged second, rebases, stops at the conflict in decisions.json, and runs reel renumber: main's log stays as it is, and Ana's decision becomes decision D-002, after main's last. Its mentions are rewritten, and the video lines to rebuild are listed.",
+      "said": "Step four. Main's cache plan and Ana's port plan both made decision D-001. Ana's branch, merged second, rebases, stops at the conflict in decisions dot json, and runs reel renumber: main's log stays as it is, and Ana's decision becomes decision D-002, after main's last. Its mentions are rewritten, and the video lines to rebuild are listed.",
+      "sha256": "fa9e2274e5172a6601c7c0710704ea5d93c457a571d84215a059852f54fb82cb",
+      "duration_s": 22.763
+    },
+    "14": {
+      "key": "fdf7f22429d9fa3ae892",
+      "text": "Quick check. Pull request fifty-seven changed its plan.md after its video was packed. You run reelplanning review on that video in its checkout. What does it say?",
+      "said": "Quick check. Pull request fifty-seven changed its plan dot md after its video was packed. You run reelplanning review on that video in its checkout. What does it say?",
+      "sha256": "0ac412dc751d1dc57c2e90c1953c7530b556da31c0a6837cc610686236026324",
+      "duration_s": 9.365
+    },
+    "15": {
+      "key": "c6f5decd4f9e9cc2a419",
+      "text": "Two choices in step four don't stop. Choice A7: reel renumber takes an entry as the branch's own when main holds none deciding the same thing. Choice A8: a waiting memory line moves only to the reviewer it names.",
+      "sha256": "efc9acf0df3ae7daf322f6843610af2c207b62f1127b53086b1ee7dbfc6aecda",
+      "duration_s": 13.355
+    },
+    "16": {
+      "key": "c2c6d38c72ad9fabb2b7",
+      "text": "Step five. CI runs the checks on GitHub by itself: the fast suite on every push; reel pr-check and reel audit on every pull request; the full suite once a maintainer adds ready-to-merge; and a closed pull request's video branch is deleted. Click the file to read it whole.",
+      "sha256": "f61a48582ab0ae794cc2f5934b3afaac06b6cfbdc1994f08fd7f29fcb5fad6cf",
+      "duration_s": 16.64
+    },
+    "17": {
+      "key": "645b72b9c3afab35ca9c",
+      "text": "Choice A9 stops. Without ready-to-merge, the full suite fails at once instead of being skipped. GitHub counts a skipped required check as passed, so a skipped suite would let a pull request merge untested.",
+      "sha256": "706551346d43d024ef7d62f5dbd46b93d810b830e9ab9a7ea01b85d913da09e0",
+      "duration_s": 11.392
+    },
+    "18": {
+      "key": "63d58559ca23977472f8",
+      "text": "And one off-plan change, where the build did other than the plan: the file is ci.yml, not test.yml as the plan named it, since it runs more than the tests.",
+      "said": "And one off-plan change, where the build did other than the plan: the file is ci dot yaml, not test dot yaml as the plan named it, since it runs more than the tests.",
+      "sha256": "63817cb8f86d623703dfc984e6a02cb7e46ff0d49f0b30f3ed7e57e440984fc5",
+      "duration_s": 9.621
+    },
+    "19": {
+      "key": "a632b8424c86f7253077",
+      "text": "Quick check. Main's log ends at decision D-231. Your branch also recorded decisions D-230 and D-231. After reel renumber, what are yours?",
+      "sha256": "d89b4b05f64adf8683e96271d63a0ea3e1ce347de81b32ad5f0d5493a292c25b",
+      "duration_s": 11.349
+    },
+    "20": {
+      "key": "ec2212ab052266365475",
+      "text": "A second agent checked the code against the plan: all five steps and thirty-three decisions hold, and it found nothing unexplained. The walkthrough check passes.",
+      "sha256": "8f305d3711f016e2540db574396295b11ad2d2b1017705ee1317e928a60856d7",
+      "duration_s": 8.789
+    },
+    "21": {
+      "key": "9027f972a17b8ac29b10",
+      "text": "Quick check. The full suite is marked required. A pull request passed its fast suite and reel pr-check, but nobody added ready-to-merge. Can it merge?",
+      "sha256": "d83212a5d953e1c2d847b5c2c30fea40180ef837378de069d929de9653a8d1e8",
+      "duration_s": 8.448
+    },
+    "22": {
+      "key": "7fc51d906159028e5634",
+      "text": "Every test passed, thirty-nine new checks among them. Not done: CI has never run on GitHub, and the three labels and the required full suite are yours to set. One open point: the hosted page calls whoever publishes it owner, so a second reviewer there can't be told apart from you. Flag a choice, or accept the build.",
+      "sha256": "9152451611d65dbf392f7c230d4846a5cff8a8b4b3924501ee86ba486f8d45b5",
+      "duration_s": 18.432
+    },
+    "01": {
+      "key": "da69bb190ebb0a225dd5",
+      "text": "The contributing plan is built, all five steps, so a repo can take pull requests from other people. A contributor sends one; a maintainer, listed in the repo's settings, can merge it. Twenty-six files changed: the new check, the numbering command, who counts, the rules, the checks GitHub runs, and thirty-nine tests.",
+      "sha256": "30de7485ff2dcbdb0f54d2016507a6a1f1f8584f706f3229836ca1fb1507740f",
+      "duration_s": 16.875
+    },
+    "02": {
+      "key": "33f3651dc3cd37e5900e",
+      "text": "Step one. A pull request gets a video only when the contributor ticks this box, naming a choice a reviewer could make the other way, or it changes over three hundred lines of code: tests, docs, videos and generated files don't count. A maintainer can also add needs-video, or no-video to waive it. Everything else merges on a normal code review.",
+      "sha256": "481fe94719c3000690fbbf51160a52c468ddc1ebb91e51141f60d2b3a21c4687",
+      "duration_s": 20.331
+    },
+    "03": {
+      "key": "5e7e08ce58978f45b77a",
+      "text": "The new check, reel pr-check, reads the line. Omar's twenty-five lines add a --quiet flag, box unticked: under the line. Ana ticks the box for a default port: over the line, so it needs a video, from her or from a maintainer's agent. Click the run to see everything the check counts.",
+      "said": "The new check, reel pr-check, reads the line. Omar's twenty-five lines add a dash dash quiet flag, box unticked: under the line. Ana ticks the box for a default port: over the line, so it needs a video, from her or from a maintainer's agent. Click the run to see everything the check counts.",
+      "sha256": "803c13e5d4923c19d5b955dd98344ff56b2142770833b4747f533adc41187de5",
+      "duration_s": 17.088
+    },
+    "04": {
+      "key": "39747dc9297312b015a8",
+      "text": "Choice A2 stops. Over the line with no video yet, the check waits and passes, rather than failing every push; reel pr-check --merge, before a merge, fails it.",
+      "said": "Choice A2 stops. Over the line with no video yet, the check waits and passes, rather than failing every push; reel pr-check dash dash merge, before a merge, fails it.",
+      "sha256": "a40ff77ef0c89e38d60d4913cc0faf9a833c690c2c5d5314f7945f7175e5ade0",
+      "duration_s": 9.963
+    },
+    "05": {
+      "key": "1da1977df5362f6983d0",
+      "text": "One doesn't stop. Choice A1: the three hundred lines leave out tests, docs, the project record, videos and generated files.",
+      "sha256": "d37fe083f31156db9a497f2fd19876342907c8fd9c4357e194feee97aa11e917",
+      "duration_s": 7.595
+    },
+    "06": {
+      "key": "b9dfc9ba9bceb946406c",
+      "text": "Step two: who decides. A contributor's plan review answers their plan's questions. Their walkthrough review is their own check: reel record adds nothing to the decision log; only a maintainer's review counts. The check lists what lands on main, and --tidy removes the contributor's reviews in one commit.",
+      "said": "Step two: who decides. A contributor's plan review answers their plan's questions. Their walkthrough review is their own check: reel record adds nothing to the decision log; only a maintainer's review counts. The check lists what lands on main, and dash dash tidy removes the contributor's reviews in one commit.",
+      "sha256": "fb17a136b8bfcb11581f480e399c7aed68e942702fbc30f8bd4d3cde64fa7434",
+      "duration_s": 17.685
+    },
+    "07": {
+      "key": "80a496d3a1aad3e85340",
+      "text": "Choice A3 stops. The maintainers list says owner, with no email, so a review sent from the local page, under your git email, counts as a contributor's until that email is added. The other way was your email in a public file.",
+      "sha256": "7013d611731286b22a24099528de9993b928e4aa0db233d069a80b3d14d0c3ef",
+      "duration_s": 13.504
+    },
+    "08": {
+      "key": "8c8d0875ab3a7bd1b1d4",
+      "text": "Quick check, a question that asks you to predict. A pull request edits two hundred and eighty lines of code and adds four hundred lines of tests, box unticked. Does it need a video?",
+      "sha256": "883e4069586cb45b50efbe85384e8217b3ae71f198558afaabd1d801130caa02",
+      "duration_s": 10.197
+    },
+    "09": {
+      "key": "1cf63f1c9ba18b652bd7",
+      "text": "Step three. The built video never goes into git. The contributor packs it onto a branch of its own, video/pr-42. The maintainer runs gh pr checkout 42, clones that branch beside it, and runs reelplanning review on it. It serves the folder as it is, and says whether its plan map matches the checkout's, or was built from another version of the plan and needs a rebuild.",
+      "sha256": "1a64d34c7b337f60676affcf0cdaa3c344c6603b6a3121ecf5d6eb91b0c2d161",
+      "duration_s": 21.632
+    }
+  }
+}

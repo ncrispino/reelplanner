@@ -1,0 +1,113 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "36-resolved-r2",
+        "index": 32,
+        "title": "Round 2, resolved"
+      },
+      "id": "amuf0olr6gzns",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "step": null
+      },
+      "t": 428.43
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-24T04:11:11.353Z",
+      "id": "q2",
+      "label": "Auto mode, inside the sandbox",
+      "option": "b",
+      "planStep": 6,
+      "question": "What may a run nobody is watching do?",
+      "recommended": true,
+      "t": 260.835
+    },
+    {
+      "decidedAt": "2026-09-24T04:11:37.219Z",
+      "id": "q3",
+      "label": "One per step, plus wherever there is something to predict",
+      "option": "c",
+      "planStep": 7,
+      "question": "How many quick checks does a video ask?",
+      "recommended": true,
+      "t": 301.832
+    },
+    {
+      "decidedAt": "2026-09-24T04:12:55.303Z",
+      "id": "q4",
+      "label": "The tags, and your record",
+      "option": "b",
+      "planStep": 8,
+      "question": "Does your own record also decide what stops?",
+      "recommended": true,
+      "t": 360.708
+    },
+    {
+      "decidedAt": "2026-09-24T04:13:20.021Z",
+      "id": "q5",
+      "label": "B, and the files",
+      "option": "c",
+      "planStep": 9,
+      "question": "How much scaffolding comes out?",
+      "recommended": true,
+      "t": 402.095
+    }
+  ],
+  "exportedAt": "2026-09-24T04:13:42.050Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-24T04:12:06.920Z",
+      "correct": true,
+      "id": "k1",
+      "t": 339.332
+    }
+  ],
+  "src": "2026-09-22-m3-revise-loop/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 428.44,
+    "firstPlayAt": "2026-09-24T04:10:05.762Z",
+    "maxTimeReached": 428.43,
+    "moments": []
+  }
+}

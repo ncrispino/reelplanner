@@ -1,0 +1,7 @@
+$ grep -n -A4 '^- Real things:' .reelplanning/plans/2026-09-27-walkthroughs-that-help/walkthrough-video/BRIEF.md   (this repo: the brief names the real thing each change scene shows)
+35:- Real things: scene 1 (the change's map, `git diff --numstat`), 4 (`reel stops` on this plan), 5 (the list in the
+36-  review player), 6 (Finish with the open question), 7 (`reel pr-check` on a scratch pull request, waiting, then
+37-  ticked), 8 (the page's header before and after, the switch), 9 (the list of videos before and after), 12 (the
+38-  saved review file before and after, and `reel memory after-build`), 13 (the test run and the code check's counts);
+39-  every change scene is a real thing, the rules scenes (2, 10) explain in words
+exit 0

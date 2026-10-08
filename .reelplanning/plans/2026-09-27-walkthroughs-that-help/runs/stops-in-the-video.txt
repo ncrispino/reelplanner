@@ -1,0 +1,11 @@
+$ grep -o 'A[0-9]* *step [0-9] *\(listed\|pauses\)[^<]*' .reelplanning/plans/2026-09-27-walkthroughs-that-help/walkthrough-video/compositions/frames/04-step-2-reel-stops.html   (the same command's output as scene 4 of the walkthrough video shows it, run when the video was built)
+A1   step 1          listed  no label: on the list at the end
+A2   step 2          listed  close: on the list at the end  [close]
+A3   step 2          pauses  you&#x27;d notice it: its scene shows it running  [visible]
+A4   step 2          listed  close: on the list at the end  [close]
+A5   step 3          pauses  you&#x27;d notice it: its scene shows it running  [visible, close]
+A6   step 4          pauses  you&#x27;d notice it: its scene shows it running  [visible, close]
+A7   step 5          listed  close: on the list at the end  [close]
+A8   step 5          pauses  you&#x27;d notice it: its scene shows it running  [visible, close]
+A10  step 6          listed  no label: on the list at the end
+exit 0

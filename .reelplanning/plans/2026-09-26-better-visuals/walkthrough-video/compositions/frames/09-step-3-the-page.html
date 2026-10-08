@@ -1,0 +1,119 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w09-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w09-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w09-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w09-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w09-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w09-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w09-ul.ink { background:var(--rp-ink); height:3px; }
+  .w09-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w09-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w09-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w09-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w09-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w09-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w09-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w09-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w09-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w09-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w09-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w09-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w09-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w09-win { position:absolute; overflow:hidden; border-radius:6px; }
+  .w09-win img { display:block; position:absolute; }
+  .w09-edge { position:absolute; box-sizing:border-box; border:1px solid rgba(var(--rp-ink-rgb),0.24); border-radius:6px; }
+  .w09-box { position:absolute; box-sizing:border-box; border:3px solid var(--rp-ink); border-radius:6px; }
+  .w09-tag { position:absolute; right:80px; top:8px; padding:0 16px; font:400 28px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="09-step-3-the-page" data-band="bottom" data-duration="16.768" data-width="1920" data-height="1080">
+
+  <div class="clip w09-bg" id="w09-bg" data-start="0" data-duration="16.768" data-track-index="0"></div>
+
+  <div class="clip w09-scene" id="w09-scene" data-start="0" data-duration="16.768" data-track-index="1">
+    <div class="w09-tag" id="w09-tag">decision D-167 · today's look</div>
+    <div class="w09-view" id="w09-view"><div class="w09-cam" id="w09-cam">
+    <div class="w09-lab" id="w09-l0" style="left:140px; top:58px">before</div>
+    <div class="w09-win" id="w09-w0" style="left:140px; top:100px; width:792.36px; height:783.84px" data-artifact="the review page, before step 3"><img id="w09-i0" src="assets/shots/page-before-terms.jpg" alt="" style="left:-1252.44px; top:-68.16px; width:2044.8px; height:1278px"></div>
+    <div class="w09-edge" style="left:140px; top:100px; width:792.36px; height:783.84px"></div>
+    <div class="w09-lab" id="w09-l1" style="left:988.36px; top:58px">after</div>
+    <div class="w09-win" id="w09-w1" style="left:988.36px; top:100px; width:792.36px; height:783.84px" data-artifact="the review page, after step 3"><img id="w09-i1" src="assets/shots/page-after-terms.jpg" alt="" style="left:-1252.44px; top:-68.16px; width:2044.8px; height:1278px"></div>
+    <div class="w09-edge" style="left:988.36px; top:100px; width:792.36px; height:783.84px"></div>
+    <div class="w09-box" id="w09-b0" style="left:1013.92px; top:179.52px; width:227.2px; height:39.76px"></div>
+    <div class="w09-pin" id="w09-p0" style="left:1188.36px; top:52px">fonts: shipped</div>
+    <div class="w09-box" id="w09-b1" style="left:1013.92px; top:227.8px; width:729.88px; height:107.92px"></div>
+    <div class="w09-pin" id="w09-p1" style="left:1448.36px; top:52px">3 solid inks</div>
+    <div class="w09-lab" id="w09-m0" style="left:2070px; top:156px">before</div>
+    <div class="w09-win" style="left:2070px; top:200px; width:749px; height:476px" data-artifact="the review page, before step 3"><img src="assets/shots/page-before-check-answered.jpg" alt="" style="left:-1078px; top:-301px; width:2016px; height:1260px"></div>
+    <div class="w09-edge" style="left:2070px; top:200px; width:749px; height:476px"></div>
+    <div class="w09-lab" id="w09-m1" style="left:2879px; top:156px">after</div>
+    <div class="w09-win" style="left:2879px; top:200px; width:749px; height:476px" data-artifact="the review page, after step 3"><img src="assets/shots/page-after-check-answered.jpg" alt="" style="left:-1078px; top:-301px; width:2016px; height:1260px"></div>
+    <div class="w09-edge" style="left:2879px; top:200px; width:749px; height:476px"></div>
+    <div class="w09-ul" id="w09-cu" style="left:3240.2px; top:661.4px; width:142.8px"></div>
+    <div class="w09-pin hot" id="w09-cp" style="left:3180.2px; top:679.4px">yours, waiting</div>
+    <div class="w09-box" id="w09-tb" style="left:2898.6px; top:492.6px; width:672px; height:98px"></div>
+    <div class="w09-pin" id="w09-tp" style="left:3068px; top:488.4px">the answer · ink, a tick</div>
+    <div class="w09-box" id="w09-db" style="left:2887.4px; top:204.2px; width:688.8px; height:134.4px"></div>
+    <div class="w09-pin" id="w09-dp" style="left:3117.4px; top:152.2px">your pick · a cross, dashed</div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-step-3-the-page";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w09-cam", { x: 0, y: 0, scale: 1 });
+  gsap.set("#w09-w1", { x: -792.36 });
+  gsap.set("#w09-i1", { x: 792.36 });
+  gsap.set("#w09-l1", { opacity: 0 });
+  gsap.set("#w09-tag", { opacity: 0, y: 8 });
+  gsap.set("#w09-b0", { opacity: 0, scale: 1.04 });
+  gsap.set("#w09-p0", { opacity: 0, y: 6 });
+  gsap.set("#w09-b1", { opacity: 0, scale: 1.04 });
+  gsap.set("#w09-p1", { opacity: 0, y: 6 });
+  gsap.set("#w09-cu", { scaleX: 0 });
+  gsap.set("#w09-cp", { opacity: 0 });
+  gsap.set("#w09-tb", { opacity: 0 });
+  gsap.set("#w09-tp", { opacity: 0 });
+  gsap.set("#w09-db", { opacity: 0 });
+  gsap.set("#w09-dp", { opacity: 0 });
+  tl.to("#w09-w1", { x: 0, duration: 0.9, ease: "power1.inOut" }, 1.95);
+  tl.to("#w09-i1", { x: 0, duration: 0.9, ease: "power1.inOut" }, 1.95);
+  tl.to("#w09-l1", { opacity: 1, duration: 0.3, ease: "none" }, 2.35);
+  tl.to("#w09-tag", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.75);
+  tl.to("#w09-p0", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4.02);
+  tl.to("#w09-b0", { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 4.12);
+  tl.to("#w09-b0", { opacity: 0.35, duration: 0.3, ease: "none" }, 6.36);
+  tl.to("#w09-p1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 6.36);
+  tl.to("#w09-b1", { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 6.46);
+  tl.to("#w09-cam", { x: -1920, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 8.22);
+  tl.to("#w09-cu", { scaleX: 1, duration: 0.45, ease: "power2.out" }, 10.63);
+  tl.to("#w09-cp", { opacity: 1, duration: 0.35, ease: "power3.out" }, 10.73);
+  tl.to("#w09-tb", { opacity: 1, duration: 0.3, ease: "power2.out" }, 13.37);
+  tl.to("#w09-tp", { opacity: 1, duration: 0.3, ease: "power2.out" }, 13.57);
+  tl.to("#w09-db", { opacity: 1, duration: 0.3, ease: "power2.out" }, 15.09);
+  tl.to("#w09-dp", { opacity: 1, duration: 0.3, ease: "power2.out" }, 15.29);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,10 @@
+$ reelplanning fresh-eyes .reelplanning/system-video --prompt newcomer
+You are a newcomer looking at a short narrated video before anyone reviews it. You did not
+make it, and you have no access to the conversation of the agent that did. Everything you get is in one file:
+
+  .reelplanning/system-video/fresh-eyes/newcomer-brief.md
+
+Read it in full and look at every picture it names, in order. Do not open any other file in the repository:
+a viewer has only what the brief gives, and that is the point. Write your findings to .reelplanning/system-video/fresh-eyes/newcomer.md, in exactly
+the shape the brief gives, then reply with how many findings you wrote and the path.
+exit 0

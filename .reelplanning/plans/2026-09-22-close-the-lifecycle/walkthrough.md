@@ -1,0 +1,143 @@
+# Walkthrough: Close the lifecycle
+
+**Status:** implemented on branch `claude/clever-knuth-b5gtcf` · **Plan:** `plan.md` · **Started from:** `effb07d` (the revised plan's video; its approval was in conversation) · **Decisions taken:** D-001 = a second agent checks the code · D-002 = fix and rebuild a flagged call · D-003 = the system video updates after every accepted walkthrough, cheaply
+
+Built over two sessions. The first built the deterministic pieces (`reel audit`, `walkthrough-scope`,
+`spec-diff`, the staleness line in `reel status`); this one built the second agent's code check, the
+fix step, and the system video. Its first real use was the richer-review plan, which went through
+every step: implemented, checked, walked through, reviewed, and one call fixed.
+
+## What was done, per step
+
+### Step 1 — Build the system video ✅
+
+The skill's "System video (v8)" section says how to build it (`--system`): into
+`.reelplanning/system-video/`, one part per pipeline in `system.json`, frames tagged with
+`spec_section` and `components`. This repo's first one is built: 35 frames, 5 parts, 5 min 52 s, a
+quick check per part, only the cast frame at full density. Linked from `README.md`.
+
+### Step 2 — Implement to the plan, and log calls as they are made ✅
+
+The skill's build section (`skills/plan-to-video/SKILL.md`, "Implement, check, walk through, fix")
+now says what counts as a call, one row per choice, and that more than about a dozen rows means the
+plan left too much open. Run for real on richer review: 15 calls logged while two agents built it.
+
+### Step 3 — Check the diff against the plan before the walkthrough ✅
+
+`scripts/code-check.mjs` writes the checker's brief (the approved plan, the decisions that apply,
+the autonomy log, the diff) and the prompt for a fresh agent (D-001). The checker writes
+`code-check/findings.md`; `reel audit` (`scripts/reel.mjs`) fails until every ✗ is answered in the
+walkthrough's "## Code check" section. First run: on richer review, by an agent that never saw how it
+was built.
+
+### Step 4 — Walk through the real implementation ✅
+
+Richer review's walkthrough video was built from real code: 38 frames, 15 calls to accept or flag.
+Reviewed 2026-09-23: 15 accepted, one changed in the reviewer's words.
+
+### Step 5 — Act on the walkthrough review ✅
+
+`scripts/walkthrough-scope.mjs` sorts the verdicts; an answer in the reviewer's own words is now a fix
+carrying those words (it was read as an accept). The skill's fix step (D-002) rewrites the code,
+updates the call's row in place and rebuilds only its beat; a flag that would overturn a decision
+becomes a new plan. First run: richer review's A10 (Escape keeps a mark's words; a × discards them).
+
+### Step 6 — Keep the system video current ✅
+
+After richer review's walkthrough was accepted, `spec.md`, `system.json` and `glossary.md` were
+updated for what landed (D-003). `scripts/spec-diff.mjs` names the frames a change affects;
+`reel status` says when the video is behind. Narration for changed lines only is still the M3 plan's.
+
+## Choices the plan did not specify (autonomy)
+
+| id | Step | Chose | Instead of | Why | Check |
+|---|---|---|---|---|---|
+| A1 | 3 | the checker's whole world is one file, `code-check/brief.md` (**changed after review:** the brief is short and points at the plan and the diff; the checker reads them itself, and its freshness comes from being a new subagent) | letting the checker explore the repo and history freely | a fresh context is only fresh if what goes into it is fixed; one file also makes the check repeatable | `scripts/code-check.mjs` |
+| A2 | 3 | the brief includes the implementer's autonomy log, but nothing else from the implementer | giving the checker nothing from the implementer | question 3 ("anything the log does not explain?") needs the log; the reasons in the implementer's conversation stay out | `scripts/code-check.mjs` |
+| A3 | 3 | a diff over 400k characters is cut, with the command to read the rest (**changed after review:** no diff is pasted in unless `--inline-diff` is given; the checker runs the diff command itself) | always the full diff | a whole-repo diff can be megabytes; the checker can read any file with git | `scripts/code-check.mjs` `LIMIT` |
+| A4 | 3 | `-- <paths>` narrows the diff | the whole range only | a branch often carries unrelated work (richer review's range also held the status page) | `scripts/code-check.mjs` |
+| A5 | 3 | findings in a fixed shape, every ✗ keyed by `Step N`, a decision id or a path | free prose | `reel audit` can then check each one is answered | `scripts/code-check.mjs` brief, `scripts/reel.mjs` `audit` |
+| A6 | 3 | no findings file is a warning in `reel audit`, not a failure | failing | plans walked through before the check existed must still pass | `scripts/reel.mjs` `audit` |
+| A7 | 5 | the fix step is skill instructions, not a script | a script that applies fixes | rewriting code is agent work; `walkthrough-scope` already does the sorting a script can do | `skills/plan-to-video/SKILL.md` step 7 |
+| A8 | 5 | a fixed call's row is updated in place ("changed after review: …") | a new row for the fix | one row per call keeps the ledger and the video's beat ids lined up | `.reelplanning/plans/2026-09-22-richer-review/walkthrough.md` A10 |
+| A9 | 5 | a note with no step, within 15 s after a flag, is taken to be about that flag | only notes on the flag's step | reviewers flag, then type; the note often lands on no step | `scripts/walkthrough-scope.mjs` `NEAR` |
+| A10 | 6 | the system video is "behind" when `spec.md` changed after the video did (git commit times, file times when uncommitted) | a content hash of what the video says | cheap, and the spec is the only source the video is built from | `scripts/reel.mjs` `status` |
+| A11 | 3 | a part labelled with a file name fails the lint; any other label that is not its glossary name is only a note; a mock of a file or page (class page, mock, file or doc) is left alone | failing every label that differs from the glossary | a mock or a branch may shorten a name on purpose; a file name on a node is never right | `scripts/frame-lint.mjs` rule 4c |
+| A12 | 3 | a step the reviewer rewound or slowed down on goes to the revise, to be said more plainly, without changing what it decides | leaving those signals in the resolved plan only | the first code check showed the revise never saw them, so "hard to follow" changed nothing | `scripts/revise-scope.mjs` |
+| A13 | 5 | an accepted agent call warns a later plan in `reel check` that touches its part, instead of failing it | failing, like a reviewed decision | an accepted call is a ratified default, not an answer to a question; blocking every later plan on it would make accepting costly | `scripts/reel.mjs` `check` |
+| A14 | 3 | `reel audit` asks for a named file only for this plan's own decisions, in their step's entry; a cited decision in force needs a mention | a file per decision in force | a cited decision was checked in its own plan's walkthrough; this one only has to say it still holds | `scripts/reel.mjs` `audit` |
+| A15 | 3 | the code check leaves accepted agent calls out of the decisions it checks | including them | they are defaults, warned about by `reel check`; the brief stays about what this plan's reviewer decided. Worth revisiting once accepted calls pile up | `scripts/code-check.mjs` |
+| A16 | 5 | a flag becomes a new plan when the reviewer's words contain a ledger id or any option label (over 3 letters) of an active decision | only the chosen option, or only this plan's decisions | overturning any recorded choice, chosen or not, is a plan-level change; a false escalation costs a question, a missed one costs an unreviewed reversal | `scripts/walkthrough-scope.mjs` `reaches` |
+| A17 | 5 | an answer in the reviewer's own words on an agent's call is a fix with those words as the instruction | an accept with a note | the reviewer rewrote the call; reading it as an accept dropped the richer-review A10 change (found in that review) | `scripts/walkthrough-scope.mjs`, `scripts/resolve-walkthrough.mjs` |
+| A18 | 2 | the skill runs its tools as `npx -y reelplanning@0.1.0`, pinned to the package version | the local `reelplanning` bin on PATH | the npm packaging (asked for separately) makes the skill work in any agent without an installer; **it needs the package published first**, until then the commands fail as written | `skills/plan-to-video/SKILL.md` "The commands" |
+| A19 | 3 | the brief shows `plan.md`, the plan as implemented | `plan.resolved.md` when it exists | found by this plan's own code check: `plan.resolved.md` records the review before the last revise, so the checker saw the old step 6 | `scripts/code-check.mjs` |
+
+## Code check
+
+Run 2026-09-23 by a fresh agent from `code-check/brief.md` (`094dfdd^..HEAD`, the 13 files this plan
+touches); findings in `code-check/findings.md`. All six steps carried; D-001 and D-002 hold. Each ✗:
+
+- **D-003**: right, only half built. The rebuild was scoped, but the cost handling was not. Fixed after
+  the check: `reel status` (`scripts/reel.mjs`) now says what an update would rebuild (frames and seconds
+  of narration) before anything runs, and the skill says text first, no render until asked.
+  **Deviation:** narration for changed lines only is still the M3 plan's; a rebuild re-narrates the
+  whole video.
+- **`scripts/reel.mjs:170`**: a real, unlogged call: A13.
+- **`scripts/reel.mjs:294`**: a real, unlogged call: A14. **Deviation** from step 3's wording.
+- **`scripts/reel.mjs:180`**: these lines belong to other plans that share the file: the re-ask guard
+  and pick-all ledger shape are richer review's (its A3 and step 3); "Explain this more" and the reworded
+  question under an old id came from the deep-dives reviews (asked for directly, and a bug fix).
+- **`scripts/code-check.mjs:51`**: right: the checker saw the pre-revise plan. Fixed: A19.
+- **`scripts/code-check.mjs:58`**: a real, unlogged call: A15.
+- **`scripts/walkthrough-scope.mjs:62`**: a real, unlogged call: A16.
+- **`scripts/resolve-walkthrough.mjs:45`**: a real call, made in response to richer review's A10: A17.
+- **`scripts/revise-scope.mjs:36`**: answer notes are richer review's (its A6); "Explain this more" was
+  asked for directly; only the hard-to-follow signal is this plan's (A12).
+- **`scripts/frame-lint.mjs:82`**: rule 4b is richer review's (its A5); the mock exemption is now in A11.
+- **`skills/plan-to-video/SKILL.md:12`**: right: the pinned commands fail until the package is published.
+  A18; publishing is the reviewer's step.
+- **`.reelplanning/spec.md:45`**: right, and the most serious: the spec and the system video said the fix
+  step had run end to end, but A10's beat was never rebuilt. Fixed after the check: the fix step's first full run
+  rebuilt only A10's beat and step 4's (plan-diff: 2 of 38 beats changed, 27 s of 6 min to rewatch).
+- **`.reelplanning/spec.md:50`**: right: the invariant overstated it. Narrowed in `spec.md`: "Explain
+  this more" never enters the ledger; a confused own-words reply is recorded, then marked reopened by
+  hand.
+
+**The log is over a dozen rows (19).** By step 2's own rule, this plan left too much open: most of the
+extra rows are the review mechanics (escalation, own-words answers, what the checker sees) that the
+plan named as steps without saying how.
+
+## After the walkthrough review
+
+Reviewed 2026-09-23: all 19 calls and both deviations accepted (D-025 to D-045). Quick check K2 missed
+("You answer a call in your own words: what happens?" answered "it counts as accepted"; it is a change
+to make). The reviewer's three comments, and what changed:
+
+- "is the checker a separate subagent? cant we tell it to launch a subagent w that … cmd": yes, it is,
+  and the skill now says so plainly: the implementing agent launches a subagent with exactly the
+  `code-check --prompt` prompt and nothing else (`skills/plan-to-video/SKILL.md` step 3).
+- "do we have to be as specific about what the review agent is … provided? … agent so smart so can
+  figure out": right. The brief no longer pastes the diff (174 KB → 8 KB); it points at the plan and
+  the diff command (`scripts/code-check.mjs`; A1 and A3 changed after review).
+- "for narration is it possible to come up with that script early on so can do in background while
+  building the rest": yes. The skill now starts narration as soon as `SCRIPT.md` is written and builds
+  frames while it runs, cueing animations to words at the end (`skills/plan-to-video/SKILL.md` Run 4).
+- K2 missed: missed quick checks now send their step to the revise (`scripts/revise-scope.mjs`), and
+  the player says, on a call's own-words box, that the words become a change.
+
+## Deviations from the plan or the decisions
+
+- D-003: narration is regenerated for the whole video, not the changed lines (the M3 plan).
+- Step 3: `reel audit` asks a named file only of this plan's own decisions (A14).
+
+## Evidence
+
+- `npm test` passes, including `scripts/test/lifecycle.spec.mjs` (the code check's findings in `reel audit`, own-words fixes).
+
+## Not done / not tested
+
+- Narration for changed lines only (the M3 plan). The A10 rebuild showed it is within reach: Kokoro
+  produced byte-identical audio for all 36 unchanged lines, so caching each line's audio by its text
+  would make a small rebuild seconds instead of 11 minutes.
+- Narration for changed lines only, so a small spec change still re-narrates the whole system video.
+- "Knowledge levels" and "Conventions" in `spec.md` have no frame; a change there names no frame to rebuild.

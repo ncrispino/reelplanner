@@ -1,0 +1,89 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f06-decision-1-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f06-decision-1-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  .f06-decision-1-q { position:absolute; left:160px; top:180px; width:1140px; font:400 52px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); opacity:0; }
+
+  /* ---- the three options: each a mini wireframe of the layout that option produces ---- */
+  .f06-decision-1-opt { position:absolute; top:330px; width:480px; height:470px; border-radius:8px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); opacity:0;
+    box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 20px rgba(var(--rp-shadow-rgb),0.05); }
+  .f06-decision-1-opt .k { position:absolute; left:0; top:-46px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f06-decision-1-opt .l { position:absolute; left:0; top:486px; width:480px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); }
+  .f06-decision-1-opt .c { position:absolute; left:0; top:524px; width:480px; font:400 26px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f06-decision-1-vid { position:absolute; border-radius:4px; background:var(--rp-data); }
+  .f06-decision-1-sheet { position:absolute; border-radius:4px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); }
+  .f06-decision-1-sheet span { position:absolute; left:12px; top:12px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+  .f06-decision-1-vid span { position:absolute; left:12px; top:12px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+
+  /* the frame's ONE coral: the recommended card's border */
+  .f06-decision-1-rec { position:absolute; left:-3px; top:-3px; width:486px; height:476px; border-radius:9px; border:3px solid var(--rp-coral); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="06-decision-1" data-duration="27.267" data-width="1920" data-height="1080">
+  <div class="f06-decision-1-bg"></div>
+  <div class="f06-decision-1-kicker" id="f06-decision-1-kicker">✱ Your call · step 2</div>
+
+  <div class="f06-decision-1-q" id="f06-decision-1-q">When a decision is asked, what happens to the video?</div>
+
+  <!-- A · the stage shrinks: the whole frame stays, smaller, with the sheet under it -->
+  <div class="f06-decision-1-opt" id="f06-decision-1-opt-a" data-plan-option="a" style="left:160px">
+    <span class="k">A</span>
+    <i class="f06-decision-1-vid" style="left:16px;top:16px;width:448px;height:250px"><span>The video</span></i>
+    <i class="f06-decision-1-sheet" style="left:16px;top:276px;width:448px;height:178px"><span>The question</span></i>
+    <span class="l">The stage shrinks</span>
+    <span class="c">smaller while you study it</span>
+  </div>
+
+  <!-- B · the sheet floats over the lower third, and folds away on request -->
+  <div class="f06-decision-1-opt" id="f06-decision-1-opt-b" data-plan-option="b" style="left:780px">
+    <span class="k">B</span>
+    <i class="f06-decision-1-vid" style="left:16px;top:16px;width:448px;height:438px"><span>The video</span></i>
+    <i class="f06-decision-1-sheet" style="left:40px;top:306px;width:400px;height:148px"><span>The question</span></i>
+    <i class="f06-decision-1-rec" id="f06-decision-1-rec"></i>
+    <span class="l">The sheet overlays</span>
+    <span class="c">folds away, then reopens</span>
+  </div>
+
+  <!-- C · the video steps aside -->
+  <div class="f06-decision-1-opt" id="f06-decision-1-opt-c" data-plan-option="c" style="left:1400px">
+    <span class="k">C</span>
+    <i class="f06-decision-1-vid" style="left:16px;top:16px;width:44px;height:438px"></i>
+    <i class="f06-decision-1-sheet" style="left:72px;top:16px;width:392px;height:438px"><span>The question</span></i>
+    <span class="l">The video steps aside</span>
+    <span class="c">no picture while deciding</span>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 26.767, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f06-decision-1-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.018);
+  tl.fromTo("#f06-decision-1-q", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55, ease: E }, 0.224);
+
+  // each option arrives on the letter that names it — times are where the voice actually says
+  // "A.", "B.", "C." and "recommend" in assets/voice/06.mp3, not where the old shorter line said them
+  tl.fromTo("#f06-decision-1-opt-a", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 2.752);
+  tl.fromTo("#f06-decision-1-opt-b", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 7.431);
+  tl.fromTo("#f06-decision-1-opt-c", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 14.072);
+
+  // "I recommend B" — the one coral, and the only signal
+  tl.fromTo("#f06-decision-1-rec", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: E }, 17.34);
+
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["06-decision-1"] = tl;
+})();
+</script>
+</template>

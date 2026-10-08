@@ -1,0 +1,114 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f36-resolved-r2-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f36-resolved-r2-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f36-resolved-r2-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f36-resolved-r2-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f36-resolved-r2-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f36-resolved-r2-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f36-resolved-r2-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-slot:not([data-filled]) .n, .f36-resolved-r2-slot:not([data-filled]) .t { opacity:0; }
+  .f36-resolved-r2-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f36-resolved-r2-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f36-resolved-r2-slot.dec .n { top:13px; } .f36-resolved-r2-slot.dec .t { top:12px; } .f36-resolved-r2-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f36-resolved-r2-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f36-resolved-r2-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f36-resolved-r2-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f36-resolved-r2-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f36-resolved-r2-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f36-resolved-r2-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f36-resolved-r2-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f36-resolved-r2-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f36-resolved-r2-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f36-resolved-r2-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f36-resolved-r2-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f36-resolved-r2-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f36-resolved-r2-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f36-resolved-r2-chip.lit { color:var(--rp-coral-deep); }
+  .f36-resolved-r2-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f36-resolved-r2-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f36-resolved-r2-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f36-resolved-r2-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f36-resolved-r2-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f36-resolved-r2-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f36-resolved-r2-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f36-resolved-r2-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f36-resolved-r2-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f36-resolved-r2-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f36-resolved-r2-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f36-resolved-r2-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f36-resolved-r2-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f36-resolved-r2-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f36-resolved-r2-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f36-resolved-r2-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f36-resolved-r2-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f36-resolved-r2-ls .d.ch { color:var(--rp-ink); }
+</style>
+
+<div id="root" data-composition-id="36-resolved-r2" data-duration="10" data-width="1920" data-height="1080">
+
+  <div class="clip f36-resolved-r2-bg" data-start="0" data-duration="10" data-track-index="0"></div>
+
+  <div class="clip f36-resolved-r2-scene" id="f36-resolved-r2-scene" data-start="0" data-duration="10" data-track-index="1">
+  <div class="f36-resolved-r2-kicker" id="f36-resolved-r2-kicker">Round 2 · 5 steps, 4 questions</div>
+  <div class="f36-resolved-r2-mono grey" style="left:500px; top:150px">steps 1–5 · built</div>
+  <div class="f36-resolved-r2-mono grey" style="left:460px; top:232px; transform:translateX(-100%)">unattended</div>
+  <div class="f36-resolved-r2-mono grey" style="left:460px; top:342px; transform:translateX(-100%)">reviews</div>
+  <div class="f36-resolved-r2-mono grey" style="left:460px; top:562px; transform:translateX(-100%)">scaffolding</div>
+  <div class="f36-resolved-r2-mono grey" style="left:460px; top:672px; transform:translateX(-100%)">proof</div>
+  <div style="position:absolute; left:478px; top:320px; width:3px; height:180px; background:rgba(var(--rp-ink-rgb),0.25); border-radius:2px"></div>
+  <div style="position:absolute; left:500px; top:200px; width:1200px; height:550px" id="f36-resolved-r2-list">
+    <div class="f36-resolved-r2-ls" data-plan-step="6" style="top:0px"><span class="n">6</span><span class="t">Unattended runs</span><span class="d ch" data-plan-question="2">Auto mode</span></div>
+    <div class="f36-resolved-r2-ls" data-plan-step="7" style="top:110px"><span class="n">7</span><span class="t">More quick checks</span><span class="d ch" data-plan-question="3">Floor + more</span></div>
+    <div class="f36-resolved-r2-ls" data-plan-step="8" style="top:220px"><span class="n">8</span><span class="t">Stop where it matters</span><span class="d ch" data-plan-question="4">Your record</span></div>
+    <div class="f36-resolved-r2-ls" data-plan-step="9" style="top:330px"><span class="n">9</span><span class="t">Less scaffolding</span><span class="d ch" data-plan-question="5">Text + files</span></div>
+    <div class="f36-resolved-r2-ls" data-plan-step="10" style="top:440px"><span class="n">10</span><span class="t">Proof on the next plan</span></div>
+  </div>
+  <div class="f36-resolved-r2-note" id="f36-resolved-r2-note">AI-generated narration and visuals</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "36-resolved-r2";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f36-resolved-r2-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f36-resolved-r2-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f36-resolved-r2-slot-" + n + " .n, #f36-resolved-r2-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f36-resolved-r2-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f36-resolved-r2-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("list"), 0.2, 12);
+  tl.fromTo($("note"), { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.5);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 9.499);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

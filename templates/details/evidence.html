@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  reelplanning detail · EVIDENCE   (templates/details/evidence.html; kind: evidence)
+  The data behind a number or a claim the video makes, so the reviewer judges the number from the runs,
+  not from the sentence. Never the value restated: if all you have is the value, there is no detail.
+
+  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanning detail new <video-dir> <name>
+  --kind evidence --data runs.json). Nothing else in this file needs touching.
+    title      the page title
+    claim      the sentence the video says, word for word
+    setup      how the runs were made: what varied, what stayed the same (folded, at the bottom)
+    chosen     the run the call picked (its label: a coral bar)
+    baseline   the run it is compared with, e.g. what the plan said (optional: a dark bar)
+    baselineLabel / chosenLabel   the words under those two bars (default "the plan said" / "chosen")
+    metrics    [{ key, label, better: "lower" | "higher", unit? }]; values may be numbers or "m:ss"
+    runs       [{ label, <key>: value, … }], one per run: a row of the table and, with six runs or fewer, a bar
+               per metric (the table then folds under "How this was measured"). The best value is set bold.
+    reading    what the runs say, including what the choice gives up (optional, one or two sentences):
+               shown right under the claim, before the runs
+    source     where the runs came from: date, script, raw log (a path in the repo, never a URL)
+  Comments land on "run: <label>" (a table row) or "<metric>: <label>" (a bar).
+  In JSON strings, write "<\/" for "</". Loads nothing from the network: keep it that way.
+-->
+<title>Evidence</title>
+<script id="rp-data" type="application/json">
+{
+  "title": "The staging runs behind 16 MB",
+  "claim": "16 MB parts lose less on a bad network.",
+  "setup": "Three part sizes, each through the same 40 dropped connections on staging. Nothing else changed between runs.",
+  "chosen": "16 MB",
+  "baseline": "8 MB",
+  "baselineLabel": "the plan said",
+  "chosenLabel": "chosen (call A1)",
+  "metrics": [
+    { "key": "resent", "label": "Parts resent", "better": "lower" },
+    { "key": "time", "label": "Time to finish", "better": "lower", "unit": "m:ss" },
+    { "key": "retries", "label": "Retries", "better": "lower" }
+  ],
+  "runs": [
+    { "label": "8 MB", "resent": 96, "time": "6:10", "retries": 131 },
+    { "label": "16 MB", "resent": 52, "time": "4:40", "retries": 64 },
+    { "label": "32 MB", "resent": 45, "time": "5:25", "retries": 58 }
+  ],
+  "reading": "16 MB finishes first. 32 MB resends fewer parts and retries less, but each resent part costs twice as much, so it finishes 45 seconds later.",
+  "source": "Sample content: say where your runs came from (date, script, raw log path)."
+}
+</script>
+<script>
+/* rp-theme: the player passes ?theme=dark (or #theme=dark); light by default. paper / ink / accent (hex) override one token.
+   In the player's panel (a frame) it sets data-framed: the panel's header already names the page, so the page's own is hidden.
+   There the player also posts the review page's faces (packages/player/fonts/faces.json) once the page is ready: a sandboxed
+   page cannot load the files itself, so they come as bytes, and --sans, --serif and --mono take their families. On its own
+   the page keeps the fallbacks in the token block. */
+(function () {
+  var q = new URLSearchParams(location.search.replace(/^\?/, "") + "&" + location.hash.replace(/^#/, "")), r = document.documentElement;
+  if (q.get("theme") === "dark") r.setAttribute("data-theme", "dark");
+  try { if (window.parent !== window) r.setAttribute("data-framed", ""); } catch (e) { r.setAttribute("data-framed", ""); }
+  ["paper", "ink", "accent"].forEach(function (k) {
+    var v = (q.get(k) || "").replace(/^#/, "");
+    if (!/^[0-9a-f]{6}$/i.test(v)) return;
+    r.style.setProperty("--" + k, "#" + v);
+    if (k === "ink") { var n = parseInt(v, 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].join(","); r.style.setProperty("--ink-rgb", c); r.style.setProperty("--ink-2", "rgba(" + c + ",.8)"); r.style.setProperty("--ink-3", "rgba(" + c + ",.66)"); }
+  });
+  if (window.parent === window || !window.FontFace || !document.fonts) return;
+  window.addEventListener("message", function (e) {
+    var m = e.data; if (e.source !== window.parent || !m || m.type !== "rp-player" || m.event !== "faces") return;
+    (m.faces || []).forEach(function (f) { try { var ff = new FontFace(String(f.family), f.data, f.descriptors || {}); document.fonts.add(ff); ff.load().catch(function () {}); } catch (x) {} });
+    ["sans", "serif", "mono"].forEach(function (k) { var v = m.roles && m.roles[k]; if (typeof v === "string" && !/[;{}<]/.test(v)) r.style.setProperty("--" + k, v); });
+  });
+})();
+</script>
+<style>
+/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+   (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
+   and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
+   is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */
+:root{--paper:#FAF9F5;--tile:#EFE9DE;--ink:#141413;--ink-2:#3D3B37;--ink-3:#5C5953;--ink-rgb:20,20,19;--accent:#B8552E;--accent-text:#9C4524;--hair:.12;--dim:.2;--tint:9%;color-scheme:light;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"EB Garamond",Georgia,"Times New Roman",serif}
+:root[data-theme="dark"]{--paper:#141310;--tile:#232120;--ink:#F2EFE8;--ink-2:#CFCAC1;--ink-3:#A6A196;--ink-rgb:242,239,232;--accent:#D2693F;--accent-text:#E3A184;--hair:.14;--dim:.3;--tint:14%;color-scheme:dark}
+:root{--ink-72:var(--ink-2);--ink-55:var(--ink-3);--ink-20:rgba(var(--ink-rgb),var(--dim));--ink-12:rgba(var(--ink-rgb),var(--hair));--ink-06:rgba(var(--ink-rgb),.06)}
+/* one calm page: content on paper, space and hairlines between groups (8 inside, 20 between, 32 between sections);
+   four type styles (body 15, secondary 13, data 12.5 mono, section head 17 serif); coral marks only what is yours or waiting on you: the call, and the part you comment on */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:15px/1.55 var(--sans);padding:16px 20px 32px;max-width:980px;-webkit-font-smoothing:antialiased}
+.rp-head h1{font:400 22px/1.25 var(--serif);margin:4px 0 12px;letter-spacing:-.005em}
+:root[data-framed] .rp-head{display:none}
+.rp-intro{font-size:14px;line-height:1.5;color:var(--ink-72);max-width:68ch;margin:0 0 20px}
+.rp-sec{font:400 17px/1.3 var(--serif);margin:32px 0 12px}
+.rp-label{font:600 13px/1.45 var(--sans);margin:0 0 8px}
+.rp-quiet{font-size:13px;line-height:1.45;color:var(--ink-72)}
+.rp-num,.rp-mono{font-family:var(--mono);font-size:12.5px;line-height:1.6;font-variant-numeric:tabular-nums}
+.rp-note{font-size:13px;line-height:1.45;color:var(--ink-55);margin:20px 0 0;max-width:68ch}
+.rp-more{margin:32px 0 0;font-size:13px;line-height:1.45;color:var(--ink-72);max-width:68ch}
+.rp-more summary{cursor:pointer;width:max-content;max-width:100%}
+.rp-more summary:hover{color:var(--ink)}
+.rp-more>:not(summary){margin:8px 0 0}
+button{font:inherit;font-size:13px;line-height:1.45;color:var(--ink);background:none;border:1px solid var(--ink-20);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--ink-55)}
+button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--ink-55);outline-offset:2px}
+/* the bridge: an anchored part shows itself only on hover or focus; the one commented on keeps a coral edge */
+[data-anchor]{cursor:pointer;border-radius:2px}
+[data-anchor]:hover,[data-anchor]:focus-visible{outline:0;background:rgba(var(--ink-rgb),.04);box-shadow:inset 2px 0 0 var(--ink-20)}
+[data-anchor][data-rp-active]{outline:0;background:color-mix(in srgb,var(--accent) var(--tint),transparent);box-shadow:inset 2px 0 0 var(--accent)}
+.rp-copy{display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;background:none;color:var(--ink-55);border-radius:4px;vertical-align:middle}
+.rp-copy:hover{color:var(--ink);background:var(--ink-06)}
+#rp-toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,8px);padding:4px 12px;border-radius:6px;background:var(--ink);color:var(--paper);font-size:13px;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none}
+#rp-toast[data-on]{opacity:1;transform:translate(-50%,0)}
+
+.claim{margin:0 0 12px;font:400 19px/1.35 var(--serif);max-width:60ch}
+.reading{margin:0 0 20px;max-width:68ch}
+.metric{margin:0 0 20px}
+.metric .rp-label .dir{font-weight:400;color:var(--ink-55)}
+.bar{display:grid;grid-template-columns:var(--lw,12ch) minmax(0,1fr) 7ch;align-items:center;column-gap:12px;padding:4px 0}
+.bar .l{font:12.5px/1.4 var(--mono);color:var(--ink-72)}
+.bar .l small{display:block;font:12px/1.35 var(--sans);color:var(--ink-55)}
+.bar .fill{display:block;height:8px;border-radius:2px;background:var(--ink-20);min-width:2px}
+.bar[data-role="baseline"] .fill{background:var(--ink-55)}
+.bar[data-role="chosen"] .fill{background:var(--accent)}
+.bar[data-role="chosen"] .l{color:var(--ink)}
+.bar .v{font:12.5px/1.4 var(--mono);text-align:right;color:var(--ink-72)}
+.bar .v[data-best]{font-weight:600;color:var(--ink)}
+/* the runs: a plain table; when it is wider than the page, the run names stay put and the right edge fades */
+.wrap{overflow-x:auto;margin:0 0 20px}
+.wrap[data-more]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 32px),transparent)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font:600 13px/1.45 var(--sans);text-align:right;padding:4px 0 8px 16px;border-bottom:1px solid var(--ink-20);white-space:nowrap;vertical-align:bottom}
+th:first-child,td:first-child{text-align:left;padding-left:8px;position:sticky;left:0;background:var(--paper);z-index:1}
+td{font:12.5px/1.6 var(--mono);padding:6px 0 6px 16px;border-bottom:1px solid var(--ink-12);text-align:right;white-space:nowrap}
+td[data-best]{font-weight:600}
+tr[data-anchor]:hover,tr[data-anchor]:focus-visible,tr[data-anchor][data-rp-active]{box-shadow:none}
+tr[data-anchor]:hover td:first-child{box-shadow:inset 2px 0 0 var(--ink-20)}
+tr[data-role="chosen"] td:first-child,tr[data-role="chosen"]:hover td:first-child,tr[data-anchor][data-rp-active] td:first-child{box-shadow:inset 2px 0 0 var(--accent)}
+tr[data-role="chosen"] td:first-child{font-weight:600}
+.rp-more .wrap{margin:12px 0}
+</style>
+</head>
+<body>
+<header class="rp-head"><h1 id="rp-title"></h1></header>
+<p class="rp-intro" id="rp-intro"></p>
+<main>
+  <p class="claim" id="claim" data-anchor="the claim" tabindex="0"></p>
+  <p class="reading" id="reading" data-anchor="the reading" tabindex="0"></p>
+  <div id="metrics"></div>
+  <div class="wrap" id="runs"><table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+  <details class="rp-more" id="more"><summary>How this was measured</summary><p id="setup"></p><p id="source"></p></details>
+</main>
+<script>
+const D = JSON.parse(document.getElementById("rp-data").textContent);
+const h = (tag, a, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (k === "text") el.textContent = v; else if (k === "class") el.className = v; else el.setAttribute(k, v === true ? "" : v); } for (const c of kids.flat()) if (c != null && c !== false) el.append(c.nodeType ? c : String(c)); return el; };
+document.title = D.title || document.title;
+document.getElementById("rp-title").textContent = D.title || "";
+const intro = document.getElementById("rp-intro"); if (D.intro) intro.textContent = D.intro; else intro.remove();
+const val = (v) => { if (typeof v === "number") return v; const t = String(v ?? "").match(/^(\d+):(\d{2})$/); return t ? +t[1] * 60 + +t[2] : parseFloat(String(v).replace(/,/g, "")); };
+const role = (r) => r.label === D.chosen ? "chosen" : r.label === D.baseline ? "baseline" : null;
+const put = (id, text) => { const el = document.getElementById(id); if (text) el.textContent = text; else el.remove(); };
+// the order: the claim, what the runs say, then the runs; how they were made waits at the bottom, folded
+put("claim", D.claim ? `“${D.claim.replace(/^["“]|["”]$/g, "")}”` : ""); put("reading", D.reading);
+put("setup", D.setup); put("source", D.source);
+const runs = D.runs || [], metrics = D.metrics || [];
+const best = Object.fromEntries(metrics.map((m) => { const vs = runs.map((r) => val(r[m.key])).filter((x) => !isNaN(x)); return [m.key, m.better === "higher" ? Math.max(...vs) : Math.min(...vs)]; }));
+// the best value is set bold; when half the runs or more tie for it, nothing stands out, so none is
+const isBest = (m, r) => val(r[m.key]) === best[m.key] && runs.filter((x) => val(x[m.key]) === best[m.key]).length < runs.length / 2;
+// six runs or fewer: a bar per run for each metric, labelled where it stands; more: the table alone
+const bars = runs.length <= 6 && metrics.length > 0;
+if (bars) {
+  const box = document.getElementById("metrics");
+  const under = [D.chosen && (D.chosenLabel || "chosen"), D.baseline && (D.baselineLabel || "the plan said")].filter(Boolean);
+  box.style.setProperty("--lw", `${Math.min(24, Math.max(8, ...runs.map((r) => String(r.label).length), ...under.map((t) => Math.ceil(t.length * 0.85)))) + 1}ch`);
+  for (const m of metrics) {
+    const vals = runs.map((r) => val(r[m.key])), max = Math.max(...vals.filter((x) => !isNaN(x)), 0) || 1;
+    box.append(h("section", { class: "metric" },
+      h("p", { class: "rp-label" }, m.label, h("span", { class: "dir", text: ` · ${m.better === "higher" ? "higher" : "lower"} is better` })),
+      runs.map((r, i) => h("div", { class: "bar", "data-role": role(r), "data-anchor": `${m.label.toLowerCase()}: ${r.label}`, tabindex: 0 },
+        h("span", { class: "l" }, r.label, role(r) ? h("small", { text: role(r) === "chosen" ? D.chosenLabel || "chosen" : D.baselineLabel || "the plan said" }) : null),
+        h("span", null, h("span", { class: "fill", style: `width:${Math.max(0, (vals[i] / max) * 100).toFixed(1)}%` })),
+        h("span", { class: "v", "data-best": isBest(m, r), text: String(r[m.key] ?? "–") })))));
+  }
+} else document.getElementById("metrics").remove();
+document.getElementById("thead").append(h("th", { scope: "col", text: "Run" }), ...metrics.map((m) => h("th", { scope: "col", text: m.label })));
+document.getElementById("tbody").append(...runs.map((r) => h("tr", { "data-anchor": `run: ${r.label}`, "data-role": role(r), tabindex: 0 }, h("td", { text: r.label }), ...metrics.map((m) => h("td", { "data-best": isBest(m, r), text: String(r[m.key] ?? "–") })))));
+const more = document.getElementById("more"), wrap = document.getElementById("runs");
+if (bars) more.insertBefore(wrap, document.getElementById("source"));   // the bars say it; the table waits with the setup
+if (!more.querySelector("p, .wrap")) more.remove();
+const fade = () => wrap.toggleAttribute("data-more", wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft > 2);
+wrap.addEventListener("scroll", fade); addEventListener("resize", fade); more.addEventListener?.("toggle", fade); fade();
+</script>
+<script>
+/* rp-bridge v2: the same lines in every page of a guide (templates/details/). Keep it as it is.
+   Any element with data-anchor="<label>" can be noted on. A click on it posts {type:"rp-detail", event:"anchor",
+   anchor, text, rect} to the player; words selected inside it post {event:"select", anchor, text, rect, editable}
+   (the player opens its note box on the selection: a comment, a suggested edit where the words sit in a
+   data-editable element, or a question). On load it posts "ready", and its height as "size" when that changes. */
+(function () {
+  var post = function (m) { m.type = "rp-detail"; try { parent.postMessage(m, "*"); } catch (e) {} };
+  var CONTROL = "button,a,input,select,textarea,label,summary,[role=button],[data-no-anchor]";
+  var clean = function (t, n) { return String(t || "").replace(/\s+/g, " ").trim().slice(0, n); };
+  var box = function (r) { return { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) }; };
+  var anchorOf = function (n) { var e = n && (n.nodeType === 1 ? n : n.parentElement); return e && e.closest ? e.closest("[data-anchor]") : null; };
+  var mark = function (el) { var was = document.querySelector("[data-rp-active]"); if (was) was.removeAttribute("data-rp-active"); el.setAttribute("data-rp-active", ""); };
+  var chosen = function () {
+    var s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+    var text = clean(String(s), 600), r = s.getRangeAt(0), el = anchorOf(r.commonAncestorContainer);
+    return text && el ? { el: el, text: text, rect: box(r.getBoundingClientRect()) } : null;
+  };
+  var send = function (el) { mark(el); post({ event: "anchor", anchor: el.getAttribute("data-anchor"), text: clean(el.innerText || el.textContent, 200), rect: box(el.getBoundingClientRect()) }); };
+  var said = "";
+  var select = function () {
+    var c = chosen(); if (!c) { said = ""; return; }
+    var key = c.text + "|" + c.rect.x + "|" + c.rect.y; if (key === said) return; said = key;
+    mark(c.el);
+    post({ event: "select", anchor: c.el.getAttribute("data-anchor"), text: c.text, rect: c.rect, editable: !!(c.el.closest && c.el.closest("[data-editable]")) });
+  };
+  document.addEventListener("click", function (e) {
+    if (chosen()) return;   // words selected are their own note (select), not a click
+    var el = e.target.closest && e.target.closest("[data-anchor]"); if (!el) return;
+    var c = e.target.closest(CONTROL); if (c && c !== el && el.contains(c)) return;   // a control inside it acts, it does not note
+    send(el);
+  });
+  document.addEventListener("mouseup", function () { setTimeout(select, 0); });
+  document.addEventListener("keyup", function (e) { if (e.shiftKey || e.key === "Shift") select(); });
+  var st = null; document.addEventListener("selectionchange", function () { clearTimeout(st); if (window.matchMedia && matchMedia("(pointer:coarse)").matches) st = setTimeout(select, 600); });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target.closest && e.target.closest("[data-anchor]");
+    if (el === e.target && e.key === "Enter" && !e.target.matches(CONTROL)) send(el);
+  });
+  var tall = 0, size = function () { var h = Math.ceil(document.documentElement.scrollHeight); if (h !== tall) { tall = h; post({ event: "size", height: h }); } };
+  var ready = function () { post({ event: "ready", title: document.title }); size(); if (window.ResizeObserver) new ResizeObserver(size).observe(document.body); };
+  if (document.readyState === "complete") ready(); else window.addEventListener("load", ready);
+})();
+</script>
+</body>
+</html>

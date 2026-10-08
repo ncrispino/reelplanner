@@ -1,0 +1,149 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w02-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w02-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .w02-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .w02-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .w02-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w02-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .w02-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w02-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .w02-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w02-ul.ink { background:var(--rp-ink); height:3px; }
+  .w02-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w02-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w02-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w02-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w02-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w02-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w02-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .w02-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .w02-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .w02-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .w02-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w02-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .w02-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .w02-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .w02-d { position:absolute; left:136px; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; }
+  .w02-d .g { display:inline-block; width:1.4em; color:rgba(var(--rp-slab-ink-rgb),0.55); }
+  .w02-d.add .g { color:var(--rp-syn-add); }
+  .w02-hl { position:absolute; left:112px; width:1696px; height:88px; background:rgba(var(--rp-syn-add-rgb),0.14); border-radius:6px; }
+  .w02-ul2 { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w02-bl { position:absolute; left:136px; font:400 26px/46px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w02-bl .g { color:var(--rp-syn-add); }
+  .w02-bl .k { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .w02-none { position:absolute; left:124px; width:1672px; height:40px; border:2px dashed rgba(var(--rp-slab-ink-rgb),0.45); border-radius:6px; box-sizing:border-box; transform-origin:0 50%; }
+  .w02-tag { position:absolute; right:100px; top:52px; padding:0 16px; font:400 28px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w02-t { position:absolute; top:706px; width:250px; height:96px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .w02-t .n { position:absolute; left:20px; top:16px; font:500 24px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .w02-t .w { position:absolute; left:20px; top:50px; font:500 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w02-t .bx { position:absolute; top:52px; width:34px; height:24px; border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:4px; box-sizing:border-box; }
+  .w02-ring { position:absolute; top:700px; width:262px; height:108px; box-sizing:border-box; border:4px solid var(--rp-ink); border-radius:14px; }
+  .w02-ring.d { border-style:dashed; }
+
+</style>
+
+<div id="root" data-composition-id="02-step-1-the-brief-picks" data-band="bottom" data-duration="19.904" data-width="1920" data-height="1080">
+
+  <div class="clip w02-bg" id="w02-bg" data-start="0" data-duration="19.904" data-track-index="0"></div>
+
+  <div class="clip w02-scene" id="w02-scene" data-start="0" data-duration="19.904" data-track-index="1">
+    <div class="w02-lab" id="w02-h" style="left:100px; top:60px">templates/video/BRIEF.md · step 1</div>
+    <div class="w02-tag" id="w02-tag">decision D-166 · the brief picks</div>
+    <div data-artifact="git diff b421610 -- templates/video/BRIEF.md">
+    <div class="w02-slab" style="left:100px; top:110px; width:1720px; height:334px"></div>
+    <div class="w02-sbar" style="left:100px; top:110px; width:1720px; height:46px"></div>
+    <div class="w02-sbt" style="left:128px; top:121px">templates/video/BRIEF.md · new in this plan</div>
+    <div class="w02-hl" id="w02-hl" style="top:344px"></div>
+    <div class="w02-d" id="w02-l0" style="top:168px"><span class="g"> </span>## Customizations</div>
+    <div class="w02-d add" id="w02-l1" style="top:212px"><span class="g">+</span>- Medium: &lt;screen, code, document or diagram&gt;</div>
+    <div class="w02-d add" id="w02-l2" style="top:256px"><span class="g">+</span>- Layouts: &lt;the few layouts its scenes take&gt;</div>
+    <div class="w02-d add" id="w02-l3" style="top:300px"><span class="g">+</span>- Main transition: &lt;one, e.g. push-slide LEFT&gt;</div>
+    <div class="w02-d add" id="w02-l4" style="top:344px"><span class="g">+</span>- Real things: &lt;optional: the scenes that show the thing itself,</div>
+    <div class="w02-d add" id="w02-l5" style="top:388px"><span class="g">+</span>  e.g. scene 3 (the table); the rest explain with pictures&gt;</div>
+    <div class="w02-ul2" id="w02-u" style="left:178px; top:382px; width:300px"></div>
+    </div>
+    <div data-artifact="reelplanning build, on a six-scene video whose brief picks scene 3">
+    <div class="w02-slab" style="left:100px; top:472px; width:1720px; height:208px"></div>
+    <div class="w02-sbar" style="left:100px; top:472px; width:1720px; height:46px"></div>
+    <div class="w02-sbt" style="left:128px; top:483px">reelplanning build · a brief with "- Real things: scene 3 (the table); the rest explain with pictures"</div>
+    <div class="w02-bl" id="w02-b0" style="top:530px"><span class="k">✓ variety  3 layout(s), 3 kind(s) of transition, none on over 70% of scenes</span></div>
+    <div class="w02-bl" id="w02-b1" style="top:576px"><span class="g">✓</span> variety  BRIEF.md picks the real things: scene 3 (the table); the rest explain with pictures</div>
+    <div class="w02-none" id="w02-no" style="top:625px"></div>
+    </div>
+    <div class="w02-bl" id="w02-pn" style="left:156px; top:623px; font-family:Inter; color:rgba(var(--rp-slab-ink-rgb),0.78)">scene 5: no line, no warning</div>
+    <div class="w02-t" id="w02-t0" style="left:100px"><span class="n">scene 1</span><span class="w">a diagram</span></div>
+    <div class="w02-t" id="w02-t1" style="left:374px"><span class="n">scene 2</span><span class="w">a diagram</span></div>
+    <div class="w02-t" id="w02-t2" style="left:648px"><span class="n">scene 3</span><span class="w">the table</span></div>
+    <div class="w02-t" id="w02-t3" style="left:922px"><span class="n">scene 4</span><span class="w">a diagram</span></div>
+    <div class="w02-t" id="w02-t4" style="left:1196px"><span class="n">scene 5</span><span class="bx" style="left:20px"></span><span class="bx" style="left:66px"></span><span class="bx" style="left:112px"></span></div>
+    <div class="w02-t" id="w02-t5" style="left:1470px"><span class="n">scene 6</span><span class="w">a diagram</span></div>
+    <div class="w02-ring" id="w02-r3" style="left:642px"></div>
+    <div class="w02-ring d" id="w02-r5" style="left:1190px"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "02-step-1-the-brief-picks";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w02-h", { opacity: 0 });
+  gsap.set("#w02-tag", { opacity: 0, y: 8 });
+  gsap.set("#w02-hl", { opacity: 0 });
+  gsap.set("#w02-u", { scaleX: 0 });
+  gsap.set("#w02-l0", { opacity: 1, x: 0 });
+  gsap.set("#w02-l1", { opacity: 0, x: -16 });
+  gsap.set("#w02-l2", { opacity: 0, x: -16 });
+  gsap.set("#w02-l3", { opacity: 0, x: -16 });
+  gsap.set("#w02-l4", { opacity: 0, x: -16 });
+  gsap.set("#w02-l5", { opacity: 0, x: -16 });
+  gsap.set("#w02-b0", { opacity: 0 });
+  gsap.set("#w02-b1", { opacity: 0 });
+  gsap.set("#w02-no", { opacity: 0, scaleX: 0.96 });
+  gsap.set("#w02-pn", { opacity: 0, y: 6 });
+  gsap.set("#w02-t0", { opacity: 0, y: 12 });
+  gsap.set("#w02-t1", { opacity: 0, y: 12 });
+  gsap.set("#w02-t2", { opacity: 0, y: 12 });
+  gsap.set("#w02-t3", { opacity: 0, y: 12 });
+  gsap.set("#w02-t4", { opacity: 0, y: 12 });
+  gsap.set("#w02-t5", { opacity: 0, y: 12 });
+  gsap.set("#w02-r3", { opacity: 0, scale: 1.04 });
+  gsap.set("#w02-r5", { opacity: 0, scale: 1.04 });
+  tl.to("#w02-h", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.2);
+  tl.to("#w02-l1", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 8.34);
+  tl.to("#w02-l2", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 8.52);
+  tl.to("#w02-l3", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 8.7);
+  tl.to("#w02-tag", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 6.19);
+  tl.to("#w02-l4", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 9.93);
+  tl.to("#w02-l5", { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 10.08);
+  tl.to("#w02-hl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 10.23);
+  tl.to("#w02-u", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 10.43);
+  tl.to("#w02-t0", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.03);
+  tl.to("#w02-t1", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.1);
+  tl.to("#w02-t2", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.17);
+  tl.to("#w02-t3", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.24);
+  tl.to("#w02-t4", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.31);
+  tl.to("#w02-t5", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 11.38);
+  tl.to("#w02-r3", { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 11.83);
+  tl.to("#w02-b0", { opacity: 1, duration: 0.15, ease: "none" }, 12.78);
+  tl.to("#w02-b1", { opacity: 1, duration: 0.15, ease: "none" }, 13.08);
+  tl.to("#w02-r5", { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 15.06);
+  tl.to("#w02-no", { opacity: 1, scaleX: 1, duration: 0.4, ease: "power3.out" }, 16.99);
+  tl.to("#w02-pn", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 17.24);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

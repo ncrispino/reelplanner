@@ -1,0 +1,9 @@
+$ reel renumber . --base origin/main
+✓ took origin/main's log (1 entries, the last D-001) and added this branch's 1 after it, read from the working tree
+✓ renumbered: D-001 → D-002
+✓ rewrote their mentions in .reelplanning/plans/2026-09-27-port/walkthrough.md, .reelplanning/plans/2026-09-27-port/reviews/plan-20260927T110000Z.md
+✓ .reelplanning/decisions.json and decisions.md: 2 entries
+terms index: 0 word(s) defined, 0 by the system video → .reelplanning/terms-index.json
+△ no beat of the system video defines: call, tag, streak, miss, deviation, beat, chapter, area — the system video is behind the glossary (`- defines: <term>` on the beat that explains it)
+next: `git add .reelplanning`, then `git rebase --continue` (or commit the merge), and `reel pr-check`
+exit 0

@@ -1,0 +1,169 @@
+# Better visuals: show the real thing, and a page that reads well
+
+## The problem
+
+The owner, on the videos:
+
+> "I think in general we can improve the visuals. Like the way the video is presented, the kinds of
+> animation or things shown can likely be improved; rn it is very formulaic with style and with what
+> exactly is presented. We have so much flexibility that we are not using and likely are contained here."
+
+And on the review page:
+
+> "the html itself, the way it has text is not great, like the whole theming here (example is the terms)
+> is not great, less clear, harder to read, i think unoriginal."
+
+Both are true, and both have causes in this repo.
+
+- **Every scene looks the same.** Across 111 scenes of four videos, every one is a small mono heading
+  at the top left (the frame template requires it), a row of step ticks down the side, one to three thin
+  boxes in the top half and empty paper below. The boxes are cards *about* a thing (a "means" card, a
+  "chose / instead" card) where the thing itself would do: the real table, the real code, the real
+  player. The style guide already says "show the thing, not a card about it"; nothing checks it.
+- **Motion is one move.** 631 things pop in, and 543 of 561 cuts between scenes are the same crossfade.
+  No camera moves, nothing leaves, nothing is drawn, typed or wiped. The frame template says motion is
+  "out of scope" and points to a motion language that does not exist, and the lint that finds still
+  stretches is satisfied by a steady drip of pops.
+- **The code and terminal blocks HyperFrames offers go unused**, because they hard-code colours the
+  frame lint rejects.
+- **The page never loads its fonts.** The player names Inter, EB Garamond and JetBrains Mono but ships
+  none of them, so each viewer gets whatever their machine has. Its text is five shades of grey alpha on
+  cream, with coral for everything from "current" to "yours".
+
+A sample proves the video side: six scenes of the fewer-stops walkthrough redrawn with the same words
+and voice (the real table with its labels, the real player timeline going from 23 pauses to 5, the real
+code change, a real `reel audit` run, a before and after wipe of the real answer bar). It built with
+every check passing, and it found where today's rules and checks get in the way. Two samples of the
+page's look, "Reading desk" and "Tally", are on the review page beside today's.
+
+## What changes
+
+Three changes, and a fourth that says when they reach the videos we have.
+
+1. **Scenes show the real thing** (steps 1 and 2): the rules, and the checks that let it through
+   while keeping the answer safe.
+2. **The review page gets a look of its own** (step 3): readable type, its fonts shipped.
+3. **Old videos change only when revised** (step 4), and the system video once.
+
+## Steps
+
+### Step 1 — A scene shows the real thing, with plain words pinned to it
+
+*Independent.*
+
+Where a scene is about something that exists (a file, a table, a command's output, a screen of the
+player), it shows that thing, and the words a newcomer needs sit on it:
+
+- **The real thing first.** The style guide's "what to draw" becomes a rule with examples: a table
+  change shows the table, a code change shows the diff, a command shows its run, a screen change shows
+  the screen before and after. Cards about a thing are for what has no surface (a rule, a count).
+- **A plain word is pinned to what it names.** A word the video defines is a small label on the code
+  token, the table column or the button it names, never a card floating beside it. The real thing sits
+  in a `data-artifact` container, and a pinned label says what it glosses.
+- **The heading and the step ticks are optional.** The frame template's required mono heading becomes
+  a quiet place label ("walkthrough.md · fewer, better stops"), used when it helps; the ticks go where a
+  scene has room and a reason.
+- **Code and terminal blocks in the theme's colours.** Forks of HyperFrames' code-diff and
+  terminal-run blocks ship with the theme, coloured only by its tokens, with syntax tokens added.
+- **Composition varies.** Each video's brief says its medium (screen, code, document, diagram), its
+  layouts and its main transition; the storyboard says per scene what real thing it shows.
+
+### Step 2 — What each move means, written down; checks that keep the answer safe
+
+*Needs step 1's `data-artifact` marker (the words check reads it).*
+
+- **The motion language** (`motion-language.md` beside the frame template): a camera moves over one
+  scene clipped above the answer area; a thing is revealed by its own verb (drawn, typed, wiped,
+  counted, struck); transitions carry meaning: a cut for a new chapter or a quick check, a push for the
+  next scene of the same chapter, a crossfade for the same place later, a zoom into a step's code done
+  as a cut plus a pull-back.
+- **The checks change to allow it:** the words check reads a real artifact's own text as glossed in
+  place (a warning at most) and splits text only on block elements; zoom-through loses its blur; the
+  still-stretch check reads camera moves and helper-made moves; the stage check stops rewarding the
+  ticks, and a video warns when over 70% of its scenes share one layout or one transition.
+- **The checks that keep the answer safe:** the frame lint fails a camera or zoom that is not inside a
+  view clipped at 900 px, so nothing moves into the lowest eighth; and it fails a question's heading or
+  card inside a moving camera unless the camera is at rest, at full size, when the scene ends. The
+  cards stay whole and still, where the player measures them.
+
+### Step 3 — The review page's look, with its fonts
+
+*Independent.*
+
+The page adopts one look (question 1) in the player's styles, block for block:
+
+- **Fonts are shipped.** The faces go into the bundle and are declared in the page's head (a font
+  declared inside the player's shadow root does not apply). No viewer depends on what is installed.
+- **One `--sans` token.** About forty places in the player spell out `Inter, ui-sans-serif, …`; they
+  read `var(--sans)`, which one rule already uses and nothing defines.
+- **Text in solid tiers**, a real type scale, keycaps for keys, and the accent (question 3) meaning
+  only "yours, waiting on you". The right answer of a quick check is marked by more than colour.
+- The video's size and place do not change; the specs that check the answer's colours are updated.
+
+### Step 4 — Videos rebuilt as they are revised; the system video once
+
+*Needs steps 1–3.*
+
+No mass rebuild. A plan or walkthrough video takes the new style when it is next revised, in the
+scenes a review touches; its other scenes stay as they are. The system video is rebuilt once, whole,
+after steps 1–3 land, since every new viewer starts there. This plan's own video is the first built
+this way.
+
+## Components touched
+
+- **The plan-to-video skill** — the style guide's "what to draw", pinned words, the frame template's
+  optional heading, the motion language, the forked code and terminal blocks, the lints (steps 1 and 2)
+- **finish-project** — transitions with meaning, the scale-only zoom-through (step 2)
+- **The review player** — the page's look, its fonts and the `--sans` token (step 3)
+- **The system video** — rebuilt once in the new style (step 4)
+
+## Open questions for the reviewer
+
+1. **Which scenes must show the real thing?** (step 1)
+- **A · Every scene shows the real thing where one exists.** The storyboard names it per scene, and the
+  build warns on a scene about a file, a command or a screen that draws only boxes.
+- **B · A mix per video.** The brief picks which scenes show real things; nothing warns.
+- **C · New rules only.** The style guide and the motion language change; no field, no warning.
+I recommend A: the guide already said "show the thing", and without a check all 111 scenes came out the
+same.
+
+2. **Which look should the review page take?** (step 3)
+- **A · Tally.** A console with the video as its lit monitor: Archivo and Martian Mono, one orange
+  signal for "waiting on you", no serif in the page. The most original of the three; 228 KB of fonts.
+- **B · Reading desk.** Today's page made readable: Atkinson Hyperlegible and Literata, coral for
+  "yours", green for the right answer. Clearer, but still a document on a desk; 170 KB of fonts.
+- **C · Today's look, readability fixes only.** Ship the fonts, solid text tiers, a real type scale.
+  The least work, and it answers "harder to read" but not "unoriginal".
+I recommend A: it answers both of the owner's words, readable and original, and its answered quick
+check fits inside the frame where Reading desk's spills 27 px under it.
+
+3. **Which accent colour?** (step 3)
+- **A · Keep today's coral.** The videos and the page stay one colour; it fails 3:1 on a light grey page.
+- **B · A darker coral.** The same hue, dark enough to pass on the page; the videos take it too.
+- **C · Tally's orange.** A brighter signal on the page; the videos keep coral, so two oranges.
+I recommend B: one colour from video to page, and it passes contrast.
+
+## Decisions in force
+
+- **D-127** Plain words on screen; the files keep theirs. The pinned labels (step 1) use the
+  glossary's on-screen word.
+- **D-083** A quick check per step, plus wherever there is something to predict: unchanged; its case
+  now stays frozen behind the question.
+- **D-108** Where the answers the frame can't take go: unchanged; step 2's checks keep the lowest eighth
+  empty and the cards still for it.
+- **D-021** A detail opens in the side panel; **D-024** detail pages start from a template: untouched.
+- **D-085** Less scaffolding: this plan adds a document (the motion language) and checks, not steps.
+- **D-003** The system video updates after every accepted walkthrough; step 4 adds one full rebuild.
+- **D-065** A comment on the system video changes the video or the system: unchanged.
+- **D-128** "Watched" is kept in this browser and your file: a rebuilt video counts as changed, as now.
+- **D-129** Approving is never blocked: unchanged.
+- **D-005** Rewinds are sent: unchanged.
+- **D-064**, **D-066**, **D-082** The loop's background agent, one setting, auto mode in the sandbox:
+  untouched.
+- **D-084**, **D-109**, **D-110** What stops the walkthrough and the fifth choice: untouched.
+- **D-106**, **D-107** Your memory's file and the retro: untouched.
+
+## Not in this plan
+
+Changing what a scene says: narration, pace, the length budget and the order of a plan video stay as
+they are. Sound and music (still none). New HyperFrames blocks beyond the two forks.

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "project": "walkthrough-video",
+  "src": "2026-09-27-walkthroughs-that-help--walkthrough/index.html",
+  "source": "conversation",
+  "by": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+  "said": "Ok can you just accept all these as is?",
+  "submittedAt": "2026-10-04T16:31:58.271Z",
+  "verdict": "approve",
+  "annotations": [],
+  "autonomy": [
+    {
+      "id": "a3",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "The list's sheet: one row per choice (its id, what it chose, \"instead of\" what) with only a Flag, and one Go on (key A) under the rows; no own words on it (words go in a comment, as on a grouped beat); on a frame that draws a card per choice, each Flag hangs from its card"
+    },
+    {
+      "id": "a5",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "The open question is asked where the review is finished: first in a walkthrough's Finish panel, with a box for your words, the ending beat saying it aloud; the words are one note on no step (`open: true`), under \"Seeing it run\" in `reviews/<id>.md`"
+    },
+    {
+      "id": "a6",
+      "verdict": "accept",
+      "planStep": 4,
+      "chose": "A small PR's other choices go under a new \"## Other choices\" in the PR template, one line each (what it chose, instead of what); the maintainer accepts them by ticking \"The other choices above are accepted\", and `reel pr-check` waits until then (fails with `--merge`); a line that does not say \"instead of\" is a note, not a failure"
+    },
+    {
+      "id": "a8",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "One control: the header's Plan–Built switch is the jump (its Built segment is \"See it built\" on a plan scene, its Plan segment \"See the plan\" on the walkthrough), following the step on screen; no separate button laid on the scenes"
+    },
+    {
+      "id": "a9",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "The list's order: what needs you first (a plan waiting on you says what to review and how long), then the system video and the five newest plans, the rest behind \"Earlier plans (N)\" (open when the video playing is in it); each row one line (name, date, one word; changed before review, the lead's look: the word says what waits and on whom, every row waiting on you is under \"Needs you\" its video here or not, names wrap to two lines, and a row whose videos are not here says \"not on this page\" instead of a switch), and on a phone the word under the name"
+    },
+    {
+      "id": "a1",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "A walkthrough video's length: aim 1–2 minutes, \"long\" past 3, \"too long\" past 5 (both a △ after the build, never a stop)"
+    },
+    {
+      "id": "a2",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "The list is its own storyboard line, `- autonomy_list: a1, a4`, one beat at the end of the video; `- autonomy_group:` (one per chapter, Accept all) still plays in older videos"
+    },
+    {
+      "id": "a4",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "\"Listed\" is recorded when the viewer presses Go on (every choice not flagged), and `reel record` lists a choice the viewer never reached only when the review approves; a review asking for changes leaves those \"never judged\""
+    },
+    {
+      "id": "a7",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "The switch lands on the first scene tagged with that plan step (in the walkthrough, its running scene; in the plan video, the step's first scene), a tenth of a second in; a step the walkthrough tags no scene with is \"Nothing to run for this step\". `bundle-player` works the table out into `library.json` (`steps`)"
+    },
+    {
+      "id": "a10",
+      "verdict": "accept",
+      "planStep": 6,
+      "chose": "The bar is judged per review, over the first three walkthrough reviews whose pauses are timed (`shownAt`): each clears it with a pause held 5 s or more (its middle value) and at least one flag, own words or comment; \"due\" only when all three miss"
+    }
+  ],
+  "decisions": [],
+  "quizzes": [],
+  "questions": [],
+  "recorded": {
+    "reviewer": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "conversation",
+    "reelplanning": "0.2.0"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "project": "walkthrough-video",
+  "src": "2026-09-26-contributing--walkthrough/index.html",
+  "source": "conversation",
+  "by": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+  "said": "Ok can you just accept all these as is?",
+  "submittedAt": "2026-10-04T16:31:58.271Z",
+  "verdict": "approve",
+  "annotations": [],
+  "autonomy": [
+    {
+      "id": "a2",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "A PR over the line with no video, or still waiting for a maintainer to accept its walkthrough, prints △ and passes; `--merge`, in the full-suite job, makes it a failure"
+    },
+    {
+      "id": "a3",
+      "verdict": "accept",
+      "planStep": 2,
+      "chose": "This repo's `maintainers` is `[\"owner\"]`, no email: a review recorded by git's user.email (the local page's Send, filed on some machine) counts as a contributor's until that email is added; `reel record` says so, and recording it again then adds its calls"
+    },
+    {
+      "id": "a6",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "This repo's plan folders dated up to 2026-09-27 keep their videos' media committed (negated lines in `.gitignore`); a plan started after that follows the rule"
+    },
+    {
+      "id": "a9",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "The full-suite job runs on every PR event and fails at once without `ready-to-merge`"
+    },
+    {
+      "id": "d1",
+      "verdict": "accept",
+      "planStep": 5,
+      "chose": "The workflow is `.github/workflows/ci.yml`"
+    },
+    {
+      "id": "a1",
+      "verdict": "accept",
+      "planStep": 1,
+      "chose": "The 300 lines leave out tests (test folders, `*.spec.*`, `*.test.*`), docs (`docs/`, Markdown and text files, the licence), the whole `.reelplanning/` record, `videos/` and media, lockfiles and `dist/`, and any file `.gitattributes` marks `linguist-generated` or `linguist-documentation`"
+    },
+    {
+      "id": "a4",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "Each video is checked against its text only until it is approved: a plan video once a plan review approved it, a walkthrough once a maintainer accepted it"
+    },
+    {
+      "id": "a5",
+      "verdict": "accept",
+      "planStep": 3,
+      "chose": "The hashes compare what the map already carries (the plan's title, problem and steps; each stop's chose, instead of, why and check) with `plan.md` and `walkthrough.md`; no new field in `plan-map.json`"
+    },
+    {
+      "id": "a7",
+      "verdict": "accept",
+      "planStep": 4,
+      "chose": "`reel renumber` takes an entry as the branch's own when the base holds none that decided the same thing (plan, question, date, answer), and reads the branch's log from whichever side of the conflict holds such entries"
+    },
+    {
+      "id": "a8",
+      "verdict": "accept",
+      "planStep": 4,
+      "chose": "A pending memory line moves when it names no email, or this machine's git user.email; one naming `owner` or an id moves as before"
+    }
+  ],
+  "decisions": [],
+  "quizzes": [],
+  "questions": [],
+  "recorded": {
+    "reviewer": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "conversation",
+    "reelplanning": "0.2.0"
+  }
+}

@@ -1,0 +1,289 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "oh i think we want to integrate this a bit more, like it should suggest based on that video what explain more would mean or waht plan this would mean, not just templated",
+      "frame": {
+        "compositionId": "06-step-3-finish",
+        "index": 6,
+        "title": "Step 3: Finish, and choices A9 and A13"
+      },
+      "id": "amumy1x1efxib",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 3
+      },
+      "t": 84.83
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "An explainer's name on the review page, and in `before:` lines, is `<name>--explainer`, like `<plan>--walkthrough`",
+      "id": "a1",
+      "judgedAt": "2026-09-29T17:21:34.980Z",
+      "planStep": 2,
+      "shownAt": "2026-09-29T17:21:28.147Z",
+      "t": 70.151,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An explainer waits under **Needs you** until it is reviewed, and again when it was rebuilt after its review (Explain more)",
+      "id": "a10",
+      "judgedAt": "2026-09-29T17:21:36.154Z",
+      "planStep": 2,
+      "shownAt": "2026-09-29T17:21:28.147Z",
+      "t": 70.151,
+      "verdict": "accept"
+    },
+    {
+      "chose": "`new-plan --from` without `--plan` writes a draft: the title, the line, the problem quoting the review, and an empty step for the agent to write",
+      "id": "a12",
+      "judgedAt": "2026-09-29T17:22:40.054Z",
+      "planStep": 4,
+      "shownAt": "2026-09-29T17:22:37.234Z",
+      "t": 124.439,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A secret, an email address (not `example.com`) or a home path stops the build anywhere in the video's text: frames, narration, storyboard, script, `explain.md`, details; the check prints it cut short",
+      "id": "a6",
+      "judgedAt": "2026-09-29T17:23:04.855Z",
+      "planStep": 5,
+      "shownAt": "2026-09-29T17:23:03.099Z",
+      "t": 164.178,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The fact check is a third fresh-eyes role, `checker` (F1 …), whose round waits for it, only for an explainer with a source that needs a guide part",
+      "id": "a7",
+      "judgedAt": "2026-09-29T17:23:08.196Z",
+      "planStep": 5,
+      "shownAt": "2026-09-29T17:23:07.416Z",
+      "t": 164.178,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A source needs a guide part past 200 lines: a file by its lines, a folder's files each on their own (`parts`), a change by its changed lines, `since:` by its log's lines",
+      "id": "a2",
+      "judgedAt": "2026-09-29T17:23:31.683Z",
+      "planStep": 1,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    },
+    {
+      "chose": "A file of the repo is shape `files`; a file's shape otherwise is read from what it holds: `.jsonl`/`.ndjson`/`.log` a sequence, `.csv`/`.tsv` or a JSON array of rows a table, anything else text",
+      "id": "a3",
+      "judgedAt": "2026-09-29T17:23:31.689Z",
+      "planStep": 1,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    },
+    {
+      "chose": "An explainer's length: aim 2–4 minutes, \"long\" past 4, \"too long\" past 7; with a source that needs a guide part, 2–5, past 5 and past 8",
+      "id": "a11",
+      "judgedAt": "2026-09-29T17:23:31.692Z",
+      "planStep": 2,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    },
+    {
+      "chose": "The end is kept as the review's `verdict` too (\"done\", \"more\", \"plan\"), beside `end`",
+      "id": "a8",
+      "judgedAt": "2026-09-29T17:23:31.694Z",
+      "planStep": 3,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    },
+    {
+      "chose": "A quoted line is the text of a `data-artifact`, block by block (a `div`, `p`, `li`, a cell); a label on it that is no quote carries `data-label` (and a pinned word `data-gloss`); \"…\" cuts a line into pieces checked on their own; a piece naming the source (its id, path, commit) passes; a repo file is read at the pinned commit, one with changes not committed then from disk with its hash checked",
+      "id": "a4",
+      "judgedAt": "2026-09-29T17:23:31.696Z",
+      "planStep": 5,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    },
+    {
+      "chose": "\"States a number\" is a digit in the scene's narration, other than a step, scene, part, question or line number and an id (D-233, A4, k1); a scene that quotes a thing with no `- source:` is treated the same; and `check-sources` runs on any video with a `- source:`, not only an explainer [close] (changed after the code check: the quote and the where said here)",
+      "id": "a5",
+      "judgedAt": "2026-09-29T17:23:31.698Z",
+      "planStep": 5,
+      "shownAt": "2026-09-29T17:23:23.057Z",
+      "t": 193.704,
+      "verdict": "listed"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [
+      "agent"
+    ],
+    "termsOpened": 1,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-29T17:23:41.539Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "questions": [],
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T17:21:20.542Z",
+      "correct": true,
+      "id": "k1",
+      "t": 56.263
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T17:22:21.080Z",
+      "correct": true,
+      "id": "k2",
+      "t": 94.85
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-29T17:22:52.851Z",
+      "correct": true,
+      "id": "k3",
+      "t": 146.258
+    }
+  ],
+  "src": "2026-09-29-explain-first--walkthrough/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 202.75,
+    "firstPlayAt": "2026-09-29T17:20:43.192Z",
+    "maxTimeReached": 202.75,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T23:18:09.177Z",
+      "video": "2026-09-26-contributing--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    },
+    {
+      "seen": "2026-09-28T19:04:26.852Z",
+      "sent": "2026-09-28T19:05:42.926Z",
+      "video": "2026-09-28-plan-guide"
+    },
+    {
+      "seen": "2026-09-28T04:39:23.180Z",
+      "sent": "2026-09-28T04:40:05.234Z",
+      "video": "2026-09-28-videos-that-make-sense"
+    },
+    {
+      "seen": "2026-09-28T19:00:00.857Z",
+      "sent": "2026-09-28T19:01:34.163Z",
+      "video": "2026-09-28-videos-that-make-sense--walkthrough"
+    },
+    {
+      "seen": "2026-09-29T06:31:36.845Z",
+      "sent": "2026-09-29T06:32:45.512Z",
+      "video": "2026-09-29-explain-first"
+    },
+    {
+      "seen": "2026-09-29T17:23:02.101Z",
+      "video": "2026-09-29-explain-first--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

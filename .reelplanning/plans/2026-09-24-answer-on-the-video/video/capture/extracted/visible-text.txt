@@ -1,0 +1,95 @@
+# Answer on the video itself, and edit the record in place
+
+## The problem
+
+When the video stops at a question, a sheet slides up over the frame and asks it again: the frame
+already shows the question and its options as cards, and the sheet repeats both in a smaller, busier
+form, covering part of what it asks about. You answer in the sheet, not on the thing you are looking
+at. And once something is on the record (an answer, a verdict, a comment, a mark), the record only
+lets you jump to it: to change a comment's words or remove a mark you have to go back to its moment
+in the video.
+
+## What changes
+
+Two changes, independent of each other.
+
+1. **You answer on the frame** (steps 1 and 2). The option cards the frame draws are what you click;
+   the sheet stops repeating them and gets out of the way.
+2. **The record is editable** (step 3). Every item in it can be changed or removed where it is listed.
+
+Step 4 checks both on the videos already on the review page.
+
+## Steps
+
+### Step 1 — Click an option on the frame to answer
+
+*Independent.*
+
+While a question waits, the frame's option cards are clickable: hover and keyboard focus light the
+card, a click answers exactly as the A–D keys do (a pick-all question ticks the card and waits for
+Confirm). The same for a quick check's options. The player already reads each frame's page (it
+marks the chosen option there after an answer), so this is the player's work, not the frames': new
+frames mark each card with `data-option="a"`, and older frames, which don't, are matched by the
+order of their option cards. A frame with no cards to match keeps today's sheet.
+
+### Step 2 — The sheet stops repeating the question
+
+*Needs step 1 (the cards answer, so the sheet no longer has to).*
+
+The question and its options are no longer repeated over the frame. What is left is what the frame
+cannot do: answer in your own words, "Explain this more", a note on your answer, Confirm for a
+pick-all question, and "Show the frame" to look without answering. These sit in one thin strip
+(question 1). A call on the agent's choice has no cards to click; its Accept and Flag go in the same
+strip, with A and B as now.
+
+### Step 3 — Edit the record where it is listed
+
+*Independent.*
+
+In the record, each item gets its own small edit: a decision's answer can be changed there (the video
+routes as a fresh answer would); a call's verdict switched; a comment's words edited or the comment
+removed; a mark's words edited or the mark removed; a quick check's note edited. A quick check's first
+answer stays as it is. After a review is sent, any edit is offered as "Send the change", as a new
+comment already is.
+
+### Step 4 — Check it on the videos already there
+
+*Needs steps 1–3.*
+
+Every video on the review page is played through its questions with clicks only, in light and dark
+and at phone width: the plan videos, the walkthroughs and the system video. The record edits are
+checked in the export the Finish panel sends.
+
+## Components touched
+
+- **The review player** — clicking the frame's options, the thin strip, editing the record (steps 1–3)
+- **The plan-to-video skill** — new frames mark their option cards (step 1)
+
+## Open questions for the reviewer
+
+1. **Where do the answers the frame can't take go?** (step 2)
+- **A · A thin strip under the video.** Own words, Explain this more, a note, Confirm, Show the frame,
+  and a call's Accept and Flag, on one line under the frame, never over it. The frame is whole.
+- **B · A small card in a corner of the frame.** The same things in a compact card over the frame's
+  top-right corner. Closer to where you look, but it covers a little of the frame.
+- **C · Keep the sheet, restyled.** No clicking on the frame's cards is needed; the sheet stays and
+  only gets lighter and smaller.
+I recommend A: the frame stays whole, and what is left is what you reach for least.
+
+## Decisions in force
+
+- **D-004** A pick-all answer plays its summary frame. Unchanged.
+- **D-021** A detail opens in a side panel. Unchanged.
+- **D-081** After a rebuild, "Play just the changes" is on by default. Unchanged.
+- **D-005** Rewinds and slow-downs are sent automatically. Unchanged.
+- **D-024** Detail pages start from a template. Unchanged.
+- **D-082** A run nobody is watching runs in auto mode, in the sandbox. Unchanged.
+- **D-083** A quick check per step, plus where there is something to predict: step 1 lets you answer
+  them on the frame.
+- **D-084** Only the calls you might overturn stop: step 2 moves their Accept and Flag into the strip.
+- **D-085** Less scaffolding: step 1 asks new frames for one attribute, nothing more.
+
+## Not in this plan
+
+Answering by clicking a frame of the system video (it asks only quick checks, which step 1 covers).
+Touch gestures beyond a tap.

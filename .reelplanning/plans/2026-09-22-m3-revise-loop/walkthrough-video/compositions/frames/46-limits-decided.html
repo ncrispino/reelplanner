@@ -1,0 +1,238 @@
+<template>
+<style>
+
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f46-limits-decided-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f46-limits-decided-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f46-limits-decided-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f46-limits-decided-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f46-limits-decided-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f46-limits-decided-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f46-limits-decided-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-slot .d.lit { color:var(--rp-coral-deep); }
+  .f46-limits-decided-slot:not([data-filled]) .n, .f46-limits-decided-slot:not([data-filled]) .t { opacity:0; }
+  /* spine state (§18 v9): six ticks at the rail's slot rows, the live one coral */
+  .f46-limits-decided-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f46-limits-decided-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f46-limits-decided-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.28); border-color:transparent; }
+  .f46-limits-decided-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f46-limits-decided-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f46-limits-decided-node.dim { opacity:0.72; }
+  .f46-limits-decided-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f46-limits-decided-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f46-limits-decided-edges path.dim { opacity:0.35; }
+  /* ---- /SHARED STAGE ---- */
+  .f46-limits-decided-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f46-limits-decided-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f46-limits-decided-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f46-limits-decided-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  /* the player's question sheet, drawn as the page it is (a prototype of the player's own surface) */
+  .f46-limits-decided-q { position:absolute; font:400 48px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-qk { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  .f46-limits-decided-card { position:absolute; width:610px; height:130px; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-card .k { position:absolute; left:24px; top:22px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f46-limits-decided-card .l { position:absolute; left:24px; top:62px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-card.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f46-limits-decided-card.ghost .l { color:rgba(var(--rp-ink-rgb),0.55); }
+  .f46-limits-decided-box { position:absolute; left:24px; top:47px; width:36px; height:36px; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.55); background:var(--rp-paper); }
+  .f46-limits-decided-tickmark { position:absolute; left:7px; top:1px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); opacity:0; }
+  .f46-limits-decided-card .l.cb { left:84px; top:45px; }
+  .f46-limits-decided-btn { position:absolute; height:60px; padding:0 28px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/56px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  /* decision beats: three option cards, each carrying a small prototype of what that option does */
+  .f46-limits-decided-opt { position:absolute; top:300px; width:520px; height:330px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f46-limits-decided-opt .l { position:absolute; left:28px; top:70px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-fr { position:absolute; top:190px; height:84px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 26px/82px "JetBrains Mono"; text-align:center; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-fr.q { background:var(--rp-paper); border-style:dashed; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-bar { position:absolute; height:4px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.25); }
+  .f46-limits-decided-mk { position:absolute; width:4px; height:28px; border-radius:2px; background:var(--rp-ink); }
+  .f46-limits-decided-pill { position:absolute; height:56px; padding:0 22px; border-radius:28px; border:2px solid var(--rp-ink); font:500 26px/52px "Inter"; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); }
+  .f46-limits-decided-sub { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+
+
+
+  .f46-limits-decided-tick[data-live] { background:rgba(var(--rp-ink-rgb),0.72); border-color:transparent; }
+  .f46-limits-decided-node .l { font:500 30px/1.15 "Inter"; }
+  .f46-limits-decided-chipx { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-tile); border-radius:6px; padding:9px 12px; }
+  /* autonomy: the call's two cards, left column (above the player's sheet, which covers the lower third while it asks) */
+  .f46-limits-decided-call { position:absolute; left:172px; width:400px; height:160px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); }
+  .f46-limits-decided-call.ch { border:2px solid var(--rp-ink); }
+  .f46-limits-decided-call.io { border:1px solid rgba(var(--rp-ink-rgb),0.3); }
+  .f46-limits-decided-call .k { position:absolute; left:26px; top:24px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-call .l { position:absolute; left:26px; right:18px; top:64px; font:400 40px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f46-limits-decided-call.io .l { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f46-limits-decided-chk { position:absolute; left:172px; top:548px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; letter-spacing:0.12em; text-transform:uppercase; }
+  .f46-limits-decided-chkp { position:absolute; left:172px; top:586px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-herok2 { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-slot.lift { border:2px solid var(--rp-ink); }
+  /* prototypes (data-plan-component="page": a depicted screen, exempt from the chrome's 26 px mono floor) */
+  .f46-limits-decided-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f46-limits-decided-mock-k { position:absolute; left:36px; top:30px; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f46-limits-decided-sq { position:absolute; left:36px; top:72px; font:400 52px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-oc { position:absolute; height:118px; box-sizing:border-box; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-oc .k { position:absolute; left:22px; top:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f46-limits-decided-oc .l { position:absolute; left:22px; top:52px; font:400 42px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-oc .l.cb { left:84px; top:38px; }
+  .f46-limits-decided-cbx { position:absolute; left:24px; top:38px; width:38px; height:38px; box-sizing:border-box; border-radius:6px; border:2px solid rgba(var(--rp-ink-rgb),0.62); background:var(--rp-paper); }
+  .f46-limits-decided-cbm { position:absolute; left:10px; top:2px; width:12px; height:22px; border-right:4px solid var(--rp-ink); border-bottom:4px solid var(--rp-ink); transform:rotate(45deg); }
+  .f46-limits-decided-btn { position:absolute; height:64px; padding:0 30px; border-radius:8px; border:2px solid var(--rp-ink); font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; }
+  .f46-limits-decided-btnf { position:absolute; left:-2px; top:-2px; right:-2px; bottom:-2px; border-radius:8px; background:var(--rp-ink); color:var(--rp-on-ink); font:500 28px/64px "Inter"; text-align:center; }
+  .f46-limits-decided-row { position:absolute; height:70px; border-radius:8px; background:var(--rp-tile); font:500 26px/70px "JetBrains Mono"; padding:0 24px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-term { position:absolute; background:var(--rp-slab); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 8px 24px rgba(var(--rp-shadow-rgb),0.10); overflow:hidden; }
+  .f46-limits-decided-termbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .f46-limits-decided-tl { position:absolute; left:40px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.9); white-space:pre; }
+  .f46-limits-decided-tl.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f46-limits-decided-tl .m { color:var(--rp-coral); }
+  .f46-limits-decided-kc { position:absolute; width:72px; height:72px; box-sizing:border-box; border-radius:10px; border:2px solid var(--rp-ink); border-bottom-width:5px; background:var(--rp-paper); font:500 34px/64px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f46-limits-decided-kl { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-seg { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.22); }
+  .f46-limits-decided-seg.cur { background:var(--rp-ink); }
+  .f46-limits-decided-mock-pc { position:absolute; height:48px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.25); font:500 24px/46px "Inter"; padding:0 14px 0 12px; box-sizing:border-box; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:var(--rp-paper); }
+  .f46-limits-decided-mock-pc b { font:500 22px/1 "JetBrains Mono"; margin-right:10px; color:var(--rp-ink); }
+  .f46-limits-decided-mock-pc.cur { background:var(--rp-tile); border-color:var(--rp-ink); color:var(--rp-ink); }
+  .f46-limits-decided-av { position:absolute; height:112px; box-sizing:border-box; border-radius:10px; border:1px solid rgba(var(--rp-ink-rgb),0.25); background:var(--rp-paper); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-av .kc2 { position:absolute; left:22px; top:22px; width:64px; height:64px; box-sizing:border-box; border-radius:8px; border:2px solid var(--rp-ink); border-bottom-width:4px; font:500 30px/56px "JetBrains Mono"; text-align:center; color:var(--rp-ink); }
+  .f46-limits-decided-av .t { position:absolute; left:108px; top:22px; font:500 32px/1.1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-av .s { position:absolute; left:108px; top:66px; font:400 24px/1.1 "Inter"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f46-limits-decided-field { position:absolute; height:70px; box-sizing:border-box; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.45); background:var(--rp-paper); font:400 30px/66px "Inter"; padding-left:20px; color:rgba(var(--rp-ink-rgb),0.5); white-space:nowrap; overflow:hidden; }
+  .f46-limits-decided-field .typed { color:var(--rp-ink); }
+  .f46-limits-decided-caret { display:inline-block; width:3px; height:34px; margin-left:2px; vertical-align:-7px; background:var(--rp-ink); }
+  .f46-limits-decided-res { position:absolute; top:260px; width:500px; height:330px; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f46-limits-decided-res .big { position:absolute; left:40px; top:56px; font:400 96px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-res .cap { position:absolute; left:40px; top:210px; font:500 28px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-gap { position:absolute; top:300px; width:760px; height:220px; box-sizing:border-box; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.35); }
+  .f46-limits-decided-gap .l { position:absolute; left:40px; top:52px; font:400 56px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-gap .s { position:absolute; left:40px; top:142px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-ls { position:absolute; left:0; width:1100px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f46-limits-decided-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f46-limits-decided-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-doc { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f46-limits-decided-fname { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-h { position:absolute; font:400 40px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-bar2 { position:absolute; height:16px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f46-limits-decided-drow { position:absolute; height:64px; border-radius:6px; background:var(--rp-tile); font:500 26px/64px "JetBrains Mono"; padding-left:22px; box-sizing:border-box; color:var(--rp-ink); white-space:nowrap; box-shadow:inset 6px 0 0 rgba(var(--rp-coral-rgb),0); }
+  .f46-limits-decided-mark { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+  .f46-limits-decided-mark path { fill:none; stroke:var(--rp-coral); stroke-width:6; stroke-linecap:round; stroke-linejoin:round; }
+  .f46-limits-decided-dec { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f46-limits-decided-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  /* ---- prototypes of the review player's own surfaces (data-plan-component="page": a depicted screen, small text is the page's own) ---- */
+  .f46-limits-decided-pg { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f46-limits-decided-lit { outline:4px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f46-limits-decided-scr { position:absolute; background:var(--rp-tile); overflow:hidden; }
+  .f46-limits-decided-mockmk { position:absolute; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.58); white-space:nowrap; }
+  .f46-limits-decided-mh { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-ms { position:absolute; font:400 26px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-mt { position:absolute; font:400 24px/1.35 "Inter"; color:var(--rp-ink); }
+  .f46-limits-decided-mockmm { position:absolute; font:500 22px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-mockmb { position:absolute; height:48px; padding:0 18px; border-radius:8px; border:2px solid var(--rp-ink); font:500 22px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); white-space:nowrap; box-sizing:border-box; }
+  .f46-limits-decided-mockmb.f { background:var(--rp-ink); color:var(--rp-on-ink); }
+  .f46-limits-decided-mockmb.off { opacity:0.45; }
+  .f46-limits-decided-mockmchip { position:absolute; height:50px; padding:0 16px; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.25); border-left:5px solid var(--rp-ink); background:var(--rp-paper); font:500 22px/48px "Inter"; color:var(--rp-ink); white-space:nowrap; box-sizing:border-box; }
+  .f46-limits-decided-mockmchip kbd, .f46-limits-decided-mockmb kbd { font:500 18px/1 "JetBrains Mono"; border:1px solid rgba(var(--rp-ink-rgb),0.3); border-bottom-width:3px; border-radius:4px; padding:2px 6px; margin-left:10px; }
+  .f46-limits-decided-mockmrow { position:absolute; left:0; right:0; height:46px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.1); font:400 22px/46px "Inter"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; padding:0 20px; box-sizing:border-box; box-shadow:inset 6px 0 0 rgba(var(--rp-ink-rgb),0); }
+  .f46-limits-decided-mockmrow .r { position:absolute; right:20px; font:500 20px/46px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f46-limits-decided-mockmrow.h { font:500 18px/46px "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.58); background:var(--rp-tile); }
+  .f46-limits-decided-mockmcode { position:absolute; left:0; right:0; height:42px; font:400 22px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; overflow:hidden; }
+  .f46-limits-decided-mockmcode .n { display:inline-block; width:64px; text-align:right; padding-right:18px; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f46-limits-decided-mbar { position:absolute; height:6px; border-radius:3px; background:rgba(var(--rp-ink-rgb),0.2); }
+  .f46-limits-decided-mfill { position:absolute; height:6px; border-radius:3px; background:var(--rp-ink); }
+  .f46-limits-decided-sec { position:absolute; left:0; right:0; padding:14px 22px 14px 26px; box-sizing:border-box; border-left:5px solid rgba(var(--rp-ink-rgb),0); }
+  .f46-limits-decided-sec .t { font:600 22px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-sec .b { margin-top:10px; height:12px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f46-limits-decided-mockfc { position:absolute; top:0; width:196px; height:236px; box-sizing:border-box; border-radius:10px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); }
+  .f46-limits-decided-mockfc .k { position:absolute; left:18px; top:20px; font:500 20px/1 "JetBrains Mono"; letter-spacing:0.1em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.6); }
+  .f46-limits-decided-mockfc .l { position:absolute; left:18px; right:14px; top:58px; font:400 32px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .f46-limits-decided-mockfc .g { position:absolute; left:18px; right:18px; height:10px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+  .f46-limits-decided-grey { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f46-limits-decided-trk { position:absolute; right:80px; top:92px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; text-align:right; }
+  .f46-limits-decided-lane { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-lane .n { position:absolute; left:32px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f46-limits-decided-lane .t { position:absolute; left:84px; font:500 40px/1.2 "Inter"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-st { position:absolute; width:180px; height:70px; box-sizing:border-box; border-radius:10px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.3); display:flex; align-items:center; justify-content:center; font:500 30px/1 "Inter"; color:var(--rp-ink); }
+  .f46-limits-decided-ind { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; transform:translateX(-100%); }
+  .f46-limits-decided-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; padding:0 28px; font:500 32px/1.15 "Inter"; color:var(--rp-ink); white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f46-limits-decided-tile .k { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); margin-right:18px; }
+  .f46-limits-decided-cell { position:absolute; box-sizing:border-box; border-radius:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); background:var(--rp-tile); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.55); display:flex; align-items:center; justify-content:center; }
+  .f46-limits-decided-big { position:absolute; font:400 88px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-kv { position:absolute; left:28px; right:28px; height:56px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 26px/56px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f46-limits-decided-kv b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); display:inline-block; width:130px; }
+  .f46-limits-decided-ln { position:absolute; left:0; right:0; height:52px; padding:0 28px; box-sizing:border-box; font:500 24px/52px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.08); }
+  .f46-limits-decided-ln .r { position:absolute; right:28px; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f46-limits-decided-ln .bug { color:var(--rp-ink); }
+  .f46-limits-decided-slot.dec .n { top:13px; } .f46-limits-decided-slot.dec .t { top:12px; } .f46-limits-decided-slot.dec .d { top:57px; left:76px; right:auto; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f46-limits-decided-mockmk { color:rgba(var(--rp-ink-rgb),0.68); }
+  .f46-limits-decided-ln.f46-limits-decided-lit, .f46-limits-decided-mockmcode.f46-limits-decided-lit { outline-offset:-3px; }
+  .f46-limits-decided-grid60 { position:absolute; width:70px; height:56px; box-sizing:border-box; border-radius:6px; }
+</style>
+
+<div id="root" data-composition-id="46-limits-decided" data-duration="21.63" data-width="1920" data-height="1080" data-plan-step="6">
+
+  <div class="clip f46-limits-decided-bg" id="f46-limits-decided-bg" data-start="0" data-duration="21.63" data-track-index="0"></div>
+
+  <div class="clip f46-limits-decided-scene" id="f46-limits-decided-scene" data-start="0" data-duration="21.63" data-track-index="1">
+
+  <div class="f46-limits-decided-kicker" id="f46-limits-decided-kicker">Step 6 · Decided by you</div>
+  <div class="f46-limits-decided-spine" id="f46-limits-decided-spine">
+    <div class="f46-limits-decided-tick" id="f46-limits-decided-tick-6" data-plan-step="6" data-done data-live style="top:35px"></div>
+    <div class="f46-limits-decided-tick" id="f46-limits-decided-tick-7" data-plan-step="7" data-done style="top:145px"></div>
+    <div class="f46-limits-decided-tick" id="f46-limits-decided-tick-8" data-plan-step="8" data-done style="top:255px"></div>
+    <div class="f46-limits-decided-tick" id="f46-limits-decided-tick-9" data-plan-step="9" data-done style="top:365px"></div>
+    <div class="f46-limits-decided-tick" id="f46-limits-decided-tick-10" data-plan-step="10" data-done style="top:475px"></div>
+  </div>
+  <div class="f46-limits-decided-lane" id="f46-limits-decided-l1" data-plan-step="6" style="left:200px; top:190px; width:1640px; height:120px"><span class="n" style="top:45px">1</span><span class="t" style="top:36px">File tools outside the repo</span><span class="f46-limits-decided-grey" style="left:760px; top:47px; color:var(--rp-ink)">→ refused by a hook</span><span class="f46-limits-decided-ind" id="f46-limits-decided-bb1" style="left:1608px; top:47px; color:var(--rp-coral-deep)">changed</span></div>
+  <div class="f46-limits-decided-lane" id="f46-limits-decided-l2" data-plan-step="6" style="left:200px; top:340px; width:1640px; height:120px"><span class="n" style="top:45px">2</span><span class="t" style="top:36px">A signed git commit</span><span class="f46-limits-decided-grey" style="left:760px; top:47px; color:var(--rp-ink)">→ outside: &quot;git commit *&quot;</span><span class="f46-limits-decided-ind" id="f46-limits-decided-bb2" style="left:1608px; top:47px; color:var(--rp-coral-deep)">built</span></div>
+  <div class="f46-limits-decided-lane" id="f46-limits-decided-l3" data-plan-step="6" style="left:200px; top:490px; width:1640px; height:120px"><span class="n" style="top:45px">3</span><span class="t" style="top:36px">No strict sandbox</span><span class="f46-limits-decided-grey" style="left:760px; top:47px; color:var(--rp-ink)">→ checked first; the review waits</span><span class="f46-limits-decided-ind" id="f46-limits-decided-bb3" style="left:1608px; top:47px; color:var(--rp-coral-deep)">built</span></div>
+  <div class="f46-limits-decided-chipx" id="f46-limits-decided-oa" style="left:200px; top:650px">codex, opencode: no sandbox check</div>
+  <div class="f46-limits-decided-grey" id="f46-limits-decided-ref" style="left:200px; top:724px">docs/reference.md · Other agents</div>
+  <div class="f46-limits-decided-grey" id="f46-limits-decided-nt" style="left:200px; top:790px">your answers, not calls: nothing to accept or flag</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "46-limits-decided";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], IR = __RP["ink-rgb"], TILE = __RP["tile"];
+  var $ = function (s) { return document.getElementById("f46-limits-decided-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to) { tl.fromTo(el, { opacity: 0 }, { opacity: to == null ? 1 : to, duration: 0.45, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, el, at, dur) { var L = lenOf(el); gsap.set(el, { strokeDasharray: L, strokeDashoffset: L }); tl.to(el, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f46-limits-decided-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.28)", borderColor: "rgba(0,0,0,0)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f46-limits-decided-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.72)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  pop(tl, $("kicker"), 0.1, 8);
+  tickOn(tl, 6, 0.12);
+  gsap.set([$("bb1"), $("bb2"), $("bb3")], { opacity: 0 });
+  pop(tl, $("l1"), 2.36, 12);
+  tl.to($("bb1"), { opacity: 1, duration: 0.35, ease: "power3.out" }, 4.15);
+  pop(tl, $("l2"), 5.73, 12);
+  pop(tl, $("l3"), 9.67, 12);
+  tl.to([$("bb2"), $("bb3")], { opacity: 1, duration: 0.35, stagger: 0.12, ease: "power3.out" }, 13.07);
+  tickDone(tl, 6, 13.07);
+  pop(tl, $("oa"), 14.33, 8);
+  fade(tl, $("ref"), 17.23);
+  fade(tl, $("nt"), 19.0);
+
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 21.110);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,114 @@
+# Deep dives: the video opens into HTML where a video falls short
+
+## The problem
+
+A plan video is good at the story: the problem, the parts, each step, each choice. It is bad at
+things you read at your own pace or poke at:
+
+- **Code.** A diff, an API contract, a schema. The walkthrough says "check `src/upload/parts.ts`
+  line 14", and the reviewer has to leave the player to find it.
+- **Exact values and long lists.** A risk table, twelve config keys, every file a step touches. On
+  screen for four seconds, they are gone before anyone reads them.
+- **Things you try.** A layout, an animation, a flow. The Bob Dylan video shows design prototypes
+  as pictures; you cannot click them.
+- **Skimming, searching, copying.** The text plan sits next to the video, but nothing links the two.
+
+HTML is good at exactly these ([The Unreasonable Effectiveness of HTML](https://thariqs.github.io/html-effectiveness/):
+annotated PRs, plans with data-flow diagrams and risk tables, clickable prototypes). HTML alone is
+still a page to read and scroll, which is why reelplanning chose video. This plan gets the pros of both:
+the video tells the story, and any moment that needs more opens into HTML without leaving the player.
+
+## Steps
+
+### Step 1 — Deep-dive beats
+
+A storyboard beat can carry `- detail: <name>`, which points at a page in the video project's
+`details/` folder. The plan map lists each detail with its frame, plan step and title. When the video
+reaches a beat that has a detail, the player shows an "Open" chip (key: E). Opening it pauses the video
+and shows the page. Closing it resumes where you were. The story never depends on a detail: the video
+must make sense to someone who opens none.
+
+### Step 2 — A small set of detail kinds
+
+The agent fills templates rather than writing each page from scratch:
+
+- **code**: a diff or a file excerpt with line numbers and margin notes;
+- **table**: rows and columns, sortable, with copyable cells;
+- **prototype**: a live HTML mock the reviewer can click (design choices become real options);
+- **plan section**: the step's full text from `plan.md`, so search and copy work.
+
+Each template is one self-contained HTML file in the look of the video's theme. The style guide
+says what goes into a detail instead of the video: anything with more than four rows, any code, any
+exact value the reviewer might copy, and anything to try rather than watch.
+
+### Step 3 — Comments inside a detail
+
+The review player's comment tools work in a detail. Select a line of code, a table row or an element
+of a prototype and comment on it. The comment is tied to the plan step, the detail and the line or
+row, and it reaches the agent like any other comment. resolve-plan lists it under its step with where
+it points ("`parts.ts` line 14: …").
+
+### Step 4 — Walkthroughs show the real code
+
+For a walkthrough video, the implement step writes a code detail per plan step from the real git diff
+of the build. Each call the agent made on its own is a margin note on the lines that carry it, and the
+"check" column links there. Accept and Flag work from inside the diff as well as from the beat.
+
+### Step 5 — The plan as a page, synced with the video
+
+Next to the video, the whole plan as one HTML page, with every step and decision. Clicking a step
+jumps the video there; playing the video highlights the step on screen. This is the "skim, search,
+copy" column of the comparison table in the README, finally linked to the video instead of sitting
+beside it.
+
+### Step 6 — Checked and bundled like the frames
+
+`frame-lint` fails a beat whose `detail` points at a missing page, and a detail that loads anything
+from outside the project. `bundle-player` and the hosted review page carry the details. The plan
+video of this plan is built with at least one detail of each kind, so the first reviewer of the
+feature is its first user.
+
+## Components touched
+
+- **The review player**: the Open chip, the detail panel, comments inside a detail, the synced plan page
+- **The plan-to-video skill**: the detail tags, the templates, the style guide's "detail or video" rule
+- **finish-project**: the plan map lists details; the lint checks them
+- **resolve-plan**: comments that point into a detail
+- **The implement step**: the per-step code detail for walkthroughs
+
+## Open questions for the reviewer
+
+1. **Where does a detail open?** (step 1)
+- **A · A panel beside the paused video.** You keep the frame in view while you read. Costs room: code
+  gets about half the width, and on a phone the panel covers the video anyway.
+- **B · Over the video, full size.** The most room for code and prototypes. Costs the frame: you lose
+  what the video was showing while you read.
+- **C · A new browser tab.** Simplest to build, and the page works on its own. Costs the review:
+  comments in the tab do not reach the player, and you have to come back.
+I recommend A, with B on phones: the point is to read the code in the context of the story.
+
+2. **Who writes a detail page?** (step 2)
+- **A · The agent writes each one as free HTML.** Anything is possible, like the html-effectiveness
+  examples. Costs consistency and tokens, and every page needs its own comment wiring.
+- **B · Only the four templates, filled with data.** Consistent, cheap, and comments work everywhere.
+  Costs anything the templates did not foresee.
+- **C · The templates, plus free HTML as an escape hatch.** Most details stay consistent; the odd one
+  that needs something new can have it. Costs a free page having weaker comments (whole-page only).
+I recommend C: the templates cover most plans, and prototypes especially will need freedom.
+
+3. **What code does a walkthrough show?** (step 4)
+- **A · The real diff for each step.** The reviewer sees everything that changed. Costs length: a big
+  step's diff is long, and the calls can get lost in it.
+- **B · Only the lines each call points at, with a few lines around them.** Short and focused on
+  what the reviewer is judging. Costs the rest of the change, which nobody sees in the video.
+I recommend A with the calls' lines expanded and the rest folded, so both are one click apart.
+
+## Decisions in force
+
+- **D-004** A pick-all answer plays one summary frame. A detail never replaces it; the summary frame may carry one.
+- **D-005** Rewinds and slow-downs are sent automatically. Opening a detail is not a rewind, and time spent in a detail is not counted as watching.
+
+## Not in this plan
+
+Rebuilding the example videos with details (that is the examples redo, after the lifecycle work).
+Editing code from inside a detail. Details in the system video.

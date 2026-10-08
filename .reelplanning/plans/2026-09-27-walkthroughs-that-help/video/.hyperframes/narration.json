@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "51ba068ef0a2db6e1481",
+      "text": "Quick check. A build changes the saved review file: each date moves from one field to two. The page looks the same. Does its walkthrough ask a quick check?",
+      "sha256": "e73485b8c80133121a98877b3c61c21dfbe402d88225dc6761141298b34d9138",
+      "duration_s": 9.024
+    },
+    "11": {
+      "key": "09a30cc379bcde5afeb6",
+      "text": "Step five is decided: one row per plan, with a Plan and Built switch. On step six's plan scenes, See it built opens the walkthrough at step six, running, not at its start. See the plan brings you back to step six's plan scene.",
+      "sha256": "a61c32dfb6e8ffe648e136161a97916233f857cb7f6c79827a952d554594d2eb",
+      "duration_s": 12.885
+    },
+    "12": {
+      "key": "a4b37c3698296f1ac67c",
+      "text": "Quick check. A small pull request makes the review page open in dark mode. What does it need?",
+      "sha256": "0919a4814d7f6d692228cf0b97a2168928a451c00ec7ee366036b067681f405d",
+      "duration_s": 5.248
+    },
+    "13": {
+      "key": "a3f3fd2a780e68a16e24",
+      "text": "Step six: measure it. The bar, over the next three walkthroughs: a pause holds you five seconds, and something gets flagged or said. If either half is missed, reel status says so, and the agent's next plan proposes dropping the walkthrough video, for you to approve like any plan. If you do, each plan's row shows what changed as text, with the list and its Flags. The plan video and the code check stay. If you don't, nothing changes. Click the status line for the whole of it.",
+      "sha256": "4000e64cd7de348979740553b1409c8a3010c0562f08da3b4133c2258dfef08f",
+      "duration_s": 23.531
+    },
+    "14": {
+      "key": "85d365b735354cb29cb3",
+      "text": "Quick check. You're in the walkthrough, watching the step that moved the Save button run, and press See the plan. Where do you land?",
+      "sha256": "89621ea932eed5f550b79815f58af4c23ac7d0faeb422751700176df07892fdf",
+      "duration_s": 6.123
+    },
+    "15": {
+      "key": "452d643060829def8cc3",
+      "text": "Step seven. The system video changes only the scenes the new rule makes wrong, and gets a bit shorter where it's easy: its two scenes on what stops the walkthrough become one. About seven forty. Eight minutes stays a soft target: the build warns, and nothing is cut just to fit.",
+      "sha256": "184a612cfafcf7f9de4bc60710a456ee251dc4063d5f9fbea2e55bd84e94ab3d",
+      "duration_s": 15.317
+    },
+    "16": {
+      "key": "3ac440ca6c7ea39207bf",
+      "text": "Quick check. The bar is missed, and the next plan proposes dropping walkthrough videos. You ask for changes to that plan. What happens to walkthroughs?",
+      "sha256": "b58af7e66266dcaeb4d090a41be9c68b2880cfe64f5338d7083086d4a34ddd37",
+      "duration_s": 8.213
+    },
+    "17": {
+      "key": "def8e08737dae3b77a0d",
+      "text": "Quick check. A plan adds a twenty second scene to the system video, which is already at its target. What else must the plan do?",
+      "sha256": "169e376c8666c0ca1c40da227ca46a7b399323c9a99104e876eee539057c99d0",
+      "duration_s": 7.061
+    },
+    "18": {
+      "key": "b8957f51b8ad809a4b89",
+      "text": "That is the plan: seven steps, and every question decided. The walkthrough shows the change running, on the screen or in a real run, pauses where you'd notice, sits beside its plan, and we measure whether you look. Draw on any step to leave a note, or approve.",
+      "sha256": "0a5068d2c672a12e928a1a6ed1315ba094e544b1347534232dd5fa8b3332c94a",
+      "duration_s": 14.315
+    },
+    "01": {
+      "key": "e99d122ec60a10788260",
+      "text": "After a plan is built, the walkthrough video goes through what landed, and pauses at each choice the agent made on its own, for you to accept or flag. The owner, on the last few: I just end up spamming accept.",
+      "sha256": "1baf77262c4e882d7528107f34572160757c9ee005a8c9c667152ef376ae906d",
+      "duration_s": 11.819
+    },
+    "02": {
+      "key": "c0fae02613d5a21607d8",
+      "text": "You took all four recommendations, so no question is left. You asked three things: aren't backend changes important too, what does dropping the video mean, and could the system video be a bit shorter. Each is now in the plan.",
+      "sha256": "33c7173dec7b4642e88d088dd6a93f94c949cea7e0b0da8eb42998448df3717d",
+      "duration_s": 12.629
+    },
+    "03": {
+      "key": "e9817d0bec5545d4ea5c",
+      "text": "Four changes now. The walkthrough shows the change running: steps one and three. What you'd notice pauses it, pull requests too: steps two and four. The plan and what was built sit together: step five. And we measure it: steps six and seven.",
+      "sha256": "e1233ccdbcc584455f3eea55fd82c0bb9378c7cd7a455fe16eaa614b82717909",
+      "duration_s": 12.971
+    },
+    "04": {
+      "key": "2009e1f895b1e3013b73",
+      "text": "Earlier plans lead here. Close the lifecycle made the walkthrough. Fewer, better stops set what pauses today. Better visuals put the real thing on screen. Contributing set when a pull request needs a video.",
+      "sha256": "7212de4b76d9cc3aef485bfb07f682058840260c2aa0fcbbd77943f81a571afc",
+      "duration_s": 12.011
+    },
+    "05": {
+      "key": "76c6b310cc7be8f217dc",
+      "text": "Step one is decided: after the build, the walkthrough shows each change running, before and after. On the screen: the corner chip before, the tab after. Or in a real run, when it happens behind the page: the saved file before and after, a command's output, a migration on a copy of real data.",
+      "sha256": "80654081c967d32dc705bcb108c44da422f29c5e9958f50cb08957ae283aacb1",
+      "duration_s": 17.024
+    },
+    "06": {
+      "key": "c1a3ba8fc034f2431955",
+      "text": "Step two is decided, with no fixed count. An off-plan change always pauses. So does a choice you'd notice, like the Save button moving, or can't easily undo, like saved reviews moving to a new file layout. The line: split a long file in two, and you see the same page, press the same buttons, and the same data sits on disk. Nothing you see or do changes, so it goes on the list, not judged.",
+      "sha256": "7df361b49cf9a578c8fdfea7556e18e6b7c0711cfe5b1c183700308ff418306c",
+      "duration_s": 22.187
+    },
+    "07": {
+      "key": "7ac6d041f8dbfe1f87d3",
+      "text": "Step three is decided: a quick check where there's something to predict, just before it runs. On the screen: you press Escape with a note typed; what happens? Behind the page: after the change, what does the saved file look like? Then the run shows it. Only a rename or a split file has nothing to predict.",
+      "sha256": "1689e9ba16dc1eb1865928df4fa0b7b1aa79359d3b15a8c2f42a7d2f83628fa3",
+      "duration_s": 16.64
+    },
+    "08": {
+      "key": "a1e80addd1ffbf870c9b",
+      "text": "Quick check. A build moves the Send button to the top, renames an inside function, and changes how saved reviews are stored on disk. Which of those pause its walkthrough?",
+      "sha256": "501b5e6fe96de5cd4d563aa930e3ed3ec84f6d85dfa82baa51c7ef2d50e7f571",
+      "duration_s": 9.6
+    },
+    "09": {
+      "key": "b1c44573009f68f3d4e9",
+      "text": "Step four is decided: pull requests get the short walkthrough. A small one needs it only for a choice you'd notice or can't easily undo, like a default you'd see change. Any other choice is a line in its text, and reel pr-check checks for it.",
+      "sha256": "d9865cd8b6de8e84bd1b422d2a09315b12c2883cfd12508d49d497b0254fba88",
+      "duration_s": 14.059
+    }
+  }
+}

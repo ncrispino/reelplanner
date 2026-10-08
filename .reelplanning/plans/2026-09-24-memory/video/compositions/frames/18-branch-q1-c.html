@@ -1,0 +1,141 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f18-branch-q1-c-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f18-branch-q1-c-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f18-branch-q1-c-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f18-branch-q1-c-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f18-branch-q1-c-chip.lit { color:var(--rp-coral-deep); }
+  .f18-branch-q1-c-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f18-branch-q1-c-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18-branch-q1-c-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18-branch-q1-c-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f18-branch-q1-c-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f18-branch-q1-c-lines path.ink { stroke:var(--rp-ink); }
+  .f18-branch-q1-c-lines path.dashed { stroke-dasharray:10 10; }
+  .f18-branch-q1-c-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f18-branch-q1-c-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f18-branch-q1-c-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f18-branch-q1-c-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f18-branch-q1-c-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f18-branch-q1-c-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f18-branch-q1-c-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f18-branch-q1-c-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f18-branch-q1-c-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f18-branch-q1-c-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f18-branch-q1-c-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f18-branch-q1-c-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f18-branch-q1-c-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18-branch-q1-c-slot.dec .n { top:13px; } .f18-branch-q1-c-slot.dec .t { top:12px; }
+  .f18-branch-q1-c-slot:not([data-filled]) .n, .f18-branch-q1-c-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f18-branch-q1-c-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18-branch-q1-c-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f18-branch-q1-c-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f18-branch-q1-c-opt.row .k { top:30px; } .f18-branch-q1-c-opt.row .l { left:84px; top:22px; }
+  .f18-branch-q1-c-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f18-branch-q1-c-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18-branch-q1-c-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f18-branch-q1-c-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f18-branch-q1-c-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f18-branch-q1-c-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18-branch-q1-c-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f18-branch-q1-c-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f18-branch-q1-c-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f18-branch-q1-c-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f18-branch-q1-c-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f18-branch-q1-c-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f18-branch-q1-c-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f18-branch-q1-c-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f18-branch-q1-c-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f18-branch-q1-c-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f18-branch-q1-c-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f18-branch-q1-c-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f18-branch-q1-c-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f18-branch-q1-c-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f18-branch-q1-c-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f18-branch-q1-c-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f18-branch-q1-c-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f18-branch-q1-c-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f18-branch-q1-c-box.center { justify-content:center; }
+  .f18-branch-q1-c-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f18-branch-q1-c-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f18-branch-q1-c-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f18-branch-q1-c-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f18-branch-q1-c-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f18-branch-q1-c-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f18-branch-q1-c-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f18-branch-q1-c-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f18-branch-q1-c-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f18-branch-q1-c-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f18-branch-q1-c-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="18-branch-q1-c" data-duration="7" data-width="1920" data-height="1080">
+
+  <div class="clip f18-branch-q1-c-bg" id="f18-branch-q1-c-bg" data-start="0" data-duration="7" data-track-index="0"></div>
+
+  <div class="clip f18-branch-q1-c-scene" id="f18-branch-q1-c-scene" data-start="0" data-duration="7" data-track-index="1">
+  <div class="f18-branch-q1-c-kicker" id="f18-branch-q1-c-kicker">If C · Not yet</div>
+  <div style="position:absolute; left:360px; top:200px; width:1200px; height:540px" id="f18-branch-q1-c-list">
+    <div class="f18-branch-q1-c-ls" id="f18-branch-q1-c-s1" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Who, and which skill</span></div>
+    <div class="f18-branch-q1-c-ls" id="f18-branch-q1-c-s2" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">The repo's memory</span><span class="d dk" id="f18-branch-q1-c-only">the only memory</span></div>
+    <div class="f18-branch-q1-c-ls" id="f18-branch-q1-c-s3" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Your memory, across repos</span><span class="d dk" id="f18-branch-q1-c-later">a later plan</span></div>
+    <div class="f18-branch-q1-c-ls" id="f18-branch-q1-c-s4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Misses decide what stops</span></div>
+    <div class="f18-branch-q1-c-ls" id="f18-branch-q1-c-s5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">A retro you start</span></div>
+  </div>
+  <div class="f18-branch-q1-c-strike" id="f18-branch-q1-c-x" style="left:452px; top:465px; width:450px"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "18-branch-q1-c";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f18-branch-q1-c-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("list"), 0.2, 10);
+  gsap.set($("later"), { opacity: 0 });
+  gsap.set($("only"), { opacity: 0 });
+  fade(tl, $("s3"), 1.07, 0.4);
+  grow(tl, $("x"), 1.07);
+  fade(tl, $("later"), 1.27);
+  lit(tl, $("s2"), 3.53);
+  fade(tl, $("only"), 3.73);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 6.499);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

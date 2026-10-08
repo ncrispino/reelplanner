@@ -1,0 +1,191 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "so for each of these they are non autonomous right like i have to go trhough them? i guess its hard to compare them in a scientific way which is fine, we'll just try to do our best. like the point is that interaction is easier in video, so this is more like a case study i would say. we want to genearlly try to follow same kinds of feedback choices or something?",
+      "frame": {
+        "compositionId": "11-branch-q1-a",
+        "index": 11,
+        "title": "If A: all the way"
+      },
+      "id": "amuivwrrwwed2",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 153.87
+    },
+    {
+      "about": "",
+      "comment": "oh and also we just want to double check that when we do plan the agent sees like an empty dir, it has no way of looking at other plans or other htmls that might already have been done . we might need to containerize if we want",
+      "frame": {
+        "compositionId": "28-the-plan",
+        "index": 28,
+        "title": "The plan"
+      },
+      "id": "amuivzsl1005u",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [
+          1,
+          2,
+          3
+        ],
+        "step": null
+      },
+      "t": 328.03
+    }
+  ],
+  "autonomy": [],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 0
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-09-26T21:09:16.340Z",
+      "id": "q1",
+      "label": "All the way, fixes included",
+      "option": "a",
+      "planStep": 2,
+      "question": "Do the text-only and HTML arms go all the way to a finished site?",
+      "recommended": true,
+      "t": 148.95
+    },
+    {
+      "decidedAt": "2026-09-26T21:11:45.436Z",
+      "id": "q2",
+      "label": "You, ours first",
+      "option": "b",
+      "planStep": 3,
+      "question": "Who reviews each arm, and in what order?",
+      "recommended": true,
+      "t": 230.35
+    },
+    {
+      "decidedAt": "2026-09-26T21:12:46.311Z",
+      "id": "q3",
+      "label": "Rubric, blind judge, your rank",
+      "note": "yes we will use rubric but its also about the planning process, and also about what we think might be different than rubric",
+      "option": "a",
+      "planStep": 4,
+      "question": "How is where we end up judged?",
+      "recommended": true,
+      "t": 293.85
+    }
+  ],
+  "exportedAt": "2026-09-26T21:13:36.155Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "quizzes": [
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-26T21:08:45.255Z",
+      "correct": true,
+      "id": "k1",
+      "t": 102.85
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-26T21:09:04.270Z",
+      "correct": true,
+      "id": "k2",
+      "t": 130.85
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-26T21:11:34.731Z",
+      "correct": true,
+      "id": "k3",
+      "t": 213.85
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-26T21:12:10.727Z",
+      "correct": true,
+      "id": "k4",
+      "t": 275.45
+    }
+  ],
+  "src": "2026-09-26-case-study/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 330.8,
+    "firstPlayAt": "2026-09-26T21:07:44.490Z",
+    "maxTimeReached": 330.8,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "video": "2026-09-26-case-study"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

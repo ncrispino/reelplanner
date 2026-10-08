@@ -1,0 +1,145 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .m04-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .m04-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .m04-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m04-kick { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m04-h { position:absolute; font:400 72px/1.05 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .m04-big { position:absolute; font:400 50px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-side { position:absolute; font:400 30px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.78); white-space:nowrap; }
+  .m04-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .m04-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m04-t code, .m04-s code, .m04-row3 code, .m04-frow code { font-family:"JetBrains Mono"; font-size:0.9em; }
+  .m04-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 30px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:26px; white-space:nowrap; }
+  .m04-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .m04-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 27px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .m04-pin.hot { background:var(--rp-coral); }
+  .m04-pin em { font-style:normal; }
+  .m04-card, .m04-tile { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .m04-tile { background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.3); }
+  .m04-quote { position:absolute; left:48px; top:44px; right:48px; font:400 36px/1.5 "Inter"; color:var(--rp-ink); }
+  .m04-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:9px; }
+  .m04-cl { position:absolute; left:36px; top:32px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m04-cl code { font-family:"JetBrains Mono"; }
+  .m04-ct { position:absolute; left:36px; top:92px; right:36px; font:400 48px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .m04-cs { position:absolute; left:36px; bottom:36px; height:48px; padding:0 18px; font:400 28px/44px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:24px; box-sizing:border-box; white-space:nowrap; }
+  .m04-cc { position:absolute; left:36px; top:90px; font:400 30px/1.55 "JetBrains Mono"; color:var(--rp-ink); white-space:pre; }
+  .m04-dh { position:absolute; left:36px; font:400 38px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-dt { position:absolute; left:36px; right:30px; font:400 30px/1.35 "Inter"; color:var(--rp-ink); }
+  .m04-dm { position:absolute; left:36px; right:30px; font:400 28px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m04-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .m04-bar { position:absolute; left:0; top:0; right:0; height:48px; background:var(--rp-slab-bar); }
+  .m04-bt { position:absolute; left:24px; top:12px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.7); white-space:nowrap; }
+  .m04-code { position:absolute; font:400 30px/1.45 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .m04-code .d { color:rgba(var(--rp-slab-ink-rgb),0.82); }
+  .m04-code .ok { color:var(--rp-syn-add); }
+  .m04-code .w { color:var(--rp-syn-num); }
+  .m04-code .x { color:var(--rp-syn-del); }
+  .m04-hair { position:absolute; height:2px; background:rgba(var(--rp-ink-rgb),0.3); }
+  .m04-strk { position:absolute; height:4px; background:var(--rp-coral); border-radius:2px; }
+  .m04-strk.ink { background:var(--rp-ink); }
+  .m04-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; }
+  .m04-rg { position:absolute; box-sizing:border-box; border:4px solid var(--rp-coral); border-radius:12px; }
+  .m04-plan { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); border:2px dashed rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .m04-row3, .m04-row2 { position:absolute; width:1600px; height:88px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m04-row3 .k, .m04-row2 .k { position:absolute; left:0; top:26px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-row3 .v, .m04-row2 .v { position:absolute; left:560px; top:30px; font:400 32px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m04-row2 { height:120px; }
+  .m04-row2 .k { top:40px; font-size:48px; }
+  .m04-row2 .v { left:720px; top:46px; }
+  .m04-ask { position:absolute; width:760px; height:80px; box-sizing:border-box; padding:0 28px; font:400 32px/76px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.35); border-radius:12px; white-space:nowrap; background:var(--rp-paper); }
+  .m04-thead, .m04-trow { position:absolute; width:1600px; }
+  .m04-thead span { position:absolute; top:0; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .m04-trow { height:130px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m04-trow span { position:absolute; top:40px; white-space:nowrap; }
+  .m04-trow .c1 { font:400 44px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .m04-trow .c2 { font:400 32px/1.3 "Inter"; color:var(--rp-ink); }
+  .m04-trow .c3 { font:400 30px/1.35 "JetBrains Mono"; color:var(--rp-ink); }
+  .m04-trow .c4 { font:400 30px/1.35 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); }
+  .m04-thead .c1, .m04-trow .c1 { left:0; } .m04-thead .c2, .m04-trow .c2 { left:400px; } .m04-thead .c3, .m04-trow .c3 { left:960px; } .m04-thead .c4, .m04-trow .c4 { left:1480px; }
+  .m04-bubble { position:absolute; height:72px; padding:0 30px; box-sizing:border-box; font:400 34px/70px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:36px 36px 36px 8px; white-space:nowrap; }
+  .m04-rk { position:absolute; left:32px; top:36px; height:48px; padding:0 18px; box-sizing:border-box; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:6px; white-space:nowrap; }
+  .m04-rt { position:absolute; left:290px; top:34px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-rl { position:absolute; left:760px; top:44px; font:400 30px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m04-rs { position:absolute; left:930px; top:44px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); white-space:nowrap; }
+  .m04-btn { position:absolute; height:84px; box-sizing:border-box; font:500 36px/84px "Inter"; text-align:center; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:10px; white-space:nowrap; }
+  .m04-btn.ghost { color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); line-height:80px; }
+  .m04-frow { position:absolute; width:680px; height:120px; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m04-frow .k { position:absolute; left:0; top:26px; font:400 30px/1.2 "Inter"; color:rgba(var(--rp-ink-rgb),0.74); white-space:nowrap; }
+  .m04-frow .v { position:absolute; left:0; top:66px; font:400 44px/1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-ctx { position:absolute; left:180px; top:80px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
+  .m04-q code, .m04-opt code { font-family:"JetBrains Mono"; font-size:0.8em; }
+  .m04-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .m04-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .m04-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m04-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 48px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .m04-opt .c { position:absolute; left:30px; top:200px; right:26px; font:400 28px/1.25 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .m04-ring { position:absolute; box-sizing:border-box; border-radius:14px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .m04-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .m04-st { position:absolute; left:160px; width:1600px; height:120px; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .m04-st .n { position:absolute; left:0; top:44px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.66); }
+  .m04-st .t { position:absolute; left:150px; top:32px; font:400 46px/1.1 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .m04-st .d, .m04-st .r { position:absolute; right:0; top:34px; height:48px; padding:0 20px; font:400 28px/44px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.6); border-radius:24px; white-space:nowrap; box-sizing:border-box; }
+  .m04-st .r { border-color:transparent; padding-right:0; color:rgba(var(--rp-ink-rgb),0.72); }
+  .m04-struck { text-decoration:line-through; text-decoration-thickness:5px; text-decoration-color:var(--rp-ink); color:rgba(var(--rp-ink-rgb),0.85); }
+  .m04-arr { position:absolute; font:400 28px/1 "Inter"; color:rgba(var(--rp-ink-rgb),0.55); }
+  .m04-dim { color:rgba(var(--rp-ink-rgb),0.7); }
+</style>
+
+<div id="root" data-composition-id="04-what-changes" data-band="bottom" data-duration="17.792" data-width="1920" data-height="1080">
+
+  <div class="clip m04-bg" id="m04-bg" data-start="0" data-duration="17.792" data-track-index="0"></div>
+
+  <div class="clip m04-scene" id="m04-scene" data-start="0" data-duration="17.792" data-track-index="1">
+    <div class="m04-lab" id="m04-lab"  style="left:160px; top:130px">the plan · three changes</div>
+    <div class="m04-big" id="m04-a0"  style="left:160px; top:230px">Ask for an explainer</div>
+    <div class="m04-side" id="m04-b0"  style="left:1100px; top:245px">steps 1, 2</div>
+    <div class="m04-hair" id="m04-h0"  style="left:160px; top:330px; width:1600px"></div>
+    <div class="m04-big" id="m04-a1"  style="left:160px; top:430px">Review it, then plan it if you want</div>
+    <div class="m04-side" id="m04-b1"  style="left:1100px; top:445px">steps 3, 4</div>
+    <div class="m04-hair" id="m04-h1"  style="left:160px; top:530px; width:1600px"></div>
+    <div class="m04-big" id="m04-a2"  style="left:160px; top:630px">Honest and private</div>
+    <div class="m04-side" id="m04-b2"  style="left:1100px; top:645px">step 5</div>
+    <div class="m04-hair" id="m04-h2"  style="left:160px; top:730px; width:1600px"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "04-what-changes";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#m04-lab", { opacity: 0, y: 12 });
+  tl.to("#m04-lab", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.10);
+  gsap.set("#m04-a0", { opacity: 0, y: 12 });
+  tl.to("#m04-a0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.27);
+  gsap.set("#m04-b0", { opacity: 0, y: 12 });
+  tl.to("#m04-b0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.27);
+  gsap.set("#m04-h0", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m04-h0", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 3.27);
+  gsap.set("#m04-a1", { opacity: 0, y: 12 });
+  tl.to("#m04-a1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.06);
+  gsap.set("#m04-b1", { opacity: 0, y: 12 });
+  tl.to("#m04-b1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.06);
+  gsap.set("#m04-h1", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m04-h1", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 9.06);
+  gsap.set("#m04-a2", { opacity: 0, y: 12 });
+  tl.to("#m04-a2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.45);
+  gsap.set("#m04-b2", { opacity: 0, y: 12 });
+  tl.to("#m04-b2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.45);
+  gsap.set("#m04-h2", { scaleX: 0, transformOrigin: "0% 50%" });
+  tl.to("#m04-h2", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 13.45);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

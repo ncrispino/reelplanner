@@ -1,0 +1,319 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "39-end",
+        "index": 39,
+        "title": "Flag a step, or accept"
+      },
+      "id": "amuinoanlcjre",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 296.43
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "The frame's cards are answered through transparent buttons the player lays over them in its own page, placed from each card's box in the frame (percent of the stage), with the hover and focus ring drawn by the player",
+      "id": "a1",
+      "judgedAt": "2026-09-26T17:10:50.312Z",
+      "planStep": 1,
+      "t": 48.398,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Cards are matched by data-option, then by data-plan-option (the letter the system video, every walkthrough check and the bob-dylan check already carry), then by an id ending -opt-a / -option-a / -choice-a / -chip-a, and only then by the order of the elements whose class ends in -opt; a rule counts only when it finds exactly one card per option, each with a box",
+      "id": "a2",
+      "judgedAt": "2026-09-26T17:10:54.528Z",
+      "planStep": 1,
+      "t": 56.291,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A card on the frame shows its state as its button in the (hidden) sheet does: ticked or your answer ringed in ink, the right answer to an answered quick check in coral, with a small tag (\"picked\", \"your answer\", \"the answer\"); \"recommended\" is not tagged, the frame says it",
+      "id": "a6",
+      "judgedAt": "2026-09-26T17:10:58.799Z",
+      "planStep": 1,
+      "t": 64.056,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"Show the frame\" is kept in the strip, and there it puts the question aside: the strip folds to one line (\"Still to answer\") and the cards and keys stop answering, so the frame can be marked; a mark tool that is on also takes the clicks from the cards (changed after review: under the video the band folds to that one line in its kept room; in the frame it folds to a pill in the corner of the empty eighth, m3)",
+      "id": "a11",
+      "judgedAt": "2026-09-26T17:11:03.288Z",
+      "planStep": 1,
+      "t": 72.12,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A video leaves its lowest eighth for the band by data-band=\"bottom\" on each frame's root (or once, on the video's own root); the band goes in the frame only when every frame that asks something carries it, decided once, when the runtime has mounted those frames (looked for up to about 8 s after ready); until then, and otherwise, it goes under the video",
+      "id": "a13",
+      "judgedAt": "2026-09-26T17:11:24.818Z",
+      "planStep": 2,
+      "t": 104.216,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The band is an eighth of the video high, never under 72 px. Under the video its room (.bandroom) is kept for the whole video and the stage's height formula leaves exactly it (--band-k 8/9, --band-min 72 px), so the page still fits the window; what does not fit scrolls inside the band rather than growing it. On a phone it is in the page's flow, at least 104 px, and grows by a line when needed",
+      "id": "a14",
+      "judgedAt": "2026-09-26T17:11:27.890Z",
+      "planStep": 2,
+      "t": 110.68,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The band's layout: two lines. First the kicker, the question in its own words on one line in the serif (the whole question in its title) and Show the frame; then the hint and the acts, the act that goes on (Continue, Confirm) at the right in ink. Answered, the feedback (two lines at most) takes the question's place. Type scales with the video (cqw): the question 15–22 px, buttons 30–40 px",
+      "id": "a15",
+      "judgedAt": "2026-09-26T17:11:31.292Z",
+      "planStep": 2,
+      "t": 118.104,
+      "verdict": "accept"
+    },
+    {
+      "chose": "In the frame, the captions are hidden while the band is up (not while it is folded), and come back when it goes",
+      "id": "a16",
+      "judgedAt": "2026-09-26T17:11:34.438Z",
+      "planStep": 2,
+      "t": 124.76,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A call always gets the strip, though its frame has no cards: Accept (A) and Flag (B) in it, and the call's \"Instead of\", \"Why\" and \"Check\" leave the player for the kicker's tooltip, since the call's frame shows them (changed after review: the strip is now the band; what the call chose is its one line of words there, in the serif, and its Accept and Flag are clear buttons)",
+      "id": "a3",
+      "judgedAt": "2026-09-26T17:11:39.626Z",
+      "planStep": 2,
+      "t": 131.437,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A group of calls in the strip: Accept all, then one \"Flag A21\" per call, named by its id as the frame names it; what each chose and replaced is in its button's title (changed after review: in the band, with \"N more calls from this part.\" as its line of words)",
+      "id": "a4",
+      "judgedAt": "2026-09-26T17:11:42.417Z",
+      "planStep": 2,
+      "t": 137.837,
+      "verdict": "accept"
+    },
+    {
+      "chose": "On a touch screen the strip says \"Tap a card.\" with no keys named, and its buttons drop their key caps (changed after review: the band's words; on a phone every key cap in the band goes, and its buttons are 44 px high)",
+      "id": "a12",
+      "judgedAt": "2026-09-26T17:11:44.834Z",
+      "planStep": 2,
+      "t": 143.128,
+      "verdict": "accept"
+    },
+    {
+      "chose": "While the strip is up the stage gives it its height, so the page still fits the window: the frame shrinks by the strip (about 52 px at 1440×1000; more while an answered quick check shows its explanation, which takes a second line). On a phone the strip is simply in the page's flow (changed after review: removed; the owner saw the video shrink and grow back. The band's room is kept for the whole video instead, A14, and the video never changes size)",
+      "id": "a5",
+      "judgedAt": "2026-09-26T17:11:47.949Z",
+      "planStep": 2,
+      "t": 150.04,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The 10 s wait is for a quick check answered just now; a question met again, already answered, keeps 4 s",
+      "id": "a17",
+      "judgedAt": "2026-09-26T17:12:13.502Z",
+      "planStep": 5,
+      "t": 179.635,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"On the band\" is the pointer over it, or the keyboard on any control in it but Continue; while held the count starts again from the top when let go, and the hint says \"Waits while you are here\". Only the band: the sheet (a frame with no cards) keeps counting under a resting pointer",
+      "id": "a18",
+      "judgedAt": "2026-09-26T17:12:16.294Z",
+      "planStep": 5,
+      "t": 185.608,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"Back to where this was explained\": explained_at is a frame number or a composition id, lifted into the plan map as that frame's start (explainedAt, explainedFrame; one naming no frame warns and is left out). Without it: the first beat of the check's plan_step before it that is not a branch or a quick check, else its part's start. The video plays from there at once. In the record it is on the answered quick checks' rows, the only ones listed there",
+      "id": "a19",
+      "judgedAt": "2026-09-26T17:12:19.077Z",
+      "planStep": 5,
+      "t": 192.179,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The trip back is sent as a rewind (D-005)",
+      "id": "a20",
+      "judgedAt": "2026-09-26T17:12:21.286Z",
+      "planStep": 5,
+      "t": 195.976,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Reached again after \"Back to where this was explained\", a quick check waits with no count even when it was answered, as when opened from its mark",
+      "id": "a21",
+      "judgedAt": "2026-09-26T17:12:24.092Z",
+      "planStep": 5,
+      "t": 202.376,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An open question the video leaves while playing (Play pressed with it up, or a seek away and then Play) gives way, and stops the video again when reached; a seek while paused still leaves it up, the frame moving under it; the rule that a question asked once and left open is never asked again is dropped",
+      "id": "a22",
+      "judgedAt": "2026-09-26T17:12:27.470Z",
+      "planStep": 5,
+      "t": 210.269,
+      "verdict": "accept"
+    },
+    {
+      "chose": "\"change\" opens a small editor under the answer: the question's options (a click saves; a pick-all ticks, then \"Save the picks\") and a line for own words (Enter saves); Esc closes it unchanged; no \"Explain this more\" there. Changing it while that question is up on the video closes the question",
+      "id": "a7",
+      "judgedAt": "2026-09-26T17:12:40.375Z",
+      "planStep": 3,
+      "t": 232.083,
+      "verdict": "accept"
+    },
+    {
+      "chose": "An answer that was in own words, changed in the record, drops the comment those words made at the question; new own words make a new one",
+      "id": "a8",
+      "judgedAt": "2026-09-26T17:12:43.349Z",
+      "planStep": 3,
+      "t": 238.526,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A call's verdict switches with one link beside it, \"accept instead\" or \"flag instead\"; a call answered in own words can be switched to either, and its comment goes",
+      "id": "a9",
+      "judgedAt": "2026-09-26T17:19:59.752Z",
+      "planStep": 3,
+      "t": 243.689,
+      "verdict": "accept"
+    },
+    {
+      "chose": "After a send, \"Send the change\" is offered at the head of the record as well as in the Finish panel, on the local review page only",
+      "id": "a10",
+      "judgedAt": "2026-09-26T17:20:03.379Z",
+      "planStep": 3,
+      "t": 249.705,
+      "verdict": "accept"
+    },
+    {
+      "chose": "The new spec plays four videos through (this plan's, the revise-loop plan and walkthrough, the system video); the other videos on the review page were checked once, by a script, for their cards being matched (all were), and are not in the spec",
+      "id": "d1",
+      "judgedAt": "2026-09-26T17:20:11.823Z",
+      "planStep": 4,
+      "t": 269.012,
+      "verdict": "accept"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 100,
+    "wrongChecks": 4
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-26T17:20:37.651Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-25T19:58:57.710Z",
+      "correct": false,
+      "id": "k1",
+      "t": 77.56
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:12:00.028Z",
+      "correct": false,
+      "id": "k2",
+      "t": 154.563
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-26T17:12:31.782Z",
+      "correct": false,
+      "id": "k3",
+      "t": 215.197
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-26T17:20:24.207Z",
+      "correct": false,
+      "id": "k4",
+      "t": 273.748
+    }
+  ],
+  "src": "2026-09-24-answer-on-the-video--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "details": [
+      {
+        "name": "band-places",
+        "openedAt": "2026-09-25T19:59:06.468Z",
+        "seconds": 1.8
+      }
+    ],
+    "durationSeconds": 297.83,
+    "firstPlayAt": "2026-09-26T17:10:24.181Z",
+    "maxTimeReached": 297.83,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

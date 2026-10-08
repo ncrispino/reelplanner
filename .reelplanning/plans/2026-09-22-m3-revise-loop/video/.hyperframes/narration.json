@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "562868ccb1f8f0460f77",
+      "text": "Step three needs step two. When you press Finish, the review reaches the main session: from the hosted page, Claude only, through its hook; from the local page, through the review server the session waits on. Only if no session is open does the server start a fresh, headless run: claude dash p, codex exec, or opencode run. Nothing is lost: the repo's reelplanning folder is the memory.",
+      "sha256": "faa794f25cea0edb11511c37b86e5a11ed9339777913efd845a8b6777a31885d",
+      "duration_s": 21.461
+    },
+    "11": {
+      "key": "5d153d195b5a092cdf37",
+      "text": "How far the first version goes beyond Claude Code was decided in your review: one setting, tested with Claude Code. The config names claude dash p; changing that one line runs Codex or opencode instead.",
+      "sha256": "ec2f06f49279079cfbda43a372991532cbaac0d3bab66742dde7ea0ae2cff5c7",
+      "duration_s": 12.544
+    },
+    "12": {
+      "key": "0e461728caa4a8bdbca2",
+      "text": "Next, part three: what a review of the system video can change.",
+      "sha256": "6c10cb3bab312b32643e6c9018825e5f7ad4553078e737fddd080a3c22e15ca7",
+      "duration_s": 3.52
+    },
+    "13": {
+      "key": "472f844dd0a31bf32ed9",
+      "text": "Part three of three: step four, the system video, and step five, the proof.",
+      "sha256": "0b57334ffec139d04dd0347515401f4378edb7f622eaa0f846c1c7a5e322c611",
+      "duration_s": 3.925
+    },
+    "14": {
+      "key": "c6134042ce74af91a826",
+      "text": "Step four: reviewing the system video changes the system. Each frame names its spec section and its parts, so a comment lands on those parts. If the video is wrong, the agent fixes the spec or the frame, and rebuilds only that frame. If the system itself should change, it goes the way your review decided.",
+      "sha256": "22382f230ff27f8529fc5c9a5138a12ccd7f66b04904d436859e03f443821699",
+      "duration_s": 17.557
+    },
+    "15": {
+      "key": "26451a74c0e1976afe01",
+      "text": "A small change inside one part goes straight in, and you see it in a short walkthrough. Anything with a choice becomes a plan first.",
+      "sha256": "96ae2879b52a63d3f2175ceba7fb5fedc9fc4392044cfa77fab86139fd2e90d0",
+      "duration_s": 7.253
+    },
+    "16": {
+      "key": "ba8660c6cebec0a3be22",
+      "text": "Step five needs all four. The GitHub Action and its template are removed, and the docs say how the loop runs. Then two real reviews, of this plan's walkthrough and of the system video, are timed from Finish to the notification.",
+      "sha256": "d0195bfebdc9e4431c959c5fbc75c0a9d8acfa118d2a41f7a29cb30c528023c0",
+      "duration_s": 12.971
+    },
+    "17": {
+      "key": "08a1559155f7aea4034f",
+      "text": "That is round one: three changes in five steps, all built, and every question decided. Next, round two, from your review of its walkthrough.",
+      "sha256": "e26472b2bcfb7551f97cfabf8e331b7f6db45e24b8b427ac1cf82f3f788ddef3",
+      "duration_s": 7.851
+    },
+    "18": {
+      "key": "82c8060344706a877c47",
+      "text": "Round two. The first five steps are built, and your review of their walkthrough added five more, with four open questions.",
+      "sha256": "5ddd7569a092ea5d378e667736eb4fffc5ec41a62618525d26114c7abc8fc775",
+      "duration_s": 6.464
+    },
+    "19": {
+      "key": "05adbc1187d5dd1f678f",
+      "text": "They make three changes. A run nobody is watching gets the right powers: step six. Reviews ask where you might disagree, and stop only where it matters: steps seven and eight. And less scaffolding: step nine. None of them needs the others. Step ten then proves them on the next plan.",
+      "sha256": "90c24470fc29715d6144decc1b2f9e8a69aaaeb9c766ee938b2c63bcc5091d0d",
+      "duration_s": 15.936
+    },
+    "20": {
+      "key": "df8525f1f07a5bc6ff81",
+      "text": "Step six: what a run nobody is watching may do. Nobody is there to answer a permission prompt, so anything that would prompt is refused. Today the run may edit files and run any shell command, but not start workers, read the web or use MCP tools, and nothing fences what a command touches. This step picks the setting, and re-runs the step five proof with it.",
+      "sha256": "a36d9df2cf629839f5ad34abe4fc833d8a237fd0ff0eae052dc8a24253f663c9",
+      "duration_s": 20.352
+    },
+    "21": {
+      "key": "5f6b4ee0b8b5f1623028",
+      "text": "What may that run do? A: as now, edits and any shell command. B: auto mode in the sandbox: a classifier approves each action, workers and the web included. C: everything, with the sandbox as the only fence. D: a short list of commands, still no workers. I recommend B: the run can do what the main session does, a classifier sits where you would, and the sandbox bounds a mistake. Which one?",
+      "sha256": "23264161784d0a918f782a6ececa3971624b4b1cd6576c70b4a16fa66e87d64d",
+      "duration_s": 21.099
+    },
+    "22": {
+      "key": "62c064b89dbaa9a525f5",
+      "text": "Step seven: more quick checks. A quick check asks you to predict what the plan or the code will do, so a wrong answer marks a place where you expected something else. Today a six-minute walkthrough asks two. After any answer, a box asks how it should work, and your words reach the agent as a comment on that step. The box is built; this step decides how many checks, and of what kind.",
+      "sha256": "88d64b797e96a9e0f78c286f4bc0d189488ee0544be99f81adba30d83296afe8",
+      "duration_s": 20.267
+    },
+    "23": {
+      "key": "27d11835c3fc1faea771",
+      "text": "How many quick checks does a video ask? A: at least one per step, about one a minute. B: one wherever there is something to predict; could be two, could be twelve. C: A's floor, plus B's. I recommend C: the floor means no step goes unchecked, which B alone cannot promise, and the extra checks go where a wrong answer is most likely, which A alone never adds. Which one?",
+      "sha256": "9f8adc478ab5a2d4d9a6f0af5a00a7eff1dfb60a572dd671a876eddcd2543d4e",
+      "duration_s": 19.797
+    },
+    "24": {
+      "key": "855b253e300b1cf8fb2d",
+      "text": "Next, part five: which of the agent's calls stop the video, and how much scaffolding comes out.",
+      "sha256": "2d93027488288e5e9c65c604b7fc088f6665f65bac64f458668997cd38e2c518",
+      "duration_s": 5.184
+    },
+    "25": {
+      "key": "f20f453f31d8a66f58fb",
+      "text": "Part five: step eight, fewer stops; step nine, less scaffolding; and step ten, the proof.",
+      "sha256": "52593940862c12241a9dc5b2894c3ce160dc1a7ae6f26b72d306cdd6488fe24f",
+      "duration_s": 4.885
+    },
+    "26": {
+      "key": "6cfdea8a146a37f1ae60",
+      "text": "Step eight: stop only for the calls you might overturn. Across four walkthroughs, you accepted sixty-eight of the agent's seventy-one calls as they were, while three of twelve plan questions got your own words. So the agent tags a call when it logs it: visible, hard to undo, a deviation, or close. A tagged call stops the video, as today.",
+      "sha256": "1644a64a3135dec07c21e6982c73890a90f1b3f79c08e829ea1ab4e43a709dd9",
+      "duration_s": 18.688
+    },
+    "27": {
+      "key": "47d5dd0af6fda96e0a2a",
+      "text": "Quick check. The agent logs a call with no tag: a heartbeat every two seconds. What happens to it?",
+      "sha256": "1f6606597366320a82cdf951fa2be33bd448c4b99b4cf83faa989c9a1742f934",
+      "duration_s": 5.653
+    },
+    "28": {
+      "key": "2be9f494bf8474b11dad",
+      "text": "Untagged calls share one beat at the end of their part: accept them all, or flag any one. So does your own record also decide what stops? A: the tags only. B: the tags and your record: a tag you accepted ten times running no longer stops on its own, and one flag brings it back. C: every call still stops. I recommend B: it starts as A, and your verdicts, not a guess, decide what fades. Which one?",
+      "sha256": "f46fb36d59b8dfcd01623f2208b2430b41613e219dd1ec0cba58a5bd86a50c73",
+      "duration_s": 21.376
+    },
+    "29": {
+      "key": "7d1c35f03876a854bc04",
+      "text": "Step nine: less scaffolding. A fresh agent audited the skill: an agent reads about twelve thousand words before it starts. The tools that do mechanical work stay: narration, captions, verify, plan diff, the review server, the ledger guard. What goes is text that only dictates format, and what is said twice: a review, for one, is kept three times.",
+      "sha256": "a87b7909a2352e28457fa06193f3458b04af6acb90e7bedea7d84b9dfdace7da",
+      "duration_s": 19.627
+    },
+    "30": {
+      "key": "7b1a6338dcf15560b84a",
+      "text": "How much comes out? A: only what hurts, such as the exact step heading reel check demands; small and safe, but the text stays as long. B: A, and the skill and the style guide rewritten, about half as long. C: B, and the files: one build command, and a review kept once. I recommend C: format rules and duplicate files are what an agent spends its attention on. Which one?",
+      "sha256": "448a6111896d05baa1b01662b7520f04ad717e8ae1b4060e45ff19e9651784a4",
+      "duration_s": 20.587
+    },
+    "31": {
+      "key": "17a00e218a32cb4b91b5",
+      "text": "Step ten needs six to nine. The next plan through the loop, the Bob Dylan site redone from scratch, uses the new quick checks and the call filter. Its review counts the quick checks answered wrong, and what each changed, and the stops against the calls you accepted without stopping.",
+      "sha256": "9312e1a918f323b4bece51dd36bf4c235534fe8d2c187aa76bbd66316f5a09a3",
+      "duration_s": 15.552
+    },
+    "32": {
+      "key": "010d89a8662deb365855",
+      "text": "That is round two: five more steps, and four questions. Answer them, draw on any step to leave a note, or approve.",
+      "sha256": "d40dd2a86db8219ab0bcccd156d091ae7e7c0b683ff1ed83bce126033d653bfb",
+      "duration_s": 6.336
+    },
+    "01": {
+      "key": "154d6ebedd0aefacb1bf",
+      "text": "You press Finish, and nothing happens until you tell an agent session: I submitted. Then you watch it build. The GitHub Action in this repo starts on a push of plan dot resolved dot M D, but the agent writes that file when it records your review. By then, the work is done.",
+      "sha256": "e726b8df029db741b22840443516f0dce5850f9a085d1a9f9e7a25b0012932f4",
+      "duration_s": 15.488
+    },
+    "02": {
+      "key": "18274651709fe55a096a",
+      "text": "The second cost is the voice. Rebuilding two frames of the system video re-narrated all thirty-five lines, and took eleven minutes. Thirty-three of them came out byte for byte the same.",
+      "sha256": "3b97dcf3ae8972ecb9926ba75fb28ff28cae5922c355d54de8e6cc75d2f31145",
+      "duration_s": 10.368
+    },
+    "03": {
+      "key": "68c1e14cd8ea96ad60c9",
+      "text": "And the system video is watch-only. You can comment on it, but the review has nowhere to go: intake takes only a plan's review, and the system video has no plan.",
+      "sha256": "c6f7cf9deae35f2d29c5d2ad7058a44af408955a8e643807efe132505a25e780",
+      "duration_s": 9.259
+    },
+    "04": {
+      "key": "c923c0c3e7d77afbd8f3",
+      "text": "So the plan makes three changes. Rebuilds get cheap: step one. The loop runs itself: steps two and three. The system video can be reviewed: step four. None of them needs the others. Step five then proves all three, on real reviews.",
+      "sha256": "d2897a47dac18a0a3f8f02f6689e345a50d64c81f29143e059dac1ec8f35bc9c",
+      "duration_s": 13.931
+    },
+    "05": {
+      "key": "9a110a4b022991c7bae5",
+      "text": "Step one: narrate only the lines that changed. Each line's audio and word timings are kept under a key: its text, the voice, the speed and the model. On a rebuild, only new or edited lines go to the voice; the rest are reused. That update would have narrated two lines, not thirty-five: about forty seconds, not eleven minutes.",
+      "sha256": "a4e435901fe9b05f9bda6e5f40f4334e1b37b89f98784acdaa6db4a051b19e72",
+      "duration_s": 18.645
+    },
+    "06": {
+      "key": "34dc555e546e825811d4",
+      "text": "Before anything runs, reel status says what an update costs in lines. Next, part two: the loop runs itself.",
+      "sha256": "aca71c6920414a1f041c8e53f2a1e65ccfd27f260097ba5ac7463e389f9f1ac2",
+      "duration_s": 6.464
+    },
+    "07": {
+      "key": "c9836c653761e5d86b2b",
+      "text": "Part two of three: steps two and three, and a question your review has since decided.",
+      "sha256": "cd0687f28bd629dc1341cd926f6f6f4a4b5cd83c65e10b991523729ce72fbbf1",
+      "duration_s": 4.416
+    },
+    "08": {
+      "key": "4b230a1ea88d85413a3e",
+      "text": "Who runs the loop was decided in your review: a background agent. Steps two and three are how.",
+      "sha256": "46558a82a4887bf47d862915529af47a5826ad81edb160987ad9c5766dc88c3a",
+      "duration_s": 5.248
+    },
+    "09": {
+      "key": "516edcc9911589373a3e",
+      "text": "Step two: one main session, the one you talk to, runs the work, but never sits on a long job. It hands each one to a background worker: build a video, implement a part, check the code, fix a flag. It checks what comes back and commits, and reelplanning itself notifies you, under any agent.",
+      "sha256": "2cc8355887a5db90a1aa38892feb92eaca14ccd1abf984b98368c179ba8d715a",
+      "duration_s": 16.043
+    }
+  }
+}

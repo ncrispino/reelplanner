@@ -1,0 +1,123 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f01-hook-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f01-hook-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f01-hook-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f01-hook-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f01-hook-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f01-hook-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f01-hook-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f01-hook-slot .d { position:absolute; right:20px; top:31px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:var(--rp-ink); white-space:nowrap; }
+  .f01-hook-slot .d.lit { color:var(--rp-coral-deep); }
+  .f01-hook-slot:not([data-filled]) .n, .f01-hook-slot:not([data-filled]) .t { opacity:0; }
+  .f01-hook-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f01-hook-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f01-hook-node.dim { opacity:0.72; }
+  .f01-hook-hole { position:absolute; border-radius:12px; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f01-hook-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f01-hook-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f01-hook-edges path.dim { opacity:0.35; }
+  .f01-hook-opt { position:absolute; top:790px; width:540px; height:100px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f01-hook-opt .l { font:400 40px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); text-align:center; margin-top:18px; }
+  .f01-hook-opt .k { position:absolute; left:20px; top:12px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  /* ---- /SHARED STAGE ---- */
+  .f01-hook-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f01-hook-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f01-hook-chip.r { margin-left:0; margin-right:-6px; }
+  .f01-hook-hero { position:absolute; left:640px; width:1200px; text-align:center; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f01-hook-herok { position:absolute; left:640px; width:1200px; text-align:center; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f01-hook-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f01-hook-page { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f01-hook-bar { position:absolute; height:16px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+
+  .f01-hook-file { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f01-hook-ptitle { position:absolute; font:400 52px/1.1 "EB Garamond"; color:var(--rp-ink); }
+  .f01-hook-row { position:absolute; left:40px; width:520px; height:52px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:500 30px/52px "JetBrains Mono"; color:var(--rp-ink); }
+  .f01-hook-row .o { position:absolute; right:0; }
+  .f01-hook-stamp { position:absolute; left:40px; top:500px; padding:14px 22px; border:2px solid var(--rp-ink); border-radius:8px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:var(--rp-ink); }
+  .f01-hook-dl { position:absolute; left:40px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f01-hook-dl.m { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f01-hook-gap { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+  .f01-hook-gap path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.55); stroke-width:3; stroke-dasharray:10 10; }
+  .f01-hook-nocheck { position:absolute; left:860px; top:405px; width:200px; text-align:center; font:500 28px/1 "JetBrains Mono"; color:var(--rp-coral-deep); }
+</style>
+
+<div id="root" data-composition-id="01-hook" data-duration="7.945" data-width="1920" data-height="1080">
+
+  <div class="clip f01-hook-bg" data-start="0" data-duration="7.945" data-track-index="0"></div>
+
+  <div class="clip f01-hook-scene" id="f01-hook-scene" data-start="0" data-duration="7.945" data-track-index="1">
+
+  <div class="f01-hook-page" id="f01-hook-plan" style="left:260px; top:150px; width:600px; height:640px">
+    <div class="f01-hook-file" style="left:40px; top:36px">plan.resolved.md</div>
+    <div class="f01-hook-ptitle" style="left:40px; top:92px">Close the lifecycle</div>
+    <div class="f01-hook-bar" style="left:40px; top:176px; width:500px"></div>
+    <div class="f01-hook-bar" style="left:40px; top:206px; width:430px"></div>
+    <div class="f01-hook-row" id="f01-hook-row-0" style="top:262px"><span>q1</span><span class="o">A</span></div>
+    <div class="f01-hook-row" id="f01-hook-row-1" style="top:332px"><span>q2</span><span class="o">A</span></div>
+    <div class="f01-hook-row" id="f01-hook-row-2" style="top:402px"><span>q3</span><span class="o">B</span></div>
+    <div class="f01-hook-stamp" id="f01-hook-stamp">Approved</div>
+  </div>
+  <div class="f01-hook-page" id="f01-hook-diff" style="left:1060px; top:150px; width:600px; height:640px">
+    <div class="f01-hook-file" style="left:40px; top:36px">git diff main</div>
+    <div class="f01-hook-dl" id="f01-hook-dl-0" style="top:100px">src/upload/resume.ts</div>
+    <div class="f01-hook-dl m" id="f01-hook-dl-1" style="top:160px">− return 400</div>
+    <div class="f01-hook-dl p" id="f01-hook-dl-2" style="top:210px">+ return 409</div>
+    <div class="f01-hook-bar" style="left:40px; top:290px; width:470px"></div>
+    <div class="f01-hook-bar" style="left:40px; top:320px; width:380px"></div>
+    <div class="f01-hook-dl p" id="f01-hook-dl-3" style="top:380px">+ parts.size = 16 MB</div>
+    <div class="f01-hook-dl m" id="f01-hook-dl-4" style="top:430px">− charge(upload)</div>
+    <div class="f01-hook-bar" style="left:40px; top:510px; width:440px"></div>
+    <div class="f01-hook-bar" style="left:40px; top:540px; width:300px"></div>
+  </div>
+  <svg class="f01-hook-gap" id="f01-hook-gap" viewBox="0 0 1920 1080"><path id="f01-hook-gapline" d="M870 470 L1050 470" /></svg>
+  <div class="f01-hook-nocheck" id="f01-hook-nocheck">no check</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var FID = "01-hook", P = "#f01-hook-";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], TILE2 = __RP["tile-2"];
+  var $ = function (s) { return document.getElementById("f01-hook-" + s); };
+  var lenOf = function (p) { return p.getTotalLength ? p.getTotalLength() : 200; };
+  // draw an edge: dash it hidden, then draw it on
+  var draw = function (tl, id, at, dur, coral) {
+    var p = $("e-" + id), L = lenOf(p);
+    gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 1 });
+    tl.to(p, { strokeDashoffset: 0, duration: dur || 0.5, ease: "power2.inOut" }, at);
+    if (coral) tl.fromTo(p, { stroke: C, strokeWidth: 4 }, { stroke: C, strokeWidth: 4, duration: 0.01 }, at);
+  };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  // fill a rail slot on its cue (the slot is a string selector so the rail's motion is visible to stage-presence)
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f01-hook-slot-" + n, { backgroundColor: "rgba(0,0,0,0)" }, { backgroundColor: TILE, duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f01-hook-slot-" + n + " .n, #f01-hook-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("plan"), 0.1, 16);
+  tl.fromTo([$("row-0"), $("row-1"), $("row-2")], { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.25, ease: "power3.out" }, 2);
+  tl.fromTo($("stamp"), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 0.6);
+  pop(tl, $("diff"), 3.91, 16);
+  tl.fromTo([$("dl-0"), $("dl-1"), $("dl-2"), $("dl-3"), $("dl-4")], { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.15, ease: "power3.out" }, 4.210);
+  tl.fromTo($("gapline"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, 5.09);
+  pop(tl, $("nocheck"), 5.240, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 7.444);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

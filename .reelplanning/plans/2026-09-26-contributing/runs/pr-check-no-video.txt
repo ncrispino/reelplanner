@@ -1,0 +1,7 @@
+$ reel pr-check . --base origin/main --body-file ../pr-ticked.md --labels no-video --merge   (a maintainer added the no-video label)
+· over the line, waived by `no-video` (ticked: a choice (the port by default, 8790))
+· size: 25 changed line(s) in 1 file(s)
+· seen in the diff, not a reason by itself: a new flag: `--quiet`
+· ids: none new; none names another entry
+✓ repo against origin/main: 0 problem(s), 0 waiting (--merge: waiting fails)
+exit 0

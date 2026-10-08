@@ -1,0 +1,119 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f24-resolved-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f24-resolved-kicker { position:absolute; left:80px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  .f24-resolved-rail { position:absolute; left:80px; top:150px; width:500px; height:660px; }
+  .f24-resolved-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f24-resolved-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); opacity:0; }
+  .f24-resolved-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; opacity:0; }
+  .f24-resolved-slot .d { position:absolute; left:76px; top:56px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); opacity:0; }
+  .f24-resolved-slot:has(.d) .t { top:18px; }
+  .f24-resolved-fill { position:absolute; inset:-1px; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); opacity:0; }
+
+  .f24-resolved-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* the page in its AFTER shape — the one frame 4 ends on */
+  .f24-resolved-page { position:absolute; left:660px; top:230px; width:1180px; height:650px; border-radius:8px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2);
+    box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 8px 28px rgba(var(--rp-shadow-rgb),0.05); }
+  .f24-resolved-r { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f24-resolved-flat { position:absolute; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+  .f24-resolved-vid { position:absolute; left:16px; top:60px; width:1148px; height:374px; border-radius:5px; background:var(--rp-data); }
+  .f24-resolved-vidcap { position:absolute; left:30px; top:72px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+  .f24-resolved-vidbar { position:absolute; left:188px; top:244px; width:804px; height:6px; border-radius:3px; background:rgba(var(--rp-on-ink-rgb),0.35); }
+  .f24-resolved-strip { position:absolute; top:582px; height:52px; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+
+  .f24-resolved-settled { position:absolute; left:80px; top:826px; width:560px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.4); opacity:0; }
+  .f24-resolved-gain { position:absolute; left:980px; top:380px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-on-ink-rgb),0.72); opacity:0; }
+  .f24-resolved-cta { position:absolute; left:80px; top:826px; width:560px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; opacity:0; }
+  .f24-resolved-made { position:absolute; left:80px; top:866px; width:560px; font:400 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.4); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="24-resolved" data-duration="14.623" data-width="1920" data-height="1080">
+  <div class="f24-resolved-bg"></div>
+  <div class="f24-resolved-kicker" id="f24-resolved-kicker">✱ The plan · 6 steps, 3 calls</div>
+
+  <div class="f24-resolved-rail" id="f24-resolved-rail">
+    <div class="f24-resolved-slot" id="f24-resolved-slot-1" data-plan-step="1" style="top:0px"><i class="f24-resolved-fill"></i><span class="n">1</span><span class="t">Give the video the page</span></div>
+    <div class="f24-resolved-slot" id="f24-resolved-slot-2" data-plan-step="2" style="top:110px"><i class="f24-resolved-fill"></i><span class="n">2</span><span class="t">Never crop the evidence</span><span class="d" data-plan-question="1">Stage shrinks</span></div>
+    <div class="f24-resolved-slot" id="f24-resolved-slot-3" data-plan-step="3" style="top:220px"><i class="f24-resolved-fill"></i><span class="n">3</span><span class="t">One home per question</span></div>
+    <div class="f24-resolved-slot" id="f24-resolved-slot-4" data-plan-step="4" style="top:330px"><i class="f24-resolved-fill"></i><span class="n">4</span><span class="t">Comment where you are</span><span class="d" data-plan-question="2">Under the video</span></div>
+    <div class="f24-resolved-slot" id="f24-resolved-slot-5" data-plan-step="5" style="top:440px"><i class="f24-resolved-fill"></i><span class="n">5</span><span class="t">One fact per line</span></div>
+    <div class="f24-resolved-slot" id="f24-resolved-slot-6" data-plan-step="6" style="top:550px"><i class="f24-resolved-fill"></i><span class="n">6</span><span class="t">The phone is the video</span><span class="d" data-plan-question="3">One sheet</span></div>
+  </div>
+
+  <div class="f24-resolved-lbl" style="left:660px;top:180px">The review page, after</div>
+  <div class="f24-resolved-page" id="f24-resolved-page" data-plan-component="page">
+    <div class="f24-resolved-r" style="left:16px;top:16px;width:1148px;height:34px"></div>
+    <div class="f24-resolved-flat" style="left:30px;top:28px">Title</div>
+    <div class="f24-resolved-vid" data-plan-component="stage"></div>
+    <div class="f24-resolved-vidcap">The video</div>
+    <div class="f24-resolved-vidbar"></div>
+    <div class="f24-resolved-r" style="left:16px;top:444px;width:1148px;height:30px"></div>
+    <div class="f24-resolved-flat" style="left:30px;top:454px">Transport · Mark · Wait · Note · Approve</div>
+    <div class="f24-resolved-r" data-plan-component="composer" style="left:16px;top:484px;width:1148px;height:88px"></div>
+    <div class="f24-resolved-flat" style="left:30px;top:498px">Comment on 1:12</div>
+    <div class="f24-resolved-strip" style="left:16px;width:278px"></div>
+    <div class="f24-resolved-flat" style="left:30px;top:600px">Steps</div>
+    <div class="f24-resolved-strip" style="left:306px;width:278px"></div>
+    <div class="f24-resolved-flat" style="left:320px;top:600px">Level</div>
+    <div class="f24-resolved-strip" style="left:596px;width:278px"></div>
+    <div class="f24-resolved-flat" style="left:610px;top:600px">Decisions</div>
+    <div class="f24-resolved-strip" style="left:886px;width:278px"></div>
+    <div class="f24-resolved-flat" style="left:900px;top:600px">Comments</div>
+    <div class="f24-resolved-gain" id="f24-resolved-gain">+400 px</div>
+  </div>
+
+  <div class="f24-resolved-settled" id="f24-resolved-settled">Palette · type · tools: settled</div>
+  <div class="f24-resolved-cta" id="f24-resolved-cta">Answer 3 · mark · approve</div>
+  <div class="f24-resolved-made" id="f24-resolved-made">AI-generated narration and visuals</div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 15.317, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+  const S = (n) => `#f24-resolved-slot-${n}`;
+
+  tl.fromTo("#f24-resolved-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0.032);
+  tl.fromTo("#f24-resolved-page", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 0.625);
+
+  // "six steps" — the rail completes in order
+  for (let n = 1; n <= 6; n++) {
+    const at = 1.07 + (n - 1) * 0.11;
+    tl.fromTo(`${S(n)} .f24-resolved-fill`, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: E }, at);
+    tl.fromTo(`${S(n)} .n`, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, at);
+    tl.fromTo(`${S(n)} .t`, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, at + 0.08);
+  }
+
+  // "three calls" — the three answered decisions land together, the frame's coral used once as a set
+  tl.fromTo([`${S(2)} .d`, `${S(4)} .d`, `${S(6)} .d`],
+    { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.5, ease: E, stagger: 0.12 }, 1.754);
+
+  // "the palette, the type and the annotation tools are settled" — what this plan does NOT reopen
+  tl.fromTo("#f24-resolved-settled", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 2.872);
+  tl.to("#f24-resolved-settled", { opacity: 0, duration: 0.4, ease: E }, 7.266);
+
+  // "how much room the video gets" — measured in ink, because the coral is spent on the three tags
+  tl.fromTo("#f24-resolved-gain", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 9.127);
+
+  // "answer the three, mark anything else, and approve"
+  tl.fromTo("#f24-resolved-cta", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 10.978);
+  tl.fromTo("#f24-resolved-made", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: E }, 12.04);
+
+  // holds still to the end
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["24-resolved"] = tl;
+})();
+</script>
+</template>

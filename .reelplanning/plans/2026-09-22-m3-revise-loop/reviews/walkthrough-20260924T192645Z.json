@@ -1,0 +1,145 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "no i think we should auto run just note that with others we do not have sandbox so less safe. we want to err on the side of doing more instead of safety",
+      "frame": {
+        "compositionId": "49-call-a18",
+        "index": 49,
+        "title": "Call A18: no sandbox, no run, and now it says so"
+      },
+      "id": "amufx97xt7ckq",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 6
+      },
+      "t": 508.93
+    },
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "80-end-r2",
+        "index": 81,
+        "title": "Round 2: built, and your call"
+      },
+      "id": "amufxatb0jdue",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 871.4
+    }
+  ],
+  "autonomy": [],
+  "decisions": [],
+  "exportedAt": "2026-09-24T19:26:45.418Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-09-24T19:24:24.175Z",
+      "correct": true,
+      "id": "k3",
+      "t": 448.69
+    }
+  ],
+  "src": "2026-09-22-m3-revise-loop--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      },
+      {
+        "completion": 1,
+        "id": "ch6"
+      },
+      {
+        "completion": 1,
+        "id": "ch7"
+      },
+      {
+        "completion": 1,
+        "id": "ch8"
+      },
+      {
+        "completion": 1,
+        "id": "ch9"
+      },
+      {
+        "completion": 0.971,
+        "id": "ch10"
+      }
+    ],
+    "completion": 0.997,
+    "details": [],
+    "durationSeconds": 875.57,
+    "firstPlayAt": "2026-09-24T19:23:57.749Z",
+    "maxTimeReached": 873.1,
+    "moments": [
+      {
+        "frameIndex": 51,
+        "from": 538.93,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 533.82
+      },
+      {
+        "frameIndex": 51,
+        "from": 546.13,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 532.1
+      },
+      {
+        "frameIndex": 50,
+        "from": 534.63,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 525.37
+      },
+      {
+        "frameIndex": 51,
+        "from": 539.73,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 534.73
+      },
+      {
+        "frameIndex": 51,
+        "from": 535.53,
+        "kind": "rewind",
+        "planStep": 6,
+        "t": 526.17
+      }
+    ]
+  },
+  "recorded": {
+    "reviewer": "noreply@anthropic.com",
+    "via": "git user.email",
+    "reelplanning": "0.1.0"
+  }
+}

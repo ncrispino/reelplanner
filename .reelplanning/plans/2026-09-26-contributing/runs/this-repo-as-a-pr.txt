@@ -1,0 +1,40 @@
+$ reelplanning pr-check ../ReelPlanning-at-97052cc --base 61fafa1   (this repo: a worktree of it at 97052cc, the contributing plan's last commit, made with `git worktree add ../ReelPlanning-at-97052cc 97052cc`; the nine commits since 61fafa1, where the plan started: its own six and three made in between (ca173ab, 7dd6937, a62dcf7), checked as one pull request by today's pr-check, with no PR text or labels)
+· over the line (623 lines)
+· size: 623 changed line(s) in 13 file(s), not counting docs, the project record, tests
+· seen in the diff, not a reason by itself: a new flag: `--body-file`, a new flag: `--continue`, a new flag: `--diff-filter`, a new flag: `--event`, a new flag: `--heads`, a new flag: `--labels`, a new flag: `--merge`, a new flag: `--no-renames`, a new flag: `--numstat`, a new flag: `--pr`, a new flag: `--short`, a new flag: `--stdin`, a new flag: `--tidy`, a new command: `scripts/pr-check.mjs`, a new command: `scripts/renumber.mjs`
+· 2026-09-26-better-visuals/video: its plan map matches plan.md (cb293713bbfd)
+· 2026-09-26-better-visuals/walkthrough-video: approved; the text may have moved on since (folds and fixes after the review)
+· 2026-09-26-contributing/video: approved; the text may have moved on since (folds and fixes after the review)
+· 2026-09-26-contributing/walkthrough-video: its plan map matches plan.md (3b07a3135106)
+· 2026-09-26-contributing/walkthrough-video: its 10 row(s) match their stops
+· 2026-09-27-details-in-the-frame/video: approved; the text may have moved on since (folds and fixes after the review)
+· 2026-09-27-details-in-the-frame/walkthrough-video: approved; the text may have moved on since (folds and fixes after the review)
+· lands on main: 2026-09-26-better-visuals: plan.md, walkthrough.md, code-check/findings.md, the videos' text (video, walkthrough-video); 2026-09-26-contributing: plan.md, walkthrough.md, code-check/findings.md, the videos' text (video, walkthrough-video); 2026-09-27-details-in-the-frame: plan.md, walkthrough.md, code-check/findings.md, the videos' text (video, walkthrough-video)
+· stays in the PR: nothing
+· ids: none new; none names another entry
+· no PR text or labels read (pass --pr <n> with gh, --event, or --body-file and --labels): the box and the labels are taken as unticked and absent
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/shots/review-page.jpg: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/01.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/02.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/03.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/04.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/05.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/06.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/07.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/08.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/09.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/10.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/11.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/12.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/13.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/14.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/15.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/16.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/17.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/18.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/19.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/20.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/21.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ adds .reelplanning/plans/2026-09-26-contributing/walkthrough-video/assets/voice/22.wav: a plan folder carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)
+✗ ReelPlanning-at-97052cc against 61fafa1: 23 problem(s), 0 waiting
+exit 1

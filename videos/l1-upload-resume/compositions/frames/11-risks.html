@@ -1,0 +1,144 @@
+<template>
+<div id="root" data-composition-id="11-risks" data-width="1920" data-height="1080" data-duration="8.287">
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; color: #141413; }
+  .clip { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .f11-risks-ground { background: #FAF9F5; }
+
+  /* ===== SHARED STAGE (frames 03–12) — geometry law: rail x80 w540, six slots y=170+112*i h96; diagram nodes at fixed boxes ===== */
+  .f11-risks-rail { position:absolute; left:80px; top:170px; width:540px; height:660px; }
+  .f11-risks-slot { position:absolute; left:0; width:540px; height:96px; border-radius:12px;
+              border:1px dashed rgba(20,20,19,0.18); }
+  .f11-risks-slot[data-filled] { border:1px solid rgba(20,20,19,0.12); background:#EFE9DE;
+              box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+  .f11-risks-slot .n { position:absolute; left:22px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:#141413; }
+  .f11-risks-slot .t { position:absolute; left:78px; top:29px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; }
+  .f11-risks-slot.dim { opacity:0.72; }
+  .f11-risks-node { position:absolute; border-radius:12px; background:#EFE9DE; border:1px solid rgba(20,20,19,0.12);
+              box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+  .f11-risks-node .l { position:absolute; left:20px; top:20px; font:500 28px/1.2 "Inter"; color:#141413; }
+  .f11-risks-node .s { position:absolute; left:20px; top:58px; font:500 18px/1 "JetBrains Mono"; letter-spacing:0.12em; text-transform:uppercase; color:rgba(20,20,19,0.62); }
+  .f11-risks-node.navy { background:#181715; border-color:rgba(250,249,245,0.14); }
+  .f11-risks-node.navy .l { color:#FAF9F5; } .f11-risks-node.navy .s { color:rgba(250,249,245,0.7); }
+  .f11-risks-node.dim { opacity:0.72; }
+  .f11-risks-node.active { border:2px solid #CC785C; }
+  .f11-risks-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f11-risks-edges path { fill:none; stroke:#141413; stroke-width:2; stroke-linecap:round; }
+  .f11-risks-edges path.dim { opacity:0.35; }
+  .f11-risks-edges path.active { stroke:#CC785C; stroke-width:3; }
+  /* this frame: the whole stage rests at 0.72 (no active step, no active edge) */
+  #f11-risks-edges path { opacity:0.72; }
+
+  /* ===== FRAME 11 layer: kicker + two risk cards + coral leaders ===== */
+  .f11-risks-kicker { position:absolute; left:700px; top:100px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em;
+              text-transform:uppercase; color:#141413; white-space:nowrap; }
+  .f11-risks-kicker .spike { display:inline-block; color:#CC785C; margin-right:14px; letter-spacing:0; }
+
+  .f11-risks-card { position:absolute; border-radius:12px; background:#FAF9F5; border:1px solid rgba(20,20,19,0.12);
+              box-shadow:0 1px 3px rgba(20,20,19,0.08),0 4px 16px rgba(20,20,19,0.04); }
+  .f11-risks-card .ct { position:absolute; left:24px; top:18px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:#141413; white-space:nowrap; }
+  .f11-risks-card .cb { position:absolute; left:24px; top:58px; font:400 28px/1.2 "Inter"; color:rgba(20,20,19,0.72); white-space:nowrap; }
+
+  .f11-risks-leaders { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f11-risks-leaders path { fill:none; stroke:#CC785C; stroke-width:2; stroke-linecap:round; }
+  .f11-risks-leaders circle { fill:#CC785C; }
+</style>
+
+<!-- ground (track 0) -->
+<div class="clip f11-risks-ground" id="f11-risks-ground" data-start="0" data-duration="8.287" data-track-index="0"></div>
+
+<!-- stage + overlay (track 1) -->
+<div class="clip" id="f11-risks-stage" data-start="0" data-duration="8.287" data-track-index="1">
+
+  <!-- RAIL: all six steps landed, resting -->
+  <div class="f11-risks-rail" id="f11-risks-rail">
+    <div class="f11-risks-slot dim" id="f11-risks-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Write-ahead manifest</span></div>
+    <div class="f11-risks-slot dim" id="f11-risks-slot-2" data-plan-step="2" data-filled style="top:112px"><span class="n">2</span><span class="t">Chunked parts</span></div>
+    <div class="f11-risks-slot dim" id="f11-risks-slot-3" data-plan-step="3" data-filled style="top:224px"><span class="n">3</span><span class="t">Resume endpoint</span></div>
+    <div class="f11-risks-slot dim" id="f11-risks-slot-4" data-plan-step="4" data-filled style="top:336px"><span class="n">4</span><span class="t">Billing on complete</span></div>
+    <div class="f11-risks-slot dim" id="f11-risks-slot-5" data-plan-step="5" data-filled style="top:448px"><span class="n">5</span><span class="t">Sweeper</span></div>
+    <div class="f11-risks-slot dim" id="f11-risks-slot-6" data-plan-step="6" data-filled style="top:560px"><span class="n">6</span><span class="t">SDK resume</span></div>
+  </div>
+
+  <!-- DIAGRAM: six nodes, fixed boxes, resting -->
+  <div class="f11-risks-node dim" id="f11-risks-node-sdk"      data-plan-component="sdk"      style="left:700px;  top:380px; width:240px; height:100px"><span class="l">Client SDK</span><span class="s">packages/sdk</span></div>
+  <div class="f11-risks-node dim" id="f11-risks-node-api"      data-plan-component="api"      style="left:1000px; top:380px; width:240px; height:100px"><span class="l">Upload API</span><span class="s">src/upload</span></div>
+  <div class="f11-risks-node navy dim" id="f11-risks-node-manifest" data-plan-component="manifest" style="left:1300px; top:200px; width:260px; height:150px"><span class="l">Manifest store</span><span class="s">upload_manifests</span></div>
+  <div class="f11-risks-node dim" id="f11-risks-node-blob"     data-plan-component="blob"     style="left:1300px; top:540px; width:260px; height:100px"><span class="l">Blob store</span><span class="s">src/blob</span></div>
+  <div class="f11-risks-node dim" id="f11-risks-node-billing"  data-plan-component="billing"  style="left:1620px; top:200px; width:220px; height:100px"><span class="l">Billing hook</span><span class="s">src/billing</span></div>
+  <div class="f11-risks-node dim" id="f11-risks-node-sweeper"  data-plan-component="sweeper"  style="left:1620px; top:540px; width:220px; height:100px"><span class="l">Sweeper</span><span class="s">src/jobs</span></div>
+
+  <!-- EDGES: all six, resting -->
+  <svg class="f11-risks-edges" id="f11-risks-edges" viewBox="0 0 1920 1080">
+    <path id="f11-risks-e-api-manifest"     d="M1240 405 L1270 405 L1270 275 L1300 275" />
+    <path id="f11-risks-e-api-blob"         d="M1240 455 L1270 455 L1270 590 L1300 590" />
+    <path id="f11-risks-e-sdk-api"          d="M940 430 L1000 430" />
+    <path id="f11-risks-e-api-billing"      d="M1120 380 L1120 160 L1730 160 L1730 200" />
+    <path id="f11-risks-e-sweeper-manifest" d="M1730 540 L1730 380 L1590 380 L1590 275 L1560 275" />
+    <path id="f11-risks-e-sweeper-blob"     d="M1620 590 L1560 590" />
+  </svg>
+
+  <!-- KICKER -->
+  <div class="f11-risks-kicker" id="f11-risks-kicker"><span class="spike" id="f11-risks-spike">&#x2731;</span>Two things to watch</div>
+
+  <!-- CORAL LEADERS (the frame's one coral moment, with the kicker's spike) -->
+  <svg class="f11-risks-leaders" id="f11-risks-leaders" viewBox="0 0 1920 1080">
+    <!-- sweeper node bottom (1730,640) → card 1 top (1730,700) -->
+    <path id="f11-risks-lead-1" d="M1730 640 L1730 700" pathLength="1" />
+    <circle id="f11-risks-dot-1" cx="1730" cy="640" r="5" />
+    <!-- sdk node bottom (820,480) → card 2 top (820,520) -->
+    <path id="f11-risks-lead-2" d="M820 480 L820 520" pathLength="1" />
+    <circle id="f11-risks-dot-2" cx="820" cy="480" r="5" />
+  </svg>
+
+  <!-- RISK CARD 1 — pinned to Sweeper -->
+  <div class="f11-risks-card" id="f11-risks-card-1" style="left:1400px; top:700px; width:440px; height:100px">
+    <span class="ct">Manifest growth</span>
+    <span class="cb">bounded by the sweeper</span>
+  </div>
+
+  <!-- RISK CARD 2 — pinned to Client SDK -->
+  <div class="f11-risks-card" id="f11-risks-card-2" style="left:700px; top:520px; width:340px; height:100px">
+    <span class="ct">Old SDKs</span>
+    <span class="cb">never resume</span>
+  </div>
+
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  window.__timelines["11-risks"] = tl;
+
+  var q = function (id) { return document.getElementById(id); };
+  var kicker = q("f11-risks-kicker"), spike = q("f11-risks-spike");
+  var lead1 = q("f11-risks-lead-1"), dot1 = q("f11-risks-dot-1"), card1 = q("f11-risks-card-1");
+  var lead2 = q("f11-risks-lead-2"), dot2 = q("f11-risks-dot-2"), card2 = q("f11-risks-card-2");
+
+  // Scene 1 (0.0–1.0s) — "Two things to watch": kicker fades in above the diagram; the ✱ spike settles 0.92→1.
+  tl.fromTo(kicker, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.15);
+  tl.fromTo(spike, { scale: 0.92, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.6, ease: "power3.out" }, 0.15);
+
+  // Scene 2a (~2.3s) — "only bound on manifest growth": leader draws from the Sweeper, card 1 pops in.
+  tl.fromTo(dot1, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power3.out" }, 2.3);
+  tl.fromTo(lead1, { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 0.35, ease: "power3.out" }, 2.35);
+  tl.fromTo(card1, { opacity: 0, scale: 0.96, y: 10, transformOrigin: "50% 0%" }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.55);
+
+  // Scene 2b (~4.2s) — "old SDKs": leader draws from the Client SDK, card 2 pops in.
+  tl.fromTo(dot2, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power3.out" }, 4.2);
+  tl.fromTo(lead2, { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 0.35, ease: "power3.out" }, 4.25);
+  tl.fromTo(card2, { opacity: 0, scale: 0.96, y: 10, transformOrigin: "50% 0%" }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power3.out" }, 4.45);
+
+  // Scene 3 (5.6–7.787s) — held read; pin the timeline to the full duration.
+  tl.set(kicker, { opacity: 1 }, 7.787);
+})();
+</script>
+</div>
+</template>

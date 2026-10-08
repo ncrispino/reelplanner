@@ -1,0 +1,110 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f08-branch-1b-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+  .f08-branch-1b-kicker { position:absolute; left:160px; top:92px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.14em; color:var(--rp-ink); text-transform:uppercase; }
+
+  .f08-branch-1b-lbl { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.1em; color:rgba(var(--rp-ink-rgb),0.55); text-transform:uppercase; }
+
+  /* ---- the main column, now the whole frame: x 160..1860, the rail's 500px folded in ----
+     AFTER-LAYOUT, video-relative, written down rather than eyeballed. The video does not move:
+       video    0,  58  1700 x 420   (column-relative)
+       band    23, 292  1654 x  92   the caption band, coral hairline
+       sheet   72, 270  1556 x 134   option B's inset: 72 each side, so the band's ends still show
+     sheet 270..404 covers band 292..384 outright — only two 49px stubs of coral survive.
+     Column box is identical in 07/08/09 (160,230 1700x620) so the crossfades do not jump.       */
+  .f08-branch-1b-col { position:absolute; left:160px; top:230px; width:1700px; height:620px; }
+  .f08-branch-1b-r { position:absolute; border-radius:5px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.1); }
+  .f08-branch-1b-r .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); text-transform:uppercase; }
+  .f08-branch-1b-vid { position:absolute; left:0; top:58px; width:1700px; height:420px; border-radius:5px; background:var(--rp-data); overflow:hidden; }
+  .f08-branch-1b-vid .cap { position:absolute; left:16px; top:14px; font:500 22px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-on-ink-rgb),0.6); text-transform:uppercase; }
+
+  .f08-branch-1b-tile { position:absolute; width:490px; height:120px; border-radius:8px;
+    background:rgba(var(--rp-on-ink-rgb),0.1); border:1px solid rgba(var(--rp-on-ink-rgb),0.22);
+    display:flex; align-items:center; justify-content:center;
+    font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-on-ink); }
+
+  /* the frame's ONE coral: the caption band the sheet is about to sit on.
+     A bare rect — its caption lines are siblings, so the draw never stretches them. */
+  .f08-branch-1b-band { position:absolute; left:23px; top:292px; width:1654px; height:92px; border-radius:4px;
+    border:2px solid var(--rp-coral); background:transparent; transform-origin:0 50%; }
+  .f08-branch-1b-line { position:absolute; height:8px; border-radius:4px; background:rgba(var(--rp-on-ink-rgb),0.35); opacity:0; }
+
+  /* the sheet keeps the video's full size and lies across its bottom third */
+  .f08-branch-1b-sheet { position:absolute; left:72px; top:270px; width:1556px; height:134px; border-radius:6px;
+    background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2);
+    box-shadow:0 -2px 24px rgba(var(--rp-shadow-rgb),0.12); }
+  .f08-branch-1b-sheet .q { position:absolute; left:37px; top:16px; font:400 40px/1.15 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f08-branch-1b-sheet .o { position:absolute; top:72px; width:418px; height:46px; border-radius:6px;
+    background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18);
+    display:flex; align-items:center; padding-left:18px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  /* the mitigation: the sheet's own clear corner says what removes this option's cost */
+  .f08-branch-1b-sheet .fold { position:absolute; right:37px; top:24px; font:500 24px/1 "JetBrains Mono"; letter-spacing:0.03em; color:rgba(var(--rp-ink-rgb),0.55); opacity:0; }
+</style>
+
+<div id="root" data-composition-id="08-branch-1b" data-duration="11.017" data-width="1920" data-height="1080">
+  <div class="f08-branch-1b-bg"></div>
+  <div class="f08-branch-1b-kicker" id="f08-branch-1b-kicker">✱ If B · the sheet overlays</div>
+
+  <div class="f08-branch-1b-lbl" style="left:160px;top:180px">The main column</div>
+
+  <div class="f08-branch-1b-col" id="f08-branch-1b-col" data-plan-component="page">
+    <div class="f08-branch-1b-r" style="left:0;top:0;width:1700px;height:44px"><span class="cap">Title</span></div>
+
+    <div class="f08-branch-1b-vid" id="f08-branch-1b-vid" data-plan-component="stage">
+      <span class="cap">The video</span>
+      <i class="f08-branch-1b-tile" style="left:58px;top:50px">Manifest</i>
+      <i class="f08-branch-1b-tile" style="left:605px;top:150px">Blob store</i>
+      <i class="f08-branch-1b-tile" style="left:1153px;top:150px">Sweeper</i>
+
+      <i class="f08-branch-1b-band" id="f08-branch-1b-band"></i>
+      <i class="f08-branch-1b-line" id="f08-branch-1b-line-1" style="left:375px;top:318px;width:951px"></i>
+      <i class="f08-branch-1b-line" id="f08-branch-1b-line-2" style="left:519px;top:346px;width:663px"></i>
+
+      <!-- the sheet rises from under the video's own edge and stops on the bottom third -->
+      <div class="f08-branch-1b-sheet" id="f08-branch-1b-sheet" data-plan-component="sheet">
+        <span class="q">Where does the manifest live?</span>
+        <i class="o" style="left:37px">A · Postgres</i>
+        <i class="o" style="left:499px">B · S3 object</i>
+        <span class="fold" id="f08-branch-1b-fold">⇕ folds away, reopens</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  const DUR = 10.517, E = "power3.out";
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#f08-branch-1b-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.42, ease: E }, 0.094);
+  tl.fromTo("#f08-branch-1b-col", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.6, ease: E, transformOrigin: "50% 40%" }, 0.094);
+
+  // "every pixel it had" — the video keeps all of it, caption band included: the one coral, drawn left to right
+  tl.fromTo("#f08-branch-1b-band", { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: E, transformOrigin: "0% 50%" }, 1.96);
+  tl.fromTo("#f08-branch-1b-line-1", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 2.368);
+  tl.fromTo("#f08-branch-1b-line-2", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 2.404);
+
+  // "the sheet sits on the bottom third of it" — and the band goes behind it, ends still showing
+  tl.fromTo("#f08-branch-1b-sheet", { y: 200 }, { y: 0, duration: 0.7, ease: E }, 3.093);
+
+  // "folds away on request" — the mitigation, in the sheet's own clear corner.
+  // 6.26s is where the voice says "folds"; the beats before this one did not move, because the
+  // line only grew at its end.
+  tl.fromTo("#f08-branch-1b-fold", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: E }, 6.605);
+
+  // held read — "nothing stays covered longer than you ask for" is spoken over the still frame that proves it
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["08-branch-1b"] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,65 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .d10-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .d10-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .d10-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .d10-shotbox { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .d10-shotbox img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .d10-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .d10-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .d10-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-ink); pointer-events:none; }
+  .d10-ring.hot { border-color:var(--rp-coral); }
+  .d10-tag { position:absolute; height:44px; padding:0 16px; font:500 26px/44px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .d10-chip { position:absolute; height:52px; padding:0 20px; font:400 30px/48px "Inter"; color:var(--rp-ink); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; box-sizing:border-box; }
+  .d10-chip code { font:500 28px/1 "JetBrains Mono"; }
+  .d10-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .d10-sbar { position:absolute; left:0; top:0; right:0; height:50px; background:var(--rp-slab-bar); }
+  .d10-sbt { position:absolute; left:28px; top:13px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .d10-row { position:absolute; left:34px; font:400 26px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .d10-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .d10-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .d10-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .d10-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .d10-card .t { position:absolute; left:28px; top:60px; font:500 40px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .d10-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .d10-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .d10-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .d10-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .d10-case { position:absolute; }
+
+</style>
+
+<div id="root" data-composition-id="10-step-3-stop" data-band="bottom" data-duration="13.419" data-width="1920" data-height="1080">
+
+  <div class="clip d10-bg" id="d10-bg" data-start="0" data-duration="13.419" data-track-index="0"></div>
+
+  <div class="clip d10-scene" id="d10-scene" data-start="0" data-duration="13.419" data-track-index="1">
+    <div class="d10-lab" id="d10-h" style="left:90px; top:60px">walkthrough.md · step 3 · 1 of 3 choices stops</div>
+    <div class="d10-slab" id="d10-gi" data-artifact=".gitignore, the plan folders&#x27; assets line and this repo&#x27;s older plans kept" style="left:90px; top:150px; width:1100px; height:168px"><div class="d10-sbar"></div><div class="d10-sbt">.gitignore · 2 of its lines</div><div class="d10-row" id="d10-gi-r0" style="top:62px; font-size:26px; line-height:44px">.reelplanning/plans/&#42;/&#42;video/assets/</div><div class="d10-row" id="d10-gi-r1" style="top:106px; font-size:26px; line-height:44px">!.reelplanning/plans/2026-09-2[0-7]-&#42;/&#42;video/assets/</div></div>
+    <div class="d10-card" id="d10-c0" data-call="a6" style="left:90px; top:380px; width:1340px"><span class="i">choice A6</span><span class="t">older plan folders keep their media</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "10-step-3-stop";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#d10-h", {"opacity": 0});
+  gsap.set("#d10-gi", {"opacity": 0});
+  gsap.set("#d10-c0", {"opacity": 0, "x": -30});
+  tl.to("#d10-h", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#d10-gi", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.3);
+  tl.to("#d10-c0", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 0.58);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

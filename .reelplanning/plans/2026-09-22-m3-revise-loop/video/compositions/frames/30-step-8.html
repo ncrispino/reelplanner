@@ -1,0 +1,148 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f30-step-8-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f30-step-8-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* ---- SHARED STAGE (reel stage, from .reelplanning/system.json; positions + sizes are law) ---- */
+  .f30-step-8-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f30-step-8-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f30-step-8-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f30-step-8-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f30-step-8-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-slot:not([data-filled]) .n, .f30-step-8-slot:not([data-filled]) .t { opacity:0; }
+  .f30-step-8-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; opacity:0; }
+  .f30-step-8-slot .dd.lit { color:var(--rp-coral-deep); }
+  .f30-step-8-slot.dec .n { top:13px; } .f30-step-8-slot.dec .t { top:12px; } .f30-step-8-slot.dec .dd { opacity:1; }
+  /* spine state (§18 v9): one tick per step at the rail's slot rows, the live one coral */
+  .f30-step-8-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f30-step-8-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); background:rgba(var(--rp-coral-rgb),0); }
+  .f30-step-8-tick[data-done] { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f30-step-8-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-3px; }
+  .f30-step-8-node .l { font:500 32px/1.15 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); text-align:center; padding:0 16px; }
+  .f30-step-8-node.ghost { background:transparent; box-shadow:none; border:2px dashed rgba(var(--rp-ink-rgb),0.3); }
+  .f30-step-8-node.ghost .l { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f30-step-8-node.ci { border:2px dashed rgba(var(--rp-ink-rgb),0.45); }
+  .f30-step-8-edges { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f30-step-8-edges path { fill:none; stroke:var(--rp-ink); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f30-step-8-edges path.head { fill:var(--rp-ink); stroke:none; }
+  /* ---- /SHARED STAGE ---- */
+  .f30-step-8-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f30-step-8-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f30-step-8-chip.lit { color:var(--rp-coral-deep); }
+  .f30-step-8-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f30-step-8-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f30-step-8-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f30-step-8-sheet { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f30-step-8-mono { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-mono.grey { color:rgba(var(--rp-ink-rgb),0.62); }
+  .f30-step-8-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-cell { position:absolute; border-radius:8px; border:1px dashed rgba(var(--rp-ink-rgb),0.3); font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f30-step-8-strike { position:absolute; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .f30-step-8-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f30-step-8-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f30-step-8-opt .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-opt .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-opt .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f30-step-8-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f30-step-8-rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f30-step-8-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f30-step-8-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f30-step-8-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f30-step-8-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f30-step-8-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+
+  .f30-step-8-c71 { position:absolute; top:0; width:9px; height:44px; border-radius:2px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f30-step-8-c12 { position:absolute; top:0; width:58px; height:44px; border-radius:4px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f30-step-8-c71.ch, .f30-step-8-c12.ch { background:var(--rp-ink); }
+  .f30-step-8-tagc { position:absolute; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; padding:8px 12px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.3); }
+  .f30-step-8-row { position:absolute; left:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+</style>
+
+<div id="root" data-composition-id="30-step-8" data-duration="20" data-width="1920" data-height="1080">
+
+  <div class="clip f30-step-8-bg" data-start="0" data-duration="20" data-track-index="0"></div>
+
+  <div class="clip f30-step-8-scene" id="f30-step-8-scene" data-start="0" data-duration="20" data-track-index="1">
+  <div class="f30-step-8-kicker" id="f30-step-8-kicker">Step 8 · Stop where it matters</div>
+  <div class="f30-step-8-spine" id="f30-step-8-spine">
+    <div class="f30-step-8-tick" id="f30-step-8-tick-6" data-plan-step="6" style="top:35px"></div>
+    <div class="f30-step-8-tick" id="f30-step-8-tick-7" data-plan-step="7" style="top:145px"></div>
+    <div class="f30-step-8-tick" id="f30-step-8-tick-8" data-plan-step="8" style="top:255px"></div>
+    <div class="f30-step-8-tick" id="f30-step-8-tick-9" data-plan-step="9" style="top:365px"></div>
+    <div class="f30-step-8-tick" id="f30-step-8-tick-10" data-plan-step="10" style="top:475px"></div>
+  </div>
+  <div class="f30-step-8-mono grey" id="f30-step-8-l71" style="left:200px; top:160px">calls in 4 walkthroughs</div>
+  <div id="f30-step-8-bar71" style="position:absolute; left:200px; top:206px; width:781px; height:44px"><div class="f30-step-8-c71" style="left:0px"></div><div class="f30-step-8-c71" style="left:11px"></div><div class="f30-step-8-c71" style="left:22px"></div><div class="f30-step-8-c71" style="left:33px"></div><div class="f30-step-8-c71" style="left:44px"></div><div class="f30-step-8-c71" style="left:55px"></div><div class="f30-step-8-c71" style="left:66px"></div><div class="f30-step-8-c71" style="left:77px"></div><div class="f30-step-8-c71" style="left:88px"></div><div class="f30-step-8-c71" style="left:99px"></div><div class="f30-step-8-c71" style="left:110px"></div><div class="f30-step-8-c71" style="left:121px"></div><div class="f30-step-8-c71" style="left:132px"></div><div class="f30-step-8-c71" style="left:143px"></div><div class="f30-step-8-c71" style="left:154px"></div><div class="f30-step-8-c71" style="left:165px"></div><div class="f30-step-8-c71" style="left:176px"></div><div class="f30-step-8-c71" style="left:187px"></div><div class="f30-step-8-c71" style="left:198px"></div><div class="f30-step-8-c71" style="left:209px"></div><div class="f30-step-8-c71" style="left:220px"></div><div class="f30-step-8-c71" style="left:231px"></div><div class="f30-step-8-c71" style="left:242px"></div><div class="f30-step-8-c71" style="left:253px"></div><div class="f30-step-8-c71" style="left:264px"></div><div class="f30-step-8-c71" style="left:275px"></div><div class="f30-step-8-c71" style="left:286px"></div><div class="f30-step-8-c71" style="left:297px"></div><div class="f30-step-8-c71" style="left:308px"></div><div class="f30-step-8-c71" style="left:319px"></div><div class="f30-step-8-c71" style="left:330px"></div><div class="f30-step-8-c71" style="left:341px"></div><div class="f30-step-8-c71" style="left:352px"></div><div class="f30-step-8-c71" style="left:363px"></div><div class="f30-step-8-c71" style="left:374px"></div><div class="f30-step-8-c71" style="left:385px"></div><div class="f30-step-8-c71" style="left:396px"></div><div class="f30-step-8-c71" style="left:407px"></div><div class="f30-step-8-c71" style="left:418px"></div><div class="f30-step-8-c71" style="left:429px"></div><div class="f30-step-8-c71" style="left:440px"></div><div class="f30-step-8-c71" style="left:451px"></div><div class="f30-step-8-c71" style="left:462px"></div><div class="f30-step-8-c71" style="left:473px"></div><div class="f30-step-8-c71" style="left:484px"></div><div class="f30-step-8-c71" style="left:495px"></div><div class="f30-step-8-c71" style="left:506px"></div><div class="f30-step-8-c71" style="left:517px"></div><div class="f30-step-8-c71" style="left:528px"></div><div class="f30-step-8-c71" style="left:539px"></div><div class="f30-step-8-c71" style="left:550px"></div><div class="f30-step-8-c71" style="left:561px"></div><div class="f30-step-8-c71" style="left:572px"></div><div class="f30-step-8-c71" style="left:583px"></div><div class="f30-step-8-c71" style="left:594px"></div><div class="f30-step-8-c71" style="left:605px"></div><div class="f30-step-8-c71" style="left:616px"></div><div class="f30-step-8-c71" style="left:627px"></div><div class="f30-step-8-c71" style="left:638px"></div><div class="f30-step-8-c71" style="left:649px"></div><div class="f30-step-8-c71" style="left:660px"></div><div class="f30-step-8-c71" style="left:671px"></div><div class="f30-step-8-c71" style="left:682px"></div><div class="f30-step-8-c71" style="left:693px"></div><div class="f30-step-8-c71" style="left:704px"></div><div class="f30-step-8-c71" style="left:715px"></div><div class="f30-step-8-c71" style="left:726px"></div><div class="f30-step-8-c71" style="left:737px"></div><div class="f30-step-8-c71 ch" style="left:748px"></div><div class="f30-step-8-c71 ch" style="left:759px"></div><div class="f30-step-8-c71 ch" style="left:770px"></div></div>
+  <div class="f30-step-8-hero" id="f30-step-8-big" style="left:200px; top:280px; font-size:88px">68 of 71</div>
+  <div class="f30-step-8-mono grey" id="f30-step-8-acc" style="left:200px; top:392px">accepted as they were</div>
+  <div class="f30-step-8-mono grey" id="f30-step-8-l12" style="left:200px; top:490px">plan questions</div>
+  <div id="f30-step-8-bar12" style="position:absolute; left:200px; top:536px; width:775px; height:44px"><div class="f30-step-8-c12 ch" style="left:0px"></div><div class="f30-step-8-c12 ch" style="left:65px"></div><div class="f30-step-8-c12 ch" style="left:130px"></div><div class="f30-step-8-c12" style="left:195px"></div><div class="f30-step-8-c12" style="left:260px"></div><div class="f30-step-8-c12" style="left:325px"></div><div class="f30-step-8-c12" style="left:390px"></div><div class="f30-step-8-c12" style="left:455px"></div><div class="f30-step-8-c12" style="left:520px"></div><div class="f30-step-8-c12" style="left:585px"></div><div class="f30-step-8-c12" style="left:650px"></div><div class="f30-step-8-c12" style="left:715px"></div></div>
+  <div class="f30-step-8-mono" id="f30-step-8-own" style="left:200px; top:606px">3 of 12: your own words</div>
+  <div class="f30-step-8-sheet" id="f30-step-8-call" style="left:1100px; top:160px; width:740px; height:200px">
+    <div class="f30-step-8-mono grey" style="left:30px; top:30px">A11 · a call</div>
+    <div class="f30-step-8-row" style="top:76px">What an unattended run may do</div>
+    <div class="f30-step-8-tagc" id="f30-step-8-ctag" style="left:30px; top:132px">hard to undo</div>
+  </div>
+  <div class="f30-step-8-chip lit" id="f30-step-8-stop" style="left:1100px; top:384px">stops the video</div>
+  <div class="f30-step-8-mono grey" id="f30-step-8-tl" style="left:1100px; top:490px">the tags</div>
+  <div class="f30-step-8-tagc" id="f30-step-8-t1" style="left:1100px; top:530px">visible</div>
+  <div class="f30-step-8-tagc" id="f30-step-8-t2" style="left:1250px; top:530px">hard to undo</div>
+  <div class="f30-step-8-tagc" id="f30-step-8-t3" style="left:1475px; top:530px">deviation</div>
+  <div class="f30-step-8-tagc" id="f30-step-8-t4" style="left:1660px; top:530px">close</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "30-step-8";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)", INK = __RP["ink"], TILE = __RP["tile"], PAPER = __RP["paper"], IR = __RP["ink-rgb"];
+  var $ = function (s) { return document.getElementById("f30-step-8-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.to(el, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var fill = function (tl, n, at) {
+    tl.fromTo("#f30-step-8-slot-" + n, { backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(" + IR + ",0.18)" }, { backgroundColor: TILE, borderColor: "rgba(" + IR + ",0.12)", duration: 0.4, ease: "power3.out" }, at);
+    tl.fromTo("#f30-step-8-slot-" + n + " .n, #f30-step-8-slot-" + n + " .t", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power3.out" }, at);
+  };
+  var tickOn = function (tl, n, at) { tl.fromTo("#f30-step-8-tick-" + n, { backgroundColor: OFF, borderColor: "rgba(" + IR + ",0.22)" }, { backgroundColor: C, borderColor: C, duration: 0.4, ease: "power3.out" }, at); };
+  var tickDone = function (tl, n, at) { tl.to("#f30-step-8-tick-" + n, { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)", duration: 0.3, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  gsap.set("#f30-step-8-tick-6", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  gsap.set("#f30-step-8-tick-7", { backgroundColor: "rgba(" + IR + ",0.55)", borderColor: "rgba(0,0,0,0)" });
+  tickOn(tl, 8, 0.1);
+  pop(tl, $("l71"), 3.13, 6);
+  tl.fromTo("#f30-step-8-bar71 > div", { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.012, ease: "power1.out" }, 3.33);
+  pop(tl, $("big"), 4.86, 12);
+  pop(tl, $("acc"), 7.33, 6);
+  pop(tl, $("l12"), 7.98, 6);
+  tl.fromTo("#f30-step-8-bar12 > div", { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.04, ease: "power1.out" }, 8.08);
+  pop(tl, $("own"), 9.99, 6);
+  pop(tl, $("call"), 11.33, 12);
+  gsap.set($("ctag"), { opacity: 0 });
+  pop(tl, $("tl"), 11.53, 6);
+  pop(tl, $("t1"), 13.07, 6);
+  pop(tl, $("t2"), 13.66, 6);
+  pop(tl, $("t3"), 14.72, 6);
+  pop(tl, $("t4"), 15.97, 6);
+  tl.to($("ctag"), { opacity: 1, duration: 0.4 }, 16.56);
+  tl.to($("t2"), { borderColor: INK, duration: 0.3 }, 16.56);
+  pop(tl, $("stop"), 17.18, 8);
+  tickDone(tl, 8, 17.18);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 19.499);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

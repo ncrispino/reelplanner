@@ -1,0 +1,278 @@
+{
+  "annotations": [
+    {
+      "comment": "",
+      "frame": {
+        "compositionId": "13-end",
+        "index": 13,
+        "title": "Seeing it run"
+      },
+      "id": "amulm5tc98kej",
+      "kind": "approve",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 139.3
+    }
+  ],
+  "autonomy": [
+    {
+      "chose": "What is left after the third round is that round's findings the author kept (not those given a meaning, which a click explains, nor those fixed), each with the reason: on the page's Before you watch, under the videos to watch first (\"Left as they are: … Kept: …\"), shown even when every video before it was watched, three on the card and the rest behind \"N more\" (the system video's third round left 32), and in the notification's line (\"2 things fresh eyes left as they are\")",
+      "id": "a6",
+      "judgedAt": "2026-09-28T18:59:11.638Z",
+      "planStep": 2,
+      "shownAt": "2026-09-28T18:59:09.728Z",
+      "t": 56.398,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Ask about this opens in the side panel (where Terms and details open), about the scene on screen, the video paused: from an Ask button beside Terms and the key Q, from a plain caption word clicked (its caption quoted in the panel), and from an underlined word's card (\"Still unclear? Ask about this\", the word in the box); a click elsewhere on the frame does what it did",
+      "id": "a8",
+      "judgedAt": "2026-09-28T18:59:44.748Z",
+      "planStep": 3,
+      "shownAt": "2026-09-28T18:59:44.247Z",
+      "t": 90.104,
+      "verdict": "accept"
+    },
+    {
+      "chose": "On your machine, a question goes to the session waiting on `review --wait`, which wakes on it as on a review (`inbox/questions/<id>.json`) and answers with `reelplanning inbox answer <id> \"…\" --from \"…\"`; the page asks for the answer every 2 s for two minutes at most; with no session waiting nothing is written and no headless run starts: it goes with the review",
+      "id": "a10",
+      "judgedAt": "2026-09-28T18:59:44.967Z",
+      "planStep": 3,
+      "shownAt": "2026-09-28T18:59:44.247Z",
+      "t": 90.104,
+      "verdict": "accept"
+    },
+    {
+      "chose": "Every question is kept in the review as `questions: [{ id, question, t, frame, planStep, askedAt, quote?, answer?, from?, via?, answeredAt?, note? }]`, `answered: false` where it has no answer (the page's own state and the review server's id for a question, `status` and `askId`, are left out); `reviews/<id>.md` lists them under \"Questions you asked\", an unanswered one \"to answer in the next version\", an answered one still \"make it plain there too\"",
+      "id": "a11",
+      "judgedAt": "2026-09-28T18:59:45.124Z",
+      "planStep": 3,
+      "shownAt": "2026-09-28T18:59:44.247Z",
+      "t": 90.104,
+      "verdict": "accept"
+    },
+    {
+      "chose": "A finding is one line, `- N1 · scene 4 · \"the phrase\": what, why`, its phrase in double quotes; the author's answer is the indented line under it, `- Answer: fixed: …`, `meaning: …` or `kept: <the reason>`, and `verify` reads both",
+      "id": "a1",
+      "judgedAt": "2026-09-28T19:01:29.663Z",
+      "planStep": 1,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "The pictures: the video packed with `bundle-player` and opened in headless Chromium at 1440 × 900, the Before you watch card dismissed, each scene seeked 0.4 s before its end (0.12 s at first; changed after the system video's look, whose designer read the next scene's first caption, already up, as this one's) and the player's stage photographed; without `playwright-core`, the frames alone from HyperFrames' snapshot, and the brief says the player's tab and chips are not in them",
+      "id": "a2",
+      "judgedAt": "2026-09-28T19:01:29.669Z",
+      "planStep": 1,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "What the agents saw is kept per scene in `fresh-eyes/stamp.json` (its narration line and its frame's HTML, hashed), so `verify` names the scenes changed since they looked",
+      "id": "a3",
+      "judgedAt": "2026-09-28T19:01:29.672Z",
+      "planStep": 1,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "\"Viewers were lost on these before\" is read from every review in the repo (the plans' and the system video's), newest first, at most 40: words looked up, \"Explain this more\", an answer, comment or check note that asks what something means (\"wdym\", \"confused\", \"what do you mean\"), checks missed, and questions asked on the page",
+      "id": "a4",
+      "judgedAt": "2026-09-28T19:01:29.674Z",
+      "planStep": 1,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "Only a finding with no answer (or a bad one) stops the build; no run yet, agents not back yet, or scenes changed since they looked is a △ line, and `build` shows what verify read of fresh eyes as a line of its own",
+      "id": "a5",
+      "judgedAt": "2026-09-28T19:01:29.676Z",
+      "planStep": 2,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "An answer is checked, not just present: `meaning` needs its quoted phrase in the glossary (Other words included) or the storyboard's `terms:`, `fixed` needs where (two words or more), `kept` a reason (three words or more)",
+      "id": "a7",
+      "judgedAt": "2026-09-28T19:01:29.678Z",
+      "planStep": 2,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "On a hosted page, one `sample` call per question, on a click only, on the quick tier: its input is the instructions (answer only from this, plain words, two to five sentences, say so when it isn't there), the question, the scene's narration and the words on its frame, its plan step's text (else the plan's problem), and the glossary rows the question and scene mention (with this video's own words); the answer's last line, \"From: …\", shows under it; `not_granted` and the other refusals hide the hosted path for the view, `rate_limited` is said and never retried",
+      "id": "a9",
+      "judgedAt": "2026-09-28T19:01:29.688Z",
+      "planStep": 3,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "Rule 1 in `frame-lint`: a bar is an element with no text, under 12 px high, over 120 px wide and filled; bars stand where words go when two or more are in a box with no text, one after another in a box's flow, or stacked (left edges within 24 px, tops 14 to 60 px apart, as lines of text are); one bar alone, or two underlines 9 px apart, passes",
+      "id": "a12",
+      "judgedAt": "2026-09-28T19:01:29.691Z",
+      "planStep": 4,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    },
+    {
+      "chose": "Rule 5 in `frame-lint`: another element with words of its own, or a filled leaf (a chip, a line), whose box ends in the 40 px above a `data-detail` mark fails; a line of words with a place but no size is measured as one line of its type; a panel holding other things, or a background behind the mark, is not in the way",
+      "id": "a13",
+      "judgedAt": "2026-09-28T19:01:29.693Z",
+      "planStep": 4,
+      "shownAt": "2026-09-28T19:00:14.857Z",
+      "t": 134.563,
+      "verdict": "listed"
+    }
+  ],
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 0,
+    "watchedPct": 99,
+    "wrongChecks": 0
+  },
+  "decisions": [],
+  "exportedAt": "2026-09-28T19:01:33.891Z",
+  "knowledgeLevel": null,
+  "project": "walkthrough-video",
+  "questions": [],
+  "quizzes": [
+    {
+      "answer": "c",
+      "answeredAt": "2026-09-28T18:58:58.611Z",
+      "correct": true,
+      "id": "k1",
+      "t": 45.646
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-09-28T18:59:20.595Z",
+      "correct": true,
+      "id": "k2",
+      "t": 63.267
+    }
+  ],
+  "src": "2026-09-28-videos-that-make-sense--walkthrough/index.html",
+  "verdict": "approve",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 0.979,
+        "id": "ch4"
+      }
+    ],
+    "completion": 0.992,
+    "details": [],
+    "durationSeconds": 142.11,
+    "firstPlayAt": "2026-09-28T18:58:21.250Z",
+    "maxTimeReached": 141,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-09-26T17:12:42.964Z",
+      "sent": "2026-09-26T17:20:37.874Z",
+      "video": "2026-09-24-answer-on-the-video--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:09:57.555Z",
+      "sent": "2026-09-26T17:10:12.827Z",
+      "video": "2026-09-25-answer-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T05:26:59.027Z",
+      "sent": "2026-09-26T05:28:16.598Z",
+      "video": "2026-09-25-fewer-better-stops--walkthrough"
+    },
+    {
+      "seen": "2026-09-25T21:20:41.818Z",
+      "sent": "2026-09-25T21:22:52.233Z",
+      "video": "2026-09-25-videos-you-can-follow"
+    },
+    {
+      "seen": "2026-09-26T04:38:14.007Z",
+      "sent": "2026-09-26T04:39:09.201Z",
+      "video": "2026-09-25-videos-you-can-follow--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T17:03:44.730Z",
+      "sent": "2026-09-26T17:06:51.177Z",
+      "video": "2026-09-26-better-visuals"
+    },
+    {
+      "seen": "2026-09-27T01:01:44.319Z",
+      "sent": "2026-09-27T01:03:10.554Z",
+      "video": "2026-09-26-better-visuals--walkthrough"
+    },
+    {
+      "seen": "2026-09-26T21:11:57.456Z",
+      "sent": "2026-09-26T21:13:36.416Z",
+      "video": "2026-09-26-case-study"
+    },
+    {
+      "seen": "2026-09-27T00:57:03.541Z",
+      "sent": "2026-09-27T00:57:45.761Z",
+      "video": "2026-09-26-contributing"
+    },
+    {
+      "seen": "2026-09-27T23:18:09.177Z",
+      "video": "2026-09-26-contributing--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T02:54:51.333Z",
+      "sent": "2026-09-27T02:55:25.980Z",
+      "video": "2026-09-27-details-in-the-frame"
+    },
+    {
+      "seen": "2026-09-27T04:22:26.379Z",
+      "sent": "2026-09-27T04:23:31.280Z",
+      "video": "2026-09-27-details-in-the-frame--walkthrough"
+    },
+    {
+      "seen": "2026-09-27T18:17:00.139Z",
+      "sent": "2026-09-27T18:19:34.278Z",
+      "video": "2026-09-27-walkthroughs-that-help"
+    },
+    {
+      "seen": "2026-09-28T04:39:23.180Z",
+      "sent": "2026-09-28T04:40:05.234Z",
+      "video": "2026-09-28-videos-that-make-sense"
+    },
+    {
+      "seen": "2026-09-28T19:00:00.857Z",
+      "video": "2026-09-28-videos-that-make-sense--walkthrough"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanning": "0.2.0"
+  }
+}

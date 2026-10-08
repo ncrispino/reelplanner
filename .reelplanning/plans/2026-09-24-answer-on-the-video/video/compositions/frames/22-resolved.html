@@ -1,0 +1,160 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f22-resolved-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f22-resolved-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f22-resolved-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f22-resolved-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-resolved-chip.lit { color:var(--rp-coral-deep); }
+  .f22-resolved-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f22-resolved-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-resolved-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-resolved-t30 { position:absolute; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f22-resolved-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f22-resolved-lines path.ink { stroke:var(--rp-ink); }
+  .f22-resolved-lines path.head { fill:var(--rp-ink); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f22-resolved-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f22-resolved-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f22-resolved-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f22-resolved-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): four slots */
+  .f22-resolved-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f22-resolved-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f22-resolved-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f22-resolved-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f22-resolved-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-slot .d, .f22-resolved-slot .dd { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-resolved-slot.dec .n { top:13px; } .f22-resolved-slot.dec .t { top:12px; }
+  .f22-resolved-slot.live { outline-color:var(--rp-coral); }
+  /* option cards (quick checks, decisions) */
+  .f22-resolved-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-resolved-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-resolved-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f22-resolved-opt .c { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-resolved-opt.row .k { top:30px; } .f22-resolved-opt.row .l { left:84px; top:22px; }
+  /* list rows (resolved plan) */
+  .f22-resolved-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f22-resolved-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f22-resolved-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f22-resolved-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f22-resolved-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+
+  /* ---- MOCKS: the review player drawn as it is (prototype content, exempt from the chrome's type floor) ---- */
+  .f22-resolved-mock { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f22-resolved-mock-in { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; }
+  .f22-resolved-mock-k { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-sub { position:absolute; left:200px; top:222px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .f22-resolved-mock-tick { position:absolute; left:80px; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f22-resolved-mock-tick.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f22-resolved-mock-card { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f22-resolved-mock-card.b2 { border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .f22-resolved-mock-card .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-resolved-mock-card .l { position:absolute; left:28px; top:66px; font:400 44px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-card .r { position:absolute; left:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-card .r b { font-weight:500; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-resolved-mock-card .rule { position:absolute; left:28px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f22-resolved-mock-card .box { position:absolute; left:28px; top:130px; width:56px; height:56px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.45); }
+  .f22-resolved-mock-ring { position:absolute; border-radius:18px; border:5px solid var(--rp-ink); }
+  .f22-resolved-mock-edge { position:absolute; border-radius:12px; border:3px solid rgba(var(--rp-ink-rgb),0.4); }
+  .f22-resolved-mock-node { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); display:flex; align-items:center; justify-content:center; font:500 32px/1.15 "Inter"; color:var(--rp-ink); }
+  .f22-resolved-mock-big { position:absolute; font:400 60px/1.08 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.08em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.55); white-space:nowrap; }
+  /* the question sheet, as .decision.sheet draws it (the player's px × 1.73, the stage's 1920 frame) */
+  .f22-resolved-mock-sheet { position:absolute; left:0; top:415px; width:1920px; height:665px; background:var(--rp-paper); box-shadow:0 -8px 30px rgba(var(--rp-shadow-rgb),0.16); }
+  .f22-resolved-mock-sheet .hk { position:absolute; left:41px; top:34px; font:500 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f22-resolved-mock-sheet .fold { position:absolute; right:41px; top:34px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f22-resolved-mock-sheet .sq { position:absolute; left:41px; top:74px; font:400 38px/1.3 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-sheet .row { position:absolute; width:898px; border-top:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f22-resolved-mock-sheet .key { position:absolute; left:0; top:18px; width:36px; height:36px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.2); font:500 20px/34px "JetBrains Mono"; text-align:center; color:rgba(var(--rp-ink-rgb),0.64); }
+  .f22-resolved-mock-sheet .key.rec { border-color:rgba(var(--rp-ink-rgb),0.6); color:var(--rp-ink); }
+  .f22-resolved-mock-sheet .key.on { background:var(--rp-ink); border-color:var(--rp-ink); color:var(--rp-paper); }
+  .f22-resolved-mock-sheet .lab { position:absolute; left:58px; top:16px; font:500 26px/1.35 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-sheet .lab i { font-style:normal; font-size:20px; color:rgba(var(--rp-ink-rgb),0.64); margin-left:12px; }
+  .f22-resolved-mock-sheet .why { position:absolute; left:58px; top:54px; width:820px; font:400 22px/1.45 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); }
+  .f22-resolved-mock-sheet .ft { position:absolute; left:41px; top:600px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f22-resolved-mock-kbd { display:inline-block; min-width:26px; height:28px; padding:0 5px; margin-left:8px; border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:5px; font:500 17px/27px "JetBrains Mono"; text-align:center; color:rgba(var(--rp-ink-rgb),0.64); vertical-align:1px; }
+  .f22-resolved-mock-sheet .nf { position:absolute; left:760px; right:41px; top:600px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.2); padding-bottom:8px; font:400 22px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.5); white-space:nowrap; }
+  /* the thin strip under the stage (screen px) */
+  .f22-resolved-mock-strip { position:absolute; height:58px; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; gap:30px; padding:0 22px; box-sizing:border-box; font:500 22px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-si { display:inline-flex; align-items:center; }
+  .f22-resolved-mock-si.dim { color:rgba(var(--rp-ink-rgb),0.45); }
+  .f22-resolved-mock-si .f22-resolved-mock-kbd { margin-left:8px; }
+  .f22-resolved-mock-field { display:inline-block; width:150px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.3); color:rgba(var(--rp-ink-rgb),0.5); padding-bottom:4px; }
+  /* the record panel (screen px) */
+  .f22-resolved-mock-rec { position:absolute; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f22-resolved-mock-rec .hd { position:absolute; left:0; right:0; top:0; height:70px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); }
+  .f22-resolved-mock-rec .ht { position:absolute; left:36px; top:20px; font:700 30px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-rec .ht span { font-weight:400; font-size:24px; color:rgba(var(--rp-ink-rgb),0.64); margin-left:10px; }
+  .f22-resolved-mock-rec .h4 { position:absolute; font:700 28px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-rec .h4 span { font-weight:400; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f22-resolved-mock-rec .sm { position:absolute; font:400 22px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f22-resolved-mock-rec .tm { position:absolute; font:500 22px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.64); white-space:nowrap; }
+  .f22-resolved-mock-rec .sq { position:absolute; font:400 30px/1.2 "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-rec .tx { position:absolute; font:500 28px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f22-resolved-mock-rec .ln { position:absolute; font:400 22px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.72); text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.3); text-underline-offset:4px; white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:4px; border-radius:4px; }
+  .f22-resolved-mock-rec .rule { position:absolute; left:36px; right:36px; height:1px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f22-resolved-mock-pill { position:absolute; height:44px; padding:0 16px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.3); font:500 24px/42px "Inter"; color:var(--rp-ink); white-space:nowrap; box-sizing:border-box; }
+  .f22-resolved-mock-pick { position:absolute; height:48px; border-radius:6px; border:1px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f22-resolved-mock-btn { position:absolute; height:48px; padding:0 18px; border-radius:6px; background:var(--rp-ink); color:var(--rp-paper); font:500 24px/48px "Inter"; white-space:nowrap; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f22-resolved-hl { position:absolute; border-radius:10px; border:3px solid var(--rp-coral); }
+  .f22-resolved-uline { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .f22-resolved-dash { position:absolute; border:3px dashed var(--rp-coral); border-radius:12px; }
+
+</style>
+
+<div id="root" data-composition-id="22-resolved" data-duration="12.75" data-width="1920" data-height="1080">
+
+  <div class="clip f22-resolved-bg" id="f22-resolved-bg" data-start="0" data-duration="12.75" data-track-index="0"></div>
+
+  <div class="clip f22-resolved-scene" id="f22-resolved-scene" data-start="0" data-duration="12.75" data-track-index="1">
+  <div class="f22-resolved-kicker" id="f22-resolved-kicker">The plan · 4 steps, 1 question</div>
+  <div class="f22-resolved-track" style="left:470px; top:262px">on the frame</div>
+  <div style="position:absolute; left:482px; top:210px; width:3px; height:190px; background:rgba(var(--rp-ink-rgb),0.25); border-radius:2px"></div>
+  <div class="f22-resolved-track" style="left:470px; top:482px">the record</div>
+  <div class="f22-resolved-track" style="left:470px; top:592px">the check</div>
+  <div style="position:absolute; left:500px; top:200px; width:1200px; height:450px" id="f22-resolved-list">
+    <div class="f22-resolved-ls" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">Click an option on the frame</span><span class="d dk">decided · D-085</span></div>
+    <div class="f22-resolved-ls" data-plan-step="2" style="top:110px"><span class="n">2</span><span class="t">The sheet stops repeating</span><span class="d">Thin strip</span></div>
+    <div class="f22-resolved-ls" data-plan-step="3" style="top:220px"><span class="n">3</span><span class="t">Edit the record where it is listed</span></div>
+    <div class="f22-resolved-ls" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Check it on the videos already there</span></div>
+  </div>
+  <div class="f22-resolved-note" id="f22-resolved-note">AI-generated narration and visuals</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "22-resolved";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f22-resolved-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("list"), 0.2, 12);
+  fade(tl, $("note"), 0.5);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 12.749);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

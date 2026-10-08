@@ -1,0 +1,74 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "yeah this all sounds good just fyi the more detail 'E' thing needs to be justified; it needs to be more detail. like the whole part size example is pretty bad bc thats not any extra information athat couldnt be in video already",
+      "frame": {
+        "compositionId": "26-callback",
+        "index": 22,
+        "title": "Back to line 14"
+      },
+      "id": "amudlqvh9emsj",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": null
+      },
+      "t": 261.1
+    }
+  ],
+  "autonomy": [],
+  "decisions": [
+    {
+      "decidedAt": "2026-09-23T04:21:36.641Z",
+      "id": "q1",
+      "label": "Types first",
+      "option": "c",
+      "planStep": 2,
+      "question": "How is each detail page made?",
+      "recommended": true,
+      "t": 113.15
+    }
+  ],
+  "exportedAt": "2026-09-23T04:28:29.109Z",
+  "knowledgeLevel": null,
+  "project": "video",
+  "quizzes": [],
+  "src": "2026-09-23-deep-dives/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      }
+    ],
+    "completion": 1,
+    "durationSeconds": 274.14,
+    "firstPlayAt": "2026-09-23T04:17:56.067Z",
+    "maxTimeReached": 274.13,
+    "moments": [
+      {
+        "frameIndex": 17,
+        "from": 274.13,
+        "kind": "rewind",
+        "planStep": 4,
+        "t": 197.88
+      }
+    ]
+  }
+}

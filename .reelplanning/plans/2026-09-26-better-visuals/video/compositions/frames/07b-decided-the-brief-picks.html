@@ -1,0 +1,114 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .b07b-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .b07b-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  /* the lowest eighth stays empty (captions, the answer chips): everything the camera moves is clipped at 900 */
+  .b07b-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .b07b-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .b07b-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .b07b-shot { position:absolute; display:block; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; }
+  .b07b-pin { position:absolute; padding:0 12px; font:400 28px/40px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .b07b-pin.hot { background:var(--rp-coral); color:var(--rp-on-ink); }
+  .b07b-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b07b-ul.ink { background:var(--rp-ink); height:3px; }
+  .b07b-q { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .b07b-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .b07b-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .b07b-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 50px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .b07b-opt .c { position:absolute; left:30px; bottom:26px; right:26px; font:500 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); }
+  .b07b-ring { position:absolute; box-sizing:border-box; border-radius:12px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .b07b-rec { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .b07b-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); }
+  .b07b-sbar { position:absolute; border-radius:10px 10px 0 0; background:var(--rp-slab-bar); }
+  .b07b-sbt { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.66); white-space:nowrap; }
+  .b07b-row { position:absolute; font:400 28px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .b07b-row .g { color:rgba(var(--rp-slab-ink-rgb),0.62); font-weight:700; margin-right:0.6em; }
+  .b07b-caret { display:inline-block; width:0.55em; height:1.05em; margin-left:0.08em; background:var(--rp-slab-ink); vertical-align:text-bottom; }
+  .b07b-doc { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.14); }
+
+  .b07b-t { position:absolute; left:160px; font:400 27px/42px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .b07b-t.h { font-weight:700; }
+  .b07b-t.dim { color:rgba(var(--rp-ink-rgb),0.62); }
+  .b07b-win { position:absolute; left:160px; height:42px; overflow:hidden; width:1595.2px; }
+  .b07b-win .b07b-t { left:0; top:0; }
+  .b07b-ul { position:absolute; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .b07b-tag { position:absolute; right:150px; top:86px; padding:0 16px; font:400 28px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-coral); border-radius:6px; white-space:nowrap; }
+  .b07b-bl { position:absolute; left:110px; top:700px; width:1700px; height:76px; border-radius:10px; background:var(--rp-slab); }
+  .b07b-br { position:absolute; left:146px; top:716px; font:400 27px/44px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; }
+  .b07b-pn { position:absolute; left:1510px; top:720px; padding:0 12px; font:400 27px/36px "Inter"; color:var(--rp-slab); background:var(--rp-slab-ink); border-radius:5px; white-space:nowrap; }
+
+</style>
+
+<div id="root" data-composition-id="07b-decided-the-brief-picks" data-band="bottom" data-duration="13.5" data-width="1920" data-height="1080">
+
+  <div class="clip b07b-bg" id="b07b-bg" data-start="0" data-duration="13.5" data-track-index="0"></div>
+
+  <div class="clip b07b-scene" id="b07b-scene" data-start="0" data-duration="13.5" data-track-index="1">
+    <div class="b07b-lab" id="b07b-anchor" style="left:110px; top:18px">Step 1 · decided: the brief picks</div>
+    <div class="b07b-doc" id="b07b-doc" style="left:110px; top:60px; width:1700px; height:508px" data-artifact="BRIEF.md">
+    </div>
+    <div class="b07b-lab" style="left:160px; top:90px">BRIEF.md · this video's own</div>
+    <div class="b07b-t h" style="top:150px">## Customizations</div>
+    <div class="b07b-t" style="top:192px"></div>
+    <div class="b07b-t dim" style="top:234px">- Medium: screens, documents, code and a terminal; composition varies per scene.</div>
+    <div class="b07b-t dim" style="top:276px">- Layouts: a wall of real scenes, a zoomed page, before and after wipes, a change's map in a …</div>
+    <div class="b07b-t dim" style="top:318px">- Main transition: push-slide LEFT for the next scene of a chapter; cut for a chapter, a quick …</div>
+    <div class="b07b-win" id="b07b-w0" style="top:360px"><div class="b07b-t" id="b07b-r0">- Real things: scene 1 (twelve real scenes), 2 (today's Terms panel), 3 and 9 (the sample's</div></div>
+    <div class="b07b-win" id="b07b-w1" style="top:402px"><div class="b07b-t" id="b07b-r1">  before and after), 4 (the terms check's map), 5 (its five lines), 7 (the plan's text), 8 (the</div></div>
+    <div class="b07b-win" id="b07b-w2" style="top:444px"><div class="b07b-t" id="b07b-r2">  decision log), 11 (this brief), 15 (the page before and after), 17 (the plans folder); the rest</div></div>
+    <div class="b07b-win" id="b07b-w3" style="top:486px"><div class="b07b-t" id="b07b-r3">  explain with pictures</div></div>
+    <div class="b07b-ul" id="b07b-u0" style="left:500.2px; top:440px; width:405px"></div>
+    <div class="b07b-ul" id="b07b-u1" style="left:937.6px; top:440px; width:291.6px"></div>
+    <div class="b07b-tag" id="b07b-tag">decision D-166 · the brief picks</div>
+    <div data-artifact="reelplanning build"><div class="b07b-bl" id="b07b-bl"></div><div class="b07b-br" id="b07b-br">✓ variety  BRIEF.md picks the real things: scene 1 (twelve real scenes), …</div></div>
+    <div class="b07b-pn" id="b07b-pn">no warning</div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "07b-decided-the-brief-picks";
+
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#b07b-w0", { x: -1595.2 });
+  gsap.set("#b07b-r0", { x: 1595.2 });
+  gsap.set("#b07b-w1", { x: -1595.2 });
+  gsap.set("#b07b-r1", { x: 1595.2 });
+  gsap.set("#b07b-w2", { x: -1595.2 });
+  gsap.set("#b07b-r2", { x: 1595.2 });
+  gsap.set("#b07b-w3", { x: -1595.2 });
+  gsap.set("#b07b-r3", { x: 1595.2 });
+  gsap.set("#b07b-u0", { scaleX: 0 });
+  gsap.set("#b07b-u1", { scaleX: 0 });
+  gsap.set("#b07b-tag", { opacity: 0, y: 8 });
+  gsap.set("#b07b-bl", { opacity: 0 });
+  gsap.set("#b07b-br", { opacity: 0 });
+  gsap.set("#b07b-pn", { opacity: 0, x: 16 });
+  tl.to("#b07b-tag", { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 3.06);
+  tl.to("#b07b-w0", { x: 0, duration: 0.7, ease: "power2.inOut" }, 2.96);
+  tl.to("#b07b-r0", { x: 0, duration: 0.7, ease: "power2.inOut" }, 2.96);
+  tl.to("#b07b-w1", { x: 0, duration: 0.7, ease: "power2.inOut" }, 3.31);
+  tl.to("#b07b-r1", { x: 0, duration: 0.7, ease: "power2.inOut" }, 3.31);
+  tl.to("#b07b-w2", { x: 0, duration: 0.7, ease: "power2.inOut" }, 3.66);
+  tl.to("#b07b-r2", { x: 0, duration: 0.7, ease: "power2.inOut" }, 3.66);
+  tl.to("#b07b-w3", { x: 0, duration: 0.7, ease: "power2.inOut" }, 4.01);
+  tl.to("#b07b-r3", { x: 0, duration: 0.7, ease: "power2.inOut" }, 4.01);
+  tl.to("#b07b-u0", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 8.22);
+  tl.to("#b07b-u1", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 9.17);
+  tl.to("#b07b-bl", { opacity: 1, duration: 0.3, ease: "none" }, 11.16);
+  tl.to("#b07b-br", { opacity: 1, duration: 0.3, ease: "none" }, 11.26);
+  tl.to("#b07b-pn", { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 11.88);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

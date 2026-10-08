@@ -1,0 +1,316 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/Inter-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+    }
+
+    /* ---- frame root (styled via #root, never a class on the root) ---- */
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      color: #141413;
+      font-family: "Inter", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- full-bleed ground: its own clip layer, lowest track ---- */
+    .f02-tension-ground {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #FAF9F5;
+    }
+
+    /* ---- content layer ---- */
+    .f02-tension-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---- the retry-loop card (card-hairline on tile) — upper-left, 40% ---- */
+    .f02-tension-card {
+      position: absolute;
+      left: 80px;
+      top: 220px;
+      width: 690px;
+      box-sizing: border-box;
+      padding: 44px 46px 42px;
+      background: #EFE9DE;
+      border: 1px solid rgba(20, 20, 19, 0.12);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(20, 20, 19, 0.08), 0 4px 16px rgba(20, 20, 19, 0.04);
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+    .f02-tension-kicker {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.46cqw;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: #141413;
+      margin: 0 0 26px;
+      white-space: nowrap;
+    }
+    .f02-tension-spike {
+      color: #CC785C;
+      margin-right: 0.45em;
+    }
+    .f02-tension-hero {
+      font-family: "EB Garamond", serif;
+      font-size: 6.8cqw;
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.022em;
+      margin: 0;
+      white-space: nowrap;
+    }
+    .f02-tension-rule {
+      height: 1px;
+      background: rgba(20, 20, 19, 0.12);
+      margin: 30px 0 22px;
+      transform-origin: left center;
+    }
+    .f02-tension-mono {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 1.35cqw;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      color: #141413;
+      opacity: 0.82;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    /* ---- right column: consequence lines, 60% ---- */
+    .f02-tension-col {
+      position: absolute;
+      left: 860px;
+      top: 236px;
+      width: 980px;
+    }
+    .f02-tension-line {
+      position: absolute;
+      left: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 3.4cqw;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.018em;
+      white-space: nowrap;
+    }
+    .f02-tension-line-1 { top: 0; }
+    .f02-tension-line-2 { top: 136px; }
+    .f02-tension-line-3 { top: 272px; }
+
+    /* marker scaffold: wrap is relative inline; strike svg sits over the text */
+    .f02-tension-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .f02-tension-w {
+      position: relative;
+      display: inline-block;
+      z-index: 0;
+      will-change: transform, opacity, filter;
+    }
+    .f02-tension-strike {
+      position: absolute;
+      left: -6px;
+      top: calc(50% - 12px);
+      width: calc(100% + 12px);
+      height: 24px;
+      z-index: 1;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .f02-tension-strike path {
+      fill: none;
+      stroke: #CC785C;
+      stroke-width: 4px;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    /* ---- the resolve: lands last ---- */
+    .f02-tension-resolve-rule {
+      position: absolute;
+      left: 860px;
+      top: 640px;
+      width: 980px;
+      height: 1px;
+      background: rgba(20, 20, 19, 0.12);
+      transform-origin: left center;
+    }
+    .f02-tension-resolve {
+      position: absolute;
+      left: 860px;
+      top: 664px;
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 4.4cqw;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.05;
+      letter-spacing: -0.012em;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+  </style>
+
+  <div id="root" data-composition-id="02-tension" data-width="1920" data-height="1080" data-duration="9.887">
+    <!-- cream ground: full-duration clip on the lowest track -->
+    <div class="clip f02-tension-ground" data-start="0" data-duration="9.887" data-track-index="0"></div>
+
+    <div class="clip f02-tension-stage" data-start="0" data-duration="9.887" data-track-index="1">
+      <!-- focal: the retry-loop card -->
+      <div class="f02-tension-card" id="f02-tension-card">
+        <p class="f02-tension-kicker"><span class="f02-tension-spike">&#10033;</span>The obvious fix</p>
+        <h2 class="f02-tension-hero" id="f02-tension-hero"><span class="f02-tension-w">Retry</span> <span class="f02-tension-w">loop</span></h2>
+        <div class="f02-tension-rule" id="f02-tension-card-rule"></div>
+        <p class="f02-tension-mono" id="f02-tension-mono">client SDK &nbsp;&middot;&nbsp; on error &rarr; retry(upload)</p>
+      </div>
+
+      <!-- supporting: three consequences, each struck through -->
+      <div class="f02-tension-col">
+        <div class="f02-tension-line f02-tension-line-1">
+          <span class="f02-tension-wrap" id="f02-tension-l1">
+            <span class="f02-tension-w">loses</span> <span class="f02-tension-w">partial</span> <span class="f02-tension-w">state</span>
+            <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+              <path id="f02-tension-s1" d="M0,12 Q31,7 62,12 Q93,17 125,12 Q156,7 187,12 Q218,17 250,12 Q281,7 312,12 Q343,17 375,12 Q406,7 437,12 Q468,17 500,12" />
+            </svg>
+          </span>
+        </div>
+        <div class="f02-tension-line f02-tension-line-2">
+          <span class="f02-tension-wrap" id="f02-tension-l2">
+            <span class="f02-tension-w">double-charges</span> <span class="f02-tension-w">the</span> <span class="f02-tension-w">user</span>
+            <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+              <path id="f02-tension-s2" d="M0,12 Q31,17 62,12 Q93,7 125,12 Q156,17 187,12 Q218,7 250,12 Q281,17 312,12 Q343,7 375,12 Q406,17 437,12 Q468,7 500,12" />
+            </svg>
+          </span>
+        </div>
+        <div class="f02-tension-line f02-tension-line-3">
+          <span class="f02-tension-wrap" id="f02-tension-l3">
+            <span class="f02-tension-w">server</span> <span class="f02-tension-w">never</span> <span class="f02-tension-w">knows</span>
+            <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+              <path id="f02-tension-s3" d="M0,12 Q31,7 62,12 Q93,17 125,12 Q156,7 187,12 Q218,17 250,12 Q281,7 312,12 Q343,17 375,12 Q406,7 437,12 Q468,17 500,12" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- the resolve: lands last -->
+      <div class="f02-tension-resolve-rule" id="f02-tension-resolve-rule"></div>
+      <p class="f02-tension-resolve" id="f02-tension-resolve">so: server-side</p>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var DUR = 9.387;
+
+      // ---------- Scene 1 (0.0–2.2s): the card pops into the upper-left ----------
+      // spring-pop-entrance: one fromTo, scale 0 -> 1 with a small rise, power3 settle.
+      tl.fromTo(
+        "#f02-tension-card",
+        { scale: 0, opacity: 0, y: 24 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        0.15
+      );
+      // "Retry loop" lands on its cue — per-word stagger.
+      tl.fromTo(
+        "#f02-tension-hero .f02-tension-w",
+        { opacity: 0, y: 14, filter: "blur(6px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.08 },
+        1.45
+      );
+      // hairline draws, then the mono index line arrives ("client SDK").
+      tl.fromTo(
+        "#f02-tension-card-rule",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.45, ease: "power2.out" },
+        1.85
+      );
+      tl.fromTo(
+        "#f02-tension-mono",
+        { opacity: 0, y: 8 },
+        { opacity: 0.82, y: 0, duration: 0.45, ease: "power3.out" },
+        2.0
+      );
+
+      // ---------- Scene 2 (2.2–7.6s): consequences land on cue, then get struck ----------
+      function reveal(wrapId, at) {
+        tl.fromTo(
+          wrapId + " .f02-tension-w",
+          { opacity: 0, y: 14, filter: "blur(6px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.08 },
+          at
+        );
+      }
+      // css-marker-patterns (scribble, strikethrough variant): the coral path draws itself
+      // via stroke-dashoffset; the struck words dim to 0.78 (>= 0.72 contrast floor).
+      function strike(pathId, wrapId, at) {
+        var path = document.querySelector(pathId);
+        var len = 0;
+        try { len = path.getTotalLength(); } catch (e) { len = 0; }
+        if (!len || !isFinite(len)) len = 520;
+        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+        tl.to(path, { strokeDashoffset: 0, duration: 0.55, ease: "power1.inOut" }, at);
+        tl.to(wrapId + " .f02-tension-w", { opacity: 0.78, duration: 0.4, ease: "power2.out" }, at + 0.1);
+      }
+
+      reveal("#f02-tension-l1", 2.85);              // "throws away"
+      strike("#f02-tension-s1", "#f02-tension-l1", 4.3);
+      reveal("#f02-tension-l2", 5.25);              // "double-charges"
+      strike("#f02-tension-s2", "#f02-tension-l2", 6.0);
+      reveal("#f02-tension-l3", 6.45);              // "hides the failure"
+      strike("#f02-tension-s3", "#f02-tension-l3", 7.25);
+
+      // ---------- Scene 3 (7.6–9.0s): held read — the card recedes, the resolve lands last ----------
+      tl.to("#f02-tension-card", { opacity: 0.72, duration: 0.6, ease: "power2.inOut" }, 7.6);
+      tl.fromTo(
+        "#f02-tension-resolve-rule",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.5, ease: "power2.out" },
+        7.6
+      );
+      tl.fromTo(
+        "#f02-tension-resolve",
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
+        7.75
+      );
+
+      // hold to the frame's fixed duration (no exit — the root transition is the exit)
+      tl.to({}, { duration: 0.01 }, DUR - 0.01);
+
+      window.__timelines["02-tension"] = tl;
+    })();
+  </script>
+</template>

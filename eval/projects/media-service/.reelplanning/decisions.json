@@ -1,0 +1,105 @@
+{
+  "decisions": [
+    {
+      "id": "D-001",
+      "date": "2026-09-12",
+      "plan": "2026-09-12-upload-resume",
+      "step": 1,
+      "stepTitle": "Write-ahead upload manifest",
+      "questionId": "q1",
+      "question": "Where does the manifest live?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Postgres",
+          "why": "parts_done flips in the same transaction as the part write; one more table to migrate",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "S3 object",
+          "why": "all upload state in one system; every part becomes an ETag-conditional write with retries, about a day more in step 2",
+          "recommended": false
+        }
+      ],
+      "chosen": "Postgres",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "parts_done flips in the same transaction as the part write; one more table to migrate",
+      "components": [
+        "sdk",
+        "manifest"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-002",
+      "date": "2026-09-12",
+      "plan": "2026-09-12-upload-resume",
+      "step": 4,
+      "stepTitle": "Move billing to manifest completion",
+      "questionId": "q2",
+      "question": "Who owns the idempotency key?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Server id",
+          "why": "the manifest id is the key; no SDK change beyond step 6; a client that loses it starts over and pays once per completed file",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Client key",
+          "why": "survives a client that retries POST /uploads itself; costs a (customer, key) unique index, a 409 path, and SDK changes in every language",
+          "recommended": false
+        }
+      ],
+      "chosen": "Server id",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "the manifest id is the key; no SDK change beyond step 6; a client that loses it starts over and pays once per completed file",
+      "components": [
+        "manifest",
+        "blob",
+        "billing"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-003",
+      "date": "2026-09-12",
+      "plan": "2026-09-12-upload-resume",
+      "step": 5,
+      "stepTitle": "Sweeper for abandoned manifests",
+      "questionId": "q3",
+      "question": "How long before an upload is abandoned?",
+      "options": [
+        {
+          "id": "a",
+          "label": "24 hours",
+          "why": "bounds blob storage at one day of interrupted uploads; mobile clients on flaky networks almost always retry within hours",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "7 days",
+          "why": "safer for very large uploads over bad links; up to a week of orphaned parts per abandoned upload and a sweeper scan that grows with it",
+          "recommended": false
+        }
+      ],
+      "chosen": "24 hours",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "bounds blob storage at one day of interrupted uploads; mobile clients on flaky networks almost always retry within hours",
+      "components": [
+        "manifest",
+        "blob",
+        "sweeper"
+      ],
+      "status": "active",
+      "supersedes": []
+    }
+  ]
+}

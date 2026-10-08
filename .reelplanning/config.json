@@ -1,0 +1,13 @@
+{
+  "maintainers": [
+    "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "owner"
+  ],
+  "pr": {
+    "issue": "required"
+  },
+  "agent": {
+    "//": "Started headless when a review is sent from the local page and no session is waiting, with the prompt appended: keep -p last. D-082: auto mode (a classifier approves each action, subagents and the web included; anything that would still ask is refused) inside Claude Code's sandbox (shell commands write only inside the repo and reach only hosts the classifier approves; no unsandboxed retry; a plain `git commit` runs outside it, so signing works). The file tools are not in the sandbox, so the PreToolUse hook refuses a Write, Edit or NotebookEdit to any path outside the repo (a permission rule cannot: deny beats allow, so denying everything would deny the repo too). The sandbox needs macOS, or Linux with bubblewrap and socat; not native Windows or a root container: there the review server runs the command with the sandbox off and says so (shell commands are then not fenced to the repo; the hook still fences the file tools). Other agents (reelplanning's docs/reference.md, \"Other agents\"), untested: Codex \"codex exec --sandbox workspace-write\"; opencode \"opencode run --auto\" with \"permission\" rules in opencode.json (no OS sandbox). Empty: reviews wait in .reelplanning/inbox/ for the next session.",
+    "command": "claude --permission-mode auto --permission-prompts none --settings '{\"sandbox\":{\"enabled\":true,\"failIfUnavailable\":true,\"allowUnsandboxedCommands\":false,\"excludedCommands\":[\"git commit *\"]},\"hooks\":{\"PreToolUse\":[{\"matcher\":\"Write|Edit|MultiEdit|NotebookEdit\",\"hooks\":[{\"type\":\"command\",\"command\":\"node\",\"args\":[\"-e\",\"const p=require(`path`),fs=require(`fs`);let s=``;process.stdin.on(`data`,d=>s+=d).on(`end`,()=>{let root,file;try{const j=JSON.parse(s),t=j.tool_input||{},f=t.file_path||t.notebook_path;if(!f)return;const real=x=>{let r=p.resolve(x),tail=[];while(true){try{return p.join(fs.realpathSync(r),...tail)}catch{if(p.dirname(r)===r)return p.resolve(x);tail.unshift(p.basename(r));r=p.dirname(r)}}};root=real(process.env.CLAUDE_PROJECT_DIR||j.cwd);file=real(p.resolve(j.cwd||root,f))}catch(e){console.error(`Refused: could not read the tool call (`+e.message+`)`);process.exit(2)}const rel=p.relative(root,file);if(rel===`..`||rel.startsWith(`..`+p.sep)||p.isAbsolute(rel)){console.error(`Refused: `+file+` is outside the repo (`+root+`). This run writes files only inside the repo.`);process.exit(2)}})\"]}]}]}}' -p"
+  }
+}

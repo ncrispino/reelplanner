@@ -1,0 +1,60 @@
+$ reelplanning build .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video
+build .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video
+△ check-terms           0.5 s  terms: 17 words before their definition, 2 quick checks whose answer was not shown (warnings)
+✓ narrate               0.3 s  narrate: 0 line(s) narrated, 13 kept byte for byte, in 0 s → audio_meta.json
+✓ fetch-sfx             0.3 s  · sfx: 0 cue(s) resolved (bundled library)
+✓ transcribe-missing    0.1 s  .: all 13 voices have word timings
+✓ sync-durations        0.1 s  audio sync-durations: 13 frame duration(s) updated
+✓ hold-durations        0.0 s  holds: 1 frame(s) held — 13: 3.904s → 7.5s
+· retime-frames         0.0 s  skipped: no line changed
+✓ finish-project       40.3 s  ◇  Check passed
+✗ verify               32.9 s  stopped here (exit 1); what it said:
+    ✓ gsap vendored → .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video/assets/vendor/gsap.min.js (2 files rewired)
+    ▶ verify .
+    ── 1/6 lint
+    ◆  Linting walkthrough-video/15 files
+    
+      ⚠ [index.html] composition_file_too_large: This HTML composition file has 321 lines. Smaller sub-compositions are easier to read, iterate on, and diff.
+        Fix: Split coherent scenes or layers into separate .html files under compositions/, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.
+      ⚠ [index.html] caption_track_kind_missing [el-captions]: <div id="el-captions"> looks like captions but is not marked as such, so the timeline cannot group it on the caption track.
+        Fix: Add data-track-kind="captions" to <div id="el-captions">.
+    
+    ◇  0 error(s), 2 warning(s)
+    ── 2/6 check
+    ◆  Checking walkthrough-video
+    
+    Lint
+      ⚠ composition_file_too_large: This HTML composition file has 321 lines. Smaller sub-compositions are easier to read, iterate on, and diff.
+        .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video/index.html [data-composition-id] t=0s
+        Fix: Split coherent scenes or layers into separate .html files under compositions/, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.
+      ⚠ caption_track_kind_missing: <div id="el-captions"> looks like captions but is not marked as such, so the timeline cannot group it on the caption track.
+        .reelplanning/plans/2026-09-28-videos-that-make-sense/walkthrough-video/index.html #el-captions t=0s
+        Fix: Add data-track-kind="captions" to <div id="el-captions">.
+      0 error(s), 2 warning(s), 0 info(s)
+    
+    Runtime
+      ◇ 0 errors, 0 warnings
+    
+    Layout
+      ℹ t=102.64s text_occluded #v10-scene > div:nth-of-type(2) inside #v10-sb > img:nth-of-type(1) "spaces lost" — Text is hidden beneath an opaque element.
+            Fix: Give the text its own zone, raise its stacking order above the covering element, or mark intentional layering with data-layout-allow-occlusion.
+      0 error(s), 0 warning(s), 1 info(s)
+    
+    Motion
+      ◇ 0 errors, 0 warnings
+    
+    Contrast
+      ◇ 58/58 text checks pass WCAG AA
+    
+    Snapshots
+      ◇ disabled
+    
+    ◇  Check passed
+    ── 3/6 details
+    ✓ check-details .: no details
+    ── 4/6 fresh eyes
+    ✗ fresh eyes, round 3: 2 findings not answered: N1 (scene 1) no answer; G1 (scene 7) kept, with no reason. Answer each under it: `- Answer: fixed: …`, `meaning: …` or `kept: <the reason>`
+    [INFO] [Compiler] Fetched 11 font face(s) for "Roboto" from Google Fonts (cached to /root/.cache/hyperframes/fonts/roboto)
+    [INFO] [Compiler] Injected deterministic @font-face rules for 1 requested font families
+    [hyperframes] browserGpuMode probe → software (WebGL unavailable)
+exit 1

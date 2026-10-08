@@ -1,0 +1,8 @@
+$ reel record .reelplanning/explainers/2026-09-29-experiment ../review.json   (a review that ends in Plan this, with a comment and a question; the decision log held 1 entry before)
+✓ .reelplanning/explainers/2026-09-29-experiment/reviews/explainer-20260929T100000Z.json, an explainer review: Plan this; 1 comment(s), 1 question(s)
+✓ .reelplanning/explainers/2026-09-29-experiment/reviews/explainer-20260929T100000Z.md: your comments by scene, your questions, what you want next
+· ledger: nothing added (an explainer asks no questions, and only an answer is a decision)
+✓ your memory: what you watched and looked up added to ~/.reelplanning/you.jsonl
+· what you want next, picked from Finish's suggestions and edited: "make the loss easy to compare" (scene 2)
+next: Plan this: `reel new-plan . <slug> --from .reelplanning/explainers/2026-09-29-experiment`, then write its steps from what you said (the draft is titled by what you picked)
+exit 0

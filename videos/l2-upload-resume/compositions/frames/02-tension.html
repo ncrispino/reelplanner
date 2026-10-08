@@ -1,0 +1,244 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Inter", sans-serif;
+      color: var(--rp-ink);
+    }
+
+    .clip {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* background — cream ground (full-bleed clip layer, lowest track) */
+    #f02-tension-ground {
+      background: var(--rp-paper);
+    }
+
+    /* foreground subject — the card-hairline, left-centre (x 420–860, y 368–528) */
+    #f02-tension-card {
+      position: absolute;
+      left: 420px;
+      top: 368px;
+      width: 440px;
+      height: 160px;
+      box-sizing: border-box;
+      background: var(--rp-tile);
+      border: 1px solid rgba(var(--rp-ink-rgb), 0.12);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(var(--rp-shadow-rgb), 0.08), 0 4px 16px rgba(var(--rp-shadow-rgb), 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .f02-tension-title {
+      font-family: "Inter", sans-serif;
+      font-weight: 400;
+      font-size: 44px;          /* card-title 2.3cqw */
+      line-height: 1.25;
+      letter-spacing: -0.005em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+
+    /* section-rule — the 40/60 split, drawn on once the card has landed */
+    #f02-tension-rule {
+      position: absolute;
+      left: 930px;
+      top: 296px;
+      width: 1px;
+      height: 304px;
+      background: rgba(var(--rp-ink-rgb), 0.12);
+      transform-origin: 50% 0%;
+      will-change: transform;
+    }
+
+    /* supporting — three two-word lines, EB Garamond headline (4.6cqw), 120px pitch */
+    .f02-tension-line {
+      position: absolute;
+      left: 1000px;
+      font-family: "EB Garamond", serif;
+      font-weight: 400;
+      font-size: 88px;
+      line-height: 1.06;
+      letter-spacing: -0.018em;
+      color: var(--rp-ink);
+      white-space: nowrap;
+    }
+    #f02-tension-line-1 { top: 282px; }
+    #f02-tension-line-2 { top: 402px; }
+    #f02-tension-line-3 { top: 522px; }
+
+    .f02-tension-text {
+      position: relative;
+      display: inline-block;
+      z-index: 1;
+    }
+    .f02-tension-w {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    /* strike — a level line through the word (drawn via dashoffset, no tilt).
+       Coral only while it is the current strike; the timeline settles earlier strikes to ink. */
+    .f02-tension-strike {
+      position: absolute;
+      left: -10px;
+      right: -10px;
+      top: 57%;
+      height: 24px;
+      margin-top: -12px;
+      z-index: 2;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .f02-tension-strike path {
+      fill: none;
+      stroke: var(--rp-coral);
+      stroke-width: 4px;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+    }
+  </style>
+
+  <div id="root" data-composition-id="02-tension" data-width="1920" data-height="1080" data-duration="9.801">
+    <div id="f02-tension-ground" class="clip" data-start="0" data-duration="9.801" data-track-index="0"></div>
+
+    <div id="f02-tension-stage" class="clip" data-start="0" data-duration="9.801" data-track-index="1">
+      <div id="f02-tension-card">
+        <div class="f02-tension-title">Retry loop</div>
+      </div>
+
+      <div id="f02-tension-rule"></div>
+
+      <div class="f02-tension-line" id="f02-tension-line-1">
+        <span class="f02-tension-text"><span class="f02-tension-w">loses</span> <span class="f02-tension-w">bytes</span></span>
+        <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+          <path class="f02-tension-strike-path" pathLength="100" d="M0,12 L500,12" />
+        </svg>
+      </div>
+
+      <div class="f02-tension-line" id="f02-tension-line-2">
+        <span class="f02-tension-text"><span class="f02-tension-w">bills</span> <span class="f02-tension-w">twice</span></span>
+        <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+          <path class="f02-tension-strike-path" pathLength="100" d="M0,12 L500,12" />
+        </svg>
+      </div>
+
+      <div class="f02-tension-line" id="f02-tension-line-3">
+        <span class="f02-tension-text"><span class="f02-tension-w">hides</span> <span class="f02-tension-w">failure</span></span>
+        <svg class="f02-tension-strike" viewBox="0 0 500 24" preserveAspectRatio="none" aria-hidden="true">
+          <path class="f02-tension-strike-path" pathLength="100" d="M0,12 L500,12" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // voice duration 8.989 s (cues/02.md); the stage holds still — no push
+      var CORAL = __RP["coral"];
+      var INK = __RP["ink"];
+      var card = "#f02-tension-card";
+      var rule = "#f02-tension-rule";
+
+      // ---- Scene 1 (0.0–3.0s): the card-hairline "Retry loop" pops into its slot on "retry" ----
+      // spring-pop-entrance: fromTo scale 0 -> 1 on a smooth power3 settle, small y rise as garnish.
+      tl.fromTo(
+        card,
+        { scale: 0, opacity: 0, y: 24 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.6, ease: "power3.out", immediateRender: true },
+        1.22                    // "retry"
+      );
+
+      // section-rule draws on for the 40/60 split as the voice says "in the client"
+      tl.fromTo(
+        rule,
+        { scaleY: 0 },
+        { scaleY: 1, duration: 0.5, ease: "power3.out", immediateRender: true },
+        1.94                    // "in"
+      );
+
+      // ---- Scene 2 (3.0–8.9s): three consequences land on their words, each struck a beat later ----
+      // Cue sheet: "throws" 3.04 · "bytes" 3.83 · "build" 5.86 · "twice" 6.29 · "never" 7.40 · "failed" 8.54
+      // Only the current strike is coral: when a strike draws, the previous strike settles to ink.
+      var beats = [
+        { id: "#f02-tension-line-1", at: 3.04, strike: 4.15 },
+        { id: "#f02-tension-line-2", at: 5.86, strike: 6.60 },
+        { id: "#f02-tension-line-3", at: 7.40, strike: 8.54 }
+      ];
+
+      beats.forEach(function (b, idx) {
+        var words = gsap.utils.toArray(b.id + " .f02-tension-w");
+        var text = b.id + " .f02-tension-text";
+        var strike = b.id + " .f02-tension-strike-path";
+
+        // per-word rise-and-settle reveal (fromTo, seek-safe)
+        words.forEach(function (w, i) {
+          tl.fromTo(
+            w,
+            { y: 26, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "power3.out", immediateRender: true },
+            b.at + i * 0.08
+          );
+        });
+
+        // the strike draws left -> right, level, coral while it is the current one
+        tl.fromTo(
+          strike,
+          { strokeDasharray: 100, strokeDashoffset: 100 },
+          { strokeDashoffset: 0, duration: 0.42, ease: "power2.inOut", immediateRender: true },
+          b.strike
+        );
+
+        // the struck line steps back (stays >= 0.72 for the contrast gate)
+        tl.fromTo(
+          text,
+          { opacity: 1 },
+          { opacity: 0.72, duration: 0.4, ease: "power2.out" },
+          b.strike + 0.1
+        );
+
+        // hand-off: the previous strike settles to ink as this one draws (one coral at a time)
+        if (idx > 0) {
+          var prev = beats[idx - 1].id + " .f02-tension-strike-path";
+          tl.fromTo(
+            prev,
+            { stroke: CORAL },
+            { stroke: INK, duration: 0.4, ease: "power3.out", immediateRender: true },
+            b.strike
+          );
+        }
+      });
+
+      // ---- Scene 3 (8.9s–end): held read — no exit; the root transition owns the cut ----
+
+      window.__timelines["02-tension"] = tl;
+    })();
+  </script>
+</template>

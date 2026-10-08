@@ -1,0 +1,83 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v09-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v09-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v09-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v09-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v09-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v09-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v09-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v09-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v09-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v09-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v09-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v09-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v09-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v09-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v09-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v09-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v09-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v09-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v09-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v09-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v09-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v09-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v09-txt code, .v09-mrow code, .v09-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="09-step-4-plan-this" data-band="bottom" data-duration="17.707" data-width="1920" data-height="1080">
+  <div class="clip v09-bg" id="v09-bg" data-start="0" data-duration="17.707" data-track-index="0"></div>
+  <div class="clip v09-scene" id="v09-scene" data-start="0" data-duration="17.707" data-track-index="1">
+    <div class="v09-paper" id="v09-plan" data-detail="plan-this" data-artifact="the draft plan.md reel new-plan --from wrote: its first lines" style="left:120px; top:60px; width:1120px; height:470px"><div class="v09-prow" style="top:18px; color:rgba(var(--rp-ink-rgb),0.72)" data-label>plans/2026-09-29-waiting-reviews/plan.md</div><div class="v09-prow" style="top:70px"># Make a waiting review easy to see on the page</div><div class="v09-prow" style="top:118px">Explained first: `2026-09-29-review-server`</div><div class="v09-prow" style="top:166px">## The problem</div><div class="v09-prow" style="top:214px">What you said on the explainer `2026-09-29-review-server` …:</div><div class="v09-prow" style="top:262px">- **Scene 3** (Who picks it up):</div><div class="v09-prow" style="top:310px">  &quot;it should show who picked it up, by name&quot;</div><div class="v09-prow" style="top:358px">- **Picked at Finish:** &quot;A plan to make a</div><div class="v09-prow" style="top:406px">  waiting review easy to see on the page&quot;</div></div>
+    <div class="v09-ring" id="v09-ring" style="left:130px; top:124px; width:1000px; height:50px"></div>
+    <div class="v09-ring" id="v09-ring3" style="left:130px; top:412px; width:900px; height:98px"></div>
+    <div class="v09-ring" id="v09-ring4" style="left:130px; top:172px; width:720px; height:50px"></div>
+    <div class="v09-ring" id="v09-ring2" style="left:130px; top:316px; width:760px; height:98px"></div>
+    <div class="v09-slab" id="v09-pre" data-artifact="reel prereqs on that plan: its first line" style="left:120px; top:560px; width:1120px; height:260px"><div class="v09-sbar"></div><div class="v09-sbt">$ reel prereqs …/2026-09-29-waiting-reviews</div><div class="v09-row" style="top:72px">before: 2026-09-29-review-server--explainer |</div><div class="v09-row" style="top:116px">  the explainer this plan starts from: explain</div><div class="v09-row" style="top:160px">  the review server, and what you said on it</div><div class="v09-row" style="top:204px">before: system#part 1 | why a video</div></div>
+    <div class="v09-ring" id="v09-ring5" style="left:128px; top:624px; width:800px; height:140px"></div>
+    <div class="v09-card" id="v09-ca12" data-call="a12" style="left:1290px; top:240px; width:510px; height:420px"><span class="i">choice A12 · it pauses here</span><span class="t" style="font-size:46px">With no plan file, a draft: the problem only, for the steps to be written</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-step-4-plan-this";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v09-plan", { opacity: 0, y: 12 });
+  gsap.set("#v09-ring", { opacity: 0, y: 12 });
+  gsap.set("#v09-ring3", { opacity: 0, y: 12 });
+  gsap.set("#v09-ring4", { opacity: 0, y: 12 });
+  gsap.set("#v09-ring2", { opacity: 0, y: 12 });
+  gsap.set("#v09-pre", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v09-ring5", { opacity: 0, y: 12 });
+  gsap.set("#v09-ca12", { opacity: 0, y: 12 });
+  tl.to("#v09-plan", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.06);
+  tl.to("#v09-ring", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.06);
+  tl.to("#v09-ring3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.07);
+  tl.to("#v09-ring4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.88);
+  tl.to("#v09-ring2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.94);
+  tl.to("#v09-pre", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 8.53);
+  tl.to("#v09-ring5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.16);
+  tl.to("#v09-ca12", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.76);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

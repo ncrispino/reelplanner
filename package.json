@@ -1,0 +1,88 @@
+{
+  "name": "reelplanning",
+  "version": "0.2.0",
+  "description": "Review your coding agent's implementation plans as short narrated videos that stop at each open choice. Your answers become a decision log in the repo, and a walkthrough video shows what the agent built and decided on its own. An agent skill and CLI for Claude Code and Codex, built on HyperFrames.",
+  "keywords": [
+    "ai-agents",
+    "coding-agent",
+    "agent-skill",
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "cursor",
+    "implementation-plan",
+    "plan",
+    "planning",
+    "plan-mode",
+    "plan-review",
+    "code-review",
+    "review",
+    "video",
+    "explainer",
+    "explainer-video",
+    "narrated-video",
+    "walkthrough",
+    "hyperframes",
+    "tts",
+    "text-to-speech",
+    "decision-log",
+    "adr",
+    "architecture-decision-records",
+    "spec-driven-development",
+    "developer-tools"
+  ],
+  "homepage": "https://github.com/ncrispino/reelplanning#readme",
+  "bugs": {
+    "url": "https://github.com/ncrispino/reelplanning/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ncrispino/reelplanning.git"
+  },
+  "license": "Apache-2.0",
+  "author": "ncrispino (https://github.com/ncrispino)",
+  "bin": {
+    "reelplanning": "bin/reelplanning.mjs",
+    "reel": "bin/reel.mjs"
+  },
+  "files": [
+    "bin/",
+    "scripts/*.mjs",
+    "scripts/*.sh",
+    "scripts/lib/",
+    "templates/",
+    "packages/player/index.html",
+    "packages/player/reelplanning-player.js",
+    "packages/player/guide-review.js",
+    "packages/player/fonts/",
+    "skills/",
+    "eval/case-studies/TEMPLATE.md",
+    "eval/case-studies/REPLICATE.md",
+    "eval/case-studies/kit/",
+    "CHANGELOG.md",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "verify": "bash scripts/verify.sh",
+    "setup": "node bin/reelplanning.mjs setup",
+    "skills:update": "node scripts/hyperframes-skills.mjs --force",
+    "review": "node scripts/lib/static-server.mjs 8787 >/dev/null 2>&1 & echo \"open http://127.0.0.1:8787/packages/player/?project=videos/l1-upload-resume\"",
+    "test": "node scripts/test/run.mjs",
+    "test:full": "node scripts/test/run.mjs --full",
+    "plan-map": "node scripts/plan-map.mjs",
+    "bundle": "node scripts/bundle-player.mjs dist/review videos/l2-upload-resume videos/g1-bob-dylan-site videos/w1-upload-resume",
+    "bundle:check": "node packages/player/test/bundle.spec.mjs dist/review",
+    "version": "node scripts/release/sync-version.mjs && git add skills docs README.md scripts/release/install.sh .claude-plugin packages/player/reelplanning-player.js"
+  },
+  "dependencies": {
+    "@hyperframes/player": "0.8.52",
+    "gsap": "^3.14.2",
+    "hyperframes": "0.8.52"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

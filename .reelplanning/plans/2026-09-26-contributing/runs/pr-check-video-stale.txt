@@ -1,0 +1,12 @@
+$ reel pr-check . --base origin/main --body-file ../pr-ticked.md --labels ""   (the same, after a line of plan.md changed and the video was not built again)
+· over the line (ticked: a choice (the port by default, 8790))
+· size: 3 changed line(s) in 1 file(s), not counting the project record, docs
+· seen in the diff, not a reason by itself: a new flag: `--port`
+· 2026-09-27-port/walkthrough-video: its 1 row(s) match their stops
+· lands on main: 2026-09-27-port: plan.md, walkthrough.md, the videos' text (walkthrough-video); the log's 1 new entry, as they read now
+· stays in the PR: 2026-09-27-port/reviews/plan-20260927T110000Z (id:sam); 2026-09-27-port/reviews/walkthrough-20260927T120000Z (id:sam)
+· ids: 1 new, after origin/main's last; none names another entry
+△ waiting for a maintainer to accept the walkthrough of 2026-09-27-port
+✗ 2026-09-27-port/walkthrough-video: built from another version of plan.md (e23bc84710eb, plan.md now fa500b385bfe): rebuild it (reelplanning build .reelplanning/plans/2026-09-27-port/walkthrough-video)
+✗ repo against origin/main: 1 problem(s), 1 waiting
+exit 1

@@ -1,0 +1,74 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .v12-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .v12-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .v12-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-h { position:absolute; font:400 56px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v12-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:8px; box-sizing:border-box; background:var(--rp-paper); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 6px 24px rgba(var(--rp-shadow-rgb),0.06); }
+  .v12-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .v12-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .v12-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); }
+  .v12-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .v12-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .v12-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.78); white-space:nowrap; }
+  .v12-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .v12-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.66); }
+  .v12-row.hot { color:var(--rp-slab-ink); font-weight:700; }
+  .v12-paper { position:absolute; border-radius:10px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.18); box-sizing:border-box; }
+  .v12-prow { position:absolute; left:28px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-ink); white-space:pre; font-variant-ligatures:none; }
+  .v12-card { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); }
+  .v12-card .i { position:absolute; left:26px; top:22px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-card .t { position:absolute; left:26px; right:22px; top:62px; font:400 38px/1.12 "EB Garamond"; color:var(--rp-ink); }
+  .v12-q { position:absolute; left:120px; width:1680px; font:400 56px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .v12-opt { position:absolute; top:470px; width:540px; height:250px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .v12-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.72); }
+  .v12-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 44px/1.12 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .v12-mrow { position:absolute; left:120px; width:1680px; height:88px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v12-mrow .a { position:absolute; left:0; top:26px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .b { position:absolute; left:720px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .c { position:absolute; left:1080px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-mrow .d { position:absolute; left:1400px; top:24px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-lrow { position:absolute; left:120px; width:1680px; height:76px; box-sizing:border-box; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .v12-lrow .a { position:absolute; left:0; top:22px; font:500 28px/1.2 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .v12-lrow .b { position:absolute; left:130px; top:18px; font:400 36px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-big { position:absolute; font:400 76px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .v12-txt { position:absolute; font:400 36px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .v12-txt code, .v12-mrow code, .v12-lrow code { font:500 32px/1 "JetBrains Mono"; }
+</style>
+
+<div id="root" data-composition-id="12-step-5-key" data-band="bottom" data-duration="17.92" data-width="1920" data-height="1080">
+  <div class="clip v12-bg" id="v12-bg" data-start="0" data-duration="17.92" data-track-index="0"></div>
+  <div class="clip v12-scene" id="v12-scene" data-start="0" data-duration="17.92" data-track-index="1">
+    <div class="v12-slab" id="v12-s1" data-detail="step-5" data-artifact="check-sources on the CI log's explainer: its real output" style="left:120px; top:70px; width:1100px; height:330px"><div class="v12-sbar"></div><div class="v12-sbt">$ reelplanning check-sources …/2026-09-29-ci-run/video</div><div class="v12-row hot" style="top:72px">✗ scene 2 · a GitHub token in its text</div><div class="v12-row hot" style="top:114px">  (ghp_…): the build stops until the</div><div class="v12-row hot" style="top:156px">  text itself is cut or masked</div><div class="v12-row hot" style="top:198px">  (ghp_…REDACTED); a blur would leave</div><div class="v12-row hot" style="top:240px">  it in the committed text</div></div>
+    <div class="v12-slab" id="v12-s2" data-artifact="the same check, the key masked in the frame's text: its real output" style="left:120px; top:440px; width:1100px; height:200px"><div class="v12-sbar"></div><div class="v12-sbt">masked: ghp_…REDACTED</div><div class="v12-row" style="top:76px">✓ check-sources: 2 scenes, 3 quoted pieces</div><div class="v12-row" style="top:118px">  against 1 pinned source</div></div>
+    <div class="v12-txt" id="v12-blur" style="left:120px; top:700px">A blur would leave the key in what's committed.</div>
+    <div class="v12-card" id="v12-ca6" data-call="a6" style="left:1290px; top:70px; width:510px; height:380px"><span class="i">choice A6 · it pauses here</span><span class="t" style="font-size:44px">A secret stops it anywhere in the video's text, not just in quotes</span></div>
+    <div class="v12-card" id="v12-ca7" data-call="a7" style="left:1290px; top:490px; width:510px; height:380px"><span class="i">choice A7 · it pauses here</span><span class="t" style="font-size:44px">A third fresh agent checks the narration against the sources</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "12-step-5-key";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#v12-s1", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v12-s2", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#v12-blur", { opacity: 0, y: 12 });
+  gsap.set("#v12-ca6", { opacity: 0, y: 12 });
+  gsap.set("#v12-ca7", { opacity: 0, y: 12 });
+  tl.to("#v12-s1", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 0.12);
+  tl.to("#v12-s2", { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power2.inOut" }, 4.43);
+  tl.to("#v12-blur", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.10);
+  tl.to("#v12-ca6", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.31);
+  tl.to("#v12-ca7", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 12.52);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

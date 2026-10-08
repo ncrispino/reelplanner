@@ -1,0 +1,93 @@
+<template>
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+  @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+
+  #root { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  #f17-opener-3-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+
+  /* ---- SHARED STAGE — opener: THE RAIL ONLY (no chain, no build, no pages) ---- */
+  .f17-opener-3-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f17-opener-3-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); }
+  .f17-opener-3-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f17-opener-3-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f17-opener-3-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  /* the tags earned so far read in ink — no coral in an opener */
+  .f17-opener-3-slot .d { position:absolute; right:20px; top:28px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-ink); }
+  .f17-opener-3-slot.dim { opacity:0.72; }
+  .f17-opener-3-slot:not([data-filled]) .n, .f17-opener-3-slot:not([data-filled]) .t { opacity:0; }
+  /* steps 4–6 were named by the closer before this one; they carry their names in from t=0 */
+  /* .named slots keep the dashed outline: they are upcoming steps, not finished ones. Their
+     labels fade in during the beat, so they start hidden like any other unfilled slot. */
+
+  /* ---- chrome ---- */
+  #f17-opener-3-kicker { position:absolute; left:80px; top:96px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  #f17-opener-3-kicker .m { margin-right:0.5em; }
+  #f17-opener-3-mark { position:absolute; left:700px; top:400px; width:300px; height:1px; background:rgba(var(--rp-ink-rgb),0.12); }
+  #f17-opener-3-line { position:absolute; left:700px; top:440px; font:500 32px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; }
+  #f17-opener-3-line .w { display:inline-block; }
+</style>
+
+<div id="root" data-composition-id="17-opener-3" data-duration="4.889" data-width="1920" data-height="1080">
+  <div class="clip" id="f17-opener-3-bg" data-start="0" data-duration="4.889" data-track-index="0"></div>
+
+  <div id="f17-opener-3-kicker"><span class="m">✱</span>PART 3 OF 3</div>
+
+  <!-- SHARED STAGE: rail only — slots 1–3 resolved, 4–6 lift to filled -->
+  <div class="f17-opener-3-rail" id="f17-opener-3-rail">
+    <div class="f17-opener-3-slot" id="f17-opener-3-slot-1" data-plan-step="1" data-filled style="top:0px"><span class="n">1</span><span class="t">Content model</span><span class="d" data-plan-question="1">10 albums</span></div>
+    <div class="f17-opener-3-slot" id="f17-opener-3-slot-2" data-plan-step="2" data-filled style="top:110px"><span class="n">2</span><span class="t">Data build</span></div>
+    <div class="f17-opener-3-slot" id="f17-opener-3-slot-3" data-plan-step="3" data-filled style="top:220px"><span class="n">3</span><span class="t">Site generator</span><span class="d" data-plan-question="2">Timeline</span></div>
+    <div class="f17-opener-3-slot named" id="f17-opener-3-slot-4" data-plan-step="4" style="top:330px"><span class="n">4</span><span class="t">Design system</span></div>
+    <div class="f17-opener-3-slot named" id="f17-opener-3-slot-5" data-plan-step="5" style="top:440px"><span class="n">5</span><span class="t">Search</span></div>
+    <div class="f17-opener-3-slot named" id="f17-opener-3-slot-6" data-plan-step="6" style="top:550px"><span class="n">6</span><span class="t">Hosting</span></div>
+  </div>
+
+  <div id="f17-opener-3-mark"></div>
+  <div id="f17-opener-3-line"><span class="w" id="f17-opener-3-w1">now</span>
+    <span class="w" id="f17-opener-3-w2">the</span>
+    <span class="w" id="f17-opener-3-w3">pages</span>
+    <span class="w" id="f17-opener-3-w4">need</span>
+    <span class="w" id="f17-opener-3-w5">a</span>
+    <span class="w" id="f17-opener-3-w6">look</span></div>
+</div>
+
+<script>
+  (function () {
+    var out = "power3.out";
+    var INK = __RP["ink-rgb"];
+    var tl = gsap.timeline({ paused: true });
+    var q = function (id) { return document.getElementById("f17-opener-3-" + id); };
+    var slot = function (n) { return q("slot-" + n); };
+
+    // t=0 — the rail is already standing: slots 1–3 filled, slot 1 tagged in ink.
+
+    // 0.03 "Part" — the kicker settles in.
+    tl.fromTo(q("kicker"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: out }, 0.047);
+
+    // 0.39 "3 of 3" — part three IS steps 4 to 6, so they are NAMED here, not filled. Those steps
+    // have not happened yet: frame 18 opens with them still empty, and a slot that reads as done two
+    // beats early is a lie about the plan's state that the viewer then watches un-happen. The part-2
+    // opener makes the same choice for slots 2 and 3.
+    [4, 5, 6].forEach(function (n, i) {
+      var t = 0.32 + i * 0.35;
+      tl.fromTo(slot(n).querySelectorAll(".n, .t"), { opacity: 0 }, { opacity: 0.62, duration: 0.55, ease: out }, t);
+    });
+
+    // 2.62 → 3.46 — the line arrives one word at a time, each on the word itself.
+    tl.fromTo(q("mark"), { scaleX: 0, transformOrigin: "0 50%" }, { scaleX: 1, duration: 0.5, ease: out }, 2.614);
+    [[1, 2.61], [2, 2.78], [3, 2.97], [4, 3.30], [5, 3.57], [6, 3.71]].forEach(function (p) {
+      tl.fromTo(q("w" + p[0]), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: out }, p[1]);
+    });
+
+    // 3.86 → 4.744 — held read on the plan, steps 4 to 6 waiting.
+    tl.set({}, {}, 4.923);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["17-opener-3"] = tl;
+  })();
+</script>
+</template>

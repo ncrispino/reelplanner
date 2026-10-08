@@ -1,0 +1,152 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
+  .f27-step-5-retro-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f27-step-5-retro-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f27-step-5-retro-kicker { position:absolute; left:80px; top:88px; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-chip { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:var(--rp-ink); white-space:nowrap; background:var(--rp-paper); padding:5px 6px; margin-left:-6px; }
+  .f27-step-5-retro-chip.grey { color:rgba(var(--rp-ink-rgb),0.72); }
+  .f27-step-5-retro-chip.lit { color:var(--rp-coral-deep); }
+  .f27-step-5-retro-hero { position:absolute; font:400 88px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f27-step-5-retro-herok { position:absolute; font:500 28px/1 "JetBrains Mono"; letter-spacing:0.16em; text-transform:uppercase; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f27-step-5-retro-q { position:absolute; left:200px; top:140px; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-note { position:absolute; right:80px; top:846px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.02em; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f27-step-5-retro-lines { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; pointer-events:none; }
+  .f27-step-5-retro-lines path { fill:none; stroke:rgba(var(--rp-ink-rgb),0.45); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .f27-step-5-retro-lines path.ink { stroke:var(--rp-ink); }
+  .f27-step-5-retro-lines path.dashed { stroke-dasharray:10 10; }
+  .f27-step-5-retro-lines path.coral { stroke:var(--rp-coral); stroke-width:4; }
+  .f27-step-5-retro-lines path.head { fill:var(--rp-ink); stroke:none; }
+  .f27-step-5-retro-lines path.headg { fill:rgba(var(--rp-ink-rgb),0.45); stroke:none; }
+  .f27-step-5-retro-lines path.headc { fill:var(--rp-coral); stroke:none; }
+  /* the spine: one tick per step at the rail's slot rows */
+  .f27-step-5-retro-spine { position:absolute; left:80px; top:150px; width:44px; height:640px; }
+  .f27-step-5-retro-tick { position:absolute; left:0; width:44px; height:20px; border-radius:4px; border:1px solid rgba(var(--rp-ink-rgb),0.22); }
+  .f27-step-5-retro-tick.done { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f27-step-5-retro-tick.live { background:var(--rp-coral); border-color:var(--rp-coral); }
+  /* the rail (reel stage): five slots */
+  .f27-step-5-retro-rail { position:absolute; left:80px; top:150px; width:500px; height:640px; }
+  .f27-step-5-retro-slot { position:absolute; left:0; width:500px; height:90px; border-radius:12px; border:1px dashed rgba(var(--rp-ink-rgb),0.18); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-1px; }
+  .f27-step-5-retro-slot[data-filled] { border:1px solid rgba(var(--rp-ink-rgb),0.12); background:var(--rp-tile); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f27-step-5-retro-slot .n { position:absolute; left:24px; top:28px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f27-step-5-retro-slot .t { position:absolute; left:76px; top:27px; font:500 30px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-slot .d { position:absolute; left:76px; top:57px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f27-step-5-retro-slot.dec .n { top:13px; } .f27-step-5-retro-slot.dec .t { top:12px; }
+  .f27-step-5-retro-slot:not([data-filled]) .n, .f27-step-5-retro-slot:not([data-filled]) .t { opacity:0; }
+  /* option cards (quick checks, decisions) */
+  .f27-step-5-retro-opt { position:absolute; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f27-step-5-retro-opt .k { position:absolute; left:28px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f27-step-5-retro-opt .l { position:absolute; left:28px; top:66px; right:24px; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f27-step-5-retro-opt.row .k { top:30px; } .f27-step-5-retro-opt.row .l { left:84px; top:22px; }
+  .f27-step-5-retro-opt.low .l { top:auto; bottom:30px; }
+  /* decision option cards: a drawing on top, then the letter, label, cost and the recommendation */
+  .f27-step-5-retro-dopt { position:absolute; top:250px; width:520px; height:590px; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.2); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f27-step-5-retro-dopt > .k { position:absolute; left:24px; top:350px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.55); }
+  .f27-step-5-retro-dopt > .l { position:absolute; left:24px; top:388px; font:400 48px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-dopt > .c { position:absolute; left:24px; top:462px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .f27-step-5-retro-dopt > .rec { position:absolute; left:24px; top:512px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  /* list rows (the plan as a list) */
+  .f27-step-5-retro-ls { position:absolute; left:0; width:1200px; height:90px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f27-step-5-retro-ls .n { position:absolute; left:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f27-step-5-retro-ls .t { position:absolute; left:96px; top:24px; font:500 36px/1.2 "Inter"; letter-spacing:-0.005em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-ls .d { position:absolute; right:30px; top:30px; font:500 30px/1 "JetBrains Mono"; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f27-step-5-retro-ls .d.dk { font-size:26px; top:32px; color:rgba(var(--rp-ink-rgb),0.72); }
+  .f27-step-5-retro-track { position:absolute; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; transform:translateX(-100%); }
+  /* records: a file, a terminal, a box */
+  .f27-step-5-retro-file { position:absolute; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); border-radius:12px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; }
+  .f27-step-5-retro-file .fn { position:absolute; left:28px; top:24px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-file .rule { position:absolute; left:28px; right:28px; top:68px; height:1px; background:rgba(var(--rp-ink-rgb),0.15); }
+  .f27-step-5-retro-file .row { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-file .row.dim { color:rgba(var(--rp-ink-rgb),0.6); }
+  .f27-step-5-retro-file .bar { position:absolute; left:28px; height:14px; border-radius:7px; background:rgba(var(--rp-ink-rgb),0.12); }
+  .f27-step-5-retro-term { position:absolute; background:var(--rp-slab); border-radius:10px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f27-step-5-retro-term .bar { position:absolute; left:0; right:0; top:0; height:58px; background:var(--rp-slab-bar); }
+  .f27-step-5-retro-term .cmd { position:absolute; left:28px; top:16px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:nowrap; }
+  .f27-step-5-retro-term .ln { position:absolute; left:28px; font:400 26px/1.2 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.92); white-space:nowrap; }
+  .f27-step-5-retro-term .ln.dim { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f27-step-5-retro-term .blk { position:absolute; border-radius:8px; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:0; }
+  .f27-step-5-retro-box { position:absolute; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:-2px; display:flex; align-items:center; padding:0 24px; box-sizing:border-box; font:500 30px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-box.mono { font:500 26px/1 "JetBrains Mono"; }
+  .f27-step-5-retro-box.paper { background:var(--rp-paper); border-color:rgba(var(--rp-ink-rgb),0.2); box-shadow:none; }
+  .f27-step-5-retro-box.data { background:var(--rp-data); color:var(--rp-on-ink); border-color:transparent; }
+  .f27-step-5-retro-box.ghost { background:transparent; border:2px dashed rgba(var(--rp-ink-rgb),0.3); box-shadow:none; }
+  .f27-step-5-retro-box.center { justify-content:center; }
+  .f27-step-5-retro-box.col { flex-direction:column; justify-content:center; align-items:flex-start; gap:10px; }
+  .f27-step-5-retro-box .s { font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .f27-step-5-retro-box.data .s { color:rgba(var(--rp-on-ink-rgb),0.7); }
+  .f27-step-5-retro-sq { position:absolute; width:64px; height:64px; border-radius:8px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; outline:3px solid rgba(var(--rp-coral-rgb),0); outline-offset:3px; }
+  .f27-step-5-retro-sq.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f27-step-5-retro-tk { position:absolute; width:10px; height:90px; border-radius:3px; border:2px solid rgba(var(--rp-ink-rgb),0.35); box-sizing:border-box; }
+  .f27-step-5-retro-tk.on { background:rgba(var(--rp-ink-rgb),0.55); border-color:transparent; }
+  .f27-step-5-retro-big { position:absolute; font:400 60px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-mid { position:absolute; font:400 44px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); white-space:nowrap; }
+  .f27-step-5-retro-strike { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.72); transform-origin:0 50%; }
+  .f27-step-5-retro-bar { position:absolute; width:44px; border-radius:6px 6px 0 0; background:rgba(var(--rp-ink-rgb),0.4); }
+  .f27-step-5-retro-mark { position:absolute; width:6px; height:90px; border-radius:3px; background:var(--rp-coral); }
+
+</style>
+
+<div id="root" data-composition-id="27-step-5-retro" data-duration="16.26" data-width="1920" data-height="1080">
+
+  <div class="clip f27-step-5-retro-bg" id="f27-step-5-retro-bg" data-start="0" data-duration="16.26" data-track-index="0"></div>
+
+  <div class="clip f27-step-5-retro-scene" id="f27-step-5-retro-scene" data-start="0" data-duration="16.26" data-track-index="1">
+  <div class="f27-step-5-retro-kicker" id="f27-step-5-retro-kicker">Step 5 · A retro you start</div>
+  <div class="f27-step-5-retro-spine" id="f27-step-5-retro-spine">
+    <div class="f27-step-5-retro-tick done" id="f27-step-5-retro-tick-1" data-plan-step="1" style="top:35px"></div>
+    <div class="f27-step-5-retro-tick done" id="f27-step-5-retro-tick-2" data-plan-step="2" style="top:145px"></div>
+    <div class="f27-step-5-retro-tick done" id="f27-step-5-retro-tick-3" data-plan-step="3" style="top:255px"></div>
+    <div class="f27-step-5-retro-tick done" id="f27-step-5-retro-tick-4" data-plan-step="4" style="top:365px"></div>
+    <div class="f27-step-5-retro-tick live" id="f27-step-5-retro-tick-5" data-plan-step="5" style="top:475px"></div>
+  </div>
+  <div class="f27-step-5-retro-chip grey" id="f27-step-5-retro-needs" style="left:200px; top:150px">needs steps 2–4</div>
+  <div class="f27-step-5-retro-term" id="f27-step-5-retro-t" style="left:200px; top:210px; width:1000px; height:150px"><div class="bar"></div><span class="cmd">$ reel status</span><span class="ln dim" style="top:80px">m1 … m5</span><span class="ln" style="top:80px; left:220px">retro due · reel retro</span></div>
+  <div class="f27-step-5-retro-file" id="f27-step-5-retro-plan" style="left:200px; top:400px; width:1000px; height:360px"><span class="fn">retro plan · skill edits</span><div class="rule"></div>
+    <span class="row" id="f27-step-5-retro-e1" style="top:104px">options get an example each</span><span class="row dim" id="f27-step-5-retro-v1" style="top:148px">evidence: m2 · D-022</span>
+    <span class="row" id="f27-step-5-retro-e2" style="top:218px">say a rewound step more plainly</span><span class="row dim" id="f27-step-5-retro-v2" style="top:262px">evidence: m3 · deep-dives step 4</span></div>
+  <div class="f27-step-5-retro-file" id="f27-step-5-retro-count" style="left:1260px; top:400px; width:580px; height:250px"><span class="fn">words</span><div class="rule"></div>
+    <span class="row" style="top:100px">added 38</span><span class="row" style="top:150px">cut 52</span></div>
+  <div class="f27-step-5-retro-box mono paper" id="f27-step-5-retro-rule" style="left:1540px; top:490px; width:250px; height:76px">cut ≥ added</div>
+  <div class="f27-step-5-retro-chip grey" id="f27-step-5-retro-rev" style="left:1260px; top:700px">reviewed like any plan</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "27-step-5-retro";
+  var C = __RP["coral"], CR = __RP["coral-rgb"], OFF = "rgba(" + CR + ",0)";
+  var $ = function (s) { return document.getElementById("f27-step-5-retro-" + s); };
+  var pop = function (tl, el, at, d) { tl.fromTo(el, { opacity: 0, y: d == null ? 12 : d }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at); };
+  var fade = function (tl, el, at, to, dur) { if (to == null) tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: dur || 0.4, ease: "power3.out" }, at); else tl.to(el, { opacity: to, duration: dur || 0.4, ease: "power3.out" }, at); };
+  var lit = function (tl, el, at) { tl.fromTo(el, { outlineColor: OFF }, { outlineColor: C, duration: 0.3, ease: "power3.out" }, at); };
+  var unlit = function (tl, el, at) { tl.to(el, { outlineColor: OFF, duration: 0.3, ease: "power3.out" }, at); };
+  var draw = function (tl, id, at, dur) { var p = $(id), L = p.getTotalLength ? p.getTotalLength() : 300; tl.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: "power2.inOut" }, at); };
+  var grow = function (tl, el, at) { tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, at); };
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  pop(tl, $("kicker"), 0.1, 8);
+  pop(tl, $("needs"), 0.3, 8);
+  pop(tl, $("t"), 3.01);
+  pop(tl, $("plan"), 5.75);
+  pop(tl, $("e1"), 7.34, 6);
+  pop(tl, $("e2"), 7.54, 6);
+  pop(tl, $("v1"), 9.64, 6);
+  pop(tl, $("v2"), 9.84, 6);
+  pop(tl, $("count"), 11.36);
+  pop(tl, $("rule"), 12.85);
+  lit(tl, $("rule"), 12.85);
+  pop(tl, $("rev"), 13.76, 8);
+  tl.to({ hold: 0 }, { hold: 1, duration: 0.001 }, 15.759);
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,5 @@
+$ reel renumber . --base origin/main --dry-run   (what it would do)
+· would take origin/main's log (1 entries, the last D-001) and add this branch's 1 after it, read from the working tree
+· would renumber: D-001 → D-002
+· would rewrite their mentions in .reelplanning/plans/2026-09-27-port/walkthrough.md, .reelplanning/plans/2026-09-27-port/reviews/plan-20260927T110000Z.md
+exit 0

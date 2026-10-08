@@ -1,0 +1,92 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w07-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w07-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .w07-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w07-h { position:absolute; font:400 60px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w07-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .w07-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .w07-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w07-tag { position:absolute; height:48px; padding:0 18px; font:500 28px/48px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .w07-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w07-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w07-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .w07-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .w07-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .w07-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w07-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .w07-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .w07-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w07-card .t { position:absolute; left:28px; top:60px; font:500 38px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w07-q { position:absolute; font:400 54px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w07-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w07-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w07-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w07-mrow { position:absolute; left:90px; width:1740px; height:84px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .w07-mrow .a { position:absolute; left:0; top:24px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .w07-mrow .b { position:absolute; left:760px; top:24px; font:400 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w07-mrow .c { position:absolute; right:0; top:24px; font:500 28px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w07-col { position:absolute; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.18); background:var(--rp-tile); }
+  .w07-big { position:absolute; font:400 78px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .w07-txt { position:absolute; font:400 34px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w07-txt code { font:500 31px/1 "JetBrains Mono"; }
+
+</style>
+
+<div id="root" data-composition-id="07-step-4-pr-check" data-band="bottom" data-duration="13.781" data-width="1920" data-height="1080">
+
+  <div class="clip w07-bg" id="w07-bg" data-start="0" data-duration="13.781" data-track-index="0"></div>
+
+  <div class="clip w07-scene" id="w07-scene" data-start="0" data-duration="13.781" data-track-index="1">
+    <div class="w07-slab" id="w07-slab" data-detail="pull-requests" data-artifact="reel pr-check on a scratch pull request, a 4-line change with two other choices: its real output, then ticked" style="left:90px; top:110px; width:1740px; height:430px">
+      <div class="w07-sbar"></div><div class="w07-sbt">$ reel pr-check . --base main --body-file pr.md</div>
+      <div class="w07-row" id="w07-s0" style="top:72px">· other choices, a line each in the PR&#x27;s text (2): &quot;the list is its own</div>
+      <div class="w07-row" id="w07-s1" style="top:114px">  storyboard line, instead of the grouped one&quot;; &quot;listed is recorded at Go on&quot;</div>
+      <div class="w07-row" id="w07-s2" style="top:156px">· under the line: a normal code review, no video (4 line(s) of 300)</div>
+      <div class="w07-row" id="w07-s3" style="top:198px">△ waiting for a maintainer to accept the 2 other choices in the PR&#x27;s text</div>
+      <div class="w07-row" id="w07-s4" style="top:240px">△ wth-prrepo against main: 0 problem(s), 1 waiting</div>
+      <div class="w07-row" id="w07-s5" style="top:282px"></div>
+      <div class="w07-row" id="w07-s6" style="top:324px">$ # the maintainer ticks &quot;The other choices above are accepted&quot;</div>
+      <div class="w07-row" id="w07-s7" style="top:366px">✓ wth-prrepo against main: 0 problem(s), 0 waiting</div>
+    </div>
+    <div class="w07-card" id="w07-ca6" data-call="a6" style="left:90px; top:600px; width:1100px"><span class="i">choice A6</span><span class="t">waits until a maintainer ticks them</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "07-step-4-pr-check";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w07-slab", { clipPath: "inset(0 100% 0 0)" });
+  gsap.set("#w07-s0", {"opacity": 0});
+  gsap.set("#w07-s1", {"opacity": 0});
+  gsap.set("#w07-s2", {"opacity": 0});
+  gsap.set("#w07-s3", {"opacity": 0});
+  gsap.set("#w07-s4", {"opacity": 0});
+  gsap.set("#w07-ca6", {"opacity": 0, "x": -30});
+  gsap.set("#w07-s5", {"opacity": 0});
+  gsap.set("#w07-s6", {"opacity": 0});
+  gsap.set("#w07-s7", {"opacity": 0});
+  tl.to("#w07-slab", { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "power2.inOut" }, 0.2);
+  tl.to("#w07-s0", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.11);
+  tl.to("#w07-s1", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.26);
+  tl.to("#w07-s2", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.41);
+  tl.to("#w07-s3", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.56);
+  tl.to("#w07-s4", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 6.71);
+  tl.to("#w07-ca6", {"opacity": 1, "x": 0, "duration": 0.45, "ease": "power3.out"}, 7.73);
+  tl.to("#w07-s5", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 13.28);
+  tl.to("#w07-s6", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 13.28);
+  tl.to("#w07-s7", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 13.28);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

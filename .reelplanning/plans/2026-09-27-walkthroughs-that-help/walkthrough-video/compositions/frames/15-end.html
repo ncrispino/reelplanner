@@ -1,0 +1,69 @@
+<template>
+<style>
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"Inter"; src:url("assets/fonts/Inter-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"JetBrains Mono"; src:url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:block; }
+  @font-face { font-family:"EB Garamond"; src:url("assets/fonts/EBGaramond-700.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:block; }
+
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .w15-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .w15-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .w15-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .w15-h { position:absolute; font:400 60px/1.1 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w15-shot { position:absolute; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.22); border-radius:6px; box-sizing:border-box; background:var(--rp-paper); }
+  .w15-shot img { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+  .w15-pin { position:absolute; padding:0 14px; font:400 30px/46px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .w15-tag { position:absolute; height:48px; padding:0 18px; font:500 28px/48px "JetBrains Mono"; color:var(--rp-ink); background:var(--rp-tile); border-radius:6px; white-space:nowrap; }
+  .w15-ul { position:absolute; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .w15-ring { position:absolute; box-sizing:border-box; border-radius:10px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .w15-slab { position:absolute; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); box-sizing:border-box; overflow:hidden; }
+  .w15-sbar { position:absolute; left:0; top:0; right:0; height:52px; background:var(--rp-slab-bar); }
+  .w15-sbt { position:absolute; left:28px; top:14px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .w15-row { position:absolute; left:32px; font:400 26px/40px "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .w15-row.dim { color:rgba(var(--rp-slab-ink-rgb),0.62); }
+  .w15-card { position:absolute; box-sizing:border-box; height:120px; border-radius:12px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .w15-card .i { position:absolute; left:28px; top:20px; font:500 28px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w15-card .t { position:absolute; left:28px; top:60px; font:500 38px/1 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w15-q { position:absolute; font:400 54px/1.14 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .w15-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .w15-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .w15-opt .l { position:absolute; left:30px; top:78px; right:26px; font:400 46px/1.1 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .w15-mrow { position:absolute; left:90px; width:1740px; height:84px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.14); }
+  .w15-mrow .a { position:absolute; left:0; top:24px; font:500 28px/1.3 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .w15-mrow .b { position:absolute; left:760px; top:24px; font:400 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w15-mrow .c { position:absolute; right:0; top:24px; font:500 28px/1.3 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.72); white-space:nowrap; }
+  .w15-col { position:absolute; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.18); background:var(--rp-tile); }
+  .w15-big { position:absolute; font:400 78px/1.1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); }
+  .w15-txt { position:absolute; font:400 34px/1.25 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .w15-txt code { font:500 31px/1 "JetBrains Mono"; }
+
+</style>
+
+<div id="root" data-composition-id="15-end" data-band="bottom" data-duration="7.5" data-width="1920" data-height="1080">
+
+  <div class="clip w15-bg" id="w15-bg" data-start="0" data-duration="7.5" data-track-index="0"></div>
+
+  <div class="clip w15-scene" id="w15-scene" data-start="0" data-duration="7.5" data-track-index="1">
+    <div class="w15-big" id="w15-q" style="left:90px; top:300px; width:1740px">Seeing it run, anything you'd change?</div>
+    <div class="w15-txt" id="w15-s" style="left:90px; top:470px">Say it in Finish, or approve the build.</div>
+    <div class="w15-ul" id="w15-u" style="left:90px; top:420px; width:1280px"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "15-end";
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#w15-q", {"opacity": 0, "y": 12});
+  gsap.set("#w15-u", { scaleX: 0 });
+  gsap.set("#w15-s", {"opacity": 0});
+  tl.to("#w15-q", {"opacity": 1, "y": 0, "duration": 0.45, "ease": "power3.out"}, 0.2);
+  tl.to("#w15-u", { scaleX: 1, duration: 0.5, ease: "power2.out" }, 1.0);
+  tl.to("#w15-s", {"opacity": 1, "duration": 0.45, "ease": "power3.out"}, 2.03);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>
