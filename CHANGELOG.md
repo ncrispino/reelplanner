@@ -7,6 +7,9 @@
   install failed in `npx skills`). `reelplanning` and `reel` check it before anything runs and say how to update,
   instead of failing later on an import an older Node does not have; `version.spec` keeps the docs and checks
   on the engines' version.
+- **The README's quick start begins in a project you already have,** then a new one (a neighborhood bakery's
+  site, in place of Bob Dylan's albums).
+
 - **The public repo is `ncrispino/reelplanning`, one commit (D-310).** `scripts/release/make-public.mjs` builds it
   in a scratch folder: a new repo whose `main` is one commit, `reelplanning <version>`, holding exactly a ref's
   tracked tree, tagged `v<version>`; it refuses a tree with a `.wav`, `.mp4` or `renders/` path, adds a line to

@@ -40,23 +40,31 @@ The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other a
 
 Run these in a terminal, or type the quoted text into your agent's chat.
 
-**A new project**, from an empty folder:
+**A project you already have:** in its folder, ask for the next change as a plan.
 
 ```bash
-mkdir dylan-site && cd dylan-site && git init
-claude "Use reelplanning to plan a small website about Bob Dylan's albums"
+cd my-app
+claude "Use reelplanning to plan adding dark mode"
 ```
 
-The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
-Say "quick" in the request ("make a quick video of …") to skip the question and get just the video.
-
-**In a repo you already have:**
+Nothing in the project has to change first: the agent reads the code that is there and plans with its names. If
+you keep a record ([ways 2 and 3](#three-ways-to-use-it)), it also maps the project's parts into `.reelplanning/`
+as it plans. Two more ways in, from the same folder:
 
 ```bash
-claude "Make a quick video plan for adding dark mode"          # plan a change and get a video
 claude "Make a video of the plan in docs/plan.md"              # a plan you already wrote
 claude "Make a quick video explaining how src/auth works"      # code that is already there
 ```
+
+**A new project**, from an empty folder:
+
+```bash
+mkdir bakery-site && cd bakery-site && git init
+claude "Use reelplanning to plan a small website for a neighborhood bakery"
+```
+
+The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
+Say "quick" in the request ("make a quick video plan for …") to skip the question and get just the video.
 
 In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add "with the plan-to-video skill" to the request ([what each needs](./docs/agents.md)).
 
