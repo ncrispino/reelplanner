@@ -8,7 +8,8 @@
   the settings (`REELPLANNER_*`) take the new name, and the review player is `reelplanner-player.js`. The old names
   are still read: a repo's `.reelplanning/` (each command says so once, with the `git mv` that renames it),
   `~/.reelplanning` while there is no `~/.reelplanner` (then its `you.jsonl` and `.env` are named, with the `mv` that
-  moves them), a `REELPLANNING_*` setting in the shell or a .env file, and the `reelplanning`
+  moves them), a `REELPLANNING_*` setting in the shell or a .env file (a line that says where a setting came from
+  names it as it was set: `from the shell's REELPLANNING_TTS (its old name)`, not its new name), and the `reelplanning`
   command, which says the new name and runs it. A review begun on the page before the rename keeps its marks.
   To move over: `npm rm -g reelplanning` (npm stops at `EEXIST` otherwise; `install.sh` does it), then install
   reelplanner. The entries below keep the old name.

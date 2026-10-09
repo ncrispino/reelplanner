@@ -33,7 +33,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { repoRoot, RP_COMMAND, rpDirOf, machineDir, machineDirShown } from "./env.mjs";
-import { newName } from "./old-names.mjs";
+import { newName, oldNameOf } from "./old-names.mjs";
 
 // OpenRouter's speech models take their provider's voices, and refuse a request with none (October 2026)
 const OPENROUTER_VOICES = [[/^deepgram\/aura-2/, "aura-2-apollo-en"], [/^elevenlabs\//, "JBFqnCBsd6RMkjVDRZzb"], [/^openai\//, "onyx"]];
@@ -88,7 +88,8 @@ export const reelplannerEnvPath = (dir = process.cwd()) => join(rpDirOf(repoRoot
 /** This machine's `~/.reelplanner/.env`, read for every repo (REELPLANNER_HOME moves it, as it moves your memory). */
 export const homeEnvPath = (env = process.env) => join(machineDir(env), ".env");
 
-// the file each variable loadEnvFile set came from (and the value it set), so a line can say where a setting came from
+// the file each variable loadEnvFile set came from (the value it set, and the name the file gave it), so a line can
+// say where a setting came from
 const SOURCES = new Map();
 /** How a line names an env file: ~/.reelplanner/.env, .reelplanner/.env, or another .env's path. */
 export function envFileLabel(f, dir = process.cwd()) {
@@ -102,6 +103,14 @@ export function envSource(name, env = process.env) {
   const s = SOURCES.get(name);
   return s && env[name] === s.value ? s.label : null;
 }
+/**
+ * How a line names a variable that is set: as it was set, so "REELPLANNING_TTS (its old name)" where the shell or the
+ * file it came from (envSource) gave it its old name; else `name`.
+ */
+export function setAs(name, env = process.env) {
+  const s = SOURCES.get(name), as = s && env[name] === s.value ? s.as : oldNameOf(name, env);
+  return as && as !== name ? `${as} (its old name)` : name;
+}
 
 /**
  * Load `.reelplanner/.env`, then the nearest other .env at or above `startDir`, then ~/.reelplanner/.env, into
@@ -112,7 +121,7 @@ export function loadEnvFile(startDir) {
   const load = (f) => {
     const label = envFileLabel(f, startDir);
     // a setting under its old name (REELPLANNING_X) sets its new one too, unless something set that already
-    for (const [k, v] of parseEnv(readFileSync(f, "utf8"))) for (const n of new Set([k, newName(k)])) if (!(n in process.env)) { process.env[n] = v; SOURCES.set(n, { label, value: v }); }
+    for (const [k, v] of parseEnv(readFileSync(f, "utf8"))) for (const n of new Set([k, newName(k)])) if (!(n in process.env)) { process.env[n] = v; SOURCES.set(n, { label, value: v, as: k }); }
     read.push(f);
   };
   if (existsSync(own)) load(own);
@@ -179,7 +188,7 @@ export function narrationSettings(dir = process.cwd(), env = process.env, over =
   cfg = { ...cfg, ...over };
   const pick = (envName, key) => {
     if (key in over) return over[key];
-    if (env[envName]) { const at = envSource(envName, env), said = at ? `${envName} in ${at}` : envName; from.includes(said) || from.push(said); return env[envName]; }
+    if (env[envName]) { const at = envSource(envName, env), as = setAs(envName, env), said = at ? `${as} in ${at}` : as; from.includes(said) || from.push(said); return env[envName]; }
     return cfg[key];
   };
   const tts = String(pick("REELPLANNER_TTS", "tts") || "").trim().toLowerCase();

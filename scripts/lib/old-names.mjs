@@ -9,6 +9,17 @@ export const OLD_PREFIX = "REELPLANNING_", NEW_PREFIX = "REELPLANNER_";
 /** A setting's name now: REELPLANNING_X → REELPLANNER_X; any other name as it is. */
 export const newName = (k) => (k.startsWith(OLD_PREFIX) ? NEW_PREFIX + k.slice(OLD_PREFIX.length) : k);
 
+/**
+ * The old name a setting in `env` was set under: REELPLANNING_X for REELPLANNER_X when the old one is set and holds the
+ * same value (copied here, by the command that started this one, or by setup.sh), so a line that says where a setting
+ * came from names what the person set; else null.
+ */
+export function oldNameOf(name, env = process.env) {
+  if (!name.startsWith(NEW_PREFIX)) return null;
+  const old = OLD_PREFIX + name.slice(NEW_PREFIX.length);
+  return env[old] !== undefined && env[old] === env[name] ? old : null;
+}
+
 /** Copy each old-named setting in `env` to its new name, where that is unset. → the old names it copied */
 export function adoptOldSettings(env = process.env) {
   const copied = [];
