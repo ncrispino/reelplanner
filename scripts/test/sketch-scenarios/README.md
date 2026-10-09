@@ -1,6 +1,6 @@
 # Sketch scenarios: the sketch page under real use
 
-Twenty sessions of what engineers put on a whiteboard and how they change it, each a timed script the real page is
+Twenty-one sessions of what engineers put on a whiteboard and how they change it, each a timed script the real page is
 played through (`play.mjs`): what they say, what they draw, and every edit, made as Excalidraw's own UI makes it.
 
 - `scenarios/classic--*`: a request through zones with a webhook hop, a hand-drawn sequence diagram, a state machine
@@ -12,6 +12,8 @@ played through (`play.mjs`): what they say, what they draw, and every edit, made
 - `scenarios/gaps--*` and `pointing--*`: what a whiteboard does badly (confidence by dashes and a legend,
   alternatives side by side and the choice, rates and paths written by things, a numbered story with a zoom into a
   box, "this one" said while pointing).
+- `scenarios/ui--*`: what the page adds beyond a whiteboard: a box linked to the file it is, today / new / going
+  marks, and a box opened up into a frame to draw its insides.
 
 `sketch-scenarios.spec.mjs` (the full run) plays them all with the partner off and checks each final drawing against
 its `expect` and that `sketch.md` tells the edits made. `judge.mjs` measures more: whether an agent given only
@@ -83,6 +85,10 @@ Every step has `"t"` (seconds) and exactly one action. Keep a scenario between 4
 | `undo` / `redo` | `"undo": 1` | Ctrl+Z / Ctrl+Shift+Z that many times |
 | `pause` | `"pause": 4` | presses Pause, waits that many seconds, presses Resume (the recording's clock stops) |
 | `point` | `"point": {"ids": ["app", "edge"], "seconds": 3}` | the pointer rests on each element in turn (the time shared between them), as a person points while talking |
+| `link` | `"link": {"id": "api", "type": "routes/upl"}` | selects it, presses Link to code, types into the note box and picks the first file listed (Enter) |
+| `mark` | `"mark": {"ids": ["ftp", "imp"], "as": "going"}` | selects each and presses Today, New or Going (`today`, `new`, `going`) |
+| `openup` | `"openup": {"id": "wrk", "as": "inside"}` | selects it and presses Open up: a frame beside everything, the view on it; `as` names the frame for later steps |
+| `back` | `"back": {"from": "inside"}` | selects that frame and presses Back: the whole picture again |
 
 ### Elements (for `add`)
 
@@ -96,10 +102,13 @@ Every element has a unique `"id"` you choose (used by later steps). Types:
   `"endArrowhead": null` for no head, `"startArrowhead": "arrow"` for two-headed.
 - `text`: `x`, `y`, `text` (can be multi-line with `\n`), optional `fontSize`, `strokeColor`
 - `frame`: `x`, `y`, `width`, `height`, `name`, optional `children: ["ids already drawn"]`
+- any of them with `"in": "<frame id>"`: `x` and `y` are inside that frame (one `openup` made, wherever it landed)
+
+A scenario's `"repo": {"path": "text", ...}` adds those files to its scratch repo (what `link` picks from).
 
 Colours: `#1e1e1e` black, `#e03131` red, `#2f9e44` green, `#1971c2` blue, `#f08c00` orange; fills `#ffc9c9`,
 `#b2f2bb`, `#a5d8ff`, `#ffec99`.
 
 ### What is not possible (don't use)
 
-Images, embeds, sticky notes beyond text elements, zooming or panning, multiple pages, Excalidraw libraries.
+Images, embeds, sticky notes beyond text elements, zooming or panning (beyond what `openup` and `back` do), multiple pages, Excalidraw libraries.

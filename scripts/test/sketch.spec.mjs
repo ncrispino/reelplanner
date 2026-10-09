@@ -86,6 +86,7 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
 const repo = mkdtempSync(join(tmpdir(), "rp-sketch-"));
 execFileSync("git", ["init", "-q"], { cwd: repo });
 writeFileSync(join(repo, "a.txt"), "x\n");
+mkdirSync(join(repo, "src", "api"), { recursive: true }); writeFileSync(join(repo, "src", "api", "upload.ts"), "export {};\n");   // for Link to code
 mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner", "decisions.json"), "[]\n");
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "add", "."], { cwd: repo });
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"], { cwd: repo });
@@ -256,6 +257,35 @@ try {
   ok(q.code === 0 && qs.transcript.segments.map((x) => x.text).join("|") === "Jobs go in the queue." && qs.transcript.dropped_in_silence === 5 && qs.keyframes[0].said === "Jobs go in the queue." && qs.keyframes[1].said === "",
     `words made up in silence are dropped; the real sentence is kept, with its picture — ${JSON.stringify(qs.transcript)} ${q.out}`);
   ok(md2.includes("**Transcript:** local whisper small.en, from the recording") && /\*\*0:30\*\* Then it sleeps\. _\(said after the last picture\)_/.test(md2), "…and sketch.md says where its words came from, and what was said after the last picture");
+
+  // what a whiteboard cannot do, from the bar shown when something is selected: Link to code (the note box lists the
+  // repo's files), Today / New / Going (a tag on it), Open up (a frame for its insides; the view goes there; Back)
+  const p6 = await ctx.newPage(); await p6.goto(`http://127.0.0.1:${port}/`); await p6.waitForFunction(() => window.reelSketch?.api);
+  await p6.click("#rec"); await p6.waitForTimeout(300);
+  await p6.evaluate(() => { const K = window.ExcalidrawKit; window.reelSketch.api.updateScene({ elements: K.convertToExcalidrawElements([
+    { type: "rectangle", id: "web", x: 260, y: 220, width: 180, height: 80, label: { text: "Web app" } },
+    { type: "rectangle", id: "up", x: 560, y: 220, width: 180, height: 80, label: { text: "Upload API" } },
+    { type: "rectangle", id: "ftp", x: 560, y: 420, width: 180, height: 80, label: { text: "FTP drop" } }], { regenerateIds: false }) }); });
+  await p6.waitForTimeout(300); await p6.mouse.click(650, 245); await p6.waitForSelector("#sel.show");
+  ok((await p6.textContent("#sel-what")).includes("Upload API"), `selecting a box shows the bar, naming it — ${await p6.textContent("#sel-what")}`);
+  await p6.click("#sel-link"); await p6.keyboard.type("upl"); await p6.waitForSelector("#files li[role=option]");
+  ok((await p6.textContent("#files li[role=option]")) === "src/api/upload.ts", `Link to code: the note box lists the repo's files for what is typed — ${await p6.textContent("#files")}`);
+  await p6.keyboard.press("Enter"); await p6.waitForTimeout(300);
+  ok(await p6.evaluate(() => window.reelSketch.api.getSceneElements().find((e) => e.id === "up").link) === "src/api/upload.ts" && await p6.inputValue("#note") === "", "…Enter links it, and is not a note");
+  await p6.mouse.click(650, 445); await p6.click('[data-status="going"]'); await p6.mouse.click(650, 245); await p6.click('[data-status="new"]'); await p6.waitForTimeout(300);
+  const tags = await p6.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.customData?.tagFor).map((e) => `${e.customData.tagFor}:${e.text}`).sort().join(","));
+  ok(tags === "ftp:− going,up:+ new" && await p6.getAttribute('[data-status="new"]', "aria-pressed") === "true", `Today / New / Going: a tag on each, the button pressed — ${tags}`);
+  await p6.click("#sel-open"); await p6.waitForTimeout(900);
+  const opened = await p6.evaluate(() => { const a = window.reelSketch.api, f = a.getSceneElements().find((e) => e.type === "frame"); return { name: f?.name, inside: f?.customData?.inside, zoom: a.getAppState().zoom.value, sel: window.reelSketch.selected() }; });
+  ok(opened.name === "inside Upload API" && opened.inside === "up" && opened.zoom !== 1 && (await p6.textContent("#sel-open")) === "Back", `Open up: a frame "inside Upload API", the view on it, Back offered — ${JSON.stringify(opened)}`);
+  await p6.click("#sel-open"); await p6.waitForTimeout(900);
+  await p6.click("#finish"); await p6.waitForSelector("#review.open"); await p6.click("#send"); await p6.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  const d6 = join(repo, (await p6.textContent("#sent")).match(/Saved to (\S+?)\. /)[1]), md6 = readFileSync(join(d6, "sketch.md"), "utf8");
+  ok(md6.includes('_changed:_ linked "Upload API" to `src/api/upload.ts`') && md6.includes('_changed:_ marked "FTP drop" as going away') && md6.includes('_changed:_ opened up "Upload API" into a frame'),
+    `sketch.md tells the link, the marks and the opening up, in their place — ${md6.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
+  ok(md6.includes('- new: what they propose: "Upload API"') && md6.includes('- going away: "FTP drop"') && md6.includes('- "Upload API" → `src/api/upload.ts`') && md6.includes('frame "inside Upload API" (what is inside "Upload API", opened up from it)') && !/"\+ new"|"− going"|labeled "inside"/.test(md6),
+    "…and in the final drawing: today vs proposed, linked to code, the frame opened up from its box; the tags are not loose text");
+  await p6.close();
 
   // Download: the same folder as a .zip, from a fresh page
   const p2 = await ctx.newPage(); await p2.goto(`http://127.0.0.1:${port}/`); await p2.waitForFunction(() => window.reelSketch?.api);

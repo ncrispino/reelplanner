@@ -23,6 +23,10 @@
   as Excalidraw wrapped them to fit their box. `sketch-scenarios.spec.mjs` (full run) plays 20 sessions written for
   it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps, alternatives,
   pointing) through the real page; `sketch-scenarios/judge.mjs` measures whether an agent can tell each one's story.
+  With one thing selected the page offers what a whiteboard cannot: **Link to code** (a file of the repo picked from
+  the note box; `sketch.md` lists the links and flags a path the repo does not have), **Today / New / Going** (a tag,
+  and `sketch.md`'s **Today vs proposed**), and **Open up** (a frame beside the picture for a box's insides, the view
+  going there, **Back** to the whole).
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
   CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.

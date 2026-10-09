@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// The sketch page under real use (scripts/test/sketch-scenarios/, README.md there): 20 sessions written to be what
+// The sketch page under real use (scripts/test/sketch-scenarios/, README.md there): 21 sessions written to be what
 // engineers whiteboard and how they edit it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code
-// with numbered steps, alternatives, pointing), each played on the real page (`sketch --once`, the partner off) and
-// checked:
+// with numbered steps, alternatives, pointing, the page's link / mark / open up), each played on the real page
+// (`sketch --once`, the partner off) and checked:
 //   - the command exits 0 after Send with its folder; no page error; every step could be made
 //   - the final drawing has each label it should (as typed, however Excalidraw wrapped it), none it should not, and
 //     every arrow between the right things
@@ -35,6 +35,9 @@ const TOLD = {
   pen: [/\*\*Freehand marks\*\*/, "freehand marks with what they are on"],
   point: [/_\((traced with the pointer|pointing at)/, "pointing, with what was said then"],
   undo: [/_changed:_ (took back|brought back|erased)/, "an undo"],
+  link: [/_changed:_ linked [\s\S]*\*\*Linked to code\*\*/, "a box linked to a file, and the list of links"],
+  mark: [/_changed:_ marked [\s\S]*\*\*Today vs proposed\*\*/, "a box marked today, new or going, and what is proposed"],
+  openup: [/_changed:_ opened up [\s\S]*opened up from it/, "a box opened up, and its frame"],
 };
 
 const queue = [...files], results = [];

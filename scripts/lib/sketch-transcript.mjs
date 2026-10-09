@@ -20,6 +20,7 @@ import { whisper } from "./tts-local.mjs";
 import { transcribe } from "./tts-api.mjs";
 import { loadEnvFile, DEFAULT_WHISPER, TIMINGS_APIS } from "./narrator.mjs";
 import { describeScene, sceneChanges } from "./sketch-scene.mjs";
+import { repoTop } from "./explainer.mjs";
 
 const mmss = (s) => s == null ? "–" : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -81,7 +82,8 @@ export function sketchMd(s, dir) {
   for (const x of timeline.sort((a, b) => a.t - b.t)) lines.push(x.line);
   if (!kfs.length && !after.length) lines.push("_(no pictures: nothing was drawn or said while recording)_");
   lines.push("", `## The final drawing`, "", s.final?.png ? `![final drawing](final.png)` : "_(empty canvas)_", "");
-  lines.push(...describeScene(els));
+  const repo = repoTop(dir);
+  lines.push(...describeScene(els, { exists: repo ? (f) => existsSync(join(repo, f)) : undefined }));
   if ((s.notes || []).length) { lines.push(`## Typed notes`, ""); for (const n of s.notes) lines.push(`- **${mmss(n.t)}** ${n.text}`); lines.push(""); }
   if (s.before_recording) lines.push(`_${s.before_recording} element${s.before_recording === 1 ? " was" : "s were"} drawn before recording started._`, "");
   return lines.join("\n");

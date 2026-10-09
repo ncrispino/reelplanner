@@ -35,6 +35,16 @@ a bar at the bottom:
 
 The question at the top right ("what are you explaining?") names the folder and heads `sketch.md`.
 
+Select one thing and a small bar above the note box offers what a whiteboard cannot do:
+
+- **Link to code.** The note box becomes a search over the repo's files (`git ls-files`): type part of a path, pick
+  one, Enter. The box now *is* that file in `sketch.md` (**Linked to code**), and a path that is not in the repo at
+  that commit is flagged, so a box linked to a file that was renamed or never existed shows up as the difference it is.
+- **Today / New / Going.** Tags it (grouped with it, so it moves with it) and records it: `sketch.md`'s **Today vs
+  proposed** lists what exists, what they propose and what goes away. Pressing it again takes the mark off.
+- **Open up.** A named frame ("inside Upload worker") appears beside the picture with a dashed arrow from the box,
+  and the view goes there to draw its insides; **Back** shows the whole picture again, **Go inside** returns.
+
 ## Questions while you sketch
 
 A partner model can watch and ask: at each picture it gets the canvas as an image, the boxes and arrows exactly as

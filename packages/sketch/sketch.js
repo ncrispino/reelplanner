@@ -74,6 +74,7 @@
     if (el.strokeColor && el.strokeColor !== "#1e1e1e") b.strokeColor = el.strokeColor;
     if (el.backgroundColor && el.backgroundColor !== "transparent") b.backgroundColor = el.backgroundColor;
     if (el.name) b.name = el.name; if (el.frameId) b.frame = el.frameId; if (el.link) b.link = el.link;
+    const cd = el.customData || {}; if (cd.status) b.status = cd.status; if (cd.inside) b.inside = cd.inside; if (cd.tagFor) b.tagFor = cd.tagFor;
     return b;
   };
   const brief = (el) => {
@@ -119,7 +120,7 @@
   }
   createRoot($("canvas")).render(React.createElement(Excalidraw, {
     excalidrawAPI: (a) => { api = a; },
-    onChange: onScene,
+    onChange: (elements, appState) => { onScene(elements); onSelect(appState); },
     initialData: { appState: { viewBackgroundColor: "#ffffff", currentItemFontFamily: 5 } },
     UIOptions: { canvasActions: { export: false, saveToActiveFile: false, loadScene: true, toggleTheme: false } },
   }));
@@ -299,6 +300,107 @@
   }
   function status(text) { $("status").textContent = text; }
 
+  // ---------- what a whiteboard cannot do: link to code, open a box up, today vs proposed ----------
+  // When something is selected a small bar offers: Link to code (then "@" and part of a path in the note box, a file
+  // of the repo picked from a list: the element's link), Open up (a named frame beside it for its insides, an arrow
+  // from it, and the view goes there; Back returns), and Today / New / Going (a small tag on it, and in the record).
+  let selected = [], linkFor = null, fileList = [], fileOn = 0;
+  const kin = () => api.getSceneElementsIncludingDeleted();
+  const bumped = (e, patch) => ({ ...e, ...patch, version: e.version + 1, versionNonce: Math.floor(Math.random() * 2 ** 31), updated: Date.now() });
+  const commit = (changed, added = []) => api.updateScene({ elements: [...kin().map((e) => changed.get(e.id) || e), ...added], captureUpdate: CaptureUpdateAction.IMMEDIATELY });
+  const words = (el) => { const l = kin().find((t) => t.containerId === el.id && !t.isDeleted); return String(l?.originalText ?? l?.text ?? el.originalText ?? el.text ?? el.name ?? el.type).replace(/\s+/g, " ").trim(); };
+  function onSelect(appState) {
+    if (!api) return;
+    const ids = Object.keys(appState.selectedElementIds || {}).filter((id) => appState.selectedElementIds[id]);
+    const els = api.getSceneElements().filter((e) => ids.includes(e.id) && !e.containerId && e.type !== "freedraw" && !e.customData?.tagFor);
+    const key = els.map((e) => `${e.id}:${e.version}`).join();
+    if (key === selected.key) return;
+    selected = Object.assign(els, { key }); renderSel();
+  }
+  function renderSel() {
+    const bar = $("sel"), one = selected.length === 1 ? selected[0] : null;
+    bar.classList.toggle("show", selected.length > 0 && !$("review").classList.contains("open"));
+    if (!selected.length) return;
+    const what = $("sel-what"); what.textContent = one ? `"${words(one)}"` : `${selected.length} things`;
+    if (one?.link) { const c = document.createElement("code"); c.textContent = ` → ${one.link}`; what.append(c); }
+    $("sel-link").hidden = !one || one.type === "frame";
+    $("sel-link").textContent = one?.link ? "Change link" : "Link to code";
+    const opened = one && kin().find((f) => f.type === "frame" && !f.isDeleted && f.customData?.inside === one.id);
+    $("sel-open").hidden = !one || !(one.customData?.inside || ["rectangle", "ellipse", "diamond"].includes(one.type));
+    $("sel-open").textContent = one?.customData?.inside ? "Back" : opened ? "Go inside" : "Open up";
+    const st = new Set(selected.map((e) => e.customData?.status || ""));
+    for (const b of bar.querySelectorAll("[data-status]")) b.setAttribute("aria-pressed", String(st.size === 1 && st.has(b.dataset.status)));
+  }
+  // link: the note box becomes a file picker until Enter (link it) or Escape
+  $("sel-link").addEventListener("click", () => { linkFor = selected[0]?.id; const n = $("note"); n.value = "@"; n.focus(); suggest(); });
+  async function suggest() {
+    const n = $("note"), box = $("files");
+    if (!linkFor || !n.value.startsWith("@")) { box.classList.remove("show"); return; }
+    const q = n.value.slice(1);
+    try { const r = await fetch(`api/sketch/files?q=${encodeURIComponent(q)}`); fileList = (await r.json()).files || []; } catch { fileList = []; }
+    fileOn = 0; box.innerHTML = "";
+    const hint = document.createElement("li"); hint.className = "hint";
+    hint.textContent = `Link "${words(kin().find((e) => e.id === linkFor) || {})}" to a file: type part of its path; :line or #name after it to point inside. Enter links, Esc leaves.`;
+    box.append(hint);
+    fileList.forEach((f, i) => { const li = document.createElement("li"); li.textContent = f; li.setAttribute("role", "option"); if (!i) li.className = "on"; li.onmousedown = (e) => { e.preventDefault(); link(f + (q.match(/[:#].*$/)?.[0] || "")); }; box.append(li); });
+    box.classList.add("show");
+  }
+  function link(target) {
+    const el = kin().find((e) => e.id === linkFor && !e.isDeleted); linkFor = null; $("files").classList.remove("show"); $("note").value = "";
+    if (!el || !target) return;
+    commit(new Map([[el.id, bumped(el, { link: target })]]));
+    status(`Linked "${words(el)}" to ${target}.`);
+  }
+  $("note").addEventListener("input", () => { if (linkFor) suggest(); });
+  $("note").addEventListener("keydown", (e) => {
+    if (!linkFor) return;
+    const items = [...$("files").querySelectorAll("li[role=option]")];
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); fileOn = (fileOn + (e.key === "ArrowDown" ? 1 : -1) + items.length) % Math.max(1, items.length); items.forEach((li, i) => li.classList.toggle("on", i === fileOn)); return; }
+    if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); linkFor = null; $("files").classList.remove("show"); $("note").value = ""; return; }
+    if (e.key === "Enter") {
+      e.preventDefault(); e.stopImmediatePropagation();   // not a note
+      const typed = $("note").value.slice(1).trim(), at = typed.match(/[:#].*$/)?.[0] || "";
+      link(fileList[fileOn] ? fileList[fileOn] + at : typed);
+    }
+  });
+  // open up: a frame beside the thing for its insides (to the right of everything, level with it), an arrow to it
+  $("sel-open").addEventListener("click", () => {
+    const el = selected[0]; if (!el) return;
+    if (el.customData?.inside) { const back = kin().find((e) => e.id === el.customData.inside && !e.isDeleted); api.scrollToContent(back ? api.getSceneElements() : undefined, { fitToViewport: true, viewportZoomFactor: 0.8, animate: true }); return; }
+    const opened = kin().find((f) => f.type === "frame" && !f.isDeleted && f.customData?.inside === el.id);
+    if (opened) { api.scrollToContent(opened, { fitToViewport: true, viewportZoomFactor: 0.55, animate: true }); return; }
+    const live2 = api.getSceneElements(), right = Math.max(...live2.map((e) => e.x + Math.max(e.width, 0)));
+    const W = 620, H = 400, x = right + 160, y = el.y + el.height / 2 - H / 2;
+    const [f] = convertToExcalidrawElements([{ type: "frame", x, y, width: W, height: H, name: `inside ${words(el)}`, children: [] }]);
+    const sx = el.x + el.width + 6, sy = el.y + el.height / 2;
+    const arrowEls = convertToExcalidrawElements([{ type: "arrow", x: sx, y: sy, points: [[0, 0], [x - 12 - sx, y + H / 2 - sy]], strokeStyle: "dashed", label: { text: "inside" } }]);
+    const a = arrowEls.find((e) => e.type === "arrow");
+    const arrow = { ...a, startBinding: { elementId: el.id, focus: 0, gap: 6 }, customData: { inside: el.id } };
+    commit(new Map([[el.id, bumped(el, { boundElements: [...(el.boundElements || []), { id: a.id, type: "arrow" }] })]]),
+      [{ ...f, customData: { inside: el.id } }, arrow, ...arrowEls.filter((e) => e !== a)]);
+    api.updateScene({ appState: { selectedElementIds: { [f.id]: true } } });
+    api.scrollToContent(api.getSceneElements().find((e) => e.id === f.id), { fitToViewport: true, viewportZoomFactor: 0.55, animate: true });
+    status(`Draw what is inside "${words(el)}" in the frame; Back returns to the whole picture.`);
+  });
+  // today / new / going: a tag on the thing (grouped with it, so they move together), and its status in the record
+  const TAG = { today: ["today", "#868e96"], new: ["+ new", "#2f9e44"], going: ["− going", "#e03131"] };
+  for (const b of $("sel").querySelectorAll("[data-status]")) b.addEventListener("click", () => {
+    const want = b.dataset.status, changed = new Map(), added = [];
+    const clear = selected.every((e) => e.customData?.status === want);   // pressed again: unmark
+    for (const el0 of selected) {
+      const el = kin().find((e) => e.id === el0.id); if (!el) continue;
+      const old = el.customData?.tag && kin().find((e) => e.id === el.customData.tag && !e.isDeleted);
+      if (old) changed.set(old.id, bumped(old, { isDeleted: true }));
+      if (clear) { changed.set(el.id, bumped(el, { customData: { ...el.customData, status: undefined, tag: undefined } })); continue; }
+      const g = (el.groupIds || [])[0] || `tag-${el.id}`, [t] = convertToExcalidrawElements([{ type: "text", x: 0, y: 0, text: TAG[want][0], fontSize: 14, strokeColor: TAG[want][1] }]);
+      const pts = el.points?.length ? el.points.map((p) => [el.x + p[0], el.y + p[1]]) : null;
+      const at = pts ? { x: (pts[0][0] + pts.at(-1)[0]) / 2 + 8, y: (pts[0][1] + pts.at(-1)[1]) / 2 - 26 } : { x: el.x + el.width - t.width, y: el.y - t.height - 4 };
+      added.push({ ...t, ...at, groupIds: [g], customData: { tagFor: el.id } });
+      changed.set(el.id, bumped(el, { groupIds: el.groupIds?.length ? el.groupIds : [g], customData: { ...el.customData, status: want, tag: t.id } }));
+    }
+    commit(changed, added); renderSel();
+  });
+
   // ---------- notes: typed, timestamped, and put on the canvas where you're looking ----------
   $("note").addEventListener("keydown", (e) => {
     if (e.key !== "Enter" || !e.target.value.trim()) return;
@@ -355,7 +457,7 @@
     }
     $("counts").textContent = `${session.keyframes.length} pictures · ${session.events.length} edits · ${fmt(clock() || 0)}`;
     $("sent").style.display = "none";
-    $("review").classList.add("open");
+    $("review").classList.add("open"); $("sel").classList.remove("show"); $("files").classList.remove("show");
   });
   $("keep").addEventListener("click", () => { $("review").classList.remove("open"); resume(); });
 
@@ -420,5 +522,5 @@
   }
 
   // a hook for tests and for the step after this one
-  window.reelSketch = { session, get api() { return api; }, keyframe, clock, pointing: () => ({ under: under(), pointer: { ...pointer }, resting, active: document.activeElement?.id || document.activeElement?.tagName }) };
+  window.reelSketch = { session, get api() { return api; }, keyframe, clock, selected: () => selected.map((e) => e.id), pointing: () => ({ under: under(), pointer: { ...pointer }, resting, active: document.activeElement?.id || document.activeElement?.tagName }) };
 })();

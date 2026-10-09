@@ -32,16 +32,24 @@ const SHAPES = new Set(["rectangle", "ellipse", "diamond", "image"]);
 const box = (e) => ({ x0: e.x, y0: e.y, x1: e.x + (e.w || 0), y1: e.y + (e.h || 0), cx: e.x + (e.w || 0) / 2, cy: e.y + (e.h || 0) / 2 });
 
 // ---------- the picture ----------
-export function describeScene(els = []) {
+const STATUS = { new: "proposed: new", going: "going away", today: "exists today" };
+/** `opts.exists(path)`: whether a linked file is in the repo (sketch.md knows the repo; the partner does not) */
+export function describeScene(els = [], opts = {}) {
+  els = els.filter((e) => !e.tagFor);   // a today/new/going tag is told as its thing's status, not as text
   const byId = new Map(els.map((e) => [e.id, e])), lines = [];
   const shapes = els.filter((e) => SHAPES.has(e.kind)), frames = els.filter((e) => e.kind === "frame");
-  // a drawn line is a connection like an arrow (a tree's branch, a lane's edge), bound or not; marks are freehand
-  const arrows = els.filter((e) => e.kind === "arrow" || e.kind === "line");
+  // a drawn line is a connection like an arrow (a tree's branch, a lane's edge), bound or not; marks are freehand;
+  // the arrow from a box to the frame it was opened up into is left out: the frame says that already
+  const arrows = els.filter((e) => (e.kind === "arrow" || e.kind === "line") && !e.inside);
   const texts = els.filter((e) => e.kind === "text"), strokes = els.filter((e) => e.kind === "freedraw");
-  const st = (e) => { const s = styleOf(e); return s ? ` (${s})` : ""; };
+  const linked = (e) => { if (!e.link) return ""; const file = e.link.replace(/[:#].*$/, ""); const ok = !opts.exists || /^https?:/.test(e.link) || opts.exists(file); return `, linked to \`${e.link}\`${ok ? "" : ": no such file in the repo at this commit"}`; };
+  const st = (e) => { const s = [styleOf(e), e.status && STATUS[e.status]].filter(Boolean).join(", "); return s || e.link ? ` (${[s, linked(e).slice(2)].filter(Boolean).join(", ")})` : ""; };
   if (frames.length) {
     lines.push("**Frames** (an area they drew around things, with its name)", "");
-    for (const f of frames) { const kids = els.filter((e) => e.frame === f.id && e.kind !== "freedraw"); lines.push(`- frame ${quoted(f)}: ${kids.length ? kids.map(quoted).join(", ") : "empty"}`); }
+    for (const f of frames) {
+      const kids = els.filter((e) => e.frame === f.id && e.kind !== "freedraw"), from = f.inside && byId.get(f.inside);
+      lines.push(`- frame ${quoted(f)}${from ? ` (what is inside ${quoted(from)}, opened up from it)` : ""}: ${kids.length ? kids.map(quoted).join(", ") : "empty"}`);
+    }
     lines.push("");
   }
   if (shapes.length) {
@@ -72,9 +80,18 @@ export function describeScene(els = []) {
   };
   const end2 = (a) => { const n = (id) => id && byId.get(id) ? quoted(byId.get(id)) : "nothing"; return `${n(a.from)} → ${n(a.to)}`; };
   if (texts.length) { lines.push("**Text on the canvas**", ""); for (const t of texts) lines.push(`- "${one(t.text)}"${st(t)}${near(t)}`); lines.push(""); }
+  // today vs proposed: what they marked as existing, new, or going away
+  const marked = els.filter((e) => e.status);
+  if (marked.length) {
+    lines.push("**Today vs proposed** (as they marked them)", "");
+    for (const [k, words] of [["today", "exists today"], ["new", "new: what they propose"], ["going", "going away"]]) { const xs = marked.filter((e) => e.status === k); if (xs.length) lines.push(`- ${words}: ${xs.map((e) => e.kind === "arrow" ? end2(e) : quoted(e)).join(", ")}`); }
+    lines.push("");
+  }
+  const links = els.filter((e) => e.link);
+  if (links.length) { lines.push("**Linked to code** (the file each thing is, in their picture)", ""); for (const e of links) lines.push(`- ${e.kind === "arrow" ? `the arrow ${end2(e)}` : quoted(e)} → \`${e.link}\`${linked(e).includes("no such file") ? " (no such file in the repo at this commit)" : ""}`); lines.push(""); }
   // groups: things they tied together
   const groups = new Map(); for (const e of els) for (const g of e.groups || []) groups.set(g, [...(groups.get(g) || []), e]);
-  const gl = [...groups.values()].filter((g) => g.length > 1);
+  const gl = [...groups.values()].filter((g) => g.length > 1);   // (a tag's own group holds only its thing, once tags are left out)
   if (gl.length) { lines.push("**Grouped together**", ""); for (const g of gl) lines.push(`- ${g.map(quoted).join(", ")}`); lines.push(""); }
   // freehand marks: what they go around, across or under
   const named = [...shapes, ...texts, ...arrows.filter((a) => a.label)];
@@ -140,6 +157,7 @@ export function sceneChanges(s) {
     return ` (now ${rel} ${label(best.o)})`;
   };
   for (const ev of s.events || []) {
+    if (ev.tagFor || state.get(ev.id)?.tagFor) { state.set(ev.id, { ...state.get(ev.id), ...ev }); continue; }   // a status tag: told as its thing's mark
     const prev = state.get(ev.id), t = ev.until ?? ev.t;
     if (ev.type === "add") {
       state.set(ev.id, { ...ev, addedAt: ev.t });
@@ -149,6 +167,7 @@ export function sceneChanges(s) {
         if (host && !labelOf.has(ev.in) && ev.t - (host.addedAt ?? ev.t) > 2) entry(ev.t, `lab:${ev.in}`, { text: `labeled ${host.kind === "arrow" ? `the arrow ${arrowName(host)}` : `the ${host.kind}`} "${one(ev.text)}"` });
         labelOf.set(ev.in, ev.text);
       } else if (!(ev.kind === "text" && ev.in)) adds.push({ t: ev.t, id: ev.id, kind: ev.kind });
+      if (ev.kind === "frame" && ev.inside) entry(ev.t, `in:${ev.id}`, { text: `opened up ${label(ev.inside)} into a frame to draw what is inside it` });
       continue;
     }
     if (ev.type === "delete") {
@@ -168,6 +187,8 @@ export function sceneChanges(s) {
       const e = entry(t, `ren:${target}`, { was: one(prev.text), what }); e.now = one(ev.text);
       if (prev.in) labelOf.set(prev.in, ev.text);
     }
+    if ((ev.status || null) !== (prev.status || null) && !ev.tagFor) entry(t, `st:${ev.id}`, { text: ev.status ? `marked ${label(ev.id)} as ${STATUS[ev.status]}` : `took the today/new/going mark off ${label(ev.id)}` });
+    if ((ev.link || null) !== (prev.link || null)) entry(t, `ln:${ev.id}`, { text: ev.link ? `linked ${label(ev.id)} to \`${ev.link}\`` : `unlinked ${label(ev.id)}` });
     if (ev.name != null && prev.name != null && ev.name !== prev.name) { const e = entry(t, `fren:${ev.id}`, { was: one(prev.name), what: "the frame" }); e.now = one(ev.name); }
     // rerouted: an arrow's ends now on other things
     if ((prev.kind === "arrow" || prev.kind === "line") && (("from" in ev && ev.from !== prev.from) || ("to" in ev && ev.to !== prev.to) || (!("from" in ev) && prev.from) || (!("to" in ev) && prev.to))) {

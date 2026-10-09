@@ -53,6 +53,28 @@
   #finish { border: 1px solid rgba(var(--ink-rgb), .2); border-radius: 9px; padding: 8px 12px; background: transparent; font-weight: 600; white-space: nowrap; }
   #finish:disabled { opacity: .45; cursor: default; }
 
+  /* what is selected, and what a whiteboard cannot do with it: link it to code, open it up, today vs proposed */
+  #sel { position: fixed; left: 50%; bottom: 118px; transform: translateX(-50%); z-index: 6; display: none; align-items: center; gap: 6px; padding: 5px 6px 5px 12px;
+    max-width: calc(100% - 32px); box-sizing: border-box; font-size: 13px; white-space: nowrap; }
+  #sel.show { display: flex; }
+  #sel .what { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+  #sel .what code { font: 12px var(--mono); color: var(--accent-text); }
+  #sel button { border: 1px solid rgba(var(--ink-rgb), .18); border-radius: 8px; padding: 5px 9px; background: transparent; font-size: 13px; }
+  #sel button:hover { background: rgba(var(--ink-rgb), .06); }
+  #sel .seg { display: inline-flex; border: 1px solid rgba(var(--ink-rgb), .18); border-radius: 8px; overflow: hidden; }
+  #sel .seg button { border: 0; border-radius: 0; border-left: 1px solid rgba(var(--ink-rgb), .12); }
+  #sel .seg button:first-child { border-left: 0; }
+  #sel .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  #sel .sep { width: 1px; align-self: stretch; background: rgba(var(--ink-rgb), .12); margin: 0 2px; }
+  /* files for "Link to code", over the note box */
+  #files { position: fixed; left: 50%; bottom: 66px; transform: translateX(-50%); z-index: 7; display: none; width: min(560px, calc(100% - 32px)); box-sizing: border-box;
+    padding: 4px; margin: 0; list-style: none; max-height: 260px; overflow: auto; }
+  #files.show { display: block; }
+  #files li { padding: 6px 9px; border-radius: 7px; font: 13px var(--mono); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #files li.on, #files li:hover { background: rgba(var(--ink-rgb), .08); }
+  #files li.hint { font: 12px var(--sans); color: var(--ink-3); cursor: default; background: none; }
+  @media (max-width: 700px) { #sel { bottom: 168px; } #sel .what { max-width: 110px; } }
+
   /* what it is hearing, just above the bar */
   #caption { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 5; max-width: min(760px, calc(100% - 32px)); padding: 6px 12px;
     border-radius: 9px; background: rgba(var(--ink-rgb), .82); color: var(--paper); font-size: 15px; pointer-events: none; opacity: 0; transition: opacity .2s; }
@@ -105,6 +127,17 @@
 
 <div id="status">Press Record, then draw and talk. Type in the box to add a note.</div>
 <div id="caption" aria-live="polite"></div>
+
+<div id="sel" class="chip" role="toolbar" aria-label="What is selected">
+  <span class="what" id="sel-what"></span>
+  <button type="button" id="sel-link" title="Link it to a file in the repo: type @ and a part of its path in the note box">Link to code</button>
+  <button type="button" id="sel-open" title="Open it up: a frame beside it to draw its insides">Open up</button>
+  <span class="sep"></span>
+  <span class="seg" title="Does it exist today, is it what you propose, or is it going away?">
+    <button type="button" data-status="today" aria-pressed="false">Today</button><button type="button" data-status="new" aria-pressed="false">New</button><button type="button" data-status="going" aria-pressed="false">Going</button>
+  </span>
+</div>
+<ul id="files" class="chip" role="listbox" aria-label="Files in the repo"></ul>
 
 <div id="bar" class="chip">
   <button id="rec" type="button" title="Start, pause or resume recording"><span class="dot"></span><span class="label">Record</span></button>

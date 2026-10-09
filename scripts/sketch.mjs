@@ -80,6 +80,7 @@ let partner;
 try { partner = await resolvePartner({ dir: process.cwd(), choice: flag("partner"), model: flag("partner-model") }); }
 catch (e) { die(e.message); }
 if (!partner.off) warmPartner(partner);
+let repoFiles = null;
 const PARTNER_GAP_S = Number(process.env.REELPLANNER_SKETCH_PARTNER_GAP_S ?? 20), PARTNER_MAX = 8;
 const PARTNER_STALE_S = Number(process.env.REELPLANNER_SKETCH_PARTNER_STALE_S ?? 30);   // an answer later than this is about an old picture
 const readJsonBody = (req, limit = 12e6) => new Promise((done, fail) => {
@@ -158,6 +159,13 @@ const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
   if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || ".",
     partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX, stale_s: PARTNER_STALE_S } });
+  if (path === "api/sketch/files") {
+    // the repo's files, for "Link to code": the best few for what is typed (its last part first, then anywhere)
+    const q = (new URL(req.url, "http://x").searchParams.get("q") || "").toLowerCase().replace(/^@/, "").split(/[:#]/)[0];
+    repoFiles ??= repo ? git("ls-files").split("\n").filter(Boolean) : [];
+    const score = (f) => { const l = f.toLowerCase(), b = l.split("/").pop(); return !q ? 1 : b.startsWith(q) ? 4 : b.includes(q) ? 3 : l.includes(q) ? 2 : q.split(/[\s/]+/).every((w) => l.includes(w)) ? 1 : 0; };
+    return json(res, 200, { ok: true, files: repoFiles.map((f) => [f, score(f)]).filter(([, n]) => n).sort((a, b) => b[1] - a[1] || a[0].length - b[0].length).slice(0, 8).map(([f]) => f) });
+  }
   if (path === "api/sketch/partner" && req.method === "POST") {
     if (partner.off) return json(res, 404, { ok: false, error: "no partner" });
     return readJsonBody(req).then((b) => askPartner(partner, b)).then((text) => json(res, 200, { ok: true, text }),

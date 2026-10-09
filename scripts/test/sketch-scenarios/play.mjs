@@ -16,7 +16,8 @@ import { launchOpts, serverUp, ROOT } from "../../lib/env.mjs";
 const OPS = () => {
   const K = () => window.ExcalidrawKit, api = () => window.reelSketch.api;
   const all = () => api().getSceneElementsIncludingDeleted();
-  const byId = (id) => all().find((e) => e.id === id && !e.isDeleted);
+  const real = (id) => window.__alias?.[id] ?? id;   // a frame made by Open up is named by the scenario's "as"
+  const byId = (id) => all().find((e) => e.id === real(id) && !e.isDeleted);
   const bump = (e, patch) => ({ ...e, ...patch, version: e.version + 1, versionNonce: Math.floor(Math.random() * 2 ** 31), updated: Date.now() });
   const commit = (changed, added = []) => api().updateScene({ elements: [...all().map((e) => changed.get(e.id) || e), ...added], captureUpdate: K().CaptureUpdateAction.IMMEDIATELY });
   const center = (e) => ({ x: e.x + e.width / 2, y: e.y + e.height / 2 });
@@ -49,11 +50,13 @@ const OPS = () => {
   return {
     add(list) {
       const cur = new Map(), added = [];
-      for (const s of list) {
+      for (const s0 of list) {
+        const F = s0.in && byId(s0.in), s = F ? { ...s0, x: F.x + (s0.x ?? 0), y: F.y + (s0.y ?? 0) } : s0;
         const style = {}; for (const k of ["strokeColor", "backgroundColor", "strokeStyle", "fontSize", "endArrowhead", "startArrowhead"]) if (s[k] !== undefined) style[k] = s[k];
         if (s.backgroundColor) style.fillStyle = "solid";
-        if (SHAPES.has(s.type)) added.push(...K().convertToExcalidrawElements([{ type: s.type, id: s.id, x: s.x, y: s.y, width: s.width, height: s.height, ...style, ...(s.label ? { label: { text: s.label } } : {}) }], { regenerateIds: false }));
-        else if (s.type === "text") added.push(...K().convertToExcalidrawElements([{ type: "text", id: s.id, x: s.x, y: s.y, text: s.text, ...style }], { regenerateIds: false }));
+        const inF = (els) => F ? els.map((e) => ({ ...e, frameId: F.id })) : els;
+        if (SHAPES.has(s.type)) added.push(...inF(K().convertToExcalidrawElements([{ type: s.type, id: s.id, x: s.x, y: s.y, width: s.width, height: s.height, ...style, ...(s.label ? { label: { text: s.label } } : {}) }], { regenerateIds: false })));
+        else if (s.type === "text") added.push(...inF(K().convertToExcalidrawElements([{ type: "text", id: s.id, x: s.x, y: s.y, text: s.text, ...style }], { regenerateIds: false })));
         else if (s.type === "frame") {
           const [f] = K().convertToExcalidrawElements([{ type: "frame", id: s.id, x: s.x, y: s.y, width: s.width, height: s.height, name: s.name, children: [] }], { regenerateIds: false });
           added.unshift(f); for (const c of s.children || []) { const e = cur.get(c) || added.find((x) => x.id === c) || byId(c); if (e) cur.set(c, bump(e, { frameId: s.id })); }
@@ -124,16 +127,21 @@ const OPS = () => {
       api().updateScene({ elements: [f, ...all().map((e) => cur.get(e.id) || e)], captureUpdate: K().CaptureUpdateAction.IMMEDIATELY });
     },
     tool(type) { api().setActiveTool({ type }); },
+    select(ids) { api().updateScene({ appState: { selectedElementIds: Object.fromEntries(ids.map((i) => [real(i), true])) } }); },
+    screen([x, y]) { const s = api().getAppState(), z = s.zoom.value; return [(x + s.scrollX) * z + (s.offsetLeft || 0), (y + s.scrollY) * z + (s.offsetTop || 0)]; },
+    newest(type) { return all().filter((e) => e.type === type && !e.isDeleted).sort((a, b) => b.updated - a.updated)[0]?.id; },
   };
 };
 
-export async function play(file, { R = ROOT, out: outDir, port, partner = "off", speed = 1, env: extraEnv = {} }) {
+export async function play(file, { R = ROOT, out: outDir, port, partner = "off", speed = 1, env: extraEnv = {}, video = null, mic = null }) {
   const sc = JSON.parse(readFileSync(file, "utf8")), id = sc.id || basename(file, ".json");
   const dir = join(outDir, id); mkdirSync(dir, { recursive: true });
   const k = speed;   // every time in the scenario, scaled
   const log = []; const T0 = { v: Date.now() }; const say = (...a) => { const l = `[${((Date.now() - T0.v) / 1000).toFixed(1)}s] ${a.join(" ")}`; log.push(l); };
   const repo = mkdtempSync(join(tmpdir(), `scn-${id}-`));
-  execFileSync("git", ["init", "-q"], { cwd: repo }); writeFileSync(join(repo, "README.md"), `# ${sc.title}\n`); mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner/decisions.json"), "[]\n");
+  execFileSync("git", ["init", "-q"], { cwd: repo }); writeFileSync(join(repo, "README.md"), `# ${sc.title}\n`);
+  for (const f of sc.repo || []) { mkdirSync(join(repo, f, ".."), { recursive: true }); writeFileSync(join(repo, f), `// ${f}\n`); }   // files to link boxes to
+  mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner/decisions.json"), "[]\n");
   execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "add", "."], { cwd: repo }); execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"], { cwd: repo });
   const env = { ...process.env, REELPLANNER_SKETCH_PARTNER: partner, ...extraEnv };
   const srv = spawn(process.execPath, [R + "/bin/reelplanner.mjs", "sketch", sc.topic || sc.title, "--once", "--port", String(port), "--no-open"], { cwd: repo, env, stdio: ["ignore", "pipe", "pipe"] });
@@ -142,10 +150,11 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
   await serverUp(port, { child: srv, timeout: 120000 });
   await new Promise((r) => setTimeout(r, 300));
   if (srv.exitCode != null) throw new Error(`its own server did not start: ${out.trim().split("\n").pop()}`);   // never drive another run's page
-  const b = await chromium.launch(launchOpts({ args: [...launchOpts().args, "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] }));
+  const b = await chromium.launch(launchOpts({ args: [...launchOpts().args, "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", ...(mic ? [`--use-file-for-fake-audio-capture=${mic}%noloop`] : [])] }));
   const errors = [], asks = [];
   try {
-    const ctx = await b.newContext({ viewport: { width: 1280, height: 800 } });
+    const ctx = await b.newContext({ viewport: { width: 1280, height: 800 }, ...(video ? { recordVideo: { dir: video, size: { width: 1280, height: 800 } } } : {}) });
+    const pageT0 = Date.now();
     const page = await ctx.newPage();
     page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => { if (m.type() === "error" && !/ERR_CONNECTION_REFUSED|ERR_INCOMPLETE_CHUNKED/.test(m.text())) errors.push(m.text()); });
     const lines = sc.steps.filter((s) => s.say).map((s) => ({ t: s.t * k, text: s.say }));
@@ -179,6 +188,7 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
           let pts = arg.points;
           if (under(pts[0])) { const closed = Math.hypot(pts[0][0] - pts.at(-1)[0], pts[0][1] - pts.at(-1)[1]) < 40, i = pts.findIndex((q) => !under(q));
             pts = closed && i > 0 ? [...pts.slice(i), ...pts.slice(1, i + 1)] : [...pts].reverse(); }
+          pts = await page.evaluate((P) => P.map((p) => window.__ops.screen(p)), pts);   // the view may be zoomed or moved (Open up, Back)
           await page.mouse.move(pts[0][0], pts[0][1]); await page.mouse.down();
           for (const [x, y] of pts.slice(1)) await page.mouse.move(x, y, { steps: 3 });
           await page.mouse.up(); await page.evaluate(() => window.__ops.tool("selection"));
@@ -186,11 +196,23 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
           // as a person does: click an empty bit of canvas first, so the keys go to the board, not the note box
           await page.evaluate(() => window.__ops.tool("selection")); await page.mouse.click(1240, 690);
           for (let i = 0; i < arg; i++) { await page.keyboard.press(act === "undo" ? "Control+z" : "Control+Shift+z"); await page.waitForTimeout(150); }
+        } else if (act === "link") {
+          // Link to code: select it, the button, type part of a path in the note box, Enter (the first file listed)
+          await page.evaluate((i) => window.__ops.select([i]), arg.id); await page.waitForSelector("#sel.show"); await page.click("#sel-link");
+          await page.keyboard.type(arg.type, { delay: 40 }); await page.waitForTimeout(500); await page.keyboard.press("Enter");
+        } else if (act === "mark") {
+          await page.evaluate((ids) => window.__ops.select(ids), arg.ids); await page.waitForSelector("#sel.show"); await page.click(`[data-status="${arg.as}"]`);
+        } else if (act === "openup") {
+          await page.evaluate((i) => window.__ops.select([i]), arg.id); await page.waitForSelector("#sel.show"); await page.click("#sel-open"); await page.waitForTimeout(900);
+          if (arg.as) await page.evaluate((a) => { (window.__alias ??= {})[a] = window.__ops.newest("frame"); }, arg.as);
+        } else if (act === "back") {
+          await page.evaluate((i) => window.__ops.select([i]), arg.from); await page.waitForSelector("#sel.show"); await page.click("#sel-open"); await page.waitForTimeout(900);
+          await page.evaluate(() => window.__ops.select([]));
         } else if (act === "point") {
           // the pointer rests on each element in turn, as a person points while talking
           await page.evaluate(() => document.activeElement?.blur());
           for (const pid of arg.ids) {
-            const c = await page.evaluate((i) => { const e = window.reelSketch.api.getSceneElements().find((x) => x.id === i); return e && { x: e.x + e.width / 2, y: e.y + e.height / 2 }; }, pid);
+            const c = await page.evaluate((i) => { const e = window.reelSketch.api.getSceneElements().find((x) => x.id === (window.__alias?.[i] ?? i)); if (!e) return null; const [x, y] = window.__ops.screen([e.x + e.width / 2, e.y + e.height / 2]); return { x, y }; }, pid);
             if (!c) throw new Error(`point: no ${pid}`);
             await page.mouse.move(c.x, c.y, { steps: 8 }); await page.waitForTimeout((arg.seconds || 1.5) * k * 1000 / arg.ids.length);
           }
@@ -207,7 +229,8 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
     const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 60000))]);
     const last = out.trim().split("\n").pop(), folder = last.startsWith("sketch: ") ? join(repo, last.slice(8)) : null;
     if (folder && existsSync(folder)) for (const f of readdirSync(folder)) cpSync(join(folder, f), join(dir, f), { recursive: true });
-    return { id, title: sc.title, file, code, errors, asks, log, saved: !!folder, out };
+    const videoFile = video ? await page.video()?.path() : null;   // written when the browser closes
+    return { id, title: sc.title, file, code, errors, asks, log, saved: !!folder, out, videoFile, recordAt: (T0.v - pageT0) / 1000 };
   } finally { await b.close(); if (srv.exitCode == null) srv.kill(); }
 }
 
