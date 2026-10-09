@@ -42,9 +42,6 @@ ok "$(. /etc/os-release; echo "$PRETTY_NAME"), python $(python3 -c 'import platf
 INSTALL="$(awk '/^## Install/{f=1; next} f && /^## /{exit} f && /^```bash/{b=1; next} b && /^```/{exit} b' "$HERE/README.md")"
 [ -n "$INSTALL" ] || { echo "✗ no \`\`\`bash block under ## Install in README.md"; exit 1; }
 if [ -n "$FROM" ]; then INSTALL="$(printf '%s\n' "$INSTALL" | sed "s|github:ncrispino/reelplanner|$FROM|")"; fi
-# the one line not run as written: `npx skills add` asks which agents to install to, which a person answers in a
-# terminal and this run cannot (no terminal: it cancels); -y answers "every agent", as AGENTS.md's line does
-INSTALL="$(printf '%s\n' "$INSTALL" | sed -E '/npx skills add/{/ -y( |$)/!s/(npx skills add[^#]*[^ #])/\1 -y/;}')"
 printf '%s\n' "$INSTALL" > /home/newuser/install.sh
 chown newuser /home/newuser/install.sh
 
@@ -74,6 +71,12 @@ else
   ok "node $(as_user 'node -v')"
   while IFS= read -r line; do
     [ -n "${line// }" ] || continue
+    # the one line not run as written: `npx skills add` asks which agents to install to, which a person answers in a
+    # terminal and this run cannot (no terminal: it cancels); -y answers "every agent", as AGENTS.md's line does.
+    # Only the command is looked at, not its comment (which may itself mention -y).
+    cmd="${line%%#*}"; note=""; [[ "$line" == *"#"* ]] && note="   #${line#*#}"
+    cmd="${cmd%"${cmd##*[![:space:]]}"}"
+    if [[ "$cmd" == *"npx skills add"* && " $cmd " != *" -y "* ]]; then line="$cmd -y$note"; fi
     step "$line"
     as_user "$line </dev/null" 2>&1 | tail -40; code=${PIPESTATUS[0]}
     [ "$code" = 0 ] && ok "exit 0" || bad "exit $code: $line"
