@@ -23,6 +23,7 @@ import { join } from "node:path";
 import { rpDirOf } from "./env.mjs";
 import { loadEnvFile } from "./narrator.mjs";
 import { repoTop } from "./explainer.mjs";
+import { describeScene } from "./sketch-scene.mjs";
 
 export const RECOMMENDED = "anthropic/claude-sonnet-5.5";
 export const OPENROUTER = "https://openrouter.ai/api/v1";
@@ -82,20 +83,8 @@ Ask about their picture, in their words. You can read every label in the list ab
 
 If nothing is worth asking right now, answer exactly NONE. Answer with the question alone, no preamble.`;
 
-/** The picture as text: boxes, arrows between them by label, words on the canvas. */
-export function describeDrawing(els = []) {
-  const byId = new Map(els.map((e) => [e.id, e]));
-  const name = (id) => { const e = byId.get(id); return e ? `"${String(e.label || e.text || e.kind).replace(/\s+/g, " ")}"` : "(nothing)"; };
-  const out = [];
-  for (const e of els) {
-    if (e.kind === "arrow") out.push(`- arrow ${name(e.from)} → ${name(e.to)}${e.label ? ` (labeled "${e.label.replace(/\s+/g, " ")}")` : ""}`);
-    else if (e.kind === "text") out.push(`- text "${String(e.text).replace(/\s+/g, " ")}"`);
-    else if (e.kind !== "freedraw" && e.kind !== "line") out.push(`- ${e.kind}${e.label ? ` "${e.label.replace(/\s+/g, " ")}"` : " (no label)"}`);
-  }
-  const free = els.filter((e) => e.kind === "freedraw" || e.kind === "line").length;
-  if (free) out.push(`- ${free} freehand stroke${free === 1 ? "" : "s"} or line${free === 1 ? "" : "s"} (see the picture)`);
-  return out.join("\n") || "(nothing yet)";
-}
+/** The picture as text, as sketch.md says it: frames, shapes and their looks, arrows, text and what it sits by, marks. */
+export const describeDrawing = (els = []) => describeScene(els).join("\n").trim() || "(nothing yet)";
 
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 // words that say "I'm guessing": a small model finds the open question far more often when the line is marked for it
@@ -136,6 +125,11 @@ export async function askPartner(p, input, { timeoutMs = p.provider === "local" 
   if (Array.isArray(out)) out = out.map((c) => c.text || "").join("");
   out = String(out || "").replace(/<think>[\s\S]*?<\/think>/g, "").trim().split(/\n\s*\n/)[0].trim().replace(/^["“]|["”]$/g, "");
   if (!out || /^none\b/i.test(out)) return null;
+  // a question, or nothing: a model sometimes thinks aloud first ("The unsure line is …. I'll ask about that."), so
+  // keep the last sentence that asks something, and drop an answer that asks nothing
+  const asks = out.replace(/\s+/g, " ").match(/[^.?!]*\?/g);
+  if (!asks) return null;
+  out = asks[asks.length - 1].trim().replace(/^["“(]+/, "");
   return out.length > 240 ? out.slice(0, 237) + "…" : out;
 }
 

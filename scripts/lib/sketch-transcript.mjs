@@ -19,6 +19,7 @@ import { whisperPath } from "./local-speed.mjs";
 import { whisper } from "./tts-local.mjs";
 import { transcribe } from "./tts-api.mjs";
 import { loadEnvFile, DEFAULT_WHISPER, TIMINGS_APIS } from "./narrator.mjs";
+import { describeScene, sceneChanges } from "./sketch-scene.mjs";
 
 const mmss = (s) => s == null ? "–" : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -36,12 +37,7 @@ function transcriptLine(s, rel) {
 /** What an agent reads first: the question, what was said with a picture at each pause, the drawing, the notes. */
 export function sketchMd(s, dir) {
   const rel = relative(process.cwd(), dir) || ".";
-  const els = s.final?.elements || [], byId = new Map(els.map((e) => [e.id, e]));
-  const name = (id) => { const e = byId.get(id); return e ? `"${(e.label || e.text || e.name || e.kind).replace(/\s+/g, " ")}"` : "(nothing)"; };
-  const shapes = els.filter((e) => !["arrow", "line", "freedraw", "text"].includes(e.kind));
-  const arrows = els.filter((e) => e.kind === "arrow");
-  const texts = els.filter((e) => e.kind === "text");
-  const free = els.filter((e) => e.kind === "freedraw").length;
+  const els = s.final?.elements || [];
   const lines = [
     `# Sketch: ${s.question || "(no question given)"}`, "",
     `How someone thinks this works, drawn and said on a canvas: their model, not the code's. Compare it with the code; don't treat it as true.`, "",
@@ -54,10 +50,12 @@ export function sketchMd(s, dir) {
   if (asked.length) lines.push(`- **Questions while sketching:** ${asked.length} from ${s.partner.model}${s.partner.provider === "openrouter" ? " via OpenRouter" : " on their machine"}, marked _asked_ below. It was told to ask about their picture, never to explain the code; what they said next is their answer.`);
   lines.push("");
   if (s.feedback) lines.push(`## Their note when sending`, "", `> ${s.feedback.replace(/\n/g, "\n> ")}`, "");
-  lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before.`, "");
+  lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before. _changed:_ lines are edits to the picture (renamed, rerouted, erased, moved, restyled): their changes of mind.`, "");
   const kfs = s.keyframes || [];
   const timeline = [...kfs.map((k) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}` })),
-    ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` }))];
+    ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` })),
+    ...sceneChanges(s).map((c) => ({ t: c.t, line: `- **${mmss(c.t)}** _changed:_ ${c.text}` })),
+    ...(s.pauses || []).filter((p) => p.seconds >= 2).map((p) => ({ t: p.t, line: `- **${mmss(p.t)}** _paused for ${Math.round(p.seconds)} s_ (they stopped the recording here; the clock stood still)` }))];
   // what was said after the last picture (a transcript made afterwards has no keyframe at each sentence's end)
   const lastT = kfs.length ? kfs[kfs.length - 1].t : -Infinity;
   const after = (s.transcript?.segments || []).filter((x) => (x.t0 + x.t1) / 2 > lastT);
@@ -65,10 +63,7 @@ export function sketchMd(s, dir) {
   for (const x of timeline.sort((a, b) => a.t - b.t)) lines.push(x.line);
   if (!kfs.length && !after.length) lines.push("_(no pictures: nothing was drawn or said while recording)_");
   lines.push("", `## The final drawing`, "", s.final?.png ? `![final drawing](final.png)` : "_(empty canvas)_", "");
-  if (shapes.length) { lines.push(`**Boxes and shapes**`, ""); for (const e of shapes) lines.push(`- ${e.kind}${e.label ? ` "${e.label.replace(/\s+/g, " ")}"` : " (no label)"}`); lines.push(""); }
-  if (arrows.length) { lines.push(`**Arrows**`, ""); for (const a of arrows) lines.push(`- ${name(a.from)} → ${name(a.to)}${a.label ? ` (labeled "${a.label.replace(/\s+/g, " ")}")` : ""}`); lines.push(""); }
-  if (texts.length) { lines.push(`**Text on the canvas**`, ""); for (const t of texts) lines.push(`- "${t.text.replace(/\s+/g, " ")}"`); lines.push(""); }
-  if (free) lines.push(`Plus ${free} freehand stroke${free === 1 ? "" : "s"}: see the pictures.`, "");
+  lines.push(...describeScene(els));
   if ((s.notes || []).length) { lines.push(`## Typed notes`, ""); for (const n of s.notes) lines.push(`- **${mmss(n.t)}** ${n.text}`); lines.push(""); }
   if (s.before_recording) lines.push(`_${s.before_recording} element${s.before_recording === 1 ? " was" : "s were"} drawn before recording started._`, "");
   return lines.join("\n");

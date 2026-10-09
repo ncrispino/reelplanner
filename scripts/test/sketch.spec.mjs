@@ -31,7 +31,41 @@ import { chmodSync } from "node:fs";
 import { createServer } from "node:http";
 import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
 import { resolvePartner, askPartner, RECOMMENDED } from "../lib/sketch-partner.mjs";
+import { describeScene, sceneChanges } from "../lib/sketch-scene.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
+
+// ---------- the picture and its changes in words (no browser): what sketch.md and the partner are told ----------
+{
+  const R = (id, label, x, y, more = {}) => ({ id, kind: "rectangle", label, x, y, w: 160, h: 80, ...more });
+  const scene = [
+    { id: "f", kind: "frame", name: "Region A", x: 40, y: 80, w: 500, h: 200 },
+    R("q", "Queue", 60, 120, { frame: "f", strokeStyle: "dashed" }), R("w", "Fetcher", 320, 120, { frame: "f" }),
+    R("db", "DB", 60, 400, { strokeColor: "#e03131", backgroundColor: "#ffc9c9", groups: ["g1"] }), { id: "c", kind: "ellipse", label: "Cache", x: 320, y: 400, w: 160, h: 80, groups: ["g1"] },
+    { id: "a", kind: "arrow", from: "q", to: "w", label: "pulls", x: 220, y: 160, w: 100, h: 0 }, { id: "a2", kind: "arrow", from: "w", x: 480, y: 160, w: 120, h: 40 },
+    { id: "t", kind: "text", text: "~50k/s", x: 240, y: 130, w: 60, h: 20 }, { id: "u", kind: "freedraw", x: 60, y: 486, w: 150, h: 8 },
+    { id: "o", kind: "freedraw", x: 300, y: 390, w: 200, h: 100 },
+  ];
+  const md = describeScene(scene).join("\n");
+  ok(md.includes(`frame "Region A": "Queue", "Fetcher"`) && md.includes(`rectangle "Queue" (dashed)`) && md.includes(`rectangle "DB" (red, filled light red)`), "scene: a frame by its name with what is in it; dashed and colours said in words");
+  ok(md.includes(`"Fetcher" → (nothing: a loose end)`) && md.includes(`"~50k/s" (next to the arrow "Queue" → "Fetcher")`) && md.includes(`- "DB", "Cache"`), "scene: a loose arrow end, a note tied to the arrow it sits by, a group");
+  ok(md.includes(`a freehand stroke: under "DB"`) && md.includes(`a freehand stroke: around or across "Cache"`) && /row 1: "Queue", "~50k\/s", "Fetcher"/.test(md), `scene: an underline and a circle by what they mark; rows left to right — ${md.split("\n").filter((l) => /freehand|row/.test(l)).join(" | ")}`);
+  const ev = (t, type, id, more) => ({ t, type, id, ...more });
+  const changes = sceneChanges({ events: [
+    ev(1, "add", "w", { kind: "rectangle", x: 100, y: 100, w: 160, h: 80 }), ev(1, "add", "wl", { kind: "text", in: "w", text: "Worker" }),
+    ev(1, "add", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(1, "add", "sl", { kind: "text", in: "s", text: "Store" }),
+    ev(1, "add", "a", { kind: "arrow", from: "w", to: "s", x: 260, y: 140, w: 140, h: 0 }),
+    ev(5, "update", "wl", { kind: "text", in: "w", text: "Fetch" }), ev(6, "update", "wl", { kind: "text", in: "w", text: "Fetcher" }),
+    ev(9, "add", "p", { kind: "rectangle", x: 100, y: 400, w: 160, h: 80 }), ev(9, "add", "pl", { kind: "text", in: "p", text: "Parser" }),
+    ev(12, "update", "a", { kind: "arrow", from: "w", to: "p", x: 180, y: 180, w: 0, h: 220 }),
+    ev(14, "update", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80, strokeStyle: "dashed" }),
+    ev(16, "update", "p", { kind: "rectangle", x: 600, y: 400, w: 160, h: 80 }),
+    ev(20, "delete", "s", { kind: "rectangle" }), ev(20, "delete", "sl", { kind: "text" }),
+    ev(22, "restore", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(22, "restore", "sl", { kind: "text", in: "s", text: "Store" }),
+  ] }).map((c) => c.text);
+  ok(changes.join(" | ") === [`renamed the rectangle "Worker" → "Fetcher"`, `rerouted the arrow ("Fetcher" → "Store") → now ("Fetcher" → "Parser")`, `restyled "Store": plain → dashed`,
+    `moved "Parser" (now below "Store")`, `erased the rectangle "Store"`, `brought back "Store" (undo)`].join(" | "),
+    `changes: a rename in bursts told once, first name → last; a reroute; a restyle; a move by its new neighbour; an erase and an undo, each once — ${changes.join(" | ")}`);
+}
 
 // a scratch repo that keeps a record
 const repo = mkdtempSync(join(tmpdir(), "rp-sketch-"));
@@ -132,7 +166,7 @@ try {
   ok(first?.model === "qwen2.5vl:7b" && !calls[0].auth && first.messages[1].content.some((c) => c.type === "image_url" && c.image_url.url.startsWith("data:image/png;base64,")),
     "…asked of the local model, with no key, with the picture");
   ok(warmups === 1, `…which was loaded once when the command started — ${warmups}`);
-  ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`arrow "Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
+  ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`"Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
     `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
   ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes("- Where does the chunk index live?")), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
   await page.fill("#note", "not sure where the chunk index lives");
@@ -172,6 +206,7 @@ try {
     && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
   const md = readFileSync(join(dir, "sketch.md"), "utf8");
   ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
+  ok(/\*\*\d:\d\d\*\* _changed:_ erased the rectangle "Scratch"/.test(md) && /\*\*Where things are\*\*/.test(md), `sketch.md: the box replaced out of the scene is told as erased, in its place; and where things are — ${md.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
   ok(/\*\*Questions while sketching:\*\* 1 from qwen2\.5vl:7b on their machine/.test(md) && /\*\*\d:\d\d\*\* _asked:_ Where does the chunk index live\?/.test(md), "sketch.md: who asked, and the question in its place");
   try {
     const probe = execFileSync("ffprobe", ["-v", "error", "-show_entries", "stream=codec_type:format=duration", "-of", "json", join(dir, "recording.webm")], { encoding: "utf8" });

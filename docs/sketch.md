@@ -81,7 +81,7 @@ Saved to `.reelplanner/sketches/<date>-<slug>/` in a repo that keeps a record, e
 
 | File | What it is | In git |
 |---|---|---|
-| `sketch.md` | what an agent reads first: the question, what was said with a picture at each pause, the typed notes, the final drawing as boxes and arrows, the note left at Send | yes |
+| `sketch.md` | what an agent reads first: the question; one timeline of what was said with a picture at each pause, every change to the picture (renamed, rerouted, erased, moved, restyled, brought back), the partner's questions and the pauses; the final drawing in words (frames and what is in them, shapes with their dashes and colours, arrows and loose ends, text and what it sits by, groups, what each freehand mark circles or underlines, rows of where things are); the typed notes; the note left at Send | yes |
 | `session.json` | everything, on the recording's clock (below) | yes |
 | `final.excalidraw` | the finished scene: open it in Excalidraw to keep drawing | yes |
 | `recording.webm` | the canvas as drawn, with the voice; copied once by ffmpeg (when installed) so it has a duration and can be seeked | no |
@@ -115,9 +115,12 @@ Finish is open, as the recording does).
   "notes": [{ "t": 5.6, "text": "not sure where the chunk index is stored", "elementId": "…" }],
   "keyframes": [{ "n": 1, "t": 1.8, "said": "the upload starts in the client", "file": "keyframes/kf-001.png", "elements": 2 }],
   "events": [{ "t": 0.8, "type": "add" | "update" | "delete" | "restore", "id": "…", "kind": "rectangle", "text": "…",
-               "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1 }],
+               "x": 120, "y": 220, "w": 200, "h": 90, "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1,
+               "strokeStyle": "dashed", "strokeColor": "#e03131", "backgroundColor": "#ffc9c9", "name": "<a frame's>", "frame": "<id>" }],
+  "pauses": [{ "t": 39.2, "seconds": 8.1 }],
   "final": { "png": "final.png", "scene": "final.excalidraw",
-             "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…" }] },
+             "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…",
+                            "strokeStyle": "dashed", "frame": "<id>", "groups": ["…"] }] },
   "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-sonnet-5.5", "on": true,
                "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }],
                "late": 1, "stopped": "too slow here" },   // late, stopped: only when answers came too late
@@ -128,7 +131,11 @@ Finish is open, as the recording does).
 
 - A **keyframe** is taken when a spoken sentence ends, when a note is typed, or 2.5 s after the drawing stops
   changing with nothing being said. `said` is what was said or typed (`(typed) …`) since the one before.
-- **Events** fold a burst of changes to one element (a drag, a stroke) into one `update`, with `until`.
+- **Events** fold a burst of changes to one element (a drag, a stroke) into one `update`, with `until`. Each carries
+  where the element is and how it looks (only what differs from a plain black solid outline), so a move, a restyle, a
+  rename (a label's `text`) and a reroute (an arrow's `from`/`to`) can be told apart; `sketch.md` tells them as
+  _changed:_ lines in its timeline, with each thing named as it was called at that moment.
+- **Pauses** are kept with how long they lasted (the recording's clock stands still through one).
 - `transcript.source` is `none` when the browser has no live recognizer or it was blocked, and nothing has
   transcribed the recording yet (below). `whisper` and `api` are transcripts made from the recording: each
   keyframe's `said` is then made again from their words, and `replaced` names the live one they took the place of.

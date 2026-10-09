@@ -29,7 +29,7 @@
     id: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z"),
     question: "", context: null,
     transcript: { source: "none", lang: navigator.language || "en-US", segments: [] },
-    notes: [], keyframes: [], events: [],
+    notes: [], keyframes: [], events: [], pauses: [],
     before_recording: 0,
   };
   const files = new Map(); // path in the bundle → Blob (keyframes; the rest is made at the end)
@@ -60,14 +60,28 @@
   let api = null;
   const known = new Map();      // element id → { version, isDeleted }
   const lastLogged = new Map(); // element id → the update event to fold quick repeats into
-  const brief = (el) => {
-    const b = { id: el.id, kind: el.type };
-    if (el.text) b.text = el.text.slice(0, 300);
-    if (el.containerId) b.in = el.containerId;
-    if (el.startBinding?.elementId) b.from = el.startBinding.elementId;
-    if (el.endBinding?.elementId) b.to = el.endBinding.elementId;
+  // how a person sees an element, beyond its words: dashed or dotted, its colours (a choice of meaning: "red is where
+  // it breaks", "dashed is a guess"), a frame's name, which frame it sits in; only what differs from a plain one
+  const looks = (el, b) => {
+    if (el.strokeStyle && el.strokeStyle !== "solid") b.strokeStyle = el.strokeStyle;
+    if (el.strokeColor && el.strokeColor !== "#1e1e1e") b.strokeColor = el.strokeColor;
+    if (el.backgroundColor && el.backgroundColor !== "transparent") b.backgroundColor = el.backgroundColor;
+    if (el.name) b.name = el.name; if (el.frameId) b.frame = el.frameId; if (el.link) b.link = el.link;
     return b;
   };
+  const brief = (el) => {
+    const b = { id: el.id, kind: el.type, x: Math.round(el.x), y: Math.round(el.y), w: Math.round(el.width), h: Math.round(el.height) };
+    if (el.text) b.text = el.text.slice(0, 300);
+    if (el.containerId) b.in = el.containerId;
+    b.from = el.startBinding?.elementId || null; b.to = el.endBinding?.elementId || null;
+    if (el.type !== "arrow" && el.type !== "line") { delete b.from; delete b.to; }
+    looks(el, b);
+    // a restyle back to plain is a change too: say so in the event
+    if (prevLooks.has(el.id)) for (const k of ["strokeStyle", "strokeColor", "backgroundColor"]) if (prevLooks.get(el.id)[k] && !b[k]) b[k] = k === "strokeStyle" ? "solid" : k === "strokeColor" ? "#1e1e1e" : "transparent";
+    prevLooks.set(el.id, { strokeStyle: b.strokeStyle, strokeColor: b.strokeColor, backgroundColor: b.backgroundColor });
+    return b;
+  };
+  const prevLooks = new Map();
   function onScene(elements) {
     // an element can also leave the scene outright (a scene replaced, a library cleared) rather than be marked deleted
     if (elements.length < known.size) {
@@ -117,7 +131,8 @@
   const toDataUrl = (blob) => new Promise((r) => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = () => r(null); f.readAsDataURL(blob); });
   async function ask(kf, blob) {
     const P = session.partner;
-    if (!partner || !P || !$("partner-on").checked || asking || !blob || !heardSinceAsk) return;
+    // not while paused or at Finish: they are not sketching then, and a question would arrive after they have sent
+    if (!partner || !P || !$("partner-on").checked || asking || !blob || !heardSinceAsk || pausedAt != null || $("review").classList.contains("open")) return;
     if (P.questions.length >= partner.max || clock() - lastAsk < partner.gap_s) return;
     asking = true; lastAsk = clock(); heardSinceAsk = false;
     const sentAt = performance.now();
@@ -155,8 +170,8 @@
       const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
       if (e.text) b.text = e.text; if (label) b.label = label.text;
       if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
-      if (e.frameId) b.frame = e.frameId; if (e.groupIds?.length) b.groups = e.groupIds; if (e.name) b.name = e.name;
-      return b;
+      if (e.groupIds?.length) b.groups = e.groupIds;
+      return looks(e, b);
     });
   }
   async function snapshot() {
@@ -276,7 +291,8 @@
     } else if (pausedAt == null) pause(); else resume();
   });
   function pause() { keyframe(); recorder?.pause(); stopSpeech(); pausedAt = now(); recBtn.classList.remove("on"); recBtn.querySelector(".label").textContent = "Resume"; }
-  function resume() { pausedTotal += now() - pausedAt; pausedAt = null; recorder?.resume(); if (mic) startSpeech(); recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause"; }
+  // a pause is a thought too: kept with how long it lasted, though the recording's clock stands still through it
+  function resume() { session.pauses.push({ t: clock(), seconds: +((now() - pausedAt) / 1000).toFixed(1) }); pausedTotal += now() - pausedAt; pausedAt = null; recorder?.resume(); if (mic) startSpeech(); recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause"; }
 
   // ---------- finish: show exactly what will be sent ----------
   let previewUrl = null;

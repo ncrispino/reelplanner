@@ -16,6 +16,10 @@
   explaining the code): `anthropic/claude-sonnet-5.5` through OpenRouter, recommended (it asked the best questions
   and held back best of the models tried, in 1.5–6 s for about $0.002 a question), when `OPENROUTER_API_KEY` is set, or a vision model on a local Ollama or LM Studio (`--partner openrouter|local|off`); the page names it, with a
   switch to turn it off, and its questions are kept in `session.json` and in `sketch.md`'s timeline.
+  `sketch.md` tells the person's changes of mind (renamed, rerouted, erased, moved, restyled, undone, paused) in its
+  timeline, and the final drawing in words: frames and what is in them, dashes and colours, loose arrow ends, what a
+  note sits by, groups, what a freehand mark circles or underlines, and rows of where things are. Tried on 19 scenarios
+  written for it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps).
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
   CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
