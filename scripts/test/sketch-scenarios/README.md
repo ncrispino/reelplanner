@@ -23,8 +23,11 @@ SKETCH_SCENARIOS_OUT=/tmp/scn node scripts/test/sketch-scenarios.spec.mjs      #
 node scripts/test/sketch-scenarios/judge.mjs /tmp/scn                          # needs OPENROUTER_API_KEY
 ```
 
-In October 2026 that measure went from 106 to 121 of 157 statements clear when `sketch.md` began telling the
-changes of mind, the looks, frames, marks and pointing (the pointing scenario: 0 of 3 to 3 of 3).
+In October 2026 that measure went from 106 to 132 of 157 statements clear (68% to 84%) as `sketch.md` began
+telling the changes of mind, the looks, frames, marks and pointing (the pointing scenario: 0 of 3 to 3 of 3); the
+same output judged twice differs by about 2. The scenarios also found what the page saved wrong: labels as
+Excalidraw wrapped them to fit their box ("PaymentServic / e"), and strokes, lines and arrows placed by their first
+point rather than by where they are.
 
 ## The format
 
@@ -75,7 +78,7 @@ Every step has `"t"` (seconds) and exactly one action. Keep a scenario between 4
 | `delete` | `"delete": ["db", "a2"]` | erases elements (a shape's label goes with it) |
 | `group` | `"group": {"ids": ["api", "cache"]}` | groups elements |
 | `frame` | `"frame": {"id": "f1", "name": "Region us-east", "children": ["api", "cache"]}` | puts existing elements in a named frame (also `add` can create one) |
-| `pen` | `"pen": {"points": [[x, y], ...]}` | a freehand stroke with the mouse (circling something, crossing out, a squiggle, an underline); 6–40 points |
+| `pen` | `"pen": {"points": [[x, y], ...]}` (Excalidraw's style panel covers about x 14–190, y 66–400 while the pen is picked: the player starts a stroke at its first point clear of it) | a freehand stroke with the mouse (circling something, crossing out, a squiggle, an underline); 6–40 points |
 | `note` | `"note": "typed text"` | types a note in the bar; it lands on the canvas |
 | `undo` / `redo` | `"undo": 1` | Ctrl+Z / Ctrl+Shift+Z that many times |
 | `pause` | `"pause": 4` | presses Pause, waits that many seconds, presses Resume (the recording's clock stops) |

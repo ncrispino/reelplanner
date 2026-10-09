@@ -35,8 +35,9 @@ const box = (e) => ({ x0: e.x, y0: e.y, x1: e.x + (e.w || 0), y1: e.y + (e.h || 
 export function describeScene(els = []) {
   const byId = new Map(els.map((e) => [e.id, e])), lines = [];
   const shapes = els.filter((e) => SHAPES.has(e.kind)), frames = els.filter((e) => e.kind === "frame");
-  const arrows = els.filter((e) => e.kind === "arrow" || (e.kind === "line" && (e.from || e.to)));
-  const texts = els.filter((e) => e.kind === "text"), strokes = els.filter((e) => e.kind === "freedraw" || (e.kind === "line" && !e.from && !e.to));
+  // a drawn line is a connection like an arrow (a tree's branch, a lane's edge), bound or not; marks are freehand
+  const arrows = els.filter((e) => e.kind === "arrow" || e.kind === "line");
+  const texts = els.filter((e) => e.kind === "text"), strokes = els.filter((e) => e.kind === "freedraw");
   const st = (e) => { const s = styleOf(e); return s ? ` (${s})` : ""; };
   if (frames.length) {
     lines.push("**Frames** (an area they drew around things, with its name)", "");
@@ -50,9 +51,14 @@ export function describeScene(els = []) {
   }
   if (arrows.length) {
     lines.push("**Arrows**", "");
+    // a loose end: what it is near (within 50 px), else nothing
+    const nearPoint = (x, y) => { let best = null, d = 50;
+      for (const o of [...shapes, ...texts]) { if (!nameOf(o)) continue; const b = box(o), dd = Math.hypot(Math.max(b.x0 - x, x - b.x1, 0), Math.max(b.y0 - y, y - b.y1, 0)); if (dd < d) { d = dd; best = o; } }
+      return best; };
     for (const a of arrows) {
-      const end = (id) => id && byId.get(id) ? quoted(byId.get(id)) : "(nothing: a loose end)";
-      lines.push(`- ${a.kind === "line" ? "line " : ""}${end(a.from)} → ${end(a.to)}${a.label ? ` (labeled "${one(a.label)}")` : ""}${st(a)}`);
+      const loose = (x, y) => { if (x == null) return "(nothing: a loose end)"; const n = nearPoint(x, y); return n ? `(a loose end near ${quoted(n)})` : "(nothing: a loose end)"; };
+      const end = (id, x, y) => id && byId.get(id) ? quoted(byId.get(id)) : loose(x, y);
+      lines.push(`- ${a.kind === "line" ? "line " : ""}${end(a.from, a.start?.[0], a.start?.[1])} → ${end(a.to, a.end?.[0], a.end?.[1])}${a.label ? ` (labeled "${one(a.label)}")` : ""}${st(a)}`);
     }
     lines.push("");
   }
@@ -78,7 +84,8 @@ export function describeScene(els = []) {
       const b = box(s), flat = (s.h || 0) < 30 && (s.w || 0) > 40;
       const under = flat ? named.filter((e) => { const x = box(e); return x.y1 <= b.cy + 6 && b.cy - x.y1 < 40 && x.x1 > b.x0 && x.x0 < b.x1; }) : [];
       // around: the thing sits inside the stroke (a circle); across: the stroke only reaches its middle (a cross-out, or a circle's edge)
-      const inside = (x) => x.x0 >= b.x0 - 15 && x.x1 <= b.x1 + 15 && x.y0 >= b.y0 - 15 && x.y1 <= b.y1 + 15;
+      const inside = (x) => { const ow = Math.max(0, Math.min(x.x1, b.x1 + 15) - Math.max(x.x0, b.x0 - 15)), oh = Math.max(0, Math.min(x.y1, b.y1 + 15) - Math.max(x.y0, b.y0 - 15));
+        return ow * oh >= 0.6 * Math.max(1, (x.x1 - x.x0) * (x.y1 - x.y0)) && (b.x1 - b.x0) * (b.y1 - b.y0) < 6 * Math.max(1, (x.x1 - x.x0) * (x.y1 - x.y0)); };   // not a stroke round half the board
       const around = named.filter((e) => inside(box(e))), across = named.filter((e) => { const x = box(e); return !inside(x) && x.cx >= b.x0 && x.cx <= b.x1 && x.cy >= b.y0 && x.cy <= b.y1; });
       const on = [around.length ? `around ${around.map(quoted).join(", ")}` : "", across.length ? `across ${across.map(quoted).join(", ")}` : ""].filter(Boolean).join("; ");
       lines.push(`- a ${s.kind === "line" ? "line" : "freehand stroke"}${s.label ? ` "${one(s.label)}"` : ""}${st(s)}${under.length ? `: under ${under.map(quoted).join(", ")}` : on ? `: ${on}` : ": on empty space (see the pictures)"}`);
@@ -134,7 +141,16 @@ export function sceneChanges(s) {
   };
   for (const ev of s.events || []) {
     const prev = state.get(ev.id), t = ev.until ?? ev.t;
-    if (ev.type === "add") { state.set(ev.id, { ...ev, addedAt: ev.t }); if (ev.in && ev.text != null) labelOf.set(ev.in, ev.text); else if (!(ev.kind === "text" && ev.in)) adds.push({ t: ev.t, id: ev.id, kind: ev.kind }); continue; }
+    if (ev.type === "add") {
+      state.set(ev.id, { ...ev, addedAt: ev.t });
+      if (ev.in && ev.text != null) {
+        // a label given to something drawn a while before: named after the fact ("this arrow is the async one")
+        const host = state.get(ev.in);
+        if (host && !labelOf.has(ev.in) && ev.t - (host.addedAt ?? ev.t) > 2) entry(ev.t, `lab:${ev.in}`, { text: `labeled ${host.kind === "arrow" ? `the arrow ${arrowName(host)}` : `the ${host.kind}`} "${one(ev.text)}"` });
+        labelOf.set(ev.in, ev.text);
+      } else if (!(ev.kind === "text" && ev.in)) adds.push({ t: ev.t, id: ev.id, kind: ev.kind });
+      continue;
+    }
     if (ev.type === "delete") {
       if (!prev) continue;
       const what = prev.kind === "arrow" ? `the arrow ${arrowName(prev)}` : prev.kind === "freedraw" ? "a freehand stroke" : `the ${prev.kind} ${label(ev.id)}`;
@@ -161,7 +177,7 @@ export function sceneChanges(s) {
     const sb = styleOf(prev), sa = styleOf(cur);
     if (sa !== sb && prev.kind !== "text") { const e = entry(t, `sty:${ev.id}`, { sty: true, target: ev.id, was: sb || "plain", name: label(ev.id) }); e.now = sa || "plain"; }
     // moved: a shape that went somewhere else (60 px or more), said by what it is next to where it ends up
-    if (SHAPES.has(prev.kind) && ev.x != null && prev.x != null && Math.hypot(ev.x - prev.x, ev.y - prev.y) >= 60) {
+    if (SHAPES.has(prev.kind) && ev.x != null && prev.x != null && Math.hypot(ev.x - prev.x, ev.y - prev.y) >= 30) {
       const e = entry(t, `mv:${ev.id}`, { mv: true, target: ev.id, name: label(ev.id) });
       state.set(ev.id, cur); e.where = near(ev.id);
     }

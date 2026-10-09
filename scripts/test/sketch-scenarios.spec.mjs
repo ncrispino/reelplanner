@@ -27,7 +27,7 @@ const opts = { out, partner: process.env.SKETCH_SCENARIOS_PARTNER || "off", spee
 
 // what sketch.md must say for each kind of step a scenario makes
 const TOLD = {
-  relabel: [/_changed:_ renamed/, "a relabel as renamed"],
+  relabel: [/_changed:_ (renamed|labeled)/, "a relabel as renamed (or labeled, when it had none)"],
   delete: [/_changed:_ (erased|took back)/, "an erase"],
   reroute: [/_changed:_ rerouted/, "a reroute"],
   restyle: [/_changed:_ restyled|\((dashed|dotted|[a-z ]*red|[a-z ]*blue|[a-z ]*green|[a-z ]*orange)/, "a restyle, or the look it left"],

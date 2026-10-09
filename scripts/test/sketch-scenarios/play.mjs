@@ -172,7 +172,14 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
         if (act === "note") { await page.fill("#note", arg); await page.press("#note", "Enter"); await page.evaluate(() => document.activeElement?.blur()); }
         else if (act === "pen") {
           await page.evaluate(() => document.activeElement?.blur()); await page.evaluate(() => window.__ops.tool("freedraw"));
-          const pts = arg.points; await page.mouse.move(pts[0][0], pts[0][1]); await page.mouse.down();
+          // as a person does: start the stroke beside Excalidraw's style panel (it opens down the left edge, about
+          // x 14-190 and y 66-400, when the pen is picked, and a press on it draws nothing): a closed loop from its
+          // first point clear of the panel, an open stroke from its other end
+          const under = ([x, y]) => x < 200 && y > 60 && y < 405;
+          let pts = arg.points;
+          if (under(pts[0])) { const closed = Math.hypot(pts[0][0] - pts.at(-1)[0], pts[0][1] - pts.at(-1)[1]) < 40, i = pts.findIndex((q) => !under(q));
+            pts = closed && i > 0 ? [...pts.slice(i), ...pts.slice(1, i + 1)] : [...pts].reverse(); }
+          await page.mouse.move(pts[0][0], pts[0][1]); await page.mouse.down();
           for (const [x, y] of pts.slice(1)) await page.mouse.move(x, y, { steps: 3 });
           await page.mouse.up(); await page.evaluate(() => window.__ops.tool("selection"));
         } else if (act === "undo" || act === "redo") {

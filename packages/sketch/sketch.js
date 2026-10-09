@@ -60,6 +60,13 @@
   let api = null;
   const known = new Map();      // element id → { version, isDeleted }
   const lastLogged = new Map(); // element id → the update event to fold quick repeats into
+  // where an element really is: a freehand stroke, line or arrow is anchored at its first point, and its other points
+  // can run left of it or above it, so its box comes from its points, not from x, y
+  const boxOf = (el) => {
+    if (!el.points?.length) return { x: el.x, y: el.y, w: el.width, h: el.height };
+    const xs = el.points.map((p) => p[0]), ys = el.points.map((p) => p[1]), x0 = Math.min(...xs), y0 = Math.min(...ys);
+    return { x: el.x + x0, y: el.y + y0, w: Math.max(...xs) - x0, h: Math.max(...ys) - y0 };
+  };
   // how a person sees an element, beyond its words: dashed or dotted, its colours (a choice of meaning: "red is where
   // it breaks", "dashed is a guess"), a frame's name, which frame it sits in; only what differs from a plain one
   const looks = (el, b) => {
@@ -70,7 +77,7 @@
     return b;
   };
   const brief = (el) => {
-    const b = { id: el.id, kind: el.type, x: Math.round(el.x), y: Math.round(el.y), w: Math.round(el.width), h: Math.round(el.height) };
+    const bx = boxOf(el), b = { id: el.id, kind: el.type, x: Math.round(bx.x), y: Math.round(bx.y), w: Math.round(bx.w), h: Math.round(bx.h) };
     const typed = el.originalText ?? el.text;   // as typed: Excalidraw wraps a label to its box ("PaymentServic\ne")
     if (typed) b.text = typed.slice(0, 300);
     if (el.containerId) b.in = el.containerId;
@@ -129,8 +136,8 @@
     const s = api.getAppState(), z = s.zoom?.value || 1, x = (pointer.x - (s.offsetLeft || 0)) / z - s.scrollX, y = (pointer.y - (s.offsetTop || 0)) / z - s.scrollY;
     let best = null, area = Infinity;
     for (const e of live()) {
-      const id = e.containerId || e.id, pad = e.type === "arrow" || e.type === "line" ? 12 : 4;
-      const x0 = Math.min(e.x, e.x + e.width) - pad, x1 = Math.max(e.x, e.x + e.width) + pad, y0 = Math.min(e.y, e.y + e.height) - pad, y1 = Math.max(e.y, e.y + e.height) + pad;
+      const id = e.containerId || e.id, pad = e.type === "arrow" || e.type === "line" ? 12 : 4, bx = boxOf(e);
+      const x0 = bx.x - pad, x1 = bx.x + bx.w + pad, y0 = bx.y - pad, y1 = bx.y + bx.h + pad;
       if (x < x0 || x > x1 || y < y0 || y > y1 || e.type === "freedraw") continue;
       const a = e.type === "frame" ? Infinity - 1 : (x1 - x0) * (y1 - y0);   // a frame only when nothing in it is under
       if (a < area) { area = a; best = id; }
@@ -196,11 +203,12 @@
   function drawn() {
     const elements = live(), byId = new Map(elements.map((e) => [e.id, e]));
     return elements.filter((e) => !e.containerId).map((e) => {
-      const b = { id: e.id, kind: e.type, x: Math.round(e.x), y: Math.round(e.y), w: Math.round(e.width), h: Math.round(e.height) };
+      const bx = boxOf(e), b = { id: e.id, kind: e.type, x: Math.round(bx.x), y: Math.round(bx.y), w: Math.round(bx.w), h: Math.round(bx.h) };
       const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
       if (e.text) b.text = e.originalText ?? e.text; if (label) b.label = label.originalText ?? label.text;
       if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
       if (e.groupIds?.length) b.groups = e.groupIds;
+      if ((e.type === "arrow" || e.type === "line") && e.points?.length) { const p0 = e.points[0], p = e.points[e.points.length - 1]; b.start = [Math.round(e.x + p0[0]), Math.round(e.y + p0[1])]; b.end = [Math.round(e.x + p[0]), Math.round(e.y + p[1])]; }
       return looks(e, b);
     });
   }
