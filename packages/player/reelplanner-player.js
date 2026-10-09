@@ -1741,8 +1741,9 @@ export class ReelplannerPlayer extends HTMLElement {
   // panel says what will happen to it (from GET /api/review, asked again each time the panel opens,
   // since a session may have started meanwhile), and its Send POSTs the same row the hosted page
   // writes to its store to /api/review; the server files it in the repo for the waiting session or a
-  // fresh agent run. Only on a page the review server marked as its own (a meta tag it adds to the top page), and only when the endpoint answers: a plain
-  // static server (python's, a file:// page) is never asked, so it logs no 404.
+  // fresh agent run. In a repo with no set-up .reelplanner/ (a quick video) the server keeps it on this machine instead
+  // (`where: "machine"`), for the session waiting on it or the next one, and nothing is added to the repo. Only on a page the review server marked as its own (a meta tag it adds to the top page), and only when the endpoint answers: a plain
+  // static server (python's, a file:// page) is never asked, so it logs no 404, and the download is the act.
   isLocalPage() { try { return location.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname); } catch { return false; } }
   reachLocal() {
     if (this._localReady) return this._localReady;
@@ -1766,10 +1767,12 @@ export class ReelplannerPlayer extends HTMLElement {
   }
   // What sending will do, in one quiet line, before it is sent: GET /api/review's { sessionWaiting, agentCommand },
   // and, where Claude Code's sandbox cannot run on this machine, why (`unsandboxed`): the run goes ahead without the sandbox.
+  // Kept on this machine (`where: "machine"`: no agent command there), the line says so, and what to do: tell the agent.
   localNext() {
     const a = this._localApi || {};
     return a.sessionWaiting ? "Your open session picks this up."
       : a.agentCommand ? `No session is open: <code>${esc(a.agentCommand)}</code> starts on it${a.unsandboxed ? `, without Claude Code's sandbox (${esc(a.unsandboxed)}): its shell commands aren't fenced to the repo` : ""}.`
+      : a.where === "machine" ? "No agent session is waiting: it's saved on this machine, not in the repo, until you tell your agent it's sent."
       : "Saved for your next session.";
   }
   localBlock() {
@@ -1783,20 +1786,25 @@ export class ReelplannerPlayer extends HTMLElement {
     if (this._claudeDb || !(await this.reachLocal())) return;   // hosted: Send is the act; no server: the download is
     const review = this.exportPayload(), body = this.reviewRow(review, this.$("[data-send-note]")?.value.trim() || ""); delete body.id;
     // pressing Send again with nothing new sends nothing new (one review must not start two runs)
-    const what = this.reviewSig(review);
+    const what = this.reviewSig(review), where = this._localApi?.where === "machine" ? "machine" : "repo";
     if (this._posted?.what === what && this._posted.state !== "failed") return;
-    this._posted = { state: "sending", verdict: review.verdict, what };
+    this._posted = { state: "sending", verdict: review.verdict, what, where };
     if (!this.$(".handoff").hidden) this.showHandoff({ finishing: this._finishing });
     try {
       const r = await fetch(new URL("/api/review", location.origin), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => null);
       if (!r.ok || !j?.ok) throw new Error(j?.error || String(r.status));
-      this._posted = { state: "sent", verdict: review.verdict, what, id: j.id || null, path: j.path || "", message: j.message || "" };
+      this._posted = { state: "sent", verdict: review.verdict, what, where, id: j.id || null, path: j.path || "", message: j.message || "" };
       // this round is over, as after a hosted Send: a rebuilt video starts the next one clean
       try { localStorage.setItem(this.rkey + ":round", JSON.stringify({ sentAt: review.exportedAt, id: j.id || null, sig: this.buildSig() })); } catch {}
-      if (j.id) this.startWork({ id: j.id, via: "local", verdict: review.verdict, handledBy: j.handledBy || null });
-      this.status("sent to the repo — no download needed"); this.markWatched("sent");
-    } catch { this._posted = null; }   // quietly: the download and the commands are still there
+      if (j.id) this.startWork({ id: j.id, via: "local", verdict: review.verdict, handledBy: j.handledBy || null, where });
+      this.status(`sent ${where === "machine" ? "to your agent" : "to the repo"} — no download needed`); this.markWatched("sent");
+    } catch {
+      // the server did not take it (gone, or refused it): the page acts as one with no server, so the download (and the
+      // commands) are the act; opening Finish again asks the server again
+      this._posted = null; this._localApi = null;
+      this.status("the review server did not take it — download the review instead");
+    }
     this.syncResend();
     if (!this.$(".handoff").hidden) this.showHandoff({ finishing: this._finishing });
   }
@@ -1804,12 +1812,13 @@ export class ReelplannerPlayer extends HTMLElement {
   reviewSig(review = this.exportPayload()) { return JSON.stringify([review.annotations, review.decisions, review.quizzes, review.autonomy, review.verdict]); }
   postedBlock() {
     const p = this._posted;
-    if (p.state === "sending") return '<div class="send done"><p class="sent">Sending your review to the repo…</p></div>';
+    const machine = p.where === "machine";   // kept on this machine (no set-up .reelplanner/), not in the repo
+    if (p.state === "sending") return `<div class="send done"><p class="sent">Sending your review${machine ? "" : " to the repo"}…</p></div>`;
     // anything added or changed since the send (a comment, a mark, an answer, the verdict) can be sent
     // too, as a new row: the inbox keys a row by its submittedAt, so it is a new review, not a repeat
     const now = this.exportPayload(), what = now.verdict !== p.verdict ? "Your verdict changed" : "Your review changed";
     const later = this.reviewSig(now) !== p.what ? `<p class="sent state">${what} after it was sent. <button class="lnk" data-act="send-local">Send the change</button></p>` : "";
-    return `<div class="send done"><p class="sent"><strong>Sent to the repo.</strong> ${esc(p.message ? p.message.charAt(0).toUpperCase() + p.message.slice(1) : "Your agent picks it up from there")}.</p>${later}${p.path ? `<span class="sent id">${esc(p.path)}</span>` : ""}</div>`;
+    return `<div class="send done"><p class="sent"><strong>${machine ? "Sent." : "Sent to the repo."}</strong> ${esc(p.message ? p.message.charAt(0).toUpperCase() + p.message.slice(1) : "Your agent picks it up from there")}.</p>${later}${p.path ? `<span class="sent id">${esc(p.path)}</span>` : ""}</div>`;
   }
   // ---- after Send: the review being worked on ---------------------------------
   // From Send until the round ends, a line above the frame says where the review is (waiting, being worked on, done,
@@ -1819,9 +1828,9 @@ export class ReelplannerPlayer extends HTMLElement {
   // round, in just the changes. Kept per video beside :round (":working"), so it survives a reload and a closed panel.
   workKey() { return this.rkey + ":working"; }
   expectsVideo(v) { return v === "changes" || v === "more"; }   // Request changes, Explain more: the video is rebuilt
-  startWork({ id, via, verdict = null, handledBy = null }) {
+  startWork({ id, via, verdict = null, handledBy = null, where = null }) {
     this.stopWorkPoll(); this.closeReady();
-    this._work = { id, via, verdict, handledBy, sig: this.buildSig(), sentAt: Date.now(), state: "waiting", by: null, step: null };
+    this._work = { id, via, verdict, handledBy, ...(where === "machine" ? { where } : {}), sig: this.buildSig(), sentAt: Date.now(), state: "waiting", by: null, step: null };
     this.saveWork(); this.renderWork(); this.pollWork(true);
   }
   saveWork() { try { if (this._work) localStorage.setItem(this.workKey(), JSON.stringify(this._work)); else localStorage.removeItem(this.workKey()); } catch {} }
@@ -1873,7 +1882,7 @@ export class ReelplannerPlayer extends HTMLElement {
     const hosted = w.via === "hosted", who = hosted ? "Claude" : "your agent", Who = hosted ? "Claude" : "Your agent";
     const step = w.step || (w.built ? "the new video is built" : "");
     switch (w.state) {
-      case "waiting": return !hosted && w.handledBy === "inbox" ? "Saved in the repo: your next agent session picks it up" : `Waiting for ${who} to pick it up`;
+      case "waiting": return !hosted && w.handledBy === "inbox" ? (w.where === "machine" ? "Saved on this machine: tell your agent it's sent" : "Saved in the repo: your next agent session picks it up") : `Waiting for ${who} to pick it up`;
       case "working": return `${Who} is working on your review${step ? ` — ${step}` : ""}`;
       case "ready": return "Done: the new version is ready";
       case "reload": return "Done — reload to watch the new version";
@@ -6797,8 +6806,9 @@ ${clip(gloss || "(none)", 9000)}`;
   // it with Done, Explain more or Plan this instead of Approve and Request changes
   get isExplainer() { return this.planMap?.kind === "explainer"; }
   // a quick video: its repo keeps no decision log (no .reelplanner/decisions.json: none at all, or only setup files),
-  // which bundle-player says with `record="none"`, as the review server decides it (no record: a review downloads).
-  // There is nothing to run `reel record` on: the review is the download, and the agent is told where it is.
+  // which bundle-player says with `record="none"`, as the review server decides it (no record: it keeps the review on
+  // this machine). There is nothing to run `reel record` on: served by `reelplanner review`, Send hands the review to
+  // the agent as at the other levels (localBlock); with no server, the review is the download, and the agent is told where it is.
   get isQuick() { return this.getAttribute("record") === "none" && !this.isSystem; }
   // where this review goes in the repo: the plan directory, or the system video's own folder
   reviewTarget() {
@@ -6947,8 +6957,8 @@ ${clip(gloss || "(none)", 9000)}`;
         <button data-review="changes" aria-pressed="${v === "changes"}"><b>Request changes</b><span>${this.glossHtml(uc && !words ? `The agent explains ${[unclear ? (unclear === 1 ? "the question you asked about" : "the questions you asked about") : "", uc === 1 ? "the quick check you missed" : `the ${uc} quick checks you missed`].filter(Boolean).join(" and ")} again, with a worked example, and you rewatch just ${unclear + uc === 1 ? "that" : "those"}.` : this.isSystem ? (words ? `The agent sorts your ${plural(words, "comment")}: it fixes the video where it is wrong or unclear, or changes the system, and you rewatch just those.` : "Leave a comment on what is wrong first — the agent fixes the video there, or changes the system.") : wtv ? (words ? `The agent fixes what your ${plural(words, "comment")} ${words === 1 ? "asks" : "ask"}, and you rewatch just those scenes.` : "Leave a comment on what to change first — the agent fixes it, and you rewatch it.") : words ? `The agent rewrites the steps your ${plural(words, "comment")} landed on, and you rewatch just those.` : unclear ? `The agent explains ${unclear === 1 ? "the question" : "the questions"} you asked about again, with examples, and you rewatch just ${unclear === 1 ? "that" : "those"}.` : "Leave a comment on what to change first — the agent rewrites the steps your comments land on.")}</span></button>
       </div>${open ? `<p class="open">${plural(open, "choice")} still open — ${open === 1 ? "it stays a question" : "they stay questions"} in the plan.</p>` : ""}` : "";
     const list = (xs) => xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}` : xs[0];
-    // One primary act. Hosted, it is Send; otherwise, while finishing, it is the download the
-    // commands need; after an export the file is already saved and the commands are the act.
+    // One primary act. Hosted, or served by `reelplanner review` (a quick video too), it is Send; otherwise, while
+    // finishing, it is the download the commands need; after an export the file is already saved and the commands are the act.
     const posted = !canSend && !!this._posted, local = !canSend && !posted && !!this._localApi;
     const primary = canSend ? this.sendBlock() : posted ? this.postedBlock() : local ? this.localBlock() : quick ? this.quickBlock(finishing)
       : finishing ? '<div class="acts"><button class="sendbtn" data-act="download">Download annotations.json</button></div>' : "";
@@ -6997,9 +7007,10 @@ ${clip(gloss || "(none)", 9000)}`;
     this.showHandoff({ finishing: this._finishing, fold: !!on });
     if (had) box.querySelector(".hfold")?.focus({ preventScroll: true });
   }
-  // A quick video's act: the download, while finishing (after an export the file is already saved), and one plain
-  // line on what to do with it. Its repo has no decision log, so there is no `reel record` to run and no plan_dir to
-  // name: the agent that made the video reads the file where the browser saved it.
+  // A quick video's act on a page with no review server behind it (or one that did not take the review): the download,
+  // while finishing (after an export the file is already saved), and one plain line on what to do with it. Its repo has
+  // no decision log, so there is no `reel record` to run and no plan_dir to name: the agent that made the video reads
+  // the file where the browser saved it.
   quickBlock(finishing) {
     const where = "where the file is (e.g. ~/Downloads/annotations.json): it reads your answers and comments and revises.";
     return `${finishing ? '<div class="acts"><button class="sendbtn" data-act="download">Download annotations.json</button></div>' : ""}<p class="tell">${finishing ? "Then tell" : "Tell"} your agent ${esc(where)}</p>`;

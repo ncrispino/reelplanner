@@ -23,7 +23,7 @@ The words under **Other words**, at the end, are the trade's own (repo, branch, 
 | The system video | `system-video` | One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes (`spec.md`, `system.json`, this glossary) | the main video, the overview video | |
 | A review | — | One pass by a reviewer, filed once and never overwritten (`reviews/<kind>-<time>.json`, with a `.md` of what to act on). The player's download is `annotations.json` until it is filed | the resolved plan, the resolved walkthrough | |
 | Approve / Request changes | — | The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again | | |
-| The inbox | — | `.reelplanner/inbox/`: reviews the review server has taken, each handed on once; not committed | | |
+| The inbox | — | `.reelplanner/inbox/`: reviews the review server has taken, each handed on once; not committed. A repo not set up has it in this machine's `~/.reelplanner/inbox/<repo-key>/` | | |
 | The sandbox | — | The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays) | | |
 | A notification | — | A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended | | |
 | A call | — | A choice the agent made on its own while building, one the plan did not cover (one row in `walkthrough.md`). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it | autonomy row | choice |

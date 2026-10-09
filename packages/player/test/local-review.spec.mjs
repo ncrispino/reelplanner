@@ -3,8 +3,9 @@
 // before it is sent (GET /api/review, asked again each time the panel opens), and its Send POSTs the
 // review row to the page's own server, /api/review, in the same shape the hosted page writes to its
 // store; only when that endpoint answers, and quietly not otherwise. Anything changed after a send
-// (a comment, not only the verdict) is offered as a new send. And a system-video review names
-// the video's own folder.
+// (a comment, not only the verdict) is offered as a new send. A quick video (no decision log in its repo) gets
+// Send too, kept on this machine, and the download only where no server takes the review. And a system-video review
+// names the video's own folder.
 // usage: node packages/player/test/local-review.spec.mjs [videos/<project>]
 import { chromium } from "playwright-core"; import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs"; import { join, normalize, extname } from "node:path";
@@ -17,14 +18,22 @@ function serve(port, api) {
   const posts = [], state = { sessionWaiting: true, agentCommand: null };
   const srv = createServer((req, res) => {
     const path = new URL(req.url, "http://x").pathname;
+    // where a sent review is, for the line above the video: still waiting
+    if (path === "/api/review/status" && api && api !== "norecord") { res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: new URL(req.url, "http://x").searchParams.get("id"), state: "waiting", by: null, since: null, build: null })); return; }
     if (path === "/api/review") {
       if (!api) { res.writeHead(404).end(); return; }
-      // the review server in a repo with no decision log (review.mjs: no .reelplanner/decisions.json): it takes no review
+      // a review server that takes no review (one from before a quick video's review went to the machine's inbox)
       if (api === "norecord") { posts.push({ refused: req.method }); res.writeHead(409, { "content-type": "application/json" }).end(JSON.stringify({ ok: false, error: "not set up: download the review instead" })); return; }
-      if (req.method === "GET") { res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, ...state, inbox: 0 })); return; }
+      // the review server in a repo with no decision log (review.mjs: no .reelplanner/decisions.json): it keeps the
+      // review in this machine's inbox for the repo ("machine"), or (here, "postfail") answers GET but fails the POST
+      const machine = api === "machine" || api === "postfail";
+      if (req.method === "GET") { res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, ...state, inbox: 0, where: machine ? "machine" : "repo" })); return; }
       let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
         posts.push({ type: req.headers["content-type"], row: JSON.parse(body) });
-        res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: "l2-test", path: ".reelplanner/inbox/l2-test.json", duplicate: false, handledBy: "session", message: "your open session has it" }));
+        if (api === "postfail") { res.writeHead(500, { "content-type": "application/json" }).end(JSON.stringify({ ok: false, error: "disk full" })); return; }
+        res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify(machine
+          ? { ok: true, id: "demo-test", path: "~/.reelplanner/inbox/repo-0123abcd/demo-test.json", duplicate: false, handledBy: "inbox", message: "no agent session is waiting: it's saved on this machine, not in the repo; tell your agent it's sent, and it picks it up" }
+          : { ok: true, id: "l2-test", path: ".reelplanner/inbox/l2-test.json", duplicate: false, handledBy: "session", message: "your open session has it" }));
       });
       return;
     }
@@ -106,9 +115,47 @@ await finish(q);
 const plain = await q.evaluate(() => !!document.querySelector("#rp").shadowRoot.querySelector('.handoff .acts .sendbtn[data-act="download"]'));
 ok(B.posts.length === 0 && plain && !(await next(q)), "without the endpoint nothing is asked or sent, and the download is the act");
 
-// ---- a quick video: the review server, in a repo with no decision log, takes no review (409), and the page says the
-// repo has none (bundle-player's record="none"): the download is the act, one line says to hand it to the agent, and
-// there is no reel record, plan_dir or repo-root command to run ----
+// ---- a quick video served by the review server (bundle-player's record="none": the repo has no decision log): Send,
+// not the download, as at the other levels; the server keeps it on this machine, and the panel says so plainly ----
+const M = serve(testPort(8881, 3), "machine");
+Object.assign(M.state, { sessionWaiting: false, agentCommand: null });
+const m = await open(testPort(8881, 3));
+// (a quick video's plan map names no plan directory)
+await m.evaluate(() => { const el = document.querySelector("#rp"); el.planMap = { ...el.planMap, planDir: null }; el.setAttribute("record", "none"); });
+await comment(m, "a comment");
+await finish(m);
+const mpanel = () => m.evaluate(() => { const box = document.querySelector("#rp").shadowRoot.querySelector(".handoff");
+  return { send: !!box.querySelector('[data-act="send-local"]'), download: !!box.querySelector('[data-act="download"]'), tell: box.querySelector(".tell")?.textContent || "", sent: box.querySelector(".send.done")?.textContent.replace(/\s+/g, " ").trim() || "",
+    cmds: box.querySelectorAll("li code").length, diy: !!box.querySelector(".diy"), work: document.querySelector("#rp").shadowRoot.querySelector(".working .wtext")?.textContent || "" }; });
+const m1 = await mpanel();
+ok(m1.send && !m1.download && !m1.tell && !m1.cmds && !m1.diy, `quick, served: the Finish panel offers Send, not the download, and no commands — ${JSON.stringify(m1)}`);
+ok((await next(m)) === "No agent session is waiting: it's saved on this machine, not in the repo, until you tell your agent it's sent.", `…and says plainly where it goes with no session waiting — "${await next(m)}"`);
+Object.assign(M.state, { sessionWaiting: true });
+await m.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('[data-act="handoff-close"]').click());
+await finish(m);
+ok((await next(m)) === "Your open session picks this up.", `…or that the session waiting on it has it — "${await next(m)}"`);
+await send(m);
+const m2 = await mpanel();
+ok(M.posts.length === 1 && M.posts[0].row.planDir === null && Array.isArray(M.posts[0].row.review?.annotations), `…Send POSTs the review row (no plan directory) — ${M.posts.length} post(s)`);
+ok(/^Sent\. No agent session is waiting: it's saved on this machine, not in the repo; tell your agent it's sent, and it picks it up\./.test(m2.sent) && !/to the repo\./.test(m2.sent) && !m2.download,
+  `…then says it is sent, kept on this machine, with no download — "${m2.sent}"`);
+ok(m2.work === "Saved on this machine: tell your agent it's sent", `…and the line above the video says so too — "${m2.work}"`);
+await m.close(); M.srv.close();
+
+// ---- a quick video whose server does not take the review (it answered, then failed the POST): the download is the act ----
+const F = serve(testPort(8881, 4), "postfail");
+const f = await open(testPort(8881, 4));
+await f.evaluate(() => { const el = document.querySelector("#rp"); el.planMap = { ...el.planMap, planDir: null }; el.setAttribute("record", "none"); });
+await comment(f, "a comment");
+await finish(f);
+await f.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('.handoff [data-act="send-local"]').click()); await f.waitForTimeout(700);
+const fp = await f.evaluate(() => { const box = document.querySelector("#rp").shadowRoot.querySelector(".handoff"); return { download: !!box.querySelector('.acts .sendbtn[data-act="download"]'), send: !!box.querySelector('[data-act="send-local"]'), tell: box.querySelector(".tell")?.textContent || "" }; });
+ok(F.posts.length === 1 && fp.download && !fp.send && /^Then tell your agent where the file is/.test(fp.tell), `quick, the POST failed: the panel falls back to the download — ${JSON.stringify(fp)}`);
+await f.close(); F.srv.close();
+
+// ---- a quick video: a review server that takes no review (409: one from before Send reached a quick video), and the
+// page says the repo has no decision log (bundle-player's record="none"): the download is the act, one line says to
+// hand it to the agent, and there is no reel record, plan_dir or repo-root command to run ----
 const C = serve(testPort(8881, 2), "norecord");
 const r = await open(testPort(8881, 2));
 await r.evaluate(() => document.querySelector("#rp").setAttribute("record", "none"));

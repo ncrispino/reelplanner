@@ -10,16 +10,17 @@
 //                   --settings (auto mode and the file-tool hook kept), and the reviewer is told so once
 //   file tools    — the command's PreToolUse hook passes a write inside the repo and refuses one outside
 //   other agents  — a `codex exec`-style command is started as it is: no probe, nothing held back
-//   --detach      — the server runs on its own past the session, is reused by a second --detach, and --stop ends it
+//   --detach      — the server runs on its own past the session, is reused by a second --detach, and --stop ends it;
+//                   in a repo with no set-up .reelplanner/ (one video) too, recorded in the machine's inbox for the repo
 //   ask           — a question asked on the page (Ask about this): with no session waiting it goes with the review; a
 //                   waiting session's --wait wakes on it, `inbox answer` answers it, GET /api/ask reads the answer
 import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync, realpathSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
 import { waitingLine, osCommand, splitCommand } from "../lib/notify.mjs";
-import { liveWaiters, claim, writeReview } from "../lib/inbox.mjs";
+import { liveWaiters, claim, writeReview, repoKey } from "../lib/inbox.mjs";
 import { sandboxOf, sandboxProblem, withoutSandbox, fencesFileTools } from "../lib/sandbox.mjs";
 // the runner hands this spec a free port and the four above it (RP_TEST_PORT); run alone, a random one below the
 // ports the system hands out for outgoing connections (32768 and up)
@@ -370,6 +371,29 @@ try {
   const dOff2 = cli(vd, "--detach", "--no-open", "--no-notify");
   ok("--detach again: the running server's line is said again", /go ahead without Claude Code's sandbox/.test(dOff2), dOff2);
   cli("--stop");
+
+  // ---------- --detach in a repo with no set-up .reelplanner/ (one video): recorded in the machine's inbox, nothing in the repo ----------
+  {
+    const quick = join(mkdtempSync(join(tmpdir(), "reel-loop-quick-")), "quick"), qv = join(quick, "videos", "demo");
+    procs.push({ kill: () => rmSync(dirname(quick), { recursive: true, force: true }) });
+    mkdirSync(join(qv, "compositions"), { recursive: true }); execFileSync("git", ["-C", quick, "init", "-q"]);
+    writeFileSync(join(qv, "index.html"), "<!doctype html><title>demo</title>\n");
+    writeFileSync(join(qv, "plan-map.json"), JSON.stringify({ ...MAP, project: "demo", planDir: null }));
+    const qcli = (...a) => execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), ...a], { cwd: quick, env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 90000 });
+    const qbox = join(youHome, "inbox", repoKey(quick)), qfile = join(qbox, ".server.json");
+    const q1 = qcli(qv, "--detach", "--no-open", "--no-notify", "--port", String(testPort(BASE_PORT, 4)), "--out", join(tmp, "bundle-quick"));
+    const qj = existsSync(qfile) ? JSON.parse(readFileSync(qfile, "utf8")) : {};
+    if (qj.pid) procs.push({ kill: () => { try { process.kill(qj.pid); } catch { /* gone */ } } });
+    ok("--detach, one video: runs on its own, recorded in the machine's inbox for the repo, logging there", !!qj.pid && isAlive(qj.pid) && q1.includes(`review page: ${qj.url}`)
+      && /review page:/.test(readFileSync(join(qbox, "server.log"), "utf8")), `${q1}\n${JSON.stringify(qj)}`);
+    ok("--detach, one video: nothing added to the repo", !existsSync(join(quick, ".reelplanner")) && readdirSync(quick).sort().join() === ".git,videos", readdirSync(quick).join());
+    const qget = await fetch(new URL("api/review", qj.base)).then((r) => r.json()).catch((e) => ({ error: e.message }));
+    ok("--detach, one video: its page takes Send (GET /api/review answers, kept on this machine)", qget.ok === true && qget.where === "machine", JSON.stringify(qget));
+    const q2 = qcli(qv, "--detach", "--no-open", "--no-notify");
+    ok("--detach again, one video: reuses it", JSON.parse(readFileSync(qfile, "utf8")).pid === qj.pid && /already running/.test(q2), q2);
+    const qstop = qcli("--stop");
+    ok("--stop, one video: stops it and forgets it", /stopped the review server/.test(qstop) && !isAlive(qj.pid) && !existsSync(qfile), qstop);
+  }
 } catch (e) {
   failed++; console.log(`✗ ${e.stack}`);
 } finally {
