@@ -1,11 +1,12 @@
 {
   "name": "reelplanning",
   "owner": { "name": "ncrispino", "url": "https://github.com/ncrispino" },
+  "metadata": { "description": "reelplanning: review your coding agent's plans as short narrated videos that stop at each open choice." },
   "plugins": [
     {
       "name": "reelplanning",
       "source": ".",
-      "description": "Plans as 90-second narrated videos: build one from a plan, review it in a player that records the reviewer's decisions, and fold the review back into the plan.",
+      "description": "Review your coding agent's implementation plans as short narrated videos that stop at each open choice; your answers become a decision log in the repo, and a walkthrough video shows what the agent decided on its own.",
       "version": "0.2.0",
       "author": { "name": "ncrispino" }
     }

@@ -9,7 +9,9 @@
   `setup` and the curl installer say that `skills` asks for 22.20. `version.spec` keeps the docs and checks on
   the engines' version.
 - **The README's quick start begins in a project you already have,** then a new one (a neighborhood bakery's
-  site, in place of Bob Dylan's albums).
+  site, in place of Bob Dylan's albums). Its Install names the Claude Code plugin (`/plugin marketplace add
+  ncrispino/reelplanning`), and says the plugin is the skill only; `marketplace.json` describes it as
+  `plugin.json` does (it said "90-second" videos).
 - **The public repo is `ncrispino/reelplanning`, one commit (D-310).** `scripts/release/make-public.mjs` builds it
   in a scratch folder: a new repo whose `main` is one commit, `reelplanning <version>`, holding exactly a ref's
   tracked tree, tagged `v<version>`; it refuses a tree with a `.wav`, `.mp4` or `renders/` path, adds a line to

@@ -26,6 +26,16 @@ reelplanning setup                              # ffmpeg, Chrome, a local voice 
 npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g   # the skill, for each agent it finds
 ```
 
+In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
+
+```
+/plugin marketplace add ncrispino/reelplanning
+/plugin install reelplanning@reelplanning
+```
+
+The plugin is the skill only: the first two lines are still what install the `reelplanning` command and its tools
+(the skill installs them itself when they are missing, but running them first is quicker).
+
 The narration needs a voice. Choose one before you run `reelplanning setup`:
 
 - **Local (the default):** free, and nothing leaves your machine. Setup downloads about 840 MB of voice and caption
