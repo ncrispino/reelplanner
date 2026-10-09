@@ -398,8 +398,10 @@ try {
   ok(!!at && at.deco === "dotted", `a caption with a glossary word, dotted — ${JSON.stringify(at)}`);
   if (at) {
     const t0 = await R(p, () => { const el = document.querySelector("#rp"); el.player.play(); return el.player.currentTime; }); await until(p, (t0) => { const el = document.querySelector("#rp"); return !el.player.paused && el.player.currentTime > t0 + 0.05; }, t0);
-    await R(p, () => document.querySelector("#rp").player.pause());
-    await p.mouse.click(at.x, at.y); await popShown(p); await frames(p);
+    // stopped: held, its time still (the player's paused mirrors the frame's last word on it, and a word sent while
+    // it played can land after the pause): the click is on a held video, and the video waits after it, its time still
+    await R(p, () => document.querySelector("#rp").player.pause()); await stopped(p);
+    await p.mouse.click(at.x, at.y); await popShown(p); await frames(p); await stopped(p);
     const cp = await R(p, () => { const el = document.querySelector("#rp"), t = el.shadowRoot.querySelector(".tpop"), bb = t.getBoundingClientRect(); return { shown: !t.hidden, text: t.textContent, paused: el.player.paused, top: bb.bottom, keys: el.confusion().termsLookedUp }; });
     ok(cp.shown && cp.paused && cp.top <= at.y && cp.keys.includes(at.key), `a click on “${at.word}” in the captions shows what it means, just above the word, and the video waits — "${cp.text.slice(0, 60)}"`, JSON.stringify(cp));
     // D-218: looked up, the word is known: its caption words read plainly now, and a click still says what it means
