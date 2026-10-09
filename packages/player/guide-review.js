@@ -1,4 +1,4 @@
-/* Highlight anything in the guide, and the video's note box pops up on it (packages/player/guide-review.js; `reelplanning
+/* Highlight anything in the guide, and the video's note box pops up on it (packages/player/guide-review.js; `reelplanner
    guide` puts it in each full guide page, and the review page's guide under the video, D-264, is that page).
 
    One experience with marking the video (the player's .markbox): the same box, the same look, the same keys and words.
@@ -30,15 +30,15 @@
    and its things are labelled. A click on a control (a button, a link, role=button, data-no-note, or anything drawn
    with a pointer cursor: an interactive widget's own) does what it does, never opens the box.
 
-   The review page (<reelplanning-guide>) says   { type: "rp-guide-host", event: "note", id }   to go to a note: the
+   The review page (<reelplanner-guide>) says   { type: "rp-guide-host", event: "note", id }   to go to a note: the
    page opens the folds it is in, scrolls it to the reading line and lights it a moment. A deep link #rpn-<id> does the
    same. One way in besides the page's own words: a part shown in a frame on this page (scripts/lib/guide-page.mjs,
    frames: true; the bridge's "select" and "anchor" messages), whose notes cannot be highlighted from here. */
 (function () {
   "use strict";
-  // How the reviewer runs reelplanning in the lines shown after an export: RP_COMMAND in scripts/lib/env.mjs, the one
+  // How the reviewer runs reelplanner in the lines shown after an export: RP_COMMAND in scripts/lib/env.mjs, the one
   // place that says, copied here by scripts/release/sync-version.mjs (scripts/test/version.spec.mjs checks they agree).
-  const RP_COMMAND = "reelplanning";
+  const RP_COMMAND = "reelplanner";
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const clean = (t, n) => String(t || "").replace(/\s+/g, " ").trim().slice(0, n);
   const fmt = (t) => { t = Math.max(0, Math.floor(t)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
@@ -46,7 +46,7 @@
   const HL = typeof Highlight === "function" && !!(window.CSS && CSS.highlights);
   const TRASH = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5"/></svg>`;
   const CSS_TEXT = `
-/* the box: the video's mark box (.markbox in packages/player/reelplanning-player.js), with the quote it is on above it */
+/* the box: the video's mark box (.markbox in packages/player/reelplanner-player.js), with the quote it is on above it */
 .rpn-box{position:absolute;z-index:80;box-sizing:border-box;width:min(420px,calc(100vw - 32px));padding:8px 6px 8px;background:var(--paper,#FAF9F5);color:var(--ink,#141413);border:1px solid var(--ink-20,rgba(20,20,19,.2));border-radius:6px;box-shadow:0 1px 2px rgba(var(--ink-rgb,20,20,19),.1),0 10px 28px -18px rgba(var(--ink-rgb,20,20,19),.45);font:13px/1.4 var(--sans,system-ui,sans-serif);text-align:left}
 .rpn-box[hidden]{display:none}
 .rpn-box.in{animation:rpn-in .14s cubic-bezier(.2,.7,.2,1)}
@@ -130,7 +130,7 @@
     const params = new URLSearchParams(location.search);
     src = params.get("src") || src || `${slug}/index.html`;
     // kept under the review's own record for the video, in the repo the page names (bundle-player's
-    // <meta name="reelplanning-repo">, the key the review page's player uses: reelplanning-player.js recordKey)
+    // <meta name="reelplanning-repo">, the key the review page's player uses: reelplanner-player.js recordKey)
     const repo = (document.querySelector('meta[name="reelplanning-repo"]')?.getAttribute("content") || "").trim();
     const KEY = repo ? `reelplanning@${repo}:annotations:${src}` : `reelplanning:annotations:${src}`, QK = `${KEY}:questions`, DK = `${KEY}:decisions`;
     const read = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v ?? d; } catch { return d; } };

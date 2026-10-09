@@ -1,11 +1,11 @@
-// The skill runs its tooling as `npx -y reelplanning@<version>`, so the version it names has to be
+// The skill runs its tooling as `npx -y reelplanner@<version>`, so the version it names has to be
 // the version package.json publishes — a skill pinned to an older release silently runs old code, and
 // one pinned to a newer release than exists fails on every command. Same for the plugin manifests,
 // scripts/release/install.sh and the docs. `npm version` keeps them together (scripts/release/sync-version.mjs); this
 // catches a hand edit that did not.
 //
-// The commands people are shown run reelplanning one way, RP_COMMAND in scripts/lib/env.mjs: `reelplanning`
-// while the package is not on npm (installed from GitHub), `npx -y reelplanning@<version>` once it is. The
+// The commands people are shown run reelplanner one way, RP_COMMAND in scripts/lib/env.mjs: `reelplanner`
+// while the package is not on npm (installed from GitHub), `npx -y reelplanner@<version>` once it is. The
 // player's after-export lines keep a copy (they run in a browser); sync-version.mjs carries it there.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -20,20 +20,20 @@ let failed = 0;
 const test = (name, fn) => { try { fn(); console.log(`✓ ${name}`); } catch (e) { failed++; console.error(`✗ ${name}\n  ${e.message}`); } };
 
 test("package.json has a semver version", () => assert.match(VERSION, /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/));
-test(`SKILL.md runs the tooling as npx -y reelplanning@${VERSION}`, () => {
+test(`SKILL.md runs the tooling as npx -y reelplanner@${VERSION}`, () => {
   const skill = readFileSync(join(ROOT, "skills/plan-to-video/SKILL.md"), "utf8");
-  assert.ok(skill.includes(`\`npx -y reelplanning@${VERSION}\``), "SKILL.md does not define $RP as the pinned package");
+  assert.ok(skill.includes(`\`npx -y reelplanner@${VERSION}\``), "SKILL.md does not define $RP as the pinned package");
 });
 test("the files that pin the version were all found (the curl installer among them)", () => assert.ok(PINNED_FILES.length >= 5 && PINNED_FILES.includes("scripts/release/install.sh"), PINNED_FILES.join(", ")));
 test("every pinned version and plugin manifest matches package.json", () => {
   const s = stale();
   assert.deepEqual(s, [], s.map((x) => `${x.file}: ${x.found}`).join("; ") + " — run: node scripts/release/sync-version.mjs");
 });
-test("RP_COMMAND is `reelplanning` before npm and the pinned npx package after", () => {
-  assert.equal(rpCommand("1.2.3", false), "reelplanning");
-  assert.equal(rpCommand("1.2.3", true), "npx -y reelplanning@1.2.3");
+test("RP_COMMAND is `reelplanner` before npm and the pinned npx package after", () => {
+  assert.equal(rpCommand("1.2.3", false), "reelplanner");
+  assert.equal(rpCommand("1.2.3", true), "npx -y reelplanner@1.2.3");
   assert.equal(RP_COMMAND, rpCommand(VERSION, ON_NPM));
-  assert.equal(RP_INSTALL, ON_NPM ? "npm i -g reelplanning" : "npm i -g github:ncrispino/reelplanning");
+  assert.equal(RP_INSTALL, ON_NPM ? "npm i -g reelplanner" : "npm i -g github:ncrispino/reelplanner");
 });
 test("the player's after-export lines and the guide's export run RP_COMMAND", () => {
   for (const f of RP_FILES) {
@@ -43,7 +43,7 @@ test("the player's after-export lines and the guide's export run RP_COMMAND", ()
   }
 });
 test("the hints people see say RP_COMMAND (--help, the skills check's fix, setup, the Codex note)", () => {
-  const help = spawnSync(process.execPath, [join(ROOT, "bin/reelplanning.mjs"), "--help"], { encoding: "utf8" }).stdout;
+  const help = spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "--help"], { encoding: "utf8" }).stdout;
   const fix = describe([{ importer: null, spec: "x", target: "/x", chain: [] }], "v0.0.0");
   assert.ok(fix.includes(`fix: ${RP_COMMAND} hyperframes-skills`), fix);
   const setup = readFileSync(join(ROOT, "scripts/setup.sh"), "utf8");
@@ -53,7 +53,7 @@ test("the hints people see say RP_COMMAND (--help, the skills check's fix, setup
   if (ON_NPM) assert.ok(help.includes(`(or: ${RP_COMMAND} <command>`), help.split("\n")[2]);
   else for (const [what, text] of [["--help", help], ["the skills fix", fix], ["setup.sh", setup], ["the Codex note", codex],
     ...RP_FILES.map((f) => [f, readFileSync(join(ROOT, f), "utf8")])])
-    assert.ok(!/npx -y reelplanning@/.test(text), `${what} shows npx -y reelplanning@…, and the package is not on npm`);
+    assert.ok(!/npx -y reelplanner@/.test(text), `${what} shows npx -y reelplanner@…, and the package is not on npm`);
 });
 // The Node it needs, the same way: package.json's engines, what the CLI refuses (scripts/lib/node-check.mjs: an
 // older major), what setup and the curl installer check, and what the docs tell people to install (they said 18
@@ -69,7 +69,7 @@ test("the Node package.json's engines names is the one the CLI, setup, the insta
   }
   // the CLI refuses only an older major (below it nothing works); a 22 older than 22.20 runs, and setup says so
   const as = (v) => spawnSync(process.execPath, ["--import", `data:text/javascript,Object.defineProperty(process.versions,"node",{value:"${v}"})`,
-    join(ROOT, "bin/reelplanning.mjs"), "--version"], { encoding: "utf8" });
+    join(ROOT, "bin/reelplanner.mjs"), "--version"], { encoding: "utf8" });
   const older = as(`${maj - 1}.99.0`);
   assert.ok(older.status === 1 && older.stderr.includes(`needs Node ${need} or later`), `Node ${maj - 1}.99.0: ${older.status} ${older.stderr}`);
   for (const v of [`${maj}.0.0`, need]) { const r = as(v); assert.ok(r.status === 0 && r.stdout.trim() === VERSION && !r.stderr, `Node ${v}: ${r.status} ${r.stderr}`); }

@@ -6,14 +6,14 @@
 // quick check's scene is cut out of its chapter (the system video's chapters are made this way), and the rest of the
 // chapter joined up around it.
 //
-// usage: reelplanning chapters <project-dir> [--no-checks]
+// usage: reelplanner chapters <project-dir> [--no-checks]
 import { readFileSync, existsSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 const args = process.argv.slice(2), dir = args.find((a) => !a.startsWith("--")), NO_CHECKS = args.includes("--no-checks");
-if (!dir) { console.error("usage: reelplanning chapters <project-dir> [--no-checks]"); process.exit(1); }
+if (!dir) { console.error("usage: reelplanner chapters <project-dir> [--no-checks]"); process.exit(1); }
 const map = JSON.parse(readFileSync(join(dir, "plan-map.json"), "utf8"));
-const src = join(dir, "renders/video.mp4"); if (!existsSync(src)) { console.error(`✗ no ${src}: render it first (reelplanning verify ${dir} --render)`); process.exit(1); }
+const src = join(dir, "renders/video.mp4"); if (!existsSync(src)) { console.error(`✗ no ${src}: render it first (reelplanner verify ${dir} --render)`); process.exit(1); }
 if (!map.chapters?.length) { console.log("no chapters tagged (add `- chapter_start: <title>` to frames)"); process.exit(0); }
 mkdirSync(join(dir, "renders/chapters"), { recursive: true });
 const r3 = (x) => +x.toFixed(3);

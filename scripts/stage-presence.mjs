@@ -8,14 +8,14 @@
 // It also measures the rail itself: a 500x660 rail is 16% of the frame and a third of its width, and
 // a rail that never changes fails the same test the diagram is held to.
 //
-// usage: reelplanning stage-presence <project-dir> [--max 0.5]
+// usage: reelplanner stage-presence <project-dir> [--max 0.5]
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 
 const args = process.argv.slice(2);
 const project = args.find((a) => !a.startsWith("--")) || ".";
 const maxShare = args.includes("--max") ? Number(args[args.indexOf("--max") + 1]) : 0.5;
-const dir = resolve(project);   // relative to the caller, not to wherever reelplanning is installed
+const dir = resolve(project);   // relative to the caller, not to wherever reelplanner is installed
 const fdir = join(dir, "compositions/frames");
 if (!existsSync(fdir)) { console.error(`✗ no frames in ${project}`); process.exit(1); }
 

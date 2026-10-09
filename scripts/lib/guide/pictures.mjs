@@ -1,7 +1,7 @@
 // The guide's pictures: a scene of the video, at the step it shows. Files beside the page, in <guide>/pics/, never
 // inline (a data: URL would go into every page that shows it, at one size, stretched on a 2× screen).
 //
-// Each picture is made from the video's snapshot (taken at 2× device scale by `reelplanning snapshot`, so a
+// Each picture is made from the video's snapshot (taken at 2× device scale by `reelplanner snapshot`, so a
 // 1920 × 1080 video gives a 3840 × 2160 PNG) at the widths the page draws it at, 1× and 2×, and whole, for the lightbox:
 // WebP, lossless where that is the smaller file (a frame of flat colour and text usually is), else lossy at quality 92.
 // A width is never made larger than the snapshot, and the page never draws a picture wider than half its pixels
@@ -93,7 +93,7 @@ export function pictureOf(file, { picsDir, pageDir = join(picsDir, ".."), made =
 }
 
 /** Remove the pictures in `picsDir` that are not in `keep` (a set of file names): a scene redrawn, a step's picture gone.
- *  A file written in the last `fresh` ms stays: two builds of one guide at once (`reelplanning review` while the tests
+ *  A file written in the last `fresh` ms stays: two builds of one guide at once (`reelplanner review` while the tests
  *  bundle the same walkthrough) would otherwise each remove what the other was writing, its half-made `.tmp.webp`
  *  included, and leave a page pointing at a picture that is gone. The next build removes it. */
 export function prunePictures(picsDir, keep, { fresh = 10 * 60 * 1000 } = {}) {

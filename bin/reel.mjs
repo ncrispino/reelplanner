@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The project-record CLI: init, new-plan, stage, check, record, audit, stops, prereqs, status, memory, retro, build, case-study, pr-check, renumber.
-// Same as `reelplanning reel …`. See docs/project-dir.md for the format it manages.
+// Same as `reelplanner reel …`. See docs/project-dir.md for the format it manages.
 import "../scripts/lib/node-check.mjs"; // first: an older Node stops here, told how to update
 import { realpathSync } from "node:fs";
 import { dirname, join } from "node:path";

@@ -7,9 +7,9 @@
 // stepped through, a worked example's tab, words highlighted and noted; back up, Finish review's summary (nothing
 // is sent). Not a spec (the runner leaves it out): it sits with them because it drives the page as they do.
 //
-// It runs on the plan guide's plan video (.reelplanning/plans/2026-09-28-plan-guide/video), bundled into a scratch
+// It runs on the plan guide's plan video (.reelplanner/plans/2026-09-28-plan-guide/video), bundled into a scratch
 // folder with `bundle-player`; the tour's clicks name things in that video and its guide. The video's assets/ (its
-// voice and fonts) are build output, not in git: build them first (`reelplanning narrate`, or copy them from the
+// voice and fonts) are build output, not in git: build them first (`reelplanner narrate`, or copy them from the
 // checkout that built it), or the frames fall back to other faces.
 //
 // usage: node packages/player/test/record-tour.mjs <out.gif> [--webm <file>] [--width 1000] [--fps 10] [--speed 1.35] [--colors 64]
@@ -27,10 +27,10 @@ const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(k);
 const WEBM = opt("--webm"), WIDTH = +opt("--width", 1000), FPS = +opt("--fps", 10), SPEED = +opt("--speed", 1.35), COLORS = +opt("--colors", 64), OUT = args[0] && resolve(args[0]);
 if (!OUT) { console.error("usage: node packages/player/test/record-tour.mjs <out.gif> [--webm <file>] [--width 1000] [--fps 10] [--speed 1.35] [--colors 64]"); process.exit(2); }
 
-const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/video", SLUG = "2026-09-28-plan-guide";
+const VIDEO = ".reelplanner/plans/2026-09-28-plan-guide/video", SLUG = "2026-09-28-plan-guide";
 const VIEW = { width: 1280, height: 800 };
 const T = mkdtempSync(join(tmpdir(), "rp-tour-")), PAGE = join(T, "page"), REC = join(T, "rec");
-execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), PAGE, join(ROOT, VIDEO), "--reelplanning", join(ROOT, ".reelplanning")], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
+execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), PAGE, join(ROOT, VIDEO), "--reelplanner", join(ROOT, ".reelplanner")], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
 const port = 8000 + Math.floor(Math.random() * 900), srv = staticServer(port, { dir: PAGE });
 await serverUp(port, { child: srv });
 

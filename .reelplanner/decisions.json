@@ -11542,6 +11542,27 @@
       "components": [
         "cli"
       ]
+    },
+    {
+      "date": "2026-10-08",
+      "step": null,
+      "stepTitle": null,
+      "questionId": null,
+      "options": [],
+      "chosenId": "own",
+      "recommended": null,
+      "status": "active",
+      "supersedes": [],
+      "id": "D-312",
+      "plan": "2026-09-26-contributing",
+      "question": "What is the project called?",
+      "chosen": "reelplanner, said \"reel planner\": the npm package, the command `reelplanner` (`reel` stays), the GitHub repo ncrispino/reelplanner, the case-studies repo ncrispino/reelplanner-case-studies (its site at ncrispino.github.io/reelplanner-case-studies), the Claude Code plugin and its marketplace, a repo's project folder `.reelplanner/`, the machine's folder `~/.reelplanner` and the settings `REELPLANNER_*`. The old names are still read for a while: a repo's `.reelplanning/` when it has no `.reelplanner/` (said once, with the `git mv .reelplanning .reelplanner` that renames it), `~/.reelplanning` while there is no `~/.reelplanner`, a `REELPLANNING_*` setting, in the shell or a .env file, when its new name is unset, and the `reelplanning` command, which says the new name on stderr and runs it. The review page keeps its saved marks' storage keys (`reelplanning:annotations:…`), so a review begun before the rename is still there after it",
+      "why": "search: reelplanning.com is already a business, so reelplanner is the easier name to find, and this early the rename is cheap",
+      "own": "im thinking we should name it reelplanner instead of reelplanning bc seo a bit better with that (ie there is already a reelplanning.com thats a business). i know this is kind of a big ask, but its early and defeinitly efeasible.",
+      "note": "decided in conversation (2026-10-08); it changes the name D-310 gave the public repo and the code chip D-186 shows, which are not linked as superseded: their other rules stand. The record's history keeps the old name as written: the entries before D-312, the plans, the reviews and the videos' narration. The owner renames the GitHub repos (GitHub redirects a renamed repo's old address; a GitHub Pages site's old address is not redirected)",
+      "components": [
+        "cli"
+      ]
     }
   ]
 }

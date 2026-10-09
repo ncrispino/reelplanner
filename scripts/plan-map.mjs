@@ -3,8 +3,8 @@
 // (composition ids in index.html) and the plan (step numbers, open questions).
 // The annotation player reads this to turn a stroke at t=41s into "step 2".
 //
-// usage: reelplanning plan-map <project-dir>
-//        reelplanning plan-map <project-dir> --thumbs   only each frame's thumbnail, from the snapshots/ there now
+// usage: reelplanner plan-map <project-dir>
+//        reelplanner plan-map <project-dir> --thumbs    only each frame's thumbnail, from the snapshots/ there now
 //                                                       (snapshot.sh runs it after taking them: lib/thumbs.mjs)
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join, resolve, relative, sep } from "node:path";
@@ -19,15 +19,15 @@ import { guideParts } from "./lib/guide/model.mjs";
 import { nextSuggestions } from "./lib/explainer.mjs";
 
 const dir = process.argv.slice(2).find((a) => !a.startsWith("--"));
-if (!dir) { console.error("usage: reelplanning plan-map <project-dir> [--thumbs]"); process.exit(1); }
+if (!dir) { console.error("usage: reelplanner plan-map <project-dir> [--thumbs]"); process.exit(1); }
 // --thumbs: the map as it is, each frame's thumbnail set again from the pictures taken since it was written
 if (process.argv.includes("--thumbs")) {
   const p = join(dir, "plan-map.json");
-  if (!existsSync(p)) { console.error(`✗ plan-map --thumbs: no plan-map.json in ${dir} (reelplanning plan-map ${dir} writes it)`); process.exit(1); }
+  if (!existsSync(p)) { console.error(`✗ plan-map --thumbs: no plan-map.json in ${dir} (reelplanner plan-map ${dir} writes it)`); process.exit(1); }
   const map = JSON.parse(readFileSync(p, "utf8")), frames = map.frames || [], snaps = snapshotsIn(dir);
   const n = attachThumbs(frames, snaps);
   writeFileSync(p, JSON.stringify(map, null, 2) + "\n");
-  console.log(`${n === frames.length ? "✓" : "△"} plan-map.json thumbnails: ${n} of ${frames.length} frames, from ${snaps.length} snapshot(s)${n < frames.length ? ` (none for frame${frames.length - n > 1 ? "s" : ""} ${frames.filter((f) => !f.thumb).map((f) => f.index).join(", ")}: reelplanning snapshot ${dir})` : ""}`);
+  console.log(`${n === frames.length ? "✓" : "△"} plan-map.json thumbnails: ${n} of ${frames.length} frames, from ${snaps.length} snapshot(s)${n < frames.length ? ` (none for frame${frames.length - n > 1 ? "s" : ""} ${frames.filter((f) => !f.thumb).map((f) => f.index).join(", ")}: reelplanner snapshot ${dir})` : ""}`);
   process.exit(0);
 }
 const sb = readFileSync(join(dir, "STORYBOARD.md"), "utf8");
@@ -170,7 +170,7 @@ const reviewDir = kind === "system" ? (relative(repoRoot(resolve(dir)), resolve(
 const details = frames.filter((f) => f.detail).map((f) => ({ name: f.detail, src: `details/${f.detail}.html`, title: f.detailTitle || f.title, kind: f.detailKind || null, why: f.detailWhy || null,
   frameIndex: f.index, compositionId: f.compositionId, planStep: f.planStep, start: f.start, end: +(f.start + (f.durationSeconds || 0)).toFixed(3), autonomy: f.autonomy || null }));
 // the guide's parts (the plan guide, step 3): a scene's `- guide: <part>[#<place>]` opens that part of the video's guide
-// over the frame, as a detail opens (the frame marks its thing data-detail="<part>"); the page is built by `reelplanning
+// over the frame, as a detail opens (the frame marks its thing data-detail="<part>"); the page is built by `reelplanner
 // guide` into guide/<part>.html, after this map. Every part is listed too, for the plan text's "Open:" under its step.
 const parts = guideParts(dir), partNamed = (n) => parts.find((p) => p.name === n);
 for (const f of frames.filter((x) => x.guide && !x.detail)) {
@@ -195,7 +195,7 @@ for (const f of frames) { delete f.nextMore; delete f.nextPlan; }
 if (explainer?.next) console.log(`Finish's suggestions: ${explainer.next.more.length} for Explain more, ${explainer.next.plan.length} for Plan this`);
 const out = { project: basename(resolve(dir)), title, planDir, ...(kind ? { kind } : {}), ...(checksDefault === "off" ? { checks: "off" } : {}), ...(explainer ? { explainer } : {}), ...(reviewDir ? { reviewDir } : {}), totalSeconds: +t.toFixed(3), chapters, levels: hasLevels ? levels : null, quizzes, autonomy, ...(autonomyGroups.length ? { autonomyGroups } : {}), ...(openQuestion ? { openQuestion } : {}), watchedSeconds: +(t - decisions.reduce((a, d) => a + d.options.filter((o) => o.branch && !o.recommended).reduce((b, o) => b + (o.branch.end - o.branch.start), 0), 0)).toFixed(3), frames, decisions, details, ...(parts.length ? { guide: { parts: parts.map(({ name, title, planStep, kind: k }) => ({ name, title, planStep, kind: k, src: `guide/${name}.html` })) } } : {}), ...(plan ? { plan } : {}) };
 if (details.length) console.log(`${details.length} detail(s): ${details.map((d) => `${d.name} (${d.kind || "?"}, frame ${d.frameIndex})`).join(", ")}`);
-if (parts.length) console.log(`guide: ${parts.length} part(s), built by reelplanning guide: ${parts.map((p) => p.name).join(", ")}`);
+if (parts.length) console.log(`guide: ${parts.length} part(s), built by reelplanner guide: ${parts.map((p) => p.name).join(", ")}`);
 if (plan) console.log(`plan text: ${plan.steps.length} step(s) from plan.md`);
 if (chapters.length) console.log("chapters: " + chapters.map((c) => `${c.id} frames ${c.fromFrame}–${c.toFrame} ${c.linearSeconds}s/${c.watchedSeconds}s watched`).join(" · "));
 // what the viewer needs to follow it (lib/terms.mjs): the videos to watch first, the words it defines, the glossary, every id it says glossed

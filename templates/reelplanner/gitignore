@@ -36,7 +36,7 @@ system-video/assets/voice/
 # on the hosted page (D-305)
 *.wav
 *.mp4
-# the guide (D-213): built by `reelplanning guide` from plan.md, git and runs/, never committed; a plan with
+# the guide (D-213): built by `reelplanner guide` from plan.md, git and runs/, never committed; a plan with
 # no video yet gets guide/index.html, the same. A step's picture fragment (guide/step-<n>.html) is committed.
 plans/*/*video/guide/
 explainers/*/video/guide/
@@ -50,7 +50,7 @@ inbox/
 
 # the blame `reel check --base` and `reel status` place accepted calls with (D-306): made again when missing
 .cache/
-# keys for narration (OPENROUTER_API_KEY …): .reelplanning/.env is where they go; read by `narrate`, `narration-check`
+# keys for narration (OPENROUTER_API_KEY …): .reelplanner/.env is where they go; read by `narrate`, `narration-check`
 # and `setup`, and never committed
 .env
 

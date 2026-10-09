@@ -26,7 +26,7 @@ import { walkthroughScope, actOnMarkdown, reaches } from "../lib/review-scope.mj
 import { approvedAt, ledgerAsOf, startedFrom, planStage } from "../lib/reviews.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-reviews-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
+process.env.REELPLANNER_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: tmp, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const reel = (...a) => run("reel.mjs", ...a);
 let failed = 0;
@@ -58,7 +58,7 @@ const review = (at, extra = {}) => ({ version: 1, src: "2026-09-23-drafts/index.
 const map = { project: "video", decisions: [{ id: "q1", question: "Where do drafts live?", planStep: 1, options: [{ id: "a", label: "Postgres" }, { id: "b", label: "Local storage" }] }] };
 
 try {
-  const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
+  const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
   mkdirSync(repo, { recursive: true });
   reel("init", repo, "--name", "drafts", "--kind", "greenfield");
   const sys = JSON.parse(readFileSync(join(rp, "system.json"), "utf8"));
@@ -77,7 +77,7 @@ try {
   const st = reel("stage", join(rp, "plans", "2026-09-20-sep3"));
   ok("reel stage: a colon plan gets a slot per step", st.code === 0 && /2 slots/.test(st.out), st.out);
   ok("reel check: no warning demands a \"## What changes\" section or a *Needs step N* line", checks.every((c) => !/What changes|Needs step|Independent/.test(c.out)), checks[0].out);
-  ok("reel new-plan: writes the plan and no checklist README", files(join(rp, "plans", "2026-09-20-sep0")).join() === "plan.md" && !existsSync(join(ROOT, "templates/reelplanning/plan-README.md")));
+  ok("reel new-plan: writes the plan and no checklist README", files(join(rp, "plans", "2026-09-20-sep0")).join() === "plan.md" && !existsSync(join(ROOT, "templates/reelplanner/plan-README.md")));
   rmSync(join(rp, "plans"), { recursive: true }); mkdirSync(join(rp, "plans"));
 
   // ---- a plan at each stage ----
@@ -91,7 +91,7 @@ try {
 
   // round 1: changes requested, with a comment and the reviewer's note (through intake, as a Finish sends it)
   const r1 = review("2026-09-23T10:00:00.000Z", { verdict: "changes", annotations: [{ id: "n1", kind: "note", t: 12, comment: "say which formats", plan: { step: 2 }, frame: { title: "Export" } }] });
-  writeFileSync(join(tmp, "row1.json"), JSON.stringify({ status: "submitted", submittedAt: r1.exportedAt, project: "video", planDir: ".reelplanning/plans/2026-09-23-drafts", title: "Drafts", note: "start with step 2", review: r1 }));
+  writeFileSync(join(tmp, "row1.json"), JSON.stringify({ status: "submitted", submittedAt: r1.exportedAt, project: "video", planDir: ".reelplanner/plans/2026-09-23-drafts", title: "Drafts", note: "start with step 2", review: r1 }));
   const i1 = run("reel-intake.mjs", join(tmp, "row1.json"), "--repo", repo);
   const id1 = "plan-20260923T100000Z";
   ok("reel-intake: files the review in reviews/ and writes what to act on beside it, no annotations.json", i1.code === 0 && files(join(pd, "reviews")).join() === `${id1}.json,${id1}.md` && !existsSync(join(pd, "annotations.json")) && !existsSync(join(pd, "plan.resolved.md")), i1.out);
@@ -101,7 +101,7 @@ try {
   ok("…what to act on: the decision with its ledger entry, the step to revise with the words, the note quoted",
     /^# Plan review · 2026-09-23 10:00 UTC · changes requested$/m.test(md1) && /\*\*Q1\*\* \(step 1\) Where do drafts live\?: \*\*Postgres\*\* \(the recommendation\) → D-001/.test(md1)
     && /- \*\*Step 2\*\*\n  - comment at 0:12 \(Export\): "say which formats"/.test(md1) && /^> start with step 2$/m.test(md1) && md1.split("\n").length < 25, md1);
-  ok("…and intake says to revise from it", new RegExp(`next: revise the plan from \\.reelplanning/plans/2026-09-23-drafts/reviews/${id1}\\.md`).test(i1.out), i1.out);
+  ok("…and intake says to revise from it", new RegExp(`next: revise the plan from \\.reelplanner/plans/2026-09-23-drafts/reviews/${id1}\\.md`).test(i1.out), i1.out);
   ok("reel status: changes requested", /\| changes requested: revise \| 1 plan \| D-001 \|/.test(status()), status());
 
   // the revise keeps the question under "Open questions for the reviewer" and cites nothing: its own decision is not asked for
@@ -181,7 +181,7 @@ try {
   // a plan approved in conversation (no approving plan review) and built: the ledger in the commit its
   // walkthrough.md says the build started from. In a repo of its own, under git
   {
-    const repo2 = join(tmp, "repo2"), rp2 = join(repo2, ".reelplanning"), g = (...a) => execFileSync("git", ["-C", repo2, "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    const repo2 = join(tmp, "repo2"), rp2 = join(repo2, ".reelplanner"), g = (...a) => execFileSync("git", ["-C", repo2, "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
     mkdirSync(repo2, { recursive: true }); reel("init", repo2, "--name", "drafts", "--kind", "greenfield");
     writeFileSync(join(rp2, "system.json"), JSON.stringify({ ...JSON.parse(readFileSync(join(rp2, "system.json"), "utf8")), components: [{ id: "store", name: "Draft store", kind: "store" }] }, null, 2));
     const L2 = { decisions: [entry("D-001", "2026-09-20", "How are drafts compressed?", "Gzip")] };
@@ -243,7 +243,7 @@ try {
     const filed = JSON.parse(readFileSync(join(pd, "reviews", "walkthrough-20260924T120000Z.json"), "utf8"));
     const mdt = readFileSync(join(pd, "reviews", "walkthrough-20260924T120000Z.md"), "utf8");
     ok("reel record: a review given in conversation is stamped by the id it names, via conversation, never git's email",
-      rt.code === 0 && filed.recorded?.reviewer === "id:u_owner" && filed.recorded?.id === "id:u_owner" && filed.recorded?.via === "conversation" && !/@/.test(JSON.stringify(filed.recorded)) && /, by id:u_owner \(reelplanning /.test(rt.out), `${rt.out}\n${JSON.stringify(filed.recorded)}`);
+      rt.code === 0 && filed.recorded?.reviewer === "id:u_owner" && filed.recorded?.id === "id:u_owner" && filed.recorded?.via === "conversation" && !/@/.test(JSON.stringify(filed.recorded)) && /, by id:u_owner \(reelplanner /.test(rt.out), `${rt.out}\n${JSON.stringify(filed.recorded)}`);
     ok("what to act on: it says accepted in conversation on its day, not in the player, with the words, and no watched %",
       /: 2 calls judged; accepted in conversation on 2026-09-24, not in the player \(nothing watched or timed\): "Ok can you just accept all these as is\?"$/m.test(mdt) && !/watched \d+%/.test(mdt) && /Accepted \(now in the ledger\): A1, A2\./.test(mdt), mdt);
     ok("reel status: still accepted, three walkthrough reviews", /\| accepted \| 2 plan, 3 walkthrough \|/.test(status()), status());
@@ -289,7 +289,7 @@ try {
   ok("reel record: a review left loose in the plan folder (the old handoff) is filed in reviews/, and the loose copy goes", lo.code === 0 && existsSync(join(pd, "reviews", "plan-20260925T080000Z.json")) && !existsSync(join(pd, "annotations.json")) && /moved from annotations\.json/.test(lo.out), lo.out);
 
   // ---- migrating an old plan folder, round 1 recovered from git history ----
-  const old = join(tmp, "old"), orp = join(old, ".reelplanning"), opd = join(orp, "plans", "2026-09-01-drafts");
+  const old = join(tmp, "old"), orp = join(old, ".reelplanner"), opd = join(orp, "plans", "2026-09-01-drafts");
   mkdirSync(old, { recursive: true });
   reel("init", old, "--name", "old", "--kind", "greenfield");
   mkdirSync(join(opd, "video"), { recursive: true });

@@ -27,9 +27,9 @@ import { privateIn, resolveRefs, nextSuggestions, asPlan } from "../lib/explaine
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-explainer-"));
 const home = join(tmp, "home"); mkdirSync(home, { recursive: true });
-process.env.REELPLANNING_HOME = join(home, ".reelplanning");   // `reel record` adds to your memory: keep it out of the real one
-const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
-const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning") };
+process.env.REELPLANNER_HOME = join(home, ".reelplanner");   // `reel record` adds to your memory: keep it out of the real one
+const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
+const env = { ...process.env, HOME: home, REELPLANNER_HOME: join(home, ".reelplanner") };
 const git = (...a) => execFileSync("git", a, { cwd: repo, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: repo, env, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const reel = (...a) => run("reel.mjs", ...a);
@@ -71,7 +71,7 @@ try {
   const trPin = S.sources.find((s) => s.form === "outside" && s.shape === "sequence");
   ok("explain: a transcript in your home is a sequence, shown as ~/…, and long enough for a guide part", trPin?.path === "~/.claude/session.jsonl" && trPin.guide === true && trPin.size.lines === 232 && !readFileSync(join(ed, "sources.json"), "utf8").includes(home), JSON.stringify(trPin));
   const sb0 = readFileSync(join(ed, "video", "STORYBOARD.md"), "utf8");
-  ok("explain: the storyboard is an explainer's, strict on its sources, filed to its folder", /^kind: explainer$/m.test(sb0) && /^sources_check: strict$/m.test(sb0) && /^plan_dir: \.reelplanning\/explainers\/2026-09-29-experiment$/m.test(sb0), sb0.slice(0, 400));
+  ok("explain: the storyboard is an explainer's, strict on its sources, filed to its folder", /^kind: explainer$/m.test(sb0) && /^sources_check: strict$/m.test(sb0) && /^plan_dir: \.reelplanner\/explainers\/2026-09-29-experiment$/m.test(sb0), sb0.slice(0, 400));
   ok("explain: explain.md says what you asked and lists each source", /\*\*You asked:\*\* "what did the experiment show\?"/.test(readFileSync(join(ed, "explain.md"), "utf8")) && /`src` · files · 2 files/.test(readFileSync(join(ed, "explain.md"), "utf8")));
   ok("explain: explain.md asks for its open threads, which Finish offers under Plan this", /^## Open threads$/m.test(readFileSync(join(ed, "explain.md"), "utf8")) && /next_plan/.test(sb0), readFileSync(join(ed, "explain.md"), "utf8"));
   write(join(tmp, "runs", "config.yaml"), "lr: 0.001\nsteps: 400\n");
@@ -81,8 +81,8 @@ try {
   const again = run("explain.mjs", "what did the experiment show?", csv, "--date", "2026-09-29", "--slug", "experiment");
   ok("explain: asked again, a new folder beside the first (a snapshot)", again.code === 0 && existsSync(join(rp, "explainers", "2026-09-29-experiment-2", "sources.json")), again.out);
   // a repo with no commit yet: said plainly, never a git stack trace
-  const bare = join(tmp, "bare"); mkdirSync(join(bare, ".reelplanning"), { recursive: true }); writeFileSync(join(bare, "notes.md"), "# notes\n");
-  writeFileSync(join(bare, ".reelplanning", "decisions.json"), JSON.stringify({ decisions: [] }));   // set up: `reel init` ran here
+  const bare = join(tmp, "bare"); mkdirSync(join(bare, ".reelplanner"), { recursive: true }); writeFileSync(join(bare, "notes.md"), "# notes\n");
+  writeFileSync(join(bare, ".reelplanner", "decisions.json"), JSON.stringify({ decisions: [] }));   // set up: `reel init` ran here
   execFileSync("git", ["init", "-q", "-b", "main"], { cwd: bare });
   const none = (() => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", "explain.mjs"), "what are these notes?", "notes.md"], { encoding: "utf8", cwd: bare, env, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } })();
   ok("explain: a repo with no commit yet says to commit once first", none.code === 1 && /has no commit yet: .*commit once first/.test(none.out) && !/at checkExecSyncError/.test(none.out), none.out);
@@ -95,7 +95,7 @@ try {
   commit("change claim");
   const vd = join(ed, "video");
   const frame = (n, inner) => write(join(vd, "compositions", "frames", `${String(n).padStart(2, "0")}.html`), `<template><style>.x{}</style><div id="root" data-band="bottom">${inner}</div><script>var tl=1;</script></template>`);
-  const board = (fm, frames) => writeFileSync(join(vd, "STORYBOARD.md"), `---\ntitle: "What did the experiment show"\nkind: explainer\nplan_dir: .reelplanning/explainers/2026-09-29-experiment\n${fm}---\n\n${frames.map((f, i) => `## Frame ${i + 1} — ${f.title || `scene ${i + 1}`}\n\n${f.source ? `- source: ${f.source}\n` : ""}${f.extra || ""}- src: compositions/frames/${String(i + 1).padStart(2, "0")}.html\n- voiceover: "${f.say || "Plain words."}"\n`).join("\n")}`);
+  const board = (fm, frames) => writeFileSync(join(vd, "STORYBOARD.md"), `---\ntitle: "What did the experiment show"\nkind: explainer\nplan_dir: .reelplanner/explainers/2026-09-29-experiment\n${fm}---\n\n${frames.map((f, i) => `## Frame ${i + 1} — ${f.title || `scene ${i + 1}`}\n\n${f.source ? `- source: ${f.source}\n` : ""}${f.extra || ""}- src: compositions/frames/${String(i + 1).padStart(2, "0")}.html\n- voiceover: "${f.say || "Plain words."}"\n`).join("\n")}`);
   const script = (lines) => writeFileSync(join(vd, "SCRIPT.md"), `# SCRIPT\n\n${lines.map((l, i) => `## Line ${i + 1} (Frame ${i + 1})\n\n    ${l}\n`).join("\n")}`);
   const check = () => run("check-sources.mjs", vd);
   // the good case: the line as it was at the pinned commit (it changed since), a label that is not a quote, a cut
@@ -198,10 +198,10 @@ try {
   ok("record: the .md says what was picked at Finish, where it came from, and that it was edited", /## What you want next\n\n- \*\*Picked\*\* from what Finish suggested for Plan this: "A plan to compare the loss across runs in one table" \(explain\.md, open threads · scene 2, "The loss"\); then edited, your words below/.test(md) && filedJson.next?.pick?.id === "p2", md);
   ok("record: it says what you want next, and from where", /what you want next, picked from Finish's suggestions and edited: "make the loss easy to compare" \(scene 2\)/.test(rec.out) && /the draft is titled by what you picked/.test(rec.out), rec.out);
   ok("record: \"this looks wrong\" and Plan this put nothing in the decision log", json(join(rp, "decisions.json")).decisions.length === n0 && /ledger: nothing added \(an explainer asks no questions/.test(rec.out), rec.out);
-  const you = existsSync(join(home, ".reelplanning", "you.jsonl")) ? readFileSync(join(home, ".reelplanning", "you.jsonl"), "utf8") : "";
+  const you = existsSync(join(home, ".reelplanner", "you.jsonl")) ? readFileSync(join(home, ".reelplanner", "you.jsonl"), "utf8") : "";
   ok("record: your memory gets what you watched", /"kind":"explainer"/.test(you) && /2026-09-29-experiment--explainer/.test(you), you.slice(0, 500));
   // reel-intake: a row the page sent, naming the explainer's folder
-  const row = { status: "submitted", submittedAt: "2026-09-29T11:00:00.000Z", project: "video", planDir: ".reelplanning/explainers/2026-09-29-experiment-2", kind: "explainer", title: "x", note: "", review: { ...review, verdict: "done", exportedAt: "2026-09-29T11:00:00.000Z" } };
+  const row = { status: "submitted", submittedAt: "2026-09-29T11:00:00.000Z", project: "video", planDir: ".reelplanner/explainers/2026-09-29-experiment-2", kind: "explainer", title: "x", note: "", review: { ...review, verdict: "done", exportedAt: "2026-09-29T11:00:00.000Z" } };
   writeFileSync(join(tmp, "row.json"), JSON.stringify(row));
   const intake = run("reel-intake.mjs", join(tmp, "row.json"), "--repo", repo);
   const moreReview = { ...review, verdict: "more", exportedAt: "2026-09-29T12:00:00.000Z", questions: [], annotations: [review.annotations[0]],
@@ -229,9 +229,9 @@ try {
   // ---- the review page's library: the Explainer row ----
   write(join(vd, "index.html"), "<!doctype html><html><body></body></html>");
   mkdirSync(join(vd, "compositions"), { recursive: true });
-  writeFileSync(join(vd, "plan-map.json"), JSON.stringify({ project: "video", title: "What did the experiment show", kind: "explainer", planDir: ".reelplanning/explainers/2026-09-29-experiment", explainer: { question: S.question, commit: S.commit, next: { more: [], plan: [] } }, totalSeconds: 150, watchedSeconds: 150, frames: [], decisions: [], quizzes: [], autonomy: [], chapters: [] }));
+  writeFileSync(join(vd, "plan-map.json"), JSON.stringify({ project: "video", title: "What did the experiment show", kind: "explainer", planDir: ".reelplanner/explainers/2026-09-29-experiment", explainer: { question: S.question, commit: S.commit, next: { more: [], plan: [] } }, totalSeconds: 150, watchedSeconds: 150, frames: [], decisions: [], quizzes: [], autonomy: [], chapters: [] }));
   write(join(repo, "later.txt"), "later\n"); commit("a later commit");   // two since: this, and the change to claim
-  const out = join(tmp, "bundle"), b = run("bundle-player.mjs", out, vd, "--reelplanning", rp);
+  const out = join(tmp, "bundle"), b = run("bundle-player.mjs", out, vd, "--reelplanner", rp);
   const lib = existsSync(join(out, "library.json")) ? json(join(out, "library.json")) : {};
   const xr = (lib.explainers || [])[0] || {};
   ok("review page: an Explainer row of its own, with the commit it explains and the commits since", b.code === 0 && xr.slug === "2026-09-29-experiment--explainer" && xr.at === S.commit.slice(0, 7) && xr.since === 2 && !(lib.other || []).some((o) => o.slug === xr.slug), `${b.out}\n${JSON.stringify(lib).slice(0, 800)}`);

@@ -10,9 +10,9 @@ literally, even when the why is compressed.
 
 Most of what follows is a goal, not a template. Where a tool enforces a rule, the rule says which.
 Why a rule exists, and the reviews it came from, is in
-[`docs/design-notes.md`](https://github.com/ncrispino/reelplanning/blob/main/docs/design-notes.md).
+[`docs/design-notes.md`](https://github.com/ncrispino/reelplanner/blob/main/docs/design-notes.md).
 
-`$RP` means what SKILL.md says: `reelplanning` when it is on the PATH.
+`$RP` means what SKILL.md says: `reelplanner` when it is on the PATH.
 
 ## 1. A series of parts
 
@@ -129,19 +129,19 @@ A reviewer who knows them skips it at `familiar`.
 - **Captions are the script's own sentences**, with the current word marked. Whisper supplies the
   timings, never the words.
 - **On screen use digits; the script uses words; `captions-sentences` applies it.**
-- **Names as `names.md` shows them** (`.reelplanning/names.md`, one list for the project). A tool's name
+- **Names as `names.md` shows them** (`.reelplanner/names.md`, one list for the project). A tool's name
   or a command is code: on screen it is in code markup (the mono, or a `<code>`), in its own spelling,
-  never capitalised: the product is `reelplanning`, lowercase, like `reel status` or `npm test`. A product
+  never capitalised: the product is `reelplanner`, lowercase, like `reel status` or `npm test`. A product
   or an acronym that is not code keeps its case and no markup: GitHub, HyperFrames, CLI, JSON. The script
-  may spell a name however reads well aloud (Kokoro says "reelplanning" and "ReelPlanning" alike); the
+  may spell a name however reads well aloud (Kokoro says "reelplanner" and "ReelPlanner" alike); the
   captions show it the list's way, a tool's name as a chip in the code voice, and its command's next words
   in the same chip (`captions-sentences`). The narration is never re-voiced for a spelling. A real thing
   (`data-artifact`) keeps its own text. `check-terms` warns on a tool's name on screen outside code markup,
   and on a listed name spelled another way. A plan that brings in a tool the videos name adds its row.
 - **Commands, flags, paths and file names are written as they are written.** SCRIPT.md says `claude -p`,
-  `--dry-run`, `plan.md`, `/work`, `~/.reelplanning/you.jsonl`, never "claude dash p", "dot md" or "slash
+  `--dry-run`, `plan.md`, `/work`, `~/.reelplanner/you.jsonl`, never "claude dash p", "dot md" or "slash
   work": `narrate` hands the voice the spoken form ("claude dash p", "plan dot md", "slash work", "home dot
-  reelplanning slash you dot json L"; `scripts/lib/say.mjs`), and the captions show the script's words, a
+  reelplanner slash you dot json L"; `scripts/lib/say.mjs`), and the captions show the script's words, a
   flag, a path or a file name as a code chip. An id like D-110 stays as it is (Kokoro reads it as the ledger
   does). `check-terms` warns on a spelled-out form in a script; an old script's spelled-out forms are shown
   written in its captions all the same.
@@ -167,7 +167,7 @@ A reviewer who knows them skips it at `familiar`.
 - **Why not, in one clause.** When the plan considered an alternative, spend one clause on why it loses.
 - **No lies-to-children.** Compress the why, never the what.
 - **Define before use.** The first time the video says a word the viewer may not know (a glossary term,
-  a word from `templates/reelplanning/jargon.txt`, one of the storyboard's `terms:`), it says what it
+  a word from `templates/reelplanner/jargon.txt`, one of the storyboard's `terms:`), it says what it
   means, plainly, in the same sentence or the one before: "a tag — a label the agent puts on a choice it
   made alone, like *you'll notice it*". Tag that beat `- defines: <term>`. A word the video before this
   one defines (its `before:` videos' `terms:`) needs no definition; if it matters here, give it a
@@ -187,7 +187,7 @@ where the boxes would sit unconnected and teach the viewer something false. Pick
 plan: a pipeline that ends in its real output, the set of pages or screens a user ends up with, a
 wireframe of one screen whose regions move, a record whose fields change, or two actors exchanging
 messages. Record the choice in `system.json` as `stage: { kind, why }`, with a `why` someone could
-disagree with; starting points for some kinds are in reelplanning's `templates/reelplanning/theme/stages/`.
+disagree with; starting points for some kinds are in reelplanner's `templates/reelplanner/theme/stages/`.
 If something has no edge and no place on the artefact, it is a rail step, not a box.
 
 **The real thing, where the brief picks it.** A scene can show the thing it is about (a file, a table, a
@@ -218,7 +218,7 @@ as glossed in place, never as a word used before it is defined, and an id in the
 change that touches many files shows its map first: the files it touches, each with one plain line of
 what changes there. Then the one or two places that carry the idea are the real thing, with plain words
 pinned on; the rest stay a line on the map. Say a plan changes ten files to put the answer on the
-video's own cards. One scene is the map, ten rows (`reelplanning-player.js` · finds the cards and
+video's own cards. One scene is the map, ten rows (`reelplanner-player.js` · finds the cards and
 answers on them; `frame-lint.mjs` · stops a card that moves; `BRIEF.md` · says where the cards go; …).
 The next is the player's diff at the one place it finds a card, "answer" pinned on the new button; the
 next is the screen before and after. The other eight files are never opened.
@@ -236,7 +236,7 @@ on screen together for at least 4 s.
 
 Seven rules for how a frame reads, whatever it draws. `frame-lint` fails what a program can see in the markup
 (rules 1 and 5); the designer, one of the two fresh agents that look at every video before you do
-(`reelplanning fresh-eyes`), checks all seven on a picture of each scene at rest, the player's tab, chips and
+(`reelplanner fresh-eyes`), checks all seven on a picture of each scene at rest, the player's tab, chips and
 captions included.
 
 1. **Show the thing, never a stand-in.** Write the words; never grey lines or an empty box where words go. If the
@@ -460,7 +460,7 @@ reviewer approved the plan; what they can judge now is what they can see. It aim
 
 ## 9. Building from the project record
 
-When the repo has `.reelplanning/`, the video is built from it:
+When the repo has `.reelplanner/`, the video is built from it:
 
 - **Names** come from `glossary.md` and `system.json`. A plan that says "upload record" for the
   manifest is corrected to the glossary name in the script, not echoed.
@@ -552,7 +552,7 @@ it must make sense to someone who opens nothing.
   words pinned (`data-gloss`); a change across many files shows its map, then one or two places, never
   every file; BRIEF.md says the medium, layouts and main transition.
 - At most six parts on a frame; every label is a glossary name; a tool's name is in code markup
-  (`reelplanning`), every name as `names.md` shows it.
+  (`reelplanner`), every name as `names.md` shows it.
 - Every frame reads (§5, "A frame a newcomer can read"): the thing, never a stand-in (no grey lines or empty box
   where words go); one reading order, the narration's; each label on its thing; a question that says what you
   decide; 40 px clear above a detail's thing, nothing on words; text readable at a glance, at most three sizes; one

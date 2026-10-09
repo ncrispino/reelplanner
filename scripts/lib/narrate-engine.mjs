@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// reelplanning's narration engine: a stand-in for HyperFrames' media-use audio engine (its audio.mjs), with the
-// same command line and the same output, used when .reelplanning/config.json's `narration.tts` (or
-// REELPLANNING_TTS) names a provider (scripts/lib/narrator.mjs). `reelplanning narrate` hands it to
+// reelplanner's narration engine: a stand-in for HyperFrames' media-use audio engine (its audio.mjs), with the
+// same command line and the same output, used when .reelplanner/config.json's `narration.tts` (or
+// REELPLANNER_TTS) names a provider (scripts/lib/narrator.mjs). `reelplanner narrate` hands it to
 // faceless-explainer's audio.mjs as HF_MEDIA_ENGINE, audio.mjs's own override, so nothing of HyperFrames' is changed.
 //
 //   node narrate-engine.mjs --request ./audio_request.json --hyperframes <dir> --out ./audio_engine_meta.json --only tts,bgm
@@ -14,9 +14,9 @@
 // timings from the provider itself, a transcription API, or local whisper at the model the settings name
 // (`hyperframes transcribe --model`, which HyperFrames' engine fixes at small.en). Lines run `concurrency` at a
 // time. Music and sound effects are not this engine's: for --only bgm/sfx it runs HyperFrames' engine
-// (REELPLANNING_MEDIA_ENGINE) on the same files after the voices are written, which merges into them.
+// (REELPLANNER_MEDIA_ENGINE) on the same files after the voices are written, which merges into them.
 //
-// The settings arrive as JSON in REELPLANNING_NARRATION (narrate resolves them); the keys from the environment.
+// The settings arrive as JSON in REELPLANNER_NARRATION (narrate resolves them); the keys from the environment.
 // A line that fails after its retries is left out and named (narrate voices it again next run); a refused key
 // stops the run.
 import { existsSync, readFileSync, writeFileSync, mkdirSync, renameSync } from "node:fs";
@@ -38,7 +38,7 @@ const outPath = resolve(flag("out", join(dir, "audio_meta.json")));
 const only = new Set(flag("only", "tts,bgm,sfx").split(",").map((x) => x.trim()).filter(Boolean));
 const request = readJson(reqPath) || die(`cannot read ${reqPath}`);
 let s;
-try { s = JSON.parse(process.env.REELPLANNING_NARRATION || ""); } catch { die("REELPLANNING_NARRATION holds no settings (run it through `reelplanning narrate`)"); }
+try { s = JSON.parse(process.env.REELPLANNER_NARRATION || ""); } catch { die("REELPLANNER_NARRATION holds no settings (run it through `reelplanner narrate`)"); }
 loadEnvFile(dir);
 const lines = Array.isArray(request.lines) ? request.lines : [];
 const lang = request.lang || "en";
@@ -107,8 +107,8 @@ writeFileSync(outPath, JSON.stringify(meta, null, 2));
 // ── music and sound effects: HyperFrames' engine, merging into what is written ──────────────────
 const rest = [...only].filter((x) => x === "sfx" || (x === "bgm" && request.bgm?.mode && request.bgm.mode !== "none"));
 if (rest.length) {
-  const media = process.env.REELPLANNING_MEDIA_ENGINE;
-  if (!media || !existsSync(media)) anomalies.push(`${rest.join(", ")}: HyperFrames' audio engine not found (${media || "REELPLANNING_MEDIA_ENGINE unset"}) — skipped`);
+  const media = process.env.REELPLANNER_MEDIA_ENGINE;
+  if (!media || !existsSync(media)) anomalies.push(`${rest.join(", ")}: HyperFrames' audio engine not found (${media || "REELPLANNER_MEDIA_ENGINE unset"}) — skipped`);
   else {
     const r = spawnSync(process.execPath, [media, "--request", reqPath, "--hyperframes", dir, "--out", outPath, "--only", rest.join(",")], { stdio: ["ignore", "inherit", "inherit"] });
     if (r.status !== 0) anomalies.push(`${rest.join(", ")}: HyperFrames' audio engine exited ${r.status ?? r.signal} — skipped`);

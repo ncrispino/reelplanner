@@ -1,10 +1,10 @@
 // Which coding agent a repo's headless review run uses (`reel init --agent claude|codex|none`), and the
-// `agent` block of .reelplanning/config.json each one writes. docs/agents.md says what each agent is tested for.
+// `agent` block of .reelplanner/config.json each one writes. docs/agents.md says what each agent is tested for.
 //
 //   claude   Claude Code (tested): the template's command, auto mode inside its sandbox (D-082)
 //   codex    Codex CLI (basic support, its headless run not yet tried end to end): `codex exec` in its own
 //            workspace-write sandbox, network on for what the run fetches or pushes
-//   none     no command: a review sent while no session waits stays in .reelplanning/inbox/ for the next one
+//   none     no command: a review sent while no session waits stays in .reelplanner/inbox/ for the next one
 //
 // Without --agent, init picks one: the agent it is running inside (Claude Code sets CLAUDECODE; Codex sets
 // CODEX_THREAD_ID, and CODEX_SANDBOX or CODEX_SANDBOX_NETWORK_DISABLED in its sandboxed shells), else the
@@ -20,8 +20,8 @@ export const AGENTS = ["claude", "codex", "none"];
 // not asked); `-a` and `--full-auto` are rejected. The prompt is appended last, as `codex exec [OPTIONS] [PROMPT]`.
 export const CODEX_COMMAND = "codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never";
 
-const CODEX_NOTE = "Started headless when a review is sent from the local page and no session is waiting, with the prompt appended last. Codex (basic support, docs/agents.md): `codex exec` in its workspace-write sandbox, which writes only inside the repo and the temp folder, never asks (a command that needs more is refused), and here has the network on, for what the run fetches or pushes; reelplanning itself is installed (`" + RP_INSTALL + "`) and needs none: drop `-c sandbox_workspace_write.network_access=true` to run with the network off (the run then cannot push). Not yet tried end to end: the sandbox keeps .git read-only, so the run's `git commit` may be refused (check `git status` after a run). reelplanning adds no fence of its own to it (no file-tools hook). Empty: reviews wait in .reelplanning/inbox/ for the next session.";
-const NONE_NOTE = "No headless run: a review sent from the local page while no session is waiting stays in .reelplanning/inbox/ until the next session runs `reelplanning inbox`. Set `command` to start one (docs/agents.md: `reel init --agent claude` or `--agent codex` writes it).";
+const CODEX_NOTE = "Started headless when a review is sent from the local page and no session is waiting, with the prompt appended last. Codex (basic support, docs/agents.md): `codex exec` in its workspace-write sandbox, which writes only inside the repo and the temp folder, never asks (a command that needs more is refused), and here has the network on, for what the run fetches or pushes; reelplanner itself is installed (`" + RP_INSTALL + "`) and needs none: drop `-c sandbox_workspace_write.network_access=true` to run with the network off (the run then cannot push). Not yet tried end to end: the sandbox keeps .git read-only, so the run's `git commit` may be refused (check `git status` after a run). reelplanner adds no fence of its own to it (no file-tools hook). Empty: reviews wait in .reelplanner/inbox/ for the next session.";
+const NONE_NOTE = "No headless run: a review sent from the local page while no session is waiting stays in .reelplanner/inbox/ until the next session runs `reelplanner inbox`. Set `command` to start one (docs/agents.md: `reel init --agent claude` or `--agent codex` writes it).";
 
 /** Is `name` an executable on PATH? (`which`, without a shell; on Windows, its .cmd and .exe too) */
 export function onPath(name, env = process.env) {

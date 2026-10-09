@@ -1,4 +1,4 @@
-# A fresh machine, as a new user meets reelplanning (docs/releasing.md, "Check it from a fresh machine"): the README's
+# A fresh machine, as a new user meets reelplanner (docs/releasing.md, "Check it from a fresh machine"): the README's
 # Install run as written, in a bare ubuntu:24.04 container, by a user with sudo (scripts/release/fresh-install.sh);
 # once with Node 22 from nvm, and once with Ubuntu's own older Node, which the CLI must refuse at once. It installs
 # the commit under test from GitHub, as the README's `npm i -g github:…` would.

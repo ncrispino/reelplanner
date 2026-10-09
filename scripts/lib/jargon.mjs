@@ -17,7 +17,7 @@
 //   a software word   SEED: common words of the trade (repo, branch, merge, clone, commit, diff, pull
 //                     request, fork, test suite, flag, prompt, agent, template, dependency, lint, spec…),
 //                     used only to detect; a repo's glossary gives the meanings
-//   reelplanning's    OWN: the system's own concept words (walkthrough, plan video, code check, brief,
+//   reelplanner's     OWN: the system's own concept words (walkthrough, plan video, code check, brief,
 //                     storyboard, audit, plan mode, kit…)
 // A word that is plain English in this video ("a brief look", a flag the author means plainly) is marked
 // plain by the storyboard: `plain: flag, brief`. The product's own name (the repo's) is never flagged.
@@ -29,7 +29,7 @@ export const SEED = ["repo", "repository", "branch", "main branch", "merge", "me
   "spec", "schema", "config", "hook", "token", "bundle", "render", "deploy", "runtime", "codebase", "refactor", "pipeline", "fixture",
   "snapshot", "changelog", "semver", "terminal", "command line", "shell", "localhost", "endpoint", "frontend", "backend", "regex",
   "iframe", "markdown", "webhook", "environment variable", "headless", "sandbox", "mock", "stub", "compile", "cron", "dev server"];
-/** reelplanning's own concept words: detection only; the repo's glossary says what each is. */
+/** reelplanner's own concept words: detection only; the repo's glossary says what each is. */
 export const OWN = ["walkthrough", "walkthrough video", "plan video", "system video", "code check", "brief", "storyboard", "audit", "plan mode",
   "kit", "glossary", "decision log", "quick check", "detail page", "plan map", "terms index"];
 /** Plain English: an all-capitals word that is one of these is emphasis, not an acronym. */
@@ -92,8 +92,8 @@ function spans(text, form) {
  */
 export function findJargon(text, { segs = null, labels = [], plain = [], names = [], product = [], said = false } = {}) {
   const out = [], seen = new Set(), plainSet = new Set(plain.map((p) => p.toLowerCase()));
-  // reelplanning itself, the tool every one of these videos is made with, is the system video's to explain
-  const productSet = new Set([...product, "reelplanning"].map((p) => p.toLowerCase()));
+  // reelplanner itself, the tool every one of these videos is made with, is the system video's to explain
+  const productSet = new Set([...product, "reelplanner"].map((p) => p.toLowerCase()));
   const labelForms = [...new Set(labels.map((l) => String(l).toLowerCase().trim()).filter(Boolean))].sort((a, b) => b.length - a.length);
   const isPlain = (k) => plainSet.has(k) || [...plainSet].some((p) => saysForm(k, p));
   const tools = names.filter((n) => n.code && !productSet.has(n.shown.toLowerCase()));
@@ -136,7 +136,7 @@ export function findJargon(text, { segs = null, labels = [], plain = [], names =
       const word = s.slice(a, b);
       // "a brief look", "in brief": the adjective, not the video's brief
       if (f === "brief" && /\b(?:a|in)\s+$/i.test(s.slice(Math.max(0, a - 4), a)) && /^\s+[a-z]/i.test(s.slice(b, b + 2))) continue;
-      push(f, word, OWN.includes(f) ? "a reelplanning word" : "a software word"); s = blank(s, a, b);
+      push(f, word, OWN.includes(f) ? "a reelplanner word" : "a software word"); s = blank(s, a, b);
     }
   }
   // 4. a tool said aloud (names.md shows it in code), in its own lower case: "git", "npm", "reel"

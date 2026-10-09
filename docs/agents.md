@@ -1,6 +1,6 @@
 # Agents
 
-reelplanning is a skill plus a command-line tool, so any coding agent that loads skills and runs shell commands
+reelplanner is a skill plus a command-line tool, so any coding agent that loads skills and runs shell commands
 can in principle drive it. In practice it is **tested with Claude Code**, has **basic support for Codex**, and is
 **untested** with the others below. This page says what works where, and lists the open work, each item written so
 a contributor can pick it up.
@@ -9,7 +9,7 @@ a contributor can pick it up.
 
 | Agent | Status | What it needs from you |
 |---|---|---|
-| Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanning/spec.md#pipelines), D-082). | Nothing beyond [Install](./reference.md#install). |
+| Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | Nothing beyond [Install](./reference.md#install). |
 | Codex CLI (0.160.0) | **Basic.** The flags and commands below are checked; no full run yet. | A global install of the package, `setup` run outside the agent, and escalation for `review --detach` and `git commit` ([Codex](#codex)). |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
@@ -24,7 +24,7 @@ moving into Antigravity CLI (`agy`), and since 2026-06-18 Gemini CLI no longer s
 `npx skills add` knows other agents too (Factory Droid, Kiro CLI, Amp, Cline, Windsurf, Goose and more): untested.
 
 What every agent gets the same: the skill (`npx skills add` installs one copy in `~/.agents/skills/plan-to-video`
-and links it into each agent's own skills folder, for each agent it finds), every `reelplanning` and `reel` command, the local review page, the inbox, and
+and links it into each agent's own skills folder, for the agents you pick, or every one it knows with `-y`), every `reelplanner` and `reel` command, the local review page, the inbox, and
 the review server's notifications. The hosted review page is a claude.ai Artifact, so it is Claude only; other agents
 use the local page.
 
@@ -51,18 +51,18 @@ What is checked, against codex-cli 0.160.0's own `--help` and a run of its sandb
 - **Skills.** Codex reads `~/.agents/skills`, where `npx skills add` puts the skill, and a skill is called with `$name`.
 - **The headless review run.** `reel init` inside Codex (it sets `CODEX_THREAD_ID`), or `reel init --agent codex`,
   writes `codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never` into
-  `.reelplanning/config.json`; the review server appends the prompt last. `exec` never asks for approval; `-a` and
-  `--full-auto` are rejected by this version. The network is on for what the run fetches or pushes; reelplanning itself is installed and needs none.
+  `.reelplanner/config.json`; the review server appends the prompt last. `exec` never asks for approval; `-a` and
+  `--full-auto` are rejected by this version. The network is on for what the run fetches or pushes; reelplanner itself is installed and needs none.
 - **Fresh eyes and the code check.** A second agent must start with no context of the conversation. Codex's
   `spawn_agent` hands the child the whole conversation unless `fork_turns` is `"none"`; `codex exec -C <scratch>
   --skip-git-repo-check -s workspace-write --add-dir <the folder it writes>` starts one from a scratch folder. Both
   are printed by `fresh-eyes` and `code-check` beside their prompts.
 - **The sandbox.** `workspace-write` writes only the working folder and the temp folder, has no network, and keeps
-  `.git` read-only. So: install the package globally (`npm i -g reelplanning`, or from GitHub while it is not on npm),
-  run `reelplanning setup` outside the agent (or start Codex with `-c sandbox_workspace_write.network_access=true`),
+  `.git` read-only. So: install the package globally (`npm i -g reelplanner`, or from GitHub while it is not on npm),
+  run `reelplanner setup` outside the agent (or start Codex with `-c sandbox_workspace_write.network_access=true`),
   and ask for escalation for `review --detach` and `git commit`.
 - **The review loop.** Nothing wakes a Codex session when a background command exits, so the skill tells it to run
-  `reelplanning inbox` at the start of each turn, or `reelplanning review --wait --timeout 90` in a loop.
+  `reelplanner inbox` at the start of each turn, or `reelplanner review --wait --timeout 90` in a loop.
 
 Not yet seen working: everything that needs a model run (the [first open item](#open-work)).
 
@@ -121,12 +121,12 @@ Each item: what to change, where, why, and how to tell it works. Pick one, open 
    *What:* where the skill runs something long (`narrate`, `build`, `review --wait`), say the fallback: start it with
    `nohup … > <log> 2>&1 &` and read the log, and loop `review --wait --timeout 90`. *Where:* `SKILL.md` "Build a
    video" step 3 and "Running the loop", or the harness reference (item 4). *Why:* opencode stops a shell call after
-   2 minutes by default. *Verify:* an opencode run of `reelplanning build` on `videos/l1-upload-resume` finishes.
+   2 minutes by default. *Verify:* an opencode run of `reelplanner build` on `videos/l1-upload-resume` finishes.
 
 9. **A path with no display, for cloud agents.**
    *What:* when there is no browser and nobody to ask (Copilot cloud agent, Codex cloud), pack the video with
    `bundle-player` and push it as its own branch (as "Several people" does for a PR), and choose preview at
-   faceless-explainer's Step 6. Add a `copilot-setup-steps.yml` template that runs `reelplanning setup`. *Where:*
+   faceless-explainer's Step 6. Add a `copilot-setup-steps.yml` template that runs `reelplanner setup`. *Where:*
    `SKILL.md` "Open it", `templates/`. *Why:* a cloud agent cannot open the review page or answer Step 6.
    *Verify:* a Copilot cloud agent run on a test issue ends with a branch the reviewer can open.
 
@@ -142,7 +142,7 @@ Each item: what to change, where, why, and how to tell it works. Pick one, open 
     find its headless flags (unverified so far) for item 3. *Why:* it replaced Gemini CLI for most users, and none
     of it is tried here. *Verify:* a short plan run in `agy` loads the skill; write what it needs into the table above.
 
-12. **Publishing.** The package is not on npm yet (`npm view reelplanning` says 404), and the owner decides when it
+12. **Publishing.** The package is not on npm yet (`npm view reelplanner` says 404), and the owner decides when it
     is. Until then the docs and `scripts/release/install.sh` install it from GitHub, which downloads the repo's
     files with its example videos (about 64 MB compressed, October 2026).
     *What:* once published, keep the GitHub line as the fallback only; or, before that, attach `npm pack`'s tarball

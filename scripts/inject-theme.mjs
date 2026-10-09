@@ -7,7 +7,7 @@
 // There is deliberately no second "index-dark.html": the runtime does not boot from a differently
 // named entry point. The review player switches the theme on the HTML; no dark MP4 is rendered.
 //
-// usage: reelplanning inject-theme <project-dir> [--captions-only]
+// usage: reelplanner inject-theme <project-dir> [--captions-only]
 //   --captions-only   only repoint the captions layer (after the caption steps are re-run on their own,
 //                     which rewrite compositions/captions.html from the skin); index.html is left alone
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -20,7 +20,7 @@ const idx = join(dir, "index.html");
 if (!CAPTIONS_ONLY && !existsSync(idx)) { console.error(`✗ ${idx} does not exist — assemble the index first`); process.exit(1); }
 
 if (!CAPTIONS_ONLY) {
-const block = readFileSync(join(ROOT, "templates/reelplanning/theme/tokens.html"), "utf8").trim();
+const block = readFileSync(join(ROOT, "templates/reelplanner/theme/tokens.html"), "utf8").trim();
 let html = readFileSync(idx, "utf8");
 
 html = html.replace(/\n?<!-- The video's colour system[\s\S]*?<\/script>\n?/, "\n");   // drop a previous block

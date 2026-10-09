@@ -607,7 +607,7 @@ function stagesOf(g) {
   });
 }
 // a word a sentence may start with, capitalised; a name written in lower case on purpose (a file, a command, a flag) kept
-const capWord = (t) => { const x = String(t || ""); return /^(?!(?:reel|reelplanning|git|npm|npx|node|gh)\b)[a-z][a-z']*(?:-[a-z]+)*(?=[\s,;:?!]|$)/.test(x) ? x[0].toUpperCase() + x.slice(1) : x; };
+const capWord = (t) => { const x = String(t || ""); return /^(?!(?:reel|reelplanner|git|npm|npx|node|gh)\b)[a-z][a-z']*(?:-[a-z]+)*(?=[\s,;:?!]|$)/.test(x) ? x[0].toUpperCase() + x.slice(1) : x; };
 const endStop = (t) => (/[.!?…:]$/.test(t) ? t : `${t}.`);
 /** A stage said as a sentence for the caption under the drawing: what passes and where
  *  from and to, then the author's own sentence for it (the why), when the diagram has one. Composed only from the edge's

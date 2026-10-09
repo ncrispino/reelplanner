@@ -25,7 +25,7 @@
 <p>The lines that carry the call are marked. Click a line to comment on it.</p>
 <pre><code><span class="ln" data-n="12" data-anchor="complete.ts:12">export async function complete(id: string) {</span><span class="ln" data-n="13" data-anchor="complete.ts:13">  const m = await manifests.get(id);</span><span class="ln mark" data-n="14" data-anchor="complete.ts:14">  if (m.partsDone.missing().length)</span><span class="ln mark" data-n="15" data-anchor="complete.ts:15">    return conflict(409, "parts missing");</span><span class="ln" data-n="16" data-anchor="complete.ts:16">  return finish(m);</span><span class="ln" data-n="17" data-anchor="complete.ts:17">}</span></code></pre>
 <script>
-/* reelplanning detail bridge (contract §3) */
+/* reelplanner detail bridge (contract §3) */
 (() => {
   const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.slice(1));
   if ((q.get("theme") || h.get("theme")) === "dark") document.documentElement.dataset.theme = "dark";

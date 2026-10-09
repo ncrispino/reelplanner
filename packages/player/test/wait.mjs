@@ -1,7 +1,7 @@
 // What the player specs wait on: the state they wait for, never a fixed time. A loaded machine (the full run, specs
 // side by side, often with other work on it) outlasts any fixed wait, and a spec that slept 300 ms and then looked
 // failed there for no fault of the player. The player specs share them from here (group and answer-on-frame bind
-// them to their own page). `p` is a Playwright page with a <reelplanning-player id="rp"> on it.
+// them to their own page). `p` is a Playwright page with a <reelplanner-player id="rp"> on it.
 //
 // until: wait for a state; the check after it says whether it came (a wait that times out returns null and does not
 // throw, so a check that fails says what it saw, not "timeout").

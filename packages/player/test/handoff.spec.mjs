@@ -47,7 +47,7 @@ ok(under.cols && under.list && under.below && /retry cost/.test(under.field) && 
 ok(!got.warn, "no placeholder warning — this video's storyboard names its plan directory");
 ok(got.codes.length === 2, `two commands — ${got.codes.length}`);
 ok(got.codes.every((c) => c.includes(planDir)), "every line names the real plan directory");
-ok(got.codes[0].startsWith(`${RP_COMMAND} reel record `) && /^\S+ ~\/Downloads\/annotations\.json$/.test(got.codes[0].slice(`${RP_COMMAND} reel record `.length)), `line 1 is reel record on the download, run as people run reelplanning (RP_COMMAND, "${RP_COMMAND}"; it files it in reviews/) — "${got.codes[0]}"`);
+ok(got.codes[0].startsWith(`${RP_COMMAND} reel record `) && /^\S+ ~\/Downloads\/annotations\.json$/.test(got.codes[0].slice(`${RP_COMMAND} reel record `.length)), `line 1 is reel record on the download, run as people run reelplanner (RP_COMMAND, "${RP_COMMAND}"; it files it in reviews/) — "${got.codes[0]}"`);
 ok(got.codes.every((c) => !/\bmv\b|resolved\.md|revise-scope/.test(c)), "no file is moved by hand, and no old file is named");
 ok(got.codes[1].includes("git push"), "line 2 pushes — that is what starts the revise");
 ok(got.text.trim().split("\n").length === 2, "what Copy puts on the clipboard is the commands, with none of the prose");
@@ -77,14 +77,14 @@ const ph = await p.evaluate(() => { const el = document.querySelector("#rp");
 ok(ph.warn && ph.first.includes("<plan-dir>"), "a silent storyboard gets a flagged placeholder, not a guess");
 
 // ---- a quick video: its repo keeps no decision log (bundle-player's record="none") ----
-// There is no .reelplanning/ to file the review in, so no `reel record`, no plan_dir to name and nothing to run from
+// There is no .reelplanner/ to file the review in, so no `reel record`, no plan_dir to name and nothing to run from
 // the repo root: Finish's act is the download, and one plain line says to tell the agent where the file is.
 const TELL = "Then tell your agent where the file is (e.g. ~/Downloads/annotations.json): it reads your answers and comments and revises.";
 const quickPanel = (setup) => p.evaluate(({ setup }) => {
   const el = document.querySelector("#rp"), keep = el.planMap;
   if (setup === "explainer") el.planMap = { ...keep, kind: "explainer", decisions: [] };
   if (setup === "walkthrough") el.planMap = { ...keep, project: "walkthrough-video", decisions: [], autonomy: [{ id: "a1", title: "a call" }] };
-  if (setup === "system") el.planMap = { ...keep, project: "system-video", planDir: ".reelplanning", kind: "system", reviewDir: ".reelplanning/system-video" };
+  if (setup === "system") el.planMap = { ...keep, project: "system-video", planDir: ".reelplanner", kind: "system", reviewDir: ".reelplanner/system-video" };
   el.setVerdict(setup === "explainer" ? "done" : "changes");   // as Finish does: Request changes where there are comments
   el.showHandoff({ finishing: setup !== "export" });
   const box = el.shadowRoot.querySelector(".handoff"), text = box.textContent.replace(/\s+/g, " ");

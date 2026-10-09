@@ -10,7 +10,7 @@ Cut what didn't happen. A blank looks like _fill in: this_.
 | Arm | {{arm_title}} |
 | Provenance | [`provenance.json`](provenance.json): the machine, every tool's version, the settings, and what the transcripts say ran |
 | Claude Code, model | _fill in: the version, and each model with its responses, from provenance.json_ |
-| reelplanning, where it ran | _fill in: ours, its version and commit from provenance.json; the others, not used_ · _fill in: locally (the OS), a cloud session, or the container_ |
+| reelplanner, where it ran | _fill in: ours, its version and commit from provenance.json; the others, not used_ · _fill in: locally (the OS), a cloud session, or the container_ |
 | Started, ended | _fill in: date and time_ – _fill in: date and time_ |
 | Total: clock, yours | _fill in: minutes_, _fill in: minutes_ |
 | Cost the agent reports | _fill in: $_ |

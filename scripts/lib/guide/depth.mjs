@@ -14,7 +14,7 @@
 //   ```diagram … ```                              how the step works (as many as it needs)
 //   #### Worked examples
 //   ##### A plan with no Interface block          one case
-//   - **Input:** `reel check .reelplanning/plans/2026-10-01-quiet-output`
+//   - **Input:** `reel check .reelplanner/plans/2026-10-01-quiet-output`
 //   - **What happens:** …
 //   - **Output:** `runs/reel-check-new-plan.txt` (lines 1-3)     a saved run, never typed in
 //   - **Predict:** What does it do with step 2?   optional: the output waits for a click

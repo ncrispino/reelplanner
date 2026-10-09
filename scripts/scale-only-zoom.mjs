@@ -7,7 +7,7 @@
 // registry change is followed) loses its filter, and the zoom is carried by scale and opacity alone.
 // Every other transition is left as the registry wrote it. Re-running changes nothing.
 //
-// usage: reelplanning scale-only-zoom <project-dir>
+// usage: reelplanner scale-only-zoom <project-dir>
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { skillsDir } from "./hyperframes-skills.mjs";
@@ -15,7 +15,7 @@ import { skillsDir } from "./hyperframes-skills.mjs";
 const dir = resolve(process.argv[2] || ".");
 const idx = join(dir, "index.html");
 if (!existsSync(idx)) { console.error(`✗ scale-only-zoom: no index.html in ${dir}`); process.exit(1); }
-const regPath = process.env.REELPLANNING_TRANSITIONS || join(skillsDir(), "faceless-explainer", "scripts", "lib", "transitions.json");
+const regPath = process.env.REELPLANNER_TRANSITIONS || join(skillsDir(), "faceless-explainer", "scripts", "lib", "transitions.json");
 let reg;
 try { reg = JSON.parse(readFileSync(regPath, "utf8")); } catch { console.log(`· scale-only-zoom: no transition registry at ${regPath}; nothing to change`); process.exit(0); }
 const zoom = (reg.transitions || []).find((t) => t.name === "zoom-through");

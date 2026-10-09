@@ -5,14 +5,14 @@
 // and the calls never judged. The same sort `reel record` writes into the review's reviews/<id>.md
 // (lib/review-scope.mjs); nothing is written.
 //
-// usage: reelplanning walkthrough-scope <plan-dir> [review.json]   (default: the newest walkthrough review in reviews/)
+// usage: reelplanner walkthrough-scope <plan-dir> [review.json]   (default: the newest walkthrough review in reviews/)
 import { existsSync, readFileSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 import { listReviews, reviewOf, ledgerFor } from "./lib/reviews.mjs";
 import { walkthroughScope, mapFor } from "./lib/review-scope.mjs";
 
 const [planDirArg, annArg] = process.argv.slice(2);
-if (!planDirArg) { console.error("usage: reelplanning walkthrough-scope <plan-dir> [review.json]"); process.exit(1); }
+if (!planDirArg) { console.error("usage: reelplanner walkthrough-scope <plan-dir> [review.json]"); process.exit(1); }
 const planDir = resolve(planDirArg);
 const path = annArg ? resolve(annArg) : listReviews(planDir).filter((r) => r.kind === "walkthrough").at(-1)?.path;
 if (!path || !existsSync(path)) { console.error(`✗ ${path || `no walkthrough review in ${planDirArg}/reviews/`} (record one first: reel record <plan-dir> <annotations.json>)`); process.exit(1); }

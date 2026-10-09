@@ -9,12 +9,12 @@
 // gap: the caption stays lit until its own end, then clears in whatever time there is before the
 // next one. With gaps this tight that is effectively a cut, which is what subtitles do anyway.
 //
-// usage: reelplanning caption-fades <project-dir>
+// usage: reelplanner caption-fades <project-dir>
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const dir = process.argv[2];
-if (!dir) { console.error("usage: reelplanning caption-fades <project-dir>"); process.exit(1); }
+if (!dir) { console.error("usage: reelplanner caption-fades <project-dir>"); process.exit(1); }
 const p = join(dir, "compositions", "captions.html");
 let s = readFileSync(p, "utf8");
 

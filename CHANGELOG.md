@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **reelplanning is now reelplanner** (D-312: reelplanning.com is already a business). The package, the command
+  (`reelplanner`; `reel` stays), the repo (`github:ncrispino/reelplanner`), the case-studies repo, the Claude Code
+  plugin (`/plugin install reelplanner@reelplanner`), a repo's `.reelplanner/`, the machine's `~/.reelplanner` and
+  the settings (`REELPLANNER_*`) take the new name, and the review player is `reelplanner-player.js`. The old names
+  are still read: a repo's `.reelplanning/` (each command says so once, with the `git mv` that renames it),
+  `~/.reelplanning` while there is no `~/.reelplanner` (then its `you.jsonl` and `.env` are named, with the `mv` that
+  moves them), a `REELPLANNING_*` setting in the shell or a .env file, and the `reelplanning`
+  command, which says the new name and runs it. A review begun on the page before the rename keeps its marks.
+  To move over: `npm rm -g reelplanning` (npm stops at `EEXIST` otherwise; `install.sh` does it), then install
+  reelplanner. The entries below keep the old name.
 - **A fresh-install check** (`.github/workflows/fresh-install.yml`, `scripts/release/fresh-install.sh`): the README's
   Install run as written in a bare `ubuntu:24.04` container, by a user with sudo, with Node 22 from nvm and with
   Ubuntu's own older Node, which the CLI must refuse. On a PR that changes the install's path, on each version tag,

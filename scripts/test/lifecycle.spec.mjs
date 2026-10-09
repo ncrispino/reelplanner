@@ -24,8 +24,8 @@ import { actOnMarkdown } from "../lib/review-scope.mjs";
 import { parseGlossary } from "../lib/terms.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-lifecycle-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
-const rp = join(tmp, ".reelplanning");
+process.env.REELPLANNER_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
+const rp = join(tmp, ".reelplanner");
 scratchCopy(join(ROOT, "eval/projects/media-service/.reelplanning"), rp);   // its video folders are links to videos/: copied, never written through
 const pd = join(rp, "plans/2026-09-12-upload-resume");
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
@@ -318,7 +318,7 @@ try {
   // A2 left on the list is "listed, not judged" (the player's Go on); A3 flagged there is a fix like any flag; A4,
   // never reached, is listed too, since Approve takes the rest. Listed entries are not in force: a later plan
   // touching them is not warned by them.
-  const rp2 = join(tmp, "list", ".reelplanning"); scratchCopy(join(ROOT, "eval/projects/media-service/.reelplanning"), rp2);
+  const rp2 = join(tmp, "list", ".reelplanner"); scratchCopy(join(ROOT, "eval/projects/media-service/.reelplanning"), rp2);
   const pd2 = join(rp2, "plans/2026-09-12-upload-resume");
   writeFileSync(join(pd2, "walkthrough.md"), readFileSync(join(pd2, "walkthrough.md"), "utf8").replace("| 16 MB default part size |", "| 16 MB default part size [visible] |"));
   const lmap = JSON.parse(readFileSync(join(pd2, "walkthrough-video", "plan-map.json"), "utf8"));

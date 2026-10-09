@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# A fresh machine, as a new user meets reelplanning (docs/releasing.md, "Check it from a fresh machine"): a bare
+# A fresh machine, as a new user meets reelplanner (docs/releasing.md, "Check it from a fresh machine"): a bare
 # Ubuntu given what a stock Ubuntu server has and a user with sudo, then the README's Install run as written, as that
 # user, and a check of what it left. Run it as root in a new `ubuntu:24.04` container, never on a machine you keep:
 # it installs packages and adds a user. .github/workflows/fresh-install.yml runs it.
 #
 #   bash scripts/release/fresh-install.sh --node 22    Node 22 from nvm (as the README suggests), then the Install
-#   bash scripts/release/fresh-install.sh --node apt   Ubuntu's own nodejs, older than reelplanning needs: the CLI
+#   bash scripts/release/fresh-install.sh --node apt   Ubuntu's own nodejs, older than reelplanner needs: the CLI
 #                                                      must refuse it at once and say how to update
-#   --from <spec>   what `npm i -g` installs in the README's place of github:ncrispino/reelplanning, to check a branch
+#   --from <spec>   what `npm i -g` installs in the README's place of github:ncrispino/reelplanner, to check a branch
 #                   or commit (github:<owner>/<repo>#<ref>); everything else in the README's lines is run as written
 #
 #   docker run --rm -v "$PWD":/src:ro ubuntu:24.04 bash /src/scripts/release/fresh-install.sh --node 22
@@ -41,10 +41,7 @@ ok "$(. /etc/os-release; echo "$PRETTY_NAME"), python $(python3 -c 'import platf
 # ---- the README's Install: its first ```bash block under "## Install", line by line
 INSTALL="$(awk '/^## Install/{f=1; next} f && /^## /{exit} f && /^```bash/{b=1; next} b && /^```/{exit} b' "$HERE/README.md")"
 [ -n "$INSTALL" ] || { echo "✗ no \`\`\`bash block under ## Install in README.md"; exit 1; }
-if [ -n "$FROM" ]; then INSTALL="$(printf '%s\n' "$INSTALL" | sed "s|github:ncrispino/reelplanning|$FROM|")"; fi
-# the one line not run as written: `npx skills add` asks which agents to install to, which a person answers in a
-# terminal and this run cannot (no terminal: it cancels); -y answers "every agent", as AGENTS.md's line does
-INSTALL="$(printf '%s\n' "$INSTALL" | sed -E '/npx skills add/{/ -y( |$)/!s/(npx skills add[^#]*[^ #])/\1 -y/;}')"
+if [ -n "$FROM" ]; then INSTALL="$(printf '%s\n' "$INSTALL" | sed "s|github:ncrispino/reelplanner|$FROM|")"; fi
 printf '%s\n' "$INSTALL" > /home/newuser/install.sh
 chown newuser /home/newuser/install.sh
 
@@ -60,7 +57,7 @@ if [ "$NODE" = apt ]; then
   src="$(printf '%s\n' "$INSTALL" | awk '/npm i -g/{print $4; exit}')"
   step "sudo npm i -g $src   (apt's npm installs globally as root)"
   sudo npm i -g "$src" >/tmp/npm.log 2>&1 && ok "installed" || { bad "npm i -g failed"; tail -5 /tmp/npm.log; }
-  for c in "reelplanning --version" "reel status"; do
+  for c in "reelplanner --version" "reel status"; do
     out="$(as_user "$c" 2>&1)"; code=$?
     if [ $code = 1 ] && printf '%s' "$out" | grep -q "needs Node .* or later; this is Node $(node -v | tr -d v)"; then
       ok "$c refuses Node $(node -v), saying how to update"
@@ -74,16 +71,22 @@ else
   ok "node $(as_user 'node -v')"
   while IFS= read -r line; do
     [ -n "${line// }" ] || continue
+    # the one line not run as written: `npx skills add` asks which agents to install to, which a person answers in a
+    # terminal and this run cannot (no terminal: it cancels); -y answers "every agent", as AGENTS.md's line does.
+    # Only the command is looked at, not its comment (which may itself mention -y).
+    cmd="${line%%#*}"; note=""; [[ "$line" == *"#"* ]] && note="   #${line#*#}"
+    cmd="${cmd%"${cmd##*[![:space:]]}"}"
+    if [[ "$cmd" == *"npx skills add"* && " $cmd " != *" -y "* ]]; then line="$cmd -y$note"; fi
     step "$line"
     as_user "$line </dev/null" 2>&1 | tail -40; code=${PIPESTATUS[0]}
     [ "$code" = 0 ] && ok "exit 0" || bad "exit $code: $line"
   done < /home/newuser/install.sh
 
   step "what it left"
-  want="$(as_user 'node -p "require(\"$(npm root -g)/reelplanning/package.json\").version"' 2>/dev/null)"
-  have="$(as_user 'reelplanning --version' 2>/dev/null)"
-  [ -n "$want" ] && [ "$have" = "$want" ] && ok "reelplanning --version: $have, on the PATH of a new terminal" || bad "reelplanning --version: \"$have\", the package says \"$want\""
-  dry="$(as_user 'reelplanning setup --dry-run' 2>&1)"; code=$?
+  want="$(as_user 'node -p "require(\"$(npm root -g)/reelplanner/package.json\").version"' 2>/dev/null)"
+  have="$(as_user 'reelplanner --version' 2>/dev/null)"
+  [ -n "$want" ] && [ "$have" = "$want" ] && ok "reelplanner --version: $have, on the PATH of a new terminal" || bad "reelplanner --version: \"$have\", the package says \"$want\""
+  dry="$(as_user 'reelplanner setup --dry-run' 2>&1)"; code=$?
   printf '%s\n' "$dry" | sed 's/^/    /'
   # after a real setup, the dry run finds every tool (a ✓ for each) and nothing missing; its "· would" lines for the
   # steps setup runs every time (the TTS speed patch, the speed check) are not a tool left out

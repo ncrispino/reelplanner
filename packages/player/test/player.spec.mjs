@@ -1,4 +1,4 @@
-// End-to-end check of <reelplanning-player> against a built project, in headless Chromium.
+// End-to-end check of <reelplanner-player> against a built project, in headless Chromium.
 // usage: node packages/player/test/player.spec.mjs [videos/<project>]
 import { chromium } from "playwright-core";
 import { existsSync } from "node:fs";
@@ -25,7 +25,7 @@ try {
   await page.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}`);
   await page.evaluate(() => { try { localStorage.clear(); } catch {} });
   await page.reload();
-  await page.waitForFunction(() => customElements.get("reelplanning-player") && document.querySelector("#rp")?.shadowRoot?.querySelector("hyperframes-player"));
+  await page.waitForFunction(() => customElements.get("reelplanner-player") && document.querySelector("#rp")?.shadowRoot?.querySelector("hyperframes-player"));
   const rp = page.locator("#rp");
   // 1. hyperframes-player becomes ready with the composition's duration
   const duration = await page.evaluate(() => new Promise((res, rej) => {

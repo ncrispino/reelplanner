@@ -10,7 +10,7 @@ where it needs them, or whose file is not filled in yet, counts as empty. -->
 # Case study: {{title}}
 
 This is a case study, not an experiment. One person ran one prompt three ways, each to a finished site:
-text only (Claude Code's plan mode), an HTML plan, and reelplanning's plan video. The claim under test
+text only (Claude Code's plan mode), an HTML plan, and reelplanner's plan video. The claim under test
 is narrow: that reviewing a plan and answering its questions is easier in a video than in text or in an
 HTML page. The start, the agent, the model and the feedback given were kept the same where we could;
 where we could not, it says so below.
@@ -78,10 +78,10 @@ _fill in: the process, per arm, and what felt different_
 
 ## 8. What we would change
 
-<!-- Words: what we would change in reelplanning because of this case study. Each item becomes part of a
+<!-- Words: what we would change in reelplanner because of this case study. Each item becomes part of a
 next plan, reviewed like any other. -->
 
-_fill in: what we would change in reelplanning_
+_fill in: what we would change in reelplanner_
 
 ## 9. Links
 

@@ -20,7 +20,7 @@ const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node"
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${detail}` : ""}`); if (!cond) failed++; };
 
-const planDir = join(tmp, ".reelplanning", "plans", "2026-01-01-uploads"), video = join(planDir, "video");
+const planDir = join(tmp, ".reelplanner", "plans", "2026-01-01-uploads"), video = join(planDir, "video");
 mkdirSync(video, { recursive: true });
 writeFileSync(join(planDir, "plan.md"), `# Resumable uploads
 
@@ -47,7 +47,7 @@ The browser asks what is done, then sends the rest.
 `);
 const KINDS = ["explore", "try", "evidence", "table", "code", "fresh"];
 const frame = (n, extra = "") => `## Frame ${n} — Frame ${n}\n- src: compositions/frames/${String(n).padStart(2, "0")}.html\n- duration: 4\n- plan_step: ${n <= 4 ? 1 : 2}\n${extra}`;
-const storyboard = `---\ntitle: "Uploads"\nplan_dir: .reelplanning/plans/2026-01-01-uploads\n---\n\n` +
+const storyboard = `---\ntitle: "Uploads"\nplan_dir: .reelplanner/plans/2026-01-01-uploads\n---\n\n` +
   KINDS.map((k, i) => frame(i + 1, `- detail: d-${k}\n- detail_kind: ${k}\n- detail_title: The ${k} page\n- detail_why: What the ${k} page holds that the video cannot.\n${k === "evidence" ? "- autonomy: a1\n" : ""}`)).join("\n") +
   "\n" + frame(7, "- detail: d-benchmark\n- detail_kind: benchmark\n- detail_title: A kind with no template\n- detail_why: Any word is a kind.\n") +
   "\n" + frame(8, "- detail: d-nokind\n- detail_title: No kind at all\n- detail_why: The kind is optional.\n") +

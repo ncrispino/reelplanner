@@ -7,8 +7,8 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { stopFor } from "../autonomy.mjs";
 
-const COMMAND = /^(?:\$\s*)?(?:npx\s+reelplanning|reelplanning|reel|npm|npx|node|git|gh)\s+\S/;
-const OWN = /^(?:npx\s+reelplanning|reelplanning|reel|npm|node\s+bin)\b/;   // the project's own commands; another tool's needs more than its verb to be a way to try it
+const COMMAND = /^(?:\$\s*)?(?:npx\s+reelplanner|reelplanner|reel|npm|npx|node|git|gh)\s+\S/;
+const OWN = /^(?:npx\s+reelplanner|reelplanner|reel|npm|node\s+bin)\b/;   // the project's own commands; another tool's needs more than its verb to be a way to try it
 const clean = (s) => String(s || "").replace(/\s+/g, " ").trim();
 /** "What changes", as the plan numbers them: each item's bold lead ("You can ask for an explainer") and its steps. */
 export function changesOf(md) {
@@ -145,10 +145,10 @@ export function choiceCounts(choices) {
 }
 
 // ── where a saved run was made, and what a command does to the repo ──
-// a command that writes to the project's record (.reelplanning/: plans, reviews, the decision log): the page warns first
-export const WRITES_RECORD = /^(?:npx\s+)?(?:reel\s+(?:record|renumber(?![^|]*--dry-run)|new-plan|retro|decide|init|adopt)|reelplanning\s+(?:explain|record|init))\b/;
-// the repo paths a command names (.reelplanning/…, scripts/…, a folder with a slash), for "does this repo have it?"
-export const pathsIn = (cmd) => [...String(cmd).matchAll(/(?:^|\s)((?:\.reelplanning|scripts|packages|templates|skills|docs|src|\.github)\/[^\s'"|)]+)/g)].map((m) => m[1].replace(/[.,;:]+$/, ""));
+// a command that writes to the project's record (.reelplanner/: plans, reviews, the decision log): the page warns first
+export const WRITES_RECORD = /^(?:npx\s+)?(?:reel\s+(?:record|renumber(?![^|]*--dry-run)|new-plan|retro|decide|init|adopt)|reelplanner\s+(?:explain|record|init))\b/;
+// the repo paths a command names (.reelplanner/…, scripts/…, a folder with a slash), for "does this repo have it?"
+export const pathsIn = (cmd) => [...String(cmd).matchAll(/(?:^|\s)((?:\.reelplann(?:er|ing)|scripts|packages|templates|skills|docs|src|\.github)\/[^\s'"|)]+)/g)].map((m) => m[1].replace(/[.,;:]+$/, ""));
 /** Where a run was made: this repo, or a scratch one (walkthrough.md says so, or the run names a plan this repo does
  *  not have, or a made-up reviewer). → { scratch: bool, why, setup, missing: [paths] } */
 export function whereRan(run, { scratch = null, inScratch = () => false, has = () => true } = {}) {

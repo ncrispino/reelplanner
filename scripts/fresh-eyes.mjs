@@ -36,9 +36,9 @@
 // A rebuild's briefs cover the scenes plan-diff says changed, each with the scene before and after it marked
 // context only; the other scenes are not in them. A first build covers every scene, and so does `--all`.
 //
-// usage: reelplanning fresh-eyes <video-dir>                        write the briefs (a new round)
-//        reelplanning fresh-eyes <video-dir> --prompt newcomer|designer   print the prompt that starts one agent
-//        reelplanning fresh-eyes <video-dir> --check               where it stands (what `verify` runs):
+// usage: reelplanner fresh-eyes <video-dir>                        write the briefs (a new round)
+//        reelplanner fresh-eyes <video-dir> --prompt newcomer|designer    print the prompt that starts one agent
+//        reelplanner fresh-eyes <video-dir> --check                where it stands (what `verify` runs):
 //                                                                  exit 1 on a finding with no answer (D-225),
 //                                                                  or on this round's findings written elsewhere
 //   --all        every scene, on a rebuild too (it holds for the rest of the build's rounds)
@@ -79,7 +79,7 @@ if (args.includes("--prompt")) {
   const roles = rolesFor(dir);
   if (!roles[role]) die(role === "checker" ? "the fact check is for an explainer with a source far longer than the video can show (a source in sources.json with guide: true); this video has the newcomer and the designer" : `--prompt newcomer, or --prompt designer${roles.checker ? ", or --prompt checker" : ""}`);
   const brief = join(fe, `${role}-brief.md`), out = join(fe, `${role}.md`);
-  if (!existsSync(brief)) die(`no brief yet: run \`reelplanning fresh-eyes ${rel(dir)}\` first`);
+  if (!existsSync(brief)) die(`no brief yet: run \`reelplanner fresh-eyes ${rel(dir)}\` first`);
   // absolute paths: the agent runs from a scratch folder of its own, so a path relative to here would land there
   const top = spawnSync("git", ["rev-parse", "--show-toplevel"], { cwd: dir, encoding: "utf8" }).stdout?.trim() || dir;
   // the launcher's instruction goes to stderr, so the prompt on stdout is exactly what the agent gets
@@ -111,7 +111,7 @@ findings you wrote and the path.`);
 
 // ── a new round ────────────────────────────────────────────────────────────────────────────────────────
 const map = (() => { try { return JSON.parse(readFileSync(join(dir, "plan-map.json"), "utf8")); } catch { return null; } })();
-if (!map?.frames?.length || !existsSync(join(dir, "index.html"))) die(`${target} is not built yet (no plan-map.json or index.html): run \`reelplanning build ${target}\` first`);
+if (!map?.frames?.length || !existsSync(join(dir, "index.html"))) die(`${target} is not built yet (no plan-map.json or index.html): run \`reelplanner build ${target}\` first`);
 const was = readStamp(dir), build = buildOf(dir, map), sameBuild = was && buildOfStamp(was) === build.id;
 // what the agents look at: a rebuild's changed scenes (plan-diff), a first build's every one; --all, once in a
 // build, holds for its later rounds
@@ -195,13 +195,13 @@ async function pagePictures() {
       const w = Number(flag("width")) || 1440;
       const page = await browser.newPage({ viewport: { width: w, height: Math.round(w * 0.625) } });
       await page.goto(`http://127.0.0.1:${srv.address().port}/?project=${encodeURIComponent(slug)}`);
-      await page.waitForFunction(() => { const el = document.querySelector("reelplanning-player, #rp"); return el?.shadowRoot?.querySelector("hyperframes-player")?.ready && el.planMap; }, null, { timeout: 120000 });
-      await page.evaluate(() => { const el = document.querySelector("reelplanning-player, #rp"); el.start?.(); });
+      await page.waitForFunction(() => { const el = document.querySelector("reelplanner-player, #rp"); return el?.shadowRoot?.querySelector("hyperframes-player")?.ready && el.planMap; }, null, { timeout: 120000 });
+      await page.evaluate(() => { const el = document.querySelector("reelplanner-player, #rp"); el.start?.(); });
       for (const s of scenes) {
         const t = at(s); if (t == null) continue;
-        await page.evaluate((t) => { const el = document.querySelector("reelplanning-player, #rp"); el.player.pause(); el.player.seek(t); }, t);
+        await page.evaluate((t) => { const el = document.querySelector("reelplanner-player, #rp"); el.player.pause(); el.player.seek(t); }, t);
         await page.waitForTimeout(900);   // the frame settled, the player's tab and chips laid out again
-        const clip = await page.evaluate(() => { const el = document.querySelector("reelplanning-player, #rp"), r = el.stage.getBoundingClientRect(); return { x: r.left, y: r.top, width: r.width, height: r.height }; });
+        const clip = await page.evaluate(() => { const el = document.querySelector("reelplanner-player, #rp"), r = el.stage.getBoundingClientRect(); return { x: r.left, y: r.top, width: r.width, height: r.height }; });
         await page.screenshot({ path: join(shotsDir, `scene-${String(s.scene).padStart(2, "0")}.png`), clip });
       }
     } finally { await browser.close(); srv.close(); }
@@ -214,7 +214,7 @@ async function pagePictures() {
 function framePictures() {
   const times = scenes.map(at).filter((t) => t != null);
   const tmp = mkdtempSync(join(tmpdir(), "rp-fresh-eyes-hf-"));
-  const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanning.mjs"), "hyperframes", "snapshot", "-o", tmp, "--at", times.join(","), "--no-end", "--describe", "false"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
+  const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "snapshot", "-o", tmp, "--at", times.join(","), "--no-end", "--describe", "false"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
   if (r.status !== 0) { rmSync(tmp, { recursive: true, force: true }); return { error: (r.stderr || r.stdout || "").trim().split("\n").at(-1) }; }
   const files = readdirSync(tmp).filter((f) => f.endsWith(".png")).map((f) => ({ f, t: parseFloat((/-at-([\d.]+)s\.png$/.exec(f) || [])[1]) })).filter((x) => Number.isFinite(x.t));
   for (const s of scenes) { const t = at(s), x = files.sort((a, b) => Math.abs(a.t - t) - Math.abs(b.t - t))[0]; if (x && Math.abs(x.t - t) < 0.5) renameSync(join(tmp, x.f), join(shotsDir, `scene-${String(s.scene).padStart(2, "0")}.png`)); }
@@ -335,8 +335,8 @@ if (checked) {
   const edir = explainerDirOf(dir), pinned = (edir && readSources(edir)) || readSources(dir) || { sources: [] };
   const how = (x) => x.form === "path" ? (x.shape === "files" && x.files?.length > 1 ? `the files under \`${x.id}/\` as they were at ${x.commit}: \`git ls-tree -r --name-only ${x.commit} -- ${x.id}\`, then \`git show ${x.commit}:<file>\`` : `\`git show ${x.commit}:${x.id}\``)
     : x.form === "outside" ? `the file \`${x.path}\` (outside the repository; read it where it is)` : x.form === "git" ? `\`git log -p ${x.range}\``
-    : x.form === "since" ? `\`git log --since=${x.day} ${x.until || "HEAD"}\` and the rows of \`.reelplanning/decisions.json\` dated ${x.day} or later`
-    : x.form === "decision" ? `its row in \`.reelplanning/decisions.json\`` : x.form === "worktree" ? `\`git diff ${x.commit}\` (what was not committed then)`
+    : x.form === "since" ? `\`git log --since=${x.day} ${x.until || "HEAD"}\` and the rows of \`.reelplanner/decisions.json\` dated ${x.day} or later`
+    : x.form === "decision" ? `its row in \`.reelplanner/decisions.json\`` : x.form === "worktree" ? `\`git diff ${x.commit}\` (what was not committed then)`
     : x.form === "pr" ? `\`gh pr diff ${x.id.slice(3)}\`` : x.form === "ci" ? `\`gh run view ${x.id.slice(3)} --log\`` : "as its id says";
   const said = Object.fromEntries(storyboardFrames(sb).filter((f) => f.meta.source).map((f) => [f.index, f.meta.source]));
   const checker = `# Fresh eyes: the fact checker's brief · ${title}

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Memory (the memory plan): on a scratch copy of this repo's own .reelplanning, with its real reviews,
-// and a home folder of its own (REELPLANNING_HOME), so the real ~/.reelplanning is never touched.
+// Memory (the memory plan): on a scratch copy of this repo's own .reelplanner, with its real reviews,
+// and a home folder of its own (REELPLANNER_HOME), so the real ~/.reelplanner is never touched.
 //   step 1 — every review filed from now on says who reviewed (git user.email, or the page's viewer: "owner"
-//            or id:<opaque id> from the hosted page's { id, owner }) and which reelplanning recorded it;
+//            or id:<opaque id> from the hosted page's { id, owner }) and which reelplanner recorded it;
 //            old reviews stay as they are
 //   step 2 — `reel status` ends with at most five memory lines, each with an id; `reel memory <id>` prints
 //            the evidence (the reviews, the words, the times)
@@ -29,8 +29,8 @@ import { recordedBy, fileReview } from "../lib/reviews.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-memory-"));
 const home = join(tmp, "home");
-process.env.REELPLANNING_HOME = home;   // every reel run below inherits it
-const realYou = join(homedir(), ".reelplanning", "you.jsonl");
+process.env.REELPLANNER_HOME = home;   // every reel run below inherits it
+const realYou = join(homedir(), ".reelplanner", "you.jsonl");
 const realBefore = existsSync(realYou) ? statSync(realYou).mtimeMs : null;
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: tmp, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const reel = (...a) => run("reel.mjs", ...a);
@@ -81,7 +81,7 @@ try {
   // ---- unit: step 1's stamp ----
   const g = join(tmp, "g"); mkdirSync(g); git(g, "init", "-q"); git(g, "config", "user.email", "owner@example.com");
   const st = recordedBy(g);
-  ok("recordedBy: git's user.email where the review is recorded, and this package's version", st.reviewer === "owner@example.com" && st.via === "git user.email" && st.reelplanning === VERSION, JSON.stringify(st));
+  ok("recordedBy: git's user.email where the review is recorded, and this package's version", st.reviewer === "owner@example.com" && st.via === "git user.email" && st.reelplanner === VERSION, JSON.stringify(st));
   const sv = recordedBy(g, { row: { viewer: { email: "viewer@example.com" } } });
   ok("recordedBy: the page's viewer when the row has one", sv.reviewer === "viewer@example.com" && sv.via === "the page's viewer", JSON.stringify(sv));
   // the hosted page's row (the Artifact's `user` capability): { id, owner }, an opaque id and never a name
@@ -93,7 +93,7 @@ try {
   ok("recordedBy: a row with no viewer, one with neither id nor owner, or only a name, falls back to git's user.email", [sn, sx, sname].every((x) => x.reviewer === "owner@example.com" && x.via === "git user.email"), JSON.stringify([sn, sx, sname]));
   ok("recordedBy: an older row's string viewer is kept as it is", recordedBy(g, { row: { viewer: " viewer@example.com " } }).reviewer === "viewer@example.com");
   const rv = { exportedAt: "2026-09-24T10:00:00.000Z", annotations: [], decisions: [] };
-  const f1 = fileReview(g, rv, { kind: "plan" }), f2 = fileReview(g, { ...rv, recorded: { reviewer: "someone@else", reelplanning: "9.9.9" } }, { kind: "plan" });
+  const f1 = fileReview(g, rv, { kind: "plan" }), f2 = fileReview(g, { ...rv, recorded: { reviewer: "someone@else", reelplanner: "9.9.9" } }, { kind: "plan" });
   ok("fileReview: the same review filed again with another stamp is the same review", !f1.again && f2.again && f2.path === f1.path, JSON.stringify([f1, f2]));
 
   // ---- unit: a signal three times makes a retro due, whatever the plan count ----
@@ -105,16 +105,16 @@ try {
   reel("init", small, "--name", "small", "--kind", "greenfield");
   writeFileSync(join(tmp, "p.md"), "# P\n\n## The problem\n\nx\n\n### Step 1 — A\n\ny\n");
   reel("new-plan", small, "a", "--plan", join(tmp, "p.md"), "--date", "2026-01-01");
-  const due = retroDue(join(small, ".reelplanning"), three, []);
+  const due = retroDue(join(small, ".reelplanner"), three, []);
   ok("retroDue: one plan, but a signal three times → due, and why", due.due && due.why.length === 1 && /one signal repeated 3 times: own words, unclear, asked for more/.test(due.why[0]), JSON.stringify(due));
-  ok("retroDue: two of a signal is not yet", !retroDue(join(small, ".reelplanning"), three.slice(0, 2), []).due);
+  ok("retroDue: two of a signal is not yet", !retroDue(join(small, ".reelplanner"), three.slice(0, 2), []).due);
 
   // ---- unit: a late fix is an accept that came before the change (round 2's N1: explain-first's A13 was
   // listed on 29 Sep, changed that evening, accepted on 30 Sep: changed, then accepted, never a late fix) ----
   const order = join(tmp, "order"); mkdirSync(order); git(order, "init", "-q"); git(order, "config", "user.email", "owner@example.com"); git(order, "config", "user.name", "Owner");
   reel("init", order, "--name", "order", "--kind", "greenfield");
   reel("new-plan", order, "b", "--plan", join(tmp, "p.md"), "--date", "2026-01-02");
-  const orp = join(order, ".reelplanning"), obPlan = readdirSync(join(orp, "plans")).find((p) => /-b$/.test(p)), ob = join(orp, "plans", obPlan);
+  const orp = join(order, ".reelplanner"), obPlan = readdirSync(join(orp, "plans")).find((p) => /-b$/.test(p)), ob = join(orp, "plans", obPlan);
   const commitAt = (when, msg) => { git(order, "add", "-A"); execFileSync("git", ["-C", order, "commit", "-q", "-m", msg], { env: { ...process.env, GIT_AUTHOR_DATE: when, GIT_COMMITTER_DATE: when }, stdio: "ignore" }); };
   const rowsMd = (a1, a2) => `# Walkthrough\n\n| # | Step | Chose | Instead of | Why | Check |\n|---|---|---|---|---|---|\n| A1 | 1 | ${a1} [close] | one list | fewer | \`x\` |\n| A2 | 1 | ${a2} [close] | one list | fewer | \`y\` |\n`;
   writeFileSync(join(ob, "walkthrough.md"), rowsMd("the list is sorted by date", "the list shows ten rows"));
@@ -129,11 +129,11 @@ try {
   ok("findMisses: …a row left unjudged by the first review, changed, then accepted by the next is none (A1: listed, changed at 18:00, accepted the next day)", !late.some((m) => /^A1 /.test(m.what)), JSON.stringify(late.map((m) => m.what)));
   ok("reel stops: so only the real late fix makes a close choice pause", /A1[^\n]*a late fix: A2 of b accepted, then changed/.test(reel("stops", ob).out), reel("stops", ob).out);
 
-  // ---- a scratch copy of this repo's .reelplanning, with its real reviews ----
-  const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
+  // ---- a scratch copy of this repo's .reelplanner, with its real reviews ----
+  const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
   // the record, not the videos: of a video's files only its plan map (the questions and checks) is read
   const inVideo = (s) => /[\\/](video|walkthrough-video|system-video|inbox)[\\/]/.test(s.slice(ROOT.length));
-  mkdirSync(repo); cpSync(join(ROOT, ".reelplanning"), rp, { recursive: true, filter: (s) => statSync(s).isDirectory() ? !/[\\/](assets|renders|snapshots|node_modules|compositions|capture)$/.test(s) : !inVideo(s) || basename(s) === "plan-map.json" });
+  mkdirSync(repo); cpSync(join(ROOT, ".reelplanner"), rp, { recursive: true, filter: (s) => statSync(s).isDirectory() ? !/[\\/](assets|renders|snapshots|node_modules|compositions|capture)$/.test(s) : !inVideo(s) || basename(s) === "plan-map.json" });
   git(repo, "init", "-q"); git(repo, "config", "user.email", "owner@example.com");
   // one person's repo: this repo's maintainers (the contributing plan) would make owner@example.com a contributor
   { const c = JSON.parse(readFileSync(join(rp, "config.json"), "utf8")); delete c.maintainers; writeFileSync(join(rp, "config.json"), JSON.stringify(c, null, 2) + "\n"); }
@@ -168,19 +168,19 @@ try {
   ok("…once: recorded again, it is already there", /· your memory: this review is already in /.test(reel("record", memPlan, oldReview).out) && readFileSync(join(home, "you.jsonl"), "utf8").trim().split("\n").length === 1);
 
   // A15, as the owner answered it: a run fenced to the repo (D-082) cannot write your file, so the summary
-  // waits in the repo (.reelplanning/you.pending.jsonl), and the next run that can write your file moves it in
-  const reelAt = (h, cwd, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), ...a], { encoding: "utf8", cwd, env: { ...process.env, REELPLANNING_HOME: h }, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
+  // waits in the repo (.reelplanner/you.pending.jsonl), and the next run that can write your file moves it in
+  const reelAt = (h, cwd, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), ...a], { encoding: "utf8", cwd, env: { ...process.env, REELPLANNER_HOME: h }, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
   writeFileSync(join(tmp, "a-file"), "");
   const fencedHome = join(tmp, "a-file", "home"), pendingFile = join(rp, "you.pending.jsonl");
   const pendingLines = () => (existsSync(pendingFile) ? readFileSync(pendingFile, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []);
   const homeLines = (h) => (existsSync(join(h, "you.jsonl")) ? readFileSync(join(h, "you.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []);
   const fenced = reelAt(fencedHome, tmp, "record", memPlan, oldReview);
-  ok("reel record: where your file cannot be written, the review is recorded all the same, and its summary waits in the repo's .reelplanning/you.pending.jsonl, said on its line", fenced.code === 0 && /△ your memory: could not write [^\n]*, so a summary of this review is kept in [^\n]*\.reelplanning\/you\.pending\.jsonl \(commit it with the review\); the next `reel record` or `reel memory --you` that can write [^\n]* moves it there/.test(fenced.out)
+  ok("reel record: where your file cannot be written, the review is recorded all the same, and its summary waits in the repo's .reelplanner/you.pending.jsonl, said on its line", fenced.code === 0 && /△ your memory: could not write [^\n]*, so a summary of this review is kept in [^\n]*\.reelplanner\/you\.pending\.jsonl \(commit it with the review\); the next `reel record` or `reel memory --you` that can write [^\n]* moves it there/.test(fenced.out)
     && pendingLines().length === 1 && pendingLines()[0].review === "plan-20260924T191356Z" && pendingLines()[0].repo === "repo", fenced.out);
   const fenced2 = reelAt(fencedHome, tmp, "record", memPlan, oldReview);
   ok("…recorded again, fenced: already kept there, not added twice", fenced2.code === 0 && /△ your memory: could not write [^\n]*; this review is already kept in [^\n]*you\.pending\.jsonl/.test(fenced2.out) && pendingLines().length === 1, fenced2.out);
   const fencedYou = reelAt(fencedHome, repo, "memory", "--you");
-  ok("reel memory --you, fenced: reads the pending summaries beside your file, and says so", fencedYou.code === 0 && /△ could not write [^\n]*: the summaries waiting in \.reelplanning\/you\.pending\.jsonl are read beside it/.test(fencedYou.out) && /\[recommended\]/.test(fencedYou.out) && /from [^\n]* and \.reelplanning\/you\.pending\.jsonl/.test(fencedYou.out) && pendingLines().length === 1, fencedYou.out);
+  ok("reel memory --you, fenced: reads the pending summaries beside your file, and says so", fencedYou.code === 0 && /△ could not write [^\n]*: the summaries waiting in \.reelplanner\/you\.pending\.jsonl are read beside it/.test(fencedYou.out) && /\[recommended\]/.test(fencedYou.out) && /from [^\n]* and \.reelplanner\/you\.pending\.jsonl/.test(fencedYou.out) && pendingLines().length === 1, fencedYou.out);
   // the next run that can write your file (a fresh home here) moves it in: once, and the pending file goes
   const home2 = join(tmp, "home2"), moved = reelAt(home2, tmp, "record", memPlan, oldReview);
   ok("reel record, next writable run: the pending summary is moved into your file, not duplicated, and the pending file removed", moved.code === 0 && /· your memory: this review is already in [^\n]*; 1 summary waiting in [^\n]*you\.pending\.jsonl moved there too/.test(moved.out)
@@ -188,7 +188,7 @@ try {
   // pending again; `reel memory --you` that can write your file moves it, and finds it already there
   reelAt(fencedHome, tmp, "record", memPlan, oldReview);
   const drained = reelAt(home, repo, "memory", "--you");
-  ok("reel memory --you, writable: moves the pending summaries in, deduplicated by repo, plan and review", drained.code === 0 && /✓ waiting in \.reelplanning\/you\.pending\.jsonl: 1 summary already there; the file is removed/.test(drained.out) && !existsSync(pendingFile) && homeLines(home).length === 1, drained.out);
+  ok("reel memory --you, writable: moves the pending summaries in, deduplicated by repo, plan and review", drained.code === 0 && /✓ waiting in \.reelplanner\/you\.pending\.jsonl: 1 summary already there; the file is removed/.test(drained.out) && !existsSync(pendingFile) && homeLines(home).length === 1, drained.out);
   // your memory reads both files: your file, and what the repo keeps pending that is not in it yet
   const yA = join(tmp, "you-a.jsonl"), yP = join(tmp, "you-p.jsonl"), fx = (review) => JSON.stringify({ ...fact("2026-01-01-a", "framing"), repo: "r", review });
   writeFileSync(yA, fx("plan-1") + "\n"); writeFileSync(yP, fx("plan-1") + "\n" + fx("plan-2") + "\n");
@@ -205,9 +205,9 @@ try {
   writeFileSync(join(tmp, "wr1.json"), JSON.stringify(wr("2099-01-02T10:00:00.000Z", "accept")));
   const rec1 = reel("record", gp, join(tmp, "wr1.json"));
   const filed = JSON.parse(readFileSync(join(gp, "reviews", "walkthrough-20990102T100000Z.json"), "utf8"));
-  ok("reel record: a new review carries the reviewer (git user.email) and the reelplanning version, and says so", filed.recorded?.reviewer === "owner@example.com" && filed.recorded.via === "git user.email" && filed.recorded.reelplanning === VERSION && /, by owner@example\.com \(reelplanning /.test(rec1.out), `${JSON.stringify(filed.recorded)}\n${rec1.out}`);
+  ok("reel record: a new review carries the reviewer (git user.email) and the reelplanner version, and says so", filed.recorded?.reviewer === "owner@example.com" && filed.recorded.via === "git user.email" && filed.recorded.reelplanner === VERSION && /, by owner@example\.com \(reelplanner /.test(rec1.out), `${JSON.stringify(filed.recorded)}\n${rec1.out}`);
   // the second round comes through intake, from a page that knows its viewer
-  writeFileSync(join(tmp, "row.json"), JSON.stringify({ status: "submitted", submittedAt: "2099-01-03T10:00:00.000Z", project: "walkthrough-video", planDir: ".reelplanning/plans/2099-01-01-gadget", viewer: "viewer@example.com", watched: [{ video: "system", seen: "2099-01-02T09:00:00.000Z" }], review: wr("2099-01-03T10:00:00.000Z", "flag") }));
+  writeFileSync(join(tmp, "row.json"), JSON.stringify({ status: "submitted", submittedAt: "2099-01-03T10:00:00.000Z", project: "walkthrough-video", planDir: ".reelplanner/plans/2099-01-01-gadget", viewer: "viewer@example.com", watched: [{ video: "system", seen: "2099-01-02T09:00:00.000Z" }], review: wr("2099-01-03T10:00:00.000Z", "flag") }));
   const i2 = run("reel-intake.mjs", join(tmp, "row.json"), "--repo", repo);
   const filed2 = JSON.parse(readFileSync(join(gp, "reviews", "walkthrough-20990103T100000Z.json"), "utf8"));
   ok("reel-intake: the page's viewer is the reviewer when the row names one", i2.code === 0 && filed2.recorded?.reviewer === "viewer@example.com" && filed2.recorded.via === "the page's viewer", `${JSON.stringify(filed2.recorded)}\n${i2.out}`);
@@ -299,7 +299,7 @@ try {
   ok("reel status: five plans after the last retro, it is due again", /△ a retro is due: 5 plans since the last retro \(2099-01-05-retro\)/.test(reel("status", repo).out));
 
   // tests never touch the real home
-  ok("the real ~/.reelplanning/you.jsonl was not touched", (existsSync(realYou) ? statSync(realYou).mtimeMs : null) === realBefore);
+  ok("the real ~/.reelplanner/you.jsonl was not touched", (existsSync(realYou) ? statSync(realYou).mtimeMs : null) === realBefore);
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

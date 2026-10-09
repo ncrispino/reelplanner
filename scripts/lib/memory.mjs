@@ -6,8 +6,8 @@
 //                 wrong, the agent's calls and their verdicts; where the reviewer got lost (checks
 //                 missed, explanations opened, words looked up, an approval with checks missed, D-129)
 //                 and the videos watched (this one, and what the browser marked watched, D-128). `reel
-//                 record` appends the same facts, one line per review, to your own file (~/.reelplanning/you.jsonl, D-106); where that
-//                 cannot be written (a run fenced to the repo), to the repo's .reelplanning/you.pending.jsonl,
+//                 record` appends the same facts, one line per review, to your own file (~/.reelplanner/you.jsonl, D-106); where that
+//                 cannot be written (a run fenced to the repo), to the repo's .reelplanner/you.pending.jsonl,
 //                 moved into your file by the next run that can write it (recordYou, movePending).
 //   memoryLines   at most seven lines from a list of facts, each with an id (`reel memory <id>` prints
 //                 its evidence): recommended, own-words, rewinds, checks, lost (where you got lost, per
@@ -21,12 +21,12 @@
 //   retroDue      D-107: five plans since the last retro, or one signal repeated three times.
 import { existsSync, readFileSync, readdirSync, appendFileSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
-import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { listReviews, ledgerFor, verdictOf, ASKS_MORE } from "./reviews.mjs";
 import { mapFor, distinctive } from "./review-scope.mjs";
 import { parseCalls } from "./autonomy.mjs";
 import { parseSteps } from "./plan-md.mjs";
+import { machineDir, RP_DIR, OLD_RP_DIR } from "./env.mjs";
 
 // D-115: the ids are words, so `reel memory <id>` says what it prints; `lost` is videos-you-can-follow's
 export const LINES = ["recommended", "own-words", "rewinds", "checks", "lost", "misses", "after-build"];
@@ -47,10 +47,10 @@ const short = (plan) => String(plan || "").replace(/^\d{4}-\d{2}-\d{2}-/, "");
 const mmss = (t) => (t == null ? "" : `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`);
 const plural = (n, w, ws = `${w}s`) => `${n} ${n === 1 ? w : ws}`;
 
-/** Where your own memory lives (D-106): REELPLANNING_HOME, else ~/.reelplanning. */
-export const homeDir = () => process.env.REELPLANNING_HOME || join(homedir(), ".reelplanning");
+/** Where your own memory lives (D-106): REELPLANNER_HOME, else ~/.reelplanner (an old ~/.reelplanning while there is no new one). */
+export const homeDir = () => machineDir();
 export const youPath = () => join(homeDir(), "you.jsonl");
-/** Where a review's summary waits when your file cannot be written: in the repo's .reelplanning, committed
+/** Where a review's summary waits when your file cannot be written: in the repo's .reelplanner, committed
  *  with the review, so it reaches the machine you next run on (the memory plan's A15, after review). */
 export const PENDING = "you.pending.jsonl";
 export const pendingPath = (rp) => join(rp, PENDING);
@@ -92,7 +92,7 @@ export const checksOf = (rv = {}) => (rv.quizzes || []).filter((q) => rv.checks 
 export function reviewFacts(r, { plan, map = null, calls = [], ledger = [], steps = {}, repo = null, video = null } = {}) {
   const rv = r.review || {}, rows = Object.fromEntries(calls.map((c) => [c.key, c]));
   const facts = { v: 1, ...(repo ? { repo } : {}), plan, review: r.id, kind: r.kind, at: r.at || null,
-    reviewer: rv.recorded?.reviewer || null, version: rv.recorded?.reelplanning || null, verdict: rv.verdict || null,
+    reviewer: rv.recorded?.reviewer || null, version: rv.recorded?.reelplanner || rv.recorded?.reelplanning || null, verdict: rv.verdict || null,
     questions: { taken: 0, of: 0 }, notTaken: [], own: [], rewinds: [], checks: checksOf(rv).length, wrongChecks: [], calls: {}, flagged: [],
     lost: lostOf(rv), watched: watchedOf(rv, { video, at: r.at }), ...(rv.checks === "off" ? { checksOff: true } : {}), ...(r.kind === "walkthrough" ? { afterBuild: afterBuildOf(rv, map) } : {}) };
   for (const d of rv.decisions || []) {
@@ -239,11 +239,11 @@ export function youKnows(facts) {
   return { watched: [...watched.values()], looked };
 }
 
-/** Every plan folder in a .reelplanning, in order (their names start with the date). */
+/** Every plan folder in a .reelplanner, in order (their names start with the date). */
 export const planNames = (rp) => (existsSync(join(rp, "plans")) ? readdirSync(join(rp, "plans")).filter((p) => existsSync(join(rp, "plans", p, "plan.md"))).sort() : []);
 export const isRetro = (plan) => /^retro/.test(short(plan));
 
-/** The facts of every review in a .reelplanning's plans, oldest first. */
+/** The facts of every review in a .reelplanner's plans, oldest first. */
 export function repoFacts(rp, { ledger = null, sys = null } = {}) {
   sys ||= readJson(join(rp, "system.json")) || {};
   const out = [];
@@ -290,7 +290,9 @@ export function changedAt(rp, plan, chose) {
   const needle = note.replace(/\s+/g, " ").trim().slice(0, 60);
   if (!needle) return null;
   try {
-    const out = execFileSync("git", ["-C", rp, "log", "--format=%aI", "--reverse", `-S${needle}`, "--", join("plans", plan, "walkthrough.md")], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    // the walkthrough at either of the record's names (D-312): with -M, the commit that renamed the folder adds no line
+    const wt = join("plans", plan, "walkthrough.md"), other = join("..", basename(rp) === RP_DIR ? OLD_RP_DIR : RP_DIR, wt);
+    const out = execFileSync("git", ["-C", rp, "log", "-M", "--format=%aI", "--reverse", `-S${needle}`, "--", wt, other], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
     return out.split("\n").find(Boolean) || null;
   } catch { return null; }
 }

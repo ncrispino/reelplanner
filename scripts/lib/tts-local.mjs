@@ -3,7 +3,7 @@
 // speed check (scripts/lib/local-speed.mjs).
 //
 // `timeoutMs` stops a call that runs longer (its whole process group, so Kokoro's python and whisper go too) and
-// throws an error with `timedOut: true`. Test seam: REELPLANNING_HYPERFRAMES_BIN names a stand-in for the
+// throws an error with `timedOut: true`. Test seam: REELPLANNER_HYPERFRAMES_BIN names a stand-in for the
 // HyperFrames CLI's entry script (the specs' fake `tts` and `transcribe`).
 import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -13,7 +13,7 @@ import { hyperframesBin } from "./env.mjs";
 import { cleanWav } from "./tts-api.mjs";
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
-const bin = () => process.env.REELPLANNING_HYPERFRAMES_BIN || hyperframesBin();
+const bin = () => process.env.REELPLANNER_HYPERFRAMES_BIN || hyperframesBin();
 const run = (args, { timeoutMs, ...opts } = {}) => new Promise((done) => {
   // with a time limit, a process group of its own, so stopping it stops what it started
   const p = spawn(process.execPath, [bin(), ...args], { stdio: ["ignore", "ignore", "pipe"], detached: !!timeoutMs && process.platform !== "win32", ...opts });

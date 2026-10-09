@@ -1,12 +1,12 @@
 // Each frame's thumbnail in plan-map.json (`frames[].thumb`): one of the pictures in the video's snapshots/,
-// which `reelplanning snapshot` (verify's step 5) takes at every frame's midpoint, named frame-NN-at-<t>s.png.
+// which `reelplanner snapshot` (verify's step 5) takes at every frame's midpoint, named frame-NN-at-<t>s.png.
 //
 // plan-map writes the map in finish-project, before verify takes the pictures, so the map a build first writes
 // names the last build's pictures (none, on a first build) and every one that moved was a missing file once
 // the new ones replaced them. snapshot.sh therefore ends with `plan-map --thumbs`, which sets the thumbnails
 // again from the pictures just taken and leaves the rest of the map (and plan-diff's `changes`) as it is.
 //
-// snapshots/ is kept out of git (.reelplanning/.gitignore: rebuilt by the pipeline), so a thumb names a file
+// snapshots/ is kept out of git (.reelplanner/.gitignore: rebuilt by the pipeline), so a thumb names a file
 // only where the video was built or snapshotted.
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";

@@ -17,17 +17,17 @@
 //                      stop, and against where step 2's rule puts it (a call you'd notice or can't easily
 //                      undo, or an off-plan change, pauses; the video listing it is stale), until the video is approved (a plan video by its plan review, a walkthrough by a
 //                      maintainer's); the video's branch, video/pr-<n> (D-215)
-//   no media (D-213)   no voice file, image or video added under .reelplanning/plans/ or explainers/
+//   no media (D-213)   no voice file, image or video added under .reelplanner/plans/ or explainers/
 //   no voice or render (D-305)  no .wav, .mp4 or renders/ file added anywhere: a finished video people should
 //                      watch goes up as a release file or on the hosted page (a worked example plays a committed .mp3)
 //   ids (D-171)        an id on the branch never names a different entry than on the base
 //   the issue          with config.json's `"pr": { "issue": "required" }` (on the base or the branch, so a PR
 //                      cannot switch it off for itself): the PR's text links an issue ("Closes #12", "Refs #12",
-//                      "owner/repo#12" or an issues URL); none fails. Off by default (templates/reelplanning/config.json)
+//                      "owner/repo#12" or an issues URL); none fails. Off by default (templates/reelplanner/config.json)
 //   what lands         the two columns: what lands on main, what stays in the PR; "not tidy" while a PR whose
 //                      walkthrough a maintainer accepted still carries a contributor's reviews
 //
-// usage: reelplanning pr-check [<repo>] [--base <ref>] [--pr <n>] [--event <file>] [--body-file <file>]
+// usage: reelplanner pr-check [<repo>] [--base <ref>] [--pr <n>] [--event <file>] [--body-file <file>]
 //                              [--labels a,b] [--merge] [--tidy] [--json]
 //   --base       what the PR merges into (default origin/main); the diff is from where the branch left it
 //   --pr         the PR's number, read with `gh pr view` (default: the current branch's PR, if gh knows one)
@@ -47,6 +47,7 @@ import { parseCalls, PAUSING } from "./lib/autonomy.mjs";
 import { listReviews, verdictOf } from "./lib/reviews.mjs";
 import { maintainersOf, maintainerOf, roleOf, MEDIA, entryKey, issueRule, linkedIssues } from "./lib/contributing.mjs";
 import { callsTouched, callWords } from "./lib/call-lines.mjs";
+import { rpDirOf, otherRpPath } from "./lib/env.mjs";
 
 const LINES = 300;
 const argv = process.argv.slice(2);
@@ -58,10 +59,12 @@ const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
 
 const git = (...a) => execFileSync("git", ["-C", ROOT, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 256 << 20 });
 const tryGit = (...a) => { try { return git(...a); } catch { return null; } };
+// a record file as `ref` has it: in .reelplanner/, or in .reelplanning/ on a base from before the rename (D-312)
+const recordAt = (ref, file) => tryGit("show", `${ref}:.reelplanner/${file}`) ?? tryGit("show", `${ref}:.reelplanning/${file}`);
 let ROOT;
 try { ROOT = execFileSync("git", ["-C", resolve(pos[0] || "."), "rev-parse", "--show-toplevel"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
 catch { die(`${resolve(pos[0] || ".")} is not in a git repo`); }
-const RP = join(ROOT, ".reelplanning"), rel = (p) => relative(process.cwd(), p) || ".";
+const RP = rpDirOf(ROOT), rel = (p) => relative(process.cwd(), p) || ".";
 const base = flag("base") || "origin/main";
 if (!tryGit("rev-parse", "--verify", "--quiet", `${base}^{commit}`)) die(`no ${base} to compare with (fetch it, or pass --base <ref>)`);
 const fork = git("merge-base", base, "HEAD").trim();
@@ -100,15 +103,22 @@ const otherChoices = (() => {
 const choicesAccepted = !!ticked("The other choices above are accepted");
 
 // ---------- the diff: from where the branch left the base to HEAD ----------
-const numstat = git("diff", "--numstat", "--no-renames", fork, "HEAD").split("\n").filter(Boolean).map((l) => { const [a, d, ...p] = l.split("\t"); return { path: p.join("\t"), lines: (Number(a) || 0) + (Number(d) || 0) }; });
-const added = new Set(git("diff", "--name-only", "--no-renames", "--diff-filter=A", fork, "HEAD").split("\n").filter(Boolean));
+// A record file the rename moved from .reelplanning/ to .reelplanner/ as it was (D-312) is not something the PR
+// changes or adds: its plan, its reviews and its media were there before.
+const moved = new Set();
+{
+  const r = (tryGit("diff", "--name-status", "-z", "-M100%", "--diff-filter=R", fork, "HEAD") || "").split("\0");
+  for (let i = 0; i + 2 < r.length; i += 3) if (/^R/.test(r[i]) && otherRpPath(r[i + 1]) === r[i + 2]) { moved.add(r[i + 1]); moved.add(r[i + 2]); }
+}
+const numstat = git("diff", "--numstat", "--no-renames", fork, "HEAD").split("\n").filter(Boolean).map((l) => { const [a, d, ...p] = l.split("\t"); return { path: p.join("\t"), lines: (Number(a) || 0) + (Number(d) || 0) }; }).filter((f) => !moved.has(f.path));
+const added = new Set(git("diff", "--name-only", "--no-renames", "--diff-filter=A", fork, "HEAD").split("\n").filter((p) => p && !moved.has(p)));
 // What does not count toward the 300 lines: tests, docs, videos and generated files. The project record
-// (.reelplanning/: plans, reviews, videos, the log) is all of those. A file marked linguist-generated or
+// (.reelplanner/: plans, reviews, videos, the log) is all of those. A file marked linguist-generated or
 // linguist-documentation in .gitattributes is too.
 const NOT_CODE = [
   [/(^|\/)(test|tests|__tests__|spec|specs)\//, "tests"], [/\.(spec|test)\.[cm]?[jt]sx?$/, "tests"],
   [/^docs\//, "docs"], [/\.(md|mdx|markdown|txt|rst|adoc)$/i, "docs"], [/(^|\/)(LICEN[CS]E|NOTICE|AUTHORS)[^/]*$/, "docs"],
-  [/^\.reelplanning\//, "the project record"], [/^videos\//, "videos"], [MEDIA, "videos"],
+  [/^\.reelplann(?:er|ing)\//, "the project record"], [/^videos\//, "videos"], [MEDIA, "videos"],
   [/(^|\/)(package-lock\.json|npm-shrinkwrap\.json|yarn\.lock|pnpm-lock\.yaml|bun\.lockb?)$/, "generated"], [/^dist\//, "generated"],
 ];
 const attrs = (() => {
@@ -139,7 +149,7 @@ const waived = labels.has("no-video"), crosses = reasons.length > 0, needed = cr
 
 // ---------- the plan folders this PR carries ----------
 const changed = numstat.map((f) => f.path);
-const planNames = [...new Set(changed.map((p) => (p.match(/^\.reelplanning\/plans\/([^/]+)\//) || [])[1]).filter(Boolean))].sort();
+const planNames = [...new Set(changed.map((p) => (p.match(/^\.reelplann(?:er|ing)\/plans\/([^/]+)\//) || [])[1]).filter(Boolean))].sort();
 const plans = planNames.map((name) => {
   const dir = join(RP, "plans", name), reviews = existsSync(join(dir, "reviews")) ? listReviews(dir) : [];
   const inPr = (r) => changed.includes(relative(ROOT, r.path));
@@ -156,7 +166,7 @@ const say = { issue: [], line: [], video: [], fresh: [], lands: [], ids: [] };
 
 // ---------- the issue: the PR's text links one, where config.json asks (`pr.issue`) ----------
 const configHere = existsSync(join(RP, "config.json")) ? readFileSync(join(RP, "config.json"), "utf8") : null;
-const issueRequired = [tryGit("show", `${base}:.reelplanning/config.json`), configHere].some((t) => t && issueRule(t) === "required");
+const issueRequired = [recordAt(base, "config.json"), configHere].some((t) => t && issueRule(t) === "required");
 const issues = pr.body == null ? [] : linkedIssues(pr.body);
 if (issues.length) say.issue.push(`links ${issues.length === 1 ? "an issue" : "issues"}: ${issues.join(", ")}`);
 else if (issueRequired && pr.body == null) waits.push("no PR text read, so no linked issue seen (pass --body-file, or --pr <n> with gh): every PR here links an issue");
@@ -171,7 +181,7 @@ if (otherChoices.length) {
 }
 
 // ---------- the video: brought, or waiting ----------
-if (bringsLine && !withVideo.length) fails.push("the PR's text says it brings a video, but no plan folder with a video's text is in the PR (.reelplanning/plans/<plan>/video/ or walkthrough-video/)");
+if (bringsLine && !withVideo.length) fails.push("the PR's text says it brings a video, but no plan folder with a video's text is in the PR (.reelplanner/plans/<plan>/video/ or walkthrough-video/)");
 if (needed && !withVideo.length) waits.push(`needs a video (${reasons.join(", ")}): the contributor brings one, or a maintainer's agent makes a walkthrough from the diff (the skill's "Several people"), or a maintainer adds \`no-video\``);
 else if (needed && !withVideo.some(accepted)) waits.push(`waiting for a maintainer to accept the walkthrough of ${withVideo.map((p) => p.name).join(", ")}`);
 
@@ -190,9 +200,9 @@ if (pr.number && withVideo.length && !withVideo.every(accepted)) {
 
 // ---------- no media under a plan folder (D-213) ----------
 // (an explainer's folder too, explain-first step 5, D-249: its text, never its built video)
-const inPlanFolder = (p) => /^\.reelplanning\/(?:plans|explainers)\//.test(p) && MEDIA.test(p);
+const inPlanFolder = (p) => /^\.reelplann(?:er|ing)\/(?:plans|explainers)\//.test(p) && MEDIA.test(p);
 for (const p of [...added].filter(inPlanFolder).sort())
-  fails.push(`adds ${p}: ${p.startsWith(".reelplanning/explainers/") ? "an explainer's folder" : "a plan folder"} carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)`);
+  fails.push(`adds ${p}: ${/^\.reelplann(?:er|ing)\/explainers\//.test(p) ? "an explainer's folder" : "a plan folder"} carries only its videos' text; the built video goes on video/pr-<n> (templates/gitignore leaves it out)`);
 // ---------- no voice file or render anywhere (D-305) ----------
 // (a worked example under videos/ plays its narration from a committed .mp3)
 const VOICE_OR_RENDER = /\.(wav|mp4)$|(^|\/)renders\//i;
@@ -207,10 +217,10 @@ for (const p of plans) for (const v of p.videos) {
   // approved already: plan.md is folded after a plan review (no new video), a row updated after the walkthrough's
   const done = v === "video" ? p.reviews.some((r) => r.kind === "plan" && approves(r)) : accepted(p);
   if (done) { say.fresh.push(`${at}: approved; the text may have moved on since (folds and fixes after the review)`); continue; }
-  if (!existsSync(mapPath)) { fails.push(`${at}: no plan-map.json (the build writes it: reelplanning build ${rel(join(p.dir, v))})`); continue; }
+  if (!existsSync(mapPath)) { fails.push(`${at}: no plan-map.json (the build writes it: reelplanner build ${rel(join(p.dir, v))})`); continue; }
   const map = JSON.parse(readFileSync(mapPath, "utf8"));
   if (!map.plan) fails.push(`${at}: its plan map carries no plan text (built before plan maps did): rebuild it`);
-  else if (hash(map.plan) !== hash(readPlanMd(join(p.dir, "plan.md")))) fails.push(`${at}: built from another version of plan.md (${hash(map.plan)}, plan.md now ${hash(readPlanMd(join(p.dir, "plan.md")))}): rebuild it (reelplanning build ${rel(join(p.dir, v))})`);
+  else if (hash(map.plan) !== hash(readPlanMd(join(p.dir, "plan.md")))) fails.push(`${at}: built from another version of plan.md (${hash(map.plan)}, plan.md now ${hash(readPlanMd(join(p.dir, "plan.md")))}): rebuild it (reelplanner build ${rel(join(p.dir, v))})`);
   else say.fresh.push(`${at}: its plan map matches plan.md (${hash(map.plan)})`);
   if (v !== "walkthrough-video") continue;
   const wtPath = join(p.dir, "walkthrough.md");
@@ -234,7 +244,7 @@ for (const p of plans) for (const v of p.videos) {
 
 // ---------- ids (D-171) ----------
 const log = (text) => { try { return JSON.parse(text).decisions || []; } catch { return null; } };
-const baseLog = log(tryGit("show", `${base}:.reelplanning/decisions.json`)), headLog = log(tryGit("show", "HEAD:.reelplanning/decisions.json"));
+const baseLog = log(recordAt(base, "decisions.json")), headLog = log(recordAt("HEAD", "decisions.json"));
 if (baseLog && headLog) {
   const onBase = new Map(baseLog.map((d) => [d.id, d])), clash = [];
   for (const d of headLog) if (onBase.has(d.id) && entryKey(onBase.get(d.id)) !== entryKey(d)) clash.push(`${d.id} (here ${d.plan}: ${d.chosen}; on ${base} ${onBase.get(d.id).plan}: ${onBase.get(d.id).chosen})`);

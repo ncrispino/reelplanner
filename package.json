@@ -1,5 +1,5 @@
 {
-  "name": "reelplanning",
+  "name": "reelplanner",
   "version": "0.2.0",
   "description": "Review your coding agent's implementation plans as short narrated videos that stop at each open choice. Your answers become a decision log in the repo, and a walkthrough video shows what the agent built and decided on its own. An agent skill and CLI for Claude Code and Codex, built on HyperFrames.",
   "keywords": [
@@ -31,19 +31,20 @@
     "spec-driven-development",
     "developer-tools"
   ],
-  "homepage": "https://github.com/ncrispino/reelplanning#readme",
+  "homepage": "https://github.com/ncrispino/reelplanner#readme",
   "bugs": {
-    "url": "https://github.com/ncrispino/reelplanning/issues"
+    "url": "https://github.com/ncrispino/reelplanner/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ncrispino/reelplanning.git"
+    "url": "git+https://github.com/ncrispino/reelplanner.git"
   },
   "license": "Apache-2.0",
   "author": "ncrispino (https://github.com/ncrispino)",
   "bin": {
-    "reelplanning": "bin/reelplanning.mjs",
-    "reel": "bin/reel.mjs"
+    "reelplanner": "bin/reelplanner.mjs",
+    "reel": "bin/reel.mjs",
+    "reelplanning": "bin/reelplanning.mjs"
   },
   "files": [
     "bin/",
@@ -52,7 +53,7 @@
     "scripts/lib/",
     "templates/",
     "packages/player/index.html",
-    "packages/player/reelplanning-player.js",
+    "packages/player/reelplanner-player.js",
     "packages/player/guide-review.js",
     "packages/player/fonts/",
     "skills/",
@@ -67,7 +68,7 @@
   },
   "scripts": {
     "verify": "bash scripts/verify.sh",
-    "setup": "node bin/reelplanning.mjs setup",
+    "setup": "node bin/reelplanner.mjs setup",
     "skills:update": "node scripts/hyperframes-skills.mjs --force",
     "review": "node scripts/lib/static-server.mjs 8787 >/dev/null 2>&1 & echo \"open http://127.0.0.1:8787/packages/player/?project=videos/l1-upload-resume\"",
     "test": "node scripts/test/run.mjs",
@@ -75,7 +76,7 @@
     "plan-map": "node scripts/plan-map.mjs",
     "bundle": "node scripts/bundle-player.mjs dist/review videos/l2-upload-resume videos/g1-bob-dylan-site videos/w1-upload-resume",
     "bundle:check": "node packages/player/test/bundle.spec.mjs dist/review",
-    "version": "node scripts/release/sync-version.mjs && git add skills docs README.md scripts/release/install.sh .claude-plugin packages/player/reelplanning-player.js"
+    "version": "node scripts/release/sync-version.mjs && git add skills docs README.md scripts/release/install.sh .claude-plugin packages/player/reelplanner-player.js"
   },
   "dependencies": {
     "@hyperframes/player": "0.8.52",

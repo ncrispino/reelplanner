@@ -1,6 +1,6 @@
 # Releasing
 
-The skill pins the npm package (`npx -y reelplanning@<version>` in `SKILL.md`), so a release is one version number in several places. `npm version` moves all of them together: it bumps `package.json`, runs `scripts/release/sync-version.mjs` (the `version` npm script), which rewrites every `reelplanning@<version>` in the skill, docs, README, `scripts/release/install.sh` and the player, plus both `.claude-plugin` manifests, then commits and tags `v<version>`. `npm test` fails if any of them drift (`scripts/test/version.spec.mjs`). Each release gets a section in `CHANGELOG.md` (shipped in the package).
+The skill pins the npm package (`npx -y reelplanner@<version>` in `SKILL.md`), so a release is one version number in several places. `npm version` moves all of them together: it bumps `package.json`, runs `scripts/release/sync-version.mjs` (the `version` npm script), which rewrites every `reelplanner@<version>` in the skill, docs, README, `scripts/release/install.sh` and the player, plus both `.claude-plugin` manifests, then commits and tags `v<version>`. `npm test` fails if any of them drift (`scripts/test/version.spec.mjs`). Each release gets a section in `CHANGELOG.md` (shipped in the package).
 
 ```bash
 npm run test:full               # green first: every spec, exhaustive (headless Chromium, specs side by side)
@@ -20,6 +20,9 @@ gh release create v0.2.1 --notes-file <(sed -n '/^## 0.2.1/,/^## /p' CHANGELOG.m
 Publish before merging a `SKILL.md` that names the new version: `npx skills add` installs the skill from the default branch, and a skill pinned to a version that is not on npm yet fails on every command.
 
 ## Going public
+
+*Done in October 2026, under the name reelplanning: the steps below are as they were run. The repo has been
+`ncrispino/reelplanner` since D-312, and GitHub redirects the old address.*
 
 The public repo is `ncrispino/reelplanning`, lowercase, and its `main` is one commit holding the release's tree; this repo stays private and keeps its full history (D-310). No voice file or render is in either (D-305). In order:
 
@@ -64,22 +67,22 @@ is under 280 characters (a link counts as 23). Attach `docs/media/system-video.g
 
 1. Coding agents write plans faster than we can read them, so we skim and approve.
 
-   reelplanning turns your agent's plan into a short narrated video that stops at each open question for your
+   reelplanner turns your agent's plan into a short narrated video that stops at each open question for your
    answer. 🎬
 
    Open source, for Claude Code and Codex:
-   github.com/ncrispino/reelplanning
+   github.com/ncrispino/reelplanner
 2. You answer on the video, comment on any moment, and the agent updates the plan. After the build, a walkthrough
    video shows the change running and stops at the choices the agent made on its own.
 3. A real run: an interactive Bob Dylan site, from an empty folder through four plans, seven videos, each reviewed.
    Every question, answer and change is public:
-   ncrispino.github.io/reelplanning-case-studies/bob-dylan/
+   ncrispino.github.io/reelplanner-case-studies/bob-dylan/
 4. Karpathy called bespoke explainer videos the output format he's "most bullish on". This is that, for the plans
    your agent writes: ideas, issues and PRs welcome.
 
 ## Publishing 0.2.0 by hand
 
-`reelplanning` is not on npm yet (`npm view reelplanning` answers 404), so 0.2.0 is its first publish. (Delete this section once 0.2.0 is out: the next `npm version` rewrites its pins.) Every pin already says 0.2.0 (`node scripts/release/sync-version.mjs --check`), and `CHANGELOG.md` has its section.
+`reelplanner` is not on npm yet (`npm view reelplanner` answers 404), so 0.2.0 is its first publish. (Delete this section once 0.2.0 is out: the next `npm version` rewrites its pins.) Every pin already says 0.2.0 (`node scripts/release/sync-version.mjs --check`), and `CHANGELOG.md` has its section.
 
 1. **Check what ships.** Expect about 150 files, under 1 MB packed, and only what `files` in `package.json` lists (`bin/`, `scripts/`, `templates/`, the player, `skills/`, the case-study kit, `CHANGELOG.md`, `NOTICE`) plus `README.md`, `LICENSE` and `package.json`. `scripts/test/package.spec.mjs` (in `npm test`) fails if a shipped script needs a file left out, or if media, tests or plans get in:
 
@@ -99,20 +102,20 @@ is under 280 characters (a link counts as 23). Attach `docs/media/system-video.g
 4. **Tag and release.** The public repo's first push carries the tag `v0.2.0` already ([Going public](#going-public)); then the release, on the public repo:
 
    ```bash
-   gh release create v0.2.0 --repo ncrispino/reelplanning --title v0.2.0 --notes-file <(sed -n '/^## 0.2.0/,/^## 0.1.0/p' CHANGELOG.md | sed '$d')
+   gh release create v0.2.0 --repo ncrispino/reelplanner --title v0.2.0 --notes-file <(sed -n '/^## 0.2.0/,/^## 0.1.0/p' CHANGELOG.md | sed '$d')
    ```
 
 5. **Check it from the registry,** in a directory outside the checkout:
 
    ```bash
-   npm view reelplanning version                  # 0.2.0
-   npx -y reelplanning@0.2.0 --version            # 0.2.0
-   npx -y reelplanning@0.2.0 --help               # the command list
-   npx -y reelplanning@0.2.0 reel status <a repo with .reelplanning/>
-   npx -y reelplanning@0.2.0 setup --dry-run      # finds the pinned HyperFrames
-   npx skills add ncrispino/reelplanning --skill plan-to-video -g   # the installed SKILL.md says reelplanning@0.2.0
+   npm view reelplanner version                  # 0.2.0
+   npx -y reelplanner@0.2.0 --version            # 0.2.0
+   npx -y reelplanner@0.2.0 --help               # the command list
+   npx -y reelplanner@0.2.0 reel status <a repo with .reelplanner/>
+   npx -y reelplanner@0.2.0 setup --dry-run      # finds the pinned HyperFrames
+   npx skills add ncrispino/reelplanner --skill plan-to-video -g   # the installed SKILL.md says reelplanner@0.2.0
    ```
 
-   The npm page (npmjs.com/package/reelplanning) should show the README, the Apache-2.0 license and the repository link.
+   The npm page (npmjs.com/package/reelplanner) should show the README, the Apache-2.0 license and the repository link.
 
-If something is wrong after publishing, publish a fixed 0.2.1; `npm deprecate "reelplanning@<bad version>" "<why>"` warns anyone who pinned it. `npm unpublish` is only allowed within 72 hours and blocks the version number for good.
+If something is wrong after publishing, publish a fixed 0.2.1; `npm deprecate "reelplanner@<bad version>" "<why>"` warns anyone who pinned it. `npm unpublish` is only allowed within 72 hours and blocks the version number for good.

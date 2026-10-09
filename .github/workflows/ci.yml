@@ -31,19 +31,19 @@ jobs:
           node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           cache: npm
       - run: npm ci
-      # ffmpeg, as `reelplanning setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
+      # ffmpeg, as `reelplanner setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
       # Without it the specs that need it say they skipped, and those paths would never run here.
       - name: ffmpeg
         run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
       # the fast run's player specs open the player in headless Chromium (scripts/lib/static-server.mjs serves the pages)
       - name: Chromium for the player specs
         run: npx playwright-core install --with-deps chromium
-      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
+      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanner setup` installs
       # it for every user. No agent is on the runner, so name one: Codex reads ~/.agents/skills, where the pipeline reads them.
       - name: HyperFrames' skills, at the pinned version
-        run: node bin/reelplanning.mjs hyperframes-skills
+        run: node bin/reelplanner.mjs hyperframes-skills
         env:
-          REELPLANNING_SKILLS_AGENTS: codex
+          REELPLANNER_SKILLS_AGENTS: codex
       - name: The fast suite
         run: npm test
 
@@ -61,17 +61,17 @@ jobs:
           node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           cache: npm
       - run: npm ci
-      # ffmpeg, as `reelplanning setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
+      # ffmpeg, as `reelplanner setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
       # Without it the specs that need it say they skipped, and those paths would never run here.
       - name: ffmpeg
         run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
       - name: Chromium for the player specs
         run: npx playwright-core install --with-deps chromium
-      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanning setup` installs
+      # narrate.spec and build.spec run HyperFrames' skill scripts: the pinned set, as `reelplanner setup` installs
       # it for every user. No agent is on the runner, so name one: Codex reads ~/.agents/skills, where the pipeline reads them.
       - name: HyperFrames' skills, at the pinned version
-        run: node bin/reelplanning.mjs hyperframes-skills
+        run: node bin/reelplanner.mjs hyperframes-skills
         env:
-          REELPLANNING_SKILLS_AGENTS: codex
+          REELPLANNER_SKILLS_AGENTS: codex
       - name: The full suite
         run: npm run test:full

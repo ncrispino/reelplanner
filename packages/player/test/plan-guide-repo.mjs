@@ -1,4 +1,4 @@
-// The plan guide's plan folder (.reelplanning/plans/2026-09-28-plan-guide) in a scratch repo of its own, with a history
+// The plan guide's plan folder (.reelplanner/plans/2026-09-28-plan-guide) in a scratch repo of its own, with a history
 // its guide can read. Two parts of a plan's guide come from git: the Built side (the changes of the commits that
 // walkthrough.md's **Commits:** names) and "Revised since your review" (plan.md as the review watched it, the last commit
 // of it before the review's first play). This repo's own history starts at the public release, one commit (D-310), and a
@@ -21,11 +21,11 @@ import { dirname, join } from "node:path";
 import { ROOT } from "../../../scripts/lib/env.mjs";
 import { readWalkthrough } from "../../../scripts/lib/guide/built.mjs";
 
-export const PLAN = ".reelplanning/plans/2026-09-28-plan-guide";
-const PLANS = ".reelplanning/plans/";
+export const PLAN = ".reelplanner/plans/2026-09-28-plan-guide";
+const PLANS = ".reelplanner/plans/";
 
 export function planGuideRepo(dir) {
-  const tracked = execFileSync("git", ["-C", ROOT, "ls-files", "-z", "--", ".reelplanning", "scripts", "templates", "packages", "skills", "docs", "CHANGELOG.md", ".gitignore"], { encoding: "utf8", maxBuffer: 64 << 20 })
+  const tracked = execFileSync("git", ["-C", ROOT, "ls-files", "-z", "--", ".reelplanner", "scripts", "templates", "packages", "skills", "docs", "CHANGELOG.md", ".gitignore"], { encoding: "utf8", maxBuffer: 64 << 20 })
     .split("\0").filter((p) => p && existsSync(join(ROOT, p)));
   // what the categories of change name: a file, or a folder's files (of a folder, those about the guide: the real build
   // changed those, not every spec in scripts/test/); a plan folder's are left as they are
@@ -33,14 +33,14 @@ export function planGuideRepo(dir) {
   const changed = tracked.filter((p) => named.some((n) => p === n || (n.endsWith("/") && p.startsWith(n) && /guide/.test(p))));
   // the record (its own files and theme), every plan's own files (another plan's plan.md says what it superseded), this
   // plan's folder whole, and the files changed
-  const record = (p) => p.startsWith(".reelplanning/") && (!p.slice(".reelplanning/".length).includes("/") || p.startsWith(".reelplanning/theme/"));
+  const record = (p) => p.startsWith(".reelplanner/") && (!p.slice(".reelplanner/".length).includes("/") || p.startsWith(".reelplanner/theme/"));
   const planOwn = (p) => p.startsWith(PLANS) && p.slice(PLANS.length).split("/").length === 2;
   const files = tracked.filter((p) => record(p) || planOwn(p) || p.startsWith(`${PLAN}/`) || changed.includes(p));
   for (const p of files) { mkdirSync(dirname(join(dir, p)), { recursive: true }); copyFileSync(join(ROOT, p), join(dir, p), constants.COPYFILE_FICLONE); }
   for (const v of ["video", "walkthrough-video"]) { const c = join(ROOT, PLAN, v, "guide", ".cache"); if (existsSync(c)) cpSync(c, join(dir, PLAN, v, "guide", ".cache"), { recursive: true }); }
 
   const git = (args, at) => execFileSync("git", ["-C", dir, "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env, GIT_AUTHOR_NAME: "reelplanning spec", GIT_AUTHOR_EMAIL: "spec@example.invalid", GIT_COMMITTER_NAME: "reelplanning spec", GIT_COMMITTER_EMAIL: "spec@example.invalid", ...(at ? { GIT_AUTHOR_DATE: at, GIT_COMMITTER_DATE: at } : {}) } });
+    env: { ...process.env, GIT_AUTHOR_NAME: "reelplanner spec", GIT_AUTHOR_EMAIL: "spec@example.invalid", GIT_COMMITTER_NAME: "reelplanner spec", GIT_COMMITTER_EMAIL: "spec@example.invalid", ...(at ? { GIT_AUTHOR_DATE: at, GIT_COMMITTER_DATE: at } : {}) } });
   const commit = (msg, at) => { git(["add", "-A"]); git(["commit", "-q", "--no-verify", "-m", msg], at); return git(["rev-parse", "--short=7", "HEAD"]).trim(); };
   const read = (p) => readFileSync(join(dir, p), "utf8"), write = (p, s) => writeFileSync(join(dir, p), s);
   git(["init", "-q"]);

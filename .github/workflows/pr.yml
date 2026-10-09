@@ -34,12 +34,13 @@ jobs:
       - run: npm ci
       # reads the PR's text and labels from the event ($GITHUB_EVENT_PATH)
       - name: reel pr-check
-        run: node bin/reelplanning.mjs reel pr-check --base "origin/${{ github.base_ref }}"
+        run: node bin/reelplanner.mjs reel pr-check --base "origin/${{ github.base_ref }}"
       - name: reel audit, on each plan folder the PR adds
         run: |
           status=0
-          for d in $(git diff --name-only --diff-filter=A "origin/${{ github.base_ref }}...HEAD" -- .reelplanning/plans | cut -d/ -f1-3 | sort -u); do
-            if [ -f "$d/walkthrough.md" ]; then node bin/reelplanning.mjs reel audit "$d" || status=1; fi
+          # (both names, renames found: a plan folder the rename moved from .reelplanning/, D-312, is not one it adds)
+          for d in $(git diff --name-only -M --diff-filter=A "origin/${{ github.base_ref }}...HEAD" -- .reelplanner/plans .reelplanning/plans | cut -d/ -f1-3 | sort -u); do
+            if [ -f "$d/walkthrough.md" ]; then node bin/reelplanner.mjs reel audit "$d" || status=1; fi
           done
           exit $status
 

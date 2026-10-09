@@ -1,11 +1,11 @@
-<h1 align="center">🎬 reelplanning</h1>
+<h1 align="center">🎬 reelplanner</h1>
 
 <p align="center"><b>Review your coding agent's plans by watching them, not reading them.</b></p>
 
 Your agent turns its plan into a short narrated video that stops at each open choice and asks you.
 You answer on the video, and the agent updates the plan.
 
-<img src="docs/media/system-video.gif" alt="The start of reelplanning's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
+<img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
 **Works with:** Claude Code (tested) · Codex (basic support) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
 (untested: [what each needs](./docs/agents.md))
@@ -14,37 +14,39 @@ You answer on the video, and the agent updates the plan.
 
 - macOS (Homebrew) or Linux (apt), Node 22.20+ ([nodejs.org](https://nodejs.org/en/download); apt's own `nodejs`
   is older), and Python 3.10+ for the local voice. Setup may ask for sudo. Windows: not yet (WSL untested).
-- About 1 GB in all: the package (about 64 MB, mostly reelplanning's own plans and the sample videos it ships
+- About 1 GB in all: the package (about 64 MB, mostly reelplanner's own plans and the sample videos it ships
   with), then setup's headless Chrome and a one-time 840 MB of voice and caption models.
-- reelplanning sends none of your code anywhere; an optional [hosted voice](#the-voice) gets only the narration text.
+- reelplanner sends none of your code anywhere; an optional [hosted voice](#the-voice) gets only the narration text.
 
 ## Install
 
 ```bash
-npm i -g github:ncrispino/reelplanning          # the `reelplanning` command
-reelplanning setup                              # ffmpeg, Chrome, a local voice (--dry-run to preview)
-npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g   # the skill, for each agent it finds
+npm i -g github:ncrispino/reelplanner                                  # the `reelplanner` command
+reelplanner setup                                                      # ffmpeg, Chrome, a local voice (--dry-run to preview)
+npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g   # the skill: it asks which agents (add -y for every agent)
 ```
 
 In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
 
 ```
-/plugin marketplace add ncrispino/reelplanning
-/plugin install reelplanning@reelplanning
+/plugin marketplace add ncrispino/reelplanner
+/plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill only: the first two lines are still what install the `reelplanning` command and its tools
+The plugin is the skill only: the first two lines are still what install the `reelplanner` command and its tools
 (the skill installs them itself when they are missing, but running them first is quicker).
 
-The narration needs a voice. Choose one before you run `reelplanning setup`:
+The narration needs a voice. Choose one before you run `reelplanner setup`:
 
 - **Local (the default):** free, and nothing leaves your machine. Setup downloads about 840 MB of voice and caption
   models once, and it needs Python 3.10+. On a slow machine it takes minutes per line.
 - **Hosted:** nothing to download, 1–3 seconds a line, about $0.03 a minute of narration with your own OpenRouter key.
-  Run `reelplanning setup --hosted-voice` instead: it skips the local voice and prints two lines to put in
-  `~/.reelplanning/.env` ([the voice](#the-voice) says more).
+  Run `reelplanner setup --hosted-voice` instead: it skips the local voice and prints two lines to put in
+  `~/.reelplanner/.env` ([the voice](#the-voice) says more).
 
 The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or uninstalling: [install details](./docs/reference.md#install).
+Installed it before as reelplanning, its name until October 2026? Run `npm rm -g reelplanning` first: npm will not
+install over its commands ([moving over](./docs/reference.md#install)).
 
 ## Quick start
 
@@ -54,11 +56,11 @@ Run these in a terminal, or type the quoted text into your agent's chat.
 
 ```bash
 cd my-app
-claude "Use reelplanning to plan adding dark mode"
+claude "Use reelplanner to plan adding dark mode"
 ```
 
 Nothing in the project has to change first: the agent reads the code that is there and plans with its names. If
-you keep a record ([ways 2 and 3](#three-ways-to-use-it)), it also maps the project's parts into `.reelplanning/`
+you keep a record ([ways 2 and 3](#three-ways-to-use-it)), it also maps the project's parts into `.reelplanner/`
 as it plans. Two more ways in, from the same folder:
 
 ```bash
@@ -70,7 +72,7 @@ claude "Make a quick video explaining how src/auth works"      # code that is al
 
 ```bash
 mkdir bakery-site && cd bakery-site && git init
-claude "Use reelplanning to plan a small website for a neighborhood bakery"
+claude "Use reelplanner to plan a small website for a neighborhood bakery"
 ```
 
 The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
@@ -91,7 +93,7 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
   - For a quick video, it downloads `annotations.json` to your downloads folder. Give the agent that path,
     and it updates the plan.
   - Otherwise, **Send** hands the review to the agent, which updates the plan and keeps the review in a
-    `.reelplanning/` folder in the repo (see [three ways](#three-ways-to-use-it)).
+    `.reelplanner/` folder in the repo (see [three ways](#three-ways-to-use-it)).
 
 ## Three ways to use it
 
@@ -102,16 +104,16 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 3. **Everything recorded.** Your answers are kept in the repo and later plans must follow them. One
    overview video of the whole project is updated as changes land.
 
-Ways 2 and 3 add a `.reelplanning/` folder to the repo (commit it). The first time in a repo, the agent asks
+Ways 2 and 3 add a `.reelplanner/` folder to the repo (commit it). The first time in a repo, the agent asks
 which way you want, unless you said "quick". To move to a fuller way later, ask the agent. [How it fits together](./docs/lifecycle.md).
 
 ## Case studies
 
-Real projects built with reelplanning, each with its videos, reviews and session:
-[reelplanning-case-studies](https://github.com/ncrispino/reelplanning-case-studies)
-([browse them](https://ncrispino.github.io/reelplanning-case-studies/)).
+Real projects built with reelplanner, each with its videos, reviews and session:
+[reelplanner-case-studies](https://github.com/ncrispino/reelplanner-case-studies)
+([browse them](https://ncrispino.github.io/reelplanner-case-studies/)).
 
-- **[A Bob Dylan site](https://ncrispino.github.io/reelplanning-case-studies/bob-dylan/):** an interactive site about
+- **[A Bob Dylan site](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/):** an interactive site about
   Bob Dylan's life and music, from an empty folder through four plans; seven videos, each reviewed.
 
 ## Why, and how it compares
@@ -123,7 +125,7 @@ Agents write plans faster than people can read them. A long plan gets skimmed, a
 
 | | What you look at | How you respond | When |
 |---|---|---|---|
-| **reelplanning** | a short narrated video of the plan, with the details on a page under it | answer each open question on the video; comment on any moment | before the code, and again after it is built (the walkthrough) |
+| **reelplanner** | a short narrated video of the plan, with the details on a page under it | answer each open question on the video; comment on any moment | before the code, and again after it is built (the walkthrough) |
 | Plan mode ([Claude Code](https://code.claude.com/docs/en/common-workflows), [Codex](https://developers.openai.com/codex/cli/slash-commands)) | the plan as text, in the chat | reply in the chat | before the code |
 | [GitHub Spec Kit](https://github.com/github/spec-kit), [Kiro](https://kiro.dev/docs/specs/) | Markdown spec files | edit the files, or reply in the chat | before the code; Spec Kit's `converge` step also runs after it |
 | [Plannotator](https://github.com/backnotprop/plannotator) | the plan (or a diff) as text, in a browser | highlight and comment on the text | before the code, or on its diff after |
@@ -134,12 +136,12 @@ More tools, with sources: [docs/comparison.md](./docs/comparison.md).
 
 ## How it works
 
-reelplanning is an agent skill plus two commands: `reelplanning` (setup and videos) and `reel` (the
-`.reelplanning/` record). Each scene is a web page
+reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
+`.reelplanner/` record). Each scene is a web page
 rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
 
-This repo is planned with reelplanning: its own plans are in [`.reelplanning/plans/`](./.reelplanning/plans/).
-More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanning/` folder](./docs/project-dir.md) ·
+This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
+More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
 [every command](./docs/reference.md) · [what works today](./docs/status.md).
 
 ## The voice
@@ -148,7 +150,7 @@ By default the narration is made on your machine, free and private: a local voic
 whisper.cpp times the captions. Nothing to sign up for, and nothing leaves your machine. It costs about 840 MB of
 models, downloaded once, and needs Python 3.10+.
 
-On a slow machine that can take minutes per line, so `reelplanning setup` times one line and tells you if it is
+On a slow machine that can take minutes per line, so `reelplanner setup` times one line and tells you if it is
 too slow here. If it is, or you would rather not install the local voice at all, use a hosted voice through OpenRouter:
 
 - **Faster:** 1–3 seconds a line.
@@ -156,22 +158,22 @@ too slow here. If it is, or you would rather not install the local voice at all,
 - **Costs** about $0.03 per minute of narration, paid with your own OpenRouter account and API key.
 - **Sends** the narration text (not your code) to OpenRouter.
 
-To switch, put these two lines in `~/.reelplanning/.env` (one file for every repo on this machine, outside any repo,
-so it is never committed), then run `reelplanning narration-check` to hear a test line:
+To switch, put these two lines in `~/.reelplanner/.env` (one file for every repo on this machine, outside any repo,
+so it is never committed), then run `reelplanner narration-check` to hear a test line:
 
 ```
-REELPLANNING_TTS=openrouter
+REELPLANNER_TTS=openrouter
 OPENROUTER_API_KEY=sk-or-…
 ```
 
-Once the two lines are there, setup skips the local voice and says so; `reelplanning setup --hosted-voice` skips it
-even before you add them. To go back to the local voice, delete the two lines and run `reelplanning setup`.
+Once the two lines are there, setup skips the local voice and says so; `reelplanner setup --hosted-voice` skips it
+even before you add them. To go back to the local voice, delete the two lines and run `reelplanner setup`.
 
 Other providers, or a key for one repo only: [narration engines](./docs/reference.md#narration-engines).
 
 ## Contributing
 
-Start with an [issue](https://github.com/ncrispino/reelplanning/issues) for a bug or an idea; a pull request
+Start with an [issue](https://github.com/ncrispino/reelplanner/issues) for a bug or an idea; a pull request
 links the issue it fixes. Setup and tests: [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 Where help is most welcome:

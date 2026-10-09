@@ -16,12 +16,12 @@ Size on disk is not the problem. These are:
   `decisions.json`, and the same end of the table and of the entries in `decisions.md`. `reel renumber` fixes the
   ids, but someone still resolves the conflict by hand first.
 - **Every reader reads all of it.** About fifteen places read the whole file, three of them from an old commit
-  with `git show <sha>:.reelplanning/decisions.json`: `approvalOf` (the log as it stood when a plan's build
+  with `git show <sha>:.reelplanner/decisions.json`: `approvalOf` (the log as it stood when a plan's build
   started), `pr-check` (the base and the branch), and `renumber` (the base).
 
 ## The design
 
-1. **One file a plan.** `.reelplanning/decisions/<plan>.json` holds the entries filed under that plan, sorted by
+1. **One file a plan.** `.reelplanner/decisions/<plan>.json` holds the entries filed under that plan, sorted by
    id, one entry a line: `{"decisions":[\n{…},\n{…}\n]}`. A record touches its own plan's file. A supersede or a fold
    changes one line in the other plan's file. Two branches conflict only when they change the same decision.
 2. **Ids stay `D-nnn`, one sequence for the repo.** The next id is the highest in any file, plus one. The
@@ -43,7 +43,7 @@ Size on disk is not the problem. These are:
   `lib/terms.mjs`, `lib/explainer.mjs`, `lib/guide/model.mjs`, `migrate-reviews` and `lib/call-lines.mjs`. The specs
   build their own logs, and the eval projects ship theirs. All of them would move in one change, with a spec for
   each reading at an old commit.
-- **The pinned skill.** The skill runs `npx -y reelplanning@0.2.0`, which reads `decisions.json`. A repo split by
+- **The pinned skill.** The skill runs `npx -y reelplanner@0.2.0`, which reads `decisions.json`. A repo split by
   a newer version breaks for anyone still on the old one. The split has to ship with a version bump of the
   skill's pin, and `reel` should refuse to write the old layout once the folder exists.
 - **Work in flight.** Other branches are changing `decisions.json` right now. A reformat of a 540 KB file makes

@@ -31,11 +31,11 @@ import { readFileSync, existsSync, statSync } from "node:fs"; import { join, nor
 import { launchOpts, testPort, FULL, ROOT, vendorFile } from "../../../scripts/lib/env.mjs";
 import { until, frames, settled, still } from "./wait.mjs";
 
-const FBS = ".reelplanning/plans/2026-09-25-fewer-better-stops/video";
-const MEMW = ".reelplanning/plans/2026-09-24-memory/walkthrough-video";
-const LOOPW = ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video";
-const LOOP = ".reelplanning/plans/2026-09-22-m3-revise-loop/video";
-const AWALK = ".reelplanning/plans/2026-09-24-answer-on-the-video/walkthrough-video";
+const FBS = ".reelplanner/plans/2026-09-25-fewer-better-stops/video";
+const MEMW = ".reelplanner/plans/2026-09-24-memory/walkthrough-video";
+const LOOPW = ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video";
+const LOOP = ".reelplanner/plans/2026-09-22-m3-revise-loop/video";
+const AWALK = ".reelplanner/plans/2026-09-24-answer-on-the-video/walkthrough-video";
 const port = testPort(8893);
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".css": "text/css", ".wav": "audio/wav", ".mp3": "audio/mpeg", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
 const mapOf = (v) => JSON.parse(readFileSync(join(ROOT, v, "plan-map.json"), "utf8"));

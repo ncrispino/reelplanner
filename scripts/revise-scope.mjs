@@ -4,14 +4,14 @@
 // `reel record` writes into the review's reviews/<id>.md (lib/review-scope.mjs); this prints it for a
 // tool, or a person, that wants the data. Nothing is written.
 //
-// usage: reelplanning revise-scope <plan-dir> [review.json]     (default: the newest review in reviews/)
+// usage: reelplanner revise-scope <plan-dir> [review.json]     (default: the newest review in reviews/)
 import { existsSync, readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { listReviews, reviewOf, reviewKind } from "./lib/reviews.mjs";
 import { reviseScope, mapFor, editsOf, scenesSaying } from "./lib/review-scope.mjs";
 
 const [planDirArg, annArg] = process.argv.slice(2);
-if (!planDirArg) { console.error("usage: reelplanning revise-scope <plan-dir> [review.json]"); process.exit(1); }
+if (!planDirArg) { console.error("usage: reelplanner revise-scope <plan-dir> [review.json]"); process.exit(1); }
 const planDir = resolve(planDirArg);
 const path = annArg ? resolve(annArg) : listReviews(planDir).at(-1)?.path;
 if (!path || !existsSync(path)) { console.error(`✗ ${path || `no review in ${planDirArg}/reviews/`} (record one first: reel record <plan-dir> <annotations.json>)`); process.exit(1); }

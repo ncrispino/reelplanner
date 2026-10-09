@@ -1,6 +1,6 @@
 #!/bin/sh
 # arm.sh: one arm of the Bob Dylan case study on your own machine, with as little typed as we can
-# (eval/case-studies/bob-dylan-site/RUNBOOK.md, "Locally"). Run it from your reelplanning checkout:
+# (eval/case-studies/bob-dylan-site/RUNBOOK.md, "Locally"). Run it from your reelplanner checkout:
 #
 #   sh eval/case-studies/kit/arm.sh <arm>                      set up the arm (S1 to S5) and start its Claude Code here
 #   sh eval/case-studies/kit/arm.sh <arm> stage <stage> start|end   from another terminal: a stage starts or ends
@@ -16,22 +16,21 @@
 # Any failure stops it with what failed. POSIX sh, for macOS and Linux.
 #
 # Test only: REEL_CS_SKIP_INSTALL=1 skips ours's install (S4); REEL_CS_RP_SRC is where npm installs
-# reelplanning from; REEL_CS_WORKTREE is where the case-study worktree goes (default ../ReelPlanning-results), and
+# reelplanner from; REEL_CS_WORKTREE is where the case-study worktree goes (default ../reelplanner-results), and
 # when it is a checkout on a case-study branch already, the one used.
 set -u
 
 MODEL=${REEL_CS_MODEL:-claude-opus-5-5}        # the model every arm runs
-BASE=claude/clever-knuth-b5gtcf                 # reelplanning's branch: ours installs it, the results branch starts from it
+BASE=${REEL_CS_BASE:-main}                      # reelplanner's branch: ours installs it, the results branch starts from it
 PREFIX=case-study/bob-dylan-                    # the results branch, with the first arm's date
 STUDY=bob-dylan-site
-# The repo $BASE lives in. For the case study already running, the private development repo, under its name today.
-# Once the public ncrispino/reelplanning exists, all work happens there (D-310): a new case study uses
-# DEV_REPO=ncrispino/reelplanning and BASE=main. A run in progress after the rename sets REEL_CS_DEV_REPO to the private
-# repo's new name, since GitHub names ignore case and the old name then reaches the public repo, which has no $BASE.
-DEV_REPO=${REEL_CS_DEV_REPO:-ncrispino/ReelPlanning}
+# The repo $BASE lives in: the public one, where all work happens (D-310). Bob Dylan's arms ran from a branch of the
+# private development repo (claude/clever-knuth-b5gtcf), which is not public: their provenance.json names it, and a
+# rerun of them runs that branch's own copy of this kit, from before the rename.
+DEV_REPO=${REEL_CS_DEV_REPO:-ncrispino/reelplanner}
 RP_SRC=${REEL_CS_RP_SRC:-github:$DEV_REPO#$BASE}
 ARMS_HOME=$HOME/reel-case-study                 # each arm's folder: ~/reel-case-study/<arm>
-PUB_REPO=https://github.com/ncrispino/reelplanning-case-studies.git   # the public home: the study, its sites, its videos
+PUB_REPO=https://github.com/ncrispino/reelplanner-case-studies.git   # the public home: the study, its sites, its videos
 PUB_SLUG=bob-dylan                              # its pages: <Pages URL>/bob-dylan/
 STAGES="plan review revise build check-the-result fix done"
 
@@ -60,10 +59,10 @@ EOF
 # ---- where things are: this checkout, its case-study worktree, the arm's folder
 kit=$(cd "$(dirname "$0")" && pwd) || die "cannot find the folder arm.sh is in"
 has git || die "git is not installed"
-common=$(cd "$kit" && cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd) || die "arm.sh is not in a git checkout: run it from your reelplanning checkout"
+common=$(cd "$kit" && cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd) || die "arm.sh is not in a git checkout: run it from your reelplanner checkout"
 main=$(dirname "$common")
-[ -d "$main/eval/case-studies" ] || die "$main is not a reelplanning checkout"
-WT_DEFAULT=${REEL_CS_WORKTREE:-$(dirname "$main")/ReelPlanning-results}
+[ -d "$main/eval/case-studies" ] || die "$main is not a reelplanner checkout"
+WT_DEFAULT=${REEL_CS_WORKTREE:-$(dirname "$main")/reelplanner-results}
 
 # the case-study worktree this checkout has, as "<branch>\t<path>" (the newest case-study branch), or REEL_CS_WORKTREE's
 find_wt() {
@@ -119,7 +118,7 @@ s1() {
     if [ -n "$BR" ]; then git -C "$main" worktree add -q "$WT" "$BR" || die "git worktree add $WT $BR failed"
     elif [ -n "$rb" ]; then BR=$rb; git -C "$main" worktree add -q --track -b "$BR" "$WT" "origin/$BR" || die "git worktree add for $BR failed"
     else
-      git -C "$main" rev-parse -q --verify "refs/remotes/origin/$BASE" >/dev/null || die "no origin/$BASE in $main: is origin the reelplanning development repo ($DEV_REPO)?"
+      git -C "$main" rev-parse -q --verify "refs/remotes/origin/$BASE" >/dev/null || die "no origin/$BASE in $main: is origin the reelplanner development repo ($DEV_REPO)?"
       BR="$PREFIX$(date +%F)"
       git -C "$main" worktree add -q -b "$BR" "$WT" "origin/$BASE" || die "git worktree add -b $BR failed"
     fi
@@ -135,13 +134,13 @@ s1() {
 # ---- S2: the arm's folder and its environment
 s2() {
   say "S2. the arm's folder and its environment"
-  mkdir -p "$A/claude" "$A/reelplanning" "$SITE" || die "cannot make $A"
+  mkdir -p "$A/claude" "$A/reelplanner" "$SITE" || die "cannot make $A"
   cat > "$A/env.sh" <<EOF
 # The $arm arm's environment. Source it in every terminal for this arm: . $A/env.sh
 export CLAUDE_CONFIG_DIR="$A/claude"               # its own Claude Code: login, settings, skills, transcripts
-export REELPLANNING_HOME="$A/reelplanning"         # its own reviewer memory, empty
-export REELPLANNING_SKILLS_DIR="$A/claude/skills"  # HyperFrames' skills, where this arm's Claude Code loads them
-export REELPLANNING_SKILLS_AGENTS=claude-code
+export REELPLANNER_HOME="$A/reelplanner"           # its own reviewer memory, empty
+export REELPLANNER_SKILLS_DIR="$A/claude/skills"   # HyperFrames' skills, where this arm's Claude Code loads them
+export REELPLANNER_SKILLS_AGENTS=claude-code
 export DISABLE_AUTOUPDATER=1                       # the same Claude Code in every arm
 cd "$A/dylan-site"
 EOF
@@ -157,35 +156,35 @@ s3() {
   say "  ✓ $SITE: git init, site.exclude, git identity agent <agent@localhost>"
 }
 
-# ---- S4, ours only: reelplanning, its skill and its tools, as a new user installs them
+# ---- S4, ours only: reelplanner, its skill and its tools, as a new user installs them
 s4() {
   [ "$arm" = ours ] || return 0
-  say "S4. reelplanning, its skill and its tools (10 to 20 minutes the first time)"
+  say "S4. reelplanner, its skill and its tools (10 to 20 minutes the first time)"
   if [ "${REEL_CS_SKIP_INSTALL:-}" = 1 ]; then say "  △ skipped (REEL_CS_SKIP_INSTALL=1: for testing arm.sh only)"; return 0; fi
   has npm || die "npm is not installed (Node 22.20 or later: nodejs.org, or brew install node)"
   # each part once: a second run skips what is marked done in $STATE
   ( . "$A/env.sh" && cd "$HOME" || exit 1
-    if ! marked installed || ! has reelplanning; then
+    if ! marked installed || ! has reelplanner; then
       from=$RP_SRC
       if ! npm i -g "$RP_SRC" >> "$A/setup.log" 2>&1; then
-        # npm cannot reach the repo: clone it, install from the clone, delete the clone (no agent may find its .reelplanning/)
+        # npm cannot reach the repo: clone it, install from the clone, delete the clone (no agent may find its .reelplanner/)
         say "  △ npm i -g $RP_SRC failed: installing from a clone instead"
-        tmp=$(mktemp -d "${TMPDIR:-/tmp}/reelplanning-src-XXXXXX") || exit 1
+        tmp=$(mktemp -d "${TMPDIR:-/tmp}/reelplanner-src-XXXXXX") || exit 1
         from="a clone of $BASE from $(git -C "$main" remote get-url origin)"
-        git clone -q --depth 1 -b "$BASE" "$(git -C "$main" remote get-url origin)" "$tmp/reelplanning" >> "$A/setup.log" 2>&1 \
-          && npm i -g --install-links "$tmp/reelplanning" >> "$A/setup.log" 2>&1; rc=$?; rm -rf "$tmp"
+        git clone -q --depth 1 -b "$BASE" "$(git -C "$main" remote get-url origin)" "$tmp/reelplanner" >> "$A/setup.log" 2>&1 \
+          && npm i -g --install-links "$tmp/reelplanner" >> "$A/setup.log" 2>&1; rc=$?; rm -rf "$tmp"
         [ $rc -eq 0 ] || { tail -n 20 "$A/setup.log" | sed 's/^/    /' >&2; die "npm i -g failed (all of it: $A/setup.log). If npm's global folder needs root, use sudo or a prefix of your own (docs/reference.md, Install); then run this again"; }
       fi
-      has reelplanning || die "reelplanning is installed but not on PATH (npm's global bin: $(npm prefix -g)/bin): add it to PATH, then run this again"
-      mark installed; say "  ✓ reelplanning $(reelplanning --version 2>/dev/null | head -n 1), from $from"
+      has reelplanner || die "reelplanner is installed but not on PATH (npm's global bin: $(npm prefix -g)/bin): add it to PATH, then run this again"
+      mark installed; say "  ✓ reelplanner $(reelplanner --version 2>/dev/null | head -n 1), from $from"
     fi
-    if ! marked skill; then run "the skill (npx skills add)" npx -y skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g -y -a claude-code; mark skill; say "  ✓ the plan-to-video skill"; fi
-    if ! marked tools; then run "reelplanning setup" reelplanning setup; mark tools; say "  ✓ reelplanning setup"; fi
+    if ! marked skill; then run "the skill (npx skills add)" npx -y skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y -a claude-code; mark skill; say "  ✓ the plan-to-video skill"; fi
+    if ! marked tools; then run "reelplanner setup" reelplanner setup; mark tools; say "  ✓ reelplanner setup"; fi
     if ! marked smoke; then
       sh "$CS/../kit/smoke.sh" > "$A/smoke.txt" 2>&1 || { sed 's/^/    /' "$A/smoke.txt" >&2; die "the smoke check failed: fix what it says, then run this again"; }
       mark smoke
     fi
-    { say "\$ reelplanning --version"; reelplanning --version 2>&1 | head -n 1
+    { say "\$ reelplanner --version"; reelplanner --version 2>&1 | head -n 1
       say "\$ sh smoke.sh"; cat "$A/smoke.txt"
       say "\$ ls \$CLAUDE_CONFIG_DIR/skills"; ls "$CLAUDE_CONFIG_DIR/skills"
       say "\$ git ls-remote origin $BASE"; git -C "$main" ls-remote origin "$BASE"; } > "$A/s4.txt" 2>&1
@@ -205,7 +204,7 @@ s5() {
   printf '%s\n' "$pre" > "$A/preflight.txt"
   prov="$CS/arms/$arm/provenance.json"
   # shellcheck disable=SC2086 # EXTRA is words
-  ( . "$A/env.sh" && REELPLANNING_BRANCH=$BASE REELPLANNING_REPO=https://github.com/$DEV_REPO sh "$CS/../kit/provenance.sh" "$arm" "$MODEL" $EXTRA ) > "$prov.new" 2>> "$A/setup.log" \
+  ( . "$A/env.sh" && REELPLANNER_BRANCH=$BASE REELPLANNER_REPO=https://github.com/$DEV_REPO sh "$CS/../kit/provenance.sh" "$arm" "$MODEL" $EXTRA ) > "$prov.new" 2>> "$A/setup.log" \
     && node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$prov.new" 2>/dev/null \
     || { rm -f "$prov.new"; die "provenance.sh did not print JSON (see $A/setup.log)"; }
   mv "$prov.new" "$prov"
@@ -291,17 +290,17 @@ done_arm() {
     mkdir -p "$CS/arms/$arm/site"
     rep=""; [ -n "$(ls -A "$CS/arms/$arm/site" 2>/dev/null)" ] && rep=--replace
     # shellcheck disable=SC2086
-    ( cd "$WT" && node bin/reelplanning.mjs reel case-study keep "$STUDY" "$arm" "$SITE" $rep ) || die "reel case-study keep refused (above). Do what it says in $SITE, then run \`$me $arm done\` again"
+    ( cd "$WT" && node bin/reelplanner.mjs reel case-study keep "$STUDY" "$arm" "$SITE" $rep ) || die "reel case-study keep refused (above). Do what it says in $SITE, then run \`$me $arm done\` again"
   fi
-  ( cd "$WT" && node bin/reelplanning.mjs reel case-study keep "$STUDY" --check ) || die "reel case-study keep --check failed (above)"
+  ( cd "$WT" && node bin/reelplanner.mjs reel case-study keep "$STUDY" --check ) || die "reel case-study keep --check failed (above)"
   say "E3. what the transcript says ran, into provenance.json"
-  ( cd "$WT" && node bin/reelplanning.mjs reel case-study provenance "$STUDY" "$arm" "$A/claude/projects" --site "$SITE" ) || die "reel case-study provenance failed (above)"
+  ( cd "$WT" && node bin/reelplanner.mjs reel case-study provenance "$STUDY" "$arm" "$A/claude/projects" --site "$SITE" ) || die "reel case-study provenance failed (above)"
   marked done || { mark done; add_note "the arm is over: arm.sh done (E1, E2, the transcript step)"; }
 
   others=$(for a in text html ours; do [ "$a" = "$arm" ] || printf '%s\n' "$a"; done | paste -sd ' ' - | sed 's/ / and /')
   # into the file first, as publish's prompt: a here-document inside $( ) does not parse on macOS's /bin/sh
   cat > "$A/done-prompt.txt" <<EOF
-You are finishing the $arm arm of reelplanning's Bob Dylan case study. You are a helper with the owner's own Claude Code, not the agent under test. You are in the case-study worktree ($WT), on the branch $BR. The steps are E3 to E6 of eval/case-studies/$STUDY/RUNBOOK.md, "When the arm is over": read that section and "The arms" for the $arm arm first. arm.sh has done E1 (the site's last commit), E2 (the site kept in arms/$arm/site/ and site.bundle, keep --check passed) and E3's transcript step (arms/$arm/provenance.json).
+You are finishing the $arm arm of reelplanner's Bob Dylan case study. You are a helper with the owner's own Claude Code, not the agent under test. You are in the case-study worktree ($WT), on the branch $BR. The steps are E3 to E6 of eval/case-studies/$STUDY/RUNBOOK.md, "When the arm is over": read that section and "The arms" for the $arm arm first. arm.sh has done E1 (the site's last commit), E2 (the site kept in arms/$arm/site/ and site.bundle, keep --check passed) and E3's transcript step (arms/$arm/provenance.json).
 
 1. Read eval/case-studies/$STUDY/arms/$arm/notes.md: my notes, a line each with its time. Ask me in one message for what they lack: each of the seven stages' start and end (say which ones the transcript's timestamps would give, and ask me to confirm), my own minutes at each stage, what I raised at each stage and how, and what /cost showed. Wait for my answer, and add it to notes.md as lines of their own.
 2. E3, the sheet (arms/$arm/SHEET.md; its preflight block is filled already): the table, from provenance.json and the notes, and each stage: the clock, my minutes and what I raised from the notes; the questions the agent asked and my answers, word for word, from the arm's transcript ($A/claude/projects/*/*.jsonl, one JSON line per message with its timestamp). From the transcript take only its metadata and the agent's questions and my answers.
@@ -310,7 +309,7 @@ You are finishing the $arm arm of reelplanning's Bob Dylan case study. You are a
 5. E6: commit the arm's folder and the data files with the message "Bob Dylan case study, $arm: the finished site", then "git push -u origin HEAD". Then add the commit's link to data/links.json, commit that and push again. Tell me the commit you pushed.
 
 Rules:
-- Read only this arm: never read arms/ of another arm ($others), ~/reel-case-study/ of another arm, eval/case-studies/$STUDY/FEEDBACK.md, or the repo's .reelplanning/.
+- Read only this arm: never read arms/ of another arm ($others), ~/reel-case-study/ of another arm, eval/case-studies/$STUDY/FEEDBACK.md, or the repo's .reelplanner/.
 - Change only eval/case-studies/$STUDY/arms/$arm/ and the $arm entries in eval/case-studies/$STUDY/data/. Leave $A/ as it is (it stays on disk until the write-up).
 - Commit and push only to $BR, never with force. Never touch $BASE: no push, merge, rebase or checkout of it, and no change in the checkout at $main.
 - If a step fails, stop and tell me what failed and what it printed; don't work around it.
@@ -318,7 +317,7 @@ EOF
   prompt=$(cat "$A/done-prompt.txt")
   has claude || die "Claude Code is not installed; the prompt for the rest is in $A/done-prompt.txt"
   # your own Claude Code, not the arm's: drop the arm's environment if this terminal has it
-  case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNING_HOME REELPLANNING_SKILLS_DIR REELPLANNING_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
+  case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNER_HOME REELPLANNER_SKILLS_DIR REELPLANNER_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
   say ""
   say "Now a Claude Code session of your own, in the worktree, does E3 to E6 (its prompt: $A/done-prompt.txt)."
   say "It asks you first for what your notes lack: your minutes, what you raised, what /cost showed."
@@ -361,20 +360,20 @@ status() {
 
 # ---- ours's videos as they are now. A revise rebuilds them in place, and their voice is kept out of git (D-305),
 # so a version not snapshotted cannot be played again as it was. Each snapshot is v1, v2 … in ~/reel-case-study/ours/
-# snapshots/: the video folders and .reelplanning's own files (the decision log at that time), and the site's commit.
+# snapshots/: the video folders and .reelplanner's own files (the decision log at that time), and the site's commit.
 snapshot() {
   [ "$arm" = ours ] || die "only the ours arm makes videos: \`$me ours snapshot\`"
-  [ -d "$SITE/.reelplanning" ] || die "no $SITE/.reelplanning yet: nothing to snapshot"
+  [ -d "$SITE/.reelplanner" ] || die "no $SITE/.reelplanner yet: nothing to snapshot"
   n=1; while [ -e "$A/snapshots/v$n" ]; do n=$((n + 1)); done
-  d="$A/snapshots/v$n"; mkdir -p "$d/.reelplanning" || die "cannot make $d"
+  d="$A/snapshots/v$n"; mkdir -p "$d/.reelplanner" || die "cannot make $d"
   found=0
-  for v in "$SITE"/.reelplanning/plans/*/video "$SITE"/.reelplanning/plans/*/walkthrough-video "$SITE"/.reelplanning/system-video; do
+  for v in "$SITE"/.reelplanner/plans/*/video "$SITE"/.reelplanner/plans/*/walkthrough-video "$SITE"/.reelplanner/system-video; do
     [ -f "$v/index.html" ] || continue
     rel=${v#"$SITE"/}; mkdir -p "$d/$(dirname "$rel")" && cp -R "$v" "$d/$rel" || die "cannot copy $v"
     found=$((found + 1))
   done
-  [ "$found" -gt 0 ] || { rm -r "${d:?}"; die "no built video in $SITE/.reelplanning yet: nothing to snapshot"; }
-  for f in "$SITE"/.reelplanning/*; do [ -f "$f" ] && cp "$f" "$d/.reelplanning/"; done
+  [ "$found" -gt 0 ] || { rm -r "${d:?}"; die "no built video in $SITE/.reelplanner yet: nothing to snapshot"; }
+  for f in "$SITE"/.reelplanner/*; do [ -f "$f" ] && cp "$f" "$d/.reelplanner/"; done
   git -C "$SITE" rev-parse HEAD > "$d/site-commit" 2>/dev/null || true
   use_wt; add_note "snapshot v$n of ours's videos ($found video(s)): ~/reel-case-study/ours/snapshots/v$n"
   say "✓ v$n: $found video(s) in $d"
@@ -386,7 +385,7 @@ snapshot() {
 # your own builds each arm's site into docs/bob-dylan/<arm>/, writes the landing pages, commits and pushes.
 publish() {
   use_wt
-  PUB=${REEL_CS_PUBLIC:-$(dirname "$main")/reelplanning-case-studies}
+  PUB=${REEL_CS_PUBLIC:-$(dirname "$main")/reelplanner-case-studies}
   if [ ! -d "$PUB/.git" ]; then git clone -q "$PUB_REPO" "$PUB" || die "cannot clone $PUB_REPO into $PUB (does the repo exist?)"; fi
   [ -z "$(git -C "$PUB" status --porcelain)" ] || die "$PUB has changes not committed: commit or drop them first"
   git -C "$PUB" pull -q --ff-only 2>/dev/null || true
@@ -403,13 +402,13 @@ publish() {
 
   say "P2. ours's review pages"
   O="$ARMS_HOME/ours/dylan-site"; pages=""
-  if [ -d "$O/.reelplanning" ]; then
+  if [ -d "$O/.reelplanner" ]; then
     for src in "$O" "$ARMS_HOME"/ours/snapshots/v*; do
-      [ -d "$src/.reelplanning" ] || continue
+      [ -d "$src/.reelplanner" ] || continue
       case $src in "$O") name=review ;; *) name=review-$(basename "$src") ;; esac
-      set --; for v in "$src"/.reelplanning/plans/*/video "$src"/.reelplanning/plans/*/walkthrough-video "$src"/.reelplanning/system-video; do [ -f "$v/index.html" ] && set -- "$@" "$v"; done
+      set --; for v in "$src"/.reelplanner/plans/*/video "$src"/.reelplanner/plans/*/walkthrough-video "$src"/.reelplanner/system-video; do [ -f "$v/index.html" ] && set -- "$@" "$v"; done
       [ $# -gt 0 ] || continue
-      ( cd "$WT" && node bin/reelplanning.mjs bundle-player "$PUB/docs/$PUB_SLUG/$name" "$@" --reelplanning "$src/.reelplanning" ) >/dev/null || die "bundle-player failed for $src"
+      ( cd "$WT" && node bin/reelplanner.mjs bundle-player "$PUB/docs/$PUB_SLUG/$name" "$@" --reelplanner "$src/.reelplanner" ) >/dev/null || die "bundle-player failed for $src"
       pages="$pages $name"; say "  ✓ docs/$PUB_SLUG/$name ($# video(s), from ${src#"$ARMS_HOME"/})"
     done
   else say "  - ours's site is not on this machine ($O): its review pages are skipped; run publish again where ours ran"; fi
@@ -418,18 +417,18 @@ publish() {
   # into the file first, never `prompt=$(cat <<EOF …)`: macOS's /bin/sh (bash 3.2) reads a here-document inside $( )
   # for quotes, and this one's apostrophes (site's, Vite's) leave the rest of the script unparsed
   cat > "$ARMS_HOME/publish-prompt.txt" <<EOF
-You are publishing reelplanning's Bob Dylan case study. You are a helper with the owner's own Claude Code. You are in $PUB, a clone of $PUB_REPO, whose GitHub Pages serves main's docs/ folder. arm.sh has copied the study into $STUDY/ (as committed on $BR of the reelplanning repo) and packed ours's review pages into docs/$PUB_SLUG/:${pages:- none}.
+You are publishing reelplanner's Bob Dylan case study. You are a helper with the owner's own Claude Code. You are in $PUB, a clone of $PUB_REPO, whose GitHub Pages serves main's docs/ folder. arm.sh has copied the study into $STUDY/ (as committed on $BR of the reelplanner repo) and packed ours's review pages into docs/$PUB_SLUG/:${pages:- none}.
 
 1. Each arm's finished site into docs/$PUB_SLUG/<arm>/ (text, html, ours; skip an arm with no $STUDY/arms/<arm>/site/ and say so): clone $STUDY/arms/<arm>/site.bundle into a temp folder, build it as $STUDY/data/sites.json's "run" for that arm says, and copy only the static output (built files, or the site's own files when it has no build) into docs/$PUB_SLUG/<arm>/. It must work under that path: fix absolute asset paths with the build tool's base-path option (e.g. Vite's --base), never by editing the site's source. Open each built copy in a browser at 390 x 844 and 1440 x 900 from a local static server rooted at docs/, and check the first screens load with no console errors. Delete the temp folders.
 2. docs/$PUB_SLUG/index.html: $STUDY/case-study.html when it exists (rewrite its links so they work from there); otherwise a short plain page: one paragraph on the study from $STUDY/README.md, and links to the three sites and the review pages, each with one line on what it is. docs/index.html: a plain list of the case studies (only this one for now), linking docs/$PUB_SLUG/.
-3. README.md at the root: what this repo is (case studies for reelplanning, https://github.com/ncrispino/reelplanning), the Pages links, and the folder layout. Plain words; "reelplanning" is lowercase.
-4. Commit with the message "Bob Dylan case study: the study, its sites and review pages" and push: "git push -u origin main" (no force). If it is the repo's first push, tell me to turn on Pages: Settings → Pages → Deploy from a branch, main, /docs. Tell me the Pages URLs (https://ncrispino.github.io/reelplanning-case-studies/ and /$PUB_SLUG/…), and anything that did not build.
+3. README.md at the root: what this repo is (case studies for reelplanner, https://github.com/ncrispino/reelplanner), the Pages links, and the folder layout. Plain words; "reelplanner" is lowercase.
+4. Commit with the message "Bob Dylan case study: the study, its sites and review pages" and push: "git push -u origin main" (no force). If it is the repo's first push, tell me to turn on Pages: Settings → Pages → Deploy from a branch, main, /docs. Tell me the Pages URLs (https://ncrispino.github.io/reelplanner-case-studies/ and /$PUB_SLUG/…), and anything that did not build.
 
 Rules: change only $STUDY/'s case-study.html links (if any), docs/ and README.md; never edit the sites' source or the study's data. No secrets, keys, emails or transcripts in what you commit: check git diff --cached for them before the commit. If a step fails, stop and tell me what failed and what it printed.
 EOF
   prompt=$(cat "$ARMS_HOME/publish-prompt.txt")
   has claude || die "Claude Code is not installed; the prompt for the rest is in $ARMS_HOME/publish-prompt.txt"
-  case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNING_HOME REELPLANNING_SKILLS_DIR REELPLANNING_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
+  case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNER_HOME REELPLANNER_SKILLS_DIR REELPLANNER_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
   say ""
   say "Now a Claude Code session of your own, in $PUB, builds the sites and pushes (its prompt: $ARMS_HOME/publish-prompt.txt)."
   cd "$PUB" || die "cannot cd to $PUB"

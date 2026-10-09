@@ -6,12 +6,12 @@ re-voiced for a spelling); the captions show it as this table does (`captions-se
 warns on a frame that shows it another way.
 
 - **Shown in backticks** is a tool's name or a command: it is shown in code markup (the frames' mono, a chip in
-  the captions), in its own spelling, wherever it appears, never capitalised ("reelplanning" at the start of a
-  sentence is still `reelplanning`). Its next words, when the script says them, join the chip:
+  the captions), in its own spelling, wherever it appears, never capitalised ("reelplanner" at the start of a
+  sentence is still `reelplanner`). Its next words, when the script says them, join the chip:
   `reel status`, `npm test`, `claude -p`.
 - **Shown plain** is a product or an acronym, shown with that case and no markup: GitHub, CLI, JSON.
 - A real thing on screen (inside a `data-artifact`) keeps its own text, and a word inside a path or a command
-  line (`bin/reelplanning.mjs`) is part of it.
+  line (`bin/reelplanner.mjs`) is part of it.
 - A flag, a path or a file name (`-p`, `--dry-run`, `/work`, `plan.md`) is written in the script as it is
   written, and is code in the captions whether listed or not; `narrate` hands the voice its spoken form
   ("dash p", "plan dot md", `scripts/lib/say.mjs`). An old script that spells one out ("claude dash p") is
@@ -21,14 +21,13 @@ Add a row when a plan brings in a tool the videos name. Written lists the spelli
 
 | Written | Shown | A command's next words |
 |---|---|---|
-| reelplanning, ReelPlanning, Reelplanning, reelPlanning | `reelplanning` | build, review, setup, narrate, reel, finish-project, check-terms, frame-lint, plan-map, plan-diff, verify, inbox, notify, detail, captions-sentences, bundle-player, system-review, hyperframes |
-| reel | `reel` | init, new-plan, stage, check, record, audit, stops, status, memory, retro, build, pr-check, renumber |
+| reelplanner, reel planner, ReelPlanner, Reelplanner, reelPlanner | `reelplanner` | build, review, setup, narrate, reel, finish-project, check-terms, frame-lint, plan-map, plan-diff, verify, inbox, notify, detail, captions-sentences, bundle-player, system-review, hyperframes |
+| reel | `reel` | init, new-plan, stage, check, record, audit, stops, status, memory, retro, build |
 | HyperFrames, Hyperframes | HyperFrames | |
 | hyperframes | `hyperframes` | check, lint, render, preview, tts, init, snapshot, add, catalog |
 | npm, NPM | `npm` | test, install, run, link, publish, pack |
 | npx | `npx` | |
 | git, Git | `git` | diff, log, status, commit, push, add, show, blame |
-| gh | `gh` | pr checkout, pr diff, pr view, api |
 | claude | `claude` | -p |
 | codex | `codex` | exec |
 | opencode | `opencode` | run |

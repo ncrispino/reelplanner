@@ -4,16 +4,16 @@
 #
 # plan-map.json is written in finish-project, before the pictures are taken, so until this sets them again its
 # thumbnails name the last build's pictures (none on a first build), and every one that moved is a missing file.
-# snapshots/ is kept out of git (.reelplanning/.gitignore): run this to make a fresh clone's thumbnails again.
+# snapshots/ is kept out of git (.reelplanner/.gitignore): run this to make a fresh clone's thumbnails again.
 #
 # The pictures are taken at 2× device scale (a 1920 × 1080 video gives 3840 × 2160 PNGs): the guide shows a scene up
 # to 760 CSS px wide, on 2× screens too, and its lightbox shows it whole (lib/guide/pictures.mjs). At 1× the guide had
 # to stretch them. HyperFrames' --zoom over the whole stage is that: a raised deviceScaleFactor, the layout unchanged.
 # RP_SNAPSHOT_SCALE sets another scale (1 for the old size).
 #
-# usage: reelplanning snapshot <project-dir>
+# usage: reelplanner snapshot <project-dir>
 set -euo pipefail
-PROJECT="${1:?usage: reelplanning snapshot <project-dir>}"
+PROJECT="${1:?usage: reelplanner snapshot <project-dir>}"
 export HYPERFRAMES_NO_TELEMETRY=1
 export HYPERFRAMES_NO_UPDATE_CHECK=1
 export HYPERFRAMES_SKIP_SKILLS=1

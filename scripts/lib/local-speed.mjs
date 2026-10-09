@@ -3,13 +3,13 @@
 // instead (the hosted voice, OpenRouter's). Local narration always works; on a small machine it is slow (2–3 minutes
 // a line on a 2-CPU droplet), and a new user should hear that before the first video, not after an hour of it.
 //
-// `reelplanning setup` runs it (and `setup --dry-run` says it would), only when Kokoro and whisper.cpp are installed
-// and no hosted engine is set; `reelplanning narration-check --local` runs it on its own, with each step's lines.
+// `reelplanner setup` runs it (and `setup --dry-run` says it would), only when Kokoro and whisper.cpp are installed
+// and no hosted engine is set; `reelplanner narration-check --local` runs it on its own, with each step's lines.
 // It writes nothing in the repo; the first time, it fetches Kokoro's and whisper's models (about 840 MB, once,
 // untimed: narrate would fetch them on the first line anyway).
 //
 // It also says whether setup installs the local voice at all (localVoicePlan): not when narration here is hosted
-// (the settings narrate reads: the shell, the repo's .reelplanning/.env, ~/.reelplanning/.env, config.json), or when
+// (the settings narrate reads: the shell, the repo's .reelplanner/.env, ~/.reelplanner/.env, config.json), or when
 // `setup --hosted-voice` asks it not to; `setup --local-voice` installs it whatever narration uses.
 //
 // usage (setup): node scripts/lib/local-speed.mjs [--dry-run] [<dir>]       always exits 0: a slow machine is advice, not a failure
@@ -17,8 +17,8 @@
 //              → a first line `kokoro=0|1 whisper=0|1 pending=0|1` (what to install; the hosted voice asked for, not set
 //                yet), then the lines setup prints
 //
-// Test seams: REELPLANNING_HYPERFRAMES_BIN (scripts/lib/tts-local.mjs) stands in for the HyperFrames CLI;
-// REELPLANNING_LOCAL_SPEED_TIMEOUT_S sets the time limit (default 30); REELPLANNING_SYSTEM_ROOT is where the fixed
+// Test seams: REELPLANNER_HYPERFRAMES_BIN (scripts/lib/tts-local.mjs) stands in for the HyperFrames CLI;
+// REELPLANNER_LOCAL_SPEED_TIMEOUT_S sets the time limit (default 30); REELPLANNER_SYSTEM_ROOT is where the fixed
 // system places are looked under (Homebrew's whisper-cli; / by default), an empty folder for a machine with none.
 import { existsSync, mkdtempSync, rmSync, statSync, accessSync, constants } from "node:fs";
 import { join, resolve, delimiter } from "node:path";
@@ -27,7 +27,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { kokoro, whisper } from "./tts-local.mjs";
 import { loadEnvFile, narrationSettings, heygenSet, envSource, envFileLabel, homeEnvPath, DEFAULT_WHISPER } from "./narrator.mjs";
-import { RP_COMMAND } from "./env.mjs";
+import { RP_COMMAND, machineDirShown } from "./env.mjs";
 
 // A plan video has 40–100 lines; 60 is a typical one.
 export const LINES = 60;
@@ -37,7 +37,7 @@ export const LINES = 60;
 // line, local narration finishes while the frames are being built (narrate runs in the background), so it is fine.
 export const SLOW_S = 20;
 // The check stops after this long: past it the machine is slow anyway, and setup should not hang on it.
-export const timeoutS = (env = process.env) => Math.max(0.1, Number(env.REELPLANNING_LOCAL_SPEED_TIMEOUT_S) || 30);
+export const timeoutS = (env = process.env) => Math.max(0.1, Number(env.REELPLANNER_LOCAL_SPEED_TIMEOUT_S) || 30);
 // One line as long as a plan video's usual one (19 words), with a pause in it.
 export const SPEED_TEXT = "The review page stops at each open choice, and your answer goes into the decision log beside the plan.";
 export const VOICE = "am_michael", SPEED = 1.25;
@@ -48,7 +48,7 @@ export function whisperPath(env = process.env) {
   for (const d of String(env.PATH || "").split(delimiter)) if (d && isExec(join(d, "whisper-cli"))) return join(d, "whisper-cli");
   if (env.HYPERFRAMES_WHISPER_PATH && isExec(env.HYPERFRAMES_WHISPER_PATH)) return env.HYPERFRAMES_WHISPER_PATH;
   const w = join(homedir(), ".cache", "hyperframes", "whisper", "whisper.cpp");
-  return [join(w, "build", "bin", "whisper-cli"), join(w, "build", "whisper-cli"), `${env.REELPLANNING_SYSTEM_ROOT || ""}/opt/homebrew/bin/whisper-cli`].find(isExec) || null;
+  return [join(w, "build", "bin", "whisper-cli"), join(w, "build", "whisper-cli"), `${env.REELPLANNER_SYSTEM_ROOT || ""}/opt/homebrew/bin/whisper-cli`].find(isExec) || null;
 }
 /** What local narration needs that is not here: "Kokoro TTS" (kokoro-onnx in HyperFrames' python), "whisper.cpp". */
 export function localToolsMissing(env = process.env, { kokoro = true, whisper = true } = {}) {
@@ -58,9 +58,9 @@ export function localToolsMissing(env = process.env, { kokoro = true, whisper = 
   return missing;
 }
 
-// The hosted voice: the two lines in ~/.reelplanning/.env that choose it (README, "The voice"; docs/reference.md,
+// The hosted voice: the two lines in ~/.reelplanner/.env that choose it (README, "The voice"; docs/reference.md,
 // "Narration engines"), and where its key comes from
-export const HOSTED_LINES = ["REELPLANNING_TTS=openrouter", "OPENROUTER_API_KEY=…"];
+export const HOSTED_LINES = ["REELPLANNER_TTS=openrouter", "OPENROUTER_API_KEY=…"];
 export const KEYS_URL = "https://openrouter.ai/settings/keys";
 
 /**
@@ -71,7 +71,7 @@ export const KEYS_URL = "https://openrouter.ai/settings/keys";
  */
 export function localVoiceNeeds(s, { env = process.env, provider = null } = {}) {
   if (s.error) return { kokoro: true, whisper: true };
-  if (s.engine === "reelplanning") return { kokoro: s.tts === "kokoro", whisper: s.timings === "local" };
+  if (s.engine === "reelplanner") return { kokoro: s.tts === "kokoro", whisper: s.timings === "local" };
   const p = provider || (heygenSet(env) ? "heygen" : "kokoro");
   if (p === "heygen") return { kokoro: false, whisper: false };
   if (p === "elevenlabs" && provider) return { kokoro: false, whisper: true };   // as picked: its pip package is there
@@ -88,9 +88,9 @@ export function localVoicePlan(dir, { hostedVoice = false, localVoice = false, e
   loadEnvFile(dir);
   const s = narrationSettings(dir, env), need = localVoiceNeeds(s, { env });
   if (!need.kokoro) {
-    const what = s.engine === "reelplanning" ? s.tts : "HeyGen";
-    const from = s.engine !== "reelplanning" ? "a HeyGen credential is set"
-      : `from ${envSource("REELPLANNING_TTS", env) || (env.REELPLANNING_TTS ? "the shell's REELPLANNING_TTS" : ".reelplanning/config.json")}`;
+    const what = s.engine === "reelplanner" ? s.tts : "HeyGen";
+    const from = s.engine !== "reelplanner" ? "a HeyGen credential is set"
+      : `from ${envSource("REELPLANNER_TTS", env) || (env.REELPLANNER_TTS ? "the shell's REELPLANNER_TTS" : ".reelplanner/config.json")}`;
     return { ...need, pending: false, lines: [need.whisper
       ? `✓ local voice: Kokoro skipped — speech is hosted (${what}, ${from}), but its word timings are local, so whisper.cpp is still installed; \`${rp} setup --local-voice\` installs Kokoro anyway`
       : `✓ local voice: skipped — narration is hosted (${what}, ${from}); \`${rp} setup --local-voice\` installs it anyway`] };
@@ -145,7 +145,7 @@ export function speedVerdict(seconds, { timedOut = false, limitS = timeoutS(), r
   return { fast: false, lines: [
     `△ ${head}: slow`,
     "  the hosted voice is much faster: a line in 1–3 s, about $0.03 a minute of narration (Deepgram Aura-2 on OpenRouter). To use it:",
-    "    put REELPLANNING_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanning/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)",
+    `    put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ${machineDirShown()}/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)`,
     `    then run: ${rp} narration-check`,
     "  local narration still works here, just slower",
   ] };
@@ -165,7 +165,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const s = narrationSettings(dir);
   const limit = timeoutS();
   if (s.error) { say("△ local narration: not timed: the narration settings need fixing first (above)"); process.exit(0); }
-  if (s.engine === "reelplanning" ? s.hosted : heygenSet()) { say(`✓ local narration: not timed: narration here is hosted (${s.keyModel || "HeyGen, a HeyGen credential is set"})`); process.exit(0); }
+  if (s.engine === "reelplanner" ? s.hosted : heygenSet()) { say(`✓ local narration: not timed: narration here is hosted (${s.keyModel || "HeyGen, a HeyGen credential is set"})`); process.exit(0); }
   const missing = localToolsMissing(), models = modelsMissing();
   const what = `one sentence through local Kokoro + whisper ${DEFAULT_WHISPER}`;
   if (dry) {

@@ -18,8 +18,8 @@ import { isRule, isHistory, inForce, specCites, specHas } from "../lib/ledger.mj
 import { callsTouched, stepsNamed } from "../lib/call-lines.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-ledger-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");
-const rp = join(tmp, ".reelplanning");
+process.env.REELPLANNER_HOME = join(tmp, "home");
+const rp = join(tmp, ".reelplanner");
 const write = (p, s) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, s); };
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 const node = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { cwd: tmp, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: process.env }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
@@ -117,7 +117,7 @@ try {
   ok("reel status: the call whose lines are all gone is outlived; the log is not edited", /1 still on lines their commits wrote, 1 outlived/.test(st.out) && byId("D-003").status === "active", st.out);
   const mem = reel("memory", tmp, "outlived");
   ok("reel memory outlived: names it, in its own words, with its file", /D-003, the earlier plan's call A2: “gone says it is soon removed”, instead of “an empty function” \(src\/x\.mjs\)/.test(mem.out) && !/D-002/.test(mem.out), mem.out);
-  ok("…and the blame is cached outside git's view (.reelplanning/.cache/)", existsSync(join(rp, ".cache", "blame.json")));
+  ok("…and the blame is cached outside git's view (.reelplanner/.cache/)", existsSync(join(rp, ".cache", "blame.json")));
 
   // ---------- relevance by code ----------
   write(join(tmp, "src", "x.mjs"), readFileSync(join(tmp, "src", "x.mjs"), "utf8").replace("// a note the earlier plan left", "// a note, reworded"));

@@ -12,7 +12,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { readPlanBlocks, blockFindings, answeredIn } from "../plan-md.mjs";
-import { repoRoot } from "../env.mjs";
+import { repoRoot, rpDirOf, otherRpPath } from "../env.mjs";
 import { approvedAt } from "../reviews.mjs";
 import { readSources, sourceText, privateIn, maskOf } from "../explainer.mjs";
 import { storyboardFrames, glossaryFor, splitMeaning } from "../terms.mjs";
@@ -34,7 +34,7 @@ export function guideTarget(dir) {
     const vids = ["video", "walkthrough-video"].map((v) => join(d, v)).filter((v) => has(join(v, "STORYBOARD.md")) || has(join(v, "plan-map.json")));
     return vids.length ? { kind: "plan", many: vids.map((v) => guideTarget(v)) } : { kind: "plan-only", planDir: d, outDir: join(d, "guide"), slug: basename(d), own: "plan" };
   }
-  if (has(join(d, "explain.md")) || has(join(d, "sources.json"))) return has(join(d, "video")) ? guideTarget(join(d, "video")) : { kind: "none", why: `${dir}: an explainer with no video/ yet, so no guide to build (\`reelplanning explain\` starts its video/)` };
+  if (has(join(d, "explain.md")) || has(join(d, "sources.json"))) return has(join(d, "video")) ? guideTarget(join(d, "video")) : { kind: "none", why: `${dir}: an explainer with no video/ yet, so no guide to build (\`reelplanner explain\` starts its video/)` };
   const sb = has(join(d, "STORYBOARD.md")) ? readFileSync(join(d, "STORYBOARD.md"), "utf8") : "";
   if (/^kind:\s*system\b/m.test(sb) || name === "system-video") return { kind: "none", why: `${dir}: the system video has no guide` };
   if (has(join(up, "sources.json")) || /^kind:\s*explainer\b/m.test(sb)) return { kind: "explainer", videoDir: d, explainerDir: up, outDir: join(d, "guide"), slug: `${basename(up)}--explainer`, own: "explainer" };
@@ -100,7 +100,7 @@ function scenesOf(videoDir, { thumbs = true } = {}) {
 // picture a step shows is made by lib/guide/pictures.mjs, as files beside the page at the sizes it is drawn at
 const slim = (d) => d && ({ id: d.id, date: d.date, plan: d.plan, step: d.step, question: d.question, chosen: d.chosen, chosenId: d.chosenId, why: d.why, note: d.note || null, status: d.status, kind: d.kind || null,
   options: (d.options || []).map((o) => ({ id: o.id, label: o.label, why: o.why, recommended: !!o.recommended })), supersedes: d.supersedes || [], supersededBy: d.supersededBy || null, supersededByPlan: d.supersededByPlan || null, foldedInto: d.foldedInto || null, verdict: d.verdict || null });
-const firstToken = (line) => { const w = String(line).trim().split(/\s+/); return /^(reelplanning|reel|npm|npx|node|git|gh)$/.test(w[0]) && w[1] && !/^[-<[]/.test(w[1]) ? `${w[0]} ${w[1]}` : w[0]; };
+const firstToken = (line) => { const w = String(line).trim().split(/\s+/); return /^(reelplanner|reel|npm|npx|node|git|gh)$/.test(w[0]) && w[1] && !/^[-<[]/.test(w[1]) ? `${w[0]} ${w[1]}` : w[0]; };
 const sentences = (md) => String(md).replace(/```[\s\S]*?```/g, "").replace(/\n(?!\n)/g, " ").split(/(?<=[.!?])\s+(?=[A-Z*`(])|\n\n+/).map((s) => s.trim()).filter((s) => s.length > 12);
 
 /** The whole of one video's guide: { data, parts: { name: data }, gaps, counts }. */
@@ -114,7 +114,7 @@ export async function buildModel(t, { thumbs = true, whole = true, outside = fal
 
   // ── a plan ──
   const planName = basename(t.planDir), plan = readPlanBlocks(join(t.planDir, "plan.md"));
-  const rp = join(repo, ".reelplanning"), ledgerAll = readJson(join(rp, "decisions.json"))?.decisions || [];
+  const rp = rpDirOf(repo), ledgerAll = readJson(join(rp, "decisions.json"))?.decisions || [];
   const sys = readJson(join(rp, "system.json"));
   const { gaps: blockGaps } = blockFindings(plan, { ledger: ledgerAll, planName });
   // the other video of the plan: a plan video's guide knows the walkthrough's scenes too, and the other way round
@@ -171,7 +171,8 @@ export async function buildModel(t, { thumbs = true, whole = true, outside = fal
   if (resolve(pageDir) === resolve(t.outDir)) prunePictures(picsDir, pics);
   const gitTime = (...a) => { try { return execFileSync("git", ["-C", repo, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).split("\n").find(Boolean) || null; } catch { return null; } };
   const writtenAt = built?.commits.at(-1)?.full ? gitTime("show", "-s", "--format=%aI", built.commits.at(-1).full) : approvedAt(t.planDir);
-  const laterThanPlan = (id) => { const at = gitTime("log", "--format=%aI", "--reverse", `-S"id": "${id}"`, "--", relative(repo, join(rp, "decisions.json")));
+  const logPath = relative(repo, join(rp, "decisions.json")), logPaths = [logPath, otherRpPath(logPath)].filter(Boolean);   // (both names, D-312)
+  const laterThanPlan = (id) => { const at = gitTime("log", "-M", "--format=%aI", "--reverse", `-S"id": "${id}"`, "--", ...logPaths);
     return !!(writtenAt && at && Date.parse(at) > Date.parse(writtenAt)); };
   for (const s of steps) { const ps = plan.steps.find((x) => x.n === s.n); s.lead = firstSentence(ps?.prose); if (s.built?.md) s.built.lead = firstSentence(s.built.md);
     // what it lets you do, a short phrase: the walkthrough's line once it is built, the plan's before; a step still
@@ -304,7 +305,7 @@ export async function buildModel(t, { thumbs = true, whole = true, outside = fal
   for (const s of steps) for (const g of s.gaps) gaps.push(g);
   // the plan video's scenes: each step's, and a step with no scene says the video leaves it out
   if (videos.plan) for (const s of steps) if (!videos.plan.scenes.some((f) => f.step === s.n) && !/not in the video/i.test(s.text)) gaps.push({ where: `step ${s.n}`, what: `has no scene in the plan video, and does not say "not in the video"`, fail: t.kind === "plan-video" });
-  made.unshift(`The plan's words: \`${relative(repo, join(t.planDir, "plan.md"))}\`, every section; its decisions from \`.reelplanning/decisions.json\`${scenes ? `; the scenes and their pictures from the plan map` : ""}.`);
+  made.unshift(`The plan's words: \`${relative(repo, join(t.planDir, "plan.md"))}\`, every section; its decisions from \`.reelplanner/decisions.json\`${scenes ? `; the scenes and their pictures from the plan map` : ""}.`);
   const side = t.kind === "walkthrough" ? "built" : "plan";
   // every open question, with where it sits (a question naming no step of this plan is shown whole here)
   const questions = plan.questions.map((q) => { const placed = (q.steps || []).find((n) => steps.some((s) => s.n === n)); return { n: q.n, title: q.title, step: placed ?? null, answered: !!answeredIn(q, ledgerAll, planName), text: placed == null ? q.text : null }; });
@@ -375,15 +376,19 @@ function notDoneOf(md, { ledger, repo, planDir, planName, since = [], plain = []
       if (w.steps.length && done === w.steps.length) { const cs = codeShort(w.texts.codeCheck);
         it.settled.push({ md: `${name.replace(/^The /, "the ")} has been built: its walkthrough says all ${w.steps.length} steps are done${cs.length ? `, and its code check found ${cs.map((x) => `step ${x.step} short of the plan${x.missing ? ` (${x.missing === 1 ? "one thing" : `${Object.keys(NUMS)[x.missing - 1] || x.missing} things`} missing)` : ""}`).join(" and ")}` : ""}`, from: `${d}/walkthrough.md` }); } }
     // the system video, brought up to date for this plan since (its commit says so: "System video current with <plan>")
-    if (/system video/i.test(text) && last) for (const c of commitsSince(repo, last.sha, { paths: [".reelplanning/system-video"], subject: new RegExp(`^System video current with ${slug.replace(/-/g, "[- ]")}\\b`, "i") }))
+    if (/system video/i.test(text) && last) for (const c of commitsSince(repo, last.sha, { paths: [".reelplanner/system-video", ".reelplanning/system-video"], subject: new RegExp(`^System video current with ${slug.replace(/-/g, "[- ]")}\\b`, "i") }))
       it.settled.push({ md: `a later commit brought it up to date: “${c.subject}”`, commits: [c], from: "git" });
     // …or by what it names: the glossary rows it says the system video lacks, which a later commit gave a scene
     // (a `- defines:` line of its storyboard), whichever plan that commit was for
     const rows = /system video/i.test(text) && /glossary/i.test(text) ? [...text.matchAll(/\(([^()]+)\)/g)].flatMap((m) => m[1].split(/,\s*|\s+and\s+/)).map((w) => w.trim().replace(/^(?:the|a|an)\s+/i, "").toLowerCase()).filter((w) => w && w.split(/\s+/).length <= 5 && !/\bD-\d/.test(w)) : [];
     if (rows.length && last && !it.settled.length) {
-      const SB = ".reelplanning/system-video/STORYBOARD.md", got = new Map(), bare = (w) => w.trim().replace(/^(?:the|a|an)\s+/i, "").toLowerCase();
-      for (const c of commitsSince(repo, last.sha, { paths: [SB] }).reverse()) {
-        let diff = "", then = ""; try { diff = execFileSync("git", ["-C", repo, "show", "--format=", c.sha, "--", SB], { encoding: "utf8", maxBuffer: 64 << 20 }); then = execFileSync("git", ["-C", repo, "show", `${c.sha}:${SB}`], { encoding: "utf8", maxBuffer: 64 << 20 }); } catch {}
+      // the storyboard at either of the record's names (.reelplanning/ before the rename, D-312): the commit that moved it
+      // shows as a rename, with no line added
+      const SB = [".reelplanner/system-video/STORYBOARD.md", ".reelplanning/system-video/STORYBOARD.md"], got = new Map(), bare = (w) => w.trim().replace(/^(?:the|a|an)\s+/i, "").toLowerCase();
+      const quiet = { encoding: "utf8", maxBuffer: 64 << 20, stdio: ["ignore", "pipe", "ignore"] };
+      for (const c of commitsSince(repo, last.sha, { paths: SB }).reverse()) {
+        let diff = "", then = ""; try { diff = execFileSync("git", ["-C", repo, "show", "-M", "--format=", c.sha, "--", ...SB], quiet); } catch {}
+        for (const f of SB) { try { then = execFileSync("git", ["-C", repo, "show", `${c.sha}:${f}`], quiet); break; } catch {} }
         const terms = (l) => l.replace(/^[+-]\s*-\s*defines:\s*/, "").split(/,\s*/).map(bare);
         const removed = new Set(diff.split("\n").filter((l) => /^-\s*-\s*defines:/.test(l)).flatMap(terms));
         const added = new Set(diff.split("\n").filter((l) => /^\+\s*-\s*defines:/.test(l)).flatMap(terms).filter((w) => !removed.has(w)));
@@ -447,7 +452,7 @@ async function explainerModel(t, { repo, scenes, gaps, made, outside }) {
   const sources = (pinned.sources || []).map((src) => {
     const base = { id: src.id, part: needsPart(src) ? sourcePart(src) : null, form: src.form, shape: src.shape, size: src.size, commit: src.commit || null, hash: src.hash || null, range: src.range || null, said: src.said || null, quoted: quoted[src.id] || [], note: null };
     if (!base.part) return base;
-    if (src.form === "outside" && !outside) return { ...base, note: `Kept outside the repo (D-249): the guide carries its path, hash and ${src.size?.lines ?? "?"} lines, not its text. \`reelplanning guide <video-dir> --outside\` builds a copy with it, masked, for this machine only.` };
+    if (src.form === "outside" && !outside) return { ...base, note: `Kept outside the repo (D-249): the guide carries its path, hash and ${src.size?.lines ?? "?"} lines, not its text. \`reelplanner guide <video-dir> --outside\` builds a copy with it, masked, for this machine only.` };
     const fileList = src.files?.length ? src.files.map((f) => f.path) : null;
     if (src.shape === "files" && fileList) {
       const files = fileList.slice(0, 200).map((p) => { const r = sourceText(src, { repo, path: p }); return { path: p, lines: r.text == null ? null : mask(r.text).replace(/\n$/, "").split("\n"), note: r.note || null, quoted: (quoted[p] || []).concat(quoted[src.id] && fileList.length === 1 ? quoted[src.id] : []) }; });

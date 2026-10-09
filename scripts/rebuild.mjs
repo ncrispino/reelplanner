@@ -2,7 +2,7 @@
 // Build an earlier version of a video again: the one a review was of, after the video has moved on.
 //
 // Each version a reviewer opened is kept (scripts/lib/versions.mjs says what and where): the commit its scenes are in,
-// the files git leaves out that nothing makes again (screenshots, captured text) in .reelplanning/media/, and the
+// the files git leaves out that nothing makes again (screenshots, captured text) in .reelplanner/media/, and the
 // tools and narration it was built with. This puts that version together in a folder of its own, outside the repo,
 // and builds it there; the current video is not touched.
 //
@@ -11,20 +11,20 @@
 //      from what that version was made from, and the build compares against that version as the last one committed
 //   2. the kept files back in their places, each checked against the hash kept with it; the fonts and sounds the tools
 //      ship, from the tools installed here
-//   3. `reelplanning build` on it: the voice is made again (the recorded voice and speed; this machine's engine, said
+//   3. `reelplanner build` on it: the voice is made again (the recorded voice and speed; this machine's engine, said
 //      when it is not the one recorded), then the captions, index, plan map, checks, pictures and the guide with them.
 //      With --no-build, only the guide is built (without the scenes' pictures, which need the build's snapshots)
 // It says what came back exactly, what was made again, and anything it could not bring back.
 //
-// usage: reelplanning rebuild <video-dir>                       list the versions kept (1 = the oldest)
-//        reelplanning rebuild <video-dir> --version <n|build|commit> [--out <dir>] [--no-build]
-//        reelplanning rebuild <video-dir> --keep                keep the current version now (review and record do it)
+// usage: reelplanner rebuild <video-dir>                       list the versions kept (1 = the oldest)
+//        reelplanner rebuild <video-dir> --version <n|build|commit> [--out <dir>] [--no-build]
+//        reelplanner rebuild <video-dir> --keep                keep the current version now (review and record do it)
 //        (also `reel rebuild …`)
 //   --version   the version's number in the list, its build id or signature, or (a prefix of) its commit
-//   --out       where the worktree goes (default: <tmp>/reelplanning-rebuild/<plan>-<video>-v<n>), outside the repo; it
+//   --out       where the worktree goes (default: <tmp>/reelplanner-rebuild/<plan>-<video>-v<n>), outside the repo; it
 //               must be empty or a rebuild this command made (that one is replaced). The video is at <out>/<its path>
-//   --no-build  put it together and build its guide, then stop: `reelplanning build <out-video>` builds the rest
-//   then:       reelplanning review <out-video>   (a review sent from there lands in the worktree's own inbox)
+//   --no-build  put it together and build its guide, then stop: `reelplanner build <out-video>` builds the rest
+//   then:       reelplanner review <out-video>   (a review sent from there lands in the worktree's own inbox)
 //               git worktree remove --force <out>  when you are done with it
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, relative, basename, sep } from "node:path";
@@ -37,7 +37,7 @@ import { videoInfo, listVersions, keepVersion, keepLines, restoreFiles, restoreS
 const argv = process.argv.slice(2);
 const VALUED = ["--version", "--out"];
 const flag = (n) => { const i = argv.indexOf(`--${n}`); return i >= 0 && i + 1 < argv.length ? argv[i + 1] : null; };
-const USAGE = "usage: reelplanning rebuild <video-dir> [--version <n|build|commit>] [--out <dir>] [--no-build] | --keep";
+const USAGE = "usage: reelplanner rebuild <video-dir> [--version <n|build|commit>] [--out <dir>] [--no-build] | --keep";
 const project = argv.find((a, i) => !a.startsWith("--") && !VALUED.includes(argv[i - 1]));
 const die = (m) => { console.error(`✗ rebuild: ${m}`); process.exit(1); };
 if (!project) die(USAGE);
@@ -61,7 +61,7 @@ const mapNow = (() => { try { return JSON.parse(readFileSync(join(info.dir, "pla
 const nowId = mapNow ? sigId(buildSig(mapNow)) : null;
 
 if (!flag("version")) {
-  if (!versions.length) { console.log(`· ${info.rel}: no versions kept yet (\`reelplanning review ${rel(info.dir)}\` keeps the one it opens; \`--keep\` keeps it now)`); process.exit(0); }
+  if (!versions.length) { console.log(`· ${info.rel}: no versions kept yet (\`reelplanner review ${rel(info.dir)}\` keeps the one it opens; \`--keep\` keeps it now)`); process.exit(0); }
   console.log(`versions of ${info.rel} (reel rebuild ${rel(info.dir)} --version <n> builds one again):`);
   for (const v of versions) {
     const kinds = (v.files || []).length ? `${v.files.length} file(s) kept` : "nothing kept outside git";
@@ -82,9 +82,9 @@ if (git(info.top, ["cat-file", "-e", `${v.commit}^{commit}`]).status !== 0) die(
 
 // ── 1. a worktree of the whole repo at the version's commit ─────────────────────────────────────────────
 // (the mark that it is ours sits in the worktree's own git folder, never in the repo's tree or its info/exclude)
-const MARK = "reelplanning-rebuild.json";
-const slug = `${basename(info.owner)}-${info.name}-v${v.n}`.replace(/^\.reelplanning-/, "");
-const out = resolve(flag("out") || join(tmpdir(), "reelplanning-rebuild", slug));
+const MARK = "reelplanner-rebuild.json";
+const slug = `${basename(info.owner)}-${info.name}-v${v.n}`.replace(/^\.reelplann(?:er|ing)-/, "");
+const out = resolve(flag("out") || join(tmpdir(), "reelplanner-rebuild", slug));
 if (out === info.top || info.top.startsWith(out + sep) || out.startsWith(info.top + sep)) die(`--out ${rel(out)}: put it outside the repo (it is a worktree of its own)`);
 const markOf = (dir) => { const g = git(dir, ["rev-parse", "--absolute-git-dir"]); return g.status === 0 ? join(g.stdout.trim(), MARK) : null; };
 const G = ["-c", "core.hooksPath=/dev/null"];   // no hook of the repo's runs on this checkout
@@ -133,8 +133,9 @@ const N = v.narration;
 console.log(`· made again: the voice and its word timings${N ? ` (${N.lines} line(s), ${N.voice} ×${N.speed}${N.model ? `, ${N.model}` : ""})` : ""}${regen.length ? ` [${regen.join(", ")}]` : ""}; then by the build: ${[...new Set([...(v.rebuilt || []), "guide/"])].join(", ")}`);
 const T = v.tools || {}, nowPkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 const ownNow = existsSync(join(ROOT, ".git")) ? String(git(ROOT, ["rev-parse", "HEAD"]).stdout || "").trim() : "";
-const toolDiff = [T.reelplanning && T.reelplanning !== nowPkg.version && `reelplanning ${T.reelplanning} (now ${nowPkg.version})`,
-  T.reelplanning === nowPkg.version && T.reelplanningCommit && ownNow && T.reelplanningCommit !== ownNow && `reelplanning at ${short(T.reelplanningCommit)} (now ${short(ownNow)})`,T.hyperframes && T.hyperframes !== nowPkg.dependencies?.hyperframes && `HyperFrames ${T.hyperframes} (now ${nowPkg.dependencies?.hyperframes})`].filter(Boolean);
+const ownV = T.reelplanner ?? T.reelplanning, ownC = T.reelplannerCommit ?? T.reelplanningCommit;   // (a record from before the rename: the old names)
+const toolDiff = [ownV && ownV !== nowPkg.version && `reelplanner ${ownV} (now ${nowPkg.version})`,
+  ownV === nowPkg.version && ownC && ownNow && ownC !== ownNow && `reelplanner at ${short(ownC)} (now ${short(ownNow)})`,T.hyperframes && T.hyperframes !== nowPkg.dependencies?.hyperframes && `HyperFrames ${T.hyperframes} (now ${nowPkg.dependencies?.hyperframes})`].filter(Boolean);
 if (toolDiff.length) console.log(`△ built then with ${toolDiff.join(", ")}: frames may come out a little differently`);
 
 // the narration this machine would use, against the one recorded
@@ -142,7 +143,7 @@ if (N?.model) {
   const d = spawnSync(process.execPath, [join(ROOT, "scripts", "narrate.mjs"), outVideo, "--dry-run", "--json"], { encoding: "utf8", env: process.env });
   let now = null; try { now = JSON.parse(d.stdout); } catch { /* no engine to ask */ }
   if (now && (now.model !== N.model || now.voice !== N.voice || Number(now.speed) !== Number(N.speed)))
-    console.log(`△ the voice was made with ${N.model} (${N.voice} ×${N.speed}); here it is ${now.model} (${now.voice} ×${now.speed}): it will not sound the same (narration settings: .reelplanning/config.json, REELPLANNING_TTS)`);
+    console.log(`△ the voice was made with ${N.model} (${N.voice} ×${N.speed}); here it is ${now.model} (${now.voice} ×${now.speed}): it will not sound the same (narration settings: .reelplanner/config.json, REELPLANNER_TTS)`);
   else if (now) console.log(`· the voice: ${now.model}, ${now.voice} ×${now.speed}, as recorded`);
 }
 
@@ -151,10 +152,10 @@ if (argv.includes("--no-build")) {
   // the guide, from what the commit has (plan.md, the ledger, runs/, git); its scenes' pictures wait for the build
   const g = spawnSync(process.execPath, [join(ROOT, "scripts", "guide.mjs"), outVideo, "--no-thumbs", "--quiet"], { encoding: "utf8", env: process.env });
   console.log(g.status === 0 ? `✓ its guide, made from the commit (without the scenes' pictures: the build takes them)` : `△ its guide did not build: ${`${g.stdout}${g.stderr}`.trim().split("\n").at(-1)}`);
-  console.log(`· not built (--no-build): reelplanning build ${rel(outVideo)}\nthen: reelplanning review ${rel(outVideo)}\n${done}`);
+  console.log(`· not built (--no-build): reelplanner build ${rel(outVideo)}\nthen: reelplanner review ${rel(outVideo)}\n${done}`);
   process.exit(back.missing.length || tools.missing.length ? 1 : 0);
 }
-console.log(`▶ reelplanning build ${rel(outVideo)}`);
-const b = spawnSync(process.execPath, [join(ROOT, "scripts", "build.mjs"), outVideo], { stdio: "inherit", env: { ...process.env, REELPLANNING_REBUILD: "1" }, cwd: process.cwd() });
-if (b.status !== 0) { console.log(`✗ version ${v.n} put together in ${rel(outVideo)}, but its build stopped (above): fix what it says there and run \`reelplanning build ${rel(outVideo)}\`\n${done}`); process.exit(1); }
-console.log(`✓ version ${v.n} of ${info.rel} built again in ${rel(outVideo)}${back.missing.length || tools.missing.length || v.lost?.length ? " (all but what is said above)" : ""}; the voice is new\nopen it: reelplanning review ${rel(outVideo)}\n${done}`);
+console.log(`▶ reelplanner build ${rel(outVideo)}`);
+const b = spawnSync(process.execPath, [join(ROOT, "scripts", "build.mjs"), outVideo], { stdio: "inherit", env: { ...process.env, REELPLANNER_REBUILD: "1" }, cwd: process.cwd() });
+if (b.status !== 0) { console.log(`✗ version ${v.n} put together in ${rel(outVideo)}, but its build stopped (above): fix what it says there and run \`reelplanner build ${rel(outVideo)}\`\n${done}`); process.exit(1); }
+console.log(`✓ version ${v.n} of ${info.rel} built again in ${rel(outVideo)}${back.missing.length || tools.missing.length || v.lost?.length ? " (all but what is said above)" : ""}; the voice is new\nopen it: reelplanner review ${rel(outVideo)}\n${done}`);

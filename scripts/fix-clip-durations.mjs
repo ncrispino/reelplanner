@@ -5,10 +5,10 @@
 // window ends: the frame goes blank for its last seconds. This re-stamps every full-length clip
 // (data-start="0", duration ≥ 60 % of the root window) to the root's data-duration, the frame's padded
 // window. Running it again changes nothing.
-// usage: reelplanning fix-clip-durations <project-dir>
+// usage: reelplanner fix-clip-durations <project-dir>
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-const dir = process.argv[2]; if (!dir) { console.error("usage: reelplanning fix-clip-durations <project-dir>"); process.exit(1); }
+const dir = process.argv[2]; if (!dir) { console.error("usage: reelplanner fix-clip-durations <project-dir>"); process.exit(1); }
 const sb = readFileSync(join(dir, "STORYBOARD.md"), "utf8");
 const srcs = [...sb.matchAll(/^- src:\s*(\S+)/gm)].map((m) => m[1]);
 // each frame's slot in index.html, the window it plays in: a frame whose root still says an older length (its voice

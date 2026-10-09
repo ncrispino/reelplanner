@@ -62,11 +62,11 @@ const bare = (o) => { const { recorded, ...rest } = o || {}; return rest; };
 const same = (a, b) => { try { return JSON.stringify(bare(JSON.parse(a))) === JSON.stringify(bare(JSON.parse(b))); } catch { return a === b; } };
 
 /**
- * Who reviewed, and which reelplanning recorded it (memory, step 1): { reviewer, via, reelplanning }.
+ * Who reviewed, and which reelplanner recorded it (memory, step 1): { reviewer, via, reelplanner }.
  * The reviewer is the page's viewer when the row (or the export) names one, else git's user.email where
- * the review is recorded; reelplanning is this package's version. A field it cannot tell is left out.
+ * the review is recorded; reelplanner is this package's version. A field it cannot tell is left out.
  * The hosted page sends `viewer: { id, owner }` (the Artifact's `user` capability): the page's owner
- * is "owner", the repo's owner reviewing their own page (the "you" of ~/.reelplanning/you.jsonl); anyone
+ * is "owner", the repo's owner reviewing their own page (the "you" of ~/.reelplanner/you.jsonl); anyone
  * else is `id:<opaque id>`, an id only, never a name. A plain string (an older row) is kept as it is.
  * The id is kept as `id` too ("id:<id>"), the owner's included: "owner" is whoever published the page, on
  * anyone's page, where the id is one person in the organization, which config.json's `maintainers` lists.
@@ -77,13 +77,13 @@ export function recordedBy(dir, { row = null, review = null } = {}) {
   // names who in `by`, as config.json's maintainers lists them ("id:<id>"). No page sent it, and no git email stands in.
   if ((row?.source ?? review?.source) === "conversation") {
     const by = String(row?.by ?? review?.by ?? "").trim();
-    return { ...(by ? { reviewer: by, ...(by.startsWith("id:") ? { id: by } : {}) } : {}), via: "conversation", reelplanning: VERSION };
+    return { ...(by ? { reviewer: by, ...(by.startsWith("id:") ? { id: by } : {}) } : {}), via: "conversation", reelplanner: VERSION };
   }
   const v = row?.viewer ?? review?.viewer, viewer = viewerOf(v), id = viewerId(v);
   let email = "";
   if (!viewer) try { email = execFileSync("git", ["-C", existsSync(dir) ? dir : dirname(dir), "config", "user.email"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { /* no git, or no email set */ }
   const who = viewer || email;
-  return { ...(who ? { reviewer: who, ...(id ? { id } : {}), via: viewer ? "the page's viewer" : "git user.email" } : {}), reelplanning: VERSION };
+  return { ...(who ? { reviewer: who, ...(id ? { id } : {}), via: viewer ? "the page's viewer" : "git user.email" } : {}), reelplanner: VERSION };
 }
 // the row's viewer id, as "id:<id>", or ""
 const viewerId = (v) => (v && typeof v === "object" && typeof v.id === "string" && v.id.trim() ? `id:${v.id.trim()}` : "");
@@ -100,7 +100,7 @@ function viewerOf(v) {
  * File a review under <dir>/reviews/ as <id>.json, never over another one. `id` is the name to use (the
  * system video's), else `<kind>-<time>`. → { id, path, again }: `again` when this very review was filed
  * before (the same content under that name, whoever recorded it), in which case nothing is written. The
- * filed copy carries `recorded` (recordedBy): the reviewer and the reelplanning version. `row` is the
+ * filed copy carries `recorded` (recordedBy): the reviewer and the reelplanner version. `row` is the
  * hosted or inbox row it came in, for the page's viewer; `stamp: false` files an old review as it was
  * (migrate-reviews: who recorded it then is not known).
  */
@@ -131,7 +131,7 @@ export function listReviews(dir) {
   }).sort((a, b) => String(a.at || "").localeCompare(String(b.at || "")) || a.id.localeCompare(b.id));
 }
 
-/** The ledger a plan directory records into (<.reelplanning>/decisions.json), as a list. */
+/** The ledger a plan directory records into (<.reelplanner>/decisions.json), as a list. */
 export function ledgerFor(planDir) {
   const L = readJson(join(dirname(dirname(planDir)), "decisions.json"));
   return Array.isArray(L) ? L : L?.decisions || [];

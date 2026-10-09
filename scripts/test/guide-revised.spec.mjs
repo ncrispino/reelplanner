@@ -24,8 +24,8 @@ import { checkGuide } from "../lib/guide/check.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-guide-revised-"));
 const home = join(tmp, "home"); mkdirSync(home, { recursive: true });
-const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
-const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning"), ...chromiumEnv() };   // (Playwright looks for its browser under HOME)
+const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
+const env = { ...process.env, HOME: home, REELPLANNER_HOME: join(home, ".reelplanner"), ...chromiumEnv() };   // (Playwright looks for its browser under HOME)
 const git = (a, extra = {}) => execFileSync("git", a, { cwd: repo, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...env, ...extra } });
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: repo, env, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const write = (p, text) => { mkdirSync(join(p, ".."), { recursive: true }); writeFileSync(p, text); };
@@ -59,7 +59,7 @@ ${more}
 #### Interface
 
 \`\`\`
-reelplanning build <dir>        # build the page
+reelplanner build <dir>        # build the page
   --to <file>                   # where the page goes
 \`\`\`
 
@@ -117,10 +117,10 @@ try {
     { index: 2, title: "Step 1: the new flag", compositionId: "02-step-1", durationSeconds: 12, start: 10, planStep: 1, narration: "Step one renames it." },
     { index: 3, title: "Step 2: the help", compositionId: "03-step-2", durationSeconds: 8, start: 22, planStep: 2, narration: "Step two says so." },
   ];
-  const map = { project: "video", title: "Rename the flag", planDir: ".reelplanning/plans/2026-10-01-flag", totalSeconds: 30, frames, details: [],
+  const map = { project: "video", title: "Rename the flag", planDir: ".reelplanner/plans/2026-10-01-flag", totalSeconds: 30, frames, details: [],
     decisions: [{ id: "q1", question: "Keep --out working?", planStep: 1, frameIndex: 2, options: [{ id: "a", label: "Keep it, with a warning", recommended: true }, { id: "b", label: "Drop it" }] }],
     quizzes: [{ id: "k1", question: "What does build --out do now?", planStep: 1, frameIndex: 2, options: [{ id: "a", label: "Warns, and writes" }, { id: "b", label: "Fails" }], answer: "a" }] };
-  write(join(vd, "STORYBOARD.md"), `---\nplan_dir: .reelplanning/plans/2026-10-01-flag\n---\n\n## Frame 1 — The flag\n\n## Frame 2 — Step 1: the new flag\n\n- plan_step: 1\n\n## Frame 3 — Step 2: the help\n\n- plan_step: 2\n`);
+  write(join(vd, "STORYBOARD.md"), `---\nplan_dir: .reelplanner/plans/2026-10-01-flag\n---\n\n## Frame 1 — The flag\n\n## Frame 2 — Step 1: the new flag\n\n- plan_step: 1\n\n## Frame 3 — Step 2: the help\n\n- plan_step: 2\n`);
   write(join(vd, "plan-map.json"), JSON.stringify(map, null, 2));
   write(join(pd, "plan.md"), PLAN());
   const v1 = commit("plan, with its video", "2026-10-02T09:00:00Z");
@@ -223,7 +223,7 @@ try {
   renameSync(join(tmp, "reviews-aside"), join(pd, "reviews")); write(join(pd, "plan.md"), v1md);
   const g3 = run("guide.mjs", vd, "--check", "--no-thumbs"), d3 = dataOf(readFileSync(join(gd, "index.html"), "utf8"));
   ok("plan.md as the review saw it: nothing marked, no toggle, --check says so", g3.code === 0 && d3.revised?.order.length === 0 && /nothing in plan\.md changed since your review of 4 Oct/.test(g3.out), g3.out);
-  ok("a review's .md and git untouched by the guide (nothing written to plan.md or reviews/)", git(["status", "--porcelain", "--", ".reelplanning/plans/2026-10-01-flag/reviews"]).trim() === "");
+  ok("a review's .md and git untouched by the guide (nothing written to plan.md or reviews/)", git(["status", "--porcelain", "--", ".reelplanner/plans/2026-10-01-flag/reviews"]).trim() === "");
 } catch (e) { console.log(`✗ threw: ${e.stack}`); failed++; }
 finally { if (!failed) rmSync(tmp, { recursive: true, force: true }); else console.log(`(kept ${tmp})`); }
 console.log(failed ? `\n${failed} failed` : "\nall passed");

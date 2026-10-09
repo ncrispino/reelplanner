@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// `reelplanning narrate` voices only the lines that changed (M3 revise loop, step 1), against a small
-// scratch project and a fake TTS: REELPLANNING_TTS_ENGINE stands in for media-use's audio engine,
+// `reelplanner narrate` voices only the lines that changed (M3 revise loop, step 1), against a small
+// scratch project and a fake TTS: REELPLANNER_TTS_ENGINE stands in for media-use's audio engine,
 // under the REAL faceless-explainer audio.mjs, so no Kokoro or whisper runs. The fake writes a
 // different wav every time it voices a line, so a byte-identical file can only have been kept.
 //   - a first run voices every line; the outputs have the shapes the next scripts read
@@ -36,7 +36,7 @@ const P = join(tmp, "video"), LOG = join(tmp, "tts.log"), ENGINE = join(tmp, "fa
 const ADAPTER = join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs");
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 1500)}` : ""}`); if (!cond) failed++; };
-if (!existsSync(ADAPTER)) { console.error(`✗ narrate.spec needs HyperFrames' faceless-explainer skill (${ADAPTER}) — run \`reelplanning hyperframes-skills\``); process.exit(1); }
+if (!existsSync(ADAPTER)) { console.error(`✗ narrate.spec needs HyperFrames' faceless-explainer skill (${ADAPTER}) — run \`reelplanner hyperframes-skills\``); process.exit(1); }
 
 // The fake engine: reads the request audio.mjs wrote, "voices" each line into assets/voice/<id>.wav
 // with bytes that differ on every call, and logs which ids it voiced. Its word timings are the line's
@@ -65,7 +65,7 @@ writeFileSync(out, JSON.stringify({ tts_provider: "fake", voice_id: req.voice ||
 
 const LINES = [
   "An agent hands you its plan, and you approve it.",
-  "reelplanning turns that plan into a short narrated video.",
+  "reelplanner turns that plan into a short narrated video.",
   "Each plan gets two videos, one before the code and one after.",
 ];
 const script = (lines) => `# SCRIPT\n\n**Voice:** am_michael\n\n---\n\n${lines.map((t, i) => `## Line ${i + 1} — beat (Frame ${i + 1})\n\n**Delivery:** Plain.\n\n    ${t}\n`).join("\n")}`;
@@ -80,7 +80,7 @@ function setup(lines) {
   writeFileSync(join(P, ".hyperframes", "holds.json"), JSON.stringify({ 3: 6 }));
   lines.forEach((_, i) => writeFileSync(join(P, "compositions", "frames", `${String(i + 1).padStart(2, "0")}-beat.html`), frame(i + 1)));
 }
-const env = { ...process.env, REELPLANNING_TTS_ENGINE: ENGINE, FAKE_TTS_LOG: LOG };
+const env = { ...process.env, REELPLANNER_TTS_ENGINE: ENGINE, FAKE_TTS_LOG: LOG };
 const narrate = (...a) => {
   writeFileSync(LOG, "");
   const e2 = a[0] && typeof a[0] === "object" ? { ...env, ...a.shift() } : env;
@@ -124,7 +124,7 @@ try {
 
   // ── one line edited: only it is voiced ──
   writeFileSync(join(tmp, "prev_meta.json"), m1);
-  setLine(1, "reelplanning turns that plan into a short narrated video you review by watching it.");
+  setLine(1, "reelplanner turns that plan into a short narrated video you review by watching it.");
   const dry = JSON.parse(execFileSync("node", [join(ROOT, "scripts", "narrate.mjs"), P, "--dry-run", "--json"], { encoding: "utf8", env }));
   ok("--dry-run --json names the one line to narrate before anything runs", dry.narrate.join() === "2" && dry.keep.join() === "1,3" && dry.estimate_s > 0, JSON.stringify(dry));
   const c = narrationCost(P, []);

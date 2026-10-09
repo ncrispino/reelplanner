@@ -9,7 +9,7 @@
 // The holds live in <project>/.hyperframes/holds.json: { "<frame number>": <seconds>, … }, and optionally
 // "tail": <seconds>, a pause after every line: each frame with a voice lasts its line plus the tail, a held frame
 // at least its hold (a video for newcomers breathes between scenes: the system video holds 0.8 s).
-// usage: reelplanning hold-durations <project-dir>
+// usage: reelplanner hold-durations <project-dir>
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 

@@ -65,25 +65,25 @@ try {
 
   // A built plan's plan video is history, unless the plan grew a new round: questions the ledger has no
   // answer for. Matched on the question's words, since the ids (q2…) come round again.
-  const rp = join(T, "rp", ".reelplanning"), pd = join(rp, "plans", "2026-01-01-demo");
-  const vd = project(join("rp", ".reelplanning", "plans", "2026-01-01-demo", "video"), "FONT-A");
+  const rp = join(T, "rp", ".reelplanner"), pd = join(rp, "plans", "2026-01-01-demo");
+  const vd = project(join("rp", ".reelplanner", "plans", "2026-01-01-demo", "video"), "FONT-A");
   put(join(pd, "plan.md"), "# Demo: a plan\n"); put(join(pd, "reviews", "plan-20260101T000000Z.json"), JSON.stringify({ exportedAt: "2026-01-01T00:00:00Z", verdict: "approve", annotations: [], decisions: [{ id: "q2", option: "a", label: "Blue" }] })); put(join(pd, "walkthrough.md"), "# built\n");
   // the ledger keeps the agent's calls too, flagged ones included (revise-loop step 8): never a plan question, whatever its words
   put(join(rp, "decisions.json"), JSON.stringify([{ id: "D-001", plan: "2026-01-01-demo", questionId: "q2", question: "Which colour?", status: "active" },
     { id: "D-002", plan: "2026-01-01-demo", questionId: "autonomy-a1", kind: "autonomy", verdict: "flag", tags: ["close"], question: "How many quick checks?", status: "flagged" }]));
   const map = (qs) => put(join(vd, "plan-map.json"), JSON.stringify({ title: "Demo", totalSeconds: 60, decisions: qs.map(([id, question]) => ({ id, question, options: [] })) }));
   const page = (dir) => { const h = readFileSync(join(dir, "index.html"), "utf8"); return { todo: JSON.parse(h.match(/const TO_REVIEW = (\[.*?\]), STATUS/)[1]), lib: JSON.parse(readFileSync(join(dir, "library.json"), "utf8")) }; };
-  map([["q2", "Which colour?"]]); bundle(join(T, "r1"), vd, "--reelplanning", rp);
+  map([["q2", "Which colour?"]]); bundle(join(T, "r1"), vd, "--reelplanner", rp);
   let pg = page(join(T, "r1"));
   check("a built plan whose questions are all answered does not ask again", !pg.todo.length && pg.lib.plans[0].stages.decided === true, JSON.stringify(pg.todo));
-  map([["q2", "What may an unattended run do?"], ["q3", "How many quick checks?"]]); bundle(join(T, "r2"), vd, "--reelplanning", rp);
+  map([["q2", "What may an unattended run do?"], ["q3", "How many quick checks?"]]); bundle(join(T, "r2"), vd, "--reelplanner", rp);
   pg = page(join(T, "r2"));
   check("a new round's questions put the plan video under Needs you, even with its id reused", pg.todo[0]?.kind === "Plan video, new round" && /2 new questions/.test(pg.todo[0].what) && pg.lib.plans[0].stages.decided === false, JSON.stringify(pg.todo[0] || null));
 
   // A page opened for one video carries the videos it builds on ("Before you watch") that are built in its repo: the
   // system video (for its chapter 2), not a plan video it does not name; one not built, one this repo has no video
   // of, and one too big for the page (its files would take it past the budget) say why on their rows (`away`)
-  const ra = join(T, "ra", ".reelplanning"), at = (...p) => join("ra", ".reelplanning", ...p);
+  const ra = join(T, "ra", ".reelplanner"), at = (...p) => join("ra", ".reelplanner", ...p);
   put(join(ra, "decisions.json"), "[]");
   const sys = project(at("system-video"), "FONT-A"), other = project(at("plans", "p2", "video"), "FONT-A");
   put(join(sys, "plan-map.json"), JSON.stringify({ title: "The system", slug: "system", chapters: [{ title: "One", start: 0, end: 5 }, { title: "Two", start: 5, end: 9 }] }));
@@ -101,24 +101,24 @@ try {
   check("…the one too big is taken out again, with nothing of it left on the page", !existsSync(join(po, "big")) && filesIn(po).length < 480 && /big: left off/.test(said), said.split("\n").filter((l) => /big/.test(l)).join(" | "));
   // the page names its repo, and the player keeps the page's state under it: another repo's page on the same port reads
   // none of it (two repos both have a "system" video); the same repo always gets the same name
-  const rb = join(T, "rb", ".reelplanning"); put(join(rb, "decisions.json"), "[]");
-  const sysB = project(join("rb", ".reelplanning", "system-video"), "FONT-A");
+  const rb = join(T, "rb", ".reelplanner"); put(join(rb, "decisions.json"), "[]");
+  const sysB = project(join("rb", ".reelplanner", "system-video"), "FONT-A");
   const repoOf = (out) => JSON.parse(readFileSync(join(out, "library.json"), "utf8")).repo;
   bundle(join(T, "b-out"), sysB); bundle(join(T, "a-again"), sys);
   const topA = readFileSync(join(po, "index.html"), "utf8");
   check("each repo gets a name of its own, the same every time it is bundled", /^ra-[0-9a-f]{8}$/.test(plib.repo) && /^rb-[0-9a-f]{8}$/.test(repoOf(join(T, "b-out"))) && repoOf(join(T, "a-again")) === plib.repo, `${plib.repo} ${repoOf(join(T, "b-out"))} ${repoOf(join(T, "a-again"))}`);
   check("…the page gives it to the player before the plan map and the video, and the list's keys use it", topA.includes(`const REPO = ${JSON.stringify(plib.repo)};`) && topA.indexOf('rp.setAttribute("repo", REPO);') > 0 && topA.indexOf('rp.setAttribute("repo", REPO);') < topA.indexOf('rp.setAttribute("plan-map"')
     && /"reelplanning@" \+ REPO/.test(topA) && /"rp@" \+ REPO/.test(topA) && !/"rp:watched:" \+ slug/.test(topA));
-  // a quick video: its repo keeps no decision log (no .reelplanning/, or one of setup files only), as the review server
+  // a quick video: its repo keeps no decision log (no .reelplanner/, or one of setup files only), as the review server
   // decides it (a review there downloads); the page says so to the player (record="none"), whose Finish then asks for the
   // download and names no `reel record`. A repo with decisions.json says nothing: today's panel.
   const NONE = 'rp.setAttribute("record", "none");';
-  const rs = join(T, "rs"); put(join(rs, ".reelplanning", "config.json"), "{}");
+  const rs = join(T, "rs"); put(join(rs, ".reelplanner", "config.json"), "{}");
   const quickS = project(join("rs", "videos", "q"), "FONT-A"); bundle(join(T, "rs-out"), quickS);
   const rg = join(T, "rg"); mkdirSync(rg, { recursive: true }); execFileSync("git", ["-C", rg, "init", "-q"]);
   const quickG = project(join("rg", "videos", "q"), "FONT-A"); bundle(join(T, "rg-out"), quickG);
   const topOf = (o) => readFileSync(join(T, o, "index.html"), "utf8");
-  check("a repo with no decision log (setup files only, or no .reelplanning/ at all): the page tells the player record=\"none\", before the plan map",
+  check("a repo with no decision log (setup files only, or no .reelplanner/ at all): the page tells the player record=\"none\", before the plan map",
     [topOf("rs-out"), topOf("rg-out")].every((t) => t.indexOf(NONE) > 0 && t.indexOf(NONE) < t.indexOf('rp.setAttribute("plan-map"')));
   check("…a repo with one (decisions.json) does not", !topA.includes(NONE) && !topOf("b-out").includes(NONE));
   const sg = join(T, "sg-out"); put(join(sys, "details", "one.html"), "<!doctype html><p>one</p>");

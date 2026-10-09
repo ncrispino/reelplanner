@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Hold a video's words to what its viewer knows (plan: accessible videos). Run by `reelplanning build`
+// Hold a video's words to what its viewer knows (plan: accessible videos). Run by `reelplanner build`
 // before narrate, and on its own.
 //
 //   a real thing    text inside a `data-artifact` container (the real table, diff or command run a scene
@@ -11,8 +11,8 @@
 //                   "D-056 stops every call" names nothing a viewer can hold. With `terms_check: strict`
 //                   in the storyboard's front matter (what the skill writes on a new storyboard) or
 //                   --strict, it fails the build; on a video from before that, it is a warning.
-//   a word early    a glossary term, a word from the jargon list (templates/reelplanning/jargon.txt, and
-//                   the repo's own .reelplanning/jargon.txt) or one of this video's `terms:`, said or shown
+//   a word early    a glossary term, a word from the jargon list (templates/reelplanner/jargon.txt, and
+//                   the repo's own .reelplanner/jargon.txt) or one of this video's `terms:`, said or shown
 //                   before a beat defines it (`- defines: <term>` at or before its first use) and not
 //                   among the words a video before this one defines (its `before:` videos' `terms:`).
 //                   A warning; --strict makes it fail.
@@ -21,15 +21,15 @@
 //                   fails the system video's build, by name ("streak has no beat"), and so does a defining
 //                   beat that says neither the term nor its on-screen word (D-127: explained in the plain word).
 //   no meaning      (D-216, D-217) a word a newcomer may not know (lib/jargon.mjs: an acronym, code, a
-//                   technical compound, a common software word or one of reelplanning's own) said or shown
+//                   technical compound, a common software word or one of reelplanner's own) said or shown
 //                   with no meaning the viewer can open: no glossary row (its core table or its "Other words"),
 //                   no `terms: x = …` in the storyboard, and not a bare `terms: x` the glossary or another video
 //                   gives a meaning. One line a word, where it is first said or shown and how often:
 //                   △ frame 7 says "merge" (4×) with no meaning: add a row to the glossary, or `terms: merge = …`.
 //                   It fails a `terms_check: strict` storyboard. A real thing's own text and a code block are
 //                   left out; a word the video uses plainly is marked `plain: flag` in the storyboard.
-//   names           (names.md) a tool's name on screen outside code markup (`reelplanning` in a sans label,
-//                   not in the mono or a <code>), or a listed name spelled another way ("ReelPlanning",
+//   names           (names.md) a tool's name on screen outside code markup (`reelplanner` in a sans label,
+//                   not in the mono or a <code>), or a listed name spelled another way ("ReelPlanner",
 //                   "Github"), outside a real thing's own text: a warning.
 //   spelled out     (lib/say.mjs) a flag, a path or a file name the script spells out ("claude dash p", "names
 //                   dot md", "slash work"): a warning. Write it as it is written (`claude -p`); narrate
@@ -48,7 +48,7 @@
 //                   a check asks what the change about to run will do, just before the scene that runs
 //                   it, so it follows the beat that sets it up and asks about the run's own case.
 //
-// usage: reelplanning check-terms <video-dir> [--strict] [--verbose]
+// usage: reelplanner check-terms <video-dir> [--strict] [--verbose]
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { ROOT } from "./lib/env.mjs";
@@ -62,7 +62,7 @@ import { frontMatter, fmValue, listOf, termsOf, plainOf, storyboardFrames, parse
 
 const argv = process.argv.slice(2);
 const dir = argv.find((a) => !a.startsWith("--"));
-if (!dir) { console.error("usage: reelplanning check-terms <video-dir> [--strict] [--verbose]"); process.exit(1); }
+if (!dir) { console.error("usage: reelplanner check-terms <video-dir> [--strict] [--verbose]"); process.exit(1); }
 const V = resolve(dir), read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 if (!existsSync(join(V, "STORYBOARD.md"))) { console.error(`✗ check-terms: no STORYBOARD.md in ${dir}`); process.exit(1); }
 const sb = read(join(V, "STORYBOARD.md")), fm = frontMatter(sb), frames = storyboardFrames(sb).sort((a, b) => a.index - b.index);

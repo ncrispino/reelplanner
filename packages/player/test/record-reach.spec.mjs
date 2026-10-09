@@ -21,7 +21,7 @@ import { mkdtempSync, rmSync } from "node:fs"; import { join } from "node:path";
 import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
 import { until, loaded, frames, laidOut } from "./wait.mjs";
 
-const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/video", SLUG = "2026-09-28-plan-guide";
+const VIDEO = ".reelplanner/plans/2026-09-28-plan-guide/video", SLUG = "2026-09-28-plan-guide";
 const T = mkdtempSync(join(tmpdir(), "rp-record-reach-")), OUT = join(T, "review");
 execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(ROOT, VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
 const port = testPort(8899);

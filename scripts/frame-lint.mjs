@@ -19,19 +19,20 @@
 // is a note: the snapshots are taken at 2× (the guide shows them on 2× screens), so it is stretched there. Take it at
 // deviceScaleFactor 2.
 //
-// usage: reelplanning frame-lint <project-dir>/compositions/frames/*.html
-//        reelplanning frame-lint <frames-dir> | <project-dir>   (every *.html frame in it)
+// usage: reelplanner frame-lint <project-dir>/compositions/frames/*.html
+//        reelplanner frame-lint <frames-dir> | <project-dir>   (every *.html frame in it)
 import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { parseHtml, elements, ancestors, classes, cssRules, matches, boxOf, hboxOf, ownSize, clips, styleOf, decode } from "./lib/frame-html.mjs";
 import { readTimeline, scriptsOf, movesTransform, scalesOf, tweensOn, num } from "./lib/timeline.mjs";
+import { rpDirOf, isRpDirName } from "./lib/env.mjs";
 
 let bad = 0, noted = 0;
-// id → glossary name, from the nearest .reelplanning/glossary.md above a frame (cached per file)
+// id → glossary name, from the nearest .reelplanner/glossary.md above a frame (cached per file)
 const glossCache = new Map();
 function glossaryFor(file) {
   for (let d = dirname(resolve(file)), i = 0; i < 10 && d !== dirname(d); i++, d = dirname(d)) {
-    const g = basename(d) === ".reelplanning" ? join(d, "glossary.md") : join(d, ".reelplanning", "glossary.md");
+    const g = isRpDirName(basename(d)) ? join(d, "glossary.md") : join(rpDirOf(d), "glossary.md");
     if (!existsSync(g)) continue;
     if (!glossCache.has(g)) glossCache.set(g, new Map([...readFileSync(g, "utf8").matchAll(/^\| ([^|]+?) \| `([^`]+)` \|/gm)].map((m) => [m[2], m[1].trim()])));
     return glossCache.get(g);
@@ -71,7 +72,7 @@ function pixelsOf(file) {
 const selectorsOf = (el) => [...(el.attrs.id ? [`#${el.attrs.id}`] : []), ...classes(el).map((c) => `.${c}`)];
 
 const argv = process.argv.slice(2);
-const usage = "usage: reelplanning frame-lint <project-dir>/compositions/frames/*.html | <frames-dir> | <project-dir> [--notes]";
+const usage = "usage: reelplanner frame-lint <project-dir>/compositions/frames/*.html | <frames-dir> | <project-dir> [--notes]";
 const stop = (msg) => { console.error(`✗ ${msg}\n${usage}`); process.exit(2); };
 // a folder stands for the frames in it: a project's compositions/frames/ when it has one (its own
 // index.html is not a frame), else the folder's own *.html
@@ -294,7 +295,7 @@ for (const f of files) {
   if (parts.size > 6 && !/data-density="full"/.test(body)) findings.push(`${parts.size} parts on one frame (at most 6; mark a whole-system beat data-density="full")`);
 
   // 4c. names a newcomer knows (richer-review step 5): a part's label on screen is its glossary name,
-  //     not a script or file name. Checked against the nearest .reelplanning/glossary.md; a label that
+  //     not a script or file name. Checked against the nearest .reelplanner/glossary.md; a label that
   //     is neither the name nor a short form of it is a note, since a mock may label things its own way.
   const gloss = glossaryFor(f);
   //     A mock of a file or page the part produces (class *page*, *mock*, *file*, *doc*) is labelled

@@ -22,7 +22,7 @@
 // command (`codex exec …`, `opencode run …`) has no `--settings`: it is never probed or changed, and
 // its own sandbox or approval modes are its own (docs/reference.md, "Other agents").
 //
-//   REELPLANNING_SANDBOX_PROBE_CMD="…"   run this instead; exit 0 = the sandbox works (tests)
+//   REELPLANNER_SANDBOX_PROBE_CMD="…"   run this instead; exit 0 = the sandbox works (tests)
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -69,7 +69,7 @@ const NESTED = "command -v unshare >/dev/null || exit 0; exec unshare --user --m
 
 /** The probe's argv on this platform, or null when there is nothing to try. */
 export function probeCommand({ platform = process.platform, env = process.env, bwrap = "bwrap" } = {}) {
-  if (env.REELPLANNING_SANDBOX_PROBE_CMD) return splitCommand(env.REELPLANNING_SANDBOX_PROBE_CMD);
+  if (env.REELPLANNER_SANDBOX_PROBE_CMD) return splitCommand(env.REELPLANNER_SANDBOX_PROBE_CMD);
   if (platform === "linux") return [bwrap, "--new-session", "--die-with-parent", "--ro-bind", "/", "/", "--dev", "/dev", "--unshare-net",
     "--unshare-pid", "--unshare-user", "--cap-drop", "ALL", "--proc", "/proc", "--", "sh", "-c", NESTED];
   if (platform === "darwin") return ["sandbox-exec", "-p", "(version 1)(allow default)", "/usr/bin/true"];

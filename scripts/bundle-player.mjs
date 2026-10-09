@@ -16,23 +16,23 @@
 // With more than one video the page gets a library: what needs the reviewer, then the repo's system video
 // and the recent plans, the rest folded behind "Earlier plans (N)"; each plan is one row with a Plan | Built
 // switch (walkthroughs-that-help step 5), and the page's header carries the same switch for the video open. Pass
-// `--reelplanning <dir>` to list every plan in that record, including ones with no video yet.
+// `--reelplanner <dir>` to list every plan in that record, including ones with no video yet.
 //
 // Every path argument is relative to the caller's working directory; the only things read from where
-// reelplanning is installed are the player itself and the HyperFrames runtime it depends on.
+// reelplanner is installed are the player itself and the HyperFrames runtime it depends on.
 //
 // A plan's or an explainer's video gets its guide beside it, <slug>/guide/ (the plan guide): the full page and its
-// pictures as `reelplanning guide` builds them, built here first when missing or older than its plan.md,
+// pictures as `reelplanner guide` builds them, built here first when missing or older than its plan.md,
 // walkthrough.md or sources.json. The part pages are left out: this page reads a part in the guide under the video.
 // Any other video with parts (details/) gets a full page made from them (scripts/lib/guide-page.mjs).
-// The page shows the open video's guide under its player (D-264, superseding D-228): <reelplanning-guide>, which frames
+// The page shows the open video's guide under its player (D-264, superseding D-228): <reelplanner-guide>, which frames
 // guide/index.html?embed=1 as tall as the window; scrolled to, the video goes on in a small player in the corner. The
 // plan's row links it, Guide beside Plan | Built: that video, with the page down at its guide (?project=<slug>#guide).
 // guide/index.html still opens on its own, as a fallback.
 //
 // The videos a bundled video builds on (its plan map's prerequisites, "Before you watch": the system video or one of its
-// chapters, the explainer or the plan it starts from) come with it, when they are built in this repo's .reelplanning/:
-// a page opened for one video (`reelplanning review <video-dir>`) plays them too, a row's link opening that video at its
+// chapters, the explainer or the plan it starts from) come with it, when they are built in this repo's .reelplanner/:
+// a page opened for one video (`reelplanner review <video-dir>`) plays them too, a row's link opening that video at its
 // chapter. Only those named directly (not what they build on in turn), each at most once, and only while the page stays
 // within FILE_BUDGET files (the 512 an Artifact version may hold); one carried this way gets its guide only when one is
 // built and current (a guide is never built for it here). A row the page cannot carry says why (its `away` in the
@@ -40,17 +40,17 @@
 //
 // The page names the repo its videos belong to (`repo` on the player, <meta name="reelplanning-repo"> in each guide):
 // the review server uses one port for every repo (8787) and a browser keeps one localStorage per origin, so the player
-// keeps a review's record and its watched marks under that name (reelplanning-player.js recordKey). It is the repo's
+// keeps a review's record and its watched marks under that name (reelplanner-player.js recordKey). It is the repo's
 // folder name and a short hash of its origin remote (the same in every clone and worktree), or of its path when it has
 // none.
 //
-// usage: reelplanning bundle-player <out-dir> <project-dir> [<project-dir> …] [--reelplanning <.reelplanning dir>]
+// usage: reelplanner bundle-player <out-dir> <project-dir> [<project-dir> …] [--reelplanner <.reelplanner dir>]
 import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync, readdirSync, rmSync, statSync } from "node:fs";
 import { resolve, join, basename, dirname, sep, relative, posix } from "node:path";
 import { execFileSync, spawnSync, execFile } from "node:child_process";
 import { cpus } from "node:os";
 import { createHash } from "node:crypto";
-import { ROOT, depFile, GSAP, repoRoot, rpInitialized, realPath } from "./lib/env.mjs";
+import { ROOT, depFile, GSAP, repoRoot, rpInitialized, realPath, rpDirOf, otherRpPath } from "./lib/env.mjs";
 import { rpDirFor, videoDirFor } from "./lib/terms.mjs";
 import { planStage, openQuestions, lastChanged, listReviews, verdictOf } from "./lib/reviews.mjs";
 import { guidePage, pointFaces } from "./lib/guide-page.mjs";
@@ -59,15 +59,15 @@ import { readWalkthrough } from "./lib/guide/built.mjs";
 import { choicesOf, choiceCounts } from "./lib/guide/reader.mjs";
 import { readSources, commitsSince, plannedFrom, endOf, END_WORDS } from "./lib/explainer.mjs";
 const argv = process.argv.slice(2);
-const rpAt = argv.indexOf("--reelplanning"); const RP = rpAt >= 0 ? resolve(argv[rpAt + 1]) : null;
-// (only when --reelplanning was given: with rpAt = -1, `i !== rpAt + 1` would drop the out dir and
+const rpAt = Math.max(argv.indexOf("--reelplanner"), argv.indexOf("--reelplanning")); const RP = rpAt >= 0 ? resolve(argv[rpAt + 1]) : null;   // (--reelplanning: its old name)
+// (only when --reelplanner was given: with rpAt = -1, `i !== rpAt + 1` would drop the out dir and
 // make the first project the out dir — which the rmSync below then deletes)
 const [outArg, ...projects] = rpAt < 0 ? argv : argv.filter((a, i) => i !== rpAt && i !== rpAt + 1);
-if (!outArg || !projects.length) { console.error("usage: reelplanning bundle-player <out-dir> <project-dir> …"); process.exit(1); }
+if (!outArg || !projects.length) { console.error("usage: reelplanner bundle-player <out-dir> <project-dir> …"); process.exit(1); }
 const OUT = resolve(outArg);
 // the out dir is emptied first, so refuse anything that would take the package or a project with it
 const installed = ROOT.split(sep).includes("node_modules"); // an npx / npm install, not a checkout's own dist/
-if (OUT === ROOT || ROOT.startsWith(OUT + sep) || (installed && OUT.startsWith(ROOT + sep))) { console.error(`✗ ${outArg}: the bundle cannot go inside reelplanning's own install (${ROOT})`); process.exit(1); }
+if (OUT === ROOT || ROOT.startsWith(OUT + sep) || (installed && OUT.startsWith(ROOT + sep))) { console.error(`✗ ${outArg}: the bundle cannot go inside reelplanner's own install (${ROOT})`); process.exit(1); }
 if (projects.some((p) => resolve(p) === OUT || resolve(p).startsWith(OUT + sep))) { console.error(`✗ ${outArg}: would delete a project it bundles — pick another out dir`); process.exit(1); }
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(join(OUT, "vendor"), { recursive: true });
@@ -77,11 +77,11 @@ const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } ca
 const human = (n) => n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.round(n / 1e3)} KB`;
 
 // ---- shared: the runtime, the web component, the annotation layer ----
-// (resolved, not ROOT/node_modules: under npx the dependencies sit beside reelplanning in the cache)
+// (resolved, not ROOT/node_modules: under npx the dependencies sit beside reelplanner in the cache)
 cpSync(depFile("@hyperframes/core", "dist/hyperframe.runtime.iife.js"), join(OUT, "vendor/hyperframe.runtime.iife.js"));
 cpSync(depFile("@hyperframes/player", "dist/hyperframes-player.js"), join(OUT, "vendor/hyperframes-player.js"));
-writeFileSync(join(OUT, "reelplanning-player.js"),
-  readFileSync(join(ROOT, "packages/player/reelplanning-player.js"), "utf8")
+writeFileSync(join(OUT, "reelplanner-player.js"),
+  readFileSync(join(ROOT, "packages/player/reelplanner-player.js"), "utf8")
     .replace('import "../../node_modules/@hyperframes/player/dist/hyperframes-player.js";', 'import "./vendor/hyperframes-player.js";'));
 // The page's own typefaces (not the videos'): packages/player/fonts/faces.json lists them, and only what it
 // lists is copied, with each face's licence, beside the player as fonts/. The player declares them in the
@@ -96,14 +96,14 @@ const FONT_HEAD = `<script type="application/json" id="rp-faces">${JSON.stringif
 // video is named for its plan, a walkthrough for its plan plus "--walkthrough", the system video
 // "system", anything else for its folder.
 function slugFor(src, taken) {
-  const m = src.replace(/\/+$/, "").match(/\.reelplanning\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
-  const e = src.replace(/\/+$/, "").match(/\.reelplanning\/explainers\/([^/]+)\/video$/);   // an explainer: <name>--explainer
+  const m = src.replace(/\/+$/, "").match(/\.reelplann(?:er|ing)\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
+  const e = src.replace(/\/+$/, "").match(/\.reelplann(?:er|ing)\/explainers\/([^/]+)\/video$/);   // an explainer: <name>--explainer
   const base = e ? `${e[1]}--explainer` : m?.[3] ? "system" : m ? (m[2] === "video" ? m[1] : `${m[1]}--walkthrough`) : basename(src);
   let s = base; for (let i = 2; taken.includes(s); i++) s = `${base}-${i}`;
   return s;
 }
 // The repo these videos belong to, as the page keeps its saved state under it (see the top): <name>-<hash>, from the
-// folder holding .reelplanning/ (or the git top level); its origin remote when that folder is a git repo's top, else
+// folder holding .reelplanner/ (or the git top level); its origin remote when that folder is a git repo's top, else
 // its path. Never the enclosing repo's remote for a folder inside another repo.
 function repoIdOf(dir) {
   const root = resolve(dir), git = (...a) => { try { return execFileSync("git", ["-C", root, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
@@ -113,10 +113,10 @@ function repoIdOf(dir) {
   return `${name}-${createHash("sha256").update(at).digest("hex").slice(0, 8)}`;
 }
 const REPO_ID = repoIdOf(RP ? dirname(RP) : repoRoot(projects[0]));
-// Whether that repo keeps a decision log (.reelplanning/decisions.json), found as the review server finds it (review.mjs
+// Whether that repo keeps a decision log (.reelplanner/decisions.json), found as the review server finds it (review.mjs
 // findRp): without one a review has no record to go into and downloads, and the page tells the player so (`record="none"`),
 // whose Finish then asks for the download and tells the reviewer to hand the file to their agent, with no `reel record`.
-const RECORD = rpInitialized(RP || join(repoRoot(projects[0]), ".reelplanning"));
+const RECORD = rpInitialized(RP || rpDirOf(repoRoot(projects[0])));
 // (a guide page names it too: its notes and answers are kept where the review page's player keeps them)
 const withRepo = (html) => html.replace(/<head>/i, () => `<head>\n<meta name="reelplanning-repo" content="${REPO_ID}">`);
 const where = {}; // slug → source dir, for the library
@@ -206,7 +206,11 @@ for (let i = 0; i < items.length; i++) {
     for (const m of readFileSync(f, "utf8").matchAll(/(?:^|["'(\s\/])(assets\/(?!voice\/|fonts\/|vendor\/)[^"'()\s?#]+)/g)) refd.add(m[1]);
   for (const r of refd) if (existsSync(join(src, r)) && statSync(join(src, r)).isFile()) { mkdirSync(dirname(join(dst, r)), { recursive: true }); cpSync(join(src, r), join(dst, r)); }
   if (existsSync(join(src, "plan-map.json"))) cpSync(join(src, "plan-map.json"), join(dst, "plan-map.json"));
-  const pm = readJson(join(src, "plan-map.json"));
+  let pm = readJson(join(src, "plan-map.json"));
+  // a plan map built before the rename (D-312) names its plan's folder as it was then (.reelplanning/plans/…): the
+  // bundle names it as it is now, so the page's `reel record` line runs as it reads
+  { const top = repoRoot(src), was = pm?.planDir, now = was && !existsSync(join(top, was)) ? otherRpPath(was) : null;
+    if (now && existsSync(join(top, now))) { pm = { ...pm, planDir: now }; writeFileSync(join(dst, "plan-map.json"), JSON.stringify(pm, null, 2) + "\n"); } }
   // a walkthrough's choices counted once, as its guide counts them (lib/guide/reader.mjs choiceCounts): how many there are
   // in all (walkthrough.md) and how many only the guide lists, so the page's words and the guide's never disagree
   { const t = guideTarget(src), wmd = t.planDir ? join(t.planDir, "walkthrough.md") : null;
@@ -225,7 +229,7 @@ for (let i = 0; i < items.length; i++) {
   }
   // its guide (the plan guide, prototype v5): the page its video's own builder made, else one made from its parts; the
   // faces are the bundle's (fonts/, two folders up)
-  // A plan's or an explainer's video has its guide built from its sources (`reelplanning guide`, run by `build`); one not
+  // A plan's or an explainer's video has its guide built from its sources (`reelplanner guide`, run by `build`); one not
   // built here yet (a fresh clone: the guide is never committed), or built before its plan.md last changed, is built now.
   // (one at a time per video, under guide/.lock: two bundles of the same video at once, from two specs or two review
   // servers, would both find it stale and build it, and one's pictures be pruned and rewritten while the other copies them)
@@ -324,7 +328,7 @@ const planTitle = (dir) => { try { return (readFileSync(join(dir, "plan.md"), "u
 const bySrc = Object.fromEntries(Object.entries(where).map(([s, d]) => [d.replace(/\/+$/, ""), s]));
 const planDirs = new Set();
 if (RP && existsSync(join(RP, "plans"))) for (const d of readdirSync(join(RP, "plans"))) if (existsSync(join(RP, "plans", d, "plan.md"))) planDirs.add(join(RP, "plans", d));
-for (const d of Object.values(where)) { const m = d.match(/^(.*\/\.reelplanning\/plans\/[^/]+)\/(?:video|walkthrough-video)\/?$/); if (m) planDirs.add(m[1]); }
+for (const d of Object.values(where)) { const m = d.match(/^(.*\/\.reelplann(?:er|ing)\/plans\/[^/]+)\/(?:video|walkthrough-video)\/?$/); if (m) planDirs.add(m[1]); }
 // Where each plan stands comes from its reviews/ and the ledger (lib/reviews.mjs planStage): whether
 // its questions are all answered (openQuestions: matched on the question's words, since ids come round
 // again when a plan is revised), and each review's own time.
@@ -358,14 +362,14 @@ const LIBRARY = {
   }),
   // explainers (explain-first step 2): a row of their own kind, each with the commit it explains and how many have
   // landed since (a snapshot, never rebuilt on its own), and what came of it: Done, or the plans it started
-  explainers: slugs.filter((s) => /\.reelplanning\/explainers\/[^/]+\/video\/?$/.test(where[s])).map((s) => {
+  explainers: slugs.filter((s) => /\.reelplann(?:er|ing)\/explainers\/[^/]+\/video\/?$/.test(where[s])).map((s) => {
     const ed = dirname(where[s].replace(/\/+$/, "")), src = readSources(ed) || {}, last = listReviews(ed).filter((r) => r.kind === "explainer").at(-1) || null;
     const repoDir = RP ? dirname(RP) : dirname(dirname(dirname(ed))), since = commitsSince(repoDir, src.commit), end = endOf(last?.review);
     return { slug: s, name: basename(ed), title: titleOf(s) || src.title || basename(ed), date: src.created || basename(ed).slice(0, 10), at: src.commit ? String(src.commit).slice(0, 7) : null, since,
       seconds: readJson(join(where[s], "plan-map.json"))?.watchedSeconds ?? null, end: end ? END_WORDS[end] : null, reviewed: !!last, reviewedAt: last?.at || null,
       planned: RP ? plannedFrom(RP, basename(ed)) : [] };
   }),
-  other: slugs.filter((s) => s !== "system" && !/\.reelplanning\/(?:plans|explainers)\//.test(where[s])).map((s) => ({ slug: s, title: titleOf(s) || s })),
+  other: slugs.filter((s) => s !== "system" && !/\.reelplann(?:er|ing)\/(?:plans|explainers)\//.test(where[s])).map((s) => ({ slug: s, title: titleOf(s) || s })),
 };
 // an explainer's Finish offers "explain the commits since" (explain-first step 3): the packed plan map says how many
 // have landed since the commit it explains, and the first few of them, so a hosted page can say so with no server
@@ -500,13 +504,13 @@ const LIBRARY_UI = `
   /* the guide under the video (D-264): the open video's guide under the player, edge to edge; the page scrolls to it,
      so its scroll bar's room is kept from the first draw (it would otherwise narrow the video when the guide arrives) */
   html { scrollbar-gutter: stable; background: var(--ground); }
-  reelplanning-guide { margin: 32px -24px 0; }
+  reelplanner-guide { margin: 32px -24px 0; }
   /* at the guide, the page's scroll bar's room is the guide's paper, not a stripe of the page's ground beside it (the
-     frame is the whole window then; <reelplanning-guide> marks it) */
+     frame is the whole window then; <reelplanner-guide> marks it) */
   html[data-rp-at-guide] { background: var(--paper); scrollbar-color: var(--ink-20) var(--paper); }
   /* a phone-wide window: the guide runs the window's full width (a desktop scroll bar's kept room left it 375 px of 390);
      the page scrolls by touch or wheel as before */
-  @media (max-width: 600px) { html { scrollbar-gutter: auto; scrollbar-width: none; } reelplanning-guide { margin: 24px 0 0; } }
+  @media (max-width: 600px) { html { scrollbar-gutter: auto; scrollbar-width: none; } reelplanner-guide { margin: 24px 0 0; } }
   /* an explainer's row (explain-first step 2): the same row, its kind said before its title */
   .xrow .xk { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: .02em; }
   .xrow .pn { flex: 1 1 45%; }
@@ -541,7 +545,7 @@ const LIBRARY_JS = `
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   // what needs you: every video still open for the reviewer, one row each, what to do in its tooltip
   const TO_REVIEW = ${JSON.stringify(TO_REVIEW)}, STATUS = ${JSON.stringify(STATUS)};
-  // (this repo's keys, as the player keeps them: reelplanning-player.js recordKey and watchedPrefix, under REPO)
+  // (this repo's keys, as the player keeps them: reelplanner-player.js recordKey and watchedPrefix, under REPO)
   const recordOf = (slug) => (REPO ? "reelplanning@" + REPO : "reelplanning") + ":annotations:" + slug + "/index.html", watchedOf = (slug) => (REPO ? "rp@" + REPO : "rp") + ":watched:" + slug;
   const sent = (t) => { try { const r = JSON.parse(localStorage.getItem(recordOf(t.slug) + ":round") || "null"); return !!(r && r.sig === t.sig); } catch { return false; } };
   const items = TO_REVIEW.map((t) => ({ ...t, done: sent(t) }));
@@ -651,7 +655,7 @@ const LIBRARY_JS = `
   sw.addEventListener("click", () => show(pop.hidden));
   document.addEventListener("pointerdown", (e) => { if (!pop.hidden && !pop.contains(e.target) && !sw.contains(e.target)) show(false); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { show(false); sw.focus(); } });
-  // a Guide link to the video already open: the same page, down to its guide (reelplanning-guide); the list goes away
+  // a Guide link to the video already open: the same page, down to its guide (reelplanner-guide); the list goes away
   addEventListener("hashchange", () => { if (location.hash === "#guide") show(false); });`;
 
 // ---- the page: same markup, paths pointed at the bundle, and the library over the bundled projects ----
@@ -675,8 +679,8 @@ page = page
   // the page's faces: their list inline and each file preloaded, so the player declares them before it first draws
   .replace("</head>", () => `${FONT_HEAD}</head>`)
   // the open video's guide, under its player (D-264): shown once the player finds the video's guide/index.html
-  .replace('<reelplanning-player id="rp"></reelplanning-player>', '<reelplanning-player id="rp"></reelplanning-player>\n<reelplanning-guide id="rp-guide" for="rp"></reelplanning-guide>');
-if (!page.includes("<reelplanning-guide")) { console.error("✗ the review page has no <reelplanning-player id=\"rp\"> to put the guide under"); process.exit(1); }
+  .replace('<reelplanner-player id="rp"></reelplanner-player>', '<reelplanner-player id="rp"></reelplanner-player>\n<reelplanner-guide id="rp-guide" for="rp"></reelplanner-guide>');
+if (!page.includes("<reelplanner-guide")) { console.error("✗ the review page has no <reelplanner-player id=\"rp\"> to put the guide under"); process.exit(1); }
 writeFileSync(join(OUT, "index.html"), page);
 writeFileSync(join(OUT, "library.json"), JSON.stringify({ slugs, repo: REPO_ID, carried: items.filter((x) => x.carried && slugs.includes(x.carried)).map((x) => x.carried), ...LIBRARY }, null, 2) + "\n"); // what was bundled, under which names
 

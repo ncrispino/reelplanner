@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# One-time machine setup for reelplanning: the system tools the video pipeline shells out to, and
-# HyperFrames' skills at the version reelplanning pins.
+# One-time machine setup for reelplanner: the system tools the video pipeline shells out to, and
+# HyperFrames' skills at the version reelplanner pins.
 #
-#   reelplanning setup                 install what is missing
-#   reelplanning setup --dry-run       say what is there and what would be installed
-#   reelplanning setup --hosted-voice  skip the local voice (Kokoro, its models, whisper.cpp): narrate with the
-#                                      hosted one, and print the two lines that choose it, for ~/.reelplanning/.env
-#   reelplanning setup --local-voice   install the local voice even when narration here is hosted
+#   reelplanner setup                  install what is missing
+#   reelplanner setup --dry-run        say what is there and what would be installed
+#   reelplanner setup --hosted-voice   skip the local voice (Kokoro, its models, whisper.cpp): narrate with the
+#                                      hosted one, and print the two lines that choose it, for ~/.reelplanner/.env
+#   reelplanner setup --local-voice    install the local voice even when narration here is hosted
 #
-# The local voice is installed unless narration here is hosted: REELPLANNING_TTS set to a hosted engine (in the
-# shell, the repo's .reelplanning/.env or ~/.reelplanning/.env) or in .reelplanning/config.json, or a HeyGen
+# The local voice is installed unless narration here is hosted: REELPLANNER_TTS set to a hosted engine (in the
+# shell, the repo's .reelplanner/.env or ~/.reelplanner/.env) or in .reelplanner/config.json, or a HeyGen
 # credential. Then it is skipped, and setup says so; everything else is installed either way.
 #
 # Idempotent: every step checks first and skips what is already there, so running it again is
@@ -22,16 +22,19 @@
 #
 # Steps: node ≥ 22.20 · ffmpeg · WebP · unzip (Linux) · Chrome headless (hyperframes browser ensure) · Kokoro TTS (pip) ·
 #        whisper.cpp (brew, or built into HyperFrames' own cache, no root) · HyperFrames' skills
-#        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanning/.env for this machine,
-#        or the repo's .reelplanning/), and, when it is local, whether it is fast enough here (one sentence, timed)
+#        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanner/.env for this machine,
+#        or the repo's .reelplanner/), and, when it is local, whether it is fast enough here (one sentence, timed)
 set -uo pipefail
+# a setting under its old name (REELPLANNING_X, before the rename) is read as REELPLANNER_X when that is unset,
+# as the node commands read it (scripts/lib/old-names.mjs)
+for k in $(compgen -e | grep '^REELPLANNING_'); do n="REELPLANNER_${k#REELPLANNING_}"; [ -n "${!n+x}" ] || export "$n=${!k}"; done
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 . "$ROOT/scripts/lib/project-dir.sh"   # hf: the pinned HyperFrames CLI
-RP="$(node "$ROOT/scripts/lib/env.mjs" rp 2>/dev/null || echo reelplanning)"   # how people run reelplanning (RP_COMMAND)
+RP="$(node "$ROOT/scripts/lib/env.mjs" rp 2>/dev/null || echo reelplanner)"   # how people run reelplanner (RP_COMMAND)
 export HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1
 # where the fixed system places (a system Chrome, Homebrew's whisper-cli) are looked under: / by default; a test
 # seam (scripts/test/local-speed.spec.mjs points it at an empty folder: a machine with none of them)
-SYS="${REELPLANNING_SYSTEM_ROOT:-}"
+SYS="${REELPLANNER_SYSTEM_ROOT:-}"
 
 DRY=0; VOICE=""
 for a in "$@"; do case "$a" in
@@ -60,7 +63,7 @@ elif have sudo && sudo -n true 2>/dev/null; then SUDO="sudo"
 elif have sudo && [ -t 0 ]; then SUDO="sudo"          # it can ask for the password
 else SUDO="none"; fi
 as_root() { if [ "$SUDO" = none ]; then return 1; fi; run $SUDO "$@"; }
-[ "$DRY" = 1 ] && echo "reelplanning setup --dry-run: nothing is changed"
+[ "$DRY" = 1 ] && echo "reelplanner setup --dry-run: nothing is changed"
 
 # ---- node
 # 22.20, package.json's engines: what the `skills` installer asks for. The commands run on any Node 22 (HyperFrames
@@ -68,7 +71,7 @@ as_root() { if [ "$SUDO" = none ]; then return 1; fi; run $SUDO "$@"; }
 nv="$(node -p 'const [a, b] = process.versions.node.split(".").map(Number); a > 22 || (a === 22 && b >= 20) ? "ok" : a === 22 ? "old" : "no"')"
 if [ "$nv" = ok ]; then ok "node $(node -v)"
 elif [ "$nv" = old ]; then ok "node $(node -v): the \`skills\` installer asks for 22.20 or newer; if a step below fails in it, update Node (https://nodejs.org/en/download)"
-else miss "node $(node -v) is too old" "reelplanning needs Node 22.20 or newer: https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"; fi
+else miss "node $(node -v) is too old" "reelplanner needs Node 22.20 or newer: https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"; fi
 
 # ---- ffmpeg: renders, and the review bundle's wav → mp3
 if have ffmpeg && have ffprobe; then ok "ffmpeg ($(command -v ffmpeg))"
@@ -197,12 +200,13 @@ fi
 if [ "$DRY" = 1 ]; then node "$ROOT/scripts/hyperframes-skills.mjs" --dry-run
 else node "$ROOT/scripts/hyperframes-skills.mjs" || miss "HyperFrames skills" "run: $RP hyperframes-skills"; fi
 
-# ---- narration: which engine `narrate` will use here, and why (.reelplanning/config.json's narration, or
-# REELPLANNING_TTS, e.g. in ~/.reelplanning/.env; docs/reference.md, "Narration engines"). A hosted one needs its key in the environment.
-# --hosted-voice before its two lines are in ~/.reelplanning/.env: nothing narrates here until they are. The person
+# ---- narration: which engine `narrate` will use here, and why (.reelplanner/config.json's narration, or
+# REELPLANNER_TTS, e.g. in ~/.reelplanner/.env; docs/reference.md, "Narration engines"). A hosted one needs its key in the environment.
+# --hosted-voice before its two lines are in ~/.reelplanner/.env: nothing narrates here until they are. The person
 # chose this, so it is the next step, not a failure: setup still succeeds.
 if [ "$HOSTED_PENDING" = 1 ]; then
-  printf '→ narration: next, put the two lines above in ~/.reelplanning/.env, then run %s narration-check to hear a test line\n' "$RP"
+  printf '→ narration: next, put the two lines above in %s/.env, then run %s narration-check to hear a test line\n' \
+    "$(node "$ROOT/scripts/lib/env.mjs" home 2>/dev/null || echo '~/.reelplanner')" "$RP"
 elif N="$(node "$ROOT/scripts/lib/narrator.mjs" describe "$PWD" 2>&1)"; then ok "$N"
 else printf '✗ %s\n' "$N"; MISSING+=("narration: ${N%%$'\n'*}"); fi
 
@@ -223,4 +227,4 @@ if [ "${#MISSING[@]}" -gt 0 ]; then
 fi
 if [ "$DRY" = 1 ]; then echo "✓ dry run done: the steps marked · would run"; exit 0; fi
 hf doctor || true
-echo "✓ reelplanning is set up"
+echo "✓ reelplanner is set up"

@@ -16,7 +16,7 @@
 //                   and over a kept site without --replace; --check fails on a bundle that does not verify;
 //                   section 5 is not filled until every arm's site is kept; a history holding a voice file or a render is
 //                   refused (D-305) and the commands it prints fix it; in place, what the site ignored stays out of git
-//   the containers — ours installs reelplanning from a tarball or GitHub (not npm), each site's .git/info/exclude
+//   the containers — ours installs reelplanner from a tarball or GitHub (not npm), each site's .git/info/exclude
 //                   keeps the built videos' media out (site.exclude)
 //   arm.sh        — (kit/arm.sh, an arm on your own machine) its usage; stage and note add a line with the time to
 //                   the arm's notes.md, and refuse a stage that is not one of the seven; status says each arm's
@@ -51,7 +51,7 @@ try {
   ok("scaffold: greenfield starts empty (start/ says so, nothing else in it)", readdirSync(join(dir, "start")).join() === "README.md" && /empty folder/.test(read(join(dir, "start/README.md"))));
   ok("scaffold: each arm's site/ is empty", ARMS.every((a) => readdirSync(join(dir, "arms", a, "site")).length === 0));
   const prompt = read(promptSrc);
-  ok("scaffold: what each arm types first", read(join(dir, "arms/text/prompt.txt")) === prompt && read(join(dir, "arms/ours/prompt.txt")) === `Use reelplanning to plan: ${prompt}`
+  ok("scaffold: what each arm types first", read(join(dir, "arms/text/prompt.txt")) === prompt && read(join(dir, "arms/ours/prompt.txt")) === `Use reelplanner to plan: ${prompt}`
     && read(join(dir, "arms/html/prompt.txt")).startsWith(prompt.trimEnd()) && /plan\.html is the only file to write\.\n$/.test(read(join(dir, "arms/html/prompt.txt"))));
   ok("scaffold: the HTML arm's result prompt asks for report.html and the choices the plan did not cover", /report\.html/.test(read(join(dir, "arms/html/report.prompt.txt"))) && /choices you made that plan\.html did not cover/.test(read(join(dir, "arms/html/report.prompt.txt"))));
   const sheet = read(join(dir, "arms/text/SHEET.md"));
@@ -59,19 +59,19 @@ try {
     && sheet.indexOf("## Preflight") < sheet.indexOf("## 1. plan") && /shots\/05-check-the-result\.png/.test(sheet), sheet.slice(0, 600));
   const dockers = ARMS.map((a) => read(join(dir, "arms", a, "Dockerfile")));
   // an arm's own lines: those marked "this arm only", and the block each such comment heads (up to the next blank or common line)
-  const common = (s) => s.split("\n").filter((l) => !/this arm only/.test(l) && !/^\s*(&&|RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg|RUN npx -y skills|ARG REELPLANNING=|COPY smoke\.sh |RUN t=\$\(ls \/opt\/case-study\/reelplanning|# in a checkout, while|# the image makes a video)/.test(l) && !/^# The \w+ arm|cs-dylan-/.test(l)).join("\n");
+  const common = (s) => s.split("\n").filter((l) => !/this arm only/.test(l) && !/^\s*(&&|RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg|RUN npx -y skills|ARG REELPLANNER=|COPY smoke\.sh |RUN t=\$\(ls \/opt\/case-study\/reelplanner|# in a checkout, while|# the image makes a video)/.test(l) && !/^# The \w+ arm|cs-dylan-/.test(l)).join("\n");
   ok("scaffold: the three containers are the same but for the lines marked \"this arm only\"", common(dockers[0]) === common(dockers[1]) && common(dockers[1]) === common(dockers[2]), common(dockers[2]));
   ok("scaffold: same Claude Code and model in all three, a new home, only site/ mounted", dockers.every((d) => /ARG CLAUDE_CODE_VERSION=2\.1\.283/.test(d) && /ARG MODEL=claude-opus-5-5/.test(d) && /useradd --create-home --home-dir \/home\/agent/.test(d) && /-v "\$PWD\/site:\/home\/agent\/dylan-site"/.test(d) && !/COPY \.\.|VOLUME/.test(d)));
-  ok("scaffold: ours adds reelplanning; text starts in plan mode", /reelplanning setup && sh \/opt\/case-study\/smoke\.sh/.test(dockers[2]) && !/reelplanning/.test(dockers[0]) && /--permission-mode plan/.test(read(join(dir, "arms/text/start.sh"))) && !/permission-mode/.test(read(join(dir, "arms/html/start.sh"))));
-  // reelplanning is not on npm: ours installs it from a tarball beside the Dockerfile, else from GitHub, never `npx reelplanning@…`
-  ok("scaffold: ours installs reelplanning from a reelplanning.tgz when there is one, else from GitHub; the skill from that package",
-    dockers[2].includes(`ARG REELPLANNING=${GITHUB}`) && /npm i -g "\$\{t:-\$REELPLANNING\}"/.test(dockers[2]) && /skills add "\$\(npm root -g\)\/reelplanning" --skill plan-to-video -g -y -a claude-code/.test(dockers[2]) && !/npx -y reelplanning@/.test(dockers[2]) && existsSync(join(dir, "arms/ours/smoke.sh")) && !existsSync(join(dir, "arms/text/smoke.sh")), dockers[2]);
+  ok("scaffold: ours adds reelplanner; text starts in plan mode", /reelplanner setup && sh \/opt\/case-study\/smoke\.sh/.test(dockers[2]) && !/reelplanner/.test(dockers[0]) && /--permission-mode plan/.test(read(join(dir, "arms/text/start.sh"))) && !/permission-mode/.test(read(join(dir, "arms/html/start.sh"))));
+  // reelplanner is not on npm: ours installs it from a tarball beside the Dockerfile, else from GitHub, never `npx reelplanner@…`
+  ok("scaffold: ours installs reelplanner from a reelplanner.tgz when there is one, else from GitHub; the skill from that package",
+    dockers[2].includes(`ARG REELPLANNER=${GITHUB}`) && /npm i -g "\$\{t:-\$REELPLANNER\}"/.test(dockers[2]) && /skills add "\$\(npm root -g\)\/reelplanner" --skill plan-to-video -g -y -a claude-code/.test(dockers[2]) && !/npx -y reelplanner@/.test(dockers[2]) && existsSync(join(dir, "arms/ours/smoke.sh")) && !existsSync(join(dir, "arms/text/smoke.sh")), dockers[2]);
   ok("scaffold: ours's container shares the host's network (its review page on 127.0.0.1); the others' do not", /docker run -it --rm --network host /.test(dockers[2]) && dockers.slice(0, 2).every((d) => /docker run -it --rm -e ANTHROPIC_API_KEY/.test(d)));
   // the built videos' media stay out of the site's history (D-305): site.exclude, in .git/info/exclude at start
   const exclude = read(join(dir, "arms/ours/site.exclude"));
   ok("scaffold: each arm's site.exclude names the built videos' media, and start.sh puts it in the site's .git/info/exclude",
     ARMS.every((a) => read(join(dir, "arms", a, "site.exclude")) === exclude && /cat \/opt\/case-study\/site\.exclude >> \.git\/info\/exclude/.test(read(join(dir, "arms", a, "start.sh"))) && /COPY preflight\.sh start\.sh site\.exclude/.test(read(join(dir, "arms", a, "Dockerfile"))))
-    && /^\.reelplanning\/plans\/\*\/\*video\/assets\/$/m.test(exclude) && /^\.reelplanning\/\*\*\/\*\.wav$/m.test(exclude) && /^\.reelplanning\/\*\*\/renders\/$/m.test(exclude), exclude);
+    && /^\.reelplanner\/plans\/\*\/\*video\/assets\/$/m.test(exclude) && /^\.reelplanner\/\*\*\/\*\.wav$/m.test(exclude) && /^\.reelplanner\/\*\*\/renders\/$/m.test(exclude), exclude);
   ok("scaffold: the smoke script parses (sh -n)", spawnSync("sh", ["-n", join(dir, "arms/ours/smoke.sh")]).status === 0);
   const rep = read(join(dir, "REPLICATE.md"));
   ok("scaffold: REPLICATE.md is filled in (versions, model, date, the folder)", !/\{\{\w+\}\}/.test(rep) && /2\.1\.283/.test(rep) && /claude-opus-5-5/.test(rep) && /~\/dylan-site/.test(rep) && new RegExp(new Date().toISOString().slice(0, 10)).test(rep));
@@ -91,11 +91,11 @@ try {
   ok("scaffold: --from records the commit and its file list", fr.status === 0 && read(join(tmp, "cs/brown/start/commit.txt")).trim() === sha && read(join(tmp, "cs/brown/start/files.txt")).trim() === "a.txt\nb.txt" && /commit `[0-9a-f]{12}` \(2 files\)/.test(read(join(tmp, "cs/brown/REPLICATE.md"))), fr.stdout + fr.stderr);
 
   // ---------- the preflight ----------
-  const pre = (home, folder) => spawnSync("sh", [join(dir, "arms/text/preflight.sh")], { cwd: folder, env: { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning") }, encoding: "utf8" });   // the new home's own memory, not the runner's scratch one
+  const pre = (home, folder) => spawnSync("sh", [join(dir, "arms/text/preflight.sh")], { cwd: folder, env: { ...process.env, HOME: home, REELPLANNER_HOME: join(home, ".reelplanner") }, encoding: "utf8" });   // the new home's own memory, not the runner's scratch one
   const home = join(tmp, "home"), site = join(home, "dylan-site"); mkdirSync(site, { recursive: true });
   execFileSync("git", ["-C", site, "init", "-q"]);
   const p0 = pre(home, site);
-  ok("preflight: an empty folder in a new home passes those checks", /✓ folder ~\/dylan-site: empty \(git init only\)/.test(p0.stdout) && /✓ no ~\/\.claude\/CLAUDE\.md/.test(p0.stdout) && /✓ no past sessions/.test(p0.stdout) && /✓ no ~\/\.reelplanning\/you\.jsonl/.test(p0.stdout), p0.stdout);
+  ok("preflight: an empty folder in a new home passes those checks", /✓ folder ~\/dylan-site: empty \(git init only\)/.test(p0.stdout) && /✓ no ~\/\.claude\/CLAUDE\.md/.test(p0.stdout) && /✓ no past sessions/.test(p0.stdout) && /✓ no ~\/\.reelplanner\/you\.jsonl/.test(p0.stdout), p0.stdout);
   writeFileSync(join(site, "index.html"), "<p>left over</p>");
   mkdirSync(join(home, ".claude"), { recursive: true }); writeFileSync(join(home, ".claude/CLAUDE.md"), "Always use React.");
   const p1 = pre(home, site);
@@ -115,7 +115,7 @@ try {
   ok("provenance.sh: prints JSON (the date, the machine, the tools, how the arm starts, its settings), and no secret or email",
     ps.status === 0 && pj && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d[+-]\d\d:\d\d$/.test(pj.recorded) && pj.machine?.kernel && pj.tools?.node === process.version
     && pj.claude_code?.started_with === "claude --model claude-opus-5-5 --permission-mode plan" && pj.claude_code?.config?.settings?.permissions?.defaultMode === "plan"
-    && pj.claude_code?.config?.settings?.env?.SOME_API_KEY === "(set)" && pj.claude_code?.env.includes("DISABLE_AUTOUPDATER=1") && pj.reelplanning === "not used by this arm"
+    && pj.claude_code?.config?.settings?.env?.SOME_API_KEY === "(set)" && pj.claude_code?.env.includes("DISABLE_AUTOUPDATER=1") && pj.reelplanner === "not used by this arm"
     && !/sk-spec|someone@example\.com/.test(ps.stdout), ps.stdout + ps.stderr);
   ok("provenance.sh: needs the arm and the model", spawnSync("sh", [join(ROOT, "eval/case-studies/kit/provenance.sh"), "text"], { encoding: "utf8" }).status === 2);
   // the transcript step: a fake transcript, one session and one subagent, with the metadata Claude Code writes
@@ -142,7 +142,7 @@ try {
     { ...base(10), type: "user", isSidechain: true, message: { role: "user", content: "SECRET TASK" } },
     asst(11, "m5", "claude-haiku-5", [{ type: "tool_use", id: "t3", name: "Read", input: { file_path: "/SECRET" } }], { isSidechain: true }),
   ].map((l) => JSON.stringify(l)).join("\n") + "\n");
-  const narr = join(tmp, "narrated", ".reelplanning/plans/p/video/.hyperframes"); mkdirSync(narr, { recursive: true });
+  const narr = join(tmp, "narrated", ".reelplanner/plans/p/video/.hyperframes"); mkdirSync(narr, { recursive: true });
   writeFileSync(join(narr, "narration.json"), JSON.stringify({ version: 1, voice: "am_michael", speed: 1.25, model: "kokoro-v1.0 + whisper small.en", lines: { "01": { text: "SECRET LINE" }, "02": {} } }));
   writeFileSync(join(dir, "arms/ours/provenance.json"), JSON.stringify({ arm: "ours", claude_code: { version: "2.1.283 (Claude Code)" } }));
   const pv = reel("provenance", "dylan", "ours", tr, "--site", join(tmp, "narrated"), "--into", "cs");
@@ -155,7 +155,7 @@ try {
     && t.skills?.["plan-to-video"] === 1 && JSON.stringify(t.permission_modes) === JSON.stringify({ default: 1, plan: 1 }) && t.effort?.high === 5 && t.reported_cost_usd === 1.23
     && t.per_file?.map((f) => f.kind).join() === "session,subagent", pf);
   ok("provenance: keeps what provenance.sh wrote, adds the voice each video was narrated with, and copies no message text",
-    JSON.parse(pf).claude_code?.version === "2.1.283 (Claude Code)" && JSON.stringify(JSON.parse(pf).narration) === JSON.stringify([{ video: ".reelplanning/plans/p/video", voice: "am_michael", speed: 1.25, model: "kokoro-v1.0 + whisper small.en", lines: 2 }])
+    JSON.parse(pf).claude_code?.version === "2.1.283 (Claude Code)" && JSON.stringify(JSON.parse(pf).narration) === JSON.stringify([{ video: ".reelplanner/plans/p/video", voice: "am_michael", speed: 1.25, model: "kokoro-v1.0 + whisper small.en", lines: 2 }])
     && !/SECRET/.test(pf) && /claude-opus-5-5 ×2/.test(pv.out), pf);
   const pv1 = reel("provenance", "dylan", "ours", join(tmp, "no-transcripts"), "--into", "cs"), pv2 = reel("provenance", "dylan", "ours", join(tmp, "narrated"), "--into", "cs");
   ok("provenance: refused with no such folder, or no transcript in it", pv1.code === 1 && /no such folder/.test(pv1.out) && pv2.code === 1 && /no transcript/.test(pv2.out), pv1.out + pv2.out);
@@ -208,12 +208,12 @@ try {
   const k6 = reel("keep", "dylan", "html", join(tmp, "plain"), "--into", "cs"), k7 = reel("keep", "dylan", "nope", "--into", "cs");
   ok("keep: refused with no such folder, a folder with no .git of its own (not the repo above it), or an arm that isn't one", k5.code === 1 && /no such folder/.test(k5.out) && k6.code === 1 && /no \.git of its own/.test(k6.out) && k7.code === 1 && /the arm is one of text, html, ours/.test(k7.out), k5.out + k6.out + k7.out);
   // D-305: a history holding a voice file or a render is refused (the bundle is committed here); the command it prints fixes it
-  ok("keep: what counts as media (a voice file, a video, a render under .reelplanning/; not the site's own pictures)",
-    isMedia(".reelplanning/plans/p/video/assets/voice/01.wav") && isMedia(".reelplanning/system-video/renders/chapters/ch1.mp4") && isMedia(".reelplanning/plans/p/video/renders/x.png")
-    && !isMedia("img/cover.jpg") && !isMedia("audio/song.mp3") && !isMedia(".reelplanning/plans/p/plan.md"));
+  ok("keep: what counts as media (a voice file, a video, a render under .reelplanner/; not the site's own pictures)",
+    isMedia(".reelplanner/plans/p/video/assets/voice/01.wav") && isMedia(".reelplanner/system-video/renders/chapters/ch1.mp4") && isMedia(".reelplanner/plans/p/video/renders/x.png")
+    && !isMedia("img/cover.jpg") && !isMedia("audio/song.mp3") && !isMedia(".reelplanner/plans/p/plan.md"));
   const loud = join(tmp, "loud-site"); mkdirSync(loud); makeSite(loud, "Loud");
-  const voice = join(loud, ".reelplanning/plans/p/video/assets/voice"); mkdirSync(voice, { recursive: true });
-  writeFileSync(join(voice, "01.wav"), "RIFF"); writeFileSync(join(loud, ".reelplanning/plans/p/plan.md"), "# A plan\n");
+  const voice = join(loud, ".reelplanner/plans/p/video/assets/voice"); mkdirSync(voice, { recursive: true });
+  writeFileSync(join(voice, "01.wav"), "RIFF"); writeFileSync(join(loud, ".reelplanner/plans/p/plan.md"), "# A plan\n");
   g(loud, "add", "-A"); g(loud, "commit", "-qm", "the plan and its video");
   const km = reel("keep", "dylan", "html", loud, "--into", "cs");
   ok("keep: refused when the site's history holds a voice file, and says how to take it out", km.code === 1 && /D-305/.test(km.out) && /1 voice file\(s\), video\(s\) or render\(s\)/.test(km.out) && /filter-branch/.test(km.out) && !existsSync(join(dir, "arms/html/site.bundle")), km.out);
@@ -222,7 +222,7 @@ try {
   const fixed = spawnSync("sh", ["-c", fix.join(" && ")], { cwd: tmp, encoding: "utf8", env: { ...process.env, ...who, FILTER_BRANCH_SQUELCH_WARNING: "1" } });
   const kf = reel("keep", "dylan", "html", loud, "--into", "cs");
   ok("keep: the three printed commands take the voice file out of every commit (it stays on disk, ignored), the plan stays, and then it keeps",
-    fix.length === 3 && fixed.status === 0 && !g(loud, "log", "--branches", "--name-only", "--format=").stdout.includes(".wav") && g(loud, "ls-files").stdout.includes(".reelplanning/plans/p/plan.md")
+    fix.length === 3 && fixed.status === 0 && !g(loud, "log", "--branches", "--name-only", "--format=").stdout.includes(".wav") && g(loud, "ls-files").stdout.includes(".reelplanner/plans/p/plan.md")
     && existsSync(join(voice, "01.wav")) && kf.code === 0 && existsSync(join(dir, "arms/html/site.bundle")), fix.join("\n") + fixed.stderr + kf.out);
   rmSync(join(dir, "arms/html/site"), { recursive: true, force: true }); rmSync(join(dir, "arms/html/site.bundle"), { force: true }); mkdirSync(join(dir, "arms/html/site"));
   const c0 = reel("keep", "dylan", "--check", "--into", "cs");
@@ -248,7 +248,7 @@ try {
   const html4 = existsSync(join(dir, "case-study.html")) ? read(join(dir, "case-study.html")) : "";
   ok("report --publish: with all nine filled, it builds the page, with no draft line and no warnings", r4.code === 0 && /all 9 sections filled: ready to publish/.test(r4.out) && !/△/.test(r4.out) && html4 && !/<strong>Draft\.<\/strong>/.test(html4) && !/class="todo"/.test(html4), r4.out);
   ok("report: the page links each kept site and its bundle", ["text", "html", "ours"].every((a) => html4.includes(`<a href="arms/${a}/site.bundle">site.bundle</a>`)));
-  ok("report: the numbers reach the page (a bar per arm and stage, the judge's scores, the key)", (html4.match(/class="bar a-/g) || []).length === 21 && /<span class="score">4<\/span>/.test(html4) && /X <span class="dim">\(Ours \(reelplanning\)\)<\/span>/.test(html4) && /Eras first, then albums/.test(html4) && /<span class="tag t-raised">raised<\/span>/.test(html4));
+  ok("report: the numbers reach the page (a bar per arm and stage, the judge's scores, the key)", (html4.match(/class="bar a-/g) || []).length === 21 && /<span class="score">4<\/span>/.test(html4) && /X <span class="dim">\(Ours \(reelplanner\)\)<\/span>/.test(html4) && /Eras first, then albums/.test(html4) && /<span class="tag t-raised">raised<\/span>/.test(html4));
   ok("report: the page has light and dark themes and no outside requests", /prefers-color-scheme:dark/.test(html4) && /:root\[data-theme="dark"\]/.test(html4) && !/<(script|link)[^>]+(src|href)="https?:/.test(html4));
   ok("report: the template's notes never reach the page", !/fill in|<!--/.test(html4.replace(/<style>[\s\S]*?<\/style>/, "")));
 
@@ -294,7 +294,7 @@ try {
   const again = arm("text");
   ok("arm.sh: an arm that is over is not set up again", again.code === 1 && /the text arm is over/.test(again.out), again.out);
   // snapshot: ours's videos as they are, voice included, v1, v2 …; publish needs the network and Claude Code (by hand)
-  const oursRp = join(armDir("ours"), "dylan-site/.reelplanning");
+  const oursRp = join(armDir("ours"), "dylan-site/.reelplanner");
   ok("arm.sh snapshot: only ours makes videos", arm("text", "snapshot").code === 1);
   mkdirSync(oursRp, { recursive: true }); writeFileSync(join(oursRp, "decisions.md"), "# Decisions\n");
   const none = arm("ours", "snapshot");
@@ -302,9 +302,9 @@ try {
   const vid = join(oursRp, "plans/2026-10-06-dylan/video");
   mkdirSync(join(vid, "assets"), { recursive: true }); writeFileSync(join(vid, "index.html"), "<html></html>"); writeFileSync(join(vid, "assets/s1.mp3"), "voice");
   const sn = [arm("ours", "snapshot"), arm("ours", "snapshot")], v1 = join(armDir("ours"), "snapshots/v1");
-  ok("arm.sh snapshot: the videos with their voice and .reelplanning's own files, v1 then v2, each with a note",
-    sn.every((r) => r.code === 0) && existsSync(join(v1, ".reelplanning/plans/2026-10-06-dylan/video/assets/s1.mp3")) && existsSync(join(v1, ".reelplanning/decisions.md"))
-    && existsSync(join(armDir("ours"), "snapshots/v2/.reelplanning/plans/2026-10-06-dylan/video/index.html")) && /snapshot v2 of ours's videos/.test(notes("ours")), sn.map((r) => r.out).join(""));
+  ok("arm.sh snapshot: the videos with their voice and .reelplanner's own files, v1 then v2, each with a note",
+    sn.every((r) => r.code === 0) && existsSync(join(v1, ".reelplanner/plans/2026-10-06-dylan/video/assets/s1.mp3")) && existsSync(join(v1, ".reelplanner/decisions.md"))
+    && existsSync(join(armDir("ours"), "snapshots/v2/.reelplanner/plans/2026-10-06-dylan/video/index.html")) && /snapshot v2 of ours's videos/.test(notes("ours")), sn.map((r) => r.out).join(""));
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

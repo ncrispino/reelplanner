@@ -1,6 +1,6 @@
 # Code of conduct
 
-reelplanning follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+reelplanner follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 In short, for everyone in the issues, pull requests, reviews and discussions here:
 
 - Be kind and assume good faith. Critique the plan, the code or the video, not the person.

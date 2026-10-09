@@ -102,7 +102,7 @@ components:
     textColor: "{colors.cream} (JetBrains Mono, --rp-slab-ink); syntax by token: --rp-syn-key (keywords), --rp-syn-str (strings), --rp-syn-num (numbers), --rp-syn-com (comments), --rp-syn-add / --rp-syn-del (added and removed lines)"
     border: "1px solid {colors.cream}@14%"
     rounded: "{spacing.radius-md}"
-    description: "The warm-navy code / terminal surface. The code itself is the theme's two forks of HyperFrames' blocks, `blocks/code-diff.html` and `blocks/terminal-run.html` (reelplanning's templates/reelplanning/theme/blocks/), coloured only by theme tokens so frame-lint's colour rule passes. The registry's own code-* blocks hard-code colours and fail it."
+    description: "The warm-navy code / terminal surface. The code itself is the theme's two forks of HyperFrames' blocks, `blocks/code-diff.html` and `blocks/terminal-run.html` (reelplanner's templates/reelplanner/theme/blocks/), coloured only by theme tokens so frame-lint's colour rule passes. The registry's own code-* blocks hard-code colours and fail it."
   spike-mark:
     glyph: "✱ (U+2731), always {colors.coral}"
     description: "The brand mark, optional. Fades + scales 0.92→1 on a single emphasis beat; never spins."

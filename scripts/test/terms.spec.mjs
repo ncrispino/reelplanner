@@ -24,7 +24,7 @@ import { ROOT } from "../lib/env.mjs";
 import { parseGlossary, rowFor, splitMeaning, termsOf, plainOf } from "../lib/terms.mjs";
 import { findJargon, saysForm } from "../lib/jargon.mjs";
 
-const tmp = mkdtempSync(join(tmpdir(), "rp-terms-spec-")), RP = join(tmp, ".reelplanning");
+const tmp = mkdtempSync(join(tmpdir(), "rp-terms-spec-")), RP = join(tmp, ".reelplanner");
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 1500)}` : ""}`); if (!cond) failed++; };
 const w = (p, s) => { mkdirSync(join(p, ".."), { recursive: true }); writeFileSync(p, s); };
@@ -44,16 +44,16 @@ try {
   w(join(RP, "glossary.md"), "# Glossary\n\n| Term | id (`system.json`) | Meaning | Also called (do not use) |\n|---|---|---|---|\n| The review player | `player` | Where you watch and answer | |\n| A tag | — | A label the agent puts on a choice it made alone | |\n| A streak | — | How many times in a row you accepted calls with the same tag | |\n| A miss | — | Something a review let through that was changed later | |\n" + OTHER);
   w(join(RP, "decisions.json"), JSON.stringify({ decisions: [{ id: "D-056", question: "Where does the plan text go?", chosen: "Beside the video", status: "active" }] }));
   const SYS = join(RP, "system-video");
-  video(SYS, 'title: "The whole system"\nkind: system\nplan_dir: .reelplanning\nterms: review player, call', [{}]);
+  video(SYS, 'title: "The whole system"\nkind: system\nplan_dir: .reelplanner\nterms: review player, call', [{}]);
   w(join(SYS, "plan-map.json"), JSON.stringify({ title: "The whole system", totalSeconds: 480, watchedSeconds: 476, chapters: [] }));
   const ALPHA = join(RP, "plans", "2026-01-01-alpha");
   w(join(ALPHA, "plan.md"), "# Alpha\n\n### Step 1 — one\n\nText.\n");
   w(join(ALPHA, "walkthrough.md"), "# Walkthrough\n\n| id | step | chose | instead of | why | check |\n|---|---|---|---|---|---|\n| A3 | 1 | Accept and Flag sit in the band [visible] | a sheet | fewer clicks | `player` |\n");
   const AW = join(ALPHA, "walkthrough-video");
-  video(AW, 'title: "Alpha, as built"\nplan_dir: .reelplanning/plans/2026-01-01-alpha\nterms: miss', [{}]);
+  video(AW, 'title: "Alpha, as built"\nplan_dir: .reelplanner/plans/2026-01-01-alpha\nterms: miss', [{}]);
   w(join(AW, "plan-map.json"), JSON.stringify({ title: "Alpha, as built", totalSeconds: 200, watchedSeconds: 190, chapters: [{ id: "ch1", title: "Calls", start: 0, end: 90, linearSeconds: 90, watchedSeconds: 88 }, { id: "ch2", title: "Misses and streaks", start: 90, end: 200, linearSeconds: 110, watchedSeconds: 62.4 }] }));
   const AV = join(ALPHA, "video");
-  video(AV, 'title: "Alpha"\nplan_dir: .reelplanning/plans/2026-01-01-alpha', [{ meta: { voiceover: '"The review player shows it."' } }]);
+  video(AV, 'title: "Alpha"\nplan_dir: .reelplanner/plans/2026-01-01-alpha', [{ meta: { voiceover: '"The review player shows it."' } }]);
 
   // the video under test: a later plan's video, leaning on part 2 of alpha's walkthrough
   const BETA = join(RP, "plans", "2026-01-02-beta"), BV = join(BETA, "video");
@@ -63,7 +63,7 @@ try {
     { meta: { voiceover: '"A streak is how many times in a row you accepted that tag."', defines: "streak", plan_step: 1 } },
     { meta: { quiz: "k1", plan_step: 1, question: "What did choice A3 put in the band?", option_a: "Accept and Flag", option_b: "Nothing", answer: "a", explain: "the choice put Accept and Flag there", explained_at: "1", walk_me_through: "The band sits under the frame. A3 moved Accept and Flag into it, so a call is answered where the video is." } },
   ];
-  video(BV, 'title: "Beta"\nplan_dir: .reelplanning/plans/2026-01-02-beta\nbefore: 2026-01-01-alpha--walkthrough#part 2 | what a miss and a streak are\nterms: streak', betaFrames);
+  video(BV, 'title: "Beta"\nplan_dir: .reelplanner/plans/2026-01-02-beta\nbefore: 2026-01-01-alpha--walkthrough#part 2 | what a miss and a streak are\nterms: streak', betaFrames);
   let r = run("plan-map.mjs", [BV]);
   const m = map(BV), pre = m.prerequisites || [];
   ok("plan-map: a `before:` line names its video, its part, what it gives, its title and that part's length", r.code === 0 && pre.length === 1 && pre[0].video === "2026-01-01-alpha--walkthrough" && pre[0].part === 2 && pre[0].partTitle === "Misses and streaks" && pre[0].title === "Alpha, as built" && pre[0].gives === "what a miss and a streak are" && pre[0].seconds === 62.4 && !pre[0].default, JSON.stringify(pre) + r.out);
@@ -120,7 +120,7 @@ try {
   ok("plan-map: a row's on-screen word is its `display`, and a form it is said by, after the term's (the key stays)", tag?.display === "label" && JSON.stringify(tag.forms) === '["tag","label"]' && !("display" in g2.find((g) => g.term === "The review player")) && g2.find((g) => g.term === "A streak").forms.includes("accepted in a row"), JSON.stringify(g2));
   ok("plan-map: each row says where it is explained (`definedIn`): no system-video beat yet, so the first video that defines it", tag?.definedIn?.video === "2026-01-02-beta" && tag.definedIn.frame === 1 && !g2.find((g) => g.term === "A miss").definedIn, JSON.stringify(tag));
   // the system video: every row needs a beat that defines it; a row without one fails its build, by name
-  const sysFrames = (defs, said) => { video(SYS, 'title: "The whole system"\nkind: system\nplan_dir: .reelplanning\nterms: review player', [{ meta: { voiceover: `"${said}"`, defines: defs, chapter_start: "The words" } }]); };
+  const sysFrames = (defs, said) => { video(SYS, 'title: "The whole system"\nkind: system\nplan_dir: .reelplanner\nterms: review player', [{ meta: { voiceover: `"${said}"`, defines: defs, chapter_start: "The words" } }]); };
   sysFrames("review player, tag, miss", "The review player plays it. A label says why you might look at a choice. A late fix is a review's miss.");
   c = run("check-terms.mjs", [SYS]);
   ok("check-terms: the system video fails while a glossary row has no beat, naming it (\"streak has no beat\")", c.code === 1 && /✗ the system video: streak has no beat .*`- defines: streak`, in its plain word \("accepted in a row"\)/.test(c.out) && !/review player has no beat|tag has no beat|miss has no beat/.test(c.out), c.out);
@@ -142,7 +142,7 @@ try {
   // quick checks: a walk-through each (the build fails without one); an id in `explain` and an answer the
   // beat never shows are warnings
   const qFrames = (q) => [{ screen: "Accept · Flag", meta: { voiceover: '"A tag, a label the agent puts on a choice it made alone, stops the video, even after a miss."', defines: "tag", plan_step: 1 } }, { meta: { voiceover: '"A streak is how many times in a row you accepted that tag."', defines: "streak", plan_step: 1 } }, { meta: { quiz: "k1", plan_step: 1, question: "What did the choice put in the band?", option_a: "Accept and Flag", option_b: "Nothing", answer: "a", ...q } }];
-  const fmB = 'title: "Beta"\nplan_dir: .reelplanning/plans/2026-01-02-beta\nbefore: 2026-01-01-alpha--walkthrough#chapter 2 | what a miss and a streak are\nterms: streak';
+  const fmB = 'title: "Beta"\nplan_dir: .reelplanner/plans/2026-01-02-beta\nbefore: 2026-01-01-alpha--walkthrough#chapter 2 | what a miss and a streak are\nterms: streak';
   video(BV, fmB, qFrames({ explain: "D-056 says so", explained_at: "1" }));
   rmSync(join(BV, "SCRIPT.md"), { force: true });
   c = run("check-terms.mjs", [BV]);
@@ -197,7 +197,7 @@ try {
   ok("plan-map: `before: <video>#chapter N` reads as part N", map(BV).prerequisites[0]?.part === 2 && map(BV).prerequisites[0]?.partTitle === "Misses and streaks", JSON.stringify(map(BV).prerequisites));
 
   // better-visuals step 2: a real thing's own text (data-artifact) is glossed in place; lines split on blocks only
-  const fmS = 'title: "Beta"\nplan_dir: .reelplanning/plans/2026-01-02-beta\nbefore: none\nterms: streak\nterms_check: strict';
+  const fmS = 'title: "Beta"\nplan_dir: .reelplanner/plans/2026-01-02-beta\nbefore: none\nterms: streak\nterms_check: strict';
   const artFrames = (screen) => [{ screen, meta: { voiceover: '"A tag, a label the agent puts on a choice it made alone, stops the video, even after a late fix, a miss."', defines: "tag, miss", plan_step: 1 } }, { meta: { voiceover: '"A streak is how many times in a row you accepted that tag."', defines: "streak", plan_step: 1 } }];
   video(BV, fmS, artFrames('<div data-artifact="walkthrough.md"><span>the streak</span> <span>D-110</span></div>'));
   c = run("check-terms.mjs", [BV]);
@@ -226,7 +226,7 @@ try {
   const code = findJargon("Press Enter, then run plan.md check", { segs: [{ text: "Press ", code: false }, { text: "Enter", code: true }, { text: ", then ", code: false }, { text: "data-detail", code: true }, { text: " and ", code: false }, { text: "plan.md", code: true }, { text: " and ", code: false }, { text: "NextAcceptFlag", code: false }] }).map((x) => x.key);
   ok("findJargon: in code on screen, a file by its name and one word that reads as code; not a key's name, nor plain words run together", code.includes("data-detail") && code.includes("plan.md") && !code.includes("enter") && !code.some((k) => /nextaccept/.test(k)), JSON.stringify(code));
   ok("findJargon: a labelled word, and its file, are not found; nor a word marked plain", !J("The agent opens walkthrough.md on a branch", { labels: ["agent", "walkthrough"], plain: ["branch"] }).length);
-  ok("findJargon: \"a brief look\" is the adjective; \"the video's brief\" is the word", !J("Take a brief look.").length && J("The video's brief says so.").includes("brief:a reelplanning word"));
+  ok("findJargon: \"a brief look\" is the adjective; \"the video's brief\" is the word", !J("Take a brief look.").length && J("The video's brief says so.").includes("brief:a reelplanner word"));
 
   const GAMMA = join(RP, "plans", "2026-01-03-gamma"), GV = join(GAMMA, "video");
   w(join(GAMMA, "plan.md"), "# Gamma\n\n### Step 1 — one\n\nText.\n");
@@ -234,7 +234,7 @@ try {
     { screen, meta: { voiceover: '"A contributor opens a pull request from a branch, and the maintainer merges it when CI passes."', plan_step: 1 } },
     { screen: '<pre>git merge --squash feature</pre><div data-artifact="log">rebase onto main</div>', meta: { voiceover: '"The branch is merged. Then it is merged again, with a flag."', plan_step: 1 } },
   ];
-  const fmG = (extra = "") => `title: "Gamma"\nplan_dir: .reelplanning/plans/2026-01-03-gamma\nbefore: none\nterms_check: strict${extra}`;
+  const fmG = (extra = "") => `title: "Gamma"\nplan_dir: .reelplanner/plans/2026-01-03-gamma\nbefore: none\nterms_check: strict${extra}`;
   video(GV, fmG(), gammaFrames());
   c = run("check-terms.mjs", [GV]);
   ok("check-terms: a word said with no meaning is one line a word, where first said and how often, with where to add one (D-216)", /✗ frame 1 says "branch" \(2×\) with no meaning: add a row to the glossary, or `terms: branch = …` in the storyboard/.test(c.out) && /✗ frame 1 says "pull request" with no meaning/.test(c.out) && /✗ frame 1 says "CI" with no meaning/.test(c.out) && /✗ frame 1 says "merge" \(3×\)/.test(c.out), c.out);
