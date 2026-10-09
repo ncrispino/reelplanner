@@ -18,7 +18,8 @@
 //                yet), then the lines setup prints
 //
 // Test seams: REELPLANNING_HYPERFRAMES_BIN (scripts/lib/tts-local.mjs) stands in for the HyperFrames CLI;
-// REELPLANNING_LOCAL_SPEED_TIMEOUT_S sets the time limit (default 30).
+// REELPLANNING_LOCAL_SPEED_TIMEOUT_S sets the time limit (default 30); REELPLANNING_SYSTEM_ROOT is where the fixed
+// system places are looked under (Homebrew's whisper-cli; / by default), an empty folder for a machine with none.
 import { existsSync, mkdtempSync, rmSync, statSync, accessSync, constants } from "node:fs";
 import { join, resolve, delimiter } from "node:path";
 import { tmpdir, homedir } from "node:os";
@@ -47,7 +48,7 @@ export function whisperPath(env = process.env) {
   for (const d of String(env.PATH || "").split(delimiter)) if (d && isExec(join(d, "whisper-cli"))) return join(d, "whisper-cli");
   if (env.HYPERFRAMES_WHISPER_PATH && isExec(env.HYPERFRAMES_WHISPER_PATH)) return env.HYPERFRAMES_WHISPER_PATH;
   const w = join(homedir(), ".cache", "hyperframes", "whisper", "whisper.cpp");
-  return [join(w, "build", "bin", "whisper-cli"), join(w, "build", "whisper-cli"), "/opt/homebrew/bin/whisper-cli"].find(isExec) || null;
+  return [join(w, "build", "bin", "whisper-cli"), join(w, "build", "whisper-cli"), `${env.REELPLANNING_SYSTEM_ROOT || ""}/opt/homebrew/bin/whisper-cli`].find(isExec) || null;
 }
 /** What local narration needs that is not here: "Kokoro TTS" (kokoro-onnx in HyperFrames' python), "whisper.cpp". */
 export function localToolsMissing(env = process.env, { kokoro = true, whisper = true } = {}) {

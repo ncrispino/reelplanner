@@ -13,17 +13,20 @@
 //  · on its own, the page keeps notes the same way and exports them as the review page does; a phone's selection opens
 //    the box docked at the foot, clear of the selection and its menu, and above the small player's bar even with the
 //    page short of the guide (Save's bottom at or above the bar's top); the keyboard: Shift let go of, and N.
-// Runs on the plan guide's walkthrough, bundled into a scratch folder (its assets/ are build output: it plays silent).
+// Runs on the plan guide's walkthrough, bundled into a scratch folder from a scratch repo with the history its guide reads
+// (plan-guide-repo.mjs: the Built side's diffs); its assets/ are build output: it plays silent.
 // RP_SHOTS=<dir> also saves screenshots there.
 // usage: node packages/player/test/guide-notes.spec.mjs
 import { chromium } from "playwright-core"; import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, mkdirSync, readFileSync, writeFileSync, readdirSync, copyFileSync } from "node:fs"; import { join } from "node:path"; import { tmpdir } from "node:os";
 import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
 import { until, loaded, frames } from "./wait.mjs";
+import { planGuideRepo } from "./plan-guide-repo.mjs";
 
 const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough", PLAN = ".reelplanning/plans/2026-09-28-plan-guide";
 const T = mkdtempSync(join(tmpdir(), "rp-guide-notes-")), OUT = join(T, "review");
-execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(ROOT, VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
+const REPO = planGuideRepo(join(T, "repo"));
+execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(REPO, VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
 const port = testPort(8897);
 const srv = staticServer(port, { dir: OUT });
 await serverUp(port, { child: srv });

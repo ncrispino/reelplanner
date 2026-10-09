@@ -26,7 +26,7 @@ file split in two, a default nobody sees). No video for these: the maintainer re
 ## Before merging (the maintainer)
 
 - [ ] The other choices above are accepted
-- [ ] The fast tests pass, and the full suite passed on the last commit (`ready-to-merge`)
+- [ ] The tests passed on the PR's last commit
 - [ ] Over the line: a walkthrough a maintainer accepted, or `no-video`
 - [ ] `spec.md`, `system.json` and `glossary.md` say what changed
 - [ ] `reel pr-check --merge` passes; then `reel pr-check --tidy`, and Squash and merge

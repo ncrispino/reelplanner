@@ -50,7 +50,7 @@ import { resolve, join, basename, dirname, sep, relative, posix } from "node:pat
 import { execFileSync, spawnSync, execFile } from "node:child_process";
 import { cpus } from "node:os";
 import { createHash } from "node:crypto";
-import { ROOT, depFile, GSAP, repoRoot, rpInitialized } from "./lib/env.mjs";
+import { ROOT, depFile, GSAP, repoRoot, rpInitialized, realPath } from "./lib/env.mjs";
 import { rpDirFor, videoDirFor } from "./lib/terms.mjs";
 import { planStage, openQuestions, lastChanged, listReviews, verdictOf } from "./lib/reviews.mjs";
 import { guidePage, pointFaces } from "./lib/guide-page.mjs";
@@ -107,7 +107,7 @@ function slugFor(src, taken) {
 // its path. Never the enclosing repo's remote for a folder inside another repo.
 function repoIdOf(dir) {
   const root = resolve(dir), git = (...a) => { try { return execFileSync("git", ["-C", root, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
-  const top = git("rev-parse", "--show-toplevel"), remote = top && resolve(top) === root ? git("remote", "get-url", "origin") : "";
+  const top = git("rev-parse", "--show-toplevel"), remote = top && realPath(top) === realPath(root) ? git("remote", "get-url", "origin") : "";
   const at = remote ? remote.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").replace(/^[^@/]*@/, "").replace(/^([^/:]+):(?!\d+\/)/, "$1/").replace(/\.git$/i, "").replace(/\/+$/, "").toLowerCase() : root;
   const name = (remote ? at.split("/").pop() : basename(root)).toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "repo";
   return `${name}-${createHash("sha256").update(at).digest("hex").slice(0, 8)}`;

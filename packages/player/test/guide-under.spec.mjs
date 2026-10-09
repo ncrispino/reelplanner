@@ -6,20 +6,27 @@
 // "Watch this moment" in the guide seeks this player and plays, never leaving the page; a marked thing on the frame
 // (data-detail) scrolls the page to its part of the guide, pausing the video, the part lit a moment; words selected in
 // the guide and kept as a note go into the same review as the video's marks. Also: a phone's slim bar, and reduced motion.
-// Runs on the plan guide's walkthrough (its frames mark their parts of the guide), bundled into a scratch folder; its
-// guide is built there if it is not (bundle-player). Its assets/ (the voice, fonts, screenshots) are build output, not
-// committed: the video plays silent.
+// Runs on the plan guide's walkthrough (its frames mark their parts of the guide), bundled into a scratch folder from a
+// scratch repo with the history its guide reads (plan-guide-repo.mjs); its guide is built there (bundle-player). Its
+// assets/ (the voice, fonts, screenshots) are build output, not committed: the video plays silent.
 // usage: node packages/player/test/guide-under.spec.mjs
 import { chromium } from "playwright-core"; import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs"; import { join } from "node:path"; import { tmpdir } from "node:os";
 import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
 import { until, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } from "./wait.mjs";
+import { planGuideRepo } from "./plan-guide-repo.mjs";
+import { webpEncoder } from "../../../scripts/lib/guide/pictures.mjs";
 
 const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough";
 const T = mkdtempSync(join(tmpdir(), "rp-guide-under-")), OUT = join(T, "review");
 // (and the plan's own video, whose plan.md changed after its plan review: its guide marks what changed)
 const PLAN_VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/video", PLAN_SLUG = "2026-09-28-plan-guide";
-execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(ROOT, VIDEO), join(ROOT, PLAN_VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
+const REPO = planGuideRepo(join(T, "repo"));
+execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(REPO, VIDEO), join(REPO, PLAN_VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
+// the guide's pictures need ffmpeg and something that makes WebP (lib/guide/pictures.mjs); the tests need neither
+// (.github/CONTRIBUTING.md), so without them the checks of a picture say so and are left out
+let ffmpeg = true; try { execFileSync("ffmpeg", ["-version"], { stdio: "ignore" }); } catch { ffmpeg = false; }
+const PICS = ffmpeg && webpEncoder(), NO_PICS = ffmpeg ? "nothing here makes WebP (ffmpeg without libwebp, and no cwebp)" : "ffmpeg is not installed";
 const port = testPort(8893);
 const srv = staticServer(port, { dir: OUT });
 await serverUp(port, { child: srv });
@@ -91,7 +98,8 @@ try {
   check("…and it keeps playing", await p.evaluate(() => !document.querySelector("#rp").player.paused));
   // paused, the small player shows its chapter settled (the guide's own picture of a scene of it, round 2's finding 11);
   // playing, the live frame
-  {
+  if (!PICS) console.log(`· the small player's settled still not checked: ${NO_PICS}`);
+  else {
     await until(p, () => document.querySelector("#rp-guide").ready);
     const want = await p.evaluate(() => { const el = document.querySelector("#rp"), c = el.chapterAt(el.player.currentTime); return el._under.stillFor(c.start, c.end, el.player.currentTime, el.theme === "dark"); });
     await p.evaluate(() => document.querySelector("#rp").player.pause());
@@ -208,7 +216,8 @@ try {
   await until(p, () => document.querySelector("#rp-guide")._scrollOn === true);
   await p.evaluate(() => document.querySelector("#rp").player.play()); await movedOn(p, await now(p));
   const zoomId = await gf.evaluate(() => { const a = [...document.querySelectorAll("a.zoom")].find((x) => x.querySelector("img")); if (!a) return null; a.id ||= "rp-test-zoom"; a.scrollIntoView({ block: "center" }); return a.id; });
-  if (!zoomId) check("a picture in the guide to open full size", false);
+  if (!PICS) { console.log(`· a picture opened full size in the guide not checked: ${NO_PICS}`); await p.evaluate(() => document.querySelector("#rp").player.pause()); }
+  else if (!zoomId) check("a picture in the guide to open full size", false);
   else {
     await gf.evaluate((id) => document.getElementById(id).click(), zoomId);
     await until(p, () => document.querySelector("#rp").hasAttribute("overlay"));
@@ -262,6 +271,11 @@ try {
     await gfr.waitForFunction((id) => { const e = document.getElementById(id); return e && Math.abs(e.getBoundingClientRect().top) < innerHeight * 0.6; }, d.name, { timeout: 20000 }).catch(() => null);
     const got = await p.evaluate(() => ({ panel: !document.querySelector("#rp").shadowRoot.querySelector(".dpanel").hidden, log: document.querySelector("#rp").detailsLog().at(-1) }));
     check("a part asked for before the guide is attached waits for it, then is read in the guide under the video (no part page loaded)", d.held && !got.panel && !parts.length && got.log?.name === d.name && got.log?.from === "chip", JSON.stringify({ ...d, ...got, parts }));
+    // measured once the small player has slid in and the guide has taken its room beside it, as the first look does: read
+    // while the page was still scrolling to the part (a loaded machine), the small player was not there yet (mini: 0)
+    await settledMini(p, true);
+    await gfr.waitForFunction(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rp-embed-right")) > 0, null, { timeout: 10000 }).catch(() => null);
+    await laidOut(p);
     const cl = await clearOf(p, gfr);
     check("at 1280 px too, the guide's column keeps clear of the small player", cl.col <= cl.mini - 16, JSON.stringify(cl));
     check("no page errors", !errs.length, errs.slice(0, 3).join(" | "));

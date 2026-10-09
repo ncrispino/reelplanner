@@ -41,20 +41,21 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { ROOT, launchOpts } from "../lib/env.mjs";
+import { ROOT, launchOpts, chromiumEnv } from "../lib/env.mjs";
 import { pathToFileURL } from "node:url";
 import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample } from "../lib/plan-md.mjs";
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
 import { paragraphsOf, checkGuide } from "../lib/guide/check.mjs";
 import { canLine, youPhrase, canOf, thinOf, wroteOf, whereRan, choicesOf, choiceCounts, firstSentence } from "../lib/guide/reader.mjs";
 import { guideTarget, buildModel, supersedesLine } from "../lib/guide/model.mjs";
+import { webpEncoder } from "../lib/guide/pictures.mjs";
 import { parseDiagram, drawDiagram, stepsDiagram, importsAmong, wrap, balance, textWidth, diagramGeometry, diagramBlocks, segHitsBox } from "../lib/guide/diagram.mjs";
 import { forGuideOf, parseExample, parseChunk, withoutForGuide, scratchOf, sinceOf, plainOf, inScratch } from "../lib/guide/depth.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-guide-"));
 const home = join(tmp, "home"); mkdirSync(home, { recursive: true });
 const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
-const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning") };
+const env = { ...process.env, HOME: home, REELPLANNING_HOME: join(home, ".reelplanning"), ...chromiumEnv() };   // (Playwright looks for its browser under HOME)
 const git = (...a) => execFileSync("git", a, { cwd: repo, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: repo, env, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 const reel = (...a) => run("reel.mjs", ...a);
@@ -495,7 +496,8 @@ try {
     // the widths it is drawn at; on a 2× screen the file it shows has at least twice the pixels it is drawn across, on a
     // desktop and a phone; clicked, it opens whole in the lightbox, which Esc and a click close
     let ffmpeg = true; try { execFileSync("ffmpeg", ["-version"], { stdio: "ignore" }); } catch { ffmpeg = false; }
-    if (ffmpeg) {
+    const webp = ffmpeg && webpEncoder();
+    if (webp) {
       mkdirSync(join(vd, "snapshots"), { recursive: true });
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=s=3840x2160", "-frames:v", "1", join(vd, "snapshots", "frame-01-at-16s.png")]);
       const mp = json(join(vd, "plan-map.json")); mp.frames.find((f) => f.index === 2).thumb = "snapshots/frame-01-at-16s.png"; writeFileSync(join(vd, "plan-map.json"), JSON.stringify(mp));
@@ -522,7 +524,7 @@ try {
           await pg.close();
         }
       } finally { await b.close(); }
-    } else console.log("· guide pictures not checked: ffmpeg is not installed");
+    } else console.log(`· guide pictures not checked: ${ffmpeg ? "nothing here makes WebP (ffmpeg without libwebp, and no cwebp: brew install webp)" : "ffmpeg is not installed"}`);
     // a step's own picture (round 1, D4): cropped to what is on the frame, 48 px round it (96 at 2×), then no taller
     // than 3:2 and no wider than 12:5, kept inside the frame
     { const { cropOf } = await import("../lib/guide/pictures.mjs"), F = { W: 3840, H: 2160 };

@@ -15,7 +15,7 @@
 //     `--local-voice` installs it anyway; and `setup --dry-run` each way (no Kokoro, whisper or speed check listed when
 //     hosted; everything else still there)
 import { spawn } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync, readdirSync, symlinkSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
@@ -56,7 +56,9 @@ else process.exit(2);
 const PY = exe(join(BIN, "python-with-kokoro"), "#!/bin/sh\nexit 0\n");
 const WHISPER = exe(join(BIN, "whisper-cli"), "#!/bin/sh\nexit 0\n");
 const baseEnv = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(REELPLANNING_|HYPERFRAMES_|HEYGEN|HF_MEDIA)/.test(k) && !/_API_KEY$/.test(k)));
-const ENV = { ...baseEnv, HOME, HYPERFRAMES_PYTHON: PY, HYPERFRAMES_WHISPER_PATH: WHISPER, REELPLANNING_HYPERFRAMES_BIN: HF, FAKE_HF_LOG: LOG, FAKE_HF_MS: "30" };
+// the fixed system places (Homebrew's whisper-cli, a system Chrome) under an empty folder: what this machine has
+// installed there is never found
+const ENV = { ...baseEnv, HOME, HYPERFRAMES_PYTHON: PY, HYPERFRAMES_WHISPER_PATH: WHISPER, REELPLANNING_HYPERFRAMES_BIN: HF, REELPLANNING_SYSTEM_ROOT: join(tmp, "no-system"), FAKE_HF_LOG: LOG, FAKE_HF_MS: "30" };
 const calls = () => (existsSync(LOG) ? readFileSync(LOG, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []);
 const runIt = (args, env = {}, cwd = REPO) => new Promise((done) => {
   rmSync(LOG, { force: true });
@@ -196,7 +198,13 @@ try {
   ok("setup --hosted-voice --local-voice: a usage error (exit 2), nothing run", u4.code === 2 && /pick one/.test(u4.out), u4.out);
 
   // ── setup --dry-run downloads no Chrome: with none anywhere it says it would; one in HyperFrames' cache is found ──
-  const noChrome = home("home-no-chrome", false), sysPath = ["/usr/bin", "/bin", dirname(process.execPath)].join(":");
+  // PATH: the system's commands, each linked into a folder of its own, but for a Chrome or Chromium (a CI runner has
+  // /usr/bin/google-chrome)
+  const sysBin = join(tmp, "path-no-chrome");
+  mkdirSync(sysBin);
+  const linked = new Set();
+  for (const d of ["/usr/bin", "/bin"]) for (const n of readdirSync(d)) if (!/chrom/i.test(n) && !linked.has(n)) { linked.add(n); symlinkSync(join(d, n), join(sysBin, n)); }
+  const noChrome = home("home-no-chrome", false), sysPath = [sysBin, dirname(process.execPath)].join(":");
   const c1 = await runIt(["bash", join(ROOT, "scripts", "setup.sh"), "--dry-run"], { HOME: noChrome, PATH: sysPath, HYPERFRAMES_BROWSER_PATH: null, PRODUCER_HEADLESS_SHELL_PATH: null, HYPERFRAMES_PYTHON: NOPY });
   ok("setup --dry-run, no Chrome anywhere: says it would download it, and downloads nothing (no cache folder made)",
     /^· would download Chrome headless \(about 260 MB\): hyperframes browser ensure$/m.test(c1.out) && !existsSync(join(noChrome, ".cache", "hyperframes", "chrome")) && !existsSync(join(noChrome, ".cache", "puppeteer")), c1.out);

@@ -299,7 +299,8 @@ done_arm() {
   marked done || { mark done; add_note "the arm is over: arm.sh done (E1, E2, the transcript step)"; }
 
   others=$(for a in text html ours; do [ "$a" = "$arm" ] || printf '%s\n' "$a"; done | paste -sd ' ' - | sed 's/ / and /')
-  prompt=$(cat <<EOF
+  # into the file first, as publish's prompt: a here-document inside $( ) does not parse on macOS's /bin/sh
+  cat > "$A/done-prompt.txt" <<EOF
 You are finishing the $arm arm of reelplanning's Bob Dylan case study. You are a helper with the owner's own Claude Code, not the agent under test. You are in the case-study worktree ($WT), on the branch $BR. The steps are E3 to E6 of eval/case-studies/$STUDY/RUNBOOK.md, "When the arm is over": read that section and "The arms" for the $arm arm first. arm.sh has done E1 (the site's last commit), E2 (the site kept in arms/$arm/site/ and site.bundle, keep --check passed) and E3's transcript step (arms/$arm/provenance.json).
 
 1. Read eval/case-studies/$STUDY/arms/$arm/notes.md: my notes, a line each with its time. Ask me in one message for what they lack: each of the seven stages' start and end (say which ones the transcript's timestamps would give, and ask me to confirm), my own minutes at each stage, what I raised at each stage and how, and what /cost showed. Wait for my answer, and add it to notes.md as lines of their own.
@@ -314,8 +315,7 @@ Rules:
 - Commit and push only to $BR, never with force. Never touch $BASE: no push, merge, rebase or checkout of it, and no change in the checkout at $main.
 - If a step fails, stop and tell me what failed and what it printed; don't work around it.
 EOF
-)
-  printf '%s\n' "$prompt" > "$A/done-prompt.txt"
+  prompt=$(cat "$A/done-prompt.txt")
   has claude || die "Claude Code is not installed; the prompt for the rest is in $A/done-prompt.txt"
   # your own Claude Code, not the arm's: drop the arm's environment if this terminal has it
   case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNING_HOME REELPLANNING_SKILLS_DIR REELPLANNING_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
@@ -415,7 +415,9 @@ publish() {
   else say "  - ours's site is not on this machine ($O): its review pages are skipped; run publish again where ours ran"; fi
   mkdir -p "$PUB/docs" && : > "$PUB/docs/.nojekyll" || die "cannot write $PUB/docs"
 
-  prompt=$(cat <<EOF
+  # into the file first, never `prompt=$(cat <<EOF …)`: macOS's /bin/sh (bash 3.2) reads a here-document inside $( )
+  # for quotes, and this one's apostrophes (site's, Vite's) leave the rest of the script unparsed
+  cat > "$ARMS_HOME/publish-prompt.txt" <<EOF
 You are publishing reelplanning's Bob Dylan case study. You are a helper with the owner's own Claude Code. You are in $PUB, a clone of $PUB_REPO, whose GitHub Pages serves main's docs/ folder. arm.sh has copied the study into $STUDY/ (as committed on $BR of the reelplanning repo) and packed ours's review pages into docs/$PUB_SLUG/:${pages:- none}.
 
 1. Each arm's finished site into docs/$PUB_SLUG/<arm>/ (text, html, ours; skip an arm with no $STUDY/arms/<arm>/site/ and say so): clone $STUDY/arms/<arm>/site.bundle into a temp folder, build it as $STUDY/data/sites.json's "run" for that arm says, and copy only the static output (built files, or the site's own files when it has no build) into docs/$PUB_SLUG/<arm>/. It must work under that path: fix absolute asset paths with the build tool's base-path option (e.g. Vite's --base), never by editing the site's source. Open each built copy in a browser at 390 x 844 and 1440 x 900 from a local static server rooted at docs/, and check the first screens load with no console errors. Delete the temp folders.
@@ -425,8 +427,7 @@ You are publishing reelplanning's Bob Dylan case study. You are a helper with th
 
 Rules: change only $STUDY/'s case-study.html links (if any), docs/ and README.md; never edit the sites' source or the study's data. No secrets, keys, emails or transcripts in what you commit: check git diff --cached for them before the commit. If a step fails, stop and tell me what failed and what it printed.
 EOF
-)
-  printf '%s\n' "$prompt" > "$ARMS_HOME/publish-prompt.txt"
+  prompt=$(cat "$ARMS_HOME/publish-prompt.txt")
   has claude || die "Claude Code is not installed; the prompt for the rest is in $ARMS_HOME/publish-prompt.txt"
   case ${CLAUDE_CONFIG_DIR:-} in "$ARMS_HOME"/*) unset CLAUDE_CONFIG_DIR REELPLANNING_HOME REELPLANNING_SKILLS_DIR REELPLANNING_SKILLS_AGENTS DISABLE_AUTOUPDATER ;; esac
   say ""

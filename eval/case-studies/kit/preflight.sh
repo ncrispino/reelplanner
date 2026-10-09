@@ -8,14 +8,17 @@
 bad=0
 ok()  { echo "✓ $*"; }
 no()  { echo "✗ $*"; bad=1; }
-tilde() { echo "$1" | sed "s|^$HOME|~|"; }
-here=$(pwd); show=$(tilde "$here")
+# the folder by where it really is (what find / lists), and HOME either way: it can name the same place through a
+# link (macOS's /var/… is /private/var/…), so ~ and ~/.claude are found by both spellings
+rhome=$(cd "$HOME" 2>/dev/null && pwd -P || echo "$HOME")
+tilde() { echo "$1" | sed -e "s|^$rhome|~|" -e "s|^$HOME|~|"; }
+here=$(pwd -P); show=$(tilde "$here")
 cc=${CLAUDE_CONFIG_DIR:-$HOME/.claude}; rp=${REELPLANNING_HOME:-$HOME/.reelplanning}
 n=$(( $(ls -A | grep -vx '.git' | wc -l) ))
 [ "$n" -eq 0 ] && ok "folder $show: empty (git init only)" || no "folder $show: $n file(s) already in it"
 up=""; d=$(dirname "$here")
 while :; do
-  for f in CLAUDE.md AGENTS.md .claude; do [ -e "$d/$f" ] && [ "$d/$f" != "$HOME/.claude" ] && up="$up ${d%/}/$f"; done
+  for f in CLAUDE.md AGENTS.md .claude; do [ -e "$d/$f" ] && [ "$d/$f" != "$HOME/.claude" ] && [ "$d/$f" != "$rhome/.claude" ] && up="$up ${d%/}/$f"; done
   [ "$d" = / ] && break; d=$(dirname "$d")
 done
 [ -z "$up" ] && ok "no CLAUDE.md or AGENTS.md above it" || no "above it:$up"

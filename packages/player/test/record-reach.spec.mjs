@@ -88,7 +88,11 @@ try {
     check(`${tag}: …pulled up over the guide, it covers the small player and lists every comment; aria-expanded says so`, s.mini && s.pulled && cover && s.expanded === "true" && s.rows.length === 5, JSON.stringify({ cover, ...s }));
     // ---- a comment's time: to it on the video, the video back in its place
     await R(p, () => document.querySelector("#rp").shadowRoot.querySelector('.marks .list [data-ann-go="c3"]').click());
-    await until(p, () => { const el = document.querySelector("#rp"); return !el._mini && !el.shadowRoot.querySelector(".wrap").classList.contains("pulled") && Math.abs(el.player.currentTime - 160) < 0.2 && el.player.paused; }, null, 15000);
+    // (and the page come to rest there: the small player ends as the frame's room comes into view, mid-way through the
+    // smooth scroll back, the picture still growing to its place; a slow machine read it there, half out of the window)
+    await until(p, () => { const el = document.querySelector("#rp"), st = el.shadowRoot.querySelector(".stage").getBoundingClientRect(), w = (window.__rpBack ||= { k: null, n: 0 }), k = `${scrollY} ${Math.round(st.top)} ${Math.round(st.bottom)}`;
+      if (k !== w.k) { w.k = k; w.n = 0; return false; }
+      return ++w.n >= 4 && !el._mini && !el.shadowRoot.querySelector(".wrap").classList.contains("pulled") && Math.abs(el.player.currentTime - 160) < 0.2 && el.player.paused; }, null, 15000);
     const went = await R(p, () => { const el = document.querySelector("#rp"), S = el.shadowRoot, c = S.querySelector(".partcard"), st = S.querySelector(".stage").getBoundingClientRect(); return { mini: !!el._mini, t: el.player.currentTime, paused: el.player.paused, inView: st.top >= -1 && st.bottom <= innerHeight + 1, card: c.classList.contains("on") ? c.textContent : null, status: S.querySelector(".status").textContent }; });
     check(`${tag}: a comment's time goes to it: the record down, the video back in its place, paused at it, the comment named on the frame`, !went.mini && Math.abs(went.t - 160) < 0.2 && went.paused && went.inView && (went.card || "").includes(W3), JSON.stringify(went));
     // ---- a guide comment's place: to it in the guide
