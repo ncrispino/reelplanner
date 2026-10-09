@@ -33,8 +33,12 @@ In Claude Code, the skill can come as a plugin instead of the third line, kept u
 /plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill only: the first two lines are still what install the `reelplanner` command and its tools
-(the skill installs them itself when they are missing, but running them first is quicker).
+The plugin is the skill, plus `/reel`: a pane in Claude Code that shows a plan's video stop by stop (each open choice
+with what the video says there, its still and its options), takes your answers, and sends them as the player's Send
+does. It works in a terminal and in a cloud session, where the review page on localhost is out of reach, and when the
+agent opens a video for review a band above the prompt offers it there ([details](./docs/reference.md#the-reel-pane-in-claude-code)).
+The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
+when they are missing, but running them first is quicker).
 
 The narration needs a voice. Choose one before you run `reelplanner setup`:
 

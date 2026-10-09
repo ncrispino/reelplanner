@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **`/reel`: the video's review in a Claude Code pane.** The Claude Code plugin now carries a hooks module beside the
+  skill (`skills/plan-to-video/hooks/`). `/reel` lists the plans with a video; a plan's video is shown stop by stop
+  (each question with its narration, its still and its options, or each call of a walkthrough), the answers are sent
+  as the player's Send sends them (a row in `.reelplanner/inbox/`, claimed by a waiting session or filed by this one
+  with `reel-intake`), and **Watch** opens the player: the local page from a terminal, an Artifact in a cloud session,
+  where localhost is out of reach. When the agent opens a video for review, a band above the prompt offers it. The
+  marketplace entry names the pane's state contract (`types`); `plugin.spec` validates the plugin as installed and
+  runs its tests (`scripts/test/plugin/`) when `claude` is on PATH.
 - **The system video says reelplanner,** in its narration and on its frames, and its install is shot again from the
   public repo on a fresh Ubuntu machine (`npm i -g github:ncrispino/reelplanner`, a first `setup`, the skill, `reel
   init`); the README's GIF is its opening, made again. The voice says the name as "reel planner": Kokoro read

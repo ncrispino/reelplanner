@@ -45,7 +45,7 @@ import { ROOT } from "../lib/env.mjs";
 const S = (n) => `scripts/test/${n}.spec.mjs`, P = (n) => `packages/player/test/${n}.spec.mjs`;
 // Every script spec: quick, no browser (about a minute and a quarter one after another).
 const SCRIPT = ["version", "package", "case-study", "numerals", "hyperframes-skills", "lifecycle", "system-review", "narrate", "narrate-api", "narration-check", "local-speed", "retime", "build",
-  "terms", "names", "loop", "review-data", "reviews", "memory", "details", "bundle-shared", "stage-presence", "visuals", "contributing", "fresh-eyes", "thumbs", "explainer", "guide", "guide-revised", "static-server", "supersedes", "ledger", "init", "review-status", "make-public", "rebuild", "old-names"].map(S);
+  "terms", "names", "loop", "review-data", "reviews", "memory", "details", "bundle-shared", "stage-presence", "visuals", "contributing", "fresh-eyes", "thumbs", "explainer", "guide", "guide-revised", "static-server", "supersedes", "ledger", "init", "review-status", "make-public", "rebuild", "old-names", "plugin"].map(S);
 // The player specs. `FAST` is the core the default run
 // keeps: the player loading and playing, its controls, a decision, a quiz and a call, the band, the size
 // and the zoom, the access rules, answer-on-frame's quicker run (one question of each kind), frame-room's

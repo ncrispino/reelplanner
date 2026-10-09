@@ -324,7 +324,25 @@ rebuild .reelplanner/plans/2026-09-28-videos-that-make-sense/video, version 1 of
 /plugin install reelplanner@reelplanner
 ```
 
-Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. The plugin is the skill's folder alone, `skills/plan-to-video` (about 110 KB in `~/.claude/plugins/cache`: `marketplace.json`'s entry is its manifest). Adding the marketplace clones the repository at depth 1, about 170 MB on disk (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305), as `npx skills add ncrispino/reelplanner` would. The npm package itself is under 1 MB and carries none of them.
+Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. The plugin is the skill's folder alone, `skills/plan-to-video` (about 140 KB in `~/.claude/plugins/cache`: `marketplace.json`'s entry is its manifest, `types` included), and beside `SKILL.md` it carries the hooks module that adds `/reel` (`hooks/`, its state's contract in `types/`). Adding the marketplace clones the repository at depth 1, about 170 MB on disk (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305), as `npx skills add ncrispino/reelplanner` would. The npm package itself is under 1 MB and carries none of them.
+
+### The reel pane in Claude Code
+
+`/reel` opens a pane listing the plans with a built video, newest first, each with its open choices or calls and
+whether it has been reviewed; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one. A plan's video
+is shown stop by stop, read from its `plan-map.json`: the question, what the video says there, the frame's still where
+`snapshots/` has one (drawn in the terminal on kitty or Ghostty, scaled down on the desktop and mobile apps), and each
+option with its why and the recommended one marked. Pick one, choose **Explain this more**, or answer in your own words
+(on surfaces with a text field). A walkthrough video's calls are accepted, flagged, or answered with what to do
+instead. The last stop sums the review up, takes a note for the agent, and sends it, approved or with changes asked.
+
+Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
+`review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and
+act on it. **Watch** opens the player: from a terminal, `reelplanner review --detach` on that video, the page opening in
+your browser; in a cloud session, where that page would be on the container's localhost, it asks Claude to publish the
+player as an Artifact (see [hosted-review.md](./hosted-review.md)) and keeps the link in the pane once published.
+When the agent runs `reelplanner review` on a video, a band above the prompt offers it in the pane, and a cloud session
+opens the pane by itself. The pane comes with the Claude Code plugin; `npx skills add` installs the skill alone.
 
 ## Voice and timing
 
