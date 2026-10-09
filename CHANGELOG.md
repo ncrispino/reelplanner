@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **A fresh-install check** (`.github/workflows/fresh-install.yml`, `scripts/release/fresh-install.sh`): the README's
+  Install run as written in a bare `ubuntu:24.04` container, by a user with sudo, with Node 22 from nvm and with
+  Ubuntu's own older Node, which the CLI must refuse. On a PR that changes the install's path, on each version tag,
+  each week, and by hand; it reports, it does not block a merge. Its first run found that `setup` could not install
+  the local voice on a stock Ubuntu: its `python3` has no pip. `setup` now installs `python3-pip` with apt, as it
+  does ffmpeg, and says how when it cannot. And `setup` read a libwebp ffmpeg as one without (`grep -q` in a pipe
+  under `pipefail`), so on Ubuntu it installed `cwebp` it did not need.
 - **Node 22.20 or later.** HyperFrames needs Node 22 and the `skills` installer 22.20, so `package.json`'s
   engines, `setup`, the curl installer and the docs say 22.20 (they said 18, and on Ubuntu's own Node 18 the
   install failed in `npx skills`). `reelplanning` and `reel` refuse a Node older than 22 before anything runs and

@@ -78,7 +78,9 @@ bring your own, are in "Contributing with reelplanning" below.
 
 **What runs on a PR:** the fast and full suites on every push (`.github/workflows/ci.yml`), and `reel pr-check`
 and `reel audit` on the plan folders the PR adds (`.github/workflows/pr.yml`, which also runs when the PR's text
-or labels change). A PR merges once all three passed on its last commit and a maintainer approved it. A version
+or labels change). A PR merges once all three passed on its last commit and a maintainer approved it. A PR that changes the
+install's path (the README, `package.json`, `setup`, the skill) also gets a fresh install in a bare Ubuntu
+(`.github/workflows/fresh-install.yml`), which reports but does not block. A version
 tag runs the full suite again before publishing (`docs/releasing.md`).
 
 **The maintainers** here are listed in `.reelplanning/config.json`: `owner`, the repo's owner as the
