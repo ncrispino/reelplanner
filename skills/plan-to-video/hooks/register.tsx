@@ -106,6 +106,8 @@ function frameOf(map: PlanMap, stop: Decision | Call) {
   )
 }
 
+const count = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+
 const clock = (s?: number) =>
   s === undefined ? '' : `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`
 
@@ -361,7 +363,7 @@ async function posterSvg($: EngineInterface, png: string) {
   return svg
 }
 
-async function openPane($: EngineInterface, target?: { slug: string; which?: ReelplannerWhich }) {
+async function openPane($: EngineInterface, target?: { slug: string; which?: ReelplannerWhich }, asked = true) {
   const plans = await scanLibrary($)
   await update($, library, () => plans)
   if (target) {
@@ -371,7 +373,8 @@ async function openPane($: EngineInterface, target?: { slug: string; which?: Ree
   } else {
     await update($, open, () => null)
   }
-  return $.ui.open({ id: PANE, title: 'reelplanner' })
+  // asked (the command, a press): the pane takes the keys, so its hotkeys work at once; Esc gives them back
+  return $.ui.open(asked ? { id: PANE, title: 'reelplanner', focus: true } : { id: PANE, title: 'reelplanner' })
 }
 
 /** `plans/<slug>/video` or `plans/<slug>/walkthrough-video` in a command or an argument. */
@@ -429,7 +432,7 @@ export const register: Register = on => {
           await update($, ready, () => ({ slug: plan.slug, which }))
           const url = JSON.stringify(ran).match(/review page:\s*(http[^\s"\\]+)/)?.[1]
           if (url && !(await isCloud($))) await update($, links, l => ({ ...l, [keyOf(plan.slug, which)]: url }))
-          if (await isCloud($)) await openPane($, { slug: plan.slug, which })
+          if (await isCloud($)) await openPane($, { slug: plan.slug, which }, false)
         }
       }
     } catch {}
@@ -460,7 +463,7 @@ export const register: Register = on => {
     if (!plan) return next(e)
     const { Box, Text, Button } = $.ui.resolve(e)
     const n = isPlanVideo(offer.which) ? plan.choices : plan.calls
-    const what = isPlanVideo(offer.which) ? `${n} open choice${n === 1 ? '' : 's'}` : `${n} call${n === 1 ? '' : 's'} to check`
+    const what = isPlanVideo(offer.which) ? `${count(n ?? 0, 'open choice')}` : `${count(n ?? 0, 'call')} to check`
     return (
       <Box gap={1}>
         <Text>
@@ -468,11 +471,13 @@ export const register: Register = on => {
         </Text>
         <Button
           key="review"
+          hotkey="r"
           label="Review here"
           variant="primary"
           onPress={async () => {
-            await openPane($, offer)
+            // the band goes first: closing it after the pane opened would hand the keys back to the prompt
             await update($, ready, () => null)
+            await openPane($, offer)
           }}
         />
         <Button key="dismiss" label="Later" role="dismiss" onPress={() => update($, ready, () => null)} />
@@ -497,16 +502,16 @@ export const register: Register = on => {
           {plans.length === 0 && (
             <Text dimColor>No plan here has a built video yet (.reelplanner/plans/*/video).</Text>
           )}
-          {plans.slice(0, 30).map(p => (
+          {plans.slice(0, 30).map((p, i) => (
             <Box key={`plan-${p.slug}`} flexDirection="column">
-              <Button key={`open-${p.slug}`} plain onPress={() => update($, open, () => ({ slug: p.slug, which: defaultWhich(p), stop: 0 }))}>
+              <Button key={`open-${p.slug}`} plain hotkey={i < 9 ? String(i + 1) : undefined} onPress={() => update($, open, () => ({ slug: p.slug, which: defaultWhich(p), stop: 0 }))}>
                 {p.title}
               </Button>
               <Text dimColor>
                 {'  '}
                 {p.slug}
-                {p.choices !== null && ` · plan video: ${p.choices} choices${p.planReviewed ? ', reviewed' : ', to review'}`}
-                {p.calls !== null && ` · walkthrough: ${p.calls} calls${p.walkthroughReviewed ? ', reviewed' : ', to review'}`}
+                {p.choices !== null && ` · plan video: ${count(p.choices, 'choice')}${p.planReviewed ? ', reviewed' : ', to review'}`}
+                {p.calls !== null && ` · walkthrough: ${count(p.calls, 'call')}${p.walkthroughReviewed ? ', reviewed' : ', to review'}`}
               </Text>
             </Box>
           ))}
@@ -542,11 +547,12 @@ export const register: Register = on => {
       <Box flexDirection="column">
         <Text bold>{map.title ?? slug}</Text>
         <Text dimColor>
-          {isPlanVideo(which) ? 'Plan video' : 'Walkthrough video'} · {stops.length}{' '}
-          {isPlanVideo(which) ? 'open choices' : 'calls the agent made'} · {clock(map.totalSeconds)}
+          {isPlanVideo(which) ? 'Plan video' : 'Walkthrough video'} ·{' '}
+          {isPlanVideo(which) ? count(stops.length, 'open choice') : count(stops.length, 'call the agent made', 'calls the agent made')} ·{' '}
+          {clock(map.totalSeconds)}
         </Text>
         <Box gap={1} flexWrap="wrap">
-          <Button key="library" label="‹ All plans" onPress={() => update($, open, () => null)} />
+          <Button key="library" hotkey="l" label="‹ All plans" onPress={() => update($, open, () => null)} />
           {hasOther && (
             <Button
               key="other"
@@ -559,6 +565,7 @@ export const register: Register = on => {
           ) : (
             <Button
               key="watch"
+              hotkey="w"
               label={cloud ? '▶ Publish the player to watch' : '▶ Open the player'}
               onPress={() => openPlayer($, slug, which)}
             />
@@ -616,9 +623,10 @@ export const register: Register = on => {
             />
           )}
           <Box gap={1} flexWrap="wrap">
-            <Button key="approve" label="Approve and send" variant="primary" onPress={() => send($, slug, which, 'approve')} />
-            <Button key="changes" label="Send: changes needed" onPress={() => send($, slug, which, 'changes')} />
+            <Button key="approve" hotkey="a" label="Approve and send" variant="primary" onPress={() => send($, slug, which, 'approve')} />
+            <Button key="changes" hotkey="c" label="Send: changes needed" onPress={() => send($, slug, which, 'changes')} />
           </Box>
+          {e.surface === 'terminal' && <Text dimColor>keys: a approve and send · c send, changes needed · l all plans · esc prompt</Text>}
           {lastSent && (
             <Text dimColor>
               Sent {lastSent.at.slice(0, 16).replace('T', ' ')} →{' '}
@@ -648,10 +656,14 @@ export const register: Register = on => {
     const narration = frame?.narration ? (
       <Markdown dimColor text={`> ${frame.narration.replace(/\n+/g, ' ')}`} />
     ) : null
+    const keys =
+      'question' in s
+        ? `keys: 1–${Math.min(9, s.options.length)} choose · e explain more · n next · b back · w watch · l all plans · esc prompt`
+        : 'keys: a accept · f flag · n next · b back · w watch · l all plans · esc prompt'
     const nav = (
       <Box gap={1}>
-        <Button key="prev" label="‹ Back" onPress={() => go(stop - 1)} />
-        <Button key="next" label={stop === stops.length - 1 ? 'To Send ›' : 'Next ›'} onPress={() => go(stop + 1)} />
+        <Button key="prev" hotkey="b" label="‹ Back" onPress={() => go(stop - 1)} />
+        <Button key="next" hotkey="n" label={stop === stops.length - 1 ? 'To Send ›' : 'Next ›'} onPress={() => go(stop + 1)} />
         {e.surface === 'terminal' && frame?.narration && (
           <Button
             key="speak"
@@ -697,10 +709,11 @@ export const register: Register = on => {
           {still}
           {narration}
           <Box flexDirection="column">
-            {q.options.map(o => (
+            {q.options.map((o, i) => (
               <Box key={`o-${o.id}`} flexDirection="column">
                 <Button
                   key={`opt-${o.id}`}
+                  hotkey={i < 9 ? String(i + 1) : undefined}
                   variant={isChosen(o) ? 'primary' : undefined}
                   onPress={() => (q.kind === 'multi' ? toggle(o) : answer({ option: o.id, label: o.label }))}
                 >
@@ -715,6 +728,7 @@ export const register: Register = on => {
           <Box gap={1} flexWrap="wrap">
             <Button
               key="unclear"
+              hotkey="e"
               variant={a?.option === 'unclear' ? 'primary' : undefined}
               label="Explain this more"
               onPress={() => answer({ option: 'unclear', label: 'Explain this more' })}
@@ -730,6 +744,7 @@ export const register: Register = on => {
           )}
           {a && <Text color="success">Answer: {a.label}</Text>}
           {nav}
+          {e.surface === 'terminal' && <Text dimColor>{keys}</Text>}
         </Box>
       )
     }
@@ -757,8 +772,8 @@ export const register: Register = on => {
         {still}
         {narration}
         <Box gap={1} flexWrap="wrap">
-          <Button key="accept" label="Accept" variant={v?.verdict === 'accept' ? 'primary' : undefined} onPress={() => judge({ verdict: 'accept' })} />
-          <Button key="flag" label="Flag it" variant={v?.verdict === 'flag' ? 'primary' : undefined} onPress={() => judge({ verdict: 'flag' })} />
+          <Button key="accept" hotkey="a" label="Accept" variant={v?.verdict === 'accept' ? 'primary' : undefined} onPress={() => judge({ verdict: 'accept' })} />
+          <Button key="flag" hotkey="f" label="Flag it" variant={v?.verdict === 'flag' ? 'primary' : undefined} onPress={() => judge({ verdict: 'flag' })} />
         </Box>
         {Input && (
           <Input
@@ -770,6 +785,7 @@ export const register: Register = on => {
         )}
         {v && <Text color="success">Verdict: {v.verdict === 'own' ? `instead: ${v.own}` : v.verdict}</Text>}
         {nav}
+        {e.surface === 'terminal' && <Text dimColor>{keys}</Text>}
       </Box>
     )
   })
