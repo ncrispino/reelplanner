@@ -162,7 +162,7 @@ s4() {
   [ "$arm" = ours ] || return 0
   say "S4. reelplanning, its skill and its tools (10 to 20 minutes the first time)"
   if [ "${REEL_CS_SKIP_INSTALL:-}" = 1 ]; then say "  △ skipped (REEL_CS_SKIP_INSTALL=1: for testing arm.sh only)"; return 0; fi
-  has npm || die "npm is not installed (Node 18 or later: nodejs.org, or brew install node)"
+  has npm || die "npm is not installed (Node 22.20 or later: nodejs.org, or brew install node)"
   # each part once: a second run skips what is marked done in $STATE
   ( . "$A/env.sh" && cd "$HOME" || exit 1
     if ! marked installed || ! has reelplanning; then

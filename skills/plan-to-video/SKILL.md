@@ -599,7 +599,8 @@ plan or request.
   `$RP reel renumber`, change the video lines it lists, rebuild them, `git add .reelplanning` and
   continue. Never merge `terms-index.json` by hand: `reel renumber` writes it again.
 - **Before merging:** `$RP reel pr-check --merge`, then `$RP reel pr-check --tidy` (removes the
-  contributor's reviews in one commit; they stay in the PR's history), and Squash and merge. After
+  contributor's reviews in one commit, so main's files hold only the maintainer's), and merge with a merge
+  commit, not squashed: main keeps the PR's commits. After
   merges, keep the system video current on main, once for every PR merged since (**The system video**).
 
 ## Running the loop

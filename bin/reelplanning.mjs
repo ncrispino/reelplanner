@@ -10,6 +10,7 @@
 // `<command>` runs scripts/<command>.mjs (with node) or scripts/<command>.sh (with bash) from this
 // package. Paths you pass are relative to YOUR working directory: the project lives in your repo,
 // and the package directory, which under npx is a cache, is only ever read.
+import "../scripts/lib/node-check.mjs"; // first: an older Node stops here, told how to update
 import { readdirSync, readFileSync, existsSync, realpathSync } from "node:fs";
 import { dirname, join, delimiter } from "node:path";
 import { spawn } from "node:child_process";

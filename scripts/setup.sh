@@ -63,8 +63,12 @@ as_root() { if [ "$SUDO" = none ]; then return 1; fi; run $SUDO "$@"; }
 [ "$DRY" = 1 ] && echo "reelplanning setup --dry-run: nothing is changed"
 
 # ---- node
-if node -e 'process.exit(+process.versions.node.split(".")[0] >= 18 ? 0 : 1)'; then ok "node $(node -v)"
-else miss "node $(node -v) is too old" "reelplanning needs Node 18 or newer"; fi
+# 22.20, package.json's engines: what the `skills` installer asks for. The commands run on any Node 22 (HyperFrames
+# needs 22; scripts/lib/node-check.mjs refuses below it), so 22.0 to 22.19 is said here, not refused.
+nv="$(node -p 'const [a, b] = process.versions.node.split(".").map(Number); a > 22 || (a === 22 && b >= 20) ? "ok" : a === 22 ? "old" : "no"')"
+if [ "$nv" = ok ]; then ok "node $(node -v)"
+elif [ "$nv" = old ]; then ok "node $(node -v): the \`skills\` installer asks for 22.20 or newer; if a step below fails in it, update Node (https://nodejs.org/en/download)"
+else miss "node $(node -v) is too old" "reelplanning needs Node 22.20 or newer: https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"; fi
 
 # ---- ffmpeg: renders, and the review bundle's wav → mp3
 if have ffmpeg && have ffprobe; then ok "ffmpeg ($(command -v ffmpeg))"

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- **Node 22.20 or later.** HyperFrames needs Node 22 and the `skills` installer 22.20, so `package.json`'s
+  engines, `setup`, the curl installer and the docs say 22.20 (they said 18, and on Ubuntu's own Node 18 the
+  install failed in `npx skills`). `reelplanning` and `reel` refuse a Node older than 22 before anything runs and
+  say how to update, instead of failing later on an import it does not have; on 22.0 to 22.19 they run, and
+  `setup` and the curl installer say that `skills` asks for 22.20. `version.spec` keeps the docs and checks on
+  the engines' version.
+- **PRs are merged with a merge commit, not squashed:** main keeps a PR's own commits. CONTRIBUTING, the PR
+  template, the templates the skill copies into a repo, the skill and `docs/lifecycle.md` say so; `reel pr-check
+  --tidy` still takes the contributor's own reviews off the branch before the merge.
+- **The README's quick start begins in a project you already have,** then a new one (a neighborhood bakery's
+  site, in place of Bob Dylan's albums). Its Install names the Claude Code plugin (`/plugin marketplace add
+  ncrispino/reelplanning`), and says the plugin is the skill only; `marketplace.json` describes it as
+  `plugin.json` does (it said "90-second" videos).
 - **A repo reached through a link works as one reached directly.** On macOS a temp folder is `/var/…`, a link to
   the `/private/var/…` that git and the working directory report, and the same happens to a linked home or projects
   folder. Code that measured one spelling against the other found no history or the wrong folder: a review's
