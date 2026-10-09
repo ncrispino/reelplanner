@@ -8,9 +8,13 @@
   clock, the scene, the recording and pictures) under `.reelplanner/sketches/` or `videos/sketches/`. The folder is
   a source for `explain`, and the skill makes the explainer say where your picture and the code agree and where not.
   Run it bare (`reelplanner sketch`, the topic typed on the page), or ask your agent ("let me sketch how … works"):
-  the skill runs `sketch "<topic>" --once`, which exits after Send with `sketch: <folder>` as its last line.
+  the skill runs `sketch "<topic>" --once`, which exits after Send with `sketch: <folder>` as its last line, and exits
+  1 when the page is closed without Send or none opens, so the agent is not left waiting. With no live caption
+  (Firefox, or the browser's recognizer blocked), local whisper transcribes the recording after Send when whisper.cpp
+  is installed; `sketch-transcribe <folder>` does it for any sketch later (local whisper, else a transcription API).
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
-  dependencies); nothing comes from a CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
+  dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
+  CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
 - **The system video says reelplanner,** in its narration and on its frames, and its install is shot again from the
   public repo on a fresh Ubuntu machine (`npm i -g github:ncrispino/reelplanner`, a first `setup`, the skill, `reel
   init`); the README's GIF is its opening, made again. The voice says the name as "reel planner": Kokoro read

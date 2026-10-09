@@ -183,10 +183,13 @@ uploads work", "I'll draw what I think happens", "here's my mental model". Open 
    them in one line: draw and talk, type notes in the box at the bottom, then Finish and Send. Don't wait in the
    foreground: they may take minutes.
 2. **When the command exits**, its last line is `sketch: <folder>`. Read that folder's `sketch.md` and look at its
-   keyframes (and `final.png`). It is their picture, not a fact.
+   keyframes (and `final.png`). It is their picture, not a fact. If its Transcript line says there is none yet (no
+   live caption and no whisper.cpp here), what they said is only in the recording: `$RP sketch-transcribe <folder>`
+   makes one, by a hosted API when a key is set, so ask before running it.
 3. **Carry on** with what they asked for, with the folder as a source: an explainer pins it beside the code
-   (**An explainer**, step 1); a plan quotes it in its problem. If the command exits with no `sketch:` line, or they
-   say they're done without sending, ask whether to go on without it.
+   (**An explainer**, step 1); a plan quotes it in its problem. If the command exits 1 with no `sketch:` line (they
+   closed the page without Send, or none opened: its last line says which), or they say they're done without
+   sending, ask whether to go on without it, or for the .zip if they used Download.
 
 They can also run `reelplanner sketch` themselves, with no topic (they type it on the page), and give you the folder.
 Never sketch for them: the point is their picture, so a sketch is always theirs. [docs/sketch.md](../../docs/sketch.md)

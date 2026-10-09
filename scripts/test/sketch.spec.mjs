@@ -11,12 +11,19 @@
 //   - Download gives the same folder as a .zip
 //   - --once (how an agent runs it): with no question the box starts empty, and after Send the command exits 0 with
 //     `sketch: <folder>` as its last line; without it, the command stays up
+//   - no live transcript (no recognizer in the browser): after Send, local whisper (a stand-in for HyperFrames'
+//     `transcribe`) makes one from the recording before that last line; sketch.md pairs its words with the pictures
+//   - `sketch-transcribe <folder>` makes one for a saved sketch (replacing the browser's), and says so when nothing
+//     here can (no whisper.cpp, no API key)
+//   - --once and the page closed without Send: the command exits 1 after a grace a reload stays within, and it
+//     exits 1 when no page opens at all
 // usage: node scripts/test/sketch.spec.mjs
 import { chromium } from "playwright-core";
 import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { chmodSync } from "node:fs";
 import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
 
@@ -28,6 +35,25 @@ mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner", 
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "add", "."], { cwd: repo });
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"], { cwd: repo });
 const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
+
+// a stand-in for HyperFrames' `transcribe` (local whisper) and a whisper.cpp for it to be found by: two sentences, the
+// second said after the last picture; and an environment with neither, nor any transcription API key
+const tools = mkdtempSync(join(tmpdir(), "rp-sketch-tools-"));
+const FAKE_HF = join(tools, "fake-hyperframes.mjs");
+writeFileSync(FAKE_HF, `import { writeFileSync, mkdirSync, appendFileSync } from "node:fs";
+import { join } from "node:path";
+const [cmd, ...a] = process.argv.slice(2), val = (f) => a[a.indexOf(f) + 1];
+appendFileSync(${JSON.stringify(join(tools, "calls.log"))}, JSON.stringify({ cmd, a }) + "\\n");
+if (cmd !== "transcribe") process.exit(2);
+mkdirSync(val("--dir"), { recursive: true });
+const w = (text, start) => ({ text, start, end: start + 0.08 });
+writeFileSync(join(val("--dir"), "transcript.json"), JSON.stringify([w("The", 0.05), w("worker", 0.15), w("polls.", 0.25), w("Then", 30), w("it", 30.1), w("sleeps.", 30.2)]));
+`);
+const WHISPER = join(tools, "whisper-cli"); writeFileSync(WHISPER, "#!/bin/sh\nexit 0\n"); chmodSync(WHISPER, 0o755);
+const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^HYPERFRAMES_/.test(k) && !/_API_KEY$/.test(k)));
+const WITH_WHISPER = { ...clean, REELPLANNER_HYPERFRAMES_BIN: FAKE_HF, HYPERFRAMES_WHISPER_PATH: WHISPER };
+const NO_WHISPER = { ...clean, HOME: tools, PATH: join(tools, "empty-path"), REELPLANNER_SYSTEM_ROOT: join(tools, "no-system") };
+const run = (args, env) => { try { return { code: 0, out: execFileSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), ...args], { cwd: repo, env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 
 const port = testPort(8793);
 const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
@@ -111,6 +137,19 @@ try {
     ok(kinds === "audio,video" && Number(p.format.duration) > 3, `the recording has the canvas and the voice, with a duration — ${kinds}, ${p.format.duration}`);
   } catch { console.log("· no ffprobe here: the recording's streams are not checked"); }
   ok(said.includes("✓ sketch saved") && said.includes("reelplanner explain"), "the command says where it went and what to run next");
+  ok(!said.includes("transcribing"), "with a live transcript, nothing is transcribed after Send");
+
+  // sketch-transcribe: nothing here to do it; then local whisper, in place of the browser's transcript
+  const rel = join(".reelplanner", "sketches", name);
+  const none = run(["sketch-transcribe", rel], NO_WHISPER);
+  ok(none.code === 1 && /nothing here can transcribe it: whisper\.cpp is not installed .*no transcription API key/.test(none.out), `sketch-transcribe with no whisper and no key says so — ${none.out}`);
+  const tx = run(["sketch-transcribe", rel], WITH_WHISPER);
+  const s2 = JSON.parse(readFileSync(join(dir, "session.json"), "utf8")), md2 = readFileSync(join(dir, "sketch.md"), "utf8");
+  ok(tx.code === 0 && /✓ 6 words in 2 sentences \(local whisper small\.en\)/.test(tx.out), `sketch-transcribe runs local whisper — ${tx.out}`);
+  ok(s2.transcript.source === "whisper" && s2.transcript.replaced === "browser-speech" && s2.transcript.lang === "en"
+    && s2.transcript.segments.map((x) => x.text).join("|") === "The worker polls.|Then it sleeps.", `…its sentences replace the browser's — ${JSON.stringify(s2.transcript)}`);
+  ok(s2.keyframes[0].said.startsWith("The worker polls.") && s2.keyframes.some((k) => k.said.includes("(typed) not sure")), `…each picture's words made again, the typed note kept — ${JSON.stringify(s2.keyframes.map((k) => k.said))}`);
+  ok(md2.includes("**Transcript:** local whisper small.en, from the recording") && /\*\*0:30\*\* Then it sleeps\. _\(said after the last picture\)_/.test(md2), "…and sketch.md says where its words came from, and what was said after the last picture");
 
   // Download: the same folder as a .zip, from a fresh page
   const p2 = await ctx.newPage(); await p2.goto(`http://127.0.0.1:${port}/`); await p2.waitForFunction(() => window.reelSketch?.api);
@@ -121,28 +160,53 @@ try {
   ok(bytes.readUInt32LE(0) === 0x04034b50 && bytes.includes(Buffer.from("/session.json")) && bytes.includes(Buffer.from("/recording.webm")), "Download gives a .zip of the folder");
   ok(srv.exitCode == null, "without --once the command stays up after Send");
 
-  // --once with no question: the box starts empty; after Send the command exits 0, its last line the folder
+  // --once with no question, in a browser with no recognizer: the box starts empty; after Send local whisper makes the
+  // transcript, then the command exits 0, its last line the folder
   const port2 = testPort(8794, 1);
-  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
+  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, env: WITH_WHISPER, stdio: ["ignore", "pipe", "pipe"] });
   let out2 = ""; once.stdout.on("data", (c) => (out2 += c));
   const exited = new Promise((r) => once.on("exit", (code) => r(code)));
   await serverUp(port2, { child: once, timeout: 60000 });
-  const p3 = await ctx.newPage(); await p3.goto(`http://127.0.0.1:${port2}/`); await p3.waitForFunction(() => window.reelSketch?.api);
+  const p3 = await ctx.newPage(); await p3.addInitScript(() => { delete window.SpeechRecognition; delete window.webkitSpeechRecognition; });
+  await p3.goto(`http://127.0.0.1:${port2}/`); await p3.waitForFunction(() => window.reelSketch?.api);
   ok(await p3.inputValue("#question") === "", "with no question given, the box starts empty");
   await p3.click("#rec"); await p3.waitForTimeout(400);
   await p3.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Worker" } }]) }); });
   await p3.waitForTimeout(400);
   await p3.click("#finish"); await p3.waitForSelector("#review.open"); await p3.click("#send");
   await p3.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
-  ok((await p3.textContent("#sent")).includes("you can close this tab"), `the page says the agent has it — ${await p3.textContent("#sent")}`);
-  const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 10000))]);
+  ok((await p3.textContent("#sent")).includes("you can close this tab") && (await p3.textContent("#sent")).includes("transcribed on this machine (local whisper small.en)"),
+    `the page says the agent has it, and that the voice is being transcribed — ${await p3.textContent("#sent")}`);
+  await p3.close();   // gone before the command exits: Send was made, so this is not "closed without Send"
+  const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 30000))]);
   const last = out2.trim().split("\n").pop();
   ok(code === 0, `--once exits after Send — ${code}`);
   ok(/^sketch: \.reelplanner\/sketches\/\d{4}-\d{2}-\d{2}-sketch$/.test(last) && existsSync(join(repo, last.slice("sketch: ".length), "sketch.md")),
     `its last line names the folder, "sketch" when no question was given — ${last}`);
   if (once.exitCode == null) once.kill();
+  const s3 = JSON.parse(readFileSync(join(repo, last.slice("sketch: ".length), "session.json"), "utf8"));
+  ok(s3.transcript.source === "whisper" && s3.transcript.segments.length === 2 && !s3.transcript.replaced && s3.keyframes.some((k) => k.said.startsWith("The worker polls.")),
+    `with no live transcript, local whisper made one before that line — ${JSON.stringify(s3.transcript)} ${JSON.stringify(s3.keyframes)}`);
+  ok(out2.indexOf("✓ 6 words") >= 0 && out2.indexOf("✓ 6 words") < out2.lastIndexOf("sketch: "), "…and said so before it");
+
+  // --once, the page reloaded (stays up) and then closed without Send (exits 1, says so); and no page at all
+  const port3 = testPort(8795, 2);
+  const shut = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "x", "--once", "--port", String(port3), "--no-open"], { cwd: repo, env: { ...WITH_WHISPER, REELPLANNER_SKETCH_GRACE_S: "3" }, stdio: ["ignore", "pipe", "pipe"] });
+  let out3 = ""; shut.stdout.on("data", (c) => (out3 += c)); shut.stderr.on("data", (c) => (out3 += c));
+  const shutExit = new Promise((r) => shut.on("exit", (c) => r(c)));
+  await serverUp(port3, { child: shut, timeout: 60000 });
+  const p4 = await ctx.newPage(); await p4.goto(`http://127.0.0.1:${port3}/`); await p4.waitForFunction(() => window.reelSketch?.api);
+  await p4.reload(); await p4.waitForFunction(() => window.reelSketch?.api); await p4.waitForTimeout(3500);
+  ok(shut.exitCode == null, "--once: a reload is not a close");
+  const closedAt = Date.now(); await p4.close();
+  const shutCode = await Promise.race([shutExit, new Promise((r) => setTimeout(() => r("still running"), 15000))]);
+  ok(shutCode === 1 && /✗ sketch: the page was closed without Send; nothing was saved/.test(out3) && !/^sketch: /m.test(out3),
+    `--once: the page closed without Send, it exits 1 and says so (${Math.round((Date.now() - closedAt) / 100) / 10} s) — ${shutCode} ${out3}`);
+  if (shut.exitCode == null) shut.kill();
+  const lone = run(["sketch", "--once", "--port", String(testPort(8796, 3)), "--no-open"], { ...WITH_WHISPER, REELPLANNER_SKETCH_OPEN_WAIT_S: "1" });
+  ok(lone.code === 1 && /✗ sketch: no page opened in 1 s/.test(lone.out), `--once: no page opened, it exits 1 — ${lone.out}`);
 } finally {
-  await b.close(); srv.kill(); rmSync(repo, { recursive: true, force: true });
+  await b.close(); srv.kill(); rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true });
 }
 if (fails.length) { console.log(`\n${fails.length} failed`); process.exit(1); }
 console.log("\nall passed");

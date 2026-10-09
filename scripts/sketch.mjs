@@ -10,7 +10,9 @@
 // The question is optional: it only fills the page's "What are you explaining?" box, which names the folder and
 // heads sketch.md, and the person can change it there. An agent passes the topic from the request so the box is
 // filled when the page opens. --once is for an agent: it runs the command in the background and waits for it to
-// exit, then reads the folder it printed. Without --once the page stays up for another sketch until Ctrl-C.
+// exit, then reads the folder it printed. If the page is closed without Send (after a 20 s grace, which a reload
+// stays within; REELPLANNER_SKETCH_GRACE_S), or no page opens in 15 min (REELPLANNER_SKETCH_OPEN_WAIT_S), it exits 1
+// with no `sketch:` line. Without --once the page stays up for another sketch until Ctrl-C.
 //
 // It serves the sketch page (packages/sketch/, an Excalidraw canvas) on localhost and opens it. Record, then
 // draw and talk; type a note and it lands on the canvas. Finish shows what will be sent; Send saves it here:
@@ -26,8 +28,10 @@
 // the text is committed. The folder is a source like any other: `reelplanner explain "<question>" <folder> <code>`.
 //
 // The page needs Excalidraw built once on this machine (vendor-excalidraw, run here on first use). It reads the
-// microphone only while recording, and the live transcript is the browser's own (Chrome's sends audio to Google;
-// the recording keeps the audio either way, so it can be transcribed locally instead: transcribe-missing).
+// microphone only while recording, and the live transcript is the browser's own (Chrome's sends audio to Google).
+// With none (Firefox, or blocked), local whisper transcribes the recording after Send when whisper.cpp is here
+// (scripts/lib/sketch-transcript.mjs; before the `sketch:` line with --once); `sketch-transcribe <folder>` does it
+// for any sketch, later.
 import { createServer } from "node:http";
 import { existsSync, mkdirSync, writeFileSync, createReadStream, statSync, renameSync, rmSync } from "node:fs";
 import { join, resolve, relative, normalize, extname, sep, basename } from "node:path";
@@ -38,6 +42,7 @@ import { ROOT, rpInitialized, rpDirOf, RP_COMMAND } from "./lib/env.mjs";
 import { TYPES } from "./lib/static-server.mjs";
 import { slugOf, repoTop } from "./lib/explainer.mjs";
 import { excalidrawVendor, buildExcalidrawVendor } from "./vendor-excalidraw.mjs";
+import { sketchMd, sketchTranscriber, transcribeSketch, transcriberName } from "./lib/sketch-transcript.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
@@ -67,38 +72,6 @@ const PAGE = join(ROOT, "packages", "sketch");
 
 // ---------- the folder a sketch is saved to, and what an agent reads first ----------
 const ALLOWED = /^(session\.json|recording\.(webm|mp4)|final\.png|final\.excalidraw|keyframes\/kf-\d{3}\.png)$/;
-const mmss = (s) => s == null ? "–" : `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-
-function sketchMd(s, dir) {
-  const els = s.final?.elements || [], byId = new Map(els.map((e) => [e.id, e]));
-  const name = (id) => { const e = byId.get(id); return e ? `"${(e.label || e.text || e.name || e.kind).replace(/\s+/g, " ")}"` : "(nothing)"; };
-  const shapes = els.filter((e) => !["arrow", "line", "freedraw", "text"].includes(e.kind));
-  const arrows = els.filter((e) => e.kind === "arrow");
-  const texts = els.filter((e) => e.kind === "text");
-  const free = els.filter((e) => e.kind === "freedraw").length;
-  const lines = [
-    `# Sketch: ${s.question || "(no question given)"}`, "",
-    `How someone thinks this works, drawn and said on a canvas: their model, not the code's. Compare it with the code; don't treat it as true.`, "",
-    `- **When:** ${s.created} · ${mmss(s.duration_s)} recorded${s.recording?.has_audio ? " with voice" : " (no voice)"}`,
-    `- **Code it is about:** ${s.context?.repoName || "?"} at \`${(s.context?.commit || "no commit").slice(0, 12)}\`${s.context?.branch ? ` on \`${s.context.branch}\`` : ""}${s.context?.dirty ? " (with uncommitted changes)" : ""}`,
-    `- **Files:** \`${s.recording?.file}\` (the canvas with the voice; the pointer is the orange dot), \`keyframes/\`, \`final.png\`, \`final.excalidraw\`, \`session.json\` (everything, timed)`,
-    `- **Transcript:** ${s.transcript?.source === "browser-speech" ? "the browser's live speech recognition (may have errors; the audio is in the recording)" : "none made live; transcribe the recording's audio"}`,
-    "",
-  ];
-  if (s.feedback) lines.push(`## Their note when sending`, "", `> ${s.feedback.replace(/\n/g, "\n> ")}`, "");
-  lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before.`, "");
-  for (const k of s.keyframes || []) lines.push(`- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}`);
-  if (!(s.keyframes || []).length) lines.push("_(no pictures: nothing was drawn or said while recording)_");
-  lines.push("", `## The final drawing`, "", s.final?.png ? `![final drawing](final.png)` : "_(empty canvas)_", "");
-  if (shapes.length) { lines.push(`**Boxes and shapes**`, ""); for (const e of shapes) lines.push(`- ${e.kind}${e.label ? ` "${e.label.replace(/\s+/g, " ")}"` : " (no label)"}`); lines.push(""); }
-  if (arrows.length) { lines.push(`**Arrows**`, ""); for (const a of arrows) lines.push(`- ${name(a.from)} → ${name(a.to)}${a.label ? ` (labeled "${a.label.replace(/\s+/g, " ")}")` : ""}`); lines.push(""); }
-  if (texts.length) { lines.push(`**Text on the canvas**`, ""); for (const t of texts) lines.push(`- "${t.text.replace(/\s+/g, " ")}"`); lines.push(""); }
-  if (free) lines.push(`Plus ${free} freehand stroke${free === 1 ? "" : "s"}: see the pictures.`, "");
-  if ((s.notes || []).length) { lines.push(`## Typed notes`, ""); for (const n of s.notes) lines.push(`- **${mmss(n.t)}** ${n.text}`); lines.push(""); }
-  if (s.before_recording) lines.push(`_${s.before_recording} element${s.before_recording === 1 ? " was" : "s were"} drawn before recording started._`, "");
-  return lines.join("\n");
-}
-
 async function save(req) {
   const form = await new Request("http://x/", { method: "POST", headers: req.headers, body: Readable.toWeb(req), duplex: "half" }).formData();
   const got = new Map();
@@ -131,7 +104,17 @@ async function save(req) {
     ? `Next: ${RP_COMMAND} explain "${(s.question || "how this works").replace(/"/g, "'")}" ${rel} <the code it is about>`
     : `Next: give your agent ${rel}/sketch.md`;
   console.log(`✓ sketch saved → ${rel}/ (${got.size} files)\n  ${next}`);
-  return { ok: true, dir: rel, next, closing: once };
+  // no live transcript: local whisper makes one from the recording, when it is here (never a hosted API unasked)
+  const by = s.transcript?.source === "none" && s.recording?.has_audio && got.has(s.recording.file) ? sketchTranscriber({ dir, api: false }) : null;
+  if (by && !by.kind) console.log(`  no live transcript, and ${by.why}: \`${RP_COMMAND} sketch-transcribe ${rel}\` makes one later`);
+  return { ok: true, dir: rel, abs: dir, next, closing: once, transcribing: by?.kind ? transcriberName(by) : null, by };
+}
+
+async function transcribeAfterSend(r) {
+  if (!r.by?.kind) return;
+  console.log(`· no live transcript: transcribing the voice with ${r.transcribing} (it stays on this machine) …`);
+  try { const t = await transcribeSketch(r.abs, r.by); console.log(`✓ ${t.words.length} words → ${r.dir}/sketch.md`); }
+  catch (e) { console.error(`✗ sketch: could not transcribe it (${e.message}); \`${RP_COMMAND} sketch-transcribe ${r.dir}\` tries again`); }
 }
 
 // ---------- the server ----------
@@ -142,14 +125,44 @@ function serve(res, root, urlPath) {
   res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream", "cache-control": "no-store" });
   createReadStream(file).pipe(res);
 }
+// --once: the agent waiting on this command must not wait for ever. The page holds a connection open (api/sketch/live);
+// when the last page goes and nothing was sent, a short grace (a reload comes back within it) and then this exits 1.
+// And if no page opens at all, it gives up after a while.
+const GRACE_S = Number(process.env.REELPLANNER_SKETCH_GRACE_S) || 20, OPEN_WAIT_S = Number(process.env.REELPLANNER_SKETCH_OPEN_WAIT_S) || 900;
+let pages = 0, opened = false, sending = false, goneTimer = null;
+function gone(why, hint = "") {
+  if (sending) return;
+  console.error(`✗ sketch: ${why}; nothing was saved.${hint && ` ${hint}`}`);
+  process.exit(1);
+}
 const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
   if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || "." });
-  if (path === "api/sketch" && req.method === "POST") return save(req).then((r) => {
-    json(res, 200, r);
-    // --once: the agent waiting on this command reads the last line, then carries on with the folder
-    if (once) res.on("finish", () => { console.log(`sketch: ${r.dir}`); server.close(); setTimeout(() => process.exit(0), 200).unref(); });
-  }, (e) => { console.error(`✗ sketch: ${e.message}`); json(res, 400, { ok: false, error: e.message }); });
+  if (path === "api/sketch/live") {
+    res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-store" });
+    res.write(": open\n\n");
+    pages++; opened = true; clearTimeout(goneTimer);
+    const ping = setInterval(() => res.write(": ping\n\n"), 15000);
+    req.on("close", () => {
+      clearInterval(ping); pages--;
+      if (once && !pages) goneTimer = setTimeout(() => gone("the page was closed without Send", "If they used Download instead, ask them for the .zip."), GRACE_S * 1000);
+    });
+    return;
+  }
+  if (path === "api/sketch" && req.method === "POST") {
+    sending = true;
+    return save(req).then((r) => {
+      const { abs, by, ...body } = r;
+      json(res, 200, body);
+      // --once: the agent waiting on this command reads the last line, then carries on with the folder (and its
+      // transcript, when one is made here); without it, the page stays up and the transcript follows in the background
+      if (once) res.on("finish", async () => { await transcribeAfterSend(r); console.log(`sketch: ${r.dir}`); server.close(); setTimeout(() => process.exit(0), 200).unref(); });
+      else res.on("finish", () => { sending = false; transcribeAfterSend(r); });
+    }, (e) => {
+      sending = false; console.error(`✗ sketch: ${e.message}`); json(res, 400, { ok: false, error: e.message });
+      if (once && !pages) goneTimer = setTimeout(() => gone("the page was closed and its Send failed"), GRACE_S * 1000);
+    });
+  }
   if (path === "" || path === "index.html") return serve(res, PAGE, "index.html");
   if (path === "sketch.js") return serve(res, PAGE, "sketch.js");
   if (path.startsWith("vendor/")) return serve(res, vendor.dir, path.slice("vendor/".length));
@@ -158,7 +171,8 @@ const server = createServer((req, res) => {
 server.on("error", (e) => die(e.code === "EADDRINUSE" ? `port ${port} is in use (--port <n> to pick another)` : e.message));
 server.listen(port, "127.0.0.1", () => {
   const url = `http://127.0.0.1:${port}/`;
-  console.log(`✓ sketch page at ${url}\n  saving to ${relative(process.cwd(), base) || "."}/ · Ctrl-C to stop`);
+  console.log(`✓ sketch page at ${url}\n  saving to ${relative(process.cwd(), base) || "."}/ · ${once ? "exits after Send" : "Ctrl-C to stop"}`);
+  if (once) setTimeout(() => { if (!opened) gone(`no page opened in ${OPEN_WAIT_S >= 60 ? `${Math.round(OPEN_WAIT_S / 60)} min` : `${OPEN_WAIT_S} s`} (${url})`); }, OPEN_WAIT_S * 1000).unref();
   if (!args.includes("--no-open")) {
     const [cmd, a] = platform() === "darwin" ? ["open", [url]] : platform() === "win32" ? ["cmd", ["/c", "start", "", url]] : ["xdg-open", [url]];
     try { spawn(cmd, a, { stdio: "ignore", detached: true }).on("error", () => {}).unref(); } catch {}

@@ -28,7 +28,7 @@
     format: "reelplanner-sketch/1",
     id: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z"),
     question: "", context: null,
-    transcript: { source: "none", segments: [] },
+    transcript: { source: "none", lang: navigator.language || "en-US", segments: [] },
     notes: [], keyframes: [], events: [],
     before_recording: 0,
   };
@@ -36,6 +36,8 @@
 
   // ---------- context from the server, if there is one ----------
   let server = false;
+  // held open while the page is: an agent waiting on `sketch --once` learns when the page is closed without Send
+  try { if (location.protocol.startsWith("http")) new EventSource("api/sketch/live"); } catch {}
   fetch("api/sketch/context").then((r) => r.ok ? r.json() : null).then((c) => {
     if (!c || !c.ok) return;
     server = true; session.context = c.context;
@@ -279,8 +281,9 @@
       const fd = new FormData(); for (const [path, blob] of await bundle()) fd.append(path, blob, path.split("/").pop());
       const r = await fetch("api/sketch", { method: "POST", body: fd }), j = await r.json();
       if (!j.ok) throw new Error(j.error || r.statusText);
-      sent(j.closing ? `Saved to <code>${esc(j.dir)}</code>. Your agent has it now; you can close this tab.`
-        : `Saved to <code>${esc(j.dir)}</code>. ${esc(j.next || "")}`);
+      const tx = j.transcribing ? ` Your voice is being transcribed on this machine (${esc(j.transcribing)}).` : "";
+      sent(j.closing ? `Saved to <code>${esc(j.dir)}</code>.${tx} Your agent has it now; you can close this tab.`
+        : `Saved to <code>${esc(j.dir)}</code>.${tx} ${esc(j.next || "")}`);
       b.textContent = "Sent";
     } catch (e) { sent(`Could not send (${esc(e.message)}). Use Download instead.`); b.textContent = "Send failed"; done = false; b.disabled = false; }
   });

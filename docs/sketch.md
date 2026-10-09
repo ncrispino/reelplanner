@@ -9,6 +9,8 @@ Two ways in:
 - **Ask your agent:** "let me sketch how upload resume works". The agent runs
   `reelplanner sketch "how upload resume works" --once` in the background: the page opens with the topic filled in,
   and when you press Send the command exits and prints `sketch: <folder>`, so the agent picks your sketch up and goes on.
+  If you close the page without sending (a reload is fine), or no page opens within 15 minutes, it exits 1 with no
+  `sketch:` line, so the agent is never left waiting.
 - **By hand:** `reelplanner sketch`, nothing else. Type what you're explaining in the box at the top right (or leave
   it: the folder is then just `sketch`), sketch, Send, and give the folder to your agent. The page stays up for
   another sketch until Ctrl-C.
@@ -66,7 +68,8 @@ Finish is open, as the recording does).
   "id": "20261008T190024Z", "question": "how upload resume works", "created": "…", "duration_s": 74.2,
   "context": { "repoName": "my-app", "remote": "…", "commit": "3488126…", "branch": "main", "dirty": false },
   "recording": { "file": "recording.webm", "mime": "video/webm;codecs=vp9,opus", "has_audio": true, "width": 1280, "height": 800, "pointer_drawn": true },
-  "transcript": { "source": "browser-speech" | "none", "lang": "en-US",
+  "transcript": { "source": "browser-speech" | "whisper" | "api" | "none", "lang": "en-US",
+                  "model": "small.en", "api": "groq", "replaced": "browser-speech",   // whisper and api only
                   "segments": [{ "t0": 0.5, "t1": 1.1, "text": "the upload starts in the client", "confidence": 0.9 }] },
   "notes": [{ "t": 5.6, "text": "not sure where the chunk index is stored", "elementId": "…" }],
   "keyframes": [{ "n": 1, "t": 1.8, "said": "the upload starts in the client", "file": "keyframes/kf-001.png", "elements": 2 }],
@@ -82,8 +85,25 @@ Finish is open, as the recording does).
 - A **keyframe** is taken when a spoken sentence ends, when a note is typed, or 2.5 s after the drawing stops
   changing with nothing being said. `said` is what was said or typed (`(typed) …`) since the one before.
 - **Events** fold a burst of changes to one element (a drag, a stroke) into one `update`, with `until`.
-- `transcript.source` is `none` when the browser has no live recognizer or it was blocked: the audio is still in the
-  recording, for a transcriber to read afterwards.
+- `transcript.source` is `none` when the browser has no live recognizer or it was blocked, and nothing has
+  transcribed the recording yet (below). `whisper` and `api` are transcripts made from the recording: each
+  keyframe's `said` is then made again from their words, and `replaced` names the live one they took the place of.
+
+## A transcript from the recording
+
+The live caption is the browser's: Chrome sends the audio to Google for it, Firefox has none, and it can be blocked.
+The voice is in `recording.webm` whichever way, and two things read it there:
+
+- **After Send, by itself:** when there was no live transcript and whisper.cpp is installed
+  (`reelplanner setup --local-voice`), `sketch` transcribes the recording with local whisper (`small.en`, or
+  `REELPLANNER_WHISPER_MODEL`) and writes `session.json` and `sketch.md` again. With `--once` this happens before the
+  `sketch:` line, so the agent reads the words. The voice stays on the machine; nothing hosted is used unasked.
+- **Later, by hand:** `reelplanner sketch-transcribe <sketch-folder>`, for any sketch, including one with a live
+  transcript (whisper's words take its place). It uses local whisper when installed, else a transcription API whose
+  key is set (`GROQ_API_KEY`, `OPENAI_API_KEY` or `OPENROUTER_API_KEY`); `--api` chooses the API, `--model` a whisper
+  model, `--lang` the language spoken (default: the browser's).
+
+Words said after the last picture are listed in `sketch.md` after it, marked so.
 
 ## Using it
 
@@ -95,6 +115,9 @@ picture matches the code and where it does not. Without a record (`reel init`), 
 
 - The page runs on a build of Excalidraw and React made once per machine into `~/.reelplanner/vendor/` (`reelplanner
   vendor-excalidraw`, which `sketch` runs on first use; a few seconds). Nothing is fetched from a CDN.
+  Excalidraw and React are MIT: the bundle opens with Excalidraw's licence and keeps React's, and `fonts/LICENSES.md`
+  beside it gives each font's (SIL OFL 1.1 for most; see [NOTICE](../NOTICE)). Nothing of them is committed or shipped.
 - The microphone is used only while recording. The live caption is the browser's own speech recognition: in Chrome
-  that sends the audio to Google. The recording itself stays on your machine.
+  that sends the audio to Google. The recording itself stays on your machine, and a transcript made from it after Send
+  is local whisper's; a hosted transcriber only reads it when you run `sketch-transcribe` with no whisper here, or `--api`.
 - Tested in Chromium (live caption and recording both). Firefox records but has no live caption; Safari is untested.
