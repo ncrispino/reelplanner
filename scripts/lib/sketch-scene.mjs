@@ -82,6 +82,22 @@ export function describeScene(els = []) {
     }
     lines.push("");
   }
+  // numbered steps: "1 POST /checkout" on an arrow, a "3" by a box. The numbers are the story's order, which the
+  // drawing scatters; gathered in order here, and said when they were drawn in another order
+  const STEP = /^\s*(?:step\s*)?[#(]?(\d{1,2})[).:]?(?:\s+|$)/i;
+  const numbered = [...arrows, ...texts, ...shapes].map((e, i) => ({ e, i, m: STEP.exec(e.kind === "text" ? e.text || "" : e.label || "") })).filter((x) => x.m);
+  if (numbered.length >= 2) {
+    const steps = [...numbered].sort((a, b) => Number(a.m[1]) - Number(b.m[1]) || a.i - b.i);
+    lines.push("**Numbered steps**, in their numbers' order", "");
+    for (const { e, m } of steps) {
+      const what = e.kind === "arrow" ? `${end2(e)}${one(e.label).slice(m[0].length) ? ` "${one(e.label).slice(m[0].length).trim()}"` : ""}`
+        : e.kind === "text" ? (near(e) ? near(e).replace(/^ \(next to (.*)\)$/, "$1") : `"${one(e.text)}"`) : quoted(e);
+      lines.push(`- ${m[1]}: ${what}`);
+    }
+    const drawn = [...numbered].sort((a, b) => a.i - b.i).map((x) => Number(x.m[1]));
+    if (drawn.some((n, i) => i && n < drawn[i - 1])) lines.push("", `_Drawn in another order: ${drawn.join(", ")}._`);
+    lines.push("");
+  }
   // layout: rows top to bottom, each left to right (position often carries meaning: order, time, lanes, columns)
   const placed = [...shapes, ...texts].filter((e) => nameOf(e)).map((e) => ({ e, ...box(e) })).sort((a, b) => a.cy - b.cy);
   if (placed.length >= 3) {

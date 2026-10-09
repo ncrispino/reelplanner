@@ -52,7 +52,15 @@ export function sketchMd(s, dir) {
   if (s.feedback) lines.push(`## Their note when sending`, "", `> ${s.feedback.replace(/\n/g, "\n> ")}`, "");
   lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before. _changed:_ lines are edits to the picture (renamed, rerouted, erased, moved, restyled): their changes of mind.`, "");
   const kfs = s.keyframes || [];
-  const timeline = [...kfs.map((k) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}` })),
+  // what the pointer rested on since the picture before: "this one" said with the pointer on a box
+  const named = new Map(); for (const ev of s.events || []) { if (ev.in && ev.text) named.set(ev.in, ev.text); else if (ev.text || ev.name) named.set(ev.id, ev.text || ev.name); }
+  for (const e of els) if (e.label || e.text || e.name) named.set(e.id, e.label || e.text || e.name);
+  const pointing = (from, to) => {
+    const ids = []; for (const p of s.pointer || []) if (p.t1 > from && p.t0 <= to && ids[ids.length - 1] !== p.id && named.has(p.id)) ids.push(p.id);
+    const q = (id) => `"${String(named.get(id)).replace(/\s+/g, " ").trim()}"`;
+    return !ids.length ? "" : ids.length >= 3 ? ` _(traced with the pointer: ${ids.map(q).join(" → ")})_` : ` _(pointing at ${ids.map(q).join(", ")})_`;
+  };
+  const timeline = [...kfs.map((k, i) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${pointing(i ? kfs[i - 1].t : -Infinity, k.t)}${k.file ? ` → [picture](${k.file})` : ""}` })),
     ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` })),
     ...sceneChanges(s).map((c) => ({ t: c.t, line: `- **${mmss(c.t)}** _changed:_ ${c.text}` })),
     ...(s.pauses || []).filter((p) => p.seconds >= 2).map((p) => ({ t: p.t, line: `- **${mmss(p.t)}** _paused for ${Math.round(p.seconds)} s_ (they stopped the recording here; the clock stood still)` }))];

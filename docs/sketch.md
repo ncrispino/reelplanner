@@ -118,6 +118,7 @@ Finish is open, as the recording does).
                "x": 120, "y": 220, "w": 200, "h": 90, "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1,
                "strokeStyle": "dashed", "strokeColor": "#e03131", "backgroundColor": "#ffc9c9", "name": "<a frame's>", "frame": "<id>" }],
   "pauses": [{ "t": 39.2, "seconds": 8.1 }],
+  "pointer": [{ "t0": 42.1, "t1": 43.4, "id": "<element under the pointer>" }],
   "final": { "png": "final.png", "scene": "final.excalidraw",
              "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…",
                             "strokeStyle": "dashed", "frame": "<id>", "groups": ["…"] }] },
@@ -136,6 +137,11 @@ Finish is open, as the recording does).
   rename (a label's `text`) and a reroute (an arrow's `from`/`to`) can be told apart; `sketch.md` tells them as
   _changed:_ lines in its timeline, with each thing named as it was called at that moment.
 - **Pauses** are kept with how long they lasted (the recording's clock stands still through one).
+- **Pointer** rests (0.4–10 s on one element, not while drawing or typing a note) are kept, so "this one" has a
+  referent: `sketch.md` adds _(pointing at "Resizer")_ to what was said then, or _(traced with the pointer: "App" →
+  "Edge" → "Resizer")_ when it ran along three or more.
+- **Numbered steps** ("1 POST /checkout" on an arrow, a "3" by a box) are gathered in `sketch.md` in their numbers'
+  order, with a line when they were drawn in another order.
 - `transcript.source` is `none` when the browser has no live recognizer or it was blocked, and nothing has
   transcribed the recording yet (below). `whisper` and `api` are transcripts made from the recording: each
   keyframe's `said` is then made again from their words, and `replaced` names the live one they took the place of.

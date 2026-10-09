@@ -49,6 +49,11 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
   ok(md.includes(`frame "Region A": "Queue", "Fetcher"`) && md.includes(`rectangle "Queue" (dashed)`) && md.includes(`rectangle "DB" (red, filled light red)`), "scene: a frame by its name with what is in it; dashed and colours said in words");
   ok(md.includes(`"Fetcher" → (nothing: a loose end)`) && md.includes(`"~50k/s" (next to the arrow "Queue" → "Fetcher")`) && md.includes(`- "DB", "Cache"`), "scene: a loose arrow end, a note tied to the arrow it sits by, a group");
   ok(md.includes(`a freehand stroke: under "DB"`) && md.includes(`a freehand stroke: around or across "Cache"`) && /row 1: "Queue", "~50k\/s", "Fetcher"/.test(md), `scene: an underline and a circle by what they mark; rows left to right — ${md.split("\n").filter((l) => /freehand|row/.test(l)).join(" | ")}`);
+  const steps = describeScene([R("b", "Browser", 40, 100), R("g", "Gateway", 300, 100), R("o", "Orders", 560, 100),
+    { id: "a1", kind: "arrow", from: "b", to: "g", label: "1 POST /checkout", x: 200, y: 140, w: 100, h: 0 }, { id: "a3", kind: "arrow", from: "o", to: "b", label: "3 done", x: 300, y: 200, w: 260, h: 0 },
+    { id: "a2", kind: "arrow", from: "g", to: "o", label: "2. create order", x: 460, y: 140, w: 100, h: 0 }]).join("\n");
+  ok(steps.includes(`- 1: "Browser" → "Gateway" "POST /checkout"\n- 2: "Gateway" → "Orders" "create order"\n- 3: "Orders" → "Browser" "done"`) && steps.includes("Drawn in another order: 1, 3, 2"),
+    "scene: numbered arrows gathered in their numbers' order, and drawn out of order said so");
   const ev = (t, type, id, more) => ({ t, type, id, ...more });
   const changes = sceneChanges({ events: [
     ev(1, "add", "w", { kind: "rectangle", x: 100, y: 100, w: 160, h: 80 }), ev(1, "add", "wl", { kind: "text", in: "w", text: "Worker" }),
@@ -169,6 +174,8 @@ try {
   ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`"Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
     `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
   ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes("- Where does the chunk index live?")), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
+  await page.mouse.move(220, 265, { steps: 6 }); await page.waitForTimeout(700);   // pointing at Client, then the API
+  await page.mouse.move(660, 265, { steps: 6 }); await page.waitForTimeout(700);
   await page.fill("#note", "not sure where the chunk index lives");
   await page.press("#note", "Enter");
   await page.waitForTimeout(800);
@@ -206,6 +213,8 @@ try {
     && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
   const md = readFileSync(join(dir, "sketch.md"), "utf8");
   ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
+  ok(s.pointer.some((p) => p.id === "client") && s.pointer.some((p) => p.id === "api") && /\(typed\) not sure where the chunk index lives _\(pointing at "Client", "Upload API"\)_/.test(md),
+    `the pointer resting on a box is kept, and told with what was said then — ${JSON.stringify(s.pointer)} ${md.split("\n").find((l) => /pointing/.test(l))}`);
   ok(/\*\*\d:\d\d\*\* _changed:_ erased the rectangle "Scratch"/.test(md) && /\*\*Where things are\*\*/.test(md), `sketch.md: the box replaced out of the scene is told as erased, in its place; and where things are — ${md.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
   ok(/\*\*Questions while sketching:\*\* 1 from qwen2\.5vl:7b on their machine/.test(md) && /\*\*\d:\d\d\*\* _asked:_ Where does the chunk index live\?/.test(md), "sketch.md: who asked, and the question in its place");
   try {

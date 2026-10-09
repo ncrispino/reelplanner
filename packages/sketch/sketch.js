@@ -29,7 +29,7 @@
     id: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z"),
     question: "", context: null,
     transcript: { source: "none", lang: navigator.language || "en-US", segments: [] },
-    notes: [], keyframes: [], events: [], pauses: [],
+    notes: [], keyframes: [], events: [], pauses: [], pointer: [],
     before_recording: 0,
   };
   const files = new Map(); // path in the bundle → Blob (keyframes; the rest is made at the end)
@@ -119,6 +119,32 @@
   // where the pointer is, drawn into the recording, so "this goes here" has a here
   const pointer = { x: -1, y: -1, down: false };
   addEventListener("pointermove", (e) => { pointer.x = e.clientX; pointer.y = e.clientY; }, { passive: true });
+
+  // what the pointer rests on while they talk: "this one" has a referent. Every 100 ms while recording, the element
+  // under the pointer (in the drawing's own coordinates); a rest of 0.4 s or more is kept as { t0, t1, id }
+  let resting = null;
+  function under() {
+    if (!api || pointer.x < 0) return null;
+    const s = api.getAppState(), z = s.zoom?.value || 1, x = (pointer.x - (s.offsetLeft || 0)) / z - s.scrollX, y = (pointer.y - (s.offsetTop || 0)) / z - s.scrollY;
+    let best = null, area = Infinity;
+    for (const e of live()) {
+      const id = e.containerId || e.id, pad = e.type === "arrow" || e.type === "line" ? 12 : 4;
+      const x0 = Math.min(e.x, e.x + e.width) - pad, x1 = Math.max(e.x, e.x + e.width) + pad, y0 = Math.min(e.y, e.y + e.height) - pad, y1 = Math.max(e.y, e.y + e.height) + pad;
+      if (x < x0 || x > x1 || y < y0 || y > y1 || e.type === "freedraw") continue;
+      const a = e.type === "frame" ? Infinity - 1 : (x1 - x0) * (y1 - y0);   // a frame only when nothing in it is under
+      if (a < area) { area = a; best = id; }
+    }
+    return best;
+  }
+  // a rest is a gesture between 0.4 s and 10 s; longer is a mouse left lying there
+  function restEnd(t) { if (resting && t - resting.t0 >= 0.4 && t - resting.t0 <= 10 && session.pointer.length < 3000) session.pointer.push({ t0: resting.t0, t1: t, id: resting.id }); resting = null; }
+  setInterval(() => {
+    if (t0 == null || pausedAt != null) return restEnd(clock() ?? 0);
+    // not while drawing (the pointer is on what it draws) or typing a note (the mouse just lies there)
+    const id = pointer.down || document.activeElement?.id === "note" ? null : under(), t = clock();
+    if (resting?.id === id) return;
+    restEnd(t); if (id) resting = { id, t0: t };
+  }, 100);
   addEventListener("pointerdown", () => { pointer.down = true; }, { passive: true });
   addEventListener("pointerup", () => { pointer.down = false; }, { passive: true });
 
@@ -290,7 +316,7 @@
       finBtn.disabled = false; if (!$("status").textContent.startsWith("No")) status("");
     } else if (pausedAt == null) pause(); else resume();
   });
-  function pause() { keyframe(); recorder?.pause(); stopSpeech(); pausedAt = now(); recBtn.classList.remove("on"); recBtn.querySelector(".label").textContent = "Resume"; }
+  function pause() { restEnd(clock()); keyframe(); recorder?.pause(); stopSpeech(); pausedAt = now(); recBtn.classList.remove("on"); recBtn.querySelector(".label").textContent = "Resume"; }
   // a pause is a thought too: kept with how long it lasted, though the recording's clock stands still through it
   function resume() { session.pauses.push({ t: clock(), seconds: +((now() - pausedAt) / 1000).toFixed(1) }); pausedTotal += now() - pausedAt; pausedAt = null; recorder?.resume(); if (mic) startSpeech(); recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause"; }
 
