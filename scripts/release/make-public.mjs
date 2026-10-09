@@ -5,18 +5,18 @@
 // push command for the owner to run (docs/releasing.md, "Going public").
 //
 //   1. refuse a tree that holds a .wav, an .mp4 or a renders/ path (D-305: no voice file or render is committed)
-//   2. `git archive <ref>` into <out>/reelplanning, a new repo on `main`; every file added (ignored ones too, as
+//   2. `git archive <ref>` into <out>/reelplanner, a new repo on `main`; every file added (ignored ones too, as
 //      they are tracked here), and the tree checked: it must be <ref>'s tree, object for object
-//   3. one line added to .reelplanning/README.md: the commit ids the record cites (decisions, reviews,
+//   3. one line added to .reelplanner/README.md: the commit ids the record cites (decisions, reviews,
 //      walkthroughs, versions) name commits of the development history, which is not public
-//   4. one commit, "reelplanning <version>" (package.json at <ref>), by --author or this repo's git user; the tag
+//   4. one commit, "reelplanner <version>" (package.json at <ref>), by --author or this repo's git user; the tag
 //      v<version>; repack, and print the size and the push command
 //
 // usage: node scripts/release/make-public.mjs [<public-remote-url>] [--ref HEAD] [--out <dir>] [--repo <checkout>]
 //                                             [--author "Name <email>"] [--date <date>]
-//   <public-remote-url>  only printed, in the push command (default https://github.com/ncrispino/reelplanning.git)
+//   <public-remote-url>  only printed, in the push command (default https://github.com/ncrispino/reelplanner.git)
 //   --ref     the commit whose tree is exported (default HEAD of --repo); what is committed, not the working tree
-//   --out     where the new repo goes (default a new folder under the system's temp dir); <out>/reelplanning must
+//   --out     where the new repo goes (default a new folder under the system's temp dir); <out>/reelplanner must
 //             not exist yet
 //   --repo    the checkout to export from (default the one this script is in); a shallow clone is fine
 //   --author  the commit's author and committer (default user.name and user.email of --repo's git config)
@@ -29,10 +29,10 @@ import { join, resolve, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
-const PUBLIC = "https://github.com/ncrispino/reelplanning.git";
+const PUBLIC = "https://github.com/ncrispino/reelplanner.git";
 // the paths no public tree may hold (D-305), as pr-check refuses them in a PR
 const MEDIA = /\.(wav|mp4)$|(^|\/)renders\//i;
-const NOTE = "Commit ids in this record (decisions, reviews, walkthroughs, versions) name commits of reelplanning's development history, which is not public: this repo starts at one commit holding the tree of the release.";
+const NOTE = "Commit ids in this record (decisions, reviews, walkthroughs, versions) name commits of reelplanner's development history, which is not public: this repo starts at one commit holding the tree of the release.";
 
 const argv = process.argv.slice(2);
 const FLAGS = ["--ref", "--out", "--repo", "--author", "--date"];
@@ -48,8 +48,8 @@ if (unknown.length) die(`unknown option ${unknown.join(", ")} (--help lists them
 const url = argv.find((a, i) => !a.startsWith("--") && !FLAGS.includes(argv[i - 1])) || PUBLIC;
 const SRC = resolve(flag("repo", join(dirname(fileURLToPath(import.meta.url)), "..", "..")));
 const REF = flag("ref", "HEAD");
-const OUT = resolve(flag("out", "") || mkdtempSync(join(tmpdir(), "reelplanning-public-")));
-const DIR = join(OUT, "reelplanning");
+const OUT = resolve(flag("out", "") || mkdtempSync(join(tmpdir(), "reelplanner-public-")));
+const DIR = join(OUT, "reelplanner");
 
 const gitIn = (cwd) => (...a) => execFileSync("git", ["-C", cwd, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 1 << 30 });
 const src = gitIn(SRC);
@@ -71,7 +71,7 @@ const paths = src("ls-tree", "-r", "-z", "--name-only", tip).split("\0").filter(
 const media = paths.filter((p) => MEDIA.test(p));
 if (media.length) die(`${REF}'s tree holds ${media.length} voice file(s), video(s) or render(s), and none goes public (D-305): ${media.slice(0, 5).join(", ")}${media.length > 5 ? ", …" : ""}. Take them out of the tree (git rm --cached) and commit first.`);
 if (existsSync(DIR)) die(`${DIR} exists already: pass another --out`);
-say(`make-public: ${SRC} at ${tip.slice(0, 12)} (${REF}), reelplanning ${version}: ${paths.length} files → ${DIR}`);
+say(`make-public: ${SRC} at ${tip.slice(0, 12)} (${REF}), reelplanner ${version}: ${paths.length} files → ${DIR}`);
 if (REF === "HEAD") {
   const dirty = (() => { try { return src("status", "--porcelain", "--untracked-files=no").split("\n").filter(Boolean).length; } catch { return 0; } })();
   if (dirty) say(`△ ${dirty} uncommitted change(s) in ${SRC} are not exported: the export is HEAD as committed`);
@@ -98,24 +98,26 @@ if (got !== tree) {
 say(`· the tree: ${REF}'s, object for object (${tree.slice(0, 12)})`);
 
 // ── 3. the record says where its commit ids point ────────────────────────────────────────────────────────────
-const readme = join(DIR, ".reelplanning", "README.md");
-if (existsSync(readme)) {
+// the record's folder as the ref holds it: .reelplanner/, or .reelplanning/ in a tree from before the rename (D-312)
+const rec = [".reelplanner", ".reelplanning"].find((d) => existsSync(join(DIR, d, "README.md")));
+const readme = rec && join(DIR, rec, "README.md");
+if (readme) {
   const text = readFileSync(readme, "utf8");
   if (!text.includes(NOTE)) {
     writeFileSync(readme, `${text.replace(/\n*$/, "\n")}\n${NOTE}\n`);
-    git("add", "-f", "--", ".reelplanning/README.md");
-    say("· .reelplanning/README.md: one line added, saying the commit ids the record cites are in the development history");
+    git("add", "-f", "--", `${rec}/README.md`);
+    say(`· ${rec}/README.md: one line added, saying the commit ids the record cites are in the development history`);
   }
 }
 
 // ── 4. one commit, the tag, the size, the push ───────────────────────────────────────────────────────────────
-git("commit", "-q", "-m", `reelplanning ${version}`);
-git("tag", "-a", `v${version}`, "-m", `reelplanning ${version}`);
+git("commit", "-q", "-m", `reelplanner ${version}`);
+git("tag", "-a", `v${version}`, "-m", `reelplanner ${version}`);
 git("gc", "--quiet", "--aggressive", "--prune=now");
 const count = git("rev-list", "--count", "--all").trim();
 const pack = Number((git("count-objects", "-v").match(/^size-pack: (\d+)$/m) || [])[1] || 0) * 1024;
 const files = git("ls-files", "-z").split("\0").filter(Boolean).length;
-say(`✓ ${DIR}: main, ${count} commit, "reelplanning ${version}" by ${who[1]} <${who[2]}>, tag v${version}; ${files} files, pack ${(pack / 1e6).toFixed(1)} MB; no .wav, .mp4 or renders/`);
+say(`✓ ${DIR}: main, ${count} commit, "reelplanner ${version}" by ${who[1]} <${who[2]}>, tag v${version}; ${files} files, pack ${(pack / 1e6).toFixed(1)} MB; no .wav, .mp4 or renders/`);
 say(`  nothing was pushed. To publish it (once, to the new, empty public repo):`);
 say(`    git -C ${DIR} push ${url} main --tags`);
 

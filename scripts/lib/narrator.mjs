@@ -32,7 +32,7 @@ import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { repoRoot, RP_COMMAND, rpDirOf, machineDir } from "./env.mjs";
+import { repoRoot, RP_COMMAND, rpDirOf, machineDir, machineDirShown } from "./env.mjs";
 import { newName } from "./old-names.mjs";
 
 // OpenRouter's speech models take their provider's voices, and refuse a request with none (October 2026)
@@ -257,7 +257,7 @@ export function familyOf(model = "") {
 }
 
 /** Where a missing key goes, said the same way by every command: "export it in your shell, or put it in …". */
-export const keyPlaces = (it = "it") => `export ${it} in your shell, or put ${it} in ~/.reelplanner/.env (this machine, every repo) or the repo's .reelplanner/.env (git ignores it; never in config.json)`;
+export const keyPlaces = (it = "it") => `export ${it} in your shell, or put ${it} in ${machineDirShown()}/.env (this machine, every repo) or the repo's .reelplanner/.env (git ignores it; never in config.json)`;
 
 /** One paragraph for `setup --dry-run` and `narrate`: which engine, why, and what is missing. { ok, text } */
 export function describe(dir = process.cwd(), env = process.env) {
@@ -268,7 +268,7 @@ export function describe(dir = process.cwd(), env = process.env) {
   if (s.engine === "hyperframes") {
     const heygen = heygenSet(env);
     const which = heygen ? "HeyGen (a HeyGen credential is set; it returns word timings)" : env.ELEVENLABS_API_KEY ? "ElevenLabs if its pip package is installed (then local whisper small.en), else local Kokoro + whisper small.en" : "local Kokoro + whisper small.en, one line at a time";
-    return { ok: true, text: `narration: HyperFrames' engine, ${which} (${why}). A hosted engine is much faster on a small machine: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanner/.env (this machine, every repo), then run ${RP_COMMAND} narration-check (docs/reference.md, "Narration engines")` };
+    return { ok: true, text: `narration: HyperFrames' engine, ${which} (${why}). A hosted engine is much faster on a small machine: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ${machineDirShown()}/.env (this machine, every repo), then run ${RP_COMMAND} narration-check (docs/reference.md, "Narration engines")` };
   }
   const where = s.timings === "provider" ? "the TTS's own word timings" : s.timings === "api" ? `${s.timingsApi.name} ${s.timingsApi.model} (${s.timingsApi.keyEnv})` : `local whisper ${s.whisperModel}`;
   const text = `narration: ${s.tts === "kokoro" ? "local Kokoro" : `${s.tts} ${s.model}${s.keyEnv ? ` (${s.keyEnv})` : ""}`}, voice ${s.voice || "(the video's)"}, word timings from ${where}, ${s.concurrency} line${s.concurrency === 1 ? "" : "s"} at a time (${why})`;

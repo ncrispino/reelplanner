@@ -82,7 +82,7 @@ if [ "$arm" = ours ]; then
   # npm keeps no commit for a package installed from git: the commit is the head of the branch it came from
   npmls=$(has npm && npm ls -g reelplanner --json 2>/dev/null | sed -n 's/.*"version": *"\([^"]*\)".*/reelplanner@\1/p' | head -n 1)
   branch=${REELPLANNER_BRANCH:-}
-  head=$( [ -n "$branch" ] && has git && git ls-remote "${REELPLANNER_REPO:-https://github.com/ncrispino/ReelPlanning}" "$branch" 2>/dev/null | cut -f1 | head -n 1)
+  head=$( [ -n "$branch" ] && has git && git ls-remote "${REELPLANNER_REPO:-https://github.com/ncrispino/reelplanner}" "$branch" 2>/dev/null | cut -f1 | head -n 1)
   skills=$(nodejs '
 const fs = require("fs"), [dir, home] = process.argv.slice(1);
 const locks = [home + "/.agents/.skill-lock.json", dir + "/../.skill-lock.json"].map((p) => { try { return JSON.parse(fs.readFileSync(p, "utf8")).skills || {}; } catch { return {}; } });

@@ -45,6 +45,8 @@ The narration needs a voice. Choose one before you run `reelplanner setup`:
   `~/.reelplanner/.env` ([the voice](#the-voice) says more).
 
 The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or uninstalling: [install details](./docs/reference.md#install).
+Installed it before as reelplanning, its name until October 2026? Run `npm rm -g reelplanning` first: npm will not
+install over its commands ([moving over](./docs/reference.md#install)).
 
 ## Quick start
 

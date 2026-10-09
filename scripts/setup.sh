@@ -205,7 +205,8 @@ else node "$ROOT/scripts/hyperframes-skills.mjs" || miss "HyperFrames skills" "r
 # --hosted-voice before its two lines are in ~/.reelplanner/.env: nothing narrates here until they are. The person
 # chose this, so it is the next step, not a failure: setup still succeeds.
 if [ "$HOSTED_PENDING" = 1 ]; then
-  printf '→ narration: next, put the two lines above in ~/.reelplanner/.env, then run %s narration-check to hear a test line\n' "$RP"
+  printf '→ narration: next, put the two lines above in %s/.env, then run %s narration-check to hear a test line\n' \
+    "$(node "$ROOT/scripts/lib/env.mjs" home 2>/dev/null || echo '~/.reelplanner')" "$RP"
 elif N="$(node "$ROOT/scripts/lib/narrator.mjs" describe "$PWD" 2>&1)"; then ok "$N"
 else printf '✗ %s\n' "$N"; MISSING+=("narration: ${N%%$'\n'*}"); fi
 

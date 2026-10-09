@@ -4,8 +4,9 @@
 //                      `reelplanner` says nothing of it; package.json has both, and `reel`
 //   a setting        — REELPLANNING_X is read as REELPLANNER_X when that is unset (the new name wins when both are
 //                      set): in the shell (scripts/lib/old-names.mjs) and in a .env file (narrator.mjs loadEnvFile)
-//   ~/.reelplanning  — the machine's folder (its .env, your memory) while there is no ~/.reelplanner; once there is
-//                      one, that one
+//   ~/.reelplanning  — the machine's folder (its .env, your memory) while there is no ~/.reelplanner, and the folder a
+//                      line tells you to put a key in; once there is one, that one, and a file the old one holds and
+//                      the new one lacks is said once, with the `mv` that moves it
 //   .reelplanning/   — a repo's project folder under its old name is found: `reel status` reads it and says once that
 //                      `git mv .reelplanning .reelplanner` renames it, and `reel init` finds it set up (no second
 //                      folder); once renamed, a command handed a plan's old path (a line a page wrote before the
@@ -61,9 +62,17 @@ try {
   const away = join(tmp, "elsewhere"); mkdirSync(away);
   const m1 = answer(ask(`narrator.loadEnvFile(${JSON.stringify(away)}); return { dir: env.machineDir(), mem: memory.homeDir(), envPath: narrator.homeEnvPath(), tts: process.env.REELPLANNER_TTS, from: narrator.envSource("REELPLANNER_TTS") };`, { HOME: home }, away));
   ok("with no ~/.reelplanner, ~/.reelplanning is the machine's folder: its .env is read, your memory is there", m1?.dir === join(home, ".reelplanning") && m1?.mem === m1?.dir && m1?.envPath === join(home, ".reelplanning", ".env") && m1?.tts === "openrouter" && m1?.from === "~/.reelplanning/.env", JSON.stringify(m1));
+  // a line that says where a key goes names the folder that is read, so following it does not start a second one
+  const hint1 = answer(ask(`return narrator.keyPlaces();`, { HOME: home }, away)), sh1 = node([join(ROOT, "scripts/lib/env.mjs"), "home"], { HOME: home }, away);
+  ok("…and a line saying where a key goes names ~/.reelplanning/.env (narrator's, and setup's)", /put it in ~\/\.reelplanning\/\.env /.test(hint1) && sh1.out.trim() === "~/.reelplanning", JSON.stringify({ hint1, sh1 }));
   mkdirSync(join(home, ".reelplanner"));
-  const m2 = answer(ask(`return { dir: env.machineDir(), mem: memory.homeDir() };`, { HOME: home }, away));
-  ok("…once there is a ~/.reelplanner, that one", m2?.dir === join(home, ".reelplanner") && m2?.mem === m2?.dir, JSON.stringify(m2));
+  const m2r = ask(`return { dir: env.machineDir(), mem: memory.homeDir(), hint: narrator.keyPlaces() };`, { HOME: home }, away), m2 = answer(m2r);
+  ok("…once there is a ~/.reelplanner, that one, and the lines name it", m2?.dir === join(home, ".reelplanner") && m2?.mem === m2?.dir && /put it in ~\/\.reelplanner\/\.env /.test(m2?.hint), JSON.stringify(m2));
+  const notes = m2r.err.split("\n").filter((l) => l.includes("machine folder's old name"));
+  ok("…and the old one's .env, which the new one lacks, is said once, with the mv that moves it", notes.length === 1 && notes[0].includes("`mv ~/.reelplanning/.env ~/.reelplanner/`"), m2r.err);
+  writeFileSync(join(home, ".reelplanner", ".env"), "");
+  const m2b = ask(`return env.machineDir();`, { HOME: home }, away);
+  ok("…and nothing once the new one has its own", answer(m2b) === join(home, ".reelplanner") && !/old name/.test(m2b.err), m2b.err);
   const m3 = answer(ask(`return env.machineDir();`, { HOME: home, REELPLANNING_HOME: join(tmp, "set") }, away));
   ok("…and REELPLANNING_HOME, the old name of REELPLANNER_HOME, still moves it", m3 === join(tmp, "set"), m3);
 

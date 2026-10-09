@@ -17,7 +17,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { ROOT, testPort } from "../lib/env.mjs";
+import { machineDirShown, ROOT, testPort } from "../lib/env.mjs";
 import { parseWav } from "../lib/tts-api.mjs";
 import { fakeTtsApis, KEYS } from "./fake-tts-apis.mjs";
 
@@ -31,6 +31,9 @@ const tmp = mkdtempSync(join(tmpdir(), "rp-narration-check-spec-"));
 const REPO = join(tmp, "repo");
 // this machine's ~/.reelplanner/.env is read by every check: a scratch one (REELPLANNER_HOME), never the real one
 const RPHOME = join(tmp, "rp-home");
+// a line saying where a key goes names the machine's folder in use: this scratch one
+const HOME_ENV = `${machineDirShown({ REELPLANNER_HOME: RPHOME })}/.env`;
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const config = (narration) => { mkdirSync(join(REPO, ".reelplanner"), { recursive: true }); writeFileSync(join(REPO, ".reelplanner", "config.json"), JSON.stringify({ narration }, null, 2)); };
 const files = (d) => readdirSync(d, { recursive: true }).map(String).sort().join("\n");
 const baseEnv = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(REELPLANNER_|HYPERFRAMES_TTS|HF_MEDIA)/.test(k) && !/_API_KEY$/.test(k)));
@@ -83,7 +86,7 @@ try {
 
   // ── a missing key ──
   const r4 = await check(["--tts", "deepinfra", "--base-url", `${BASE}/deepinfra/v1`], { DEEPINFRA_API_KEY: null });
-  ok("a missing key: nothing sent, the variable named and where to put it (this machine's ~/.reelplanner/.env, or the repo's), exit 1", r4.code === 1 && r4.reqs.length === 0 && /^✗ speech: not sent: DEEPINFRA_API_KEY is not set$/m.test(r4.out) && /→ export DEEPINFRA_API_KEY=… in your shell, or put DEEPINFRA_API_KEY=… in ~\/\.reelplanner\/\.env \(this machine, every repo\) or the repo's \.reelplanner\/\.env \(git ignores it; never in config\.json\)/.test(r4.out) && /^✗ narration-check: .* does not work yet$/m.test(r4.out), r4.out);
+  ok("a missing key: nothing sent, the variable named and where to put it (this machine's ~/.reelplanner/.env, or the repo's), exit 1", r4.code === 1 && r4.reqs.length === 0 && /^✗ speech: not sent: DEEPINFRA_API_KEY is not set$/m.test(r4.out) && new RegExp(`→ export DEEPINFRA_API_KEY=… in your shell, or put DEEPINFRA_API_KEY=… in ${esc(HOME_ENV)} \\(this machine, every repo\\) or the repo's \\.reelplanner/\\.env \\(git ignores it; never in config\\.json\\)`).test(r4.out) && /^✗ narration-check: .* does not work yet$/m.test(r4.out), r4.out);
   const r4b = await check(["--tts", "openai", "--base-url", `${BASE}/openai/v1`, "--timings-api", "groq"], { GROQ_API_KEY: null });
   ok("…a missing transcriber key: the speech is checked, the timings say what to set", r4b.code === 1 && /^✓ speech/m.test(r4b.out) && /^✗ word timings: not asked for: GROQ_API_KEY is not set$/m.test(r4b.out) && /console\.groq\.com\/keys/.test(r4b.out), r4b.out);
 

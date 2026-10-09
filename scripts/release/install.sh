@@ -50,6 +50,11 @@ if npm view "reelplanner@$VERSION" version >/dev/null 2>&1; then
   RP="npx -y reelplanner@$VERSION"
 else
   printf '\n▶ reelplanner@%s is not on npm yet: npm i -g %s\n' "$VERSION" "$GITHUB"
+  # its name until October 2026 (D-312): npm will not install over its commands (both have `reel`), and this replaces it
+  if npm ls -g reelplanning --depth=0 >/dev/null 2>&1; then
+    printf '  reelplanning, its old name, is installed: npm rm -g reelplanning first\n'
+    npm rm -g reelplanning </dev/null || die "could not remove reelplanning, its old name (npm's global folder may need sudo: npm rm -g reelplanning)"
+  fi
   npm i -g "$GITHUB" </dev/null || die "could not install $GITHUB (a private repo needs access; or npm's global folder needs sudo: npm i -g $GITHUB)"
   RP="reelplanner"
 fi

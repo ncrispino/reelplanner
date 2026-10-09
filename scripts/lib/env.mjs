@@ -260,14 +260,29 @@ export function otherRpPath(p) {
   return q === String(p) ? null : q;
 }
 
+/** The files of the machine's folder that are read from it. */
+const MACHINE_FILES = ["you.jsonl", ".env"];
+let toldMachine = false;
 /**
  * This machine's own folder, ~/.reelplanner (REELPLANNER_HOME): your memory (you.jsonl) and the machine's .env.
- * Before the rename it was ~/.reelplanning: that one is used while there is no ~/.reelplanner.
+ * Before the rename it was ~/.reelplanning: that one is used while there is no ~/.reelplanner. Once both are there,
+ * the old one is not read: a file of it the new one lacks is said once on stderr, with the `mv` that moves it.
  */
 export function machineDir(env = process.env) {
   if (env.REELPLANNER_HOME) return resolve(env.REELPLANNER_HOME);
   const fresh = join(homedir(), RP_DIR), old = join(homedir(), OLD_RP_DIR);
-  return resolve(!existsSync(fresh) && existsSync(old) ? old : fresh);
+  if (!existsSync(fresh)) return resolve(existsSync(old) ? old : fresh);
+  const left = MACHINE_FILES.filter((f) => existsSync(join(old, f)) && !existsSync(join(fresh, f)));
+  if (left.length && !toldMachine) {
+    toldMachine = true;
+    process.stderr.write(`△ ~/${OLD_RP_DIR}: the machine folder's old name, not read now that ~/${RP_DIR} is there; \`mv ${left.map((f) => `~/${OLD_RP_DIR}/${f}`).join(" ")} ~/${RP_DIR}/\` moves what it holds\n`);
+  }
+  return resolve(fresh);
+}
+/** How a line names the machine's folder: ~/.reelplanner, or ~/.reelplanning while that is the one read. */
+export function machineDirShown(env = process.env) {
+  const d = machineDir(env), h = homedir();
+  return d.startsWith(h + sep) ? `~${d.slice(h.length)}` : d;
 }
 /**
  * Whether `d` holds a repo's `.reelplanner/` (or its old `.reelplanning/`). The machine's own ~/.reelplanner is not
@@ -283,7 +298,8 @@ export function hasRp(d) {
 }
 
 // The same answers for the shell scripts:
-//   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp   (rp: the command people run, RP_COMMAND)
+//   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp | home
+//   (rp: the command people run, RP_COMMAND; home: the machine's folder as a line names it, machineDirShown())
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [what, a, b] = process.argv.slice(2);
   try {
@@ -291,6 +307,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     else if (what === "dep" && a && b) console.log(depFile(a, b));
     else if (what === "version") console.log(VERSION);
     else if (what === "rp") console.log(RP_COMMAND);
-    else { console.error("usage: node scripts/lib/env.mjs hf-bin | dep <name> <file> | version | rp"); process.exit(2); }
+    else if (what === "home") console.log(machineDirShown());
+    else { console.error("usage: node scripts/lib/env.mjs hf-bin | dep <name> <file> | version | rp | home"); process.exit(2); }
   } catch (e) { console.error(`✗ ${e.message}`); process.exit(1); }
 }

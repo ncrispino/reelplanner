@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync, mkdtempSync, existsSync, rmSync } from "no
 import { execFileSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
-import { hyperframesBin, RP_COMMAND } from "./lib/env.mjs";
+import { hyperframesBin, RP_COMMAND, machineDirShown } from "./lib/env.mjs";
 import { loadEnvFile, narrationSettings, DEFAULT_WHISPER } from "./lib/narrator.mjs";
 import { transcribe, alignWords, toWav } from "./lib/tts-api.mjs";
 import { recordPath, pad2 } from "./lib/narration.mjs";
@@ -61,11 +61,11 @@ if (S.engine === "reelplanner" && !S.error) {
     if (t && process.env[t.keyEnv]) api = t;
     else if (!whisperPath()) {
       console.error(`✗ ${dir}: frame(s) ${missing.map((v) => v.frame).join(", ")} have no word timings, and nothing here can transcribe them: narration is ${S.tts}, which times its own speech, no transcription API key is set and whisper.cpp is not installed.`);
-      console.error(`  Put OPENROUTER_API_KEY (or GROQ_API_KEY, or OPENAI_API_KEY) in ~/.reelplanner/.env, or run \`${RP_COMMAND} setup --local-voice\`, then run this again.`);
+      console.error(`  Put OPENROUTER_API_KEY (or GROQ_API_KEY, or OPENAI_API_KEY) in ${machineDirShown()}/.env, or run \`${RP_COMMAND} setup --local-voice\`, then run this again.`);
       process.exit(1);
     }
   }
-  if (api && !process.env[api.keyEnv]) { console.error(`✗ ${dir}: ${api.keyEnv} is not set: the word timings come from ${api.name} ${api.model}, which needs it (in ~/.reelplanner/.env, or the shell)`); process.exit(1); }
+  if (api && !process.env[api.keyEnv]) { console.error(`✗ ${dir}: ${api.keyEnv} is not set: the word timings come from ${api.name} ${api.model}, which needs it (in ${machineDirShown()}/.env, or the shell)`); process.exit(1); }
 }
 // the words each line was voiced with (as said), for lining a transcriber's words up with them
 const said = Object.fromEntries(Object.entries((() => { try { return JSON.parse(readFileSync(recordPath(projectDir), "utf8")).lines || {}; } catch { return {}; } })()).map(([id, e]) => [id, e.said || e.text]));

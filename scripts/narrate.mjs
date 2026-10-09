@@ -48,7 +48,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { skillsDir } from "./hyperframes-skills.mjs";
-import { ROOT, pkgDir, RP_COMMAND } from "./lib/env.mjs";
+import { ROOT, pkgDir, RP_COMMAND, machineDirShown } from "./lib/env.mjs";
 import { localVoiceNeeds, localToolsMissing, HOSTED_LINES, KEYS_URL } from "./lib/local-speed.mjs";
 import { narrationSettings, keyModel, familyOf, loadEnvFile, envFileWarning, keyPlaces } from "./lib/narrator.mjs";
 import { parseScript, scriptFor, planNarration, modelId, hyperframesCliPath, recordPath, progressDir, progressPath, PROGRESS, writeAtomic, sha256, costSentence, playsMp3 } from "./lib/narration.mjs";
@@ -136,7 +136,7 @@ if (plan.narrate.length && !FAKE && !process.env.REELPLANNER_HYPERFRAMES_BIN) {
   const gone = localToolsMissing(process.env, need);
   if (gone.length) {
     const why = OWN ? `narration here is ${S.tts === "kokoro" ? "local Kokoro" : `${S.tts}, timed by local whisper`} (from ${S.from.join(" and ")})` : "narration here is the local voice (the default: no hosted voice is set)";
-    const m = `${gone.join(" and ")} ${gone.length === 1 ? "is" : "are"} not installed, and ${why}. Either install the local voice: \`${RP_COMMAND} setup --local-voice\` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put ${HOSTED_LINES.join(" and ")} in ~/.reelplanner/.env (a key from ${KEYS_URL}), then run \`${RP_COMMAND} narration-check\``;
+    const m = `${gone.join(" and ")} ${gone.length === 1 ? "is" : "are"} not installed, and ${why}. Either install the local voice: \`${RP_COMMAND} setup --local-voice\` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put ${HOSTED_LINES.join(" and ")} in ${machineDirShown()}/.env (a key from ${KEYS_URL}), then run \`${RP_COMMAND} narration-check\``;
     if (has("dry-run")) console.log(`  △ ${m}`); else die(m);
   }
 }

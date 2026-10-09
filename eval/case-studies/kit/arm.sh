@@ -16,19 +16,18 @@
 # Any failure stops it with what failed. POSIX sh, for macOS and Linux.
 #
 # Test only: REEL_CS_SKIP_INSTALL=1 skips ours's install (S4); REEL_CS_RP_SRC is where npm installs
-# reelplanner from; REEL_CS_WORKTREE is where the case-study worktree goes (default ../ReelPlanning-results), and
+# reelplanner from; REEL_CS_WORKTREE is where the case-study worktree goes (default ../reelplanner-results), and
 # when it is a checkout on a case-study branch already, the one used.
 set -u
 
 MODEL=${REEL_CS_MODEL:-claude-opus-5-5}        # the model every arm runs
-BASE=claude/clever-knuth-b5gtcf                 # reelplanner's branch: ours installs it, the results branch starts from it
+BASE=${REEL_CS_BASE:-main}                      # reelplanner's branch: ours installs it, the results branch starts from it
 PREFIX=case-study/bob-dylan-                    # the results branch, with the first arm's date
 STUDY=bob-dylan-site
-# The repo $BASE lives in. For the case study already running, the private development repo, under its name today.
-# Once the public ncrispino/reelplanner exists, all work happens there (D-310): a new case study uses
-# DEV_REPO=ncrispino/reelplanner and BASE=main. A run in progress after the rename sets REEL_CS_DEV_REPO to the private
-# repo's new name, since GitHub names ignore case and the old name then reaches the public repo, which has no $BASE.
-DEV_REPO=${REEL_CS_DEV_REPO:-ncrispino/ReelPlanning}
+# The repo $BASE lives in: the public one, where all work happens (D-310). Bob Dylan's arms ran from a branch of the
+# private development repo (claude/clever-knuth-b5gtcf), which is not public: their provenance.json names it, and a
+# rerun of them runs that branch's own copy of this kit, from before the rename.
+DEV_REPO=${REEL_CS_DEV_REPO:-ncrispino/reelplanner}
 RP_SRC=${REEL_CS_RP_SRC:-github:$DEV_REPO#$BASE}
 ARMS_HOME=$HOME/reel-case-study                 # each arm's folder: ~/reel-case-study/<arm>
 PUB_REPO=https://github.com/ncrispino/reelplanner-case-studies.git   # the public home: the study, its sites, its videos
@@ -63,7 +62,7 @@ has git || die "git is not installed"
 common=$(cd "$kit" && cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd) || die "arm.sh is not in a git checkout: run it from your reelplanner checkout"
 main=$(dirname "$common")
 [ -d "$main/eval/case-studies" ] || die "$main is not a reelplanner checkout"
-WT_DEFAULT=${REEL_CS_WORKTREE:-$(dirname "$main")/ReelPlanning-results}
+WT_DEFAULT=${REEL_CS_WORKTREE:-$(dirname "$main")/reelplanner-results}
 
 # the case-study worktree this checkout has, as "<branch>\t<path>" (the newest case-study branch), or REEL_CS_WORKTREE's
 find_wt() {

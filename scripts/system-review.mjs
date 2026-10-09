@@ -28,7 +28,7 @@
 // writes <system-video-dir>/reviews/<id>.json and reviews/<id>.md, and the index <system-video-dir>/review.md
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, join, dirname, relative, basename } from "node:path";
-import { repoRoot } from "./lib/env.mjs";
+import { repoRoot, rpDirOf } from "./lib/env.mjs";
 import { reviewId } from "./lib/inbox.mjs";
 import { fileReview, reviewsDir } from "./lib/reviews.mjs";
 
@@ -43,7 +43,7 @@ const review = row.review || row;
 if (!review || !Array.isArray(review.annotations)) die(`${reviewPath} carries no review`);
 
 const isSystem = (d) => existsSync(join(d, "plan-map.json")) && existsSync(join(d, "STORYBOARD.md")) && /^kind:\s*"?system"?\s*$/m.test((readFileSync(join(d, "STORYBOARD.md"), "utf8").match(/^---\n([\s\S]*?)\n---/) || ["", ""])[1]);
-const VIDEO = resolve(flag("video") || (isSystem(dirname(resolve(reviewPath))) ? dirname(resolve(reviewPath)) : join(repoRoot(dirname(resolve(reviewPath))), ".reelplanner", "system-video")));
+const VIDEO = resolve(flag("video") || (isSystem(dirname(resolve(reviewPath))) ? dirname(resolve(reviewPath)) : join(rpDirOf(repoRoot(dirname(resolve(reviewPath)))), "system-video")));
 if (!isSystem(VIDEO)) die(`${VIDEO} is not a system video (needs plan-map.json and kind: system in its STORYBOARD.md)`);
 const RP = dirname(VIDEO);
 const map = JSON.parse(readFileSync(join(VIDEO, "plan-map.json"), "utf8"));

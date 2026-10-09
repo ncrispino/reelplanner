@@ -19,7 +19,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync, chmodSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { ROOT, testPort } from "../lib/env.mjs";
+import { ROOT, testPort, machineDirShown } from "../lib/env.mjs";
 import { skillsDir } from "../hyperframes-skills.mjs";
 import { alignWords, parseWav, toWav } from "../lib/tts-api.mjs";
 import { narrationSettings, describe, familyOf, heygenSet } from "../lib/narrator.mjs";
@@ -34,6 +34,9 @@ const P = join(tmp, "video"), CFG = join(tmp, ".reelplanner", "config.json");
 // this machine's .env (~/.reelplanner/.env) is read by every narration command: a scratch one, never the real one
 const RPHOME = join(tmp, "rp-home"), HOME_ENV = join(RPHOME, ".env");
 process.env.REELPLANNER_HOME = RPHOME;
+// a line saying where a key goes names the machine's folder in use: this scratch one
+const HINT_ENV = `${machineDirShown()}/.env`;
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // ── the fake APIs (fake-tts-apis.mjs) ────────────────────────────────────────────────────────────
 const api = await fakeTtsApis(testPort(28640));
@@ -127,7 +130,7 @@ try {
   ok("transcribe-missing, hosted narration: the line's words from the hosted transcriber (groq), lined up with the line's own words, in both meta files",
     tm.code === 0 && transReqs(tm).length === 1 && speechReqs(tm).length === 0 && /transcribing serially with groq whisper-large-v3-turbo/.test(tm.out)
       && json("audio_meta.json").voices[1].words.map((w) => w.text).join(" ") === "A line voiced with no local voice installed." && json("audio_engine_meta.json").voices[1].words.length === 8 && noKeyIn(tm.out), tm.out);
-  const LOCAL_HINT = "Either install the local voice: `reelplanner setup --local-voice` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanner/.env (a key from https://openrouter.ai/settings/keys), then run `reelplanner narration-check`";
+  const LOCAL_HINT = `Either install the local voice: \`reelplanner setup --local-voice\` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ${HINT_ENV} (a key from https://openrouter.ai/settings/keys), then run \`reelplanner narration-check\``;
   config({ tts: "kokoro" });
   const w0s = wavs();
   setLines([LINES[0], "A line for a voice that is not installed.", ...LINES.slice(2)]);
@@ -167,7 +170,7 @@ try {
     r4.code === 1 && /refused the key in OPENAI_API_KEY \(HTTP 401/.test(r4.out) && /kept lines are back as they were/.test(r4.out) && ["01.wav", "03.wav"].every((f) => wavs()[f] === w2[f]) && !r4.out.includes("sk-wrong"), r4.out);
   const r5 = await narrate([], { OPENAI_API_KEY: "" });
   ok("a missing key stops the run before any request, and says what to set and where: this machine's ~/.reelplanner/.env or the repo's",
-    r5.code === 1 && r5.reqs.length === 0 && /OPENAI_API_KEY is not set: narration "openai" with word timings from groq needs it: export it in your shell, or put it in ~\/\.reelplanner\/\.env \(this machine, every repo\) or the repo's \.reelplanner\/\.env/.test(r5.out), r5.out);
+    r5.code === 1 && r5.reqs.length === 0 && new RegExp(`OPENAI_API_KEY is not set: narration "openai" with word timings from groq needs it: export it in your shell, or put it in ${esc(HINT_ENV)} \\(this machine, every repo\\) or the repo's \\.reelplanner\\/\\.env`).test(r5.out), r5.out);
   const r5d = await narrate(["--dry-run"], { OPENAI_API_KEY: "", GROQ_API_KEY: "" });
   ok("…a dry run only says so, both of them", r5d.code === 0 && r5d.reqs.length === 0 && /△ OPENAI_API_KEY and GROQ_API_KEY are not set/.test(r5d.out), r5d.out);
   writeFileSync(join(tmp, ".env"), `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);

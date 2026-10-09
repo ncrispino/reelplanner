@@ -47,7 +47,7 @@ it shows anything missing, run `$RP setup` once. Pass on whatever it could not i
 around it. Setup installs the local voice (about 840 MB, Python 3.10+) unless a hosted engine is set, and says
 which; if the person has said they want the hosted voice, run `$RP setup --hosted-voice` instead. If `reelplanner` is not on the PATH and `npx` cannot find the package (`npm view reelplanner` says
 404: it is not on npm yet), install it once from GitHub, `npm i -g github:ncrispino/reelplanner` (works
-once the repo is public), and write `reelplanner` where this skill says `$RP`.
+once the repo is public; if npm says `EEXIST`, it is installed under its old name: `npm rm -g reelplanning` first), and write `reelplanner` where this skill says `$RP`.
 
 **Before the first narration on a machine** (unless a hosted engine is set: `REELPLANNER_TTS` in
 `~/.reelplanner/.env`, or `narration.tts` in `.reelplanner/config.json`), run `$RP narration-check --local` once

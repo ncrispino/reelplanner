@@ -19,7 +19,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
-import { ROOT } from "../lib/env.mjs";
+import { ROOT, machineDirShown } from "../lib/env.mjs";
 import { speedVerdict, SPEED_TEXT, SLOW_S } from "../lib/local-speed.mjs";
 
 let failed = 0;
@@ -73,16 +73,17 @@ const SLOW_MS = 8000;
 const afterStart = (r) => (r.calls.length ? r.end - r.calls[0].t : 0);
 const check = (args = [], env) => runIt([process.execPath, join(ROOT, "bin", "reelplanner.mjs"), "narration-check", "--local", ...args], env);
 const step = (args = [], env) => runIt([process.execPath, join(ROOT, "scripts", "lib", "local-speed.mjs"), ...args, REPO], env);
-const SLOW = [
+// `home`: the machine's folder as the line names it, the one in use (a run here has a scratch HOME with none: the new name)
+const slow = (home = "~/.reelplanner") => [
   "  the hosted voice is much faster: a line in 1–3 s, about $0.03 a minute of narration (Deepgram Aura-2 on OpenRouter). To use it:",
-  "    put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanner/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)",
+  `    put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ${home}/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)`,
   "    then run: reelplanner narration-check",
   "  local narration still works here, just slower",
 ].join("\n");
 // the stand-in tts and transcriber each start a process, so a loaded machine can take a second or two: the verdict
 // is what is checked (fine, and how it is said), not that a stand-in finished under 1 s
 const FINE = /^✓ local narration: (?:under 1 s|about \d+ s) a line here, (?:under a minute|about \d+ min) for a plan video \(60 lines\): fine$/m;
-const TIMED_OUT = "△ local narration: over 1 s a line here (one sentence did not finish in 1 s), over 1 min for a plan video (60 lines): slow\n" + SLOW;
+const TIMED_OUT = "△ local narration: over 1 s a line here (one sentence did not finish in 1 s), over 1 min for a plan video (60 lines): slow\n" + slow();
 
 try {
   // ── the verdict's words ──
@@ -90,7 +91,7 @@ try {
   ok("verdict: 6 s a line is fine, said in one line with the minutes for a plan video", JSON.stringify(v(6)) === JSON.stringify({ fast: true, lines: ["✓ local narration: about 6 s a line here, about 6 min for a plan video (60 lines): fine"] }), JSON.stringify(v(6)));
   ok(`verdict: ${SLOW_S} s a line is still fine, ${SLOW_S + 1} s is slow`, v(SLOW_S).fast && !v(SLOW_S + 1).fast);
   ok("verdict: 45 s a line is slow: the hosted voice with its cost, the engine and the key in ~/.reelplanner/.env (no config.json), the check, and that local still works",
-    v(45).lines.join("\n") === "△ local narration: about 45 s a line here, about 45 min for a plan video (60 lines): slow\n" + SLOW, v(45).lines.join("\n"));
+    v(45).lines.join("\n") === "△ local narration: about 45 s a line here, about 45 min for a plan video (60 lines): slow\n" + slow(machineDirShown()), v(45).lines.join("\n"));
   ok("verdict: a sentence that did not finish in 30 s is over 30 s a line, and slow", v(0, { timedOut: true, limitS: 30 }).lines[0] === "△ local narration: over 30 s a line here (one sentence did not finish in 30 s), over 30 min for a plan video (60 lines): slow", v(0, { timedOut: true, limitS: 30 }).lines[0]);
   ok("verdict: no key in it, only the variable's name (and the engine's)", !/sk-|=[A-Za-z0-9]/.test(v(45).lines.join("\n").replace("OPENROUTER_API_KEY=…", "").replace("REELPLANNER_TTS=openrouter", "")));
 

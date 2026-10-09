@@ -27,7 +27,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { kokoro, whisper } from "./tts-local.mjs";
 import { loadEnvFile, narrationSettings, heygenSet, envSource, envFileLabel, homeEnvPath, DEFAULT_WHISPER } from "./narrator.mjs";
-import { RP_COMMAND } from "./env.mjs";
+import { RP_COMMAND, machineDirShown } from "./env.mjs";
 
 // A plan video has 40–100 lines; 60 is a typical one.
 export const LINES = 60;
@@ -145,7 +145,7 @@ export function speedVerdict(seconds, { timedOut = false, limitS = timeoutS(), r
   return { fast: false, lines: [
     `△ ${head}: slow`,
     "  the hosted voice is much faster: a line in 1–3 s, about $0.03 a minute of narration (Deepgram Aura-2 on OpenRouter). To use it:",
-    "    put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanner/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)",
+    `    put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ${machineDirShown()}/.env (this machine, every repo; a key from https://openrouter.ai/settings/keys)`,
     `    then run: ${rp} narration-check`,
     "  local narration still works here, just slower",
   ] };

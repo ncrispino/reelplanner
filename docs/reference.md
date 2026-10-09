@@ -43,10 +43,13 @@ is written the same way, from one setting (`RP_COMMAND` in `scripts/lib/env.mjs`
 - **To remove it:** `npx skills remove plan-to-video -g` (and HyperFrames' skills setup added: `npx skills ls -g`
   lists them), `npm rm -g reelplanner`, and `rm -rf ~/.cache/hyperframes` (HyperFrames' cache: Chrome, the voice
   models and, on Linux, whisper.cpp). `~/.reelplanner/` holds the hosted voice's key and your review summaries.
-- **From reelplanning,** its name until October 2026 (D-312): `npm rm -g reelplanning`, then install as above. The old
-  names are still read for a while: a repo's `.reelplanning/` when it has no `.reelplanner/` (a command says so once;
-  `git mv .reelplanning .reelplanner` renames it, and a `.gitignore` line naming it needs the new name too),
-  `~/.reelplanning` while there is no `~/.reelplanner`, a `REELPLANNING_*` setting, in the shell or a `.env`, when
+- **From reelplanning,** its name until October 2026 (D-312): `npm rm -g reelplanning`, then install as above (npm
+  stops at `EEXIST` before that: both packages have a `reel` command). The plugin under the old name: `/plugin
+  uninstall reelplanning@reelplanning` and `/plugin marketplace remove reelplanning`, then add it as above. The old
+  names are still read for a while: a repo's `.reelplanning/` when it has no `.reelplanner/` (each command says so,
+  once; `git mv .reelplanning .reelplanner` renames it, and a `.gitignore` line naming it needs the new name too),
+  `~/.reelplanning` while there is no `~/.reelplanner` (once there is one, a command names the old one's `you.jsonl`
+  or `.env` it no longer reads, with the `mv` that moves them), a `REELPLANNING_*` setting, in the shell or a `.env`, when
   its `REELPLANNER_*` name is unset, and the `reelplanning` command, which says the new name and runs it. A review
   begun on the page before the rename keeps its marks (the page's saved keys kept their names).
   ffmpeg, `unzip` and the pip packages (`kokoro-onnx`, `soundfile`) are left; a repo's `.reelplanner/` is its own.
