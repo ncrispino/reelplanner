@@ -47,7 +47,7 @@
   `~` however `HOME` and the folder are spelled.
 - **The test suite passes on CI and on macOS,** not only in the development containers: CI runs on Node 22 (which
   HyperFrames needs) with ffmpeg, and the specs no longer lean on the machine's tools, its temp folder's spelling,
-  the development history, or a page measured before it came to rest.
+  the development history, a page measured before it came to rest, or a paused video read before its pause landed.
 - **The full suite runs on every push to a pull request,** instead of failing until a maintainer added
   `ready-to-merge`: a PR's checks are green or red for its code, and a maintainer's approving review is what else
   it needs. The tests (`.github/workflows/ci.yml`) start only on pushes, and `reel pr-check` moved to
