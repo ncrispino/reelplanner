@@ -1,0 +1,59 @@
+# A fresh machine, as a new user meets reelplanner (docs/releasing.md, "Check it from a fresh machine"): the README's
+# Install run as written, in a bare ubuntu:24.04 container, by a user with sudo (scripts/release/fresh-install.sh);
+# once with Node 22 from nvm, and once with Ubuntu's own older Node, which the CLI must refuse at once. It installs
+# the commit under test from GitHub, as the README's `npm i -g github:…` would.
+#
+# Not a required check: it runs when a PR changes the install's path, on a version tag, by hand, and each week,
+# since what the install fetches (`npx skills`, Ubuntu's packages, HyperFrames' downloads) moves on its own.
+name: fresh-install
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - README.md
+      - package.json
+      - package-lock.json
+      - bin/**
+      - scripts/setup.sh
+      - scripts/hyperframes-skills.mjs
+      - scripts/lib/env.mjs
+      - scripts/lib/node-check.mjs
+      - scripts/release/fresh-install.sh
+      - skills/plan-to-video/SKILL.md
+      - .github/workflows/fresh-install.yml
+  push:
+    tags: ["v*"]
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays, 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The branch, tag or commit of this repo to install
+        default: main
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: fresh install (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22", "apt"]
+    env:
+      # the commit under test: a PR's own last commit (in its fork, for a PR from one), else the ref asked for or pushed
+      REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+      REF: ${{ github.event.pull_request.head.sha || inputs.ref || github.sha }}
+    steps:
+      # the README the install is read from, at the same commit (git is not in the image: checkout downloads it)
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPO }}
+          ref: ${{ env.REF }}
+      - name: The README's Install, as written
+        run: bash scripts/release/fresh-install.sh --node "${{ matrix.node }}" --from "github:$REPO#$REF"

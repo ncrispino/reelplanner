@@ -20,7 +20,7 @@
 # sudo, or from an interactive terminal. Otherwise the step is reported with the command to run
 # yourself, and setup exits 1 so an agent calling it knows the machine is not ready.
 #
-# Steps: node ≥ 18 · ffmpeg · unzip (Linux) · Chrome headless (hyperframes browser ensure) · Kokoro TTS (pip) ·
+# Steps: node ≥ 22.20 · ffmpeg · WebP · unzip (Linux) · Chrome headless (hyperframes browser ensure) · Kokoro TTS (pip) ·
 #        whisper.cpp (brew, or built into HyperFrames' own cache, no root) · HyperFrames' skills
 #        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanner/.env for this machine,
 #        or the repo's .reelplanner/), and, when it is local, whether it is fast enough here (one sentence, timed)
@@ -84,7 +84,9 @@ else miss "ffmpeg: no package manager this script knows" "install ffmpeg (with f
 
 # ---- WebP: the guide's pictures, made with ffmpeg's libwebp or else libwebp's own cwebp (scripts/lib/guide/pictures.mjs).
 # Homebrew's ffmpeg is built without libwebp, so on a Mac the guide had no pictures; apt's ffmpeg has it.
-if have ffmpeg && ffmpeg -hide_banner -encoders 2>/dev/null | grep -qw libwebp; then ok "WebP (ffmpeg's libwebp)"
+# (grep reads the whole list: -q would stop at the first match, ffmpeg would die writing the rest, and pipefail
+# would count the pipe as failed, so a libwebp ffmpeg read as one without)
+if have ffmpeg && ffmpeg -hide_banner -encoders 2>/dev/null | grep -w libwebp >/dev/null; then ok "WebP (ffmpeg's libwebp)"
 elif have cwebp; then ok "WebP (cwebp)"
 elif [ "$OS" = Darwin ] && have brew; then run brew install webp || miss "webp" "brew install webp failed (the guide's pictures)"
 elif ! have ffmpeg; then :   # ffmpeg is missing (said above); apt's brings libwebp
@@ -134,19 +136,30 @@ fi
 # ---- Kokoro: local text-to-speech. HyperFrames runs it with python3, or with $HYPERFRAMES_PYTHON.
 PY="${HYPERFRAMES_PYTHON:-python3}"
 kokoro() { "$PY" -c "import kokoro_onnx, soundfile" >/dev/null 2>&1; }
+pip_ok() { "$PY" -m pip --version >/dev/null 2>&1; }
 if [ "$NEED_KOKORO" != 1 ]; then :
 elif ! have "$PY"; then miss "Kokoro TTS: $PY not found" "install Python 3.10+, then: pip install kokoro-onnx soundfile"
 elif kokoro; then ok "Kokoro TTS (kokoro-onnx in $PY)"
-elif [ "$DRY" = 1 ]; then todo "run: $PY -m pip install --user kokoro-onnx soundfile"
+elif [ "$DRY" = 1 ]; then
+  pip_ok || { [ "$PY" = python3 ] && have apt-get && todo "run: sudo apt-get install -y python3-pip   ($PY has no pip)"; }
+  todo "run: $PY -m pip install --user kokoro-onnx soundfile"
 else
-  if "$PY" -c 'import sys; sys.exit(0 if sys.prefix != sys.base_prefix else 1)'; then pipargs=()   # a venv: no --user
-  else pipargs=(--user); fi
-  step "$PY -m pip install ${pipargs[*]} kokoro-onnx soundfile"
-  "$PY" -m pip install -q "${pipargs[@]}" kokoro-onnx soundfile \
-    || { echo "  (retrying with --break-system-packages: this Python is marked externally managed)";
-         "$PY" -m pip install -q "${pipargs[@]}" --break-system-packages kokoro-onnx soundfile; }
-  kokoro && ok "Kokoro TTS" || miss "Kokoro TTS: pip could not install kokoro-onnx" \
-    "run: pip install kokoro-onnx soundfile — or make a venv with them and export HYPERFRAMES_PYTHON=<venv>/bin/python"
+  # a stock Ubuntu's python3 has no pip: apt's python3-pip, as ffmpeg above
+  if ! pip_ok && [ "$PY" = python3 ] && have apt-get && [ "$SUDO" != none ]; then
+    { as_root apt-get update && as_root apt-get install -y python3-pip; } || true
+  fi
+  if ! pip_ok; then miss "Kokoro TTS: $PY has no pip" \
+    "run: sudo apt-get install -y python3-pip (or make a venv with kokoro-onnx and soundfile, and export HYPERFRAMES_PYTHON=<venv>/bin/python), then setup again"
+  else
+    if "$PY" -c 'import sys; sys.exit(0 if sys.prefix != sys.base_prefix else 1)'; then pipargs=()   # a venv: no --user
+    else pipargs=(--user); fi
+    step "$PY -m pip install ${pipargs[*]} kokoro-onnx soundfile"
+    "$PY" -m pip install -q "${pipargs[@]}" kokoro-onnx soundfile \
+      || { echo "  (retrying with --break-system-packages: this Python is marked externally managed)";
+           "$PY" -m pip install -q "${pipargs[@]}" --break-system-packages kokoro-onnx soundfile; }
+    kokoro && ok "Kokoro TTS" || miss "Kokoro TTS: pip could not install kokoro-onnx" \
+      "run: pip install kokoro-onnx soundfile — or make a venv with them and export HYPERFRAMES_PYTHON=<venv>/bin/python"
+  fi
 fi
 
 # ---- whisper.cpp: word timings for captions. HyperFrames looks on PATH, at $HYPERFRAMES_WHISPER_PATH,
