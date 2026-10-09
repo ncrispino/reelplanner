@@ -15,7 +15,7 @@ notice or can't easily undo (`.github/CONTRIBUTING.md`). A bug fix, a typo or a 
 
 <!-- Brought a video? Add the maintainer's two lines, with your branch's URL:
 git clone -q --depth 1 -b video/pr-<number> <url> ../pr-<number>-video
-reelplanning review ../pr-<number>-video
+reelplanner review ../pr-<number>-video
 -->
 
 ## Other choices

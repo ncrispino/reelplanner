@@ -1,6 +1,6 @@
-## Contributing with reelplanning
+## Contributing with reelplanner
 
-This repo plans its changes with [reelplanning](https://github.com/ncrispino/reelplanning): a plan, and
+This repo plans its changes with [reelplanner](https://github.com/ncrispino/reelplanner): a plan, and
 the work done from it, are reviewed as short narrated videos. You don't need it to contribute. Open a pull
 request (PR) as on any GitHub repo; this section says when a PR gets a video, and who makes it.
 
@@ -26,7 +26,7 @@ flag or command alone is not a choice that needs one; `reel pr-check` names it a
 
 ### Who makes the video
 
-- **You plan with reelplanning:** bring a plan folder, `.reelplanning/plans/<date>-<name>/`, with two
+- **You plan with reelplanner:** bring a plan folder, `.reelplanner/plans/<date>-<name>/`, with two
   videos. The plan video, which you review yourself before writing the code, where a wrong choice costs
   least; and the walkthrough video, which shows the change running and pauses at the choices your agent
   made on its own that you'd notice or can't easily undo, the rest a list at its end. Tick "This PR brings
@@ -37,7 +37,7 @@ flag or command alone is not a choice that needs one; `reel pr-check` names it a
 ### Who decides
 
 - A **contributor** opens a PR. A **maintainer** can merge; maintainers are listed in
-  `.reelplanning/config.json` under `maintainers`.
+  `.reelplanner/config.json` under `maintainers`.
 - Your own plan review answers your plan's questions: those answers are the plan's decisions. If a
   maintainer disagrees with one, the change is made on your branch and the decision log keeps the last
   answer.
@@ -57,12 +57,12 @@ branch's earlier commits, now in main's history, still do).
 
 Never into git's history. The PR's branch carries only the videos' text (the lines in `.gitignore` leave
 the rest out, and `reel pr-check` fails a PR that adds a voice file, an image or a video under
-`.reelplanning/plans/`). Once the PR is open, your agent packs the built videos and pushes them to a branch
+`.reelplanner/plans/`). Once the PR is open, your agent packs the built videos and pushes them to a branch
 of their own, `video/pr-<number>`, that is never merged:
 
 ```sh
 url=$(git remote get-url origin)            # for a PR from a fork, this is the fork
-reelplanning bundle-player ../pr-42-video <plan-dir>/video <plan-dir>/walkthrough-video
+reelplanner bundle-player ../pr-42-video <plan-dir>/video <plan-dir>/walkthrough-video
 cd ../pr-42-video
 git init -q -b video/pr-42 && git add -A && git commit -qm "PR #42: its videos"
 git push --force "$url" video/pr-42
@@ -72,7 +72,7 @@ Then it adds two lines to the PR's text, for the maintainer:
 
 ```sh
 git clone -q --depth 1 -b video/pr-42 <url> ../pr-42-video
-reelplanning review ../pr-42-video           # in the PR's checkout, so Send files the review there
+reelplanner review ../pr-42-video           # in the PR's checkout, so Send files the review there
 ```
 
 A rebuild runs the same again: the forced push replaces the branch's one commit. When the PR closes, the
@@ -81,10 +81,10 @@ branch is deleted (for a PR from a fork, delete it in your fork when you like).
 ### Decision numbers
 
 Decisions are numbered in order across the repo, so two open PRs can each record the same next number. The
-PR merged second fixes it: `git rebase origin/main`, and when it stops at `.reelplanning/decisions.json`,
+PR merged second fixes it: `git rebase origin/main`, and when it stops at `.reelplanner/decisions.json`,
 run `reel renumber`: your new decisions go after main's last, and their mentions in your plan folder are
-rewritten. A number never changes once it is on main. A conflict in `.reelplanning/terms-index.json` is
-never merged by hand: `reel renumber` (or `reelplanning terms-index .reelplanning`) writes it again.
+rewritten. A number never changes once it is on main. A conflict in `.reelplanner/terms-index.json` is
+never merged by hand: `reel renumber` (or `reelplanner terms-index .reelplanner`) writes it again.
 
 ### Before a merge
 
@@ -94,8 +94,8 @@ The maintainer checks:
 - a PR over the line has a walkthrough a maintainer accepted, or the `no-video` label;
 - the other choices in the PR's text are accepted (ticked);
 - a contributor's own plan was reviewed before the code, and their code check found nothing left;
-- `.reelplanning/spec.md`, `system.json` and `glossary.md` say what changed;
+- `.reelplanner/spec.md`, `system.json` and `glossary.md` say what changed;
 - `reel pr-check --base origin/main --merge` passes; then `reel pr-check --tidy`, and merge with **Create a merge commit**.
 
 After merging, a maintainer brings the system video up to date on main, once for every PR merged since
-(`reelplanning spec-diff`, then `reelplanning build .reelplanning/system-video`).
+(`reelplanner spec-diff`, then `reelplanner build .reelplanner/system-video`).

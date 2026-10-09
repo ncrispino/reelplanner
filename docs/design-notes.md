@@ -4,7 +4,7 @@ The skill (`skills/plan-to-video/SKILL.md`) and its style guide say what to do, 
 This file keeps the reasons that still explain a rule, grouped by topic: what went wrong, and what
 changed because of it. The evidence base is [`research.md`](research.md), the reasons for the
 visual choices are in [`design-rationale.md`](./design-rationale.md), and every decision a reviewer
-made is in [`.reelplanning/decisions.md`](../.reelplanning/decisions.md).
+made is in [`.reelplanner/decisions.md`](../.reelplanner/decisions.md).
 
 ## The research behind the guide
 
@@ -162,6 +162,6 @@ files. What went:
   to act on; `migrate-reviews` filed 16 reviews across six plans, recovering overwritten rounds from
   git.
 - The hand-ticked plan README went stale in two plans; `reel status` reads the stage from the files.
-- The skill walked an agent through nine build commands by hand; `reelplanning build` runs them.
+- The skill walked an agent through nine build commands by hand; `reelplanner build` runs them.
 - The skill and the style guide, written as a changelog with version tags and contradictions, became
   one current guide each, with the history here.

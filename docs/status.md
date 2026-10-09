@@ -1,16 +1,16 @@
 # Status: what's built and what's left
 
 The [README](../README.md) describes the whole workflow. This page shows how much of it works today.
-Every stage below has run on this repo's own plans (`.reelplanning/plans/`); `reelplanning reel status .`
+Every stage below has run on this repo's own plans (`.reelplanner/plans/`); `reelplanner reel status .`
 lists them, each with its stage, reviews and decisions.
 
 | Stage | Status |
 |---|---|
-| Ask for a plan, get a video | ✅ The skill writes the plan into `.reelplanning/plans/`, checks it against past decisions and builds the video. It takes over whenever the agent picks the skill for a planning request; plans made in Claude Code's plan mode are not routed to it automatically yet. |
+| Ask for a plan, get a video | ✅ The skill writes the plan into `.reelplanner/plans/`, checks it against past decisions and builds the video. It takes over whenever the agent picks the skill for a planning request; plans made in Claude Code's plan mode are not routed to it automatically yet. |
 | An existing plan → video | ✅ load the plan-to-video skill: `/plan-to-video path/to/plan.md` in Claude Code, `$plan-to-video path/to/plan.md` in Codex. |
-| An explainer of what is already there | ✅ `reelplanning explain "<question>" <sources…>` pins the sources, and the video quotes them word for word; `check-sources` stops a line its source does not hold. |
-| The review page opens by itself | ✅ `reelplanning review <video-dir>` bundles the player with the video, serves it locally and opens the browser; the skill runs it when a video is ready. |
-| First plan in an existing repo | 🟡 The skill maps the code into `.reelplanning/` and builds the system video from that map alongside the first plan video, so you can correct the map while you review the plan. Not yet run on an existing repo other than this one. |
+| An explainer of what is already there | ✅ `reelplanner explain "<question>" <sources…>` pins the sources, and the video quotes them word for word; `check-sources` stops a line its source does not hold. |
+| The review page opens by itself | ✅ `reelplanner review <video-dir>` bundles the player with the video, serves it locally and opens the browser; the skill runs it when a video is ready. |
+| First plan in an existing repo | 🟡 The skill maps the code into `.reelplanner/` and builds the system video from that map alongside the first plan video, so you can correct the map while you review the plan. Not yet run on an existing repo other than this one. |
 | Fresh eyes before you watch | ✅ `fresh-eyes` gives two fresh subagents, a newcomer and a designer, only what a viewer gets (each scene's narration and a picture of it at rest, through the review page); every finding is answered before the page opens, and `verify` stops on one that isn't. |
 | Watch, comment, decide | ✅ Local player, hosted player, one-click handoff to Claude from a published Artifact. Questions take 2–4 options or "pick all that apply" and are answered on the frame itself, with a click or A–D; any answer can carry a note. Rewinds and slow-downs reach the agent in `reviews/<id>.md` as steps to say more plainly. A quick check you miss marks that step for the next video. |
 | The guide under the video | ✅ Each video's guide sits under it on the same page: the plan's cases, interface and worked examples, diagrams you can step through, saved runs, and after the build what changed and what the agent decided alone. Any words on it can be highlighted to leave a note. A scene can also open a detail page over the paused frame. |
@@ -19,7 +19,7 @@ lists them, each with its stage, reviews and decisions.
 | Check the code against the plan | ✅ `code-check` writes a short brief that a fresh subagent, which never saw the implementer's conversation, answers. `reel audit` fails until every ✗ it found is answered. It has found real gaps. |
 | Walkthrough video | ✅ The change running, before and after, in about two minutes (style guide §8); it pauses only for what you'd notice or can't easily undo (`reel stops`), the rest a list at the end; a quick check where there is something to predict. |
 | Accept / flag → code rewritten | ✅ `walkthrough-scope` sorts the verdicts, flagged code is fixed, only the changed beats are rebuilt, and accepted choices join the decision log. |
-| System video, kept current | ✅ [Built](../.reelplanning/system-video/). `spec-diff` names the frames a spec change affects and `reel status` says when the video is behind and how much an update would rebuild. |
+| System video, kept current | ✅ [Built](../.reelplanner/system-video/). `spec-diff` names the frames a spec change affects and `reel status` says when the video is behind and how much an update would rebuild. |
 | Several people | ✅ A pull request gets a video only over the line (`reel pr-check`); decision numbers renumber at a rebase (`reel renumber`); CI runs the fast suite on each push to `main` and to a pull request, the full suite on each push to a pull request (`.github/workflows/ci.yml`), and `reel pr-check` on each pull request (`.github/workflows/pr.yml`); pushes to other branches are not tested. |
 
 The original milestones (M0–M4) and layers (L0–L4) are in the [original plan](./history/original-plan.md) §2.1 and §6.
@@ -28,8 +28,8 @@ The original milestones (M0–M4) and layers (L0–L4) are in the [original plan
 
 Done:
 
-- **The Bob Dylan case study**, published in [reelplanning-case-studies](https://github.com/ncrispino/reelplanning-case-studies)
-  ([its pages](https://ncrispino.github.io/reelplanning-case-studies/bob-dylan/)): an interactive site from an empty
+- **The Bob Dylan case study**, published in [reelplanner-case-studies](https://github.com/ncrispino/reelplanner-case-studies)
+  ([its pages](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/)): an interactive site from an empty
   folder through four plans, seven videos, each reviewed, with the project, the reviews and the session. The kit for
   it is [`eval/case-studies/`](../eval/case-studies/).
 - **Codex's flags and commands are checked** against codex-cli 0.160.0's own help and a run of its sandbox
@@ -37,7 +37,7 @@ Done:
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 
-- **The switch:** rename this repo (e.g. `reelplanning-dev`), create the empty public `ncrispino/reelplanning`, run
+- **The switch:** rename this repo (e.g. `reelplanner-dev`), create the empty public `ncrispino/reelplanner`, run
   `node scripts/release/make-public.mjs` and the push it prints, then check the install on a fresh machine.
 - **Announce it:** the post and replies drafted in [`docs/releasing.md`](./releasing.md#announcing-it), once the
   install works from a fresh machine.
@@ -53,15 +53,15 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
   question and a part's end are crossed in one jump.
 
 - **The comparison arms of the case study:** the same Bob Dylan prompt planned as plain text and as an HTML page, set
-  beside the reelplanning run, as the kit allows ([`eval/case-studies/bob-dylan-site/`](../eval/case-studies/bob-dylan-site/README.md)).
+  beside the reelplanner run, as the kit allows ([`eval/case-studies/bob-dylan-site/`](../eval/case-studies/bob-dylan-site/README.md)).
 - **A Codex run end to end** (and one more agent): install with `npx skills add`, then run a plan through. Not
   possible in the cloud sessions so far (no Codex CLI or key there).
 - **The sample videos under `videos/` hosted where they play in the browser**; today they play on the local review
   page (`npm run review`), and the case study's videos are hosted on its pages.
 
-- **Learn from edits made in the agent session, per person, and pass reelplanning-wide lessons upstream.** Today
+- **Learn from edits made in the agent session, per person, and pass reelplanner-wide lessons upstream.** Today
   memory comes only from what a review records: `reel record` adds a summary of each review to your own file,
-  `~/.reelplanning/you.jsonl` (answers, rewinds, words looked up, quick checks missed), `reel memory --you` reads
+  `~/.reelplanner/you.jsonl` (answers, rewinds, words looked up, quick checks missed), `reel memory --you` reads
   it across repos, and `reel retro` proposes skill edits for the repo where the evidence is. What is missed:
   the changes you ask for in the conversation itself ("slower here", "no jargon on this frame", "show the real
   command"). Two halves:
@@ -69,7 +69,7 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
      the scene and the change), so the next video you get, in any repo, starts closer to it; `reel memory --you`
      shows it and lets you remove a line.
   2. *Upstream:* when the same kind of change comes up for several people or videos, the agent drafts a
-     suggested change to reelplanning itself (the skill, the style guide, a frame rule) as an issue or pull
+     suggested change to reelplanner itself (the skill, the style guide, a frame rule) as an issue or pull
      request text, with the evidence, for the person to send or not. Nothing leaves the machine without them.
   Where to start: `scripts/lib/memory.mjs` (`reviewFacts`, `recordYou`), `scripts/reel.mjs` (`memory`,
   `retro`), and the skill's "After a plan review".
@@ -88,7 +88,7 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
   names; (2) phonemes for a word the spelling can't fix (Kokoro takes IPA input; a hosted voice like OpenAI's
   takes pronunciation instructions); (3) rewording the line; (4) another voice or provider. Each fix re-voices
   only that line, and the check runs again, so the loop can run without the person. Where to start:
-  `scripts/narrate.mjs`, `scripts/lib/say.mjs`, `scripts/lib/narration.mjs`, `.reelplanning/names.md`.
+  `scripts/narrate.mjs`, `scripts/lib/say.mjs`, `scripts/lib/narration.mjs`, `.reelplanner/names.md`.
   The two items above are independent and can be built in parallel.
 - **Watch and review from the terminal: a Claude Code mod.** Today the review page opens in a browser. A Claude Code
   mod (a plugin of function hooks that draws a pane, band, status line or toast inside the terminal or the desktop
@@ -126,11 +126,11 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
   scenes in parallel, render again only the scenes a rebuild changed (the plan diff knows which), and fresh eyes
   before narration (above). Where to start: `scripts/build.mjs` (its stage times), `scripts/narrate.mjs`, the render
   in `verify`.
-- **Cost against the alternatives.** A plan through reelplanning costs more time and tokens than plan mode or a text
+- **Cost against the alternatives.** A plan through reelplanner costs more time and tokens than plan mode or a text
   plan: a storyboard, a script, frames, a voice and a render, then the checks. That is accepted for now: the
   agent's build of the plan takes far longer, the review is a fraction of it, and time spent understanding a plan
   before the code is well spent. The gap should still keep shrinking. Measure it first: the case-study kit already
-  times each stage of each arm (text, an HTML plan, reelplanning; `arm.sh <arm> stage`); add tokens and wall-clock
-  per plan, and report reelplanning's share of the whole build. The two items above are the main levers, with
+  times each stage of each arm (text, an HTML plan, reelplanner; `arm.sh <arm> stage`); add tokens and wall-clock
+  per plan, and report reelplanner's share of the whole build. The two items above are the main levers, with
   fewer agent turns per video (a frame right the first time, not fixed after a check). Where to start:
   `eval/case-studies/kit/arm.sh` and `provenance.sh`, and `build`'s stage times.

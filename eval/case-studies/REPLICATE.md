@@ -1,7 +1,7 @@
 # How to run a case study, step by step
 
 A case study takes one prompt and runs it three ways, each to a finished site: **text only** (Claude
-Code's plan mode), **HTML** (a plan written as an HTML page) and **ours** (reelplanning). You run every
+Code's plan mode), **HTML** (a plan written as an HTML page) and **ours** (reelplanner). You run every
 arm yourself, at the keyboard. This page says exactly what to do in each, what you will see, and what
 to write down and where.
 
@@ -12,7 +12,7 @@ dates and the container. Keep it up to date as you go (the dates especially).
 | | |
 |---|---|
 | Case study | `{{slug}}` |
-| reelplanning | {{version}} |
+| reelplanner | {{version}} |
 | Claude Code | {{claude_code_version}}, the same in all three arms |
 | Model | `{{model}}`, the same in all three arms |
 | The folder the agent sees | `~/{{folder}}`, empty but for `git init` |
@@ -47,8 +47,8 @@ docker build --build-arg UID=$(id -u) -t cs-{{slug}}-<arm> .
 docker run -it --rm -e ANTHROPIC_API_KEY -v "$PWD/site:/home/agent/{{folder}}" cs-{{slug}}-<arm>
 ```
 
-- **Ours only, before `docker build`:** reelplanning is not on npm yet, so its container installs it from
-  a `reelplanning-<version>.tgz` beside the `Dockerfile` when there is one, else from GitHub (that works
+- **Ours only, before `docker build`:** reelplanner is not on npm yet, so its container installs it from
+  a `reelplanner-<version>.tgz` beside the `Dockerfile` when there is one, else from GitHub (that works
   once the repo is public). While the repo is private, make the tarball at the root of a checkout:
   `npm pack --pack-destination {{dir}}/arms/ours` (it is never committed). And add `--network host` to
   `docker run` (the first lines of its `Dockerfile` have it): the review page the agent serves inside
@@ -65,7 +65,7 @@ docker run -it --rm -e ANTHROPIC_API_KEY -v "$PWD/site:/home/agent/{{folder}}" c
   Then press Enter: Claude Code starts. Without `ANTHROPIC_API_KEY` it asks you to log in; the login is
   kept in the container's home and goes when the container does.
 - **Without Docker.** On your own machine: the arm's folder outside any repo, and per arm a Claude Code
-  config of its own (`CLAUDE_CONFIG_DIR`) and reviewer memory of its own (`REELPLANNING_HOME`), which the
+  config of its own (`CLAUDE_CONFIG_DIR`) and reviewer memory of its own (`REELPLANNER_HOME`), which the
   preflight checks; your other repos on the disk stay a ✗ line. Or a fresh cloud session: a new machine,
   but it starts from a checkout of a repo and its agent reads that repo's `CLAUDE.md`, so the preflight
   shows ✗ lines there (the checkout on disk, the session's own transcript). Paste the lines into the sheet
@@ -74,8 +74,8 @@ docker run -it --rm -e ANTHROPIC_API_KEY -v "$PWD/site:/home/agent/{{folder}}" c
   `eval/case-studies/kit/arm.sh` sets up an arm, starts it, notes its stages and finishes it.
 
 The preflight checks, one line each: the folder is empty (`git init` only); no `CLAUDE.md`,
-`AGENTS.md` or `.claude` above it; no `~/.claude/CLAUDE.md`; no `~/.reelplanning/you.jsonl` (the
-reviewer memory starts empty); no past sessions (with `CLAUDE_CONFIG_DIR` or `REELPLANNING_HOME` set, it
+`AGENTS.md` or `.claude` above it; no `~/.claude/CLAUDE.md`; no `~/.reelplanner/you.jsonl` (the
+reviewer memory starts empty); no past sessions (with `CLAUDE_CONFIG_DIR` or `REELPLANNER_HOME` set, it
 looks there instead); no other repos, plans or plan pages on the disk.
 
 ## The seven stages
@@ -87,7 +87,7 @@ named `NN-stage.png`, for example `02-review.png`), and the cost the agent repor
 
 | Stage | Text only | HTML | Ours |
 |---|---|---|---|
-| plan | plan mode, the prompt as typed | the prompt, plus the HTML paragraph | "Use reelplanning to plan: " and the prompt |
+| plan | plan mode, the prompt as typed | the prompt, plus the HTML paragraph | "Use reelplanner to plan: " and the prompt |
 | review | read the plan, answer its questions in chat | read `plan.html` in a browser, notes in chat | the plan video on the review page |
 | revise | the agent edits the plan | the agent edits `plan.html` | revised steps, rebuilt scenes |
 | build | approve; it builds | "build what plan.html says" | build, choices recorded, stop at a step's fifth |
@@ -141,9 +141,9 @@ report are pages you read in a browser.
 6. **fix.** Ask for fixes in chat.
 7. **done.** When you would ship it.
 
-## Ours: reelplanning from start to finish
+## Ours: reelplanner from start to finish
 
-This part is also a full example of using reelplanning, from install to the finished site. The
+This part is also a full example of using reelplanner, from install to the finished site. The
 container builds with the skill and its tools already installed (the `Dockerfile`'s lines marked "this
 arm only"), so step 1 happens in `docker build`.
 
@@ -153,18 +153,18 @@ much of it was yours). Cut what didn't happen.
 
 ### 1. Install (in `docker build`)
 
-The install in [the reference](../../docs/reference.md#install), as the container runs it. reelplanning
+The install in [the reference](../../docs/reference.md#install), as the container runs it. reelplanner
 is not on npm yet, so the tooling comes from GitHub (or, while the repo is private, from the tarball
 `npm pack` made: "Start an arm"), and the skill from the package just installed:
 
 ```bash
-npm i -g ./reelplanning-{{version}}.tgz    # once the repo is public: npm i -g github:<owner>/<repo>
-npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g -y -a claude-code
-reelplanning setup
+npm i -g ./reelplanner-{{version}}.tgz    # once the repo is public: npm i -g github:<owner>/<repo>
+npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y -a claude-code
+reelplanner setup
 sh smoke.sh                          # a line of speech, its word timings and ten seconds of video
 ```
 
-The skill writes its commands as `$RP`, which is the `reelplanning` installed here (it is on the PATH;
+The skill writes its commands as `$RP`, which is the `reelplanner` installed here (it is on the PATH;
 the package is not on npm). Capture: what `setup` installed or
 couldn't and the smoke's lines (the build's output), and how long the build took.
 
@@ -173,16 +173,16 @@ couldn't and the smoke's lines (the build's output), and how long the build took
 In the container's empty folder, type `prompt.txt`:
 
 ```text
-Use reelplanning to plan: <the prompt>
+Use reelplanner to plan: <the prompt>
 ```
 
 The part after the colon is `prompt.md`, word for word. Capture: every question the agent asked and
-your answers, the plan (`.reelplanning/plans/<date>-<slug>/plan.md`), the time to a plan.
+your answers, the plan (`.reelplanner/plans/<date>-<slug>/plan.md`), the time to a plan.
 
 ### 3. Plan video (stage: plan)
 
 Capture: the storyboard summary, the build time, the video's parts and their lengths, the link to the
-review page (in the container, the local page `reelplanning review` serves; in a cloud session, the page it
+review page (in the container, the local page `reelplanner review` serves; in a cloud session, the page it
 published as a claude.ai Artifact) and to each part's MP4 if any, a screenshot of the first choice.
 
 ### 4. Comments (stage: review)
@@ -247,7 +247,7 @@ the system video it left behind.
   else (a cloud session's clone, say), name that folder last: `reel case-study keep {{slug}} <arm> <folder>`
   copies the files its git tracks into `site/` and bundles its history. `reel case-study keep {{slug}}
   --check` checks every arm kept so far. To see the history again: `git clone arms/<arm>/site.bundle <folder>`.
-  It refuses a history that holds a voice file, a video or a render under `.reelplanning/` (no voice file or
+  It refuses a history that holds a voice file, a video or a render under `.reelplanner/` (no voice file or
   render is committed here, a bundle included: D-305) and prints the commands that take them out. In place,
   what the site's git ignored (its `node_modules`, the built videos' media) stays on disk, so the videos
   still play, and `arms/<arm>/.gitignore` keeps it out of this repo.

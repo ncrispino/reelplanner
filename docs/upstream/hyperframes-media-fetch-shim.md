@@ -1,6 +1,6 @@
 # Upstream issue draft: installed `media-use` imports a monorepo-only path
 
-Draft for `heygen-com/hyperframes`. Nothing here is patched on our side: reelplanning pins the skills
+Draft for `heygen-com/hyperframes`. Nothing here is patched on our side: reelplanner pins the skills
 to the tag of the CLI version in `package.json` (`scripts/hyperframes-skills.mjs`) and checks that
 they load. We have not filed it; check their issues for a duplicate first.
 

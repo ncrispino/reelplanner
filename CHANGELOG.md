@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **reelplanning is now reelplanner** (D-312: reelplanning.com is already a business). The package, the command
+  (`reelplanner`; `reel` stays), the repo (`github:ncrispino/reelplanner`), the case-studies repo, the Claude Code
+  plugin (`/plugin install reelplanner@reelplanner`), a repo's `.reelplanner/`, the machine's `~/.reelplanner` and
+  the settings (`REELPLANNER_*`) take the new name, and the review player is `reelplanner-player.js`. The old names
+  are still read: a repo's `.reelplanning/` (said once, with the `git mv` that renames it), `~/.reelplanning` while
+  there is no `~/.reelplanner`, a `REELPLANNING_*` setting in the shell or a .env file, and the `reelplanning`
+  command, which says the new name and runs it. A review begun on the page before the rename keeps its marks.
+  To move over: `npm rm -g reelplanning`, then install reelplanner. The entries below keep the old name.
 - **Node 22.20 or later.** HyperFrames needs Node 22 and the `skills` installer 22.20, so `package.json`'s
   engines, `setup`, the curl installer and the docs say 22.20 (they said 18, and on Ubuntu's own Node 18 the
   install failed in `npx skills`). `reelplanning` and `reel` refuse a Node older than 22 before anything runs and

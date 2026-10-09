@@ -6,7 +6,7 @@
 #
 # It prints one JSON object: the date and time zone; the machine (OS, kernel, CPU, memory); node, npm,
 # python3, git, ffmpeg and Claude Code; how the arm's Claude Code starts and the settings that change what it
-# does; for ours, reelplanning (its version, and the head of the branch REELPLANNING_BRANCH names, since npm
+# does; for ours, reelplanner (its version, and the head of the branch REELPLANNER_BRANCH names, since npm
 # keeps no commit for a git install), HyperFrames, the skills in the arm's config and the voice and
 # transcription models on disk. A tool that is missing reads
 # "not found": it never stops. No token, key or email goes in: settings are read key by key, env values only
@@ -73,16 +73,16 @@ console.log(JSON.stringify({ config_dir: clean(cc), settings: pick(read(cc + "/s
   managed_settings: managed.length ? Object.fromEntries(managed.map((p) => [p, pick(read(p))])) : "none" }));
 ' "$cc" "$HOME")
 # the arm's environment (env.sh): only these names, since whoever runs this script may have more of their own
-envs=$(for n in CLAUDE_CONFIG_DIR DISABLE_AUTOUPDATER REELPLANNING_HOME REELPLANNING_SKILLS_DIR REELPLANNING_SKILLS_AGENTS; do
+envs=$(for n in CLAUDE_CONFIG_DIR DISABLE_AUTOUPDATER REELPLANNER_HOME REELPLANNER_SKILLS_DIR REELPLANNER_SKILLS_AGENTS; do
   eval "val=\${$n-}"; [ -n "$val" ] && printf '%s=%s\n' "$n" "$(printf '%s' "$val" | tilde | scrub)"; done)
 
-# ---- ours: reelplanning, HyperFrames, the skills, the models
+# ---- ours: reelplanner, HyperFrames, the skills, the models
 ours='"not used by this arm"'
 if [ "$arm" = ours ]; then
   # npm keeps no commit for a package installed from git: the commit is the head of the branch it came from
-  npmls=$(has npm && npm ls -g reelplanning --json 2>/dev/null | sed -n 's/.*"version": *"\([^"]*\)".*/reelplanning@\1/p' | head -n 1)
-  branch=${REELPLANNING_BRANCH:-}
-  head=$( [ -n "$branch" ] && has git && git ls-remote "${REELPLANNING_REPO:-https://github.com/ncrispino/ReelPlanning}" "$branch" 2>/dev/null | cut -f1 | head -n 1)
+  npmls=$(has npm && npm ls -g reelplanner --json 2>/dev/null | sed -n 's/.*"version": *"\([^"]*\)".*/reelplanner@\1/p' | head -n 1)
+  branch=${REELPLANNER_BRANCH:-}
+  head=$( [ -n "$branch" ] && has git && git ls-remote "${REELPLANNER_REPO:-https://github.com/ncrispino/ReelPlanning}" "$branch" 2>/dev/null | cut -f1 | head -n 1)
   skills=$(nodejs '
 const fs = require("fs"), [dir, home] = process.argv.slice(1);
 const locks = [home + "/.agents/.skill-lock.json", dir + "/../.skill-lock.json"].map((p) => { try { return JSON.parse(fs.readFileSync(p, "utf8")).skills || {}; } catch { return {}; } });
@@ -93,10 +93,10 @@ console.log(JSON.stringify(Object.fromEntries(names.map((n) => { const l = locks
   models=$(ls "$HOME/.cache/hyperframes/tts/models" "$HOME/.cache/hyperframes/tts/voices" "$HOME/.cache/hyperframes/whisper/models" 2>/dev/null | grep -E '\.(onnx|bin)$')
   kokoro=$(has python3 && python3 -c 'import importlib.metadata as m; print(m.version("kokoro-onnx"))' 2>/dev/null)
   ours=$(printf '{"version": %s, "path": %s, "npm_ls": %s, "branch": %s, "branch_head": %s, "hyperframes": %s, "hyperframes_skills": %s, "skills": %s, "kokoro_onnx": %s, "models_on_disk": %s, "setup_dry_run": %s}' \
-    "$(js "$(v reelplanning --version)")" "$(js "$( (command -v reelplanning || echo 'not found') | tilde)")" "$(js "$(or_nf "$npmls")")" \
-    "$(js "${branch:-not given (REELPLANNING_BRANCH)}")" "$(js "$(or_nf "$head")")" "$(js "$(v reelplanning hyperframes --version)")" \
-    "$(js "$(v reelplanning hyperframes-skills --dry-run)")" "$skills" "$(js "$(or_nf "$kokoro")")" "$(jsa "$models")" \
-    "$(jsa "$(has reelplanning && reelplanning setup --dry-run 2>&1 </dev/null | tilde | scrub)")")
+    "$(js "$(v reelplanner --version)")" "$(js "$( (command -v reelplanner || echo 'not found') | tilde)")" "$(js "$(or_nf "$npmls")")" \
+    "$(js "${branch:-not given (REELPLANNER_BRANCH)}")" "$(js "$(or_nf "$head")")" "$(js "$(v reelplanner hyperframes --version)")" \
+    "$(js "$(v reelplanner hyperframes-skills --dry-run)")" "$skills" "$(js "$(or_nf "$kokoro")")" "$(jsa "$models")" \
+    "$(jsa "$(has reelplanner && reelplanner setup --dry-run 2>&1 </dev/null | tilde | scrub)")")
 fi
 
 printf '{\n'
@@ -111,5 +111,5 @@ printf '  "tools": {"node": %s, "npm": %s, "python3": %s, "git": %s, "ffmpeg": %
 printf '  "claude_code": {"version": %s, "path": %s, "started_with": %s, "model": %s, "config": %s, "env": %s},\n' \
   "$(js "$(v claude --version)")" "$(js "$( (command -v claude || echo 'not found') | tilde)")" "$(js "claude --model $model${more:+ $more}")" \
   "$(js "$model")" "$settings" "$(jsa "$envs")"
-printf '  "reelplanning": %s\n' "$ours"
+printf '  "reelplanner": %s\n' "$ours"
 printf '}\n'

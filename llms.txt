@@ -1,11 +1,11 @@
-# reelplanning
+# reelplanner
 
-> Review a coding agent's implementation plan as a short narrated video that stops at each open choice. The answers are recorded in a decision log in the repo, and after the build a walkthrough video shows the choices the agent made on its own. An agent skill (plan-to-video) plus a CLI (`reelplanning`, `reel`). Tested with Claude Code, basic support for Codex. Not on npm yet: install with `npm i -g github:ncrispino/reelplanning`, then `reelplanning setup`, then `npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g`.
+> Review a coding agent's implementation plan as a short narrated video that stops at each open choice. The answers are recorded in a decision log in the repo, and after the build a walkthrough video shows the choices the agent made on its own. An agent skill (plan-to-video) plus a CLI (`reelplanner`, `reel`). Tested with Claude Code, basic support for Codex. Not on npm yet: install with `npm i -g github:ncrispino/reelplanner`, then `reelplanner setup`, then `npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g`.
 
 ## Start here
 
 - [README](README.md): what it does, install, quick-start examples (new project, existing repo), the three ways to use it, the voice, how it compares
-- [AGENTS.md](AGENTS.md): exact steps for an agent, to use reelplanning in another repo or to contribute here
+- [AGENTS.md](AGENTS.md): exact steps for an agent, to use reelplanner in another repo or to contribute here
 - [The skill](skills/plan-to-video/SKILL.md): what the agent does, step by step, and every command it runs
 - [Agents](docs/agents.md): support per agent (Claude Code, Codex, GitHub Copilot, Cursor, OpenCode, Antigravity CLI) and open work
 
@@ -13,7 +13,7 @@
 
 - [Reference](docs/reference.md): install, every command, how each piece is checked
 - [Lifecycle](docs/lifecycle.md): the full loop in short, then plan, review, build, walkthrough, system video
-- [The .reelplanning/ format](docs/project-dir.md): the files a repo keeps (plans, decisions.md, spec, parts)
+- [The .reelplanner/ format](docs/project-dir.md): the files a repo keeps (plans, decisions.md, spec, parts)
 - [Status](docs/status.md): what works today and what is still to come
 - [Comparison](docs/comparison.md): similar projects, with sources, as of October 2026
 - [Style guide](skills/plan-to-video/references/style-guide.md): how a plan is told as a video
@@ -23,7 +23,7 @@
 ## Contributing
 
 - [CONTRIBUTING.md](.github/CONTRIBUTING.md): setup, tests, pull requests, when a PR gets a video
-- [SECURITY.md](.github/SECURITY.md): what reelplanning adds to an agent run, and how to report a problem
+- [SECURITY.md](.github/SECURITY.md): what reelplanner adds to an agent run, and how to report a problem
 
 ## Optional
 

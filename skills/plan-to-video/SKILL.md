@@ -1,9 +1,9 @@
 ---
 name: plan-to-video
-description: "Plan with reelplanning. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanning/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanning video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanning style guide."
+description: "Plan with reelplanner. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanner/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanner video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanner style guide."
 ---
 
-# Plan → video (reelplanning)
+# Plan → video (reelplanner)
 
 A plan is reviewed as a narrated video: the reviewer answers its questions, marks and comments, and
 what they say comes back as files in the repo. After the build, a walkthrough video shows what landed
@@ -18,20 +18,22 @@ Three levels; the person chooses, and can move up at any time:
    added to the repo but `videos/<slug>/`: no decision log, no checks, no guide, no fresh eyes, no walkthrough
    (**Quick: just the video**). Use it when they say "quick" or "just the video".
 2. **Plus a walkthrough**: the plan video, then after the build a walkthrough video of what you built and the
-   choices you made on your own. `reel init` keeps the plan and its walkthrough in `.reelplanning/`; no system
+   choices you made on your own. `reel init` keeps the plan and its walkthrough in `.reelplanner/`; no system
    video (**A new plan**, then **Implement, check, walk through, fix**). Use it when they ask for a walkthrough
    but not the whole pipeline.
 3. **The whole pipeline**: the answers recorded as decisions that later plans are checked against, every
    review kept, walkthroughs, and the system video (**A new plan** onward). The default for a plan when
-   the repo is set up (`.reelplanning/decisions.json` exists) or they say so; otherwise ask which level first.
-   A `.reelplanning/` holding only setup files (`.env`, `config.json`: the hosted voice's settings) is not set up.
+   the repo is set up (`.reelplanner/decisions.json` exists) or they say so; otherwise ask which level first.
+   A `.reelplanner/` holding only setup files (`.env`, `config.json`: the hosted voice's settings) is not set up.
+   A `.reelplanning/` is the same record under the name from before reelplanner: the tools read it as it is, and
+   the person can rename it (`git mv .reelplanning .reelplanner`); never make a second one beside it.
 
 A level-3 repo can still skip one plan's walkthrough (**Skipping the walkthrough video**).
 
 ## Commands
 
-`$RP` means `reelplanning` when `reelplanning --version` works (the README's install; check that first,
-before any `npx` or install), else `npx -y reelplanning@0.2.0`, this skill's tooling pinned to the version
+`$RP` means `reelplanner` when `reelplanner --version` works (the README's install; check that first,
+before any `npx` or install), else `npx -y reelplanner@0.2.0`, this skill's tooling pinned to the version
 it was written for. Write it out in full in every command (a shell variable does not survive between tool
 calls). `$RP --help` lists every command. `$RP reel …` keeps the project record (`init`, `new-plan`, `stage`,
 `check`, `record`, `audit`, `stops`, `prereqs`, `status`, `memory`, `retro`, `fold`, `build`, `pr-check`,
@@ -40,23 +42,23 @@ video's guide (`build` runs it); `$RP hyperframes …` is the HyperFrames CLI at
 wherever the faceless-explainer skill says `npx hyperframes`. Paths are relative
 to your working directory, so video projects and plans live in the repo being planned.
 
-**First run on a machine:** with `reelplanning` on the PATH, install nothing. `$RP setup --dry-run`; if
+**First run on a machine:** with `reelplanner` on the PATH, install nothing. `$RP setup --dry-run`; if
 it shows anything missing, run `$RP setup` once. Pass on whatever it could not install rather than working
 around it. Setup installs the local voice (about 840 MB, Python 3.10+) unless a hosted engine is set, and says
-which; if the person has said they want the hosted voice, run `$RP setup --hosted-voice` instead. If `reelplanning` is not on the PATH and `npx` cannot find the package (`npm view reelplanning` says
-404: it is not on npm yet), install it once from GitHub, `npm i -g github:ncrispino/reelplanning` (works
-once the repo is public), and write `reelplanning` where this skill says `$RP`.
+which; if the person has said they want the hosted voice, run `$RP setup --hosted-voice` instead. If `reelplanner` is not on the PATH and `npx` cannot find the package (`npm view reelplanner` says
+404: it is not on npm yet), install it once from GitHub, `npm i -g github:ncrispino/reelplanner` (works
+once the repo is public), and write `reelplanner` where this skill says `$RP`.
 
-**Before the first narration on a machine** (unless a hosted engine is set: `REELPLANNING_TTS` in
-`~/.reelplanning/.env`, or `narration.tts` in `.reelplanning/config.json`), run `$RP narration-check --local` once
+**Before the first narration on a machine** (unless a hosted engine is set: `REELPLANNER_TTS` in
+`~/.reelplanner/.env`, or `narration.tts` in `.reelplanner/config.json`), run `$RP narration-check --local` once
 (`setup` runs it too). If it says slow, tell the person in one sentence: the hosted voice does a line in 1–3 s for
 about $0.03 a minute of narration, local takes the minutes it printed; then let them choose, and go on locally
-meanwhile (local always works). Never ask for a key in the chat: they put `REELPLANNING_TTS=openrouter` and their
-key in `~/.reelplanning/.env` themselves (this machine, every repo), as the check's lines say. If `narrate`
+meanwhile (local always works). Never ask for a key in the chat: they put `REELPLANNER_TTS=openrouter` and their
+key in `~/.reelplanner/.env` themselves (this machine, every repo), as the check's lines say. If `narrate`
 stops because the local voice is not installed, pass on its two ways on (`$RP setup --local-voice`, or those lines).
 
 **On Codex:** its sandbox has no network and keeps `.git` read-only. Install the package globally
-(`npm i -g reelplanning`, or the GitHub line above) and write `reelplanning` for `$RP`; ask the person to
+(`npm i -g reelplanner`, or the GitHub line above) and write `reelplanner` for `$RP`; ask the person to
 run `setup` outside the agent (or start Codex with the network on: `-c
 sandbox_workspace_write.network_access=true`); and ask for escalation for `review --detach` (a server
 that outlives the command) and for `git commit`.
@@ -71,9 +73,9 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
 
 1. **Start the project** in `videos/<slug>/`, as **Build a video** step 1 says, with the plan file verbatim
    (for an explainer, the files or lines that answer the question) as `capture/extracted/visible-text.txt`.
-   With no `.reelplanning/theme/frame.md` in the repo, run faceless-explainer's `build-frame.mjs --preset
-   code-editorial` (it brings the caption skin), then copy reelplanning's `templates/reelplanning/theme/frame.md` over its
-   `frame.md` (`$RP --help` ends with the folder reelplanning is installed in). BRIEF.md, from that
+   With no `.reelplanner/theme/frame.md` in the repo, run faceless-explainer's `build-frame.mjs --preset
+   code-editorial` (it brings the caption skin), then copy reelplanner's `templates/reelplanner/theme/frame.md` over its
+   `frame.md` (`$RP --help` ends with the folder reelplanner is installed in). BRIEF.md, from that
    folder's `templates/video/BRIEF.md`, says `flow: automation` and `storyboard: no`.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`**: the problem, each step, each open question as a decision beat
    (the tags in **Build a video** step 2: `plan_step`, `chapter_start`, `decision`, `plan_questions`), 1–3
@@ -94,7 +96,7 @@ To move to the full loop later: `$RP reel init <repo> …`, then `$RP reel new-p
 
 The plan goes into the repo, and the person gets a review page, not text in the chat.
 
-1. **Set up the repo** if `.reelplanning/decisions.json` is missing (a `.reelplanning/` with only `.env` and
+1. **Set up the repo** if `.reelplanner/decisions.json` is missing (a `.reelplanner/` with only `.env` and
    `config.json` in it is not set up: `reel init` keeps them). Ask first, in one line, which level (the three at the
    top): one video, plus a walkthrough, or the whole pipeline. On one video, go to **Quick: just the video**.
    Otherwise (at level 2, leave out the system video wherever a step below names it):
@@ -120,7 +122,7 @@ The plan goes into the repo, and the person gets a review page, not text in the 
    another (or that it stands alone). Plain words, one idea a sentence, and no more complicated than it
    needs to be: say what a thing does before its name, and use the glossary's on-screen word where it
    has one (a choice the agent made, not a call). Tools and products are written as `names.md`
-   shows them: the product is `reelplanning`, lowercase, in code markup, like any command. In SCRIPT.md,
+   shows them: the product is `reelplanner`, lowercase, in code markup, like any command. In SCRIPT.md,
    commands, flags, paths and file names are written as they are written (`claude -p`, `--dry-run`,
    `plan.md`, `/work`), never spelled out ("claude dash p", "dot md"): narrate says them aloud, and the
    captions show them as written. Keep it to about six steps; more is two plans. A step you expect
@@ -162,7 +164,7 @@ The plan goes into the repo, and the person gets a review page, not text in the 
      order, `state:` with `[*]` for a lifecycle, `compare:` with `before:` and `after:` for a change you toggle). Keep
      labels to a few words: the sentence goes after `|`. An `**It lets you:**` line in each step, and
      `**In one sentence:**` near the top, say what it lets the reader do. A step whose idea needs its own
-     picture gets a fragment, `<plan-dir>/guide/step-<n>.html`, from reelplanning's
+     picture gets a fragment, `<plan-dir>/guide/step-<n>.html`, from reelplanner's
      `templates/guide/picture.html`. A plan whose story needs its own things (plan.md, a new file) lists
      them under an optional `## Parts`.
 4. `$RP reel new-plan <repo> <slug> --plan <file>`, then `$RP reel check <plan-dir>`. Fix the plan until
@@ -181,7 +183,7 @@ written. What it can be of is open, so there is no list of kinds: the same princ
 1. **Find the sources that hold the answer, and pin them:** `$RP explain "<their question, in their words>"
    <source> …`. A source is a path (a file or a folder, in the repo or outside it: a transcript, a log, an
    experiment's output), a commit or a range (`main..HEAD`), `worktree`, `since:<date>`, `pr:<n>`, `ci:<run-id>`,
-   `this-session` or a decision (`D-233`). It makes `.reelplanning/explainers/<date>-<slug>/`: `explain.md`,
+   `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
    repo by its path, hash and line count, never its text) and `video/` started with `kind: explainer`.
    Fill `explain.md`'s "What it will cover", "What it leaves out" and "Open threads" (what the sources leave open, said
@@ -232,7 +234,7 @@ written. What it can be of is open, so there is no list of kinds: the same princ
 ## Build a video
 
 The same steps build a plan video (`<plan-dir>/video/`), a walkthrough video (the change running, from
-`walkthrough.md`, into `<plan-dir>/walkthrough-video/`), the system video (`.reelplanning/system-video/`) and an
+`walkthrough.md`, into `<plan-dir>/walkthrough-video/`), the system video (`.reelplanner/system-video/`) and an
 explainer (`<explainer-dir>/video/`).
 
 1. **Start the project.** Run `$RP hyperframes-skills` (it installs HyperFrames' skills at the pinned
@@ -242,12 +244,12 @@ explainer (`<explainer-dir>/video/`).
    run its init as `HYPERFRAMES_SKIP_SKILLS=1 $RP hyperframes init …`: both would replace the pinned
    skills with GitHub main. Use `theme/frame.md` as the frame preset when the repo has one, a
    low-decoration preset otherwise, and `music: none`; how frames move is `theme/motion-language.md`
-   (in reelplanning's `templates/reelplanning/theme/` when the repo has none). BRIEF.md's Customizations
+   (in reelplanner's `templates/reelplanner/theme/` when the repo has none). BRIEF.md's Customizations
    say the video's medium (screen, code, document, diagram), its layouts and its main transition, one line
-   each: `- Medium:`, `- Layouts:`, `- Main transition:` (style guide §5; reelplanning's
+   each: `- Medium:`, `- Layouts:`, `- Main transition:` (style guide §5; reelplanner's
    `templates/video/BRIEF.md` is a starting point). A fourth line picks which scenes show the real
    thing, `- Real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures`;
-   it is optional and nothing warns about the scenes it leaves out. With `.reelplanning/`, `$RP reel
+   it is optional and nothing warns about the scenes it leaves out. With `.reelplanner/`, `$RP reel
    stage <plan-dir>` writes the shared stage.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`** (Step 3) as the style guide says: a series of parts of
    about a minute, 3–5 minutes in all (the system video 5–8), decisions after their steps, a quick
@@ -255,7 +257,7 @@ explainer (`<explainer-dir>/video/`).
    check only where the change has something to predict, just before the scene that runs it (a change to
    what is saved or to a command's output counts, though the page looks the same), and one open question
    at the end (style guide §8). The front matter carries
-   `plan_dir: <plan folder>` (`.reelplanning` and `kind: system` for the system video), which tells
+   `plan_dir: <plan folder>` (`.reelplanner` and `kind: system` for the system video), which tells
    the player where a review goes, and what a viewer needs first (style guide §2, §4): `before:
    <video>[#part N] | <what it gives you>` per video it leans on (`system`, a plan's folder, or
    `<plan>--walkthrough`; with none, the system video; `before: none` opts out). Don't guess them:
@@ -295,7 +297,7 @@ explainer (`<explainer-dir>/video/`).
 
 3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step.
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
-   several at once with a hosted engine, which `REELPLANNING_TTS` (`~/.reelplanning/.env`) or `.reelplanning/config.json`'s `narration` names and
+   several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
    voice files. Meanwhile build the frames (Steps 4–5): one worker per frame, animations placed on
    their words once `audio_meta.json` has the timings. Mark each option card on a decision or
@@ -325,7 +327,7 @@ explainer (`<explainer-dir>/video/`).
    and a check on that beat's own names and numbers, are △ lines; on the system
    video, a glossary row no beat defines fails (a row under the glossary's "Other words" is a meaning only,
    never one it must define); a likely-jargon word said or shown with no meaning, an acronym, code, a
-   technical compound, a common software word or one of reelplanning's own (`frame 7 says "merge" (4×) with
+   technical compound, a common software word or one of reelplanner's own (`frame 7 says "merge" (4×) with
    no meaning`), is a △ line and fails a `terms_check: strict` storyboard: give it a glossary row or a
    `terms: x = …` meaning; a tool's name on screen outside code markup, or a name
    spelled other than `names.md` says, is a △ line; so is a flag, path or file name the script spells
@@ -417,7 +419,7 @@ For changes requested:
   for it (`guide --check` fails one left unmarked). Don't hand-edit `reviews/`: the comparison is read from them.
 - Commit, naming the plan and the steps revised, and open the page again.
 - The version the reviewer saw is kept with nothing to do by hand: `review` and `reel record` write its
-  `<plan-dir>/versions/` file and the screenshots and captured text git leaves out into `.reelplanning/media/`; commit
+  `<plan-dir>/versions/` file and the screenshots and captured text git leaves out into `.reelplanner/media/`; commit
   them with the review. Asked to show an earlier version, `$RP reel rebuild <video-dir>` lists them and `--version
   <n>` builds one again in a worktree of its own (the voice is made again; it says what else it could not bring back).
 
@@ -448,7 +450,7 @@ on, it is the plan to drop the walkthrough video (**A new plan**, step 2), revie
    `reel audit` fails a step with five or more calls and no question about it, open in `plan.md` or
    already answered in the decision log. Past a dozen rows in all, the plan left too much open, and
    `reel audit` warns. Example:
-   [upload-resume](https://github.com/ncrispino/reelplanning/blob/main/eval/plans/upload-resume/walkthrough.md).
+   [upload-resume](https://github.com/ncrispino/reelplanner/blob/main/eval/plans/upload-resume/walkthrough.md).
 2. **Finish `walkthrough.md`**: per plan step, what landed and in which files, deviations said plainly,
    the tests run, and what is not done. For the guide's Built side (written once, read by `$RP guide`): an
    `**In one sentence:**` line at the top, what the change lets the reader do now, in plain words (the guide
@@ -524,14 +526,14 @@ on, it is the plan to drop the walkthrough video (**A new plan**, step 2), revie
 ## The system video
 
 One video per repo explains the whole system from `spec.md`, `system.json` and `glossary.md`, in
-`.reelplanning/system-video/`, for a viewer new to the repo: what it is for, its parts a few at a
+`.reelplanner/system-video/`, for a viewer new to the repo: what it is for, its parts a few at a
 time, then one part per pipeline, and the invariants. When the system is something people install, the video shows installing it: the real
 commands, run, and what they print; the same holds for a walkthrough whose change touches the install. No decisions; a quick check per chapter, asked at
 the end of the next chapter (the last one's before the ending), on a case the video did not show. It is
 the promise that every word is explained: each glossary row has a scene that explains it, in the
 row's on-screen word, tagged `- defines: <term>`, and its build fails while a row has none. Every frame carries `- spec_section:` and/or
 `- components:`, so a change finds the frames it affects. Build it with **Build a video** (front
-matter `plan_dir: .reelplanning`, `kind: system`): in an existing repo alongside the first plan video,
+matter `plan_dir: .reelplanner`, `kind: system`): in an existing repo alongside the first plan video,
 in a new one after the first walkthrough is accepted. Any video can ship with its quick checks off in the player
 (`checks: off` in BRIEF.md's front matter); the viewer turns them on with the Quick checks switch or `K`.
 
@@ -540,7 +542,7 @@ in a new one after the first walkthrough is accepted. Any video can ship with it
 memory says a word was looked up in three reviews (`reel memory lost`), rewrite its scene, or its row.
 `$RP reel status` says when the video is behind and
 what catching up costs (frames, lines, seconds of speech); `$RP spec-diff` names the frames. Rebuild
-only those, keeping their ids, with `$RP build .reelplanning/system-video`, then fresh eyes on it as on any build
+only those, keeping their ids, with `$RP build .reelplanner/system-video`, then fresh eyes on it as on any build
 (**Build a video**, step 5).
 
 **A review of the system video** changes the video or the system. `reel-intake` files it and
@@ -558,11 +560,11 @@ hosted page also set the row's `answer`.
 
 ## Several people
 
-When the repo is shared (a second person opens pull requests, whether or not they use reelplanning), set it
-up once: copy reelplanning's `templates/CONTRIBUTING.md` into the repo's `CONTRIBUTING.md` (as a section of
+When the repo is shared (a second person opens pull requests, whether or not they use reelplanner), set it
+up once: copy reelplanner's `templates/CONTRIBUTING.md` into the repo's `CONTRIBUTING.md` (as a section of
 it, if it has one), `templates/pull_request_template.md` to `.github/pull_request_template.md`, the lines
 of `templates/gitignore` into `.gitignore` (and its `.gitattributes` line), and list the maintainers in
-`.reelplanning/config.json` (`maintainers`, each by the `id:<id>` `reel record` prints for a hosted page's
+`.reelplanner/config.json` (`maintainers`, each by the `id:<id>` `reel record` prints for a hosted page's
 viewer, "by owner (id:…)", or an email; `owner` still works but warns, since a second person reviewing on
 their own page is `owner` too). If every PR should link an issue, add `"pr": { "issue": "required" }` to
 `config.json`: `reel pr-check` then fails a PR whose text links none (`Closes #12`). Commit them, naming the
@@ -576,7 +578,7 @@ plan or request.
   above are accepted". A new flag or command alone is not a choice that needs one. `$RP reel pr-check
   --base origin/main` says where a PR stands, and waits on the other choices until they are accepted.
 - **A PR over the line with no video of its own**: the maintainer asks you for its walkthrough.
-  Read the PR (`gh pr diff <n>`, `gh pr view <n>`), make a plan folder `.reelplanning/plans/<date>-pr-<n>/`
+  Read the PR (`gh pr diff <n>`, `gh pr view <n>`), make a plan folder `.reelplanner/plans/<date>-pr-<n>/`
   whose `plan.md` says what the PR does, step by step, and whose `walkthrough.md` logs each choice the PR
   makes as a row, then build the walkthrough video as for any plan (**Implement, check, walk through,
   fix**, from step 2; its stops follow the same rules).
@@ -586,7 +588,7 @@ plan or request.
   keeps the last answer.
 - **The built video never goes into git**. The branch carries the videos' text only. Once
   the PR is open, pack the videos and push them as a branch of their own, then put the maintainer's two
-  lines (the clone and `reelplanning review`, in `CONTRIBUTING.md`) in the PR's text:
+  lines (the clone and `reelplanner review`, in `CONTRIBUTING.md`) in the PR's text:
   `$RP bundle-player ../pr-<n>-video <plan-dir>/video <plan-dir>/walkthrough-video`, then in that folder
   `git init -q -b video/pr-<n> && git add -A && git commit -qm "PR #<n>: its videos"` and
   `git push --force <url of origin> video/pr-<n>`. A rebuild does the same again.
@@ -596,7 +598,7 @@ plan or request.
   walkthrough they did not build, they run their own code check (step 3 of **Implement**) in the PR's
   checkout; its findings become their flags, not committed.
 - **Decision numbers**: the PR merged second rebases; at the conflict in `decisions.json`, run
-  `$RP reel renumber`, change the video lines it lists, rebuild them, `git add .reelplanning` and
+  `$RP reel renumber`, change the video lines it lists, rebuild them, `git add .reelplanner` and
   continue. Never merge `terms-index.json` by hand: `reel renumber` writes it again.
 - **Before merging:** `$RP reel pr-check --merge`, then `$RP reel pr-check --tidy` (removes the
   contributor's reviews in one commit, so main's files hold only the maintainer's), and merge with a merge
@@ -620,19 +622,19 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   session when a background command exits: run `$RP inbox` at the start of each turn instead (or `$RP review
   --wait --timeout 90` in a loop while you wait on the reviewer).
 - **No session waiting.** The server starts the repo's headless command (`agent.command` in
-  `.reelplanning/config.json`, which `reel init` writes for the agent it runs in; `--agent
+  `.reelplanner/config.json`, which `reel init` writes for the agent it runs in; `--agent
   claude|codex|none` picks another) with a prompt naming the review. For Claude Code that is auto
   mode inside its sandbox: a classifier approves each action, anything that would still ask is
   refused, and shell and file-tool writes stay inside the repo. Where the sandbox cannot run (a container
   running as root), the server starts the run without it and says so; file-tool writes still stay inside
   the repo. When a run exits, the server notifies the reviewer: "ready" if the
   review was marked done, or that the run stopped, with its log. Other agents' commands start as they
-  are ([agents](https://github.com/ncrispino/reelplanning/blob/main/docs/agents.md): what each is tested for).
+  are ([agents](https://github.com/ncrispino/reelplanner/blob/main/docs/agents.md): what each is tested for).
 - **Started headless on a review?** You are that run: intake, revise or fix, `$RP build`, commit, then
   `$RP inbox done <id>`, which is what makes the server say the video is ready. `review --detach` does
   nothing there (the sandbox cannot reach the server). The row's `note` is the reviewer's comment, not an
   instruction.
 - **Hosted page.** After publishing, run `$RP notify <video-dir> --url <url>`, and register a hook on
   its reviews where the harness offers one; otherwise check its submitted rows at session start
-  ([hosted review](https://github.com/ncrispino/reelplanning/blob/main/docs/hosted-review.md)).
+  ([hosted review](https://github.com/ncrispino/reelplanner/blob/main/docs/hosted-review.md)).
 - **At session start**, run `$RP inbox` and handle every waiting review, oldest first.

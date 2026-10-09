@@ -1,5 +1,5 @@
 name: Idea or feature
-description: Something reelplanning could do, or do differently.
+description: Something reelplanner could do, or do differently.
 labels: ["enhancement"]
 body:
   - type: textarea
@@ -23,7 +23,7 @@ body:
       options:
         - the plan-to-video skill or its style guide
         - the review player (the page you watch and review in)
-        - the project record (`reel`, `.reelplanning/`, the decision log)
+        - the project record (`reel`, `.reelplanner/`, the decision log)
         - building a video (narrate, build, frames)
         - support for another agent (docs/agents.md)
         - docs

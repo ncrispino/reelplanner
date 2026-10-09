@@ -18,14 +18,14 @@ prompt it gets is at the end of this page. It sees only the three sites, as X, Y
    mkdir -p ~/judge && while read letter arm; do
      cp -R "{{dir}}/arms/$arm/site" ~/judge/$letter
      cd ~/judge/$letter
-     rm -rf .git .reelplanning plan.html report.html CLAUDE.md AGENTS.md
+     rm -rf .git .reelplanner plan.html report.html CLAUDE.md AGENTS.md
      find . -iname '*plan*.md' -delete        # the plan files, of any arm
      git init -q && git add -A && git commit -qm "the site"
      cd - >/dev/null
    done < ~/case-study-key.txt
    ```
 
-3. Look through the three folders by eye (`grep -ri "plan\|reelplanning\|review" ~/judge`) for anything
+3. Look through the three folders by eye (`grep -ri "plan\|reelplanner\|review" ~/judge`) for anything
    left that names an arm, and take it out.
 4. Start the judge in a fresh session that holds only `~/judge` (the arm's container, with `~/judge`
    mounted instead of `site/`, does this; on your own machine, a Claude Code config of its own, as for an

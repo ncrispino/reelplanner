@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in reelplanning did not work as the docs say.
+description: Something in reelplanner did not work as the docs say.
 labels: ["bug"]
 body:
   - type: markdown
@@ -12,7 +12,7 @@ body:
       label: What happened
       description: What you ran or did, what you expected, and what you got instead. Paste the command's output.
       placeholder: |
-        I ran `reelplanning reel check .reelplanning/plans/2026-10-04-done-flag` and expected …, but it printed …
+        I ran `reelplanner reel check .reelplanner/plans/2026-10-04-done-flag` and expected …, but it printed …
     validations:
       required: true
   - type: textarea
@@ -28,8 +28,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: reelplanning version
-      description: "`reelplanning --version`, or the commit (`git rev-parse --short HEAD`) for a checkout"
+      label: reelplanner version
+      description: "`reelplanner --version`, or the commit (`git rev-parse --short HEAD`) for a checkout"
     validations:
       required: true
   - type: dropdown
@@ -47,7 +47,7 @@ body:
     id: machine
     attributes:
       label: Machine
-      description: Your OS, `node --version`, and what `reelplanning setup --dry-run` prints.
+      description: Your OS, `node --version`, and what `reelplanner setup --dry-run` prints.
       render: text
     validations:
       required: false
