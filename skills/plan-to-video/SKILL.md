@@ -181,7 +181,9 @@ uploads work", "I'll draw what I think happens", "here's my mental model". Open 
 1. **Start it in the background** with the topic from their request: `$RP sketch "<the topic, in their words>"
    --once`. It opens a full-screen canvas in their browser; the topic fills its "What are you explaining?" box. Tell
    them in one line: draw and talk, type notes in the box at the bottom, then Finish and Send. Don't wait in the
-   foreground: they may take minutes.
+   foreground: they may take minutes. A partner model may ask them short questions beside the canvas (OpenRouter's
+   by default when its key is set, else a local one; the command's start lines name it): say so, and that the switch
+   under the topic turns it off. Its questions are in `sketch.md`, marked _asked_; what they said next answers them.
 2. **When the command exits**, its last line is `sketch: <folder>`. Read that folder's `sketch.md` and look at its
    keyframes (and `final.png`). It is their picture, not a fact. If its Transcript line says there is none yet (no
    live caption and no whisper.cpp here), what they said is only in the recording: `$RP sketch-transcribe <folder>`

@@ -5,7 +5,11 @@
 //   reelplanner sketch                                   by hand: type what you're explaining on the page
 //   reelplanner sketch "<what you are explaining>" --once  from an agent: the question filled in, and it exits
 //                                                         after Send, printing `sketch: <folder>` as its last line
-//   [--port <n>] [--out <dir>] [--no-open]
+//   [--port <n>] [--out <dir>] [--no-open] [--partner openrouter|local|off] [--partner-model <id>]
+//
+// --partner: a model that asks one short question beside the canvas when something in the picture is unclear
+// (scripts/lib/sketch-partner.mjs; docs/sketch.md, "Questions while you sketch"). By default OpenRouter's
+// anthropic/claude-haiku-5.5 when OPENROUTER_API_KEY is set, else a local model server's vision model, else none.
 //
 // The question is optional: it only fills the page's "What are you explaining?" box, which names the folder and
 // heads sketch.md, and the person can change it there. An agent passes the topic from the request so the box is
@@ -43,11 +47,12 @@ import { TYPES } from "./lib/static-server.mjs";
 import { slugOf, repoTop } from "./lib/explainer.mjs";
 import { excalidrawVendor, buildExcalidrawVendor } from "./vendor-excalidraw.mjs";
 import { sketchMd, sketchTranscriber, transcribeSketch, transcriberName } from "./lib/sketch-transcript.mjs";
+import { resolvePartner, askPartner, partnerLabel } from "./lib/sketch-partner.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
 const die = (m) => { console.error(`✗ sketch: ${m}`); process.exit(1); };
-const VALUED = new Set(["--port", "--out"]);
+const VALUED = new Set(["--port", "--out", "--partner", "--partner-model"]);
 const question = args.filter((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1])).join(" ").trim();
 const port = Number(flag("port") || 8790);
 const once = args.includes("--once");
@@ -69,6 +74,18 @@ if (!vendor.ready) {
   catch (e) { die(`the sketch page needs Excalidraw built once: ${e.message}`); }
 }
 const PAGE = join(ROOT, "packages", "sketch");
+
+// the partner that asks questions while they sketch (scripts/lib/sketch-partner.mjs): OpenRouter, local, or off
+let partner;
+try { partner = await resolvePartner({ dir: process.cwd(), choice: flag("partner"), model: flag("partner-model") }); }
+catch (e) { die(e.message); }
+const PARTNER_GAP_S = Number(process.env.REELPLANNER_SKETCH_PARTNER_GAP_S ?? 20), PARTNER_MAX = 8;
+const readJsonBody = (req, limit = 12e6) => new Promise((done, fail) => {
+  let n = 0; const parts = [];
+  req.on("data", (c) => { n += c.length; if (n > limit) { fail(new Error("too large")); req.destroy(); } else parts.push(c); });
+  req.on("end", () => { try { done(JSON.parse(Buffer.concat(parts).toString("utf8"))); } catch { fail(new Error("not JSON")); } });
+  req.on("error", fail);
+});
 
 // ---------- the folder a sketch is saved to, and what an agent reads first ----------
 const ALLOWED = /^(session\.json|recording\.(webm|mp4)|final\.png|final\.excalidraw|keyframes\/kf-\d{3}\.png)$/;
@@ -137,7 +154,13 @@ function gone(why, hint = "") {
 }
 const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
-  if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || "." });
+  if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || ".",
+    partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX } });
+  if (path === "api/sketch/partner" && req.method === "POST") {
+    if (partner.off) return json(res, 404, { ok: false, error: "no partner" });
+    return readJsonBody(req).then((b) => askPartner(partner, b)).then((text) => json(res, 200, { ok: true, text }),
+      (e) => { console.error(`△ sketch: the partner did not answer (${e.message})`); json(res, 502, { ok: false, error: e.message }); });
+  }
   if (path === "api/sketch/live") {
     res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-store" });
     res.write(": open\n\n");
@@ -171,7 +194,7 @@ const server = createServer((req, res) => {
 server.on("error", (e) => die(e.code === "EADDRINUSE" ? `port ${port} is in use (--port <n> to pick another)` : e.message));
 server.listen(port, "127.0.0.1", () => {
   const url = `http://127.0.0.1:${port}/`;
-  console.log(`✓ sketch page at ${url}\n  saving to ${relative(process.cwd(), base) || "."}/ · ${once ? "exits after Send" : "Ctrl-C to stop"}`);
+  console.log(`✓ sketch page at ${url}\n  saving to ${relative(process.cwd(), base) || "."}/ · ${once ? "exits after Send" : "Ctrl-C to stop"}\n  questions while sketching: ${partnerLabel(partner)}`);
   if (once) setTimeout(() => { if (!opened) gone(`no page opened in ${OPEN_WAIT_S >= 60 ? `${Math.round(OPEN_WAIT_S / 60)} min` : `${OPEN_WAIT_S} s`} (${url})`); }, OPEN_WAIT_S * 1000).unref();
   if (!args.includes("--no-open")) {
     const [cmd, a] = platform() === "darwin" ? ["open", [url]] : platform() === "win32" ? ["cmd", ["/c", "start", "", url]] : ["xdg-open", [url]];

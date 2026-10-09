@@ -45,6 +45,14 @@
     const x = c.context;
     $("ctx").textContent = `${x.repoName} · ${x.branch || "detached"} @ ${(x.commit || "no commit").slice(0, 7)}${x.dirty ? " (uncommitted changes)" : ""}`;
     $("ctx").title = `Saved to ${c.saveTo}`;
+    if (c.partner) {
+      partner = c.partner;
+      session.partner = { provider: c.partner.provider, model: c.partner.model, on: partnerOn(), questions: [] };
+      $("partner-label").textContent = `Ask me questions (${c.partner.label})`;
+      $("partner").title = c.partner.provider === "local" ? "A model on this machine looks at each picture and what you said, and may ask one short question. Nothing leaves this machine."
+        : `At each picture, the drawing and what you said so far go to ${c.partner.where} (${c.partner.model}), which may ask one short question.`;
+      $("partner-on").checked = partnerOn(); $("partner").hidden = false;
+    }
   }).catch(() => {}).finally(() => { if (!server) $("send").hidden = true; });
 
   // ---------- the canvas ----------
@@ -99,11 +107,47 @@
   addEventListener("pointerdown", () => { pointer.down = true; }, { passive: true });
   addEventListener("pointerup", () => { pointer.down = false; }, { passive: true });
 
+  // ---------- the partner: at a picture, maybe one short question (scripts/lib/sketch-partner.mjs) ----------
+  let partner = null, asking = false, lastAsk = -Infinity, heardSinceAsk = true;
+  const remember = (on) => { try { localStorage.setItem("reelplanner.sketch.partner", on ? "on" : "off"); } catch {} };
+  function partnerOn() { try { return localStorage.getItem("reelplanner.sketch.partner") !== "off"; } catch { return true; } }
+  $("partner-on").addEventListener("change", (e) => { remember(e.target.checked); if (session.partner) session.partner.on = e.target.checked; if (!e.target.checked) $("ask").classList.remove("show"); });
+  $("ask-close").addEventListener("click", () => $("ask").classList.remove("show"));
+  const toDataUrl = (blob) => new Promise((r) => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = () => r(null); f.readAsDataURL(blob); });
+  async function ask(kf, blob) {
+    const P = session.partner;
+    if (!partner || !P || !$("partner-on").checked || asking || !blob || !heardSinceAsk) return;
+    if (P.questions.length >= partner.max || clock() - lastAsk < partner.gap_s) return;
+    asking = true; lastAsk = clock(); heardSinceAsk = false;
+    try {
+      const said = [...session.transcript.segments.map((x) => ({ t: x.t0, text: x.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
+      const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ question: $("question").value.trim(), elements: drawn(), said, asked: P.questions.map((q) => q.text), png: await toDataUrl(blob) }) });
+      const j = await r.json().catch(() => ({}));
+      if (!j.ok) { status(`The question partner did not answer (${j.error || r.status}); keep going.`); heardSinceAsk = true; return; }
+      if (!j.text || !$("partner-on").checked) { heardSinceAsk = true; return; }
+      P.questions.push({ t: clock(), after_picture: kf.n, text: j.text });
+      $("ask-who").textContent = `A question · ${partner.label}`; $("ask-text").textContent = j.text; $("ask").classList.add("show");
+    } catch { heardSinceAsk = true; } finally { asking = false; }
+  }
+
   // ---------- keyframes: a picture each time a thought ends ----------
   let said = [], dirty = false, kfTimer = null, hearing = false;
   function sceneChanged() { dirty = true; if (!hearing) schedule(2500); }
   function schedule(ms) { clearTimeout(kfTimer); kfTimer = setTimeout(keyframe, ms); }
   const live = () => api ? api.getSceneElements().filter((e) => !e.isDeleted) : [];
+  // the scene as the record keeps it: each element by kind, a box's label, an arrow's two ends
+  function drawn() {
+    const elements = live(), byId = new Map(elements.map((e) => [e.id, e]));
+    return elements.filter((e) => !e.containerId).map((e) => {
+      const b = { id: e.id, kind: e.type, x: Math.round(e.x), y: Math.round(e.y), w: Math.round(e.width), h: Math.round(e.height) };
+      const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
+      if (e.text) b.text = e.text; if (label) b.label = label.text;
+      if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
+      if (e.frameId) b.frame = e.frameId; if (e.groupIds?.length) b.groups = e.groupIds; if (e.name) b.name = e.name;
+      return b;
+    });
+  }
   async function snapshot() {
     const elements = live();
     if (!elements.length) return null;
@@ -118,7 +162,10 @@
     const blob = await snapshot().catch(() => null);
     const file = blob ? `keyframes/kf-${String(n).padStart(3, "0")}.png` : null;
     if (blob) files.set(file, blob);
-    session.keyframes.push({ n, t, said: text, file, elements: live().length });
+    const kf = { n, t, said: text, file, elements: live().length };
+    session.keyframes.push(kf);
+    if (text) heardSinceAsk = true;
+    ask(kf, blob);
   }
 
   // ---------- recording: the canvas layers composed into one picture, with the mic ----------
@@ -230,9 +277,10 @@
     previewUrl = URL.createObjectURL(new Blob(chunks, { type: mime }));
     $("playback").src = previewUrl;
     const tr = $("transcript"); tr.innerHTML = "";
-    const lines = [...session.transcript.segments.map((s) => ({ t: s.t0, text: s.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
+    const lines = [...session.transcript.segments.map((s) => ({ t: s.t0, text: s.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` })),
+      ...(session.partner?.questions || []).map((q) => ({ t: q.t, text: `(asked) ${q.text}`, asked: true }))].sort((a, b) => a.t - b.t);
     if (!lines.length) tr.innerHTML = `<p style="color:var(--ink-3)">${session.transcript.source === "none" ? "No live transcript; the audio is in the recording." : "Nothing said yet."}</p>`;
-    for (const l of lines) { const p = document.createElement("p"); const tm = document.createElement("time"); tm.textContent = fmt(l.t); p.append(tm, l.text); p.onclick = () => { $("playback").currentTime = l.t; }; tr.append(p); }
+    for (const l of lines) { const p = document.createElement("p"); if (l.asked) p.className = "asked"; const tm = document.createElement("time"); tm.textContent = fmt(l.t); p.append(tm, l.text); p.onclick = () => { $("playback").currentTime = l.t; }; tr.append(p); }
     const fr = $("frames"); fr.innerHTML = "";
     for (const k of session.keyframes) {
       const d = document.createElement("div"); d.className = "kf";
@@ -250,15 +298,7 @@
     await new Promise((r) => { if (!recorder || recorder.state === "inactive") return r(); recorder.addEventListener("stop", r, { once: true }); recorder.stop(); });
     cancelAnimationFrame(draw); mic?.getTracks().forEach((t) => t.stop());
     const ext = mime.includes("mp4") ? "mp4" : "webm";
-    const elements = live(), byId = new Map(elements.map((e) => [e.id, e]));
-    const finalEls = elements.filter((e) => !e.containerId).map((e) => {
-      const b = { id: e.id, kind: e.type, x: Math.round(e.x), y: Math.round(e.y), w: Math.round(e.width), h: Math.round(e.height) };
-      const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
-      if (e.text) b.text = e.text; if (label) b.label = label.text;
-      if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
-      if (e.frameId) b.frame = e.frameId; if (e.groupIds?.length) b.groups = e.groupIds; if (e.name) b.name = e.name;
-      return b;
-    });
+    const finalEls = drawn();
     const finalPng = await snapshot().catch(() => null);
     const body = {
       ...session, question: $("question").value.trim(), created: new Date().toISOString(),

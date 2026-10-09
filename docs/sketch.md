@@ -16,7 +16,8 @@ Two ways in:
   another sketch until Ctrl-C.
 
 The text after `sketch` is optional either way: it only fills that box, which names the folder and heads `sketch.md`.
-Other options: `--port <n>`, `--out <dir>` (where the folder goes), `--no-open` (print the URL instead of opening it).
+Other options: `--port <n>`, `--out <dir>` (where the folder goes), `--no-open` (print the URL instead of opening it),
+`--partner openrouter|local|off` and `--partner-model <id>` (below).
 
 ## The page
 
@@ -33,6 +34,27 @@ a bar at the bottom:
   the server offers).
 
 The question at the top right ("what are you explaining?") names the folder and heads `sketch.md`.
+
+## Questions while you sketch
+
+A partner model can watch and ask: at each picture it gets the canvas as an image, the boxes and arrows exactly as
+typed, and what you have said and typed so far, and it may ask one short question, shown under the topic, beside the
+canvas (never drawn on it). It is told to ask about *your* picture (an arrow to nowhere, a box never explained,
+something you said you are unsure of) and never to explain or correct the code: where your picture and the code
+differ is what the explainer is for. At most one question every 20 s, eight in all, and none until you have said or
+typed something since the last. The switch under the topic turns it off (remembered in this browser).
+
+| `--partner` | What runs | What leaves the machine |
+|---|---|---|
+| `openrouter` (recommended) | `anthropic/claude-haiku-5.5` through OpenRouter: it sees images, is made for quick answers, and costs $0.10 / $0.50 per million tokens (a fraction of a cent a question; not yet timed against the others). Needs `OPENROUTER_API_KEY`, the key the hosted voice uses | each picture, the drawing as text, and the words so far |
+| `local` | a vision model on an OpenAI-compatible server here: Ollama (`:11434`) or LM Studio (`:1234`), the first vision model it lists (`ollama pull gemma3:4b` if none) | nothing (the live caption is still the browser's: in Chrome, Google's) |
+| `off` | nothing | nothing |
+
+With none named (`auto`), it is OpenRouter when `OPENROUTER_API_KEY` is set, else a local server with a vision model,
+else off; `sketch` says which on start, and the page names it. Settings: `REELPLANNER_SKETCH_PARTNER`,
+`REELPLANNER_SKETCH_MODEL` (any OpenRouter model id that takes images, or a local model's name),
+`REELPLANNER_SKETCH_BASE_URL`, or `.reelplanner/config.json`'s `"sketch": { "partner", "model", "base_url" }`.
+A partner named that cannot run (no key, no server, no vision model) stops `sketch` and says why.
 
 ## The folder
 
@@ -77,6 +99,8 @@ Finish is open, as the recording does).
                "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1 }],
   "final": { "png": "final.png", "scene": "final.excalidraw",
              "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…" }] },
+  "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-haiku-5.5", "on": true,
+               "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }] },
   "feedback": "confident about the client side, guessing on retries",
   "before_recording": 0
 }

@@ -19,10 +19,23 @@
   .chip { background: var(--paper); border: 1px solid rgba(var(--ink-rgb), .14); border-radius: 12px; box-shadow: 0 2px 10px rgba(var(--ink-rgb), .08); }
 
   /* what you are explaining: top right, under Excalidraw's own menu row */
-  #topic { position: fixed; top: 64px; right: 16px; z-index: 5; width: min(340px, calc(100% - 32px)); padding: 8px 12px; }
+  #side { position: fixed; top: 64px; right: 16px; z-index: 5; width: min(340px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 8px; }
+  #topic { padding: 8px 12px; }
   #topic label { display: block; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
   #topic input { width: 100%; box-sizing: border-box; border: 0; background: transparent; color: var(--ink); font: 500 14px var(--sans); padding: 2px 0; outline: none; }
   #topic .ctx { font: 11px var(--mono); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #topic .partner { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(var(--ink-rgb), .1);
+    font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--ink-2); cursor: pointer; }
+  #topic .partner[hidden] { display: none; }
+  #topic .partner input { width: auto; flex: none; accent-color: var(--accent); margin: 0; padding: 0; }
+
+  /* the partner's question: under the topic, beside the canvas, never on it */
+  #ask { box-sizing: border-box; padding: 10px 12px; display: none; border-left: 3px solid var(--accent); }
+  #ask.show { display: block; }
+  #ask .who { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); display: flex; justify-content: space-between; }
+  #ask .who button { border: 0; background: transparent; color: var(--ink-3); padding: 0 2px; font-size: 14px; line-height: 1; }
+  #ask p { margin: 4px 0 0; font-size: 15px; }
+  #transcript p.asked { color: var(--ink-3); font-style: italic; }
 
   /* the bar: bottom center, clear of Excalidraw's zoom (left) and help (right) */
   #bar { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 8px;
@@ -53,7 +66,7 @@
   #review h2 { margin: 0 0 4px; font-size: 18px; }
   #review .sub { color: var(--ink-3); margin: 0 0 16px; }
   #review .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
-  @media (max-width: 700px) { #review .grid { grid-template-columns: 1fr; } #bar { flex-wrap: wrap; } #note { order: 3; flex-basis: 100%; } #topic { top: 64px; } }
+  @media (max-width: 700px) { #review .grid { grid-template-columns: 1fr; } #bar { flex-wrap: wrap; } #note { order: 3; flex-basis: 100%; } }
   #review video { width: 100%; border-radius: 9px; background: #000; aspect-ratio: 16 / 10; }
   #review h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
   #transcript { max-height: 220px; overflow: auto; font-size: 13px; }
@@ -74,10 +87,18 @@
 <body>
 <div id="canvas"></div>
 
+<div id="side">
 <div id="topic" class="chip">
   <label for="question">What are you explaining?</label>
   <input id="question" placeholder="e.g. how upload resume works" autocomplete="off">
   <div class="ctx" id="ctx">not connected to a repo</div>
+  <label class="partner" id="partner" hidden><input type="checkbox" id="partner-on" checked><span id="partner-label"></span></label>
+</div>
+
+<div id="ask" class="chip" aria-live="polite">
+  <div class="who"><span id="ask-who">A question</span><button type="button" id="ask-close" title="Dismiss" aria-label="Dismiss">×</button></div>
+  <p id="ask-text"></p>
+</div>
 </div>
 
 <div id="status">Press Record, then draw and talk. Type in the box to add a note.</div>

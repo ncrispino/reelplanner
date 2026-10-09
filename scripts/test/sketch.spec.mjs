@@ -17,6 +17,10 @@
 //     here can (no whisper.cpp, no API key)
 //   - --once and the page closed without Send: the command exits 1 after a grace a reload stays within, and it
 //     exits 1 when no page opens at all
+//   - the partner (a stand-in OpenAI-style server as the local model): the page names it, sends it the picture, the
+//     boxes and arrows and the words at a picture, shows its question beside the canvas and keeps it; NONE shows
+//     nothing; sketch.md lists the question in its place. OpenRouter: the recommended model and the key, by default;
+//     a partner named that cannot run says why; off shows no switch
 // usage: node scripts/test/sketch.spec.mjs
 import { chromium } from "playwright-core";
 import { spawn, execFileSync } from "node:child_process";
@@ -24,7 +28,9 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, exist
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { chmodSync } from "node:fs";
+import { createServer } from "node:http";
 import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
+import { resolvePartner, askPartner, RECOMMENDED } from "../lib/sketch-partner.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
 
 // a scratch repo that keeps a record
@@ -51,12 +57,26 @@ writeFileSync(join(val("--dir"), "transcript.json"), JSON.stringify([w("The", 0.
 `);
 const WHISPER = join(tools, "whisper-cli"); writeFileSync(WHISPER, "#!/bin/sh\nexit 0\n"); chmodSync(WHISPER, 0o755);
 const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^HYPERFRAMES_/.test(k) && !/_API_KEY$/.test(k)));
-const WITH_WHISPER = { ...clean, REELPLANNER_HYPERFRAMES_BIN: FAKE_HF, HYPERFRAMES_WHISPER_PATH: WHISPER };
-const NO_WHISPER = { ...clean, HOME: tools, PATH: join(tools, "empty-path"), REELPLANNER_SYSTEM_ROOT: join(tools, "no-system") };
+// a stand-in for a local model server (Ollama's OpenAI-style API): it lists a text model and a vision one, asks one
+// question, then has none
+const calls = [];
+const fakeModel = createServer((req, res) => {
+  let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
+    res.setHeader("content-type", "application/json");
+    if (req.url === "/v1/models") return res.end(JSON.stringify({ data: [{ id: "llama3:8b" }, { id: "qwen2.5vl:7b" }] }));
+    const j = JSON.parse(body || "{}"); calls.push({ auth: req.headers.authorization || null, body: j });
+    res.end(JSON.stringify({ choices: [{ message: { content: calls.length === 1 ? "Where does the chunk index live?" : "NONE" } }] }));
+  });
+});
+await new Promise((r) => fakeModel.listen(0, "127.0.0.1", r));
+const FAKE_BASE = `http://127.0.0.1:${fakeModel.address().port}/v1`;
+const WITH_WHISPER = { ...clean, REELPLANNER_HYPERFRAMES_BIN: FAKE_HF, HYPERFRAMES_WHISPER_PATH: WHISPER, REELPLANNER_SKETCH_PARTNER: "off" };
+const NO_WHISPER = { ...clean, HOME: tools, PATH: join(tools, "empty-path"), REELPLANNER_SYSTEM_ROOT: join(tools, "no-system"), REELPLANNER_SKETCH_PARTNER: "off" };
+const PARTNER_LOCAL = { ...clean, REELPLANNER_SKETCH_PARTNER: "local", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE, REELPLANNER_SKETCH_PARTNER_GAP_S: "0" };
 const run = (args, env) => { try { return { code: 0, out: execFileSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), ...args], { cwd: repo, env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 
 const port = testPort(8793);
-const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
+const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, env: PARTNER_LOCAL, stdio: ["ignore", "pipe", "pipe"] });
 let said = ""; srv.stdout.on("data", (c) => (said += c));
 await serverUp(port, { child: srv, timeout: 120000 });
 
@@ -79,6 +99,8 @@ try {
   await page.waitForFunction(() => window.reelSketch?.api, null, { timeout: 60000 });
   ok(await page.inputValue("#question") === "how upload resume works", "the question from the command line is filled in");
   ok((await page.textContent("#ctx")).includes(head.slice(0, 7)), `the repo's commit is shown — ${await page.textContent("#ctx")}`);
+  ok(await page.isVisible("#partner") && (await page.textContent("#partner-label")).includes("qwen2.5vl:7b on this machine"),
+    `the page names the partner, the local server's vision model — ${await page.textContent("#partner-label")}`);
 
   await page.click("#rec");
   await page.waitForTimeout(300);
@@ -96,6 +118,13 @@ try {
     ], { regenerateIds: false }) });
   });
   await page.waitForTimeout(4200); // the three sentences
+  ok(await page.isVisible("#ask") && (await page.textContent("#ask-text")) === "Where does the chunk index live?", `the partner's question is shown beside the canvas — ${await page.textContent("#ask")}`);
+  const first = calls[0]?.body, userText = first?.messages?.[1]?.content?.[0]?.text || "";
+  ok(first?.model === "qwen2.5vl:7b" && !calls[0].auth && first.messages[1].content.some((c) => c.type === "image_url" && c.image_url.url.startsWith("data:image/png;base64,")),
+    "…asked of the local model, with no key, with the picture");
+  ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`arrow "Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
+    `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
+  ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes(`"Where does the chunk index live?"`)), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
   await page.fill("#note", "not sure where the chunk index lives");
   await page.press("#note", "Enter");
   await page.waitForTimeout(800);
@@ -108,7 +137,7 @@ try {
   await page.click("#keep"); await page.waitForTimeout(700);
   ok(await page.evaluate(() => window.reelSketch.clock()) > c2, "Keep sketching starts the clock again");
   await page.click("#finish"); await page.waitForSelector("#review.open");
-  ok((await page.locator("#transcript p").count()) === 4, "the panel lists the three sentences and the note");
+  ok((await page.locator("#transcript p").count()) === 5 && (await page.locator("#transcript p.asked").count()) === 1, "the panel lists the three sentences, the note and the question asked");
   ok((await page.locator("#frames .kf img").count()) >= 3, `a picture at each pause — ${await page.locator("#frames .kf").count()}`);
   await page.fill("#feedback", "guessing on retries");
   await page.click("#send");
@@ -129,8 +158,11 @@ try {
   ok(s.notes.length === 1 && s.notes[0].elementId && s.keyframes.some((k) => k.said.includes("(typed) not sure")), "the typed note is timed, on the canvas, and in a keyframe");
   ok(s.events.some((e) => e.type === "delete" && e.id === "scratch"), "an element replaced out of the scene is a delete");
   ok(s.events.some((e) => e.type === "add" && e.kind === "arrow" && e.from === "client" && e.to === "api"), "the arrow's ends are in its add event");
+  ok(s.partner?.provider === "local" && s.partner.model === "qwen2.5vl:7b" && s.partner.on === true && s.partner.questions.length === 1
+    && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
   const md = readFileSync(join(dir, "sketch.md"), "utf8");
   ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
+  ok(/\*\*Questions while sketching:\*\* 1 from qwen2\.5vl:7b on their machine/.test(md) && /\*\*\d:\d\d\*\* _asked:_ Where does the chunk index live\?/.test(md), "sketch.md: who asked, and the question in its place");
   try {
     const probe = execFileSync("ffprobe", ["-v", "error", "-show_entries", "stream=codec_type:format=duration", "-of", "json", join(dir, "recording.webm")], { encoding: "utf8" });
     const p = JSON.parse(probe), kinds = p.streams.map((x) => x.codec_type).sort().join();
@@ -170,6 +202,7 @@ try {
   const p3 = await ctx.newPage(); await p3.addInitScript(() => { delete window.SpeechRecognition; delete window.webkitSpeechRecognition; });
   await p3.goto(`http://127.0.0.1:${port2}/`); await p3.waitForFunction(() => window.reelSketch?.api);
   ok(await p3.inputValue("#question") === "", "with no question given, the box starts empty");
+  ok(!(await p3.isVisible("#partner")), "partner off: no switch on the page");
   await p3.click("#rec"); await p3.waitForTimeout(400);
   await p3.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Worker" } }]) }); });
   await p3.waitForTimeout(400);
@@ -205,7 +238,18 @@ try {
   if (shut.exitCode == null) shut.kill();
   const lone = run(["sketch", "--once", "--port", String(testPort(8796, 3)), "--no-open"], { ...WITH_WHISPER, REELPLANNER_SKETCH_OPEN_WAIT_S: "1" });
   ok(lone.code === 1 && /✗ sketch: no page opened in 1 s/.test(lone.out), `--once: no page opened, it exits 1 — ${lone.out}`);
+
+  // OpenRouter, by default when its key is set: the recommended model, the key sent; a partner named that can't run says why
+  const or = await resolvePartner({ dir: repo, env: { OPENROUTER_API_KEY: "k-test", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE } });
+  ok(or.provider === "openrouter" && or.model === RECOMMENDED && RECOMMENDED === "anthropic/claude-haiku-5.5", `auto with OPENROUTER_API_KEY: OpenRouter, ${RECOMMENDED} — ${JSON.stringify(or)}`);
+  process.env.OPENROUTER_API_KEY = "k-test"; calls.length = 1;   // the stand-in's next answer is NONE
+  const none2 = await askPartner(or, { question: "q", elements: [], said: [], asked: [] });
+  ok(none2 === null && calls[1]?.auth === "Bearer k-test" && calls[1].body.model === RECOMMENDED, `…the key goes with the request, and NONE is no question — ${JSON.stringify(calls[1]?.auth)}`);
+  delete process.env.OPENROUTER_API_KEY;
+  const named = run(["sketch", "--partner", "openrouter", "--no-open", "--port", String(testPort(8797, 4))], { ...clean, REELPLANNER_SKETCH_PARTNER: "" });
+  ok(named.code === 1 && /partner openrouter needs OPENROUTER_API_KEY/.test(named.out), `--partner openrouter with no key says so — ${named.out}`);
 } finally {
+  fakeModel.close();
   await b.close(); srv.kill(); rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true });
 }
 if (fails.length) { console.log(`\n${fails.length} failed`); process.exit(1); }

@@ -49,12 +49,16 @@ export function sketchMd(s, dir) {
     `- **Code it is about:** ${s.context?.repoName || "?"} at \`${(s.context?.commit || "no commit").slice(0, 12)}\`${s.context?.branch ? ` on \`${s.context.branch}\`` : ""}${s.context?.dirty ? " (with uncommitted changes)" : ""}`,
     `- **Files:** \`${s.recording?.file}\` (the canvas with the voice; the pointer is the orange dot), \`keyframes/\`, \`final.png\`, \`final.excalidraw\`, \`session.json\` (everything, timed)`,
     `- **Transcript:** ${transcriptLine(s, rel)}`,
-    "",
   ];
+  const asked = s.partner?.questions || [];
+  if (asked.length) lines.push(`- **Questions while sketching:** ${asked.length} from ${s.partner.model}${s.partner.provider === "openrouter" ? " via OpenRouter" : " on their machine"}, marked _asked_ below. It was told to ask about their picture, never to explain the code; what they said next is their answer.`);
+  lines.push("");
   if (s.feedback) lines.push(`## Their note when sending`, "", `> ${s.feedback.replace(/\n/g, "\n> ")}`, "");
   lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before.`, "");
   const kfs = s.keyframes || [];
-  for (const k of kfs) lines.push(`- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}`);
+  const timeline = [...kfs.map((k) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}` })),
+    ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` }))].sort((a, b) => a.t - b.t);
+  for (const x of timeline) lines.push(x.line);
   // what was said after the last picture (a transcript made afterwards has no keyframe at each sentence's end)
   const lastT = kfs.length ? kfs[kfs.length - 1].t : -Infinity;
   const after = (s.transcript?.segments || []).filter((x) => x.t0 >= lastT);
