@@ -107,20 +107,20 @@
   .s08-side.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="08-init" data-band="bottom" data-duration="19.381" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="08-init" data-band="bottom" data-duration="19.445" data-width="1920" data-height="1080">
 
-  <div class="clip s08-bg" id="s08-bg" data-start="0" data-duration="19.381" data-track-index="0"></div>
+  <div class="clip s08-bg" id="s08-bg" data-start="0" data-duration="19.445" data-track-index="0"></div>
 
-  <div class="clip s08-scene" id="s08-scene" data-start="0" data-duration="19.381" data-track-index="1">
+  <div class="clip s08-scene" id="s08-scene" data-start="0" data-duration="19.445" data-track-index="1">
     <div class="s08-step" id="s08-st"><b>4</b> of 4 · in each repo</div>
     <div class="s08-view" id="s08-view"><div class="s08-cam" id="s08-cam">
     <div data-artifact="reel init . --name my-app --kind brownfield --agent claude" id="s08-art">
     <div class="s08-term" id="s08-win" style="left:100px; top:100px; width:1300px; height:790px"><div class="s08-tbar"></div><div class="s08-tdot" style="left:24px"></div><div class="s08-tdot" style="left:48px"></div><div class="s08-tdot" style="left:72px"></div><div class="s08-ttl">~/my-app</div></div>
     <div class="s08-cmd" id="s08-c0" style="left:136px; top:176px; font-size:28px; line-height:42px"><span class="g">$</span><span id="s08-ct0">reel init . --name my-app --kind brownfield --agent claude</span></div>
-    <div class="s08-out" id="s08-o0-0" style="left:136px; top:218px; font-size:27px; line-height:42px"><span class="ok">✓</span> ~/my-app/.reelplanning (brownfield: my-app)</div>
+    <div class="s08-out" id="s08-o0-0" style="left:136px; top:218px; font-size:27px; line-height:42px"><span class="ok">✓</span> ~/my-app/.reelplanner (brownfield: my-app)</div>
     <div class="s08-out" id="s08-o0-1" style="left:136px; top:260px; font-size:27px; line-height:42px"><span class="ok">✓</span> agent: claude (--agent): a review sent while no session</div>
     <div class="s08-out" id="s08-o0-2" style="left:136px; top:302px; font-size:27px; line-height:42px"><span class="dim">  waits starts `claude`; --agent claude|codex|none picks another</span></div>
-    <div class="s08-cmd" id="s08-c1" style="left:136px; top:360.8px; font-size:28px; line-height:42px"><span class="g">$</span><span id="s08-ct1">ls -p .reelplanning</span></div>
+    <div class="s08-cmd" id="s08-c1" style="left:136px; top:360.8px; font-size:28px; line-height:42px"><span class="g">$</span><span id="s08-ct1">ls -p .reelplanner</span></div>
     <div class="s08-out" id="s08-o1-0" style="left:136px; top:402.8px; font-size:27px; line-height:42px">README.md</div>
     <div class="s08-out" id="s08-o1-1" style="left:136px; top:444.8px; font-size:27px; line-height:42px">config.json</div>
     <div class="s08-out" id="s08-o1-2" style="left:136px; top:486.8px; font-size:27px; line-height:42px">decisions.json</div>
@@ -151,58 +151,58 @@
 
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s08-c0", { opacity: 0 });
-  tl.set("#s08-c0", { opacity: 1 }, 0.3);
-  (function(){ var el=document.getElementById("s08-ct0"); var s="reel init . --name my-app --kind brownfield --agent claude"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.526,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.3); })();
+  tl.set("#s08-c0", { opacity: 1 }, 0.304);
+  (function(){ var el=document.getElementById("s08-ct0"); var s="reel init . --name my-app --kind brownfield --agent claude"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.526,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.304); })();
   gsap.set("#s08-o0-0", { opacity: 0 });
-  tl.to("#s08-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.46);
+  tl.to("#s08-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.607);
   gsap.set("#s08-o0-1", { opacity: 0 });
-  tl.to("#s08-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.66);
+  tl.to("#s08-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.816);
   gsap.set("#s08-o0-2", { opacity: 0 });
-  tl.to("#s08-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.66);
+  tl.to("#s08-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.816);
   gsap.set("#s08-c1", { opacity: 0 });
-  tl.set("#s08-c1", { opacity: 1 }, 3.96);
-  (function(){ var el=document.getElementById("s08-ct1"); var s="ls -p .reelplanning"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.5,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},3.96); })();
+  tl.set("#s08-c1", { opacity: 1 }, 4.078);
+  (function(){ var el=document.getElementById("s08-ct1"); var s="ls -p .reelplanner"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.5,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},4.078); })();
   gsap.set("#s08-o1-0", { opacity: 0 });
-  tl.to("#s08-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.96);
+  tl.to("#s08-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.027);
   gsap.set("#s08-o1-1", { opacity: 0 });
-  tl.to("#s08-o1-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.86);
+  tl.to("#s08-o1-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.91);
   gsap.set("#s08-o1-2", { opacity: 0 });
-  tl.to("#s08-o1-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.85);
+  tl.to("#s08-o1-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.83);
   gsap.set("#s08-o1-3", { opacity: 0 });
-  tl.to("#s08-o1-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.85);
+  tl.to("#s08-o1-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.83);
   gsap.set("#s08-o1-4", { opacity: 0 });
-  tl.to("#s08-o1-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.96);
+  tl.to("#s08-o1-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.07);
   gsap.set("#s08-o1-5", { opacity: 0 });
-  tl.to("#s08-o1-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.11);
+  tl.to("#s08-o1-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.149);
   gsap.set("#s08-o1-6", { opacity: 0 });
-  tl.to("#s08-o1-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.26);
+  tl.to("#s08-o1-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.274);
   gsap.set("#s08-o1-7", { opacity: 0 });
-  tl.to("#s08-o1-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.4);
+  tl.to("#s08-o1-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.57);
   gsap.set("#s08-o1-8", { opacity: 0 });
-  tl.to("#s08-o1-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.41);
+  tl.to("#s08-o1-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.4);
   gsap.set("#s08-o1-9", { opacity: 0 });
-  tl.to("#s08-o1-9", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.41);
+  tl.to("#s08-o1-9", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.4);
   gsap.set("#s08-agent", { opacity: 0 });
-  tl.to("#s08-agent", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
+  tl.to("#s08-agent", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.079);
   gsap.set("#s08-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s08-st", { opacity: 0 });
-  tl.to("#s08-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
+  tl.to("#s08-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.079);
   gsap.set("#s08-win", { opacity: 0 });
-  tl.to("#s08-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.05);
+  tl.to("#s08-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.079);
   gsap.set("#s08-g0", { opacity: 0, y: 12 });
-  tl.to("#s08-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.95);
+  tl.to("#s08-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.927);
   gsap.set("#s08-g1", { opacity: 0, y: 12 });
-  tl.to("#s08-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.86);
+  tl.to("#s08-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.91);
   gsap.set("#s08-g2", { opacity: 0, y: 12 });
-  tl.to("#s08-g2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.96);
+  tl.to("#s08-g2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.07);
   gsap.set("#s08-g3", { opacity: 0, y: 12 });
-  tl.to("#s08-g3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.4);
+  tl.to("#s08-g3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.57);
   gsap.set("#s08-g4", { opacity: 0, y: 12 });
-  tl.to("#s08-g4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.41);
+  tl.to("#s08-g4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.4);
   gsap.set("#s08-g5", { opacity: 0, y: 12 });
-  tl.to("#s08-g5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.76);
+  tl.to("#s08-g5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.92);
   gsap.set("#s08-g6", { opacity: 0, y: 12 });
-  tl.to("#s08-g6", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.48);
+  tl.to("#s08-g6", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.13);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

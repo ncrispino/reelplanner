@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **The system video says reelplanner,** in its narration and on its frames, and its install is shot again from the
+  public repo on a fresh Ubuntu machine (`npm i -g github:ncrispino/reelplanner`, a first `setup`, the skill, `reel
+  init`); the README's GIF is its opening, made again. The voice says the name as "reel planner": Kokoro read
+  "reelplanner" as "reopliner", so `say.mjs` hands it over apart (`NAME_SAID`), alone, in code and in a path, and the
+  captions still show it as written. `reelplanning` has a meaning in Terms (the glossary's Other words) for the pages
+  and videos made before the rename.
 - **reelplanning is now reelplanner** (D-312: reelplanning.com is already a business). The package, the command
   (`reelplanner`; `reel` stays), the repo (`github:ncrispino/reelplanner`), the case-studies repo, the Claude Code
   plugin (`/plugin install reelplanner@reelplanner`), a repo's `.reelplanner/`, the machine's `~/.reelplanner` and

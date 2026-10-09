@@ -113,13 +113,13 @@
   .s02-page span { display:block; margin-top:14px; font:400 26px/1.4 "Inter"; color:rgba(var(--rp-ink-rgb),0.75); }
 </style>
 
-<div id="root" data-composition-id="02-real-planning" data-band="bottom" data-duration="15.38" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="02-real-planning" data-band="bottom" data-duration="15.316" data-width="1920" data-height="1080">
 
   <div class="clip s02-bg" id="s02-bg" data-start="0" data-duration="19.412" data-track-index="0"></div>
 
   <div class="clip s02-scene" id="s02-scene" data-start="0" data-duration="19.412" data-track-index="1">
     <div class="s02-view" id="s02-view"><div class="s02-cam" id="s02-cam">
-    <div class="s02-name" id="s02-name"><code id="s02-nt" style="font-family:JetBrains Mono">reelplanning</code></div>
+    <div class="s02-name" id="s02-name"><code id="s02-nt" style="font-family:JetBrains Mono">reelplanner</code></div>
     <div class="s02-real" id="s02-real">turns a plan into a short video</div>
     <div class="s02-kick" id="s02-ex" style="left:150px; top:286px;">an example plan's video: an upload that resumes</div>
     <div class="s02-card" id="s02-c0" style="left:150px; top:420px"><b>The problem</b> <i>the upload dies at 90%</i></div>
@@ -146,44 +146,44 @@
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s02-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s02-name", { opacity: 0, y: 12 });
-  tl.to("#s02-name", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.09);
-  (function(){ var el=document.getElementById("s02-nt"); var s="reelplanning"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.4,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.09); })();
+  tl.to("#s02-name", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.088);
+  (function(){ var el=document.getElementById("s02-nt"); var s="reelplanner"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.4,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.088); })();
   gsap.set("#s02-real", { opacity: 0 });
   tl.to("#s02-real", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.05);
   gsap.set("#s02-rq", { opacity: 0, x: 0 });
-  tl.to("#s02-rq", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2);
+  tl.to("#s02-rq", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.095);
   gsap.set("#s02-rqt", { opacity: 0, y: 12 });
-  tl.to("#s02-rqt", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.5);
+  tl.to("#s02-rqt", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.542);
   tl.to("#s02-rq", { opacity: 0, duration: 0.35, ease: "power2.out" }, 6.26);
   tl.to("#s02-rqt", { opacity: 0, duration: 0.35, ease: "power2.out" }, 6.26);
   gsap.set("#s02-c0", { opacity: 0, y: 12 });
-  tl.to("#s02-c0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.68);
+  tl.to("#s02-c0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.66);
   gsap.set("#s02-c1", { opacity: 0, y: 12 });
-  tl.to("#s02-c1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.76);
+  tl.to("#s02-c1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.768);
   gsap.set("#s02-c2", { opacity: 0, y: 12 });
-  tl.to("#s02-c2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.87);
+  tl.to("#s02-c2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.866);
   gsap.set("#s02-c3", { opacity: 0, y: 12 });
-  tl.to("#s02-c3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.98);
+  tl.to("#s02-c3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.963);
   gsap.set("#s02-c4", { opacity: 0, y: 12 });
-  tl.to("#s02-c4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.09);
+  tl.to("#s02-c4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.087);
   gsap.set("#s02-c5", { opacity: 0, y: 12 });
-  tl.to("#s02-c5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.19);
+  tl.to("#s02-c5", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.199);
   gsap.set("#s02-ex", { opacity: 0 });
-  tl.to("#s02-ex", { opacity: 1, duration: 0.4, ease: "power2.out" }, 6.93);
+  tl.to("#s02-ex", { opacity: 1, duration: 0.4, ease: "power2.out" }, 6.919);
   gsap.set("#s02-psc", { opacity: 0, y: 8 });
   gsap.set("#s02-pscu", { scaleX: 0 });
-  tl.to("#s02-psc", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 6.74);
+  tl.to("#s02-psc", { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 6.75);
   tl.to("#s02-pscu", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.83);
   gsap.set("#s02-b0", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s02-b0", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 10.68);
+  tl.to("#s02-b0", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 10.7);
   gsap.set("#s02-b1", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s02-b1", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 10.83);
+  tl.to("#s02-b1", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 10.85);
   gsap.set("#s02-bl0", { opacity: 0 });
-  tl.to("#s02-bl0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.68);
+  tl.to("#s02-bl0", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.7);
   gsap.set("#s02-bl1", { opacity: 0 });
-  tl.to("#s02-bl1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.83);
+  tl.to("#s02-bl1", { opacity: 1, duration: 0.3, ease: "power2.out" }, 10.85);
   gsap.set("#s02-page", { opacity: 0, x: 0 });
-  tl.to("#s02-page", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 11.55);
+  tl.to("#s02-page", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 11.57);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

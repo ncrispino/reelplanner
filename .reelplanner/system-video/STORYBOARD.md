@@ -1,23 +1,23 @@
 ---
-title: "reelplanning: the whole system"
+title: "reelplanner: the whole system"
 format: 1920x1080
 duration: 570s
-message: "a plan as long text is too hard to take in, so reelplanning turns it into a short narrated video you review by watching, with the detail on a guide under it. This is the whole system as it is today: installing it, the plan and its video, reviewing in the player, what happens after you send, the build and its walkthrough, and what is kept"
-arc: explainer in seven chapters: what reelplanning is and its one loop; installing it, run for real; the plan and its video; reviewing in the player and the guide; after you send; the build and its walkthrough; what is kept, and kept current
-audience: someone new to the repo, who knows nothing about reelplanning
+message: "a plan as long text is too hard to take in, so reelplanner turns it into a short narrated video you review by watching, with the detail on a guide under it. This is the whole system as it is today: installing it, the plan and its video, reviewing in the player, what happens after you send, the build and its walkthrough, and what is kept"
+arc: explainer in seven chapters: what reelplanner is and its one loop; installing it, run for real; the plan and its video; reviewing in the player and the guide; after you send; the build and its walkthrough; what is kept, and kept current
+audience: someone new to the repo, who knows nothing about reelplanner
 mode: autonomous
 music: none
 kind: system
-plan_dir: .reelplanning
-terms: own words; plan.md = the file a plan is written in: its problem, its steps and its questions for you; walkthrough.md = the file the agent writes as it builds: what landed in each step, and each choice it made on its own; spec.md = the project's description of itself, in plain prose: what it is for, its parts and its rules; system.json = the project's parts and how they connect, as data; interface = what a step adds that you use: a command and its flags, a file's fields, what a page shows; HyperFrames = the video framework that draws each scene as an HTML page and renders the video; maintainer = a person who decides what goes into a repo; author = the agent that made a video; glossary = the project's list of words, one name per thing, each with its meaning; pr-check = the command that says where a pull request stands: waiting on its video, on a review, or ready to merge; case = one kind of input or situation a step handles, with a real example; reel-intake = the command that files a review that came as a row of a hosted page: it checks the row, then records it like any other; the list = the walkthrough video's last scene: every choice that doesn't pause, one line each, with its own Flag; reel fold = the command that gathers a part's many rules into one section of spec.md, once the owner says yes; past choice = a choice the agent made on its own in an earlier build, kept in its walkthrough.md; decisions.md = the decision log's file, in .reelplanning/; superseded = replaced by a later decision; in force = still binding on later plans: not replaced by a later answer; cite = name a decision by its id, or the spec.md section it is folded into, in the plan's list of the decisions it keeps; pipeline = the third level, all of reelplanning: your answers kept as decisions that later plans are checked against, every review kept, walkthrough videos and the system video
+plan_dir: .reelplanner
+terms: own words; plan.md = the file a plan is written in: its problem, its steps and its questions for you; walkthrough.md = the file the agent writes as it builds: what landed in each step, and each choice it made on its own; spec.md = the project's description of itself, in plain prose: what it is for, its parts and its rules; system.json = the project's parts and how they connect, as data; interface = what a step adds that you use: a command and its flags, a file's fields, what a page shows; HyperFrames = the video framework that draws each scene as an HTML page and renders the video; maintainer = a person who decides what goes into a repo; author = the agent that made a video; glossary = the project's list of words, one name per thing, each with its meaning; pr-check = the command that says where a pull request stands: waiting on its video, on a review, or ready to merge; case = one kind of input or situation a step handles, with a real example; reel-intake = the command that files a review that came as a row of a hosted page: it checks the row, then records it like any other; the list = the walkthrough video's last scene: every choice that doesn't pause, one line each, with its own Flag; reel fold = the command that gathers a part's many rules into one section of spec.md, once the owner says yes; past choice = a choice the agent made on its own in an earlier build, kept in its walkthrough.md; decisions.md = the decision log's file, in .reelplanner/; superseded = replaced by a later decision; in force = still binding on later plans: not replaced by a later answer; cite = name a decision by its id, or the spec.md section it is folded into, in the plan's list of the decisions it keeps; pipeline = the third level, all of reelplanner: your answers kept as decisions that later plans are checked against, every review kept, walkthrough videos and the system video
 terms_check: strict
 details_check: strict
 ---
 
 ## Video direction
 
-- THE SYSTEM VIDEO, REDONE WHOLE (decision D-003 keeps it current; the owner asked for a full redo on 2026-10-04): one video explaining the whole repo, from `.reelplanning/spec.md`, `system.json` and `glossary.md`, for someone new. No decision scenes; a quick check per chapter (seven), each later and on a new case (decisions D-197 to D-199): chapter N's check at the end of chapter N+1, the last two just before the ending, with `explained_at` naming the scene that explained its rule. Every glossary row has a scene tagged `- defines:`, in the row's on-screen word (decision D-127).
-- SEVEN CHAPTERS (`chapter_start` on scenes 1, 6, 11, 17, 26, 31, 38), the lifecycle in order: what reelplanning is (what it makes of a plan, and the real review page stopped at a question; the loop: plan, plan video and guide, your review, decisions, build, walkthrough video and guide, your review, the system video; how much of it you use, three levels you pick from, in the README's words: one video, a plan video or an explainer; plus a walkthrough; the whole pipeline, which the rest of this video shows); installing it (decision D-303: the four commands, with what they print; the README's `npm i -g github:…` on screen, run from a packed copy until the repo is public, said in a note; your agent fills a repo's description in from its code); the plan and its video (how to start, and that you type only that: your agent runs every command after it, a chip on each command scene says so; plan.md's blocks, `reel check`'s rules, decision D-306; what the agent writes and what `reelplanning build` runs, fresh eyes and two of the frame rules, the review page your agent starts and that keeps running); reviewing in the player (the cards, Explain this more, own words, Terms, Ask about this, the plan text, quick checks, the guide under the video, decisions D-264 and D-265, the quiet mark on the plan video's own scene, decision D-266, a note on any words, Finish and Send); after you send (how a review arrives, a hosted page said in plain words; who picks it up: the hand-off and the sandbox; `reel record` and the decision log, which keeps everything while what binds a plan stays small: rules, history and `reel fold`, decision D-306; the agent revises); the build and its walkthrough (choices and labels, a step's fifth choice asked in plan.md, the code check and `reel audit`, the change running, what pauses, the list, the Built side and the fix); what is kept (the folder, this video kept current and spec.md for the rest, memory, explainers, several people). The frame rules in full, the record's history in full, and the case study are left to the guide this video does not have yet (plans/2026-10-04-system-video-guide/); until then spec.md holds them.
+- THE SYSTEM VIDEO, REDONE WHOLE (decision D-003 keeps it current; the owner asked for a full redo on 2026-10-04): one video explaining the whole repo, from `.reelplanner/spec.md`, `system.json` and `glossary.md`, for someone new. No decision scenes; a quick check per chapter (seven), each later and on a new case (decisions D-197 to D-199): chapter N's check at the end of chapter N+1, the last two just before the ending, with `explained_at` naming the scene that explained its rule. Every glossary row has a scene tagged `- defines:`, in the row's on-screen word (decision D-127).
+- SEVEN CHAPTERS (`chapter_start` on scenes 1, 6, 11, 17, 26, 31, 38), the lifecycle in order: what reelplanner is (what it makes of a plan, and the real review page stopped at a question; the loop: plan, plan video and guide, your review, decisions, build, walkthrough video and guide, your review, the system video; how much of it you use, three levels you pick from, in the README's words: one video, a plan video or an explainer; plus a walkthrough; the whole pipeline, which the rest of this video shows); installing it (decision D-303: the four commands, with what they print; the README's `npm i -g github:…` on screen, run from a packed copy until the repo is public, said in a note; your agent fills a repo's description in from its code); the plan and its video (how to start, and that you type only that: your agent runs every command after it, a chip on each command scene says so; plan.md's blocks, `reel check`'s rules, decision D-306; what the agent writes and what `reelplanner build` runs, fresh eyes and two of the frame rules, the review page your agent starts and that keeps running); reviewing in the player (the cards, Explain this more, own words, Terms, Ask about this, the plan text, quick checks, the guide under the video, decisions D-264 and D-265, the quiet mark on the plan video's own scene, decision D-266, a note on any words, Finish and Send); after you send (how a review arrives, a hosted page said in plain words; who picks it up: the hand-off and the sandbox; `reel record` and the decision log, which keeps everything while what binds a plan stays small: rules, history and `reel fold`, decision D-306; the agent revises); the build and its walkthrough (choices and labels, a step's fifth choice asked in plan.md, the code check and `reel audit`, the change running, what pauses, the list, the Built side and the fix); what is kept (the folder, this video kept current and spec.md for the rest, memory, explainers, several people). The frame rules in full, the record's history in full, and the case study are left to the guide this video does not have yet (plans/2026-10-04-system-video-guide/); until then spec.md holds them.
 - PACE: narrated at speed 1.1, with 0.8 s after every line (`.hyperframes/holds.json`'s tail), for someone new; quick checks are cut out of the chapter MP4s (`chapters --no-checks`), which cannot stop for an answer.
 - THE REAL THING WHERE THE BRIEF PICKS IT (decision D-166): today's review page and guide (this branch's player, bundled with `bundle-player`, shot at 1440×900 at 2×, light and dark, swapped with the theme); the plan guide's plan.md, walkthrough.md, code-check findings, reviews and the decision log's entry D-264; real runs of the install (npm, `setup`, `npx skills add`, `reel init`, on a scratch machine), `reel check`, `reel status`, `reel stops`, `reel audit` and `spec-diff` in the theme's terminal block. Each sits in a `data-artifact` container with its own words, plain words pinned on it (`data-gloss`). The rest explain with pictures: the loop, the pipeline, the hand-off and its fence, the two lanes of a revise, an explainer's ends, a pull request's video branch.
 - MOTION (theme motion-language.md): a camera moves over one view clipped at y 900; things arrive by their own verb (typed, printed, wiped, drawn, pinned, lit); cut = a new chapter or a quick check, push-slide LEFT = the next scene of a chapter, crossfade = the ending. Quick-check headings (`data-question`) and cards (`data-option`) sit outside any camera, whole and still; the check's own new case is drawn first, then set aside small at the top left.
@@ -27,7 +27,7 @@ details_check: strict
 
 ## Frame 1 — A long plan
 
-- chapter_start: What reelplanning is
+- chapter_start: What reelplanner is
 - defines: agent, step
 - scene: A PLAN LIKE THIS ONE: the plan guide's plan.md (803 lines) on a document page in a camera, line numbers in its gutter: its title, The problem, its five `### Step N` headings, then Open questions for the reviewer with its four questions at line 696. 'step' is pinned on Step 1's heading; the camera runs down the page to the questions; on 'question is asking' a coral '4 questions, at line 696 of 803' lands on them: you can answer them in the chat, but they sit at the end of a lot of reading.
 - voiceover: "Your agent, the AI assistant that writes your code, hands you a plan like this: five steps, eight hundred lines, and four questions at the end. You can answer them right in the chat. But that's a lot to read, so it's easy to skim, and hard to see what each question is asking."
@@ -47,9 +47,9 @@ keyMessage: Your agent, the AI assistant that writes your code, hands you a plan
 ## Frame 2 — A plan, as a video
 
 - defines: scene, chapter, guide
-- scene: THE NAME, THEN THE REAL THING: `reelplanning` typed large, then 'turns a plan into a short video' set under it; on 'a short narrated video that stops at each question', the real review page wipes in, the plan guide's video stopped at its question 2 with its three cards on the frame ('stopped at a question' pinned on it), for about four seconds; then a row of six scene cards, each a picture and a line of voice, two brackets over them naming two chapters ('scene' and 'chapter' pinned), and a page slides in under the row: 'the guide: the rest of the plan, on a page under its video'.
-- voiceover: "reelplanning turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide."
-- duration: 14.88s
+- scene: THE NAME, THEN THE REAL THING: `reelplanner` typed large, then 'turns a plan into a short video' set under it; on 'a short narrated video that stops at each question', the real review page wipes in, the plan guide's video stopped at its question 2 with its three cards on the frame ('stopped at a question' pinned on it), for about four seconds; then a row of six scene cards, each a picture and a line of voice, two brackets over them naming two chapters ('scene' and 'chapter' pinned), and a page slides in under the row: 'the guide: the rest of the plan, on a page under its video'.
+- voiceover: "reelplanner turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide."
+- duration: 14.816s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/02-real-planning.html
@@ -60,7 +60,7 @@ keyMessage: Your agent, the AI assistant that writes your code, hands you a plan
 - sfx: none
 
 narrativeRole: A plan, as a video.
-keyMessage: reelplanning turns that plan into a short narrated video, which stops at each question for your answer.
+keyMessage: reelplanner turns that plan into a short narrated video, which stops at each question for your answer.
 
 ## Frame 3 — One loop for every change
 
@@ -85,7 +85,7 @@ keyMessage: Used in full, every change follows one loop.
 - defines: explainer
 - scene: THREE LEVELS, ONE LINE EACH (the README's words), landing on their words: '1 · one video' with 'a plan video, from a plan · or an explainer, of what is already there · just the video: no guide, no record'; '2 · + a walkthrough' with 'after the build: the change, running'; '3 · + the whole pipeline' with 'your answers kept as decisions · every review on record · the system video kept current'; a coral 'you pick: each level is optional' on 'you choose', the first row lit 'the basic unit'; last, 'from here on: the whole pipeline' under the three.
 - voiceover: "You choose how much of it you use. The basic unit is one video: a plan video, or an explainer, a video of something already there. Add a walkthrough after the build, if you want, or take the whole pipeline: your answers kept as decisions, every review on record, and the system video kept current. From here on, this video shows the whole pipeline."
-- duration: 22.133s
+- duration: 22.112s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/03b-levels.html
@@ -104,7 +104,7 @@ keyMessage: You choose how much of it you use.
 - defines: plan-to-video skill
 - scene: THE REAL TABLE: docs/agents.md's Support table (Agent, Status), the plan-to-video skill named over it; Claude Code's row ringed 'tested' on its word, its line saying the sandbox as shipped is untested on a normal machine; Codex's 'basic', the four untested rows marked 'open work' together.
 - voiceover: "It all runs through the plan-to-video skill, the instructions your agent follows. It's tested with Claude Code, though not yet its sandboxed run on a normal machine. Codex has basic support."
-- duration: 13.045s
+- duration: 13.067s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/04-agents.html
@@ -122,9 +122,9 @@ keyMessage: It all runs through the plan-to-video skill, the instructions your a
 
 - chapter_start: Installing it
 - defines: reel cli
-- scene: A RUN on the terminal slab, on a scratch machine: the README's `npm i -g github:ncrispino/reelplanning` typed, its output printed ('added 120 packages in 10s'), then `reelplanning --version` printing 0.2.0 and `reel --help`'s first line; a small note under the run says what really ran while the repo is private: a packed copy of this branch, `npm i -g ./reelplanning-0.2.0.tgz`; 'keeps the record' on `reel`.
-- voiceover: "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanning`, and `reel`, the reel CLI, which keeps the project's record."
-- duration: 12.811s
+- scene: A RUN on the terminal slab, on a scratch machine: the README's `npm i -g github:ncrispino/reelplanner` typed, its output printed ('added 120 packages in 27s'), then `reelplanner --version` printing 0.2.0 and `reel --help`'s first line; a small note under the run says what really ran while the repo is private: a packed copy of this branch, `npm i -g ./reelplanner-0.2.0.tgz`; 'keeps the record' on `reel`.
+- voiceover: "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanner`, and `reel`, the reel CLI, which keeps the project's record."
+- duration: 12.853s
 - transition_in: cut
 - status: animated
 - src: compositions/frames/05-install.html
@@ -140,9 +140,9 @@ keyMessage: Installing takes four commands.
 
 ## Frame 7 — What the videos need
 
-- scene: A REAL RUN: `reelplanning setup` typed; its check lines print one by one (node, ffmpeg, Chrome headless, Kokoro TTS, whisper.cpp, HyperFrames skills at v0.8.52, the voice's speed patch, 'reelplanning is set up'); plain words pinned on three of them on their words: 'a voice', 'captions', 'draws the frames'.
-- voiceover: "Second, `reelplanning setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills."
-- duration: 11.339s
+- scene: A REAL RUN: `reelplanner setup` typed; its check lines print one by one (node, ffmpeg, Chrome headless, Kokoro TTS, whisper.cpp, HyperFrames skills at v0.8.52, the voice's speed patch, 'reelplanner is set up'); plain words pinned on three of them on their words: 'a voice', 'captions', 'draws the frames'.
+- voiceover: "Second, `reelplanner setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills."
+- duration: 11.381s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/06-setup.html
@@ -154,13 +154,13 @@ keyMessage: Installing takes four commands.
 - sfx: none
 
 narrativeRole: What the videos need.
-keyMessage: Second, `reelplanning setup`, once per machine too, gets what videos need:
+keyMessage: Second, `reelplanner setup`, once per machine too, gets what videos need:
 
 ## Frame 8 — The skill, into your agent
 
-- scene: A REAL RUN: the README's `npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g` typed; its output prints: one skill found, plan-to-video selected, installed to every agent ('universal: … Codex …', 'symlinked: …'), 'Done!'; then `ls -l ~/.claude/skills` shows plan-to-video, linked; 'where Claude Code reads skills' pinned on it.
+- scene: A REAL RUN: the README's `npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g` typed; its output prints: one skill found, plan-to-video selected, installed to every agent ('universal: … Codex …', 'symlinked: …'), 'Done!'; then `ls -l ~/.claude/skills` shows plan-to-video, linked; 'where Claude Code reads skills' pinned on it.
 - voiceover: "Third, `npx skills add` copies the plan-to-video skill from that install to where Claude Code, Codex and the other agents read skills."
-- duration: 9.589s
+- duration: 9.632s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/07-skill.html
@@ -177,9 +177,9 @@ keyMessage: Third, `npx skills add` copies the plan-to-video skill from that ins
 ## Frame 9 — Then, in each repo
 
 - defines: decision log
-- scene: A REAL RUN in a new repo: `reel init . --name my-app --kind brownfield --agent claude` prints its ✓ lines; `ls -p .reelplanning` lists what it wrote, each pinned with its plain word (its own description, its parts, its words, the decision log); then 'your agent: fills spec.md and system.json in from your code' lands on spec.md and system.json; a chip 'your agent runs this' over the run.
-- voiceover: "Last, in each repo, `reel init` writes `.reelplanning/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it."
-- duration: 19.381s
+- scene: A REAL RUN in a new repo: `reel init . --name my-app --kind brownfield --agent claude` prints its ✓ lines; `ls -p .reelplanner` lists what it wrote, each pinned with its plain word (its own description, its parts, its words, the decision log); then 'your agent: fills spec.md and system.json in from your code' lands on spec.md and system.json; a chip 'your agent runs this' over the run.
+- voiceover: "Last, in each repo, `reel init` writes `.reelplanner/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it."
+- duration: 19.445s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/08-init.html
@@ -191,7 +191,7 @@ keyMessage: Third, `npx skills add` copies the plan-to-video skill from that ins
 - sfx: none
 
 narrativeRole: Then, in each repo.
-keyMessage: Last, in each repo, `reel init` writes `.reelplanning/`:
+keyMessage: Last, in each repo, `reel init` writes `.reelplanner/`:
 
 ## Frame 10 — Quick check: a login page, built
 
@@ -264,9 +264,9 @@ keyMessage: Then `reel check` holds the plan to what you decided:
 ## Frame 13 — From plan to video
 
 - defines: brief, storyboard, narrate, finish-project, plan-diff, frame-lint, details check
-- scene: THE PIPELINE, LIT ON ITS WORDS: outside the box, what the agent writes: BRIEF.md, STORYBOARD.md and the frames (one HTML page a scene); then the box, `reelplanning build`, holding what it runs: `narrate` (a local voice), finish-project (adds the captions and ties each scene to the plan) and the checks (frame-lint, the details check), with plan-diff under finish-project (marks the scenes that changed since the last build); ending in 'the video'; each lights as it is said; the chip 'your agent runs this' over the box.
-- voiceover: "The agent writes a storyboard and the frames; `reelplanning build` voices it with a local voice, adds captions and checks every frame."
-- duration: 9.077s
+- scene: THE PIPELINE, LIT ON ITS WORDS: outside the box, what the agent writes: BRIEF.md, STORYBOARD.md and the frames (one HTML page a scene); then the box, `reelplanner build`, holding what it runs: `narrate` (a local voice), finish-project (adds the captions and ties each scene to the plan) and the checks (frame-lint, the details check), with plan-diff under finish-project (marks the scenes that changed since the last build); ending in 'the video'; each lights as it is said; the chip 'your agent runs this' over the box.
+- voiceover: "The agent writes a storyboard and the frames; `reelplanner build` voices it with a local voice, adds captions and checks every frame."
+- duration: 9.205s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/12-making.html
@@ -278,7 +278,7 @@ keyMessage: Then `reel check` holds the plan to what you decided:
 - sfx: none
 
 narrativeRole: From plan to video.
-keyMessage: The agent writes a storyboard and the frames; `reelplanning build` voices it with a local voice, adds captions and checks every frame.
+keyMessage: The agent writes a storyboard and the frames; `reelplanner build` voices it with a local voice, adds captions and checks every frame.
 
 ## Frame 14 — Fresh eyes, before you
 
@@ -302,9 +302,9 @@ keyMessage: Before you see it, fresh eyes look:
 ## Frame 15 — The review page
 
 - defines: review server, notification
-- scene: THE REAL PAGE: the review page's Videos list open (Needs you, then the system video and the recent plans, each with Plan, Built and Guide); the camera pushes in on the list; 'every video in the repo' pinned on it; 'your agent starts it: reelplanning review --detach' with 'keeps running after your session ends' under it; a notification drawn beside it with its real line: '4 choices to make, 5 quick checks, … 5 min'.
-- voiceover: "Your agent starts the review server, `reelplanning review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes."
-- duration: 16.224s
+- scene: THE REAL PAGE: the review page's Videos list open (Needs you, then the system video and the recent plans, each with Plan, Built and Guide); the camera pushes in on the list; 'every video in the repo' pinned on it; 'your agent starts it: reelplanner review --detach' with 'keeps running after your session ends' under it; a notification drawn beside it with its real line: '4 choices to make, 5 quick checks, … 5 min'.
+- voiceover: "Your agent starts the review server, `reelplanner review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes."
+- duration: 16.288s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/15-review-page.html
@@ -316,13 +316,13 @@ keyMessage: Before you see it, fresh eyes look:
 - sfx: none
 
 narrativeRole: The review page.
-keyMessage: Your agent starts the review server, `reelplanning review`, and it keeps running after your session ends.
+keyMessage: Your agent starts the review server, `reelplanner review`, and it keeps running after your session ends.
 
 ## Frame 16 — Quick check: a second repo
 
 - scene: A NEW CASE, DRAWN, THEN SET ASIDE: a laptop with three ticks on it (the tooling, setup, the skill) and two repos beside it, the second one ringed; it shrinks to the top left as the question lands.
 - voiceover: "Quick check. On a new laptop, you've run the first three commands. So in a second repo: what still has to run?"
-- duration: 7.456s
+- duration: 7.477s
 - transition_in: cut
 - status: animated
 - src: compositions/frames/16-check-install.html
@@ -337,7 +337,7 @@ keyMessage: Your agent starts the review server, `reelplanning review`, and it k
 - option_c: `setup` again, then `reel init`
 - answer: b
 - explain: The tooling, setup and the skill are once per machine; each repo only needs `reel init`, and your agent runs it for you.
-- walk_me_through: The npm install, setup and the skill went onto the laptop once, and every repo on it uses them. The second repo has no `.reelplanning/` folder yet. So only `reel init` runs there, and your agent runs it for you the first time you plan.
+- walk_me_through: The npm install, setup and the skill went onto the laptop once, and every repo on it uses them. The second repo has no `.reelplanner/` folder yet. So only `reel init` runs there, and your agent runs it for you the first time you plan.
 - explained_at: 9
 - option_a_why: Three of the four are once per machine: the laptop already has them.
 - option_b_why: Right: only `reel init` is per repo, and the agent runs it when you first plan there.
@@ -392,7 +392,7 @@ keyMessage: At each question the video stops, and you click a card to answer; Mo
 - defines: side panel, ask about this, plan text
 - scene: THE REAL PAGE, THREE STATES, the video's own captions off: Terms open in the side panel (Case, Step, each with its meaning); then Ask about this in the same panel, a question typed; then the plan's own text beside the video with the step highlighted; each pinned on its word, the camera close on each so the page's words read at 1080p.
 - voiceover: "Stuck on a word? Terms opens in the side panel. Ask about this, or Q, asks an agent about the scene. The Plan switch shows the plan text."
-- duration: 10.165s
+- duration: 10.187s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/19-terms-ask.html
@@ -466,7 +466,7 @@ keyMessage: A thing in a scene can lead to its part of the guide, quietly:
 
 - scene: THE REAL PAGE: words selected on the guide ('Five stages: step through them…'), and the note box open on them with a note typed, Ask and Save in it; the camera pushes in on the box; 'same box as a mark' pinned on it.
 - voiceover: "On the guide, select any words to leave a note, suggest an edit, or ask. It goes with the same review."
-- duration: 7.136s
+- duration: 7.157s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/23-note.html
@@ -485,7 +485,7 @@ keyMessage: On the guide, select any words to leave a note, suggest an edit, or 
 - defines: finish, approve
 - scene: THE REAL PANEL, served by the review server: Finish your review, with Approve and Request changes side by side; Approve ringed on its word ('no new video'), then Request changes ('only what changed'); then the Send button and the line under it saying who picks the review up.
 - voiceover: "When you're done, press Finish. Approve, and the agent works your comments into the plan, with no new video. Request changes, and you'll see only the scenes that changed. Then press Send."
-- duration: 12.021s
+- duration: 12.043s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/24-finish.html
@@ -536,7 +536,7 @@ keyMessage: Quick check.
 - defines: hosted page
 - scene: THREE WAYS IN, DRAWN: Send on your machine (to the review server); a hosted page, drawn as the review page in a browser on a phone and a laptop, a link ('the review page as a link you open anywhere · Claude only'), and the review sent from it; a download, handed over; the last two filed by `reel-intake` or `reel record`, said under them.
 - voiceover: "Your review reaches the agent one of three ways. Send, on your machine. Send on a hosted page: the review page as a link you open anywhere, Claude only. Or a download you hand it."
-- duration: 12.576s
+- duration: 12.597s
 - transition_in: cut
 - status: animated
 - src: compositions/frames/26a-arrive.html
@@ -593,7 +593,7 @@ keyMessage: The decision log keeps everything, but little of it binds a plan: yo
 - defines: revise step
 - scene: TWO LANES, under the name of this stage, 'the revise step': Approved, a comment going into plan.md as a line of text, and 'no new video'; Requested changes, a row of eight scenes with two lit coral, and the real line from the review page above it, 'Revised since the last build: 7 of 33 scenes changed', with 'Play just the changes'.
 - voiceover: "Then the agent revises. Approved: your comments go into `plan.md`, no new video. Changes requested: only the steps your words touched are rewritten, plan-diff marks the scenes that changed, and the player plays just those."
-- duration: 15.776s
+- duration: 15.819s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/28-revise.html
@@ -611,7 +611,7 @@ keyMessage: Then the agent revises.
 
 - scene: A NEW CASE, DRAWN, THEN SET ASIDE: a paused scene with a table on it and a pointer moving onto the table; it shrinks to the top left as the question lands.
 - voiceover: "Quick check. Paused on a scene, your pointer over its table: how do you know the table leads to the guide?"
-- duration: 6.88s
+- duration: 6.923s
 - transition_in: cut
 - status: animated
 - src: compositions/frames/30-check-mark.html
@@ -736,7 +736,7 @@ keyMessage: A pause shows the choice running, with Accept and Flag.
 ## Frame 36 — What was built, and the fix
 
 - defines: walkthrough fix step
-- scene: THE REAL PAGE, TWO STATES, the camera close and below the guide's header (its count of choices left out): the walkthrough's guide, its Built side at step 1 (the real run of `reelplanning guide`, what it reads and writes); then Finish, served by the review server, with the open question 'Seeing it run, anything you'd change?' above Approve and Request changes, and Send; 'real runs' pinned on the run; 'the walkthrough fix step' named over the Finish.
+- scene: THE REAL PAGE, TWO STATES, the camera close and below the guide's header (its count of choices left out): the walkthrough's guide, its Built side at step 1 (the real run of `reelplanner guide`, what it reads and writes); then Finish, served by the review server, with the open question 'Seeing it run, anything you'd change?' above Approve and Request changes, and Send; 'real runs' pinned on the run; 'the walkthrough fix step' named over the Finish.
 - voiceover: "Under it, the guide's Built side shows what changed, with the real runs. Finish asks again: anything you'd change? Flag a choice, and the agent fixes the code and its row."
 - duration: 12.064s
 - transition_in: crossfade
@@ -786,9 +786,9 @@ keyMessage: Quick check.
 ## Frame 38 — All of it, as text
 
 - chapter_start: What's kept
-- scene: THE REAL FOLDER: `.reelplanning/` as this repo has it, printed as a tree (spec.md, system.json, glossary.md, decisions.md, config.json, theme/, system-video/, plans/<date>-<name>/ with plan.md, reviews/, walkthrough.md, code-check/, runs/, video/, walkthrough-video/); 'text, committed' marks the text; 'on your machine' the inbox; 'built again' the guides, the voice and the renders, each on its line.
-- voiceover: "The record is text in your repo, under `.reelplanning/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out."
-- duration: 23.605s
+- scene: THE REAL FOLDER: `.reelplanner/` as this repo has it, printed as a tree (spec.md, system.json, glossary.md, decisions.md, config.json, theme/, system-video/, plans/<date>-<name>/ with plan.md, reviews/, walkthrough.md, code-check/, runs/, video/, walkthrough-video/); 'text, committed' marks the text; 'on your machine' the inbox; 'built again' the guides, the voice and the renders, each on its line.
+- voiceover: "The record is text in your repo, under `.reelplanner/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out."
+- duration: 23.776s
 - transition_in: cut
 - status: animated
 - src: compositions/frames/38-stored.html
@@ -800,7 +800,7 @@ keyMessage: Quick check.
 - sfx: none
 
 narrativeRole: All of it, as text.
-keyMessage: The record is text in your repo, under `.reelplanning/`:
+keyMessage: The record is text in your repo, under `.reelplanner/`:
 
 ## Frame 39 — This video, kept current
 
@@ -843,7 +843,7 @@ keyMessage: Your reviews teach it too:
 ## Frame 41 — Explain first
 
 - scene: A PICTURE: a question in your words ('what changed on this branch?'), the sources it pins (a branch, a log, a session), a video with no question marks on it, and its three ends, Done, Explain more, Plan this, each landing on its word.
-- voiceover: "Not ready to plan? `reelplanning explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this."
+- voiceover: "Not ready to plan? `reelplanner explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this."
 - duration: 12.085s
 - transition_in: push-slide LEFT
 - status: animated
@@ -911,7 +911,7 @@ keyMessage: Quick check.
 
 - scene: A NEW CASE, DRAWN, THEN SET ASIDE: system.json with a new part, 'scheduler', added, and a new glossary row for it; it shrinks to the top left as the question lands.
 - voiceover: "Quick check. A walkthrough you accept adds a new part, the scheduler, to the parts and the glossary. What happens to this video?"
-- duration: 8.011s
+- duration: 8.053s
 - transition_in: push-slide LEFT
 - status: animated
 - src: compositions/frames/44-check-current.html
@@ -938,11 +938,11 @@ keyMessage: Quick check.
 narrativeRole: Quick check: a new part.
 keyMessage: Quick check.
 
-## Frame 45 — reelplanning, in one picture
+## Frame 45 — reelplanner, in one picture
 
 - scene: THE ENDING, HELD STILL: the loop from scene 3, small, every station lit; three lines land on their words: a plan you watch and answer, a build you watch and accept, a record that keeps everything.
-- voiceover: "That's reelplanning: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch."
-- duration: 10.72s
+- voiceover: "That's reelplanner: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch."
+- duration: 10.848s
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/45-end.html
@@ -952,6 +952,6 @@ keyMessage: Quick check.
 - spec_section: Purpose
 - sfx: none
 
-narrativeRole: reelplanning, in one picture.
-keyMessage: That's reelplanning:
+narrativeRole: reelplanner, in one picture.
+keyMessage: That's reelplanner:
 

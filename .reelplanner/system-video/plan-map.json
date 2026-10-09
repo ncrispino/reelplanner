@@ -1,20 +1,20 @@
 {
   "project": "system-video",
-  "title": "reelplanning: the whole system",
-  "planDir": ".reelplanning",
+  "title": "reelplanner: the whole system",
+  "planDir": ".reelplanner",
   "kind": "system",
-  "reviewDir": ".reelplanning/system-video",
-  "totalSeconds": 600.328,
+  "reviewDir": ".reelplanner/system-video",
+  "totalSeconds": 601.182,
   "chapters": [
     {
       "id": "ch1",
-      "title": "What reelplanning is",
+      "title": "What reelplanner is",
       "fromFrame": 1,
       "toFrame": 5,
       "start": 0,
-      "end": 86.794,
-      "linearSeconds": 86.794,
-      "watchedSeconds": 86.794,
+      "end": 86.731,
+      "linearSeconds": 86.731,
+      "watchedSeconds": 86.731,
       "decisions": []
     },
     {
@@ -22,10 +22,10 @@
       "title": "Installing it",
       "fromFrame": 6,
       "toFrame": 10,
-      "start": 86.794,
-      "end": 146.773,
-      "linearSeconds": 59.979,
-      "watchedSeconds": 59.979,
+      "start": 86.731,
+      "end": 146.901,
+      "linearSeconds": 60.17,
+      "watchedSeconds": 60.17,
       "decisions": []
     },
     {
@@ -33,10 +33,10 @@
       "title": "The plan and its video",
       "fromFrame": 11,
       "toFrame": 16,
-      "start": 146.773,
-      "end": 229.525,
-      "linearSeconds": 82.752,
-      "watchedSeconds": 82.752,
+      "start": 146.901,
+      "end": 229.866,
+      "linearSeconds": 82.965,
+      "watchedSeconds": 82.965,
       "decisions": []
     },
     {
@@ -44,10 +44,10 @@
       "title": "Reviewing in the player",
       "fromFrame": 17,
       "toFrame": 25,
-      "start": 229.525,
-      "end": 324.212,
-      "linearSeconds": 94.687,
-      "watchedSeconds": 94.687,
+      "start": 229.866,
+      "end": 324.618,
+      "linearSeconds": 94.752,
+      "watchedSeconds": 94.752,
       "decisions": []
     },
     {
@@ -55,10 +55,10 @@
       "title": "After you send",
       "fromFrame": 26,
       "toFrame": 30,
-      "start": 324.212,
-      "end": 402.068,
-      "linearSeconds": 77.856,
-      "watchedSeconds": 77.856,
+      "start": 324.618,
+      "end": 402.581,
+      "linearSeconds": 77.963,
+      "watchedSeconds": 77.963,
       "decisions": []
     },
     {
@@ -66,8 +66,8 @@
       "title": "The build and its walkthrough",
       "fromFrame": 31,
       "toFrame": 37,
-      "start": 402.068,
-      "end": 487.284,
+      "start": 402.581,
+      "end": 487.797,
       "linearSeconds": 85.216,
       "watchedSeconds": 85.216,
       "decisions": []
@@ -77,10 +77,10 @@
       "title": "What's kept",
       "fromFrame": 38,
       "toFrame": 45,
-      "start": 487.284,
-      "end": 600.328,
-      "linearSeconds": 113.044,
-      "watchedSeconds": 113.044,
+      "start": 487.797,
+      "end": 601.182,
+      "linearSeconds": 113.385,
+      "watchedSeconds": 113.385,
       "decisions": []
     }
   ],
@@ -111,8 +111,8 @@
       ],
       "answer": "b",
       "explain": "After the build comes the walkthrough video: it shows the change running, and you review it before the system video catches up.",
-      "at": 146.723,
-      "explainedAt": 32.555,
+      "at": 146.851,
+      "explainedAt": 32.491,
       "explainedFrame": 3,
       "walkMeThrough": "The plan video came first, before any code, and you approved it. Now the agent has built the login page. The next video in the loop is the walkthrough video: the page running, which you review. Only after that is the system video brought up to date."
     },
@@ -141,10 +141,10 @@
       ],
       "answer": "b",
       "explain": "The tooling, setup and the skill are once per machine; each repo only needs `reel init`, and your agent runs it for you.",
-      "at": 229.475,
-      "explainedAt": 120.533,
+      "at": 229.816,
+      "explainedAt": 120.597,
       "explainedFrame": 9,
-      "walkMeThrough": "The npm install, setup and the skill went onto the laptop once, and every repo on it uses them. The second repo has no `.reelplanning/` folder yet. So only `reel init` runs there, and your agent runs it for you the first time you plan."
+      "walkMeThrough": "The npm install, setup and the skill went onto the laptop once, and every repo on it uses them. The second repo has no `.reelplanner/` folder yet. So only `reel init` runs there, and your agent runs it for you the first time you plan."
     },
     {
       "id": "k3",
@@ -171,8 +171,8 @@
       ],
       "answer": "b",
       "explain": "Every finding is answered before the page opens, fixed, given a meaning, or kept with the reason; the build won't pass one left unanswered.",
-      "at": 324.162,
-      "explainedAt": 187.53,
+      "at": 324.568,
+      "explainedAt": 187.786,
       "explainedFrame": 14,
       "walkMeThrough": "Fresh eyes found “stage map” hard to follow in that video. The author may disagree, but can't ignore it. They answer it under the finding: fix the line, give the phrase a meaning you can click, or keep it and say why. Only then does the build pass and the page open."
     },
@@ -201,8 +201,8 @@
       ],
       "answer": "b",
       "explain": "A thing that leads to the guide stays quiet: a faint arrow when paused, and on hover a thin ring and “More in the guide”.",
-      "at": 402.018,
-      "explainedAt": 286.922,
+      "at": 402.531,
+      "explainedAt": 287.285,
       "explainedFrame": 22,
       "walkMeThrough": "The video is paused, so the table shows a faint arrow. Your pointer moves over it, and a thin ring and a small grey “More in the guide” appear. Click that label, and the guide opens at the table's part."
     },
@@ -231,8 +231,8 @@
       ],
       "answer": "c",
       "explain": "With no session waiting, the review server starts the headless run on it, inside the sandbox.",
-      "at": 487.234,
-      "explainedAt": 336.788,
+      "at": 487.747,
+      "explainedAt": 337.215,
       "explainedFrame": 27,
       "walkMeThrough": "The review server keeps your review in the inbox, then hands it on once. No session is waiting at eleven at night. So the server starts the headless run, your agent on its own, inside the sandbox, and it works on your review."
     },
@@ -261,8 +261,8 @@
       ],
       "answer": "b",
       "explain": "A choice labelled visible or hard-to-undo pauses; close and unlabelled choices go on the list at the end, unless a recent late fix shares their label.",
-      "at": 581.547,
-      "explainedAt": 442.057,
+      "at": 582.231,
+      "explainedAt": 442.57,
       "explainedFrame": 34,
       "walkMeThrough": "The visible choice changes what you see, so it pauses in the scene that runs it. The close one has no recent late fix sharing its label, so it goes on the list at the end. The unlabelled one goes on the list too. That's one pause."
     },
@@ -291,14 +291,14 @@
       ],
       "answer": "b",
       "explain": "A change to those files makes spec-diff name the scenes to rebuild, and every word in the glossary gets a scene.",
-      "at": 589.558,
-      "explainedAt": 510.889,
+      "at": 590.284,
+      "explainedAt": 511.573,
       "explainedFrame": 39,
       "walkMeThrough": "The walkthrough was accepted, so the parts and the glossary now name the scheduler. spec-diff compares them with what this video covers and names the scenes to rebuild. And since every word in the glossary has a scene, one is added for the scheduler."
     }
   ],
   "autonomy": [],
-  "watchedSeconds": 600.328,
+  "watchedSeconds": 601.182,
   "frames": [
     {
       "index": 1,
@@ -313,7 +313,7 @@
       "decision": null,
       "branch": null,
       "question": null,
-      "chapterStart": "What reelplanning is",
+      "chapterStart": "What reelplanner is",
       "knowledge": null,
       "quiz": null,
       "answer": null,
@@ -338,7 +338,7 @@
         "step"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -350,7 +350,7 @@
       "title": "A plan, as a video",
       "compositionId": "02-real-planning",
       "type": "pain_point",
-      "durationSeconds": 14.88,
+      "durationSeconds": 14.816,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Purpose",
@@ -371,9 +371,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "reelplanning turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.",
+      "narration": "reelplanner turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.",
       "start": 17.675,
-      "thumb": "snapshots/frame-01-at-25.37s.png",
+      "thumb": "snapshots/frame-01-at-25.33s.png",
       "terms": [
         "scene",
         "chapter",
@@ -386,10 +386,10 @@
         "guide"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
-        "retimed": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
         "wasIndex": 2
       }
     },
@@ -420,8 +420,8 @@
       "summary": null,
       "options": [],
       "narration": "Used in full, every change follows one loop. The plan video tells the plan, before any code, and your review's answers become decisions. The agent builds, noting each choice it makes alone. The walkthrough video shows it running, for your review too. Then the system video, this one, catches up.",
-      "start": 32.555,
-      "thumb": "snapshots/frame-02-at-42.34s.png",
+      "start": 32.491,
+      "thumb": "snapshots/frame-02-at-42.27s.png",
       "terms": [
         "plan video",
         "review",
@@ -451,7 +451,7 @@
       "title": "How much you use",
       "compositionId": "03b-levels",
       "type": "product_intro",
-      "durationSeconds": 22.133,
+      "durationSeconds": 22.112,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Purpose",
@@ -475,8 +475,8 @@
       "summary": null,
       "options": [],
       "narration": "You choose how much of it you use. The basic unit is one video: a plan video, or an explainer, a video of something already there. Add a walkthrough after the build, if you want, or take the whole pipeline: your answers kept as decisions, every review on record, and the system video kept current. From here on, this video shows the whole pipeline.",
-      "start": 51.616,
-      "thumb": "snapshots/frame-03-at-62.93s.png",
+      "start": 51.552,
+      "thumb": "snapshots/frame-03-at-62.86s.png",
       "terms": [
         "explainer",
         "system video",
@@ -489,7 +489,7 @@
         "explainer"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -501,7 +501,7 @@
       "title": "The skill, and which agents",
       "compositionId": "04-agents",
       "type": "product_intro",
-      "durationSeconds": 13.045,
+      "durationSeconds": 13.067,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -525,8 +525,8 @@
       "summary": null,
       "options": [],
       "narration": "It all runs through the plan-to-video skill, the instructions your agent follows. It's tested with Claude Code, though not yet its sandboxed run on a normal machine. Codex has basic support.",
-      "start": 73.749,
-      "thumb": "snapshots/frame-04-at-80.27s.png",
+      "start": 73.664,
+      "thumb": "snapshots/frame-04-at-80.2s.png",
       "terms": [
         "plan-to-video skill",
         "agent"
@@ -535,7 +535,7 @@
         "plan-to-video skill"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -547,7 +547,7 @@
       "title": "The tooling, once per machine",
       "compositionId": "05-install",
       "type": "feature_showcase",
-      "durationSeconds": 12.811,
+      "durationSeconds": 12.853,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -570,9 +570,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanning`, and `reel`, the reel CLI, which keeps the project's record.",
-      "start": 86.794,
-      "thumb": "snapshots/frame-05-at-93.45s.png",
+      "narration": "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanner`, and `reel`, the reel CLI, which keeps the project's record.",
+      "start": 86.731,
+      "thumb": "snapshots/frame-05-at-93.41s.png",
       "terms": [
         "reel cli",
         "cli",
@@ -583,9 +583,9 @@
         "reel cli"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
         "retimed": false,
         "wasIndex": 6
       }
@@ -595,7 +595,7 @@
       "title": "What the videos need",
       "compositionId": "06-setup",
       "type": "feature_showcase",
-      "durationSeconds": 11.339,
+      "durationSeconds": 11.381,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -618,16 +618,16 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Second, `reelplanning setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.",
-      "start": 99.605,
+      "narration": "Second, `reelplanner setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.",
+      "start": 99.584,
       "thumb": "snapshots/frame-06-at-105.52s.png",
       "terms": [
         "hyperframes"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
         "retimed": false,
         "wasIndex": 7
       }
@@ -637,7 +637,7 @@
       "title": "The skill, into your agent",
       "compositionId": "07-skill",
       "type": "feature_showcase",
-      "durationSeconds": 9.589,
+      "durationSeconds": 9.632,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -661,17 +661,17 @@
       "summary": null,
       "options": [],
       "narration": "Third, `npx skills add` copies the plan-to-video skill from that install to where Claude Code, Codex and the other agents read skills.",
-      "start": 110.944,
-      "thumb": "snapshots/frame-07-at-115.99s.png",
+      "start": 110.965,
+      "thumb": "snapshots/frame-07-at-116.03s.png",
       "terms": [
         "plan-to-video skill",
         "agent",
         "npx"
       ],
       "change": {
-        "status": "same",
+        "status": "edited",
         "said": false,
-        "shown": false,
+        "shown": true,
         "retimed": false,
         "wasIndex": 8
       }
@@ -681,7 +681,7 @@
       "title": "Then, in each repo",
       "compositionId": "08-init",
       "type": "feature_showcase",
-      "durationSeconds": 19.381,
+      "durationSeconds": 19.445,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -704,9 +704,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Last, in each repo, `reel init` writes `.reelplanning/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
-      "start": 120.533,
-      "thumb": "snapshots/frame-08-at-130.22s.png",
+      "narration": "Last, in each repo, `reel init` writes `.reelplanner/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
+      "start": 120.597,
+      "thumb": "snapshots/frame-08-at-130.32s.png",
       "terms": [
         "decision log",
         "review",
@@ -717,10 +717,10 @@
         "decision log"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
-        "retimed": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
         "wasIndex": 9
       }
     },
@@ -770,8 +770,8 @@
         }
       ],
       "narration": "Quick check: your agent has finished building a login page you approved. Which video do you watch next?",
-      "start": 139.914,
-      "thumb": "snapshots/frame-09-at-143.34s.png",
+      "start": 140.042,
+      "thumb": "snapshots/frame-09-at-143.47s.png",
       "terms": [
         "quick check",
         "system video",
@@ -819,8 +819,8 @@
       "summary": null,
       "options": [],
       "narration": "To start, type `/plan-to-video` in Claude Code, or `$plan-to-video` in Codex, or just ask your agent for a plan. From there, your agent runs the commands. It writes the plan into your repo as `plan.md`: a few steps, each with its cases, interface and an example, and a numbered question wherever the choice is yours.",
-      "start": 146.773,
-      "thumb": "snapshots/frame-10-at-157.91s.png",
+      "start": 146.901,
+      "thumb": "snapshots/frame-10-at-158.04s.png",
       "terms": [
         "call",
         "step",
@@ -831,7 +831,7 @@
         "case"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -867,16 +867,16 @@
       "summary": null,
       "options": [],
       "narration": "Then `reel check` holds the plan to what you decided: your answers on each part it touches are rules it must cite, or say why it replaces one.",
-      "start": 168.544,
-      "thumb": "snapshots/frame-11-at-173.75s.png",
+      "start": 168.672,
+      "thumb": "snapshots/frame-11-at-173.88s.png",
       "terms": [
         "cite"
       ],
       "change": {
         "status": "edited",
-        "said": true,
+        "said": false,
         "shown": true,
-        "retimed": true,
+        "retimed": false,
         "wasIndex": 12
       }
     },
@@ -885,7 +885,7 @@
       "title": "From plan to video",
       "compositionId": "12-making",
       "type": "feature_showcase",
-      "durationSeconds": 9.077,
+      "durationSeconds": 9.205,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -911,9 +911,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "The agent writes a storyboard and the frames; `reelplanning build` voices it with a local voice, adds captions and checks every frame.",
-      "start": 178.453,
-      "thumb": "snapshots/frame-12-at-183.24s.png",
+      "narration": "The agent writes a storyboard and the frames; `reelplanner build` voices it with a local voice, adds captions and checks every frame.",
+      "start": 178.581,
+      "thumb": "snapshots/frame-12-at-183.43s.png",
       "terms": [
         "brief",
         "storyboard",
@@ -934,10 +934,10 @@
         "details check"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
-        "retimed": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
         "wasIndex": 13
       }
     },
@@ -970,8 +970,8 @@
       "summary": null,
       "options": [],
       "narration": "Before you see it, fresh eyes look: two new agents who know nothing of the plan. One lists what a newcomer couldn't follow; the other, what breaks the frame rules, like one reading order and each name on its thing. The author answers every finding: fixed, given a meaning, or kept with a reason.",
-      "start": 187.53,
-      "thumb": "snapshots/frame-13-at-196.94s.png",
+      "start": 187.786,
+      "thumb": "snapshots/frame-13-at-197.19s.png",
       "terms": [
         "fresh eyes",
         "frame rules",
@@ -983,7 +983,7 @@
         "frame rules"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -995,7 +995,7 @@
       "title": "The review page",
       "compositionId": "15-review-page",
       "type": "feature_showcase",
-      "durationSeconds": 16.224,
+      "durationSeconds": 16.288,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -1018,9 +1018,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Your agent starts the review server, `reelplanning review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.",
-      "start": 205.845,
-      "thumb": "snapshots/frame-14-at-213.96s.png",
+      "narration": "Your agent starts the review server, `reelplanner review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.",
+      "start": 206.101,
+      "thumb": "snapshots/frame-14-at-214.25s.png",
       "terms": [
         "review server",
         "notification",
@@ -1034,10 +1034,10 @@
         "notification"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
-        "retimed": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
         "wasIndex": 15
       }
     },
@@ -1046,7 +1046,7 @@
       "title": "Quick check: a second repo",
       "compositionId": "16-check-install",
       "type": "social_proof",
-      "durationSeconds": 7.456,
+      "durationSeconds": 7.477,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Install",
@@ -1087,15 +1087,15 @@
         }
       ],
       "narration": "Quick check. On a new laptop, you've run the first three commands. So in a second repo: what still has to run?",
-      "start": 222.069,
-      "thumb": "snapshots/frame-15-at-225.8s.png",
+      "start": 222.389,
+      "thumb": "snapshots/frame-15-at-226.13s.png",
       "terms": [
         "quick check",
         "agent",
         "repo"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1131,8 +1131,8 @@
       "summary": null,
       "options": [],
       "narration": "Open a video, and it plays in the review player, its chapters on the timeline. Draw on a frame, or comment anywhere, and it's tied to the plan step on screen.",
-      "start": 229.525,
-      "thumb": "snapshots/frame-16-at-235.09s.png",
+      "start": 229.866,
+      "thumb": "snapshots/frame-16-at-235.43s.png",
       "terms": [
         "review player",
         "review",
@@ -1179,8 +1179,8 @@
       "summary": null,
       "options": [],
       "narration": "At each question the video stops, and you click a card to answer; More on a card says what picking it means. Not ready? Explain this more asks for it again, explained better. None fits? Write your own words in the answer bar.",
-      "start": 240.16,
-      "thumb": "snapshots/frame-17-at-247.69s.png",
+      "start": 240.501,
+      "thumb": "snapshots/frame-17-at-248.03s.png",
       "terms": [
         "own words",
         "answer bar",
@@ -1203,7 +1203,7 @@
       "title": "Terms, Ask, and the plan text",
       "compositionId": "19-terms-ask",
       "type": "feature_showcase",
-      "durationSeconds": 10.165,
+      "durationSeconds": 10.187,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -1227,8 +1227,8 @@
       "summary": null,
       "options": [],
       "narration": "Stuck on a word? Terms opens in the side panel. Ask about this, or Q, asks an agent about the scene. The Plan switch shows the plan text.",
-      "start": 254.72,
-      "thumb": "snapshots/frame-18-at-260.05s.png",
+      "start": 255.061,
+      "thumb": "snapshots/frame-18-at-260.4s.png",
       "terms": [
         "side panel",
         "ask about this",
@@ -1242,7 +1242,7 @@
         "plan text"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1278,8 +1278,8 @@
       "summary": null,
       "options": [],
       "narration": "Now and then, a quick check asks what the plan will do on a new case. Once you answer, each card says why. And Walk me through it works the case through.",
-      "start": 264.885,
-      "thumb": "snapshots/frame-19-at-270.06s.png",
+      "start": 265.248,
+      "thumb": "snapshots/frame-19-at-270.42s.png",
       "terms": [
         "quick check",
         "walk me through it",
@@ -1322,8 +1322,8 @@
       "summary": null,
       "options": [],
       "narration": "Scroll down, and the guide is under the video, which keeps playing small in the corner. It holds what a video can't: every case, the interface, worked examples, and diagrams to step through.",
-      "start": 274.73,
-      "thumb": "snapshots/frame-20-at-281.08s.png",
+      "start": 275.093,
+      "thumb": "snapshots/frame-20-at-281.44s.png",
       "terms": [
         "guide",
         "step",
@@ -1371,8 +1371,8 @@
       "summary": null,
       "options": [],
       "narration": "A thing in a scene can lead to its part of the guide, quietly: a faint arrow when paused; on hover, a thin ring and More in the guide.",
-      "start": 286.922,
-      "thumb": "snapshots/frame-21-at-291.67s.png",
+      "start": 287.285,
+      "thumb": "snapshots/frame-21-at-292.03s.png",
       "terms": [
         "part of the guide",
         "open chip",
@@ -1396,7 +1396,7 @@
       "title": "A note on any words",
       "compositionId": "23-note",
       "type": "feature_showcase",
-      "durationSeconds": 7.136,
+      "durationSeconds": 7.157,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -1420,14 +1420,14 @@
       "summary": null,
       "options": [],
       "narration": "On the guide, select any words to leave a note, suggest an edit, or ask. It goes with the same review.",
-      "start": 295.914,
-      "thumb": "snapshots/frame-22-at-299.73s.png",
+      "start": 296.277,
+      "thumb": "snapshots/frame-22-at-300.11s.png",
       "terms": [
         "review",
         "guide"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1439,7 +1439,7 @@
       "title": "Finish: approve, or ask for changes",
       "compositionId": "24-finish",
       "type": "feature_showcase",
-      "durationSeconds": 12.021,
+      "durationSeconds": 12.043,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Pipelines",
@@ -1463,8 +1463,8 @@
       "summary": null,
       "options": [],
       "narration": "When you're done, press Finish. Approve, and the agent works your comments into the plan, with no new video. Request changes, and you'll see only the scenes that changed. Then press Send.",
-      "start": 303.05,
-      "thumb": "snapshots/frame-23-at-309.06s.png",
+      "start": 303.434,
+      "thumb": "snapshots/frame-23-at-309.46s.png",
       "terms": [
         "finish",
         "approve",
@@ -1476,7 +1476,7 @@
         "approve"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1531,8 +1531,8 @@
         }
       ],
       "narration": "Quick check. Fresh eyes flag “stage map” in another video, and its author thinks it's clear. What happens before the review page opens?",
-      "start": 315.071,
-      "thumb": "snapshots/frame-24-at-319.64s.png",
+      "start": 315.477,
+      "thumb": "snapshots/frame-24-at-320.05s.png",
       "terms": [
         "review",
         "quick check",
@@ -1553,7 +1553,7 @@
       "title": "How a review arrives",
       "compositionId": "26a-arrive",
       "type": "feature_showcase",
-      "durationSeconds": 12.576,
+      "durationSeconds": 12.597,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Pipelines",
@@ -1578,8 +1578,8 @@
       "summary": null,
       "options": [],
       "narration": "Your review reaches the agent one of three ways. Send, on your machine. Send on a hosted page: the review page as a link you open anywhere, Claude only. Or a download you hand it.",
-      "start": 324.212,
-      "thumb": "snapshots/frame-25-at-330.75s.png",
+      "start": 324.618,
+      "thumb": "snapshots/frame-25-at-331.17s.png",
       "terms": [
         "hosted page",
         "review",
@@ -1589,7 +1589,7 @@
         "hosted page"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1626,8 +1626,8 @@
       "summary": null,
       "options": [],
       "narration": "Sent on your machine, the review server keeps it in the inbox and hands it on once: to a waiting session; else it starts the headless run, your agent alone in the sandbox, a fence keeping its writes in your repo; else it waits for your next session.",
-      "start": 336.788,
-      "thumb": "snapshots/frame-26-at-344.95s.png",
+      "start": 337.215,
+      "thumb": "snapshots/frame-26-at-345.37s.png",
       "terms": [
         "inbox",
         "headless run",
@@ -1679,8 +1679,8 @@
       "summary": null,
       "options": [],
       "narration": "`reel record` files the review and adds each answer, with an id like D-264, to the decision log. The log keeps everything, but little of it binds a plan. Of 309, only 65 are rules: your answers in force. The agent's choices are history, back only when a change rewrites their code. And `reel fold` drafts a part's rules as one spec section; once you approve it, plans cite that instead.",
-      "start": 352.607,
-      "thumb": "snapshots/frame-27-at-366.26s.png",
+      "start": 353.034,
+      "thumb": "snapshots/frame-27-at-366.69s.png",
       "terms": [
         "id",
         "review",
@@ -1698,9 +1698,9 @@
       ],
       "change": {
         "status": "edited",
-        "said": true,
+        "said": false,
         "shown": true,
-        "retimed": true,
+        "retimed": false,
         "wasIndex": 28
       }
     },
@@ -1709,7 +1709,7 @@
       "title": "Only what your words touched",
       "compositionId": "28-revise",
       "type": "feature_showcase",
-      "durationSeconds": 15.776,
+      "durationSeconds": 15.819,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Pipelines",
@@ -1735,8 +1735,8 @@
       "summary": null,
       "options": [],
       "narration": "Then the agent revises. Approved: your comments go into `plan.md`, no new video. Changes requested: only the steps your words touched are rewritten, plan-diff marks the scenes that changed, and the player plays just those.",
-      "start": 379.412,
-      "thumb": "snapshots/frame-28-at-387.3s.png",
+      "start": 379.839,
+      "thumb": "snapshots/frame-28-at-387.75s.png",
       "terms": [
         "revise step",
         "plan-diff",
@@ -1749,7 +1749,7 @@
         "revise step"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1761,7 +1761,7 @@
       "title": "Quick check: does it lead somewhere?",
       "compositionId": "30-check-mark",
       "type": "social_proof",
-      "durationSeconds": 6.88,
+      "durationSeconds": 6.923,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -1804,15 +1804,15 @@
         }
       ],
       "narration": "Quick check. Paused on a scene, your pointer over its table: how do you know the table leads to the guide?",
-      "start": 395.188,
-      "thumb": "snapshots/frame-29-at-398.63s.png",
+      "start": 395.658,
+      "thumb": "snapshots/frame-29-at-399.12s.png",
       "terms": [
         "beat",
         "quick check",
         "guide"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1848,8 +1848,8 @@
       "summary": null,
       "options": [],
       "narration": "Once you approve, the agent builds the plan. Each choice the plan didn't cover is a row in `walkthrough.md`, with a label when you might want to look: visible, hard-to-undo, or close. At a step's fifth choice, the agent stops and asks you instead: that step waits, with a question in `plan.md`.",
-      "start": 402.068,
-      "thumb": "snapshots/frame-30-at-412.35s.png",
+      "start": 402.581,
+      "thumb": "snapshots/frame-30-at-412.86s.png",
       "terms": [
         "implement step",
         "label",
@@ -1867,7 +1867,7 @@
         "label"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -1904,8 +1904,8 @@
       "summary": null,
       "options": [],
       "narration": "Then the code check: a second agent, new to the work, reads the code against the plan and your decisions. `reel audit` fails until every finding is answered.",
-      "start": 422.132,
-      "thumb": "snapshots/frame-31-at-427.68s.png",
+      "start": 422.645,
+      "thumb": "snapshots/frame-31-at-428.19s.png",
       "terms": [
         "code check",
         "reel audit",
@@ -1916,9 +1916,9 @@
         "reel audit"
       ],
       "change": {
-        "status": "same",
+        "status": "edited",
         "said": false,
-        "shown": false,
+        "shown": true,
         "retimed": false,
         "wasIndex": 32
       }
@@ -1952,8 +1952,8 @@
       "summary": null,
       "options": [],
       "narration": "The walkthrough video shows each change running, the real page or a real run, before and after, in about two minutes, with its own guide.",
-      "start": 432.724,
-      "thumb": "snapshots/frame-32-at-437.64s.png",
+      "start": 433.237,
+      "thumb": "snapshots/frame-32-at-438.15s.png",
       "terms": [
         "walkthrough video",
         "guide"
@@ -1995,8 +1995,8 @@
       "summary": null,
       "options": [],
       "narration": "`reel stops` decides what pauses it: an off-plan change, where the agent strayed from the plan; a choice labelled visible or hard-to-undo; and one sharing a label with a recent late fix: something a review let through, changed later.",
-      "start": 442.057,
-      "thumb": "snapshots/frame-33-at-450.34s.png",
+      "start": 442.57,
+      "thumb": "snapshots/frame-33-at-450.86s.png",
       "terms": [
         "reel stops",
         "off-plan change",
@@ -2014,9 +2014,9 @@
         "late fix"
       ],
       "change": {
-        "status": "same",
+        "status": "edited",
         "said": false,
-        "shown": false,
+        "shown": true,
         "retimed": false,
         "wasIndex": 34
       }
@@ -2050,8 +2050,8 @@
       "summary": null,
       "options": [],
       "narration": "A pause shows the choice running, with Accept and Flag. Every other choice is on one list at the end, each with a Flag.",
-      "start": 458.132,
-      "thumb": "snapshots/frame-34-at-462.46s.png",
+      "start": 458.645,
+      "thumb": "snapshots/frame-34-at-462.98s.png",
       "terms": [
         "grouped scene",
         "call",
@@ -2098,8 +2098,8 @@
       "summary": null,
       "options": [],
       "narration": "Under it, the guide's Built side shows what changed, with the real runs. Finish asks again: anything you'd change? Flag a choice, and the agent fixes the code and its row.",
-      "start": 466.292,
-      "thumb": "snapshots/frame-35-at-472.32s.png",
+      "start": 466.805,
+      "thumb": "snapshots/frame-35-at-472.84s.png",
       "terms": [
         "walkthrough fix step",
         "call",
@@ -2168,8 +2168,8 @@
         }
       ],
       "narration": "Quick check. In a repo set up for Claude Code, you press Send at eleven at night, with no session open. What happens to your review?",
-      "start": 478.356,
-      "thumb": "snapshots/frame-36-at-482.82s.png",
+      "start": 478.869,
+      "thumb": "snapshots/frame-36-at-483.33s.png",
       "terms": [
         "review server",
         "headless run",
@@ -2192,7 +2192,7 @@
       "title": "All of it, as text",
       "compositionId": "38-stored",
       "type": "feature_showcase",
-      "durationSeconds": 23.605,
+      "durationSeconds": 23.776,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Conventions",
@@ -2215,9 +2215,9 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "The record is text in your repo, under `.reelplanning/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
-      "start": 487.284,
-      "thumb": "snapshots/frame-37-at-499.34s.png",
+      "narration": "The record is text in your repo, under `.reelplanner/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
+      "start": 487.797,
+      "thumb": "snapshots/frame-37-at-499.94s.png",
       "terms": [
         "review",
         "inbox",
@@ -2231,10 +2231,10 @@
         "glossary"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
-        "retimed": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
         "wasIndex": 38
       }
     },
@@ -2267,8 +2267,8 @@
       "summary": null,
       "options": [],
       "narration": "This video is made from three of those files: `spec.md`; `system.json`, the parts of the system and how they connect; and the glossary, each word with a scene. When they change, spec-diff names the scenes to rebuild. system-review sorts each comment on it: fix the video, a small change, or a new plan. This video has no guide yet: `spec.md` holds the rest.",
-      "start": 510.889,
-      "thumb": "snapshots/frame-38-at-523s.png",
+      "start": 511.573,
+      "thumb": "snapshots/frame-38-at-523.68s.png",
       "terms": [
         "part of the system",
         "spec-diff",
@@ -2288,9 +2288,9 @@
         "system-review"
       ],
       "change": {
-        "status": "same",
+        "status": "edited",
         "said": false,
-        "shown": false,
+        "shown": true,
         "retimed": false,
         "wasIndex": 39
       }
@@ -2324,8 +2324,8 @@
       "summary": null,
       "options": [],
       "narration": "Your reviews teach it too: `reel status` ends with the memory, lines worked out from the log and your reviews, like how often you take the recommendation. When evidence piles up, a retro proposes skill edits.",
-      "start": 534.601,
-      "thumb": "snapshots/frame-39-at-542.01s.png",
+      "start": 535.285,
+      "thumb": "snapshots/frame-39-at-542.7s.png",
       "terms": [
         "memory",
         "retro",
@@ -2371,16 +2371,16 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Not ready to plan? `reelplanning explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.",
-      "start": 548.926,
-      "thumb": "snapshots/frame-40-at-555.22s.png",
+      "narration": "Not ready to plan? `reelplanner explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.",
+      "start": 549.61,
+      "thumb": "snapshots/frame-40-at-555.9s.png",
       "terms": [
         "explainer"
       ],
       "change": {
-        "status": "same",
-        "said": false,
-        "shown": false,
+        "status": "edited",
+        "said": true,
+        "shown": true,
         "retimed": false,
         "wasIndex": 41
       }
@@ -2414,8 +2414,8 @@
       "summary": null,
       "options": [],
       "narration": "With more people, a big pull request gets its own walkthrough video, on a branch of its own, and the maintainer's review is the one that counts.",
-      "start": 561.011,
-      "thumb": "snapshots/frame-41-at-565.77s.png",
+      "start": 561.695,
+      "thumb": "snapshots/frame-41-at-566.46s.png",
       "terms": [
         "review",
         "walkthrough video",
@@ -2479,8 +2479,8 @@
         }
       ],
       "narration": "Quick check. Step six has three choices: one labelled visible, one close, one with no label, and no recent late fixes. Which of them pause the walkthrough video?",
-      "start": 570.536,
-      "thumb": "snapshots/frame-42-at-576.32s.png",
+      "start": 571.22,
+      "thumb": "snapshots/frame-42-at-577s.png",
       "terms": [
         "call",
         "miss",
@@ -2504,7 +2504,7 @@
       "title": "Quick check: a new part",
       "compositionId": "44-check-current",
       "type": "social_proof",
-      "durationSeconds": 8.011,
+      "durationSeconds": 8.053,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Parts",
@@ -2547,8 +2547,8 @@
         }
       ],
       "narration": "Quick check. A walkthrough you accept adds a new part, the scheduler, to the parts and the glossary. What happens to this video?",
-      "start": 581.597,
-      "thumb": "snapshots/frame-43-at-585.85s.png",
+      "start": 582.281,
+      "thumb": "snapshots/frame-43-at-586.56s.png",
       "terms": [
         "spec-diff",
         "beat",
@@ -2557,7 +2557,7 @@
         "glossary"
       ],
       "change": {
-        "status": "same",
+        "status": "restyled",
         "said": false,
         "shown": false,
         "retimed": false,
@@ -2566,10 +2566,10 @@
     },
     {
       "index": 45,
-      "title": "reelplanning, in one picture",
+      "title": "reelplanner, in one picture",
       "compositionId": "45-end",
       "type": "cta",
-      "durationSeconds": 10.72,
+      "durationSeconds": 10.848,
       "planStep": null,
       "planQuestions": [],
       "specSection": "Purpose",
@@ -2590,16 +2590,16 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "That's reelplanning: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.",
-      "start": 589.608,
-      "thumb": "snapshots/frame-44-at-594.97s.png",
+      "narration": "That's reelplanner: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.",
+      "start": 590.334,
+      "thumb": "snapshots/frame-44-at-595.76s.png",
       "terms": [
         "agent"
       ],
       "change": {
         "status": "edited",
         "said": true,
-        "shown": true,
+        "shown": false,
         "retimed": true,
         "wasIndex": 45
       }
@@ -2648,11 +2648,11 @@
     "the list": "the walkthrough video's last scene: every choice that doesn't pause, one line each, with its own Flag",
     "reel fold": "the command that gathers a part's many rules into one section of spec.md, once the owner says yes",
     "past choice": "a choice the agent made on its own in an earlier build, kept in its walkthrough.md",
-    "decisions.md": "the decision log's file, in .reelplanning/",
+    "decisions.md": "the decision log's file, in .reelplanner/",
     "superseded": "replaced by a later decision",
     "in force": "still binding on later plans: not replaced by a later answer",
     "cite": "name a decision by its id, or the spec.md section it is folded into, in the plan's list of the decisions it keeps",
-    "pipeline": "the third level, all of reelplanning: your answers kept as decisions that later plans are checked against, every review kept, walkthrough videos and the system video"
+    "pipeline": "the third level, all of reelplanner: your answers kept as decisions that later plans are checked against, every review kept, walkthrough videos and the system video"
   },
   "glossary": [
     {
@@ -2670,24 +2670,24 @@
         "video": "system",
         "frame": 5,
         "title": "The skill, and which agents",
-        "start": 73.749,
+        "start": 73.664,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
       "term": "narrate",
       "id": "narrate",
-      "meaning": "Voices the script, only the lines that changed since the last build; reelplanning build runs it, then finish-project and verify",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanner build runs it, then finish-project and verify",
       "forms": [
         "narrate"
       ],
-      "said": "Voices the script, only the lines that changed since the last build; `reelplanning build` runs it, then finish-project and verify.",
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanner build` runs it, then finish-project and verify.",
       "definedIn": {
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -2707,7 +2707,7 @@
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -2724,14 +2724,14 @@
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
     },
     {
       "term": "spec-diff",
-      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanning spec-diff); it also names a row no scene explains yet",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanner spec-diff); it also names a row no scene explains yet",
       "forms": [
         "spec-diff"
       ],
@@ -2739,13 +2739,13 @@
       "files": [
         "`spec.md`",
         "`system.json`",
-        "`reelplanning spec-diff`"
+        "`reelplanner spec-diff`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 39,
         "title": "This video, kept current",
-        "start": 510.889,
+        "start": 511.573,
         "chapter": 7,
         "chapterTitle": "What's kept"
       }
@@ -2753,19 +2753,19 @@
     {
       "term": "The review player",
       "id": "player",
-      "meaning": "The video player on the review page (<reelplanning-player>). You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review",
+      "meaning": "The video player on the review page (<reelplanner-player>). You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review",
       "forms": [
         "review player"
       ],
       "said": "The video player on the review page. You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review.",
       "files": [
-        "`<reelplanning-player>`"
+        "`<reelplanner-player>`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 17,
         "title": "The review player",
-        "start": 229.525,
+        "start": 229.866,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -2773,19 +2773,19 @@
     {
       "term": "The review server",
       "id": "server",
-      "meaning": "reelplanning review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "meaning": "reelplanner review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
       "forms": [
         "review server"
       ],
       "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
       "files": [
-        "`reelplanning review`"
+        "`reelplanner review`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 15,
         "title": "The review page",
-        "start": 205.845,
+        "start": 206.101,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -2805,7 +2805,7 @@
         "video": "system",
         "frame": 27,
         "title": "Who picks it up",
-        "start": 336.788,
+        "start": 337.215,
         "chapter": 5,
         "chapterTitle": "After you send"
       }
@@ -2813,19 +2813,19 @@
     {
       "term": "The reel CLI",
       "id": "cli",
-      "meaning": "The command that keeps the project's record: its plans, reviews and decisions (scripts/reel.mjs, in .reelplanning/). For example, reel record files a review and logs your answers, and reel status says what is waiting",
+      "meaning": "The command that keeps the project's record: its plans, reviews and decisions (scripts/reel.mjs, in .reelplanner/). For example, reel record files a review and logs your answers, and reel status says what is waiting",
       "forms": [
         "reel cli"
       ],
       "said": "The command that keeps the project's record: its plans, reviews and decisions. For example, `reel record` files a review and logs your answers, and `reel status` says what is waiting.",
       "files": [
-        "`scripts/reel.mjs`, in `.reelplanning/`"
+        "`scripts/reel.mjs`, in `.reelplanner/`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 6,
         "title": "The tooling, once per machine",
-        "start": 86.794,
+        "start": 86.731,
         "chapter": 2,
         "chapterTitle": "Installing it"
       }
@@ -2845,7 +2845,7 @@
         "video": "system",
         "frame": 29,
         "title": "Only what your words touched",
-        "start": 379.412,
+        "start": 379.839,
         "chapter": 5,
         "chapterTitle": "After you send"
       }
@@ -2866,7 +2866,7 @@
         "video": "system",
         "frame": 31,
         "title": "Every choice, written down",
-        "start": 402.068,
+        "start": 402.581,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -2883,7 +2883,7 @@
         "video": "system",
         "frame": 36,
         "title": "What was built, and the fix",
-        "start": 466.292,
+        "start": 466.805,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -2903,9 +2903,9 @@
         "video": "system",
         "frame": 3,
         "title": "One loop for every change",
-        "start": 32.555,
+        "start": 32.491,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -2922,9 +2922,9 @@
         "video": "system",
         "frame": 3,
         "title": "One loop for every change",
-        "start": 32.555,
+        "start": 32.491,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -2939,26 +2939,26 @@
         "video": "system",
         "frame": 24,
         "title": "Finish: approve, or ask for changes",
-        "start": 303.05,
+        "start": 303.434,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
     },
     {
       "term": "The inbox",
-      "meaning": ".reelplanning/inbox/: reviews the review server has taken, each handed on once; not committed",
+      "meaning": ".reelplanner/inbox/: reviews the review server has taken, each handed on once; not committed",
       "forms": [
         "inbox"
       ],
       "said": "Reviews the review server has taken, each handed on once; not committed.",
       "files": [
-        "`.reelplanning/inbox/`"
+        "`.reelplanner/inbox/`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 27,
         "title": "Who picks it up",
-        "start": 336.788,
+        "start": 337.215,
         "chapter": 5,
         "chapterTitle": "After you send"
       }
@@ -2974,7 +2974,7 @@
         "video": "system",
         "frame": 27,
         "title": "Who picks it up",
-        "start": 336.788,
+        "start": 337.215,
         "chapter": 5,
         "chapterTitle": "After you send"
       }
@@ -2990,7 +2990,7 @@
         "video": "system",
         "frame": 15,
         "title": "The review page",
-        "start": 205.845,
+        "start": 206.101,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3011,9 +3011,9 @@
         "video": "system",
         "frame": 3,
         "title": "One loop for every change",
-        "start": 32.555,
+        "start": 32.491,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3027,18 +3027,18 @@
         "video": "system",
         "frame": 34,
         "title": "What pauses it",
-        "start": 442.057,
+        "start": 442.57,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
     },
     {
       "term": "Memory",
-      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanning/you.jsonl (--you)",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanner/you.jsonl (--you)",
       "forms": [
         "memory"
       ],
-      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanning/you.jsonl`.",
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanner/you.jsonl`.",
       "files": [
         "`reviews/`",
         "`--you`"
@@ -3047,7 +3047,7 @@
         "video": "system",
         "frame": 40,
         "title": "What your reviews teach",
-        "start": 534.601,
+        "start": 535.285,
         "chapter": 7,
         "chapterTitle": "What's kept"
       }
@@ -3065,7 +3065,7 @@
         "video": "system",
         "frame": 34,
         "title": "What pauses it",
-        "start": 442.057,
+        "start": 442.57,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -3083,7 +3083,7 @@
         "video": "system",
         "frame": 31,
         "title": "Every choice, written down",
-        "start": 402.068,
+        "start": 402.581,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -3101,7 +3101,7 @@
         "video": "system",
         "frame": 34,
         "title": "What pauses it",
-        "start": 442.057,
+        "start": 442.57,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -3121,7 +3121,7 @@
         "title": "A plan, as a video",
         "start": 17.675,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3137,7 +3137,7 @@
         "title": "A plan, as a video",
         "start": 17.675,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3153,7 +3153,7 @@
         "video": "system",
         "frame": 39,
         "title": "This video, kept current",
-        "start": 510.889,
+        "start": 511.573,
         "chapter": 7,
         "chapterTitle": "What's kept"
       }
@@ -3172,7 +3172,7 @@
         "video": "system",
         "frame": 40,
         "title": "What your reviews teach",
-        "start": 534.601,
+        "start": 535.285,
         "chapter": 7,
         "chapterTitle": "What's kept"
       }
@@ -3190,7 +3190,7 @@
         "video": "system",
         "frame": 35,
         "title": "A pause, and the list",
-        "start": 458.132,
+        "start": 458.645,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -3211,7 +3211,7 @@
         "title": "A long plan",
         "start": 0,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3225,7 +3225,7 @@
         "video": "system",
         "frame": 24,
         "title": "Finish: approve, or ask for changes",
-        "start": 303.05,
+        "start": 303.434,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3244,7 +3244,7 @@
         "video": "system",
         "frame": 9,
         "title": "Then, in each repo",
-        "start": 120.533,
+        "start": 120.597,
         "chapter": 2,
         "chapterTitle": "Installing it"
       }
@@ -3260,7 +3260,7 @@
         "video": "system",
         "frame": 10,
         "title": "Quick check: a login page, built",
-        "start": 139.914,
+        "start": 140.042,
         "chapter": 2,
         "chapterTitle": "Installing it"
       }
@@ -3281,7 +3281,7 @@
         "video": "system",
         "frame": 18,
         "title": "It stops, and you answer on the frame",
-        "start": 240.16,
+        "start": 240.501,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3297,14 +3297,14 @@
         "video": "system",
         "frame": 39,
         "title": "This video, kept current",
-        "start": 510.889,
+        "start": 511.573,
         "chapter": 7,
         "chapterTitle": "What's kept"
       }
     },
     {
       "term": "A part of the guide / guide part",
-      "meaning": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video (- guide: <part>, built by reelplanning guide; - detail:, from a template in templates/details/; the frame marks the thing with data-detail)",
+      "meaning": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video (- guide: <part>, built by reelplanner guide; - detail:, from a template in templates/details/; the frame marks the thing with data-detail)",
       "forms": [
         "part of the guide",
         "guide part"
@@ -3312,13 +3312,13 @@
       "display": "part of the guide",
       "said": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video.",
       "files": [
-        "`- guide: <part>`, built by `reelplanning guide`; `- detail:`, from a template in `templates/details/`; the frame marks the thing with `data-detail`"
+        "`- guide: <part>`, built by `reelplanner guide`; `- detail:`, from a template in `templates/details/`; the frame marks the thing with `data-detail`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 22,
         "title": "A quiet way into the guide",
-        "start": 286.922,
+        "start": 287.285,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3334,7 +3334,7 @@
         "video": "system",
         "frame": 22,
         "title": "A quiet way into the guide",
-        "start": 286.922,
+        "start": 287.285,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3350,7 +3350,7 @@
         "video": "system",
         "frame": 19,
         "title": "Terms, Ask, and the plan text",
-        "start": 254.72,
+        "start": 255.061,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3369,7 +3369,7 @@
         "video": "system",
         "frame": 19,
         "title": "Terms, Ask, and the plan text",
-        "start": 254.72,
+        "start": 255.061,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3390,7 +3390,7 @@
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3411,7 +3411,7 @@
         "title": "A long plan",
         "start": 0,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3425,9 +3425,9 @@
         "video": "system",
         "frame": 3,
         "title": "One loop for every change",
-        "start": 32.555,
+        "start": 32.491,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3445,9 +3445,9 @@
         "video": "system",
         "frame": 3,
         "title": "One loop for every change",
-        "start": 32.555,
+        "start": 32.491,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3464,26 +3464,26 @@
         "video": "system",
         "frame": 32,
         "title": "A second agent checks",
-        "start": 422.132,
+        "start": 422.645,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
     },
     {
       "term": "Fresh eyes",
-      "meaning": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you (reelplanning fresh-eyes; what is kept after the third look is said on Before you watch)",
+      "meaning": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you (reelplanner fresh-eyes; what is kept after the third look is said on Before you watch)",
       "forms": [
         "fresh eyes"
       ],
       "said": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you.",
       "files": [
-        "`reelplanning fresh-eyes`; what is kept after the third look is said on Before you watch"
+        "`reelplanner fresh-eyes`; what is kept after the third look is said on Before you watch"
       ],
       "definedIn": {
         "video": "system",
         "frame": 14,
         "title": "Fresh eyes, before you",
-        "start": 187.53,
+        "start": 187.786,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3499,26 +3499,26 @@
         "video": "system",
         "frame": 14,
         "title": "Fresh eyes, before you",
-        "start": 187.53,
+        "start": 187.786,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
     },
     {
       "term": "frame-lint",
-      "meaning": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at (reelplanning frame-lint)",
+      "meaning": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at (reelplanner frame-lint)",
       "forms": [
         "frame-lint"
       ],
       "said": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at.",
       "files": [
-        "`reelplanning frame-lint`"
+        "`reelplanner frame-lint`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3534,7 +3534,7 @@
         "video": "system",
         "frame": 19,
         "title": "Terms, Ask, and the plan text",
-        "start": 254.72,
+        "start": 255.061,
         "chapter": 4,
         "chapterTitle": "Reviewing in the player"
       }
@@ -3553,7 +3553,7 @@
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3572,7 +3572,7 @@
         "video": "system",
         "frame": 13,
         "title": "From plan to video",
-        "start": 178.453,
+        "start": 178.581,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
       }
@@ -3592,7 +3592,7 @@
         "video": "system",
         "frame": 32,
         "title": "A second agent checks",
-        "start": 422.132,
+        "start": 422.645,
         "chapter": 6,
         "chapterTitle": "The build and its walkthrough"
       }
@@ -3600,33 +3600,33 @@
     {
       "term": "The explainer",
       "id": "explainer",
-      "meaning": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (reelplanning explain \"<what you asked>\" <source> …, in .reelplanning/explainers/; every fact from a named source, check-sources)",
+      "meaning": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (reelplanner explain \"<what you asked>\" <source> …, in .reelplanner/explainers/; every fact from a named source, check-sources)",
       "forms": [
         "explainer"
       ],
       "said": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it.",
       "files": [
-        "`reelplanning explain \"<what you asked>\" <source> …`, in `.reelplanning/explainers/`; every fact from a named source, `check-sources`"
+        "`reelplanner explain \"<what you asked>\" <source> …`, in `.reelplanner/explainers/`; every fact from a named source, `check-sources`"
       ],
       "definedIn": {
         "video": "system",
         "frame": 4,
         "title": "How much you use",
-        "start": 51.616,
+        "start": 51.552,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
       "term": "The guide",
       "id": "guide",
-      "meaning": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from plan.md by reelplanning guide, never committed; D-264). Select any words on it to comment, suggest an edit or ask",
+      "meaning": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from plan.md by reelplanner guide, never committed; D-264). Select any words on it to comment, suggest an edit or ask",
       "forms": [
         "guide"
       ],
       "said": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner. Select any words on it to comment, suggest an edit or ask.",
       "files": [
-        "built from `plan.md` by `reelplanning guide`, never committed; D-264"
+        "built from `plan.md` by `reelplanner guide`, never committed; D-264"
       ],
       "definedIn": {
         "video": "system",
@@ -3634,7 +3634,7 @@
         "title": "A plan, as a video",
         "start": 17.675,
         "chapter": 1,
-        "chapterTitle": "What reelplanning is"
+        "chapterTitle": "What reelplanner is"
       }
     },
     {
@@ -3837,6 +3837,15 @@
       "other": true
     },
     {
+      "term": "reelplanning",
+      "meaning": "reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written",
+      "forms": [
+        "reelplanning"
+      ],
+      "said": "Reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written.",
+      "other": true
+    },
+    {
       "term": "CSS",
       "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
       "forms": [
@@ -3907,13 +3916,13 @@
     },
     {
       "term": "npx",
-      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanning@0.2.0 reel record …)",
+      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanner@0.2.0 reel record …)",
       "forms": [
         "npx"
       ],
       "said": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it.",
       "files": [
-        "`npx -y reelplanning@0.2.0 reel record …`"
+        "`npx -y reelplanner@0.2.0 reel record …`"
       ],
       "other": true
     },
@@ -3955,7 +3964,7 @@
         "video": "system",
         "frame": 26,
         "title": "How a review arrives",
-        "start": 324.212,
+        "start": 324.618,
         "chapter": 5,
         "chapterTitle": "After you send"
       }
@@ -4049,219 +4058,51 @@
     }
   },
   "termsCheck": "strict",
-  "freshEyes": {
-    "rounds": 3,
-    "left": [
-      {
-        "id": "N2",
-        "role": "newcomer",
-        "scene": 12,
-        "what": "scene 12 · \"26 in force\": \"in force\" has a meaning, but the video has not yet said that your answers are kept as numbered decisions, so I cannot tell where the 26 come from. I guess they are earlier answers about the player. Why 26, and who counted them? The \"your answers\" card only says they are \"rules\" and does not link them to the answers I gave in reviews (that is only explained in scene 28, after this).",
-        "why": "scene 3 says your review's answers become decisions; scene 28 shows the log in the lifecycle's order, after the review is sent"
-      },
-      {
-        "id": "N3",
-        "role": "newcomer",
-        "scene": 12,
-        "what": "scene 12 · \"touches [player]\": I guess \"player\" is one part of the system (the review player) and the brackets list the parts the plan changes. The video never says how the check knows which part a plan touches, and the brackets are not explained on screen.",
-        "why": "the brackets are the run's own output, the parts the plan says it changes; scene 6 named the parts"
-      },
-      {
-        "id": "N4",
-        "role": "newcomer",
-        "scene": 12,
-        "what": "scene 12 · \"0 superseded, 0 failure(s), 0 warning(s)\": \"superseded\" has a meaning, but what makes the check fail or warn is never shown. Does a plan that fails get blocked? What would a failure look like? Only the happy case appears, so I cannot tell what the check protects me from.",
-        "why": "the scene shows the check passing on a fresh plan; what fails it is the plan guide's detail, said in the line: a rule neither cited nor replaced"
-      },
-      {
-        "id": "N7",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"an id\" / \"D-264\": I guess D-264 is one decision-log entry, with the question it answered in decisions.md. How an answer in a review becomes this entry, and why this one is an \"answer\" rather than an agent choice, is not shown. The headline link \"reel record files the review and adds each answer\" is only in the narration.",
-        "why": "the narration says reel record adds each answer to the log with an id, and the frame shows that entry; scene 31 shows the agent's own choices"
-      },
-      {
-        "id": "N10",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"a plan touching the player cites all 26 of its rules\" then \"reel fold player\": the 26 here matches scene 12, but the video never says why citing 26 ids is a problem or why folding helps (too long? hard to read?). I would need that to see the point. \"player\" as the argument of the command is only implied to be a part.",
-        "why": "the narration says plans then cite one section instead of each id, and the last box says 'in place of 26 ids'"
-      },
-      {
-        "id": "N11",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"spec.md#rules-player\": \"spec.md\" is defined, but the \"#rules-player\" part is never explained. I guess it is a section anchor. \"you approve\": how and where do I approve a fold (a review? a command?) is not shown.",
-        "why": "you approve the draft the agent shows you, as with any change; the anchor is the section's name, written as it is written"
-      },
-      {
-        "id": "N13",
-        "role": "newcomer",
-        "scene": 45,
-        "what": "scene 45 · \"your review\" appears twice (after the plan video and after the walkthrough video): are they the same thing? The closing doesn't distinguish plan review from walkthrough review.",
-        "why": "scene 3 names each review in order, the plan review then the walkthrough review"
-      },
-      {
-        "id": "G1",
-        "role": "designer",
-        "scene": 12,
-        "what": "scene 12 · \"26 in force\": the tooltip chip sits apart from the underlined text, below the terminal, and the terminal's own output line is small, so the key number is hard to read at a glance; rule 3 and 6; put the label right under the underline and enlarge the terminal text.",
-        "why": "the tag sits right under the underline on '26 in force', at the same left edge; the run's text is the theme's terminal size"
-      },
-      {
-        "id": "G2",
-        "role": "designer",
-        "scene": 12,
-        "what": "scene 12 · \"Your answers / rules / cited on each part the plan touches, or replaced, with the reason\": the card is a second restatement of the caption and nothing links it to the \"26 in force\" figure above; the frame has a large empty band above the terminal and below the card, so it is not used in balance; rules 2 and 7; tie the card to the terminal (arrow or \"26 answers\") and enlarge both so they fill the frame.",
-        "why": "the card states the rule the run counts; the group is centred in the view, with the lowest band kept for captions"
-      },
-      {
-        "id": "G8",
-        "role": "designer",
-        "scene": 28,
-        "what": "scene 28 · \"a plan touching the player cites all 26 of its rules\": the fold flow is small and sits at the bottom with a thin gap above it, the box text (\"spec.md#rules-player\") is small mono, and the frame has more than five different text sizes (mono, serif big, small grey, chip text); rule 6; cut the sizes to three and enlarge the flow boxes.",
-        "why": "the flow boxes are 112px tall with 30px type, the code in the theme's mono; the frame uses the theme's sizes"
-      },
-      {
-        "id": "G9",
-        "role": "designer",
-        "scene": 28,
-        "what": "scene 28 · whole frame: it packs four ideas (the file listing, the id, the log bar, the fold flow) into one picture with no single focal point, and the narration's order (id, then log, then 65 of 309, then fold) is followed top to bottom, but the terminal at the top gets the most weight while the story is the bar; rule 7; make the bar the focal point and shrink or drop the top listing.",
-        "why": "the terminal is compact (168px) and the bar is the widest, tallest thing in the frame; each part lands on its words in the narration's order"
-      },
-      {
-        "id": "G11",
-        "role": "designer",
-        "scene": 45,
-        "what": "scene 45 · the loop diagram: the boxes' two rows are not the same width as the wide gap beneath them, so the bottom-left of the frame is empty, and the diagram and the right-hand text do not share a baseline, so the frame feels unbalanced; rule 7; centre the diagram and text vertically, or stack them.",
-        "why": "scene 45's layout is unchanged from the builds that had their look"
-      },
-      {
-        "id": "G13",
-        "role": "designer",
-        "scene": 45,
-        "what": "scene 45 · \"Install it, ask your agent for a plan, and watch.\": the closing call to action repeats the caption chip \"and watch.\" below, and the two sit in different places; rule 7; show it only once.",
-        "why": "the closing line on the frame is the call to action held at the end; the caption shows the narration as it is said, as in every scene"
-      }
-    ],
-    "again": [
-      {
-        "id": "N1",
-        "role": "newcomer",
-        "scene": 12,
-        "what": "scene 12 · \"reel check\": the command is named but never said what it is for before this. I guess it is a validator in the reel CLI that compares a plan with past answers. I would need to know that it is run automatically (the chip says \"your agent runs this\") and when, i.e. before the plan video is made?",
-        "why": "scene 11 says the agent runs the commands once the plan is written, and scene 13 follows with the video; the chip says who runs it",
-        "as": "round 1 · N1"
-      },
-      {
-        "id": "N5",
-        "role": "newcomer",
-        "scene": 12,
-        "what": "scene 12 · \"cited ... or replaced, with the reason\": the caption \"or say why it replaces one\" implies a plan can override a rule. Who judges whether the reason is good enough, the check or me? Nothing says.",
-        "why": "the reason is read in your review of the plan, which chapter 4 shows; the check holds the plan to give one",
-        "as": "round 2 · N5"
-      },
-      {
-        "id": "N6",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"ls reviews/\" and the file names \"plan-20260928T190542Z.json / .md\", \"walkthrough-20261004T163158Z.json\": I guess these are filed reviews, one pair per review, in the plan's folder. Nothing says what is inside them, or why a plan and a walkthrough review share a folder. The long number strings are unexplained (a timestamp? I guessed so). \"never overwritten\" is clear, but its purpose (history?) is not stated.",
-        "why": "scene 28's point is that each review is filed once and kept; the files' contents are a detail the folder shows as it is",
-        "as": "round 1 · N7"
-      },
-      {
-        "id": "N8",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"65 rules / 213 history / 31 not in force\": I guess the bar splits all 309 entries into three groups. Only \"65 ... your answers in force\" is tied to \"binds a plan\". I could not tell why 31 are \"not in force\" (replaced by a later answer, i.e. \"superseded\"?). The dashed box has no explanation. Why the video says \"not in force\" here but \"superseded\" in the glossary is also unclear.",
-        "why": "'not in force' has a meaning in the storyboard's terms, and the narration says only the 65 bind a plan",
-        "as": "round 2 · N8"
-      },
-      {
-        "id": "N9",
-        "role": "newcomer",
-        "scene": 28,
-        "what": "scene 28 · \"raised again only when a change rewrites their code\": I could not follow this. I guess the agent's own past choices are only shown again when a later change touches the code they made. \"Raised\" is a vague word: raised where, to whom (a plan, a question, a walkthrough)?",
-        "why": "scene 32 shows the code check, which names such a choice when a change rewrites its code; the line says when, the detail is the guide's",
-        "as": "round 2 · N9"
-      },
-      {
-        "id": "N12",
-        "role": "newcomer",
-        "scene": 45,
-        "what": "scene 45 · the loop diagram, arrow from \"the system video\" up to \"the plan\": I do not see why the system video points back at the plan, or how a video leads into a plan. I guess the project's description is updated and the next plan starts from it. The narration doesn't mention it. Also \"decisions\" is a box in the loop, yet the narration says \"a record that keeps everything\": which boxes are the record?",
-        "why": "scene 45 only changed its words; the loop is scene 3's, where the system video's place in it is said",
-        "as": "round 1 · N15"
-      },
-      {
-        "id": "N14",
-        "role": "newcomer",
-        "scene": 45,
-        "what": "scene 45 · \"Install it\": no command, link or place is given. Where do I get it, and what does it need (Claude Code? a repo?). The closing ends on \"ask your agent for a plan\" with no first step I can copy.",
-        "why": "chapter 2 (scenes 6 to 10) runs the install commands one by one; the ending points back to it",
-        "as": "round 1 · N17"
-      },
-      {
-        "id": "G3",
-        "role": "designer",
-        "scene": 12,
-        "what": "scene 12 · \"or say why it replaces one.\": the caption chip is the player's caption, and it is mid-sentence, so the line reads \"…rules it must cite\" in the narration but only the tail shows; low priority, but the card says \"cited … or replaced\", which repeats it; rule 7; drop the repeat or show a \"replaced, with the reason\" example.",
-        "why": "the card and the narration agree by design, as with the other cards in this video",
-        "as": "round 1 · G4"
-      },
-      {
-        "id": "G4",
-        "role": "designer",
-        "scene": 28,
-        "what": "scene 28 · \"never overwritten\": the red chip sits at the right of the file listing, apart from the file names it qualifies (all four files), and it sits close to the right edge of the terminal; rule 3; put it under or beside the whole listing with a bracket.",
-        "why": "the chip sits on the listing's rows, inside the terminal, just past the file names it qualifies",
-        "as": "round 2 · G3"
-      },
-      {
-        "id": "G7",
-        "role": "designer",
-        "scene": 28,
-        "what": "scene 28 · \"the decision log: 309 entries\": the title sits at the right above the bar while the \"binds a plan\" bracket is at the left, so two labels compete across the bar; the grey bar's segments are labelled below, not on them; rule 3; label the log at the left and put each count on its segment.",
-        "why": "the bracket over the coral part lands on 'binds' and the log's title on '309', each where the narration points; segment labels sit under their segments, centred",
-        "as": "round 1 · G8"
-      },
-      {
-        "id": "G10",
-        "role": "designer",
-        "scene": 45,
-        "what": "scene 45 · \"the plan … the plan video … your review … decisions … the build … the walkthrough video … your review … the system video\": the loop diagram is small (box text about 11px) on the left and its text is hard to read at this size; rule 6; enlarge the boxes to fill the left half.",
-        "why": "scene 45 only changed its words; its small loop is scene 3's picture recalled",
-        "as": "round 1 · G12"
-      },
-      {
-        "id": "G12",
-        "role": "designer",
-        "scene": 45,
-        "what": "scene 45 · \"a plan you watch and answer / a build you watch and accept / a record that keeps everything\": the three lines are not tied to the loop's boxes they name (the plan video, the walkthrough video, decisions), so the reader cannot see which part is which; rules 2 and 3; draw each line next to its stage.",
-        "why": "the three lines sum up the whole loop, which is lit whole",
-        "as": "round 1 · G14"
-      }
-    ]
-  },
   "changes": {
     "against": "HEAD",
     "baseline": true,
-    "at": "2026-10-05T17:42:46.631Z",
-    "build": "c9976cce49d1",
+    "at": "2026-10-09T05:49:46.935Z",
+    "build": "78b46a1007d1",
     "added": 0,
-    "edited": 3,
-    "restyled": 0,
+    "edited": 15,
+    "restyled": 14,
     "retimed": 0,
-    "same": 42,
+    "same": 16,
     "removed": [],
     "changedFrames": [
+      2,
+      6,
+      7,
+      8,
+      9,
       12,
+      13,
+      15,
       28,
+      32,
+      34,
+      38,
+      39,
+      41,
       45
     ],
-    "restyledFrames": [],
-    "changedSeconds": 47.43,
-    "totalSeconds": 600.328,
-    "kept": "nothing changed since HEAD: its build, built again"
+    "restyledFrames": [
+      1,
+      4,
+      5,
+      11,
+      14,
+      16,
+      19,
+      23,
+      24,
+      26,
+      29,
+      30,
+      31,
+      44
+    ],
+    "changedSeconds": 227.43,
+    "totalSeconds": 601.182
   }
 }

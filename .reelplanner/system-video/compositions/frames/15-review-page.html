@@ -106,18 +106,18 @@
   .s15-nt span { display:block; margin-top:12px; font:400 27px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.8); }
 </style>
 
-<div id="root" data-composition-id="15-review-page" data-band="bottom" data-duration="16.224" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="15-review-page" data-band="bottom" data-duration="16.288" data-width="1920" data-height="1080">
 
-  <div class="clip s15-bg" id="s15-bg" data-start="0" data-duration="16.224" data-track-index="0"></div>
+  <div class="clip s15-bg" id="s15-bg" data-start="0" data-duration="16.288" data-track-index="0"></div>
 
-  <div class="clip s15-scene" id="s15-scene" data-start="0" data-duration="16.224" data-track-index="1">
+  <div class="clip s15-scene" id="s15-scene" data-start="0" data-duration="16.288" data-track-index="1">
     <div class="s15-view" id="s15-view"><div class="s15-cam" id="s15-cam">
     <div class="s15-lab" id="s15-lab" style="left:80px; top:40px;">the review page · Videos</div>
     <div data-artifact="the review page: its Videos list"><div class="s15-crop" id="s15-shot" style="left:860px; top:40px; width:960px; height:915.108px"><img class="s15-lt" src="assets/shots/library-light.jpg" alt="" style="left:-1460.719px; top:-82.878px; width:2486.331px; height:1553.957px"><img class="s15-dk" src="assets/shots/library-dark.jpg" alt="" style="left:-1460.719px; top:-82.878px; width:2486.331px; height:1553.957px"></div></div>
     <div data-artifact="the notification for the plan guide's video" class="s15-nt" id="s15-nt"><b>The plan guide: the video first, and a full page behind it …</b><span>4 choices to make, 5 quick checks, … 5 min</span></div>
     <div class="s15-tag ink" id="s15-t1" style="left:480px; top:289.54px">every video in the repo</div>
     <div class="s15-tag" id="s15-t2" style="left:390px; top:130.691px">what waits on you: here, nothing</div>
-    <div class="s15-tag ink" id="s15-ag" style="left:80px; top:640px">your agent starts it: <code style="font-family:JetBrains Mono">reelplanning review --detach</code></div>
+    <div class="s15-tag ink" id="s15-ag" style="left:80px; top:640px">your agent starts it: <code style="font-family:JetBrains Mono">reelplanner review --detach</code></div>
     <div class="s15-tag ghost" id="s15-kr" style="left:80px; top:708px">it keeps running after your session ends</div>
     </div></div>
 
@@ -131,19 +131,19 @@
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s15-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s15-lab", { opacity: 0 });
-  tl.to("#s15-lab", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.1);
+  tl.to("#s15-lab", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.092);
   gsap.set("#s15-shot", { opacity: 0, x: 60 });
-  tl.to("#s15-shot", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 0.2);
+  tl.to("#s15-shot", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 0.197);
   gsap.set("#s15-ag", { opacity: 0, y: 12 });
-  tl.to("#s15-ag", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+  tl.to("#s15-ag", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.04);
   gsap.set("#s15-kr", { opacity: 0, y: 12 });
-  tl.to("#s15-kr", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.73);
+  tl.to("#s15-kr", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.83);
   gsap.set("#s15-t1", { opacity: 0, y: 12 });
-  tl.to("#s15-t1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.07);
+  tl.to("#s15-t1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.17);
   gsap.set("#s15-nt", { opacity: 0, x: -40 });
-  tl.to("#s15-nt", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 8.2);
+  tl.to("#s15-nt", { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 8.32);
   gsap.set("#s15-t2", { opacity: 0, y: 12 });
-  tl.to("#s15-t2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.67);
+  tl.to("#s15-t2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.787);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

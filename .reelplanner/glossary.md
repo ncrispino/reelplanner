@@ -88,6 +88,7 @@ General words of the trade, with the meaning a newcomer needs. The player shows 
 | A terminal | — | The window where you type commands | | |
 | CLI | — | A command-line tool: a program you run by typing its name and options in a terminal | | |
 | HTML | — | The language web pages are written in; each scene of a video is an HTML page | | |
+| reelplanning | — | reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written | | |
 | CSS | — | The rules for how a web page looks: its colours, sizes and where things sit | | |
 | JSON | — | A plain-text format for data a program reads (`plan-map.json`, say) | | |
 | TTS | — | Text to speech: the voice made from a video's script | | |

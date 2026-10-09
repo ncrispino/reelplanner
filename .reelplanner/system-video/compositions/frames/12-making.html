@@ -106,11 +106,11 @@
   .s12-bd { position:absolute; left:500px; top:150px; width:1110px; height:640px; box-sizing:border-box; border:3px dashed rgba(var(--rp-ink-rgb),0.4); border-radius:18px; }
 </style>
 
-<div id="root" data-composition-id="12-making" data-band="bottom" data-duration="9.577" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="12-making" data-band="bottom" data-duration="9.705" data-width="1920" data-height="1080">
 
-  <div class="clip s12-bg" id="s12-bg" data-start="0" data-duration="9.577" data-track-index="0"></div>
+  <div class="clip s12-bg" id="s12-bg" data-start="0" data-duration="9.705" data-track-index="0"></div>
 
-  <div class="clip s12-scene" id="s12-scene" data-start="0" data-duration="9.577" data-track-index="1">
+  <div class="clip s12-scene" id="s12-scene" data-start="0" data-duration="9.705" data-track-index="1">
     <div class="s12-view" id="s12-view"><div class="s12-cam" id="s12-cam">
     <div class="s12-kick" id="s12-la" style="left:60px; top:110px;">the agent writes</div>
     <div class="s12-node" id="s12-w0" style="left:60px; top:170px; width:380px; height:180px"><code>BRIEF.md</code> <span class="sub">who it's for, how it looks</span></div>
@@ -118,7 +118,7 @@
     <div class="s12-node" id="s12-w2" style="left:60px; top:590px; width:380px; height:180px">the frames <span class="sub">one HTML page a scene</span></div>
     <div class="s12-arrow" id="s12-in" style="left:446px; top:468px; width:48px"><i></i></div>
     <div class="s12-bd" id="s12-bd"></div>
-    <div class="s12-kick" id="s12-bl" style="left:530px; top:172px;"><code style='font-family:JetBrains Mono'>reelplanning build</code> runs</div>
+    <div class="s12-kick" id="s12-bl" style="left:530px; top:172px;"><code style='font-family:JetBrains Mono'>reelplanner build</code> runs</div>
     <div class="s12-node" id="s12-n0" style="left:530px; top:250px; width:320px; height:300px"><code>narrate</code> <span class="sub">voices the script with a local voice</span></div>
     <div class="s12-arrow" id="s12-a0" style="left:852px; top:398px; width:34px"><i></i></div>
     <div class="s12-node" id="s12-n1" style="left:890px; top:250px; width:320px; height:300px"><code>finish-project</code> <span class="sub">adds the captions, ties each scene to the plan</span></div>
@@ -140,7 +140,7 @@
 
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s12-agent", { opacity: 0 });
-  tl.to("#s12-agent", { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.96);
+  tl.to("#s12-agent", { opacity: 1, duration: 0.3, ease: "power2.out" }, 2.98);
   gsap.set("#s12-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s12-la", { opacity: 0 });
   tl.to("#s12-la", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.24);
@@ -151,29 +151,29 @@
   gsap.set("#s12-w2", { opacity: 0, y: 12 });
   tl.to("#s12-w2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.01);
   gsap.set("#s12-bd", { opacity: 0 });
-  tl.to("#s12-bd", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.96);
+  tl.to("#s12-bd", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.98);
   gsap.set("#s12-bl", { opacity: 0 });
-  tl.to("#s12-bl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.96);
+  tl.to("#s12-bl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.98);
   gsap.set("#s12-in", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s12-in", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 2.96);
+  tl.to("#s12-in", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 2.98);
   gsap.set("#s12-n0", { opacity: 0, y: 12 });
-  tl.to("#s12-n0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.98);
+  tl.to("#s12-n0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.02);
   gsap.set("#s12-a0", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s12-a0", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 4.28);
+  tl.to("#s12-a0", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 4.344);
   gsap.set("#s12-n1", { opacity: 0, y: 12 });
-  tl.to("#s12-n1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.96);
+  tl.to("#s12-n1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.1);
   gsap.set("#s12-a1", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s12-a1", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 6.26);
+  tl.to("#s12-a1", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 6.401);
   gsap.set("#s12-n2", { opacity: 0, y: 12 });
-  tl.to("#s12-n2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.04);
+  tl.to("#s12-n2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.13);
   gsap.set("#s12-dv", { opacity: 0 });
-  tl.to("#s12-dv", { opacity: 1, duration: 0.3, ease: "power2.out" }, 6.46);
+  tl.to("#s12-dv", { opacity: 1, duration: 0.3, ease: "power2.out" }, 6.557);
   gsap.set("#s12-pd", { opacity: 0, y: 12 });
-  tl.to("#s12-pd", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.56);
+  tl.to("#s12-pd", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.636);
   gsap.set("#s12-ao", { scaleX: 0, transformOrigin: "0% 50%" });
-  tl.to("#s12-ao", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 7.64);
+  tl.to("#s12-ao", { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, 7.764);
   gsap.set("#s12-out", { opacity: 0, y: 12 });
-  tl.to("#s12-out", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.94);
+  tl.to("#s12-out", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.07);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();
