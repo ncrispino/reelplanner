@@ -59,8 +59,8 @@ t0 = time.time()
 marks = []
 
 
-def mark(caption, speed=1):
-    marks.append({"t": round(time.time() - t0, 2), "caption": caption, "speed": speed})
+def mark(caption, speed=1, stop=False):
+    marks.append({"t": round(time.time() - t0, 2), "caption": caption, "speed": speed, **({"stop": True} if stop else {})})
     print(f"{time.time() - t0:6.1f}s  {caption}", flush=True)
 
 
@@ -101,10 +101,11 @@ wait_for("stopped at choice 3", 180)
 mark("Choice 3: 1 again")
 time.sleep(5)
 key("1")
-wait_for("Your review", 30)
+wait_for("Send your review", 30)
 time.sleep(1)
 mark("The review, ready to send: a approves, c asks for changes")
 time.sleep(8)
+mark("", stop=True)
 grab.communicate(b"q", timeout=30)
 json.dump(marks, open(f"{OUT}/marks.json", "w"), indent=1)
 kitty.terminate()

@@ -15,6 +15,8 @@ import os, tempfile
 work = tempfile.mkdtemp(prefix="reel-cut-")
 pieces = []
 for i, m in enumerate(marks):
+    if m.get("stop"):
+        break  # the video ends here; the rest is the recorder winding down
     a, b = m["t"], (marks[i + 1]["t"] if i + 1 < len(marks) else end)
     if b - a < 0.2:
         continue
