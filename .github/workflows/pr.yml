@@ -1,0 +1,62 @@
+# The checks of a shared repo, on a pull request (the contributing plan, step 5; .github/CONTRIBUTING.md). The tests
+# are in ci.yml, which only pushes start; this workflow also runs when nothing but the PR's text or labels changed.
+#
+#   pr-check      every PR: `reel pr-check` (a linked issue, where config.json asks; the line for a video, no media,
+#                 fresh videos, ids, tidy) and `reel audit` on each plan folder the PR adds that has a walkthrough.md
+#                 (D-202). A maintainer runs `reel pr-check --merge` themselves before merging (the PR template).
+#   video-branch  a PR closed, merged or not: deletes its video's branch, video/pr-<n> (D-215). A PR from a
+#                 fork keeps its video's branch in the fork; the contributor deletes it there.
+name: pr
+
+on:
+  pull_request:
+    # edited: the PR's text changed (an issue linked after pr-check failed), so pr-check reads it again;
+    # labeled, unlabeled: a maintainer's needs-video or no-video
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, closed]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-check:
+    name: reel pr-check
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}   # the PR's own last commit, not a merge with the base
+          fetch-depth: 0   # the diff from where the branch left the base, and the base's decision log
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
+          cache: npm
+      - run: npm ci
+      # reads the PR's text and labels from the event ($GITHUB_EVENT_PATH)
+      - name: reel pr-check
+        run: node bin/reelplanning.mjs reel pr-check --base "origin/${{ github.base_ref }}"
+      - name: reel audit, on each plan folder the PR adds
+        run: |
+          status=0
+          for d in $(git diff --name-only --diff-filter=A "origin/${{ github.base_ref }}...HEAD" -- .reelplanning/plans | cut -d/ -f1-3 | sort -u); do
+            if [ -f "$d/walkthrough.md" ]; then node bin/reelplanning.mjs reel audit "$d" || status=1; fi
+          done
+          exit $status
+
+  video-branch:
+    name: delete the video's branch
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Delete video/pr-${{ github.event.pull_request.number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF: heads/video/pr-${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/${{ github.repository }}/git/ref/$REF" >/dev/null 2>&1; then
+            gh api --method DELETE "repos/${{ github.repository }}/git/refs/$REF" && echo "deleted video/pr-${{ github.event.pull_request.number }}"
+          else
+            echo "no video/pr-${{ github.event.pull_request.number }} branch: nothing to delete"
+          fi

@@ -22,6 +22,7 @@ import { resolve, join, dirname, basename, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 import { narrationCost, costSentence } from "./lib/narration.mjs";
 import { parseGlossary, rowFor, listOf } from "./lib/terms.mjs";
+import { realPath } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
@@ -29,6 +30,7 @@ const pos = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--sinc
 let rp = resolve(pos[0] || ".");
 for (let i = 0; i < 6 && basename(rp) !== ".reelplanning"; i++) { if (existsSync(join(rp, ".reelplanning"))) { rp = join(rp, ".reelplanning"); break; } rp = dirname(rp); }
 if (basename(rp) !== ".reelplanning") { console.error(`✗ no .reelplanning/ at or above ${pos[0] || "."}`); process.exit(1); }
+rp = realPath(rp);   // as git names it, so its paths below are inside git's top (not /var/… for /private/var/…)
 
 const git = (...a) => { try { return execFileSync("git", ["-C", rp, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
 const top = git("rev-parse", "--show-toplevel");

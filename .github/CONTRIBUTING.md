@@ -76,10 +76,10 @@ files, or makes a choice you'd notice or can't easily undo (tick the box and nam
 it: if you don't plan with reelplanning, a maintainer's agent makes it from your diff. The rules, and how to
 bring your own, are in "Contributing with reelplanning" below.
 
-**What runs on a PR** (`.github/workflows/ci.yml`): the fast suite on every push, `reel pr-check` and
-`reel audit` on the plan folders the PR adds, and the full suite once a maintainer adds `ready-to-merge`
-(the check a PR needs before it merges). A version tag runs the full suite again before publishing
-(`docs/releasing.md`).
+**What runs on a PR:** the fast and full suites on every push (`.github/workflows/ci.yml`), and `reel pr-check`
+and `reel audit` on the plan folders the PR adds (`.github/workflows/pr.yml`, which also runs when the PR's text
+or labels change). A PR merges once all three passed on its last commit and a maintainer approved it. A version
+tag runs the full suite again before publishing (`docs/releasing.md`).
 
 **The maintainers** here are listed in `.reelplanning/config.json`: `owner`, the repo's owner as the
 review page names them. `owner` is whoever published the review page, so on a page of their own a second
@@ -181,8 +181,7 @@ never merged by hand: `reel renumber` (or `reelplanning terms-index .reelplannin
 
 The maintainer checks:
 
-- the fast tests pass on every push, and the full suite passed on the PR's last commit (it runs once a
-  maintainer adds `ready-to-merge`);
+- the tests passed on the PR's last commit (CI runs them on every push);
 - a PR over the line has a walkthrough a maintainer accepted, or the `no-video` label;
 - the other choices in the PR's text are accepted (ticked);
 - a contributor's own plan was reviewed before the code, and their code check found nothing left;

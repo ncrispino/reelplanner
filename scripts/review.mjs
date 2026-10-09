@@ -70,7 +70,7 @@ import { resolve, join, dirname, basename, extname, normalize, relative } from "
 import { tmpdir, platform, hostname } from "node:os";
 import { execFileSync, spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { ROOT, repoRoot, rpInitialized, hasRp } from "./lib/env.mjs";
+import { ROOT, repoRoot, rpInitialized, hasRp, realPath } from "./lib/env.mjs";
 import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs";
 import { sandboxProblem, unsandboxedNote } from "./lib/sandbox.mjs";
 import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion } from "./lib/inbox.mjs";
@@ -82,7 +82,9 @@ const args = process.argv.slice(2);
 if (args.includes("--wait")) { const { main } = await import("./inbox.mjs"); process.exit(await main(args)); }
 const flag = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const valued = new Set(["--out", "--port", "--timeout", "--repo"]);
-const projects = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i - 1])).map((p) => resolve(p));
+// each by where it really is, as the working directory and git name it, so a path shown relative to here, or
+// written relative to the repo, never climbs out through a link (macOS's /var/… for /private/var/…)
+const projects = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i - 1])).map((p) => realPath(p));
 
 // ---------- the detached server: .reelplanning/inbox/.server.json ----------
 // a repo's .reelplanning/ once `reel init` set it up (its decisions.json): a folder of setup files only (the hosted

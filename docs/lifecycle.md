@@ -143,9 +143,10 @@ The stages above assume one person per repo, who plans, reviews and merges. In a
   that it was built from the plan as it is now, and the maintainer runs their own code check (D-202).
 - **Records that merge** (D-171): decision ids stay in order; the PR merged second runs `reel renumber`
   at its rebase. `terms-index.json` is written again, never merged by hand.
-- **What runs** (`.github/workflows/ci.yml`): the fast suite on every push; `reel pr-check` and `reel
-  audit` on every PR; the full suite once a maintainer adds `ready-to-merge`, the check required before a
-  merge; the video's branch deleted when the PR closes.
+- **What runs:** the fast suite on every push, and the full suite on every push to a PR
+  (`.github/workflows/ci.yml`); `reel pr-check` and `reel audit` on every PR, and the video's branch deleted
+  when the PR closes (`.github/workflows/pr.yml`). A PR merges once its checks passed on its last commit and a
+  maintainer approved it.
 - **The system video** is brought up to date on main after merges, once for every PR merged since
   (D-003): `reelplanning spec-diff` names the frames, `reelplanning build .reelplanning/system-video`
   rebuilds them. `reel status` says it is behind meanwhile. A PR carries only the changes to `spec.md`,

@@ -9,7 +9,7 @@ npm pack --dry-run              # the file list (scripts/test/package.spec.mjs c
 git push origin main --follow-tags
 ```
 
-The full suite is also the check every pull request passes before it merges (`.github/workflows/ci.yml`, once a maintainer adds `ready-to-merge`; `.github/CONTRIBUTING.md`), so what is on main has passed it on its last commit. Pushing the `v*` tag runs `.github/workflows/publish.yml`, which runs the full suite (`npm run test:full`) once more and then publishes with `npm publish --provenance --access public`. Then create the GitHub release for the tag:
+The full suite is also the check every pull request passes before it merges (`.github/workflows/ci.yml`, on every push to it; `.github/CONTRIBUTING.md`), so what is on main has passed it on its last commit. Pushing the `v*` tag runs `.github/workflows/publish.yml`, which runs the full suite (`npm run test:full`) once more and then publishes with `npm publish --provenance --access public`. Then create the GitHub release for the tag:
 
 ```bash
 gh release create v0.2.1 --notes-file <(sed -n '/^## 0.2.1/,/^## /p' CHANGELOG.md | sed '$d')
@@ -39,7 +39,7 @@ The public repo is `ncrispino/reelplanning`, lowercase, and its `main` is one co
    ```
 
    The `v<version>` tag runs `.github/workflows/publish.yml` in the new repo. Without the `NPM_TOKEN` secret there (it is per repo) it stops at the publish step, harmlessly; add the secret first for it to publish, or publish by hand (below).
-5. **GitHub settings** on the public repo: the description and topics in [`github-topics.txt`](./github-topics.txt), with `sh scripts/release/github-about.sh` (your own `gh` login; `--dry-run` first) or by hand (About → the gear icon); the `NPM_TOKEN` secret; the `ready-to-merge` label `ci.yml` waits for; private vulnerability reporting on (Security, which `.github/SECURITY.md` links). reelplanning has no GitHub Pages site (the case studies' pages are in `ncrispino/reelplanning-case-studies`).
+5. **GitHub settings** on the public repo: the description and topics in [`github-topics.txt`](./github-topics.txt), with `sh scripts/release/github-about.sh` (your own `gh` login; `--dry-run` first) or by hand (About → the gear icon); the `NPM_TOKEN` secret; the `needs-video` and `no-video` labels `reel pr-check` reads; `main`'s protection (a pull request with one approving review, and the `fast suite`, `full suite` and `reel pr-check` checks passed on its last commit; the owner may merge their own); private vulnerability reporting on (Security, which `.github/SECURITY.md` links). reelplanning has no GitHub Pages site (the case studies' pages are in `ncrispino/reelplanning-case-studies`).
 6. **Check it from a fresh machine** (or a container), with no clone and no stored GitHub login:
 
    ```bash

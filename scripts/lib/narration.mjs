@@ -45,7 +45,7 @@ import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "
 import { createHash } from "node:crypto";
 import { join, relative, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
-import { pkgDir } from "./env.mjs";
+import { pkgDir, realPath } from "./env.mjs";
 import { say } from "./say.mjs";
 
 export const RECORD = join(".hyperframes", "narration.json");
@@ -152,7 +152,7 @@ const git = (cwd, ...a) => execFileSync("git", ["-C", cwd, ...a], { encoding: "u
 export function gitNarratedLines(dir) {
   try {
     const top = git(dir, "rev-parse", "--show-toplevel").trim();
-    const rel = relative(top, dir) || ".";
+    const rel = relative(top, realPath(dir)) || ".";
     const rev = git(top, "log", "-1", "--format=%H", "--", join(rel, "audio_meta.json")).trim();
     if (!rev) return null;
     // the files on disk must be the ones that commit made, not a later hand edit: audio_meta.json and the voice

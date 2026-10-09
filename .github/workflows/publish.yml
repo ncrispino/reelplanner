@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22   # HyperFrames needs 22; package.json's engines say 22.20
           registry-url: https://registry.npmjs.org
 
       - name: The tag matches package.json, and every pinned version matches it
@@ -28,6 +28,11 @@ jobs:
           node scripts/release/sync-version.mjs --check
 
       - run: npm ci
+
+      # ffmpeg, as `reelplanning setup` installs it for every user: narrate's mp3 and wav, the guide's pictures.
+      # Without it the specs that need it say they skipped, and those paths would never run here.
+      - name: ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
 
       # The full suite, exhaustive, before anything is published: the script specs and every player spec
       # (headless Chromium, which Playwright installs here; scripts/lib/static-server.mjs serves the pages).

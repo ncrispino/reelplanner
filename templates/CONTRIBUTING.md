@@ -90,8 +90,7 @@ never merged by hand: `reel renumber` (or `reelplanning terms-index .reelplannin
 
 The maintainer checks:
 
-- the fast tests pass on every push, and the full suite passed on the PR's last commit (it runs once a
-  maintainer adds `ready-to-merge`);
+- the tests passed on the PR's last commit (CI runs them on every push);
 - a PR over the line has a walkthrough a maintainer accepted, or the `no-video` label;
 - the other choices in the PR's text are accepted (ticked);
 - a contributor's own plan was reviewed before the code, and their code check found nothing left;

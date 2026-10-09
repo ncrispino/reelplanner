@@ -1,6 +1,6 @@
 // Where things are (this package, a Chromium, a dependency, the repo a path is in), worked out on the
 // machine it runs on rather than written down.
-import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, copyFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, copyFileSync, realpathSync } from "node:fs";
 import { join, resolve, dirname, basename } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -21,16 +21,32 @@ export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..")
  */
 export function chromiumPath() {
   if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH;
-  const stores = [process.env.PLAYWRIGHT_BROWSERS_PATH, "/opt/pw-browsers", join(homedir(), ".cache/ms-playwright")].filter(Boolean);
-  const inside = ["chrome-linux/chrome", "chrome-linux/headless_shell", "chrome-mac/Chromium.app/Contents/MacOS/Chromium", "chrome-win/chrome.exe"];
+  // Playwright's own store on this OS (where `npx playwright install` puts them), as well as a container's
+  const own = process.platform === "darwin" ? join(homedir(), "Library/Caches/ms-playwright")
+    : process.platform === "win32" ? join(process.env.LOCALAPPDATA || join(homedir(), "AppData/Local"), "ms-playwright")
+    : join(process.env.XDG_CACHE_HOME || join(homedir(), ".cache"), "ms-playwright");
+  const stores = [process.env.PLAYWRIGHT_BROWSERS_PATH, "/opt/pw-browsers", own].filter(Boolean);
+  // a build's executable, in the layouts Playwright has used: Chromium's own (to 1.48), then Chrome for Testing's, the
+  // full browser and the headless shell
+  const inside = ["chrome-linux/chrome", "chrome-linux/headless_shell", "chrome-mac/Chromium.app/Contents/MacOS/Chromium", "chrome-win/chrome.exe",
+    "chrome-linux64/chrome", "chrome-linux-arm64/chrome", ...["arm64", "x64"].map((a) => `chrome-mac-${a}/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`), "chrome-win64/chrome.exe",
+    ...["linux64", "linux-arm64", "mac-arm64", "mac-x64"].map((a) => `chrome-headless-shell-${a}/chrome-headless-shell`), "chrome-headless-shell-win64/chrome-headless-shell.exe"];
   for (const store of stores) {
     if (!existsSync(store)) continue;
-    // "chromium-1194" sorts after "chromium-1180" numerically, which a plain sort gets wrong
-    const builds = readdirSync(store).filter((d) => d.startsWith("chromium")).sort((a, b) => (parseInt(b.replace(/\D+/g, ""), 10) || 0) - (parseInt(a.replace(/\D+/g, ""), 10) || 0));
+    // "chromium-1194" sorts after "chromium-1180" numerically, which a plain sort gets wrong; of one build, the full
+    // browser ("chromium-1243") before its headless shell ("chromium_headless_shell-1243")
+    const num = (d) => parseInt(d.replace(/\D+/g, ""), 10) || 0;
+    const builds = readdirSync(store).filter((d) => d.startsWith("chromium")).sort((a, b) => num(b) - num(a) || (a < b ? -1 : a > b ? 1 : 0));
     for (const b of builds) for (const rel of inside) { const p = join(store, b, rel); if (existsSync(p)) return p; }
   }
   return undefined;
 }
+
+/**
+ * For a child process given a HOME of its own (a spec's scratch home): this machine's Chromium, found from the real
+ * one, as CHROMIUM_PATH. Playwright looks for its browsers under HOME, so the child would find none.
+ */
+export const chromiumEnv = () => { const p = chromiumPath(); return p ? { CHROMIUM_PATH: p } : {}; };
 
 /** Launch options for a headless run in a container: no sandbox, and audio may start itself. */
 export const launchOpts = (extra = {}) => ({
@@ -176,8 +192,24 @@ export function repoRoot(p = process.cwd()) {
     const up = dirname(d); if (up === d) break; d = up;
   }
   const at = existsSync(p) && statSync(p).isDirectory() ? resolve(p) : dirname(resolve(p));
-  try { return execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
+  let top; try { top = execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
   catch { return process.cwd(); }
+  // spelled as the caller spelled `p`, like the answers above: git names the real path
+  for (let d = at; ; d = dirname(d)) { if (realPath(d) === top) return d; if (dirname(d) === d) return top; }
+}
+
+/**
+ * Where `p` really is: the path git names (its top level) and the working directory has, whatever links the
+ * caller's spelling goes through (macOS's /var/… is /private/var/…; a linked home or projects folder). A path
+ * from the caller compares with theirs, or is made relative to them, through this, or `relative(top, p)` climbs
+ * out of the repo (`../../private/…`) and `git log -- <that>` finds nothing. A path not made yet: its nearest
+ * existing folder's real path, with the rest as given.
+ */
+export function realPath(p) {
+  const abs = resolve(p);
+  for (let d = abs, rest = []; ; rest.unshift(basename(d)), d = dirname(d)) {
+    try { return join(realpathSync(d), ...rest); } catch { if (dirname(d) === d) return abs; }
+  }
 }
 
 /**
@@ -195,7 +227,9 @@ export function machineDir() { return resolve(process.env.REELPLANNING_HOME || j
  */
 export function hasRp(d) {
   const rp = join(d, ".reelplanning");
-  return existsSync(rp) && (resolve(rp) !== machineDir() || rpInitialized(rp));
+  // compared by where they really are: the working directory is the real path (macOS's /private/var/…), while
+  // HOME can name it through a link (/var/…)
+  return existsSync(rp) && (realPath(rp) !== realPath(machineDir()) || rpInitialized(rp));
 }
 
 // The same answers for the shell scripts:

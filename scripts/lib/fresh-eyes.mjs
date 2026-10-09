@@ -36,7 +36,7 @@
 // An answer is `fixed` (what changed, and where), `meaning` (the phrase kept, with a meaning a viewer can
 // click: the glossary's "Other words", or the storyboard's `terms:`), or `kept` with the reason.
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, realpathSync } from "node:fs";
 import { join, resolve, relative, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseScript } from "./narration.mjs";
@@ -175,7 +175,10 @@ export const fileRole = (md) => (/^\s*#\s*Fresh eyes:\s*(newcomer|designer|check
  */
 export function strayFindings(videoDir, stamp) {
   if (!stamp?.id) return [];
-  const dir = resolve(videoDir), fe = feDir(dir), expected = new Set(Object.keys(rolesFor(dir)).map((r) => join(fe, `${r}.md`)));
+  // every path by its real one, as git names its top (macOS's /private/var/… for a /var/… folder), so a file is the
+  // same path from git and from the walk
+  let dir; try { dir = realpathSync(videoDir); } catch { dir = resolve(videoDir); }
+  const fe = feDir(dir), expected = new Set(Object.keys(rolesFor(dir)).map((r) => join(fe, `${r}.md`)));
   const files = new Set();
   const g = spawnSync("git", ["rev-parse", "--show-toplevel"], { cwd: dir, encoding: "utf8" });
   if (g.status === 0) {

@@ -20,7 +20,7 @@ lists them, each with its stage, reviews and decisions.
 | Walkthrough video | ✅ The change running, before and after, in about two minutes (style guide §8); it pauses only for what you'd notice or can't easily undo (`reel stops`), the rest a list at the end; a quick check where there is something to predict. |
 | Accept / flag → code rewritten | ✅ `walkthrough-scope` sorts the verdicts, flagged code is fixed, only the changed beats are rebuilt, and accepted choices join the decision log. |
 | System video, kept current | ✅ [Built](../.reelplanning/system-video/). `spec-diff` names the frames a spec change affects and `reel status` says when the video is behind and how much an update would rebuild. |
-| Several people | ✅ A pull request gets a video only over the line (`reel pr-check`); decision numbers renumber at a rebase (`reel renumber`); CI (`.github/workflows/ci.yml`) runs the fast suite on each push to `main` and each push to a pull request, `reel pr-check` on each pull request, and the full suite on a pull request once a maintainer adds `ready-to-merge`; pushes to other branches are not tested. |
+| Several people | ✅ A pull request gets a video only over the line (`reel pr-check`); decision numbers renumber at a rebase (`reel renumber`); CI runs the fast suite on each push to `main` and to a pull request, the full suite on each push to a pull request (`.github/workflows/ci.yml`), and `reel pr-check` on each pull request (`.github/workflows/pr.yml`); pushes to other branches are not tested. |
 
 The original milestones (M0–M4) and layers (L0–L4) are in the [original plan](./history/original-plan.md) §2.1 and §6.
 

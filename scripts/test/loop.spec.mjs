@@ -14,7 +14,7 @@
 //   ask           — a question asked on the page (Ask about this): with no session waiting it goes with the review; a
 //                   waiting session's --wait wakes on it, `inbox answer` answers it, GET /api/ask reads the answer
 import { spawn, execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
@@ -44,6 +44,9 @@ const started = (child, out) => new Promise((done) => {
 const lines = (f) => (existsSync(f) ? readFileSync(f, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)) : []);
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-loop-"));
+// the same place, however it is spelled: a working directory is always its real path (macOS's /private/var/… for
+// this /var/… temp folder), so what a process prints from its own is compared by where it is
+const samePlace = (a, b) => { try { return realpathSync(a) === realpathSync(b); } catch { return false; } };
 const rp = join(tmp, ".reelplanning"), pd = join(rp, "plans/2026-01-01-demo"), vd = join(pd, "video");
 mkdirSync(join(vd, "compositions"), { recursive: true });
 writeFileSync(join(pd, "plan.md"), "# Demo\n");
@@ -200,7 +203,7 @@ try {
   const inboxFile = join(tmp, r1.body.path);
   ok("server: the file is the row as posted", existsSync(inboxFile) && JSON.parse(readFileSync(inboxFile, "utf8")).review.annotations[0].text === "clearer, please");
   const wcode = await Promise.race([waited, sleep(8000).then(() => "timeout")]);
-  ok("--wait: exits 0 with the review's path", wcode === 0 && wout.trim() === inboxFile, `exit ${wcode}, out ${JSON.stringify(wout)}`);
+  ok("--wait: exits 0 with the review's path", wcode === 0 && samePlace(wout.trim(), inboxFile), `exit ${wcode}, out ${JSON.stringify(wout)}`);
   ok("--wait: the review is claimed by the session", JSON.parse(readFileSync(inboxFile.replace(/\.json$/, ".claim"), "utf8")).by === "session");
   await sleep(2200); // past the server's re-check
   ok("server: with a session waiting, no headless run starts", !existsSync(runs), JSON.stringify(lines(runs)));
@@ -224,7 +227,7 @@ try {
     ok("ask: a session waiting → it has the question", got.status === 200 && got.body.handledBy === "session" && got.body.id === "ask-2", JSON.stringify(got.body));
     const qcode = await Promise.race([qdone, sleep(8000).then(() => "timeout")]);
     const qfile = join(rp, "inbox", "questions", "ask-2.json");
-    ok("ask: --wait exits 0 with the question's path", qcode === 0 && qout.trim() === qfile && JSON.parse(readFileSync(qfile, "utf8")).narration === "It is saved.", `exit ${qcode}, out ${JSON.stringify(qout)}`);
+    ok("ask: --wait exits 0 with the question's path", qcode === 0 && samePlace(qout.trim(), qfile) && JSON.parse(readFileSync(qfile, "utf8")).narration === "It is saved.", `exit ${qcode}, out ${JSON.stringify(qout)}`);
     const before = await (await fetch(`${url}/api/ask?id=ask-2`)).json();
     ok("ask: not answered yet", before.ok && before.answered === false, JSON.stringify(before));
     const ans = execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-2", "The", "file", "the", "page", "writes", "when", "you", "press", "Send.", "--from", "the plan, step 3"], { cwd: tmp, encoding: "utf8" });
@@ -238,7 +241,7 @@ try {
   const prompt = run?.args?.at(-1) || "";
   ok("server: the command gets the prompt last, naming the review's path", /^Record and act on the review at \.reelplanning\/inbox\/video-20260103T093000Z\.json/.test(prompt) && /plan-to-video/.test(prompt)
     && /reelplanning verify <video-dir>/.test(prompt) && /reelplanning inbox done video-20260103T093000Z/.test(prompt) && /review server that started it/.test(prompt), prompt);
-  ok("server: the command runs in the repo", run?.cwd === tmp, run?.cwd);
+  ok("server: the command runs in the repo", !!run?.cwd && samePlace(run.cwd, tmp), run?.cwd);
   // any agent reads it (codex exec, opencode run): no Claude Code tool names in it
   ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt), prompt);
   ok("server: where the sandbox can run, it says nothing about running without it", !/without Claude Code's sandbox/.test(log), log);

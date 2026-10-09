@@ -20,6 +20,7 @@ import { join, resolve, relative, dirname, basename } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileReview, reviewKind, reviewTime, reviewsDir, reviewOf, ledgerFor, listReviews } from "./lib/reviews.mjs";
 import { actOnMarkdown } from "./lib/review-scope.mjs";
+import { realPath } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry-run");
@@ -45,7 +46,9 @@ const tryGit = (cwd, ...a) => { try { return git(cwd, ...a); } catch { return nu
 const parse = (t) => { try { return JSON.parse(t); } catch { return null; } };
 
 let repo = tryGit(top, "rev-parse", "--show-toplevel")?.trim() || null;
-const at = (rev, abs) => (repo && rev ? tryGit(repo, "show", `${rev}:${relative(repo, abs).split("\\").join("/")}`) : null);
+// a file's path in the repo, from where it really is (git's top is the real path; `top` may name it through a link)
+const inRepo = (abs) => relative(repo, realPath(abs)).split("\\").join("/");
+const at = (rev, abs) => (repo && rev ? tryGit(repo, "show", `${rev}:${inRepo(abs)}`) : null);
 
 let filedN = 0, removedN = 0;
 for (const pd of planDirs(top).sort()) {
@@ -55,7 +58,7 @@ for (const pd of planDirs(top).sort()) {
     const abs = join(pd, file);
     // every version: the committed ones oldest first, then the working copy
     const versions = [];
-    if (repo) for (const rev of (tryGit(repo, "log", "--format=%H", "--", relative(repo, abs)) || "").split("\n").filter(Boolean).reverse()) {
+    if (repo) for (const rev of (tryGit(repo, "log", "--format=%H", "--", inRepo(abs)) || "").split("\n").filter(Boolean).reverse()) {
       const text = at(rev, abs); if (text != null) versions.push({ rev, text });
     }
     if (existsSync(abs)) versions.push({ rev: null, text: readFileSync(abs, "utf8") });
