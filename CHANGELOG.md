@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Send works for a quick video too.** With no set-up `.reelplanner/` (the skill's first level, one video), the
+  Finish panel offered only **Download annotations.json**, and the person then told the agent where the file was.
+  Now the review server keeps that repo's inbox in this machine's folder, `~/.reelplanner/inbox/<repo-key>/` (the
+  repo folder's name and a short hash of its path; `REELPLANNER_HOME` moves it), so **Send** hands the review to
+  the session waiting on it (`review --wait`) with nothing added to the repo. There is no agent command at that
+  level, so with no session waiting the panel says plainly it is saved on this machine until you tell your agent;
+  `inbox` lists it. `review --detach` and `--stop` work there too (its `.server.json` and log go in the same
+  folder). The download is left for a page no server takes the review for (none behind it, or a Send that
+  failed). A repo set up later uses its own `.reelplanner/inbox/`; a review left in the machine's is named by
+  `inbox` and finished by `inbox done`, never picked up twice.
 - **The system video says reelplanner,** in its narration and on its frames, and its install is shot again from the
   public repo on a fresh Ubuntu machine (`npm i -g github:ncrispino/reelplanner`, a first `setup`, the skill, `reel
   init`); the README's GIF is its opening, made again. The voice says the name as "reel planner": Kokoro read

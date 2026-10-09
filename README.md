@@ -89,11 +89,12 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 - The agent writes the plan and makes a narrated video of it, in `videos/<name>/`. Building the video takes
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
-- Comment on any moment, then press **Finish review**:
-  - For a quick video, it downloads `annotations.json` to your downloads folder. Give the agent that path,
-    and it updates the plan.
-  - Otherwise, **Send** hands the review to the agent, which updates the plan and keeps the review in a
-    `.reelplanner/` folder in the repo (see [three ways](#three-ways-to-use-it)).
+- Comment on any moment, then press **Finish review** and **Send**: the review goes to the agent, which updates
+  the plan.
+  - For a quick video, nothing is added to the repo: the review waits on your machine, in `~/.reelplanner/inbox/`,
+    until the agent picks it up. If no agent session is waiting, tell it the review is sent.
+  - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
+    [three ways](#three-ways-to-use-it)).
 
 ## Three ways to use it
 

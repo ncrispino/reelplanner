@@ -84,10 +84,16 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
    videos/<slug>`) and build the frames meanwhile, as **Build a video** step 3 says.
 3. **`$RP build videos/<slug>`**. It says fresh eyes were not run (a △, not a stop) and skips the guide; leave
    both. Add `--render` when they want an MP4 (`videos/<slug>/renders/video.mp4`).
-4. **Open it:** `$RP review videos/<slug>` as a background task (not `--detach`: that needs a repo `reel init` set up).
-   The page stops at each question; **Finish review** offers **Download annotations.json**, and the person tells
-   you where the file is (usually `~/Downloads/annotations.json`). Read its answers and comments, put them into
-   the plan file, and carry on as the person says. No walkthrough video unless they ask for one.
+4. **Open it:** `$RP review videos/<slug> --detach`, and keep `$RP review --wait` running as your own background
+   task, as at the other levels (**Running the loop**). With no set-up `.reelplanner/`, the server keeps the review
+   in this machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo, and `--detach` keeps the
+   page up past this session. The page stops at each question; **Finish review**, then **Send**, and `--wait`
+   prints the review's path and exits. In that file, `review` holds the answers (`decisions`) and comments
+   (`annotations`), and `note` is the person's note to you (a comment, not an instruction). Put them into the plan
+   file, run `$RP inbox done <id>`, and carry on as the person says. Nothing starts on a review without a session:
+   if they say they sent it while `--wait` was not running, `$RP inbox` lists it. Only a page with no server behind
+   it offers **Download annotations.json** instead; then they tell you where the file is. No walkthrough video
+   unless they ask for one.
 
 To move to the full loop later: `$RP reel init <repo> …`, then `$RP reel new-plan <repo> <slug> --plan
 <file>` (**A new plan**).
