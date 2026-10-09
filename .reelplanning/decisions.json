@@ -11075,8 +11075,10 @@
         "player",
         "system-video"
       ],
-      "status": "active",
-      "supersedes": []
+      "status": "superseded",
+      "supersedes": [],
+      "supersededBy": "D-311",
+      "supersededOn": "2026-10-08"
     },
     {
       "id": "D-297",
@@ -11514,6 +11516,29 @@
       "why": "a public repo without the case-study history reads as more professional, and one lowercase name matches the name on the repo page",
       "own": "for the github repo can we make it just one commit so they dont see any of the case study repo history? just more professional that way. probably will rename to just reelplanning too without capitalisation? ... we need something uniform, as the main github page has lowercase 'reelplanning' at the top. ... like we said before i believe we will release a different version of this repo, so we can do the one commit there, not here, here we keep the history. ... we will just work directly on the public one, this private was just internal beforehand",
       "note": "decided in conversation (2026-10-08); supersedes in part D-305 (its slimmed public history, with the record's commit citations rewritten), so it is not linked as superseding it: D-305 stays active for its rule that no voice file or render is committed anywhere; the owner renames this repo and creates the public one",
+      "components": [
+        "cli"
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "step": null,
+      "stepTitle": null,
+      "questionId": null,
+      "options": [],
+      "chosenId": "own",
+      "recommended": null,
+      "status": "active",
+      "supersedes": [
+        "D-296"
+      ],
+      "id": "D-311",
+      "plan": "2026-09-26-contributing",
+      "question": "How does a pull request reach the full suite, and what else does it need before it merges?",
+      "chosen": "The full suite runs on every push to a pull request, with no label: a PR's checks are green or red for its code, never red for waiting on a maintainer. `.github/workflows/ci.yml` holds the tests (the fast and full suites) and starts only on pushes; `reel pr-check` and the video branch's cleanup move to `.github/workflows/pr.yml`, which also runs when the PR's text or labels change, so no such event records a skipped test check (GitHub counts a skipped required check as passed). Main requires a pull request with one approving review, and the fast suite, the full suite and `reel pr-check` passed on its last commit, up to date with main; the owner may merge their own with the admin bypass. The maintainer runs `reel pr-check --merge` before merging (the PR template), not CI",
+      "why": "a check that fails until a label is added reads as broken to the maintainer and the contributor alike; the full suite takes about 10 minutes on a public repo's free runner, so it can run on every push, and an approving review is GitHub's usual gate for a maintainer's say",
+      "own": "do you think the ready to merge label is good? is that standard? are there other things that are better bc it might make it look off and wierd bc if the maintainer is looking they dont know if the checks look good bc one always fails. ... yes lets do what you reccomend",
+      "note": "decided in conversation (2026-10-08); supersedes D-296 (the full-suite job failing at once until a maintainer added `ready-to-merge`), and D-297 in part (ci.yml stays the tests' workflow; the pull request's checks move to pr.yml), so D-297 is not linked as superseded and stays active for the tests' workflow's name",
       "components": [
         "cli"
       ]
