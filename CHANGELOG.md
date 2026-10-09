@@ -18,6 +18,11 @@
 - **The test suite passes on CI and on macOS,** not only in the development containers: CI runs on Node 22 (which
   HyperFrames needs) with ffmpeg, and the specs no longer lean on the machine's tools, its temp folder's spelling,
   the development history, or a page measured before it came to rest.
+- **The full suite runs on every push to a pull request,** instead of failing until a maintainer added
+  `ready-to-merge`: a PR's checks are green or red for its code, and a maintainer's approving review is what else
+  it needs. The tests (`.github/workflows/ci.yml`) start only on pushes, and `reel pr-check` moved to
+  `.github/workflows/pr.yml`, so an edited PR text or a label never records a skipped test check, which GitHub
+  counts as passed.
 - **The public repo is `ncrispino/reelplanning`, one commit (D-310).** `scripts/release/make-public.mjs` builds it
   in a scratch folder: a new repo whose `main` is one commit, `reelplanning <version>`, holding exactly a ref's
   tracked tree, tagged `v<version>`; it refuses a tree with a `.wav`, `.mp4` or `renders/` path, adds a line to
