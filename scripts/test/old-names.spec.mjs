@@ -3,7 +3,9 @@
 //   the command      — `reelplanning` runs `reelplanner` with the same arguments and says the new name on stderr;
 //                      `reelplanner` says nothing of it; package.json has both, and `reel`
 //   a setting        — REELPLANNING_X is read as REELPLANNER_X when that is unset (the new name wins when both are
-//                      set): in the shell (scripts/lib/old-names.mjs) and in a .env file (narrator.mjs loadEnvFile)
+//                      set): in the shell (scripts/lib/old-names.mjs) and in a .env file (narrator.mjs loadEnvFile);
+//                      a line that says where a setting came from names the old one, "(its old name)": describe's,
+//                      setup's about the local voice, narration-check's about a key
 //   ~/.reelplanning  — the machine's folder (its .env, your memory) while there is no ~/.reelplanner, and the folder a
 //                      line tells you to put a key in; once there is one, that one, and a file the old one holds and
 //                      the new one lacks is said once, with the `mv` that moves it
@@ -55,6 +57,26 @@ try {
   ok("…in a .env file: the repo's .reelplanner/.env saying REELPLANNING_TTS sets REELPLANNER_TTS, and says where from", file?.tts === "openrouter" && file?.s === "openrouter" && file?.from === ".reelplanner/.env", JSON.stringify(file));
   const both = answer(ask(`narrator.loadEnvFile(${JSON.stringify(repo1)}); return process.env.REELPLANNER_TTS;`, { REELPLANNER_TTS: "kokoro", REELPLANNER_HOME: join(tmp, "nohome") }, repo1));
   ok("…and the shell's REELPLANNER_TTS still wins over a file's old name", both === "kokoro", both);
+  // a line that says where a setting came from names what the person set: its old name, said to be one
+  const describe = (env) => node([join(ROOT, "scripts/lib/narrator.mjs"), "describe", repo1], { REELPLANNER_HOME: join(tmp, "nohome"), ...env }, repo1);
+  const dFile = describe();
+  rmSync(join(repo1, ".reelplanner", ".env"));
+  const dShell = describe({ REELPLANNING_TTS: "openrouter" }), dNew = describe({ REELPLANNER_TTS: "openrouter" }), dBoth = describe({ REELPLANNER_TTS: "openrouter", REELPLANNING_TTS: "kokoro" });
+  ok("…and where it came from is said under the name it was set under: `narrator.mjs describe` says \"from REELPLANNING_TTS (its old name)\", for the shell's",
+    /\(from REELPLANNING_TTS \(its old name\)\)$/m.test(dShell.out) && !/REELPLANNER_TTS/.test(dShell.out), dShell.out);
+  ok("…\"from REELPLANNING_TTS (its old name) in .reelplanner/.env\", for a file's", /\(from REELPLANNING_TTS \(its old name\) in \.reelplanner\/\.env\)$/m.test(dFile.out) && !/REELPLANNER_TTS/.test(dFile.out), dFile.out);
+  ok("…and the new name as it is, alone or over an old one", /\(from REELPLANNER_TTS\)$/m.test(dNew.out) && /\(from REELPLANNER_TTS\)$/m.test(dBoth.out) && !/old name/.test(dNew.out + dBoth.out), dNew.out + dBoth.out);
+  const plan = node([join(ROOT, "scripts/lib/local-speed.mjs"), "--plan", repo1], { REELPLANNER_HOME: join(tmp, "nohome"), REELPLANNING_TTS: "openrouter" }, repo1);
+  ok("…setup's line about the local voice: \"from the shell's REELPLANNING_TTS (its old name)\"", plan.out.includes("narration is hosted (openrouter, from the shell's REELPLANNING_TTS (its old name));"), plan.out);
+  // narration-check's engine line names a key's variable and where it came from (a server that is not there: nothing is sent)
+  writeFileSync(join(repo1, ".reelplanner", "config.json"), JSON.stringify({ narration: { tts: "openai-compatible", base_url: "http://127.0.0.1:9/v1", model: "m", voice: "v", timings: "local", retries: 0 } }));
+  const nc = node([join(ROOT, "scripts/narration-check.mjs")], { REELPLANNER_HOME: join(tmp, "nohome"), REELPLANNING_TTS_API_KEY: "sk-old" }, repo1);
+  writeFileSync(join(repo1, ".reelplanner", ".env"), "REELPLANNING_TTS_API_KEY=sk-old\n");
+  const ncFile = node([join(ROOT, "scripts/narration-check.mjs")], { REELPLANNER_HOME: join(tmp, "nohome") }, repo1);
+  rmSync(join(repo1, ".reelplanner", ".env")); rmSync(join(repo1, ".reelplanner", "config.json"));
+  ok("…narration-check's engine line: \"key REELPLANNER_TTS_API_KEY from the shell's REELPLANNING_TTS_API_KEY (its old name)\", and from a file's",
+    /^engine: openai-compatible m at 127\.0\.0\.1:9 \(key REELPLANNER_TTS_API_KEY from the shell's REELPLANNING_TTS_API_KEY \(its old name\)\),/m.test(nc.out)
+      && /^engine: .*\(key REELPLANNER_TTS_API_KEY from \.reelplanner\/\.env's REELPLANNING_TTS_API_KEY \(its old name\)\),/m.test(ncFile.out) && !/sk-old/.test(nc.out + ncFile.out), nc.out + nc.err + ncFile.out + ncFile.err);
 
   // ── ~/.reelplanning ──
   const home = join(tmp, "home"); mkdirSync(join(home, ".reelplanning"), { recursive: true });

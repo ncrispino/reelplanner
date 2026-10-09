@@ -8,10 +8,19 @@
   the settings (`REELPLANNER_*`) take the new name, and the review player is `reelplanner-player.js`. The old names
   are still read: a repo's `.reelplanning/` (each command says so once, with the `git mv` that renames it),
   `~/.reelplanning` while there is no `~/.reelplanner` (then its `you.jsonl` and `.env` are named, with the `mv` that
-  moves them), a `REELPLANNING_*` setting in the shell or a .env file, and the `reelplanning`
+  moves them), a `REELPLANNING_*` setting in the shell or a .env file (a line that says where a setting came from
+  names it as it was set: `from the shell's REELPLANNING_TTS (its old name)`, not its new name), and the `reelplanning`
   command, which says the new name and runs it. A review begun on the page before the rename keeps its marks.
   To move over: `npm rm -g reelplanning` (npm stops at `EEXIST` otherwise; `install.sh` does it), then install
   reelplanner. The entries below keep the old name.
+- **The Claude Code plugin is the skill's folder alone.** Its marketplace entry's source was the whole repository,
+  so installing it copied all of it into `~/.claude/plugins/cache` (117 MB), and Claude Code npm-installed the
+  root's `package.json` there (177 MB more), beside the marketplace's own clone (172 MB). The source is now
+  `skills/plan-to-video` (108 KB, `SKILL.md` and its style guide), and the entry in `marketplace.json` is its
+  manifest (`.claude-plugin/plugin.json` is gone; `sync-version.mjs` carries the version into the entry, and
+  `version.spec` keeps the plugin that folder alone). An install made before keeps its copy until the version moves.
+- **`setup`'s summary names a narration problem once:** a narration setting that cannot work was listed as
+  `narration: narration: …` under "still missing".
 - **A fresh-install check** (`.github/workflows/fresh-install.yml`, `scripts/release/fresh-install.sh`): the README's
   Install run as written in a bare `ubuntu:24.04` container, by a user with sudo, with Node 22 from nvm and with
   Ubuntu's own older Node, which the CLI must refuse. On a PR that changes the install's path, on each version tag,

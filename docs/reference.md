@@ -324,7 +324,7 @@ rebuild .reelplanner/plans/2026-09-28-videos-that-make-sense/video, version 1 of
 /plugin install reelplanner@reelplanner
 ```
 
-Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. Both the plugin and `npx skills add` clone the repository at depth 1, about 64 MB compressed (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305). The npm package itself is under 1 MB and carries none of them.
+Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. The plugin is the skill's folder alone, `skills/plan-to-video` (about 110 KB in `~/.claude/plugins/cache`: `marketplace.json`'s entry is its manifest). Adding the marketplace clones the repository at depth 1, about 170 MB on disk (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305), as `npx skills add ncrispino/reelplanner` would. The npm package itself is under 1 MB and carries none of them.
 
 ## Voice and timing
 

@@ -208,7 +208,8 @@ if [ "$HOSTED_PENDING" = 1 ]; then
   printf '→ narration: next, put the two lines above in %s/.env, then run %s narration-check to hear a test line\n' \
     "$(node "$ROOT/scripts/lib/env.mjs" home 2>/dev/null || echo '~/.reelplanner')" "$RP"
 elif N="$(node "$ROOT/scripts/lib/narrator.mjs" describe "$PWD" 2>&1)"; then ok "$N"
-else printf '✗ %s\n' "$N"; MISSING+=("narration: ${N%%$'\n'*}"); fi
+# (the summary takes describe's own line, which starts "narration: ", over a note before it on stderr)
+else printf '✗ %s\n' "$N"; L="$(grep -m1 '^narration: ' <<<"$N")"; MISSING+=("${L:-narration: ${N%%$'\n'*}}"); fi
 
 # ---- is local narration fast enough here? One sentence through local Kokoro + whisper, timed (at most 30 s), when
 # both are installed and no hosted engine is set; slow (over 20 s a line) says how to switch to the hosted voice.

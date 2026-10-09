@@ -36,7 +36,7 @@
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
-import { narrationSettings, loadEnvFile, envFileWarning, envSource, keyPlaces, TTS, TIMINGS, TIMINGS_APIS, DEFAULT_WHISPER } from "./lib/narrator.mjs";
+import { narrationSettings, loadEnvFile, envFileWarning, envSource, setAs, keyPlaces, TTS, TIMINGS, TIMINGS_APIS, DEFAULT_WHISPER } from "./lib/narrator.mjs";
 import { synthesize, transcribe, alignWords, parseWav } from "./lib/tts-api.mjs";
 import { kokoro, whisper } from "./lib/tts-local.mjs";
 import { SPEED_TEXT, timeoutS, speedVerdict, localToolsMissing, modelsMissing, fetchModels } from "./lib/local-speed.mjs";
@@ -87,8 +87,9 @@ else if (s.engine === "hyperframes" && (!s.error || flagged)) {
 const hostOf = (u) => { try { return new URL(u).host; } catch { return String(u); } };
 const KEY_PAGES = { OPENAI_API_KEY: "https://platform.openai.com/api-keys", DEEPINFRA_API_KEY: "https://deepinfra.com/dash/api_keys", OPENROUTER_API_KEY: "https://openrouter.ai/settings/keys", ELEVENLABS_API_KEY: "https://elevenlabs.io/app/settings/api-keys", GROQ_API_KEY: "https://console.groq.com/keys" };
 const keyHint = (k) => `${keyPlaces(`${k}=…`)}${KEY_PAGES[k] ? `; a key comes from ${KEY_PAGES[k]}` : ""}`;
-// where a key that is set came from: a file loadEnvFile read (never the key itself), or nothing for the shell's
-const keyFrom = (k) => { const at = envSource(k); return at ? ` from ${at}` : ""; };
+// where a key that is set came from: a file loadEnvFile read (never the key itself), or nothing for the shell's; and
+// the name it was set under when that is its old one (REELPLANNING_TTS_API_KEY)
+const keyFrom = (k) => { const at = envSource(k), as = setAs(k); return as !== k ? ` from ${at ? `${at}'s` : "the shell's"} ${as}` : at ? ` from ${at}` : ""; };
 let failed = false, late = null;
 const fail = (line, hint) => { failed = true; say(`✗ ${line}`); if (hint) say(`  → ${hint}`); };
 const finish = () => {

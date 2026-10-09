@@ -13,7 +13,7 @@
 //     to skip it); skipped with one line when narration is hosted (~/.reelplanner/.env, the shell, config.json), Kokoro
 //     alone when hosted speech is timed by local whisper; `--hosted-voice` skips it and prints the two lines;
 //     `--local-voice` installs it anyway; and `setup --dry-run` each way (no Kokoro, whisper or speed check listed when
-//     hosted; everything else still there)
+//     hosted; everything else still there), and a narration setting that cannot work named once in its summary
 import { spawn } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, chmodSync, readdirSync, symlinkSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -195,6 +195,11 @@ try {
   const u3 = await setup([], { HYPERFRAMES_PYTHON: NOPY });
   ok("setup --dry-run, the default: the local voice is said first, then Kokoro's install, whisper.cpp and the speed check, as before",
     u3.out.includes(`\n${INSTALLING}\n· would run: ${NOPY} -m pip install --user kokoro-onnx soundfile\n`) && /^(✓ whisper\.cpp|· would (run: brew install whisper-cpp|build whisper\.cpp)|✗ whisper\.cpp)/m.test(u3.out) && /^· would time one sentence/m.test(u3.out), u3.out);
+  config({ tts: "bogus" });
+  const u5 = await setup([], { HYPERFRAMES_PYTHON: NOPY });
+  config(null);
+  ok("setup --dry-run, a narration setting that cannot work: said, and the summary names it once (\"narration: narration tts …\", exit 1)",
+    u5.code === 1 && /^✗ narration: narration tts "bogus" is not one of: /m.test(u5.out) && /^✗ after setup, still missing:\n(?: {4}.*\n)* {4}narration: narration tts "bogus" is not one of: /m.test(u5.out) && !/narration: narration:/.test(u5.out), u5.out);
   const u4 = await runIt(["bash", join(ROOT, "scripts", "setup.sh"), "--hosted-voice", "--local-voice"]);
   ok("setup --hosted-voice --local-voice: a usage error (exit 2), nothing run", u4.code === 2 && /pick one/.test(u4.out), u4.out);
 
