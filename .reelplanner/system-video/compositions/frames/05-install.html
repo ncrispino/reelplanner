@@ -107,28 +107,28 @@
   .s05-side.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }.s05-pub { position:absolute; font:400 24px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.7); white-space:nowrap; }
 </style>
 
-<div id="root" data-composition-id="05-install" data-band="bottom" data-duration="13.311" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="05-install" data-band="bottom" data-duration="13.353" data-width="1920" data-height="1080">
 
-  <div class="clip s05-bg" id="s05-bg" data-start="0" data-duration="13.311" data-track-index="0"></div>
+  <div class="clip s05-bg" id="s05-bg" data-start="0" data-duration="13.353" data-track-index="0"></div>
 
-  <div class="clip s05-scene" id="s05-scene" data-start="0" data-duration="13.311" data-track-index="1">
+  <div class="clip s05-scene" id="s05-scene" data-start="0" data-duration="13.353" data-track-index="1">
     <div class="s05-step" id="s05-st"><b>1</b> of 4 · the tooling · once per machine</div>
     <div class="s05-view" id="s05-view"><div class="s05-cam" id="s05-cam">
-    <div data-artifact="npm i -g github:ncrispino/reelplanning (the README's; run here from a packed copy of this branch, npm i -g ./reelplanning-0.2.0.tgz, on a scratch machine)" id="s05-art">
+    <div data-artifact="npm i -g github:ncrispino/reelplanner (the README's, run on a fresh Ubuntu 24.04 machine with Node 22 from nvm)" id="s05-art">
     <div class="s05-term" id="s05-win" style="left:100px; top:100px; width:1300px; height:560px"><div class="s05-tbar"></div><div class="s05-tdot" style="left:24px"></div><div class="s05-tdot" style="left:48px"></div><div class="s05-tdot" style="left:72px"></div><div class="s05-ttl">a new machine</div></div>
-    <div class="s05-cmd" id="s05-c0" style="left:136px; top:176px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s05-ct0">npm i -g github:ncrispino/reelplanning</span></div>
-    <div class="s05-out" id="s05-o0-0" style="left:136px; top:220px; font-size:27px; line-height:44px">added 120 packages in 10s</div>
+    <div class="s05-cmd" id="s05-c0" style="left:136px; top:176px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s05-ct0">npm i -g github:ncrispino/reelplanner</span></div>
+    <div class="s05-out" id="s05-o0-0" style="left:136px; top:220px; font-size:27px; line-height:44px">added 120 packages in 27s</div>
     <div class="s05-out" id="s05-o0-1" style="left:136px; top:264px; font-size:27px; line-height:44px"></div>
     <div class="s05-out" id="s05-o0-2" style="left:136px; top:308px; font-size:27px; line-height:44px"><span class="dim">41 packages are looking for funding</span></div>
     <div class="s05-out" id="s05-o0-3" style="left:136px; top:352px; font-size:27px; line-height:44px"><span class="dim">  run `npm fund` for details</span></div>
-    <div class="s05-cmd" id="s05-c1" style="left:136px; top:413.6px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s05-ct1">reelplanning --version</span></div>
+    <div class="s05-cmd" id="s05-c1" style="left:136px; top:413.6px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s05-ct1">reelplanner --version</span></div>
     <div class="s05-out" id="s05-o1-0" style="left:136px; top:457.6px; font-size:27px; line-height:44px">0.2.0</div>
     <div class="s05-cmd" id="s05-c2" style="left:136px; top:519.2px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s05-ct2">reel --help | head -1</span></div>
-    <div class="s05-out" id="s05-o2-0" style="left:136px; top:563.2px; font-size:27px; line-height:44px">reel — manage a project's .reelplanning/ directory (docs/project-dir.md).</div>
+    <div class="s05-out" id="s05-o2-0" style="left:136px; top:563.2px; font-size:27px; line-height:44px">reel — manage a project's .reelplanner/ directory (docs/project-dir.md).</div>
     </div>
-    <div class="s05-side" id="s05-g0" style="left:574.24px; top:411.6px"><code style='font-family:JetBrains Mono'>reelplanning</code> and <code style='font-family:JetBrains Mono'>reel</code>: two commands</div>
+    <div class="s05-side" id="s05-g0" style="left:574.24px; top:411.6px"><code style='font-family:JetBrains Mono'>reelplanner</code> and <code style='font-family:JetBrains Mono'>reel</code>: two commands</div>
     <div class="s05-side hot" id="s05-g1" style="left:574.24px; top:517.2px"><code style='font-family:JetBrains Mono'>reel</code> · keeps the record</div>
-    <div class="s05-pub" id="s05-pub" style="left:100px; top:684px">the command you run · this shot, while the repo is private: a packed copy, <code style="font-family:JetBrains Mono">npm i -g ./reelplanning-0.2.0.tgz</code></div>
+    <div class="s05-pub" id="s05-pub" style="left:100px; top:684px">the command you run · shot on a fresh Linux machine (Ubuntu 24.04)</div>
     </div></div>
 
   </div>
@@ -140,8 +140,8 @@
 
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s05-c0", { opacity: 0 });
-  tl.set("#s05-c0", { opacity: 1 }, 0.4);
-  (function(){ var el=document.getElementById("s05-ct0"); var s="npm i -g github:ncrispino/reelplanning"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.4); })();
+  tl.set("#s05-c0", { opacity: 1 }, 0.415);
+  (function(){ var el=document.getElementById("s05-ct0"); var s="npm i -g github:ncrispino/reelplanner"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.415); })();
   gsap.set("#s05-o0-0", { opacity: 0 });
   tl.to("#s05-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.68);
   gsap.set("#s05-o0-1", { opacity: 0 });
@@ -151,26 +151,26 @@
   gsap.set("#s05-o0-3", { opacity: 0 });
   tl.to("#s05-o0-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.78);
   gsap.set("#s05-c1", { opacity: 0 });
-  tl.set("#s05-c1", { opacity: 1 }, 6.44);
-  (function(){ var el=document.getElementById("s05-ct1"); var s="reelplanning --version"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.579,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},6.44); })();
+  tl.set("#s05-c1", { opacity: 1 }, 6.529);
+  (function(){ var el=document.getElementById("s05-ct1"); var s="reelplanner --version"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.579,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},6.529); })();
   gsap.set("#s05-o1-0", { opacity: 0 });
-  tl.to("#s05-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 7.34);
+  tl.to("#s05-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 7.407);
   gsap.set("#s05-c2", { opacity: 0 });
-  tl.set("#s05-c2", { opacity: 1 }, 8.97);
-  (function(){ var el=document.getElementById("s05-ct2"); var s="reel --help | head -1"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.553,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},8.97); })();
+  tl.set("#s05-c2", { opacity: 1 }, 9.261);
+  (function(){ var el=document.getElementById("s05-ct2"); var s="reel --help | head -1"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.553,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},9.261); })();
   gsap.set("#s05-o2-0", { opacity: 0 });
-  tl.to("#s05-o2-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.67);
+  tl.to("#s05-o2-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.765);
   gsap.set("#s05-pub", { opacity: 0 });
-  tl.to("#s05-pub", { opacity: 1, duration: 0.45, ease: "power2.out" }, 5.28);
+  tl.to("#s05-pub", { opacity: 1, duration: 0.45, ease: "power2.out" }, 5.265);
   gsap.set("#s05-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s05-st", { opacity: 0 });
-  tl.to("#s05-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
+  tl.to("#s05-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.079);
   gsap.set("#s05-win", { opacity: 0 });
-  tl.to("#s05-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.05);
+  tl.to("#s05-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.079);
   gsap.set("#s05-g0", { opacity: 0, y: 12 });
-  tl.to("#s05-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.34);
+  tl.to("#s05-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.407);
   gsap.set("#s05-g1", { opacity: 0, y: 12 });
-  tl.to("#s05-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.63);
+  tl.to("#s05-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.82);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

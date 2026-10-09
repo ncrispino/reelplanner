@@ -15,7 +15,8 @@
 //   -p, --dry-run                   dash p, dash dash dry-run                    "dash p" → -p, "dash dash you" → --you
 //   plan.md, you.jsonl              plan dot md, you dot json L                  "dot md", "dot M D", "dot json L" → .md, .jsonl
 //   /work, scripts/narrate.mjs      slash work, scripts slash narrate dot mjs    "slash work" → /work
-//   ~/.reelplanner                  home dot reelplanner                         "tilde slash" → ~/
+//   ~/.reelplanner                  home dot reel planner                        "tilde slash" → ~/
+//   reelplanner, `reelplanner`      reel planner (NAME_SAID: a name Kokoro runs together, "reopliner")
 //   snake_case                      snake underscore case                        "underscore" → _
 //   noreply@anthropic.com           noreply at anthropic dot com                 (the domain only: anthropic.com)
 //   D-110                           D-110 (Kokoro says "D one hundred ten", as the ledger reads it)
@@ -28,6 +29,10 @@ export const EXT = new Set(("md mdx mjs cjs js jsx ts tsx json jsonl html htm cs
   + "wav mp3 mp4 webm png jpg jpeg svg gif webp pdf csv tsv zip gz tar diff patch gitignore com org io dev ai net app").split(" "));
 /** How an extension is said, where Kokoro would say it badly as written. */
 export const EXT_SAID = { jsonl: "json L", yml: "yaml", io: "I O", gitignore: "git ignore", htm: "H T M" };
+/** Names the voice says apart, alone, in code or in a path: Kokoro said "reelplanner" as "reopliner". */
+export const NAME_SAID = { reelplanner: "reel planner" };
+// a name of NAME_SAID, possessive too ("reelplanner's"), as said; else null
+const nameSaid = (w) => { const m = /^(.*?)((?:'|’)s)?$/.exec(w); const s = NAME_SAID[m[1].toLowerCase()]; return s ? s + (m[2] || "") : null; };
 const SEP_SAID = { "/": "slash", ".": "dot", "_": "underscore", "@": "at" };
 const SEP_SHOWN = { slash: "/", dot: ".", underscore: "_" };
 
@@ -77,7 +82,7 @@ function sayPath(core) {
   pieces.forEach((p, i) => {
     if (SEP_SAID[p]) out.push(SEP_SAID[p]);
     else if (i === pieces.length - 1 && pieces[i - 1] === "." && EXT.has(p.toLowerCase())) out.push(EXT_SAID[p.toLowerCase()] || p);
-    else out.push(p);
+    else out.push(nameSaid(p) || p);
   });
   return out.join(" ");
 }
@@ -85,7 +90,7 @@ function sayPath(core) {
 export function sayWord(word) {
   const { pre, core, post } = around(word);
   const kind = core && codeKind(core);
-  if (!kind) return word;
+  if (!kind) { const n = core && nameSaid(core); return n ? pre + n + post : word; }
   const bare = (s) => s.replace(/`/g, "");
   if (kind === "flag") {
     const [, dashes, name, value] = FLAG.exec(core);
@@ -93,7 +98,7 @@ export function sayWord(word) {
   }
   return bare(pre) + sayPath(core) + bare(post);
 }
-/** A script line → the text the voice is handed. Only flags, paths and file names change; a line with none is returned as it is. */
+/** A script line → the text the voice is handed. Only flags, paths, file names and NAME_SAID's names change; a line with none is returned as it is. */
 export const say = (text) => String(text).replace(/\S+/g, (w) => sayWord(w));
 /** A written word → the words the voice says for it (what the captions align to the transcription). */
 export const saidWords = (word) => sayWord(word).split(/\s+/).filter(Boolean);

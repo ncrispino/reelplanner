@@ -1,4 +1,4 @@
-# SCRIPT — reelplanning's system video (seven chapters)
+# SCRIPT — reelplanner's system video (seven chapters)
 
 **Voice:** am_michael (Kokoro, local; synthesised at speed 1.1, 0.8 s held after each line)
 **Voice settings:** default
@@ -16,7 +16,7 @@
 
 **Delivery:** Plain.
 
-    reelplanning turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.
+    reelplanner turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.
 
 ## Line 3 — One loop for every change (Frame 3)
 
@@ -40,13 +40,13 @@
 
 **Delivery:** Plain.
 
-    Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanning`, and `reel`, the reel CLI, which keeps the project's record.
+    Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanner`, and `reel`, the reel CLI, which keeps the project's record.
 
 ## Line 7 — What the videos need (Frame 7)
 
 **Delivery:** Plain.
 
-    Second, `reelplanning setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.
+    Second, `reelplanner setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.
 
 ## Line 8 — The skill, into your agent (Frame 8)
 
@@ -58,7 +58,7 @@
 
 **Delivery:** Plain.
 
-    Last, in each repo, `reel init` writes `.reelplanning/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.
+    Last, in each repo, `reel init` writes `.reelplanner/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.
 
 ## Line 10 — Quick check: a login page, built (Frame 10)
 
@@ -82,7 +82,7 @@
 
 **Delivery:** Plain.
 
-    The agent writes a storyboard and the frames; `reelplanning build` voices it with a local voice, adds captions and checks every frame.
+    The agent writes a storyboard and the frames; `reelplanner build` voices it with a local voice, adds captions and checks every frame.
 
 ## Line 14 — Fresh eyes, before you (Frame 14)
 
@@ -94,7 +94,7 @@
 
 **Delivery:** Plain.
 
-    Your agent starts the review server, `reelplanning review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.
+    Your agent starts the review server, `reelplanner review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.
 
 ## Line 16 — Quick check: a second repo (Frame 16)
 
@@ -232,7 +232,7 @@
 
 **Delivery:** Plain.
 
-    The record is text in your repo, under `.reelplanning/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.
+    The record is text in your repo, under `.reelplanner/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.
 
 ## Line 39 — This video, kept current (Frame 39)
 
@@ -250,7 +250,7 @@
 
 **Delivery:** Plain.
 
-    Not ready to plan? `reelplanning explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.
+    Not ready to plan? `reelplanner explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.
 
 ## Line 42 — More people (Frame 42)
 
@@ -270,8 +270,8 @@
 
     Quick check. A walkthrough you accept adds a new part, the scheduler, to the parts and the glossary. What happens to this video?
 
-## Line 45 — reelplanning, in one picture (Frame 45)
+## Line 45 — reelplanner, in one picture (Frame 45)
 
 **Delivery:** Plain.
 
-    That's reelplanning: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.
+    That's reelplanner: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.

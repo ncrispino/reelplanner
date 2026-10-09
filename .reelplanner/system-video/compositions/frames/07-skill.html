@@ -107,23 +107,23 @@
   .s07-side.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="07-skill" data-band="bottom" data-duration="10.089" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="07-skill" data-band="bottom" data-duration="10.132" data-width="1920" data-height="1080">
 
-  <div class="clip s07-bg" id="s07-bg" data-start="0" data-duration="10.089" data-track-index="0"></div>
+  <div class="clip s07-bg" id="s07-bg" data-start="0" data-duration="10.132" data-track-index="0"></div>
 
-  <div class="clip s07-scene" id="s07-scene" data-start="0" data-duration="10.089" data-track-index="1">
+  <div class="clip s07-scene" id="s07-scene" data-start="0" data-duration="10.132" data-track-index="1">
     <div class="s07-step" id="s07-st"><b>3</b> of 4 · the skill · once per machine</div>
     <div class="s07-view" id="s07-view"><div class="s07-cam" id="s07-cam">
-    <div data-artifact="npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g (the README's command, run on a scratch machine)" id="s07-art">
+    <div data-artifact="npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g (the README's command, run on a scratch machine)" id="s07-art">
     <div class="s07-term" id="s07-win" style="left:100px; top:100px; width:1300px; height:790px"><div class="s07-tbar"></div><div class="s07-tdot" style="left:24px"></div><div class="s07-tdot" style="left:48px"></div><div class="s07-tdot" style="left:72px"></div><div class="s07-ttl">a new machine</div></div>
-    <div class="s07-cmd" id="s07-c0" style="left:136px; top:176px; font-size:26px; line-height:40px"><span class="g">$</span><span id="s07-ct0">npx skills add "$(npm root -g)/reelplanning" --skill plan-to-video -g</span></div>
+    <div class="s07-cmd" id="s07-c0" style="left:136px; top:176px; font-size:26px; line-height:40px"><span class="g">$</span><span id="s07-ct0">npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g</span></div>
     <div class="s07-out" id="s07-o0-0" style="left:136px; top:216px; font-size:25px; line-height:40px">o  Found 1 skill</div>
     <div class="s07-out" id="s07-o0-1" style="left:136px; top:256px; font-size:25px; line-height:40px">•  Selected 1 skill: plan-to-video</div>
-    <div class="s07-out" id="s07-o0-2" style="left:136px; top:296px; font-size:25px; line-height:40px">•  Installing to all agents</div>
+    <div class="s07-out" id="s07-o0-2" style="left:136px; top:296px; font-size:25px; line-height:40px">•  Installing to: AiderDesk, AstrBot, Autohand Code CLI, Augment, IBM Bob, …</div>
     <div class="s07-out" id="s07-o0-3" style="left:136px; top:336px; font-size:25px; line-height:40px">o  Installed 1 skill</div>
     <div class="s07-out" id="s07-o0-4" style="left:136px; top:376px; font-size:25px; line-height:40px">|  ✓ ~/.agents/skills/plan-to-video</div>
-    <div class="s07-out" id="s07-o0-5" style="left:136px; top:416px; font-size:25px; line-height:40px">|    universal: Amp, Antigravity, Antigravity CLI, Cline, Codex +17 more</div>
-    <div class="s07-out" id="s07-o0-6" style="left:136px; top:456px; font-size:25px; line-height:40px">|    symlinked: AiderDesk, AstrBot, Autohand Code CLI, Augment, IBM Bob +51</div>
+    <div class="s07-out" id="s07-o0-5" style="left:136px; top:416px; font-size:25px; line-height:40px">|    universal: Pi, Amp, Antigravity, Antigravity CLI, Cline +16 more</div>
+    <div class="s07-out" id="s07-o0-6" style="left:136px; top:456px; font-size:25px; line-height:40px">|    symlinked: AiderDesk, AstrBot, Autohand Code CLI, Augment, IBM Bob +50 more</div>
     <div class="s07-out" id="s07-o0-7" style="left:136px; top:496px; font-size:25px; line-height:40px"><span class="dim">   ⋮</span></div>
     <div class="s07-out" id="s07-o0-8" style="left:136px; top:536px; font-size:25px; line-height:40px">—  Done!  Review skills before use; they run with full agent permissions.</div>
     <div class="s07-cmd" id="s07-c1" style="left:136px; top:592px; font-size:26px; line-height:40px"><span class="g">$</span><span id="s07-ct1">readlink ~/.claude/skills/plan-to-video</span></div>
@@ -142,40 +142,40 @@
 
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s07-c0", { opacity: 0 });
-  tl.set("#s07-c0", { opacity: 1 }, 0.4);
-  (function(){ var el=document.getElementById("s07-ct0"); var s="npx skills add \"$(npm root -g)/reelplanning\" --skill plan-to-video -g"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.816,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.4); })();
+  tl.set("#s07-c0", { opacity: 1 }, 0.433);
+  (function(){ var el=document.getElementById("s07-ct0"); var s="npx skills add \"$(npm root -g)/reelplanner\" --skill plan-to-video -g"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.816,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.433); })();
   gsap.set("#s07-o0-0", { opacity: 0 });
-  tl.to("#s07-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 1.92);
+  tl.to("#s07-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 1.953);
   gsap.set("#s07-o0-1", { opacity: 0 });
-  tl.to("#s07-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.12);
+  tl.to("#s07-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.168);
   gsap.set("#s07-o0-2", { opacity: 0 });
-  tl.to("#s07-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.42);
+  tl.to("#s07-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.567);
   gsap.set("#s07-o0-3", { opacity: 0 });
-  tl.to("#s07-o0-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.72);
+  tl.to("#s07-o0-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.911);
   gsap.set("#s07-o0-4", { opacity: 0 });
-  tl.to("#s07-o0-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.92);
+  tl.to("#s07-o0-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.056);
   gsap.set("#s07-o0-5", { opacity: 0 });
-  tl.to("#s07-o0-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.1);
+  tl.to("#s07-o0-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.14);
   gsap.set("#s07-o0-6", { opacity: 0 });
-  tl.to("#s07-o0-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.3);
+  tl.to("#s07-o0-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.34);
   gsap.set("#s07-o0-7", { opacity: 0 });
-  tl.to("#s07-o0-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.4);
+  tl.to("#s07-o0-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.44);
   gsap.set("#s07-o0-8", { opacity: 0 });
-  tl.to("#s07-o0-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.6);
+  tl.to("#s07-o0-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.628);
   gsap.set("#s07-c1", { opacity: 0 });
-  tl.set("#s07-c1", { opacity: 1 }, 3.76);
-  (function(){ var el=document.getElementById("s07-ct1"); var s="readlink ~/.claude/skills/plan-to-video"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.026,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},3.76); })();
+  tl.set("#s07-c1", { opacity: 1 }, 3.792);
+  (function(){ var el=document.getElementById("s07-ct1"); var s="readlink ~/.claude/skills/plan-to-video"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:1.026,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},3.792); })();
   gsap.set("#s07-o1-0", { opacity: 0 });
-  tl.to("#s07-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.66);
+  tl.to("#s07-o1-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.7);
   gsap.set("#s07-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s07-st", { opacity: 0 });
   tl.to("#s07-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
   gsap.set("#s07-win", { opacity: 0 });
   tl.to("#s07-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.05);
   gsap.set("#s07-g0", { opacity: 0, y: 12 });
-  tl.to("#s07-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.96);
+  tl.to("#s07-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.211);
   gsap.set("#s07-g1", { opacity: 0, y: 12 });
-  tl.to("#s07-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.02);
+  tl.to("#s07-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.128);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

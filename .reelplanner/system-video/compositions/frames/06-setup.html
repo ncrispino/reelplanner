@@ -107,26 +107,26 @@
   .s06-side.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="06-setup" data-band="bottom" data-duration="11.839" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="06-setup" data-band="bottom" data-duration="11.881" data-width="1920" data-height="1080">
 
-  <div class="clip s06-bg" id="s06-bg" data-start="0" data-duration="11.839" data-track-index="0"></div>
+  <div class="clip s06-bg" id="s06-bg" data-start="0" data-duration="11.881" data-track-index="0"></div>
 
-  <div class="clip s06-scene" id="s06-scene" data-start="0" data-duration="11.839" data-track-index="1">
+  <div class="clip s06-scene" id="s06-scene" data-start="0" data-duration="11.881" data-track-index="1">
     <div class="s06-step" id="s06-st"><b>2</b> of 4 · <code style='font-family:JetBrains Mono'>setup</code> · once per machine</div>
     <div class="s06-view" id="s06-view"><div class="s06-cam" id="s06-cam">
-    <div data-artifact="reelplanning setup" id="s06-art">
+    <div data-artifact="reelplanner setup" id="s06-art">
     <div class="s06-term" id="s06-win" style="left:100px; top:100px; width:1300px; height:760px"><div class="s06-tbar"></div><div class="s06-tdot" style="left:24px"></div><div class="s06-tdot" style="left:48px"></div><div class="s06-tdot" style="left:72px"></div><div class="s06-ttl">a new machine</div></div>
-    <div class="s06-cmd" id="s06-c0" style="left:136px; top:176px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s06-ct0">reelplanning setup</span></div>
-    <div class="s06-out" id="s06-o0-0" style="left:136px; top:220px; font-size:27px; line-height:44px"><span class="ok">✓</span> node v22.22.2</div>
-    <div class="s06-out" id="s06-o0-1" style="left:136px; top:264px; font-size:27px; line-height:44px"><span class="ok">✓</span> ffmpeg (/usr/bin/ffmpeg)</div>
+    <div class="s06-cmd" id="s06-c0" style="left:136px; top:176px; font-size:28px; line-height:44px"><span class="g">$</span><span id="s06-ct0">reelplanner setup</span></div>
+    <div class="s06-out" id="s06-o0-0" style="left:136px; top:220px; font-size:27px; line-height:44px"><span class="ok">✓</span> node v22.23.3</div>
+    <div class="s06-out" id="s06-o0-1" style="left:136px; top:264px; font-size:27px; line-height:44px"><span class='ok'>▶</span> sudo apt-get install -y ffmpeg</div>
     <div class="s06-out" id="s06-o0-2" style="left:136px; top:308px; font-size:27px; line-height:44px"><span class="ok">✓</span> Chrome headless (~/.cache/hyperframes/chrome/…)</div>
-    <div class="s06-out" id="s06-o0-3" style="left:136px; top:352px; font-size:27px; line-height:44px"><span class="ok">✓</span> Kokoro TTS (kokoro-onnx in python3)</div>
-    <div class="s06-out" id="s06-o0-4" style="left:136px; top:396px; font-size:27px; line-height:44px"><span class="ok">✓</span> whisper.cpp (/usr/local/bin/whisper-cli)</div>
+    <div class="s06-out" id="s06-o0-3" style="left:136px; top:352px; font-size:27px; line-height:44px"><span class="ok">✓</span> Kokoro TTS</div>
+    <div class="s06-out" id="s06-o0-4" style="left:136px; top:396px; font-size:27px; line-height:44px"><span class="ok">✓</span> whisper.cpp (~/.cache/…/whisper-cli)</div>
     <div class="s06-out" id="s06-o0-5" style="left:136px; top:440px; font-size:27px; line-height:44px"><span class='ok'>▶</span> installing HyperFrames skills at v0.8.52 …</div>
     <div class="s06-out" id="s06-o0-6" style="left:136px; top:484px; font-size:27px; line-height:44px"><span class="ok">✓</span> HyperFrames skills at v0.8.52 in ~/.agents/skills</div>
     <div class="s06-out" id="s06-o0-7" style="left:136px; top:528px; font-size:27px; line-height:44px"><span class="ok">✓</span> patched ~/.agents/skills/media-use/…/tts.mjs</div>
     <div class="s06-out" id="s06-o0-8" style="left:136px; top:572px; font-size:27px; line-height:44px"><span class="dim">…</span></div>
-    <div class="s06-out" id="s06-o0-9" style="left:136px; top:616px; font-size:27px; line-height:44px"><span class="ok">✓</span> reelplanning is set up</div>
+    <div class="s06-out" id="s06-o0-9" style="left:136px; top:616px; font-size:27px; line-height:44px"><span class="ok">✓</span> reelplanner is set up</div>
     </div>
     <div class="s06-side" id="s06-g0" style="left:1016.5px; top:306px">draws the frames</div>
     <div class="s06-side" id="s06-g1" style="left:795.37px; top:350px">a voice</div>
@@ -143,41 +143,41 @@
 
   var tl = gsap.timeline({ paused: true });
   gsap.set("#s06-c0", { opacity: 0 });
-  tl.set("#s06-c0", { opacity: 1 }, 0.4);
-  (function(){ var el=document.getElementById("s06-ct0"); var s="reelplanning setup"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.474,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.4); })();
+  tl.set("#s06-c0", { opacity: 1 }, 0.424);
+  (function(){ var el=document.getElementById("s06-ct0"); var s="reelplanner setup"; var o={n:0}; el.textContent=""; tl.to(o,{n:s.length,duration:0.474,ease:"none",onUpdate:function(){ el.textContent=s.slice(0,Math.round(o.n)); }},0.424); })();
   gsap.set("#s06-o0-0", { opacity: 0 });
   tl.to("#s06-o0-0", { opacity: 1, duration: 0.18, ease: "power1.out" }, 2.85);
   gsap.set("#s06-o0-1", { opacity: 0 });
-  tl.to("#s06-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3);
+  tl.to("#s06-o0-1", { opacity: 1, duration: 0.18, ease: "power1.out" }, 3.036);
   gsap.set("#s06-o0-2", { opacity: 0 });
-  tl.to("#s06-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 6.96);
+  tl.to("#s06-o0-2", { opacity: 1, duration: 0.18, ease: "power1.out" }, 7);
   gsap.set("#s06-o0-3", { opacity: 0 });
-  tl.to("#s06-o0-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.5);
+  tl.to("#s06-o0-3", { opacity: 1, duration: 0.18, ease: "power1.out" }, 4.57);
   gsap.set("#s06-o0-4", { opacity: 0 });
-  tl.to("#s06-o0-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.32);
+  tl.to("#s06-o0-4", { opacity: 1, duration: 0.18, ease: "power1.out" }, 5.4);
   gsap.set("#s06-o0-5", { opacity: 0 });
-  tl.to("#s06-o0-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 8.84);
+  tl.to("#s06-o0-5", { opacity: 1, duration: 0.18, ease: "power1.out" }, 8.939);
   gsap.set("#s06-o0-6", { opacity: 0 });
-  tl.to("#s06-o0-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.44);
+  tl.to("#s06-o0-6", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.541);
   gsap.set("#s06-o0-7", { opacity: 0 });
-  tl.to("#s06-o0-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.84);
+  tl.to("#s06-o0-7", { opacity: 1, duration: 0.18, ease: "power1.out" }, 9.945);
   gsap.set("#s06-o0-8", { opacity: 0 });
-  tl.to("#s06-o0-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 10.04);
+  tl.to("#s06-o0-8", { opacity: 1, duration: 0.18, ease: "power1.out" }, 10.127);
   gsap.set("#s06-o0-9", { opacity: 0 });
-  tl.to("#s06-o0-9", { opacity: 1, duration: 0.18, ease: "power1.out" }, 10.34);
+  tl.to("#s06-o0-9", { opacity: 1, duration: 0.18, ease: "power1.out" }, 10.4);
   gsap.set("#s06-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#s06-st", { opacity: 0 });
   tl.to("#s06-st", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.05);
   gsap.set("#s06-win", { opacity: 0 });
   tl.to("#s06-win", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.05);
   gsap.set("#s06-g0", { opacity: 0, y: 12 });
-  tl.to("#s06-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.06);
+  tl.to("#s06-g0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 7.101);
   gsap.set("#s06-g1", { opacity: 0, y: 12 });
-  tl.to("#s06-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.6);
+  tl.to("#s06-g1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.661);
   gsap.set("#s06-g2", { opacity: 0, y: 12 });
-  tl.to("#s06-g2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.42);
+  tl.to("#s06-g2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.46);
   gsap.set("#s06-g3", { opacity: 0, y: 12 });
-  tl.to("#s06-g3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.54);
+  tl.to("#s06-g3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.643);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();

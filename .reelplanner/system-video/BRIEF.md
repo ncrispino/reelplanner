@@ -2,27 +2,27 @@
 workflow: faceless-explainer
 flow: automation
 storyboard: no
-message: "a plan as long text is too hard to take in, so reelplanning turns it into a short narrated video you review by watching, with the detail on a guide under it. This is the whole system as it is today, from installing it to the record it keeps"
+message: "a plan as long text is too hard to take in, so reelplanner turns it into a short narrated video you review by watching, with the detail on a guide under it. This is the whole system as it is today, from installing it to the record it keeps"
 destination: embed
 aspect: 1920x1080
 language: en
-audience: someone new to the repo who knows nothing about reelplanning; the video anyone new watches first
+audience: someone new to the repo who knows nothing about reelplanner; the video anyone new watches first
 length: seven chapters of about a minute each; 5–8 minutes in all, a soft target (past 8 is a warning, not a reason to trim)
 angle: concept explainer
 narration: yes
-style_preset: .reelplanning/theme/frame.md (the project theme)
+style_preset: .reelplanner/theme/frame.md (the project theme)
 music: none
 ---
 
 ## Intent
 
-reelplanning's system video (SKILL.md "The system video"): one video explaining the whole repo, built from
-`.reelplanning/spec.md`, `system.json` and `glossary.md`, kept current as plans land (decision D-003): every frame is
-tagged with the spec section and the parts it explains, and `reelplanning spec-diff` names the frames a change to
+reelplanner's system video (SKILL.md "The system video"): one video explaining the whole repo, built from
+`.reelplanner/spec.md`, `system.json` and `glossary.md`, kept current as plans land (decision D-003): every frame is
+tagged with the spec section and the parts it explains, and `reelplanner spec-diff` names the frames a change to
 those three files affects.
 
 Redone whole on 2026-10-04, at the owner's request (a full redo, not a patch), for a newcomer and in the order of the
-lifecycle: what reelplanning is and its one loop (what it makes of a plan); installing it, with the four real commands run
+lifecycle: what reelplanner is and its one loop (what it makes of a plan); installing it, with the four real commands run
 (D-303); the plan and its video (plan.md's blocks, `reel check`'s rules and history, D-306, the build, the frame rules,
 fresh eyes, the review page); reviewing in the player (the cards, own words, Terms, Ask about this, the plan text, quick
 checks, the guide under the video, D-264 and D-265, the quiet mark, D-266, a note on any words, Finish); after you send
@@ -41,7 +41,7 @@ Reworked again after a review of that cut (a040712): who runs what (you type onl
 agent runs this", on every scene that shows a command); the words a newcomer was never given (a hosted page, two of
 the frame rules, "Explain this more", the review server that keeps running, the agent filling a repo's description in
 from its code); scene 25 split in two (how a review arrives; who picks it up); "step" kept for a plan's steps (the
-agent builds, revises, fixes; the stages' names only on screen); `reelplanning build` drawn as what it runs, beside
+agent builds, revises, fixes; the stages' names only on screen); `reelplanner build` drawn as what it runs, beside
 what the agent writes; `reel check` on a fresh plan and `reel audit` cropped to their ✓ lines; a step's fifth choice
 asked in `plan.md`; the quiet mark on the plan video's own scene; the real review page in scene 2; the review-page
 shots closer and below the walkthrough's header (its count of choices); the asides on older videos out of the
@@ -56,7 +56,7 @@ video stops at each one. Lines 1, 2, 10, 32 and 37 (now 11, 33, 38) were re-chec
 and reworded. The same day, at the owner's direction, a scene after the loop (scene 4): you pick how much of it you
 use, three levels in the README's words, each optional: one video (a plan video or an explainer), plus a walkthrough,
 or the whole pipeline, which the rest of the video shows; scene 3 now says the loop is the whole of it, used in full. The ending's hold is 10.6 s. Later that day the owner asked that the video not say the name's sound-alike ("it's kinda obv"): scene 2
-now says what reelplanning does with the plan, a short narrated video that stops at each question, and its subtitle
+now says what reelplanner does with the plan, a short narrated video that stops at each question, and its subtitle
 reads "turns a plan into a short video". The README keeps its line on the name (D-304 is about the README only).
 
 ## Customizations
@@ -84,7 +84,7 @@ reads "turns a plan into a short video". The README keeps its line on the name (
   chapter N's check at the end of chapter N+1, the last two just before the ending. No decision scenes.
 - `music: none`. Kokoro `am_michael` at speed 1.1, one line at a time, and 0.8 s held after each line
   (`.hyperframes/holds.json`'s `tail`): slower than a plan video's 1.25, for someone new.
-- The chapter MP4s leave the quick checks out (`reelplanning chapters --no-checks`): an MP4 cannot stop for an answer.
+- The chapter MP4s leave the quick checks out (`reelplanner chapters --no-checks`): an MP4 cannot stop for an answer.
 
 ## Notes
 
@@ -93,13 +93,12 @@ Frames were written by one generator (in the session's scratchpad, `sv3/gen/`), 
 `audio_meta.json`. The review page was shot from a bundle of this branch's player with the plan guide's and other
 plans' videos (`bundle-player`), at 1440×900 at 2×, in both themes.
 
-The install runs (scenes 6 to 9) were made on a scratch machine: its own home folder and npm prefix. reelplanning is
-not on npm and the GitHub repo is private today, so the tooling was installed from `npm pack` of this branch with
-`npm i -g ./reelplanning-0.2.0.tgz`. The screen shows the README's `npm i -g github:ncrispino/reelplanning` as the
-command, with a note under it saying what ran (`npm i -g github:…` run today installs the default branch, whose
-older `bin/` scripts do not start; once this branch is merged and the repo public, scene 6 is shot again with it). The skill went in with the README's own command, `npx skills add "$(npm root
--g)/reelplanning" --skill plan-to-video -g`, from the copy npm had just installed, as it runs for anyone today. A path
-in the scratch home is shown as `~`. `reel check` in scene 12 ran on a one-step plan written for it in a scratch copy of
-this repo's record (`2026-10-05-bigger-captions`), cropped to its ✓ line. The Finish panels (scenes 24 and 36) were shot with `reelplanning review`
+The install runs (scenes 6 to 9) were shot again on 2026-10-09, after the rename to reelplanner (D-312) and with the
+repo public: a fresh `ubuntu:24.04` container, a user with sudo, Node 22 from nvm as the README suggests, and the
+README's own commands, `npm i -g github:ncrispino/reelplanner`, `reelplanner setup` (a first run: it installed
+ffmpeg, the local voice and whisper.cpp, which scene 7 shows as its lines, cut with `…`) and `npx skills add "$(npm
+root -g)/reelplanner" --skill plan-to-video -g` (with `-y`: with no terminal its question which agents cancels it;
+the screen shows the README's line), then `reel init` in a new repo. A path in the scratch home is shown as `~`. `reel check` in scene 12 ran on a one-step plan written for it in a scratch copy of
+this repo's record (`2026-10-05-bigger-captions`), cropped to its ✓ line. The Finish panels (scenes 24 and 36) were shot with `reelplanner review`
 serving the bundle and a session waiting (`review --wait`), so they show Send and who picks the review up; the
 inner videos' own captions are off in every shot.

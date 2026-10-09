@@ -21,7 +21,7 @@ import { tmpdir } from "node:os";
 import vm from "node:vm";
 import { ROOT } from "../lib/env.mjs";
 import { parseNames, showNames, namesOnScreen, withCaptionCode, ensureCaptionCodeFonts, CAPTION_CODE_CSS, CAPTION_CODE_JS } from "../lib/names.mjs";
-import { say, unspell, spelledOut, codeWord } from "../lib/say.mjs";
+import { say, unspell, spelledOut, codeWord, NAME_SAID } from "../lib/say.mjs";
 import { parseScript } from "../lib/narration.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-names-spec-"));
@@ -152,19 +152,21 @@ try {
   const SAID = [
     ["Run claude -p on plan.md, then open /work.", "Run claude dash p on plan dot md, then open slash work."],
     ["Pass --dry-run, or --speed=1.25.", "Pass dash dash dry-run, or dash dash speed equals 1.25."],
-    ["It lands in ~/.reelplanner/you.jsonl.", "It lands in home dot reelplanner slash you dot json L."],
-    ["See scripts/narrate.mjs and CONTRIBUTING.md (and .reelplanner/).", "See scripts slash narrate dot mjs and CONTRIBUTING dot md (and dot reelplanner)."],
+    ["It lands in ~/.reelplanner/you.jsonl.", "It lands in home dot reel planner slash you dot json L."],
+    ["See scripts/narrate.mjs and CONTRIBUTING.md (and .reelplanner/).", "See scripts slash narrate dot mjs and CONTRIBUTING dot md (and dot reel planner)."],
+    ["That's reelplanner: `reelplanner build`, and reelplanner's page.", "That's reel planner: `reel planner build`, and reel planner's page."],
     ["Mail noreply@anthropic.com.", "Mail noreply at anthropic dot com."],
   ];
   const badSaid = SAID.filter(([a, b]) => say(a) !== b).map(([a]) => `${a} → ${say(a)}`);
-  ok("say: a flag, a path or a file name is handed to the voice as spoken (dash p, dot md, slash work, home, json L)", !badSaid.length, badSaid.join("\n  "));
+  ok("say: a flag, a path, a file name or a name said apart is handed to the voice as spoken (dash p, dot md, slash work, home, json L, reel planner)", !badSaid.length, badSaid.join("\n  "));
   const plainLine = "Decision D-110, e.g. and/or A/B at 1.25 with write-ahead - a dash, a dot, a slash of it.";
   ok("…and an id (D-110), a slash between words, a number, a hyphenated word or the words dash, dot, slash are left as they are", say(plainLine) === plainLine, say(plainLine));
-  // every line of every script in this repo that writes nothing that way is handed over unchanged (its key, its audio kept)
+  // every line of every script in this repo that writes nothing that way (no code, no name of NAME_SAID) is handed over
+  // unchanged (its key, its audio kept)
   const scripts = execFileSync("git", ["-C", ROOT, "ls-files", "*SCRIPT.md"], { encoding: "utf8" }).trim().split("\n").filter(Boolean);
   let nLines = 0; const moved = [];
   for (const f of scripts) for (const l of parseScript(readFileSync(join(ROOT, f), "utf8"))) {
-    if (l.text.split(/\s+/).some((x) => codeWord(x))) continue;
+    if (l.text.split(/\s+/).some((x) => codeWord(x)) || Object.keys(NAME_SAID).some((n) => l.text.toLowerCase().includes(n))) continue;
     nLines++; if (say(l.text) !== l.text) moved.push(`${f} frame ${l.frame}: ${say(l.text)}`);
   }
   ok(`…every line of this repo's ${scripts.length} scripts with no written form is handed over as it is (${nLines} lines)`, nLines > 500 && !moved.length, moved.slice(0, 5).join("\n  "));

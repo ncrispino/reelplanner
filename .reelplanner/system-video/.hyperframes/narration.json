@@ -7,278 +7,285 @@
     "10": {
       "key": "f4ad4845f6d461ea09b9",
       "text": "Quick check: your agent has finished building a login page you approved. Which video do you watch next?",
-      "sha256": "b442c3b46c319d06a766de7e205ba153b47653445d7d922cf22ef6209c405f9a",
+      "sha256": "c7126a618347e9e13777ed9a4c161656c7c4c364e81ff3b05867a6ba52e4ae26",
       "duration_s": 6.059
     },
     "11": {
       "key": "1e642cbbaef4c6acb6a5",
       "text": "To start, type `/plan-to-video` in Claude Code, or `$plan-to-video` in Codex, or just ask your agent for a plan. From there, your agent runs the commands. It writes the plan into your repo as `plan.md`: a few steps, each with its cases, interface and an example, and a numbered question wherever the choice is yours.",
       "said": "To start, type slash plan-to-video in Claude Code, or `$plan-to-video` in Codex, or just ask your agent for a plan. From there, your agent runs the commands. It writes the plan into your repo as plan dot md: a few steps, each with its cases, interface and an example, and a numbered question wherever the choice is yours.",
-      "sha256": "39319d266fbfe1ffe5b66f48fc92c63791e72b5903351b8cc79358ed7ba60ac9",
+      "sha256": "a523f10f890bc2a17f729baf71bf4ab9db1a7d5dbc547773b9ddf041ab5d476a",
       "duration_s": 20.971
     },
     "12": {
       "key": "114597609a0f64174f32",
       "text": "Then `reel check` holds the plan to what you decided: your answers on each part it touches are rules it must cite, or say why it replaces one.",
-      "sha256": "fdf31beea052975eea7e850b7a649dd3c88f6955c616548e6215c510afa32c4d",
+      "sha256": "9517b3bf5a4a471fa85285d6fa406e2d784ed237cd6610b7443f66519861ef4d",
       "duration_s": 9.109
     },
     "13": {
-      "key": "94482cb69342db165178",
-      "text": "The agent writes a storyboard and the frames; `reelplanning build` voices it with a local voice, adds captions and checks every frame.",
-      "sha256": "d408cbd500e64c8924a01091ac18f700c758e2c9842de242363ad926266675c2",
-      "duration_s": 8.277
+      "key": "76980b760ffdfe6ed991",
+      "text": "The agent writes a storyboard and the frames; `reelplanner build` voices it with a local voice, adds captions and checks every frame.",
+      "said": "The agent writes a storyboard and the frames; `reel planner build` voices it with a local voice, adds captions and checks every frame.",
+      "sha256": "68a1246f9998d646ab2852075c837a9d8cb8da7321762729c07fe460b3d321f4",
+      "duration_s": 8.405
     },
     "14": {
       "key": "f21b09158ddfe26483a9",
       "text": "Before you see it, fresh eyes look: two new agents who know nothing of the plan. One lists what a newcomer couldn't follow; the other, what breaks the frame rules, like one reading order and each name on its thing. The author answers every finding: fixed, given a meaning, or kept with a reason.",
-      "sha256": "030e64212211568cc56a7a7fd341efbb1acd92fe9796caa96dbc33a7e9f3f887",
+      "sha256": "f9cbdc343998932540cbe3c95e5042008e6be699bfef7045e196b6d1592b3a13",
       "duration_s": 17.515
     },
     "15": {
-      "key": "70fe8c0cdd4f08d9d1c0",
-      "text": "Your agent starts the review server, `reelplanning review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.",
-      "sha256": "ff9fe7428ffb56de42c387a77de253d70418f7546f0a5ab81c8f754e64bb1dc0",
-      "duration_s": 15.424
+      "key": "37268f855e874d6a68a8",
+      "text": "Your agent starts the review server, `reelplanner review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.",
+      "said": "Your agent starts the review server, `reel planner review`, and it keeps running after your session ends. It serves the review page, and a notification says when a video is ready: here, four choices to make and five quick checks, about five minutes.",
+      "sha256": "b06168944df20a4579d6f34bc9b3d53f52db0e174404f90cd9410f52ded8a097",
+      "duration_s": 15.488
     },
     "16": {
       "key": "02cff1132a660e29b943",
       "text": "Quick check. On a new laptop, you've run the first three commands. So in a second repo: what still has to run?",
-      "sha256": "2cf3a5b9c5b1162c3e81e45ed99ae9f5afdcd22415c91dad7820db2dc1b9d296",
-      "duration_s": 6.656
+      "sha256": "9a4de186db1a8ace4bdd077ad65f4f3dc25f75f2585aba350a5b822deb5e8e9c",
+      "duration_s": 6.677
     },
     "17": {
       "key": "05516fdd1c9b4847b25c",
       "text": "Open a video, and it plays in the review player, its chapters on the timeline. Draw on a frame, or comment anywhere, and it's tied to the plan step on screen.",
-      "sha256": "a3d8bc1029d47decda32ee141ea072ee3fd66708263f8f87343b0a862e061d88",
+      "sha256": "da751ae2aeafc483b0212144c018fa74e629cfbdf5bfb58a51a0c44324d09ef1",
       "duration_s": 9.835
     },
     "18": {
       "key": "06af2130e5760fc4c695",
       "text": "At each question the video stops, and you click a card to answer; More on a card says what picking it means. Not ready? Explain this more asks for it again, explained better. None fits? Write your own words in the answer bar.",
-      "sha256": "a514498a1f44fd1f97037126c1230e6ea163331ee963746f8e82c490698f3570",
+      "sha256": "727d651327d2dfe76b649b87c7256b57b9e1002ffdc7952f3cd3601589f6ecd7",
       "duration_s": 13.76
     },
     "19": {
       "key": "9dfab8452d38669fc456",
       "text": "Stuck on a word? Terms opens in the side panel. Ask about this, or Q, asks an agent about the scene. The Plan switch shows the plan text.",
-      "sha256": "ea44b0067a0c6ad86e5e2184040152aefac475e95f9eef8dcdf0c4b82264e1dc",
-      "duration_s": 9.365
+      "sha256": "63f63367b6df38042dcb4c2845cabaaf7ec31d3578c1860e11a16590c94ea4f8",
+      "duration_s": 9.387
     },
     "20": {
       "key": "6016f580b0276ee91978",
       "text": "Now and then, a quick check asks what the plan will do on a new case. Once you answer, each card says why. And Walk me through it works the case through.",
-      "sha256": "d0a3b61134ef4f062fb17925ae554d1c2041bb24c50ffa7e99173ef72e3ac29f",
+      "sha256": "f9c0b4f0b15a535e34cf26229f2374916585b111a7063b935d6f095e517b086d",
       "duration_s": 9.045
     },
     "21": {
       "key": "829742f663f36c66184c",
       "text": "Scroll down, and the guide is under the video, which keeps playing small in the corner. It holds what a video can't: every case, the interface, worked examples, and diagrams to step through.",
-      "sha256": "632ba9a1ad2f8bf95b8470679fdcc4664c33b40b16c6f5fd580f05d740c940d9",
+      "sha256": "2f62fa6a70f7e40ff6d8cd3e344dcdb170581ae7869e45f814adf6f98c6e2ef8",
       "duration_s": 11.392
     },
     "22": {
       "key": "fa86d36b2089f4aa10eb",
       "text": "A thing in a scene can lead to its part of the guide, quietly: a faint arrow when paused; on hover, a thin ring and More in the guide.",
-      "sha256": "a94fcb423f898a48d5425bf0667c5ad439ebb1a7706780d4ec8bf45aa5b8b4da",
+      "sha256": "dfbbe04e500834132050d1d690e62e6ef0feaf4e470f163d9a6ee3fb731f913c",
       "duration_s": 8.192
     },
     "23": {
       "key": "1fff9a495a68cc3a4205",
       "text": "On the guide, select any words to leave a note, suggest an edit, or ask. It goes with the same review.",
-      "sha256": "9e7484b747c628824fa942e5e7e74adc017b2d629ca20aa7ff77fee8e57fc56e",
-      "duration_s": 6.336
+      "sha256": "2de2cfee1ba5c44c4691e94570860dd259031bdfb5912012ff3c374b81a2ff44",
+      "duration_s": 6.357
     },
     "24": {
       "key": "241c2f657fca2e788ba4",
       "text": "When you're done, press Finish. Approve, and the agent works your comments into the plan, with no new video. Request changes, and you'll see only the scenes that changed. Then press Send.",
-      "sha256": "b9117f3617c5a1abbb9560a952ff3bff08aff01ef0d337575b485ef2b01b4d17",
-      "duration_s": 11.221
+      "sha256": "ebb387d36581984ff9840a5b5790d4d66ad407ea2f0b1e40e6759b3a1847a568",
+      "duration_s": 11.243
     },
     "25": {
       "key": "d91b06d5573956865653",
       "text": "Quick check. Fresh eyes flag “stage map” in another video, and its author thinks it's clear. What happens before the review page opens?",
-      "sha256": "a14b7781dba21280309762e5ac7b3bed7f1977b6aa1f3525ca59d49ea72e5154",
+      "sha256": "c383cf1024ef4de2ca052ac83a06516313817244b6ef756ef6463a4f5c000f19",
       "duration_s": 8.341
     },
     "26": {
       "key": "4d8c67352398e12b3dd8",
       "text": "Your review reaches the agent one of three ways. Send, on your machine. Send on a hosted page: the review page as a link you open anywhere, Claude only. Or a download you hand it.",
-      "sha256": "658786e9a58aec84eff2022747e809d3fce1c9c82a5146d1d87f4ed835ce7d44",
-      "duration_s": 11.776
+      "sha256": "06a3c538473c63fd4d1835ee858d45e353a3c0d02aec18aeb438a312cfdeeee6",
+      "duration_s": 11.797
     },
     "27": {
       "key": "55a8d0431d2f37521f77",
       "text": "Sent on your machine, the review server keeps it in the inbox and hands it on once: to a waiting session; else it starts the headless run, your agent alone in the sandbox, a fence keeping its writes in your repo; else it waits for your next session.",
-      "sha256": "e10de04bb58d6baeb7e0b4c71f003575cf6457c9e398e15d67d7eb36fb994238",
+      "sha256": "6063276a25daa6d668732ba300de3cf8e4467f184bfd12db55c83b590079fc15",
       "duration_s": 15.019
     },
     "28": {
       "key": "839b8a37d3dc38d69b2d",
       "text": "`reel record` files the review and adds each answer, with an id like D-264, to the decision log. The log keeps everything, but little of it binds a plan. Of 309, only 65 are rules: your answers in force. The agent's choices are history, back only when a change rewrites their code. And `reel fold` drafts a part's rules as one spec section; once you approve it, plans cite that instead.",
-      "sha256": "51c75e7d2d2c0ba559968d1a56a886a34da4aabec96ca72b1a63f7ab9f289193",
+      "sha256": "dfbb2526fe49fa3abc58aa7a3020d4326c821710818aa54ca3bec03b0ab52791",
       "duration_s": 26.005
     },
     "29": {
       "key": "1622a4d806e31c02ea74",
       "text": "Then the agent revises. Approved: your comments go into `plan.md`, no new video. Changes requested: only the steps your words touched are rewritten, plan-diff marks the scenes that changed, and the player plays just those.",
       "said": "Then the agent revises. Approved: your comments go into plan dot md, no new video. Changes requested: only the steps your words touched are rewritten, plan-diff marks the scenes that changed, and the player plays just those.",
-      "sha256": "524ec2a44a627db59deebe6a90e0230cdeee4a86af3b13fe9904370ab7f6e8ba",
-      "duration_s": 14.976
+      "sha256": "127730f86da8618dd6252d04d1d9a948ea5a9950669b7c5c4a7b097a2ebfce1f",
+      "duration_s": 15.019
     },
     "30": {
       "key": "5efaaf4304a0975f1e1f",
       "text": "Quick check. Paused on a scene, your pointer over its table: how do you know the table leads to the guide?",
-      "sha256": "2f8a61a2f507291e0a91be396be168d275afd34a6483ab3d9575f23bdfc58ec4",
-      "duration_s": 6.08
+      "sha256": "f08a752005846ee27f2ededcf4dfeea4891210f9877350186b58992b0948036f",
+      "duration_s": 6.123
     },
     "31": {
       "key": "f71bbb162e2cbbeda8f1",
       "text": "Once you approve, the agent builds the plan. Each choice the plan didn't cover is a row in `walkthrough.md`, with a label when you might want to look: visible, hard-to-undo, or close. At a step's fifth choice, the agent stops and asks you instead: that step waits, with a question in `plan.md`.",
       "said": "Once you approve, the agent builds the plan. Each choice the plan didn't cover is a row in walkthrough dot md, with a label when you might want to look: visible, hard-to-undo, or close. At a step's fifth choice, the agent stops and asks you instead: that step waits, with a question in plan dot md.",
-      "sha256": "cc565c35e166f68b6b586921c051a7922ff52ab32fa081d9bcb4c6713a8ecfe0",
+      "sha256": "8c4df941d48c44b7dc10a9ba4d70ec5a17b14802df34b3b4526768949f16eb74",
       "duration_s": 19.264
     },
     "32": {
       "key": "ac9a6b42f3ca8dcf85fa",
       "text": "Then the code check: a second agent, new to the work, reads the code against the plan and your decisions. `reel audit` fails until every finding is answered.",
-      "sha256": "ca008d4ab02500c37cfa45a4befc0d9e4baa468327b939194403fb217e37208d",
+      "sha256": "bfaca89ddc7d82082864f2f0d25194946aff0f4a01fae5d5d346c73c8d484a1c",
       "duration_s": 9.792
     },
     "33": {
       "key": "a503aebf6435c2aa4921",
       "text": "The walkthrough video shows each change running, the real page or a real run, before and after, in about two minutes, with its own guide.",
-      "sha256": "e62d024a47c70669aa998c17bafb0ae47e7316cef89f3c8c74bee2a095faaa91",
+      "sha256": "6c13a0c5971b0fc1c767698f4a8ba554dad9aa605257c8722900a0b886d104a4",
       "duration_s": 8.533
     },
     "34": {
       "key": "a660f3e012b48661ccd9",
       "text": "`reel stops` decides what pauses it: an off-plan change, where the agent strayed from the plan; a choice labelled visible or hard-to-undo; and one sharing a label with a recent late fix: something a review let through, changed later.",
-      "sha256": "8a6dd04f8836fde1d1f0bd420b75fdb56adc4a54f33fe43de8b380f00f35f14a",
+      "sha256": "37e426492e2c28f4df74e05f74b5ffab5ed472570eeb57d31744a7a854489928",
       "duration_s": 15.275
     },
     "35": {
       "key": "64e23e25b9b1276161e8",
       "text": "A pause shows the choice running, with Accept and Flag. Every other choice is on one list at the end, each with a Flag.",
-      "sha256": "9f21eae8469dbb1afd8bc61957c13e1c141699b7b6c4d1b5b6752d73f6a9683b",
+      "sha256": "181abcbc60cd9c8a206d486a0f0d928ef276daaa7d689510ea6cc30cbeb64640",
       "duration_s": 7.36
     },
     "36": {
       "key": "c7a08fa483e6f6d90a32",
       "text": "Under it, the guide's Built side shows what changed, with the real runs. Finish asks again: anything you'd change? Flag a choice, and the agent fixes the code and its row.",
-      "sha256": "1b5f51b45ed5f4d114af979328f6868365da571f191ceb76228ec5477a5451a0",
+      "sha256": "033874097ca6cc6c6b2bf0369e62d7933766e877b3f4599e91309229d85f6ee4",
       "duration_s": 11.264
     },
     "37": {
       "key": "d2f70540cafcf0dea89a",
       "text": "Quick check. In a repo set up for Claude Code, you press Send at eleven at night, with no session open. What happens to your review?",
-      "sha256": "279512cbf43b7eea52e95529ced3aa6b117a174213f1b24a503f40bce518a476",
+      "sha256": "8c6d2045084b95d2beefeccb200a0b44e61e38fdbf772593ced46338bb8b4826",
       "duration_s": 8.128
     },
     "38": {
-      "key": "c3360619391bffcdea66",
-      "text": "The record is text in your repo, under `.reelplanning/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
-      "said": "The record is text in your repo, under dot reelplanning: the spec, the parts, the glossary, the decision log, and each plan's plan dot md, reviews, walkthrough dot md and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
-      "sha256": "c32b6fbf8836a169eaa29837e1884410c54eda3a90059fa2aab84a5544b7a518",
-      "duration_s": 22.805
+      "key": "a037dc4c17eba9b5f589",
+      "text": "The record is text in your repo, under `.reelplanner/`: the spec, the parts, the glossary, the decision log, and each plan's `plan.md`, reviews, `walkthrough.md` and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
+      "said": "The record is text in your repo, under dot reel planner: the spec, the parts, the glossary, the decision log, and each plan's plan dot md, reviews, walkthrough dot md and video sources. The inbox stays on your machine; guides and video files are built again, never committed. This repo's own older plans still hold theirs, until its public history leaves them out.",
+      "sha256": "8c8ee473b51dbbea8cbe1bf702d24d46e533d1cf13e57a7bb400f7c6de9ae6f4",
+      "duration_s": 22.976
     },
     "39": {
       "key": "72b460eb82f41a917a3b",
       "text": "This video is made from three of those files: `spec.md`; `system.json`, the parts of the system and how they connect; and the glossary, each word with a scene. When they change, spec-diff names the scenes to rebuild. system-review sorts each comment on it: fix the video, a small change, or a new plan. This video has no guide yet: `spec.md` holds the rest.",
       "said": "This video is made from three of those files: spec dot md; system dot json, the parts of the system and how they connect; and the glossary, each word with a scene. When they change, spec-diff names the scenes to rebuild. system-review sorts each comment on it: fix the video, a small change, or a new plan. This video has no guide yet: spec dot md holds the rest.",
-      "sha256": "1964d8940b77fa90dd84c9c694c5893f6236d96d7007b0013828ea3010cc8feb",
+      "sha256": "5d3248de2d6ae3cf29d8c665a2d80db23cba95c42f5d42420e585a4f4d247a02",
       "duration_s": 22.912
     },
     "40": {
       "key": "8abc63e3b77243363fd5",
       "text": "Your reviews teach it too: `reel status` ends with the memory, lines worked out from the log and your reviews, like how often you take the recommendation. When evidence piles up, a retro proposes skill edits.",
-      "sha256": "bb9377d5f5add63dbd48e2d0b9170bad785d180db61d66c350da6281fda74e59",
+      "sha256": "bc420194ebaaf965a71497f13a42755926db4ea9aed46fad9b2762d139d67455",
       "duration_s": 13.525
     },
     "41": {
-      "key": "50e1a11c93e67d801841",
-      "text": "Not ready to plan? `reelplanning explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.",
-      "sha256": "0453c0ea520e9fd8efb57dbe19ea46652c68c476551c0a70e0e95b6b936f9e83",
+      "key": "aef5016aebc550c8e6d1",
+      "text": "Not ready to plan? `reelplanner explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.",
+      "said": "Not ready to plan? `reel planner explain` makes an explainer: a video of something already there, every fact from a named source. It ends with Done, Explain more, or Plan this.",
+      "sha256": "9a40760b085e5880725b7da06c26f82adc15508db971167f208e52b85e8dee85",
       "duration_s": 11.285
     },
     "42": {
       "key": "6fa674510433d534d1c6",
       "text": "With more people, a big pull request gets its own walkthrough video, on a branch of its own, and the maintainer's review is the one that counts.",
-      "sha256": "680a0b4452cbb74a3bfe9a99379d730922ebc10def90124a38822ce689f0b417",
+      "sha256": "d04a4ee44deae50413d936d6df8e74ec049173e17ee3dc84ee753bde704bfc62",
       "duration_s": 8.725
     },
     "43": {
       "key": "28a5af9af3a43dfcfe40",
       "text": "Quick check. Step six has three choices: one labelled visible, one close, one with no label, and no recent late fixes. Which of them pause the walkthrough video?",
-      "sha256": "bc1711c0ccd426976efb43f1f7048a08e07adbaaf8aca0e6b0aa50227b3d6bf4",
+      "sha256": "eab6220bd87f2315460f6ae786059394e4926aeb9374a2626beba9a05dca8e13",
       "duration_s": 10.261
     },
     "44": {
       "key": "a8661ebaef68a70e701f",
       "text": "Quick check. A walkthrough you accept adds a new part, the scheduler, to the parts and the glossary. What happens to this video?",
-      "sha256": "8ae9eece2a9f454ed6ffd01202c6c3b8ff406f84a46183f1baf9edd243a2c24b",
-      "duration_s": 7.211
+      "sha256": "a5827b2e56c4df4a489a84ec4dd01978bd68670f6c32866e83067c9ea5afbdae",
+      "duration_s": 7.253
     },
     "45": {
-      "key": "ea4847ab4e57ad250152",
-      "text": "That's reelplanning: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.",
-      "sha256": "126ec7460c46d9a1ac57799c83c5a60b98ca00ceebe3ef3100d615743320ed9a",
-      "duration_s": 9.92
+      "key": "4da18d4cb9addf8e1277",
+      "text": "That's reelplanner: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.",
+      "said": "That's reel planner: a plan you watch and answer, a build you watch and accept, and a record that keeps everything. Install it, ask your agent for a plan, and watch.",
+      "sha256": "38f0a9389b8286641502276d42ea3bb7bc4cdbc76b03b992b53a93d3cbb8d1f1",
+      "duration_s": 10.048
     },
     "01": {
       "key": "b5f07a97847ae9c644a9",
       "text": "Your agent, the AI assistant that writes your code, hands you a plan like this: five steps, eight hundred lines, and four questions at the end. You can answer them right in the chat. But that's a lot to read, so it's easy to skim, and hard to see what each question is asking.",
-      "sha256": "32bd29c7ba2616b9b572dcab15e044d360df3b147f08bab2355f666fc4ed843b",
+      "sha256": "dc116f1a79fe282a484e0cb8282583481f53a385f3ad74742a86b5ea3627ac6c",
       "duration_s": 16.875
     },
     "02": {
-      "key": "b73cb15510a0414f7e38",
-      "text": "reelplanning turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.",
-      "sha256": "801d82bf2c0ed3ddbd219e539d7efaf728b546dde77952c711ed40f4eef2dff2",
-      "duration_s": 14.08
+      "key": "05a5998033abd89dad44",
+      "text": "reelplanner turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.",
+      "said": "reel planner turns that plan into a short narrated video, which stops at each question for your answer. It's a row of scenes, each a picture and a line or two, grouped into chapters. The rest goes on a page under it, the guide.",
+      "sha256": "6c65ed402de32b482a9635244ecea4e2891592ba32b6ebb39a9976b3a783450e",
+      "duration_s": 14.016
     },
     "03": {
       "key": "f4d7d646f7d0abc04b9f",
       "text": "Used in full, every change follows one loop. The plan video tells the plan, before any code, and your review's answers become decisions. The agent builds, noting each choice it makes alone. The walkthrough video shows it running, for your review too. Then the system video, this one, catches up.",
-      "sha256": "3b8b65545deb9488918a095935cc917d8d0db7614f4134d53143b4cfcff6a21e",
+      "sha256": "16b34b76aeffd8def9a144cd151839ec8386a057f7145cac186e7abb322e54ea",
       "duration_s": 18.261
     },
     "04": {
       "key": "1c0b8318c6a16bcdfa9a",
       "text": "You choose how much of it you use. The basic unit is one video: a plan video, or an explainer, a video of something already there. Add a walkthrough after the build, if you want, or take the whole pipeline: your answers kept as decisions, every review on record, and the system video kept current. From here on, this video shows the whole pipeline.",
-      "sha256": "5fa2afcacba2e3b14fc69b8506bb2292742f51031f257afdf4e4dd55674dc1ed",
-      "duration_s": 21.333
+      "sha256": "fb99ee57cc3fd4bfb57dcb6d4b945fb2992b63dbbcff24b39754d877964f6cd8",
+      "duration_s": 21.312
     },
     "05": {
       "key": "3f89691faa48935948fb",
       "text": "It all runs through the plan-to-video skill, the instructions your agent follows. It's tested with Claude Code, though not yet its sandboxed run on a normal machine. Codex has basic support.",
-      "sha256": "72b6e820c2bc566f27dfad6a6f476697760cc9bba4fc9daf382b937124b9c5bd",
-      "duration_s": 12.245
+      "sha256": "6ccea7b796be671e798134a42416e42153dc88c2fdbf2b35a1ff13f84c63dfe2",
+      "duration_s": 12.267
     },
     "06": {
-      "key": "c91d68721fbbc76336f1",
-      "text": "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanning`, and `reel`, the reel CLI, which keeps the project's record.",
-      "sha256": "c4cf5c4e141f2d7f54034552109099219d69a2d651c76eb3199d160591ee7bcd",
-      "duration_s": 12.011
+      "key": "a52d42abf0333ab1e101",
+      "text": "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reelplanner`, and `reel`, the reel CLI, which keeps the project's record.",
+      "said": "Installing takes four commands. First, once per machine, npm installs the tooling from GitHub. That adds `reel planner`, and `reel`, the reel CLI, which keeps the project's record.",
+      "sha256": "a713fe142bae1ae90d3123768fe9a8425acc7168deb2de2bc6aa2a2cd8abb036",
+      "duration_s": 12.053
     },
     "07": {
-      "key": "dc13b313ccdda169ee9e",
-      "text": "Second, `reelplanning setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.",
-      "sha256": "d55d78fb0d9de0f90d670051ad4d72c3884d3d75227459e17c422e6ea17acbf7",
-      "duration_s": 10.539
+      "key": "7b60c0bb0dbb312cc691",
+      "text": "Second, `reelplanner setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.",
+      "said": "Second, `reel planner setup`, once per machine too, gets what videos need: a voice, a transcriber for captions, a browser that draws the frames, and HyperFrames' skills.",
+      "sha256": "c45d0f16519a4d215902c12f636fac9c247b62b6c9108d1f4cc88d67c5937899",
+      "duration_s": 10.581
     },
     "08": {
       "key": "a05e95c77e904386aa41",
       "text": "Third, `npx skills add` copies the plan-to-video skill from that install to where Claude Code, Codex and the other agents read skills.",
-      "sha256": "1378dce6a4021da93358222ef8c1b2960037b49c108e6cfb9d0ef4d618c0a41e",
-      "duration_s": 8.789
+      "sha256": "ef4628b65764830aef865e251f1f3856effc81d014842fd6cc35486220ad3a04",
+      "duration_s": 8.832
     },
     "09": {
-      "key": "9c1809a37232e5739a6a",
-      "text": "Last, in each repo, `reel init` writes `.reelplanning/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
-      "said": "Last, in each repo, `reel init` writes dot reelplanning: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
-      "sha256": "299b4bb0f28d718a5cef41308d5d79a2021913d41519e31f2d0852e8b414d9dd",
-      "duration_s": 18.581
+      "key": "f9d0eb87e216ee68112e",
+      "text": "Last, in each repo, `reel init` writes `.reelplanner/`: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
+      "said": "Last, in each repo, `reel init` writes dot reel planner: the project's description, its parts and words, the decision log: every answer you give, and the command that starts your agent when a review arrives. Your agent runs it for you, and in a repo with code, fills in the description and parts from it.",
+      "sha256": "ca232366f3c2aeb0753556e12e049e0503f4472982066dc6f0f3a005cd6cb908",
+      "duration_s": 18.645
     }
   }
 }

@@ -39,11 +39,11 @@
   .q4-ps { position:absolute; left:1300px; top:220px; font:500 48px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.75); white-space:nowrap; }
 </style>
 
-<div id="root" data-composition-id="30-check-mark" data-band="bottom" data-duration="6.88" data-width="1920" data-height="1080">
+<div id="root" data-composition-id="30-check-mark" data-band="bottom" data-duration="6.923" data-width="1920" data-height="1080">
 
-  <div class="clip q4-bg" id="q4-bg" data-start="0" data-duration="6.88" data-track-index="0"></div>
+  <div class="clip q4-bg" id="q4-bg" data-start="0" data-duration="6.923" data-track-index="0"></div>
 
-  <div class="clip q4-scene" id="q4-scene" data-start="0" data-duration="6.88" data-track-index="1">
+  <div class="clip q4-scene" id="q4-scene" data-start="0" data-duration="6.923" data-track-index="1">
     <div class="q4-view" id="q4-view"><div class="q4-cam" id="q4-cam"><div id="q4-case">
     <div class="q4-fr" id="q4-fr"></div>
     <div class="q4-row" id="q4-r0" style="top:160px">Case · Example · What happens</div>
@@ -67,16 +67,16 @@
   var tl = gsap.timeline({ paused: true });
   gsap.set("#q4-cam", { x: 0, y: 0, scale: 1 });
   gsap.set("#q4-case", { opacity: 1, transformOrigin: "0 0" });
-  tl.to("#q4-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.1);
+  tl.to("#q4-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 0.091);
   tl.to("#q4-case", { scale: 0.6, x: 40, y: 0, opacity: 0.92, duration: 1, ease: "power3.inOut" }, 1);
   gsap.set("#q4-q", { opacity: 0, x: -24 });
   tl.to("#q4-q", { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 2.1);
   gsap.set("#q4-opt-a", { opacity: 0, y: 28 });
-  tl.to("#q4-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.02);
+  tl.to("#q4-opt-a", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.04);
   gsap.set("#q4-opt-b", { opacity: 0, y: 28 });
-  tl.to("#q4-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.14);
+  tl.to("#q4-opt-b", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.16);
   gsap.set("#q4-opt-c", { opacity: 0, y: 28 });
-  tl.to("#q4-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.26);
+  tl.to("#q4-opt-c", { opacity: 1, y: 0, duration: 0.45, ease: "power4.out" }, 5.28);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
 })();
