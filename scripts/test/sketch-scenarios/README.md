@@ -1,6 +1,6 @@
 # Sketch scenarios: the sketch page under real use
 
-Twenty-one sessions of what engineers put on a whiteboard and how they change it, each a timed script the real page is
+Twenty-two sessions of what engineers put on a whiteboard and how they change it, each a timed script the real page is
 played through (`play.mjs`): what they say, what they draw, and every edit, made as Excalidraw's own UI makes it.
 
 - `scenarios/classic--*`: a request through zones with a webhook hop, a hand-drawn sequence diagram, a state machine
@@ -14,6 +14,8 @@ played through (`play.mjs`): what they say, what they draw, and every edit, made
   box, "this one" said while pointing).
 - `scenarios/ui--*`: what the page adds beyond a whiteboard: a box linked to the file it is, today / new / going
   marks, and a box opened up into a frame to draw its insides.
+- `scenarios/rich--*`: beyond boxes: a Mermaid flow pasted from a doc and reshaped, icons from the page's library, an
+  SVG dropped in from the infra repo.
 
 `sketch-scenarios.spec.mjs` (the full run) plays them all with the partner off and checks each final drawing against
 its `expect` and that `sketch.md` tells the edits made. `judge.mjs` measures more: whether an agent given only
@@ -89,6 +91,11 @@ Every step has `"t"` (seconds) and exactly one action. Keep a scenario between 4
 | `mark` | `"mark": {"ids": ["ftp", "imp"], "as": "going"}` | selects each and presses Today, New or Going (`today`, `new`, `going`) |
 | `openup` | `"openup": {"id": "wrk", "as": "inside"}` | selects it and presses Open up: a frame beside everything, the view on it; `as` names the frame for later steps |
 | `back` | `"back": {"from": "inside"}` | selects that frame and presses Back: the whole picture again |
+| `icon` | `"icon": {"icon": "database", "id": "db", "x": 480, "y": 440, "label": "Orders DB"}` | opens the Library, clicks that icon (`packages/sketch/icons.js`), closes it, puts it with its top left at x, y and names it; `id` is its biggest part (arrows bind to it), `<id>:label` its label (to `relabel` later) |
+| `mermaid` | `"mermaid": {"source": "flowchart LR\n  A[Checkout] --> B{Card ok?}", "x": 250, "y": 110}` | More tools → Mermaid to Excalidraw, the source typed, Insert, then moved to x, y; later steps name its boxes `"@Checkout"` (by label) |
+| `image` | `"image": {"name": "vpc.svg", "id": "vpc", "x": 60, "y": 580, "width": 260, "height": 120, "svg": "<svg …>"}` (or `"file"`, relative to the scenario) | drops the SVG on the canvas there, as a file from the desktop |
+
+Any id can be `"@<label>"`: the shape with that label (what a Mermaid insert drew).
 
 ### Elements (for `add`)
 
@@ -111,4 +118,4 @@ Colours: `#1e1e1e` black, `#e03131` red, `#2f9e44` green, `#1971c2` blue, `#f08c
 
 ### What is not possible (don't use)
 
-Images, embeds, sticky notes beyond text elements, zooming or panning (beyond what `openup` and `back` do), multiple pages, Excalidraw libraries.
+Raster images (only SVG is dropped), web embeds, sticky notes beyond text elements, zooming or panning (beyond what `openup` and `back` do), multiple pages, libraries other than the page's own icons.

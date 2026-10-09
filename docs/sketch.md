@@ -45,6 +45,24 @@ Select one thing and a small bar above the note box offers what a whiteboard can
 - **Open up.** A named frame ("inside Upload worker") appears beside the picture with a dashed arrow from the box,
   and the view goes there to draw its insides; **Back** shows the whole picture again, **Go inside** returns.
 
+More than boxes and arrows, all in Excalidraw's own tools, and all read into `sketch.md`:
+
+- **Icons** (the Library button, top right): a database, queue, user, web app, phone, service, cloud, cache, auth,
+  file, scheduled job, email and external API, each a few of Excalidraw's own shapes grouped with a label under it
+  (`packages/sketch/icons.js`). They draw at once, take colours, dashes and arrows like any box, and `sketch.md` says
+  `database "Orders DB"`, not an ellipse and two lines. Double-click the label to name it. More libraries can be
+  added from the library's **Browse libraries** (libraries.excalidraw.com: cloud architecture sets, UML, network).
+- **Mermaid** (More tools → Mermaid to Excalidraw): a flowchart, sequence or class diagram you already have becomes
+  boxes and arrows to edit (other Mermaid kinds come in as one picture). `sketch.md` keeps the source under
+  **Inserted from Mermaid**, and tells the insert in the timeline; what you change after is told as changes.
+- **Pictures** (drop, paste, or Insert image): a screenshot, an exported diagram. `sketch.md` names it by its file,
+  and for an SVG lists the words in it (its text, title and description), so a dropped infra diagram says what it
+  shows. A picture is pixels to everything else: the partner sees it in the canvas image, and arrows bind to it as a
+  whole. An SVG of more than 2 MB is flagged as likely to slow the page; a PNG of it draws faster.
+- **Web embeds** (More tools → Web Embed): a Figma file, a YouTube video, a GitHub gist on the canvas, told by its
+  address.
+- **Frames** and the **laser pointer** are Excalidraw's own; pointing is recorded either way.
+
 ## Questions while you sketch
 
 A partner model can watch and ask: at each picture it gets the canvas as an image, the boxes and arrows exactly as
@@ -53,6 +71,14 @@ canvas (never drawn on it). It is told to ask about *your* picture (an arrow to 
 something you said you are unsure of) and never to explain or correct the code: where your picture and the code
 differ is what the explainer is for. At most one question every 20 s, eight in all, and none until you have said or
 typed something since the last. The switch under the topic turns it off (remembered in this browser).
+
+You see it decide: while it looks, a line under the topic pulses with what it is checking ("Looking at: the loose
+"retry?" arrow"), then the question types itself out in the card, with that line under it. When it has nothing to
+ask, the line says so ("Nothing to ask yet · looked at: …") and fades. It answers in two lines, `LOOKING:` and then
+`ASK:` or `NONE`, streamed as they are written; the looking line costs nothing in speed (Sonnet 5.5: first words in
+about 1 s, the question in 1.5–2.5 s) and asking it did not make it ask more (same four cases: it asked in the two
+with something open and held back in the two without). A model that shows its reasoning (a local thinking model's
+`<think>`, or a reasoning field) streams that into the line too; Sonnet 5.5 through OpenRouter does not send its own.
 
 | `--partner` | What runs | What leaves the machine |
 |---|---|---|
@@ -126,14 +152,20 @@ Finish is open, as the recording does).
   "keyframes": [{ "n": 1, "t": 1.8, "said": "the upload starts in the client", "file": "keyframes/kf-001.png", "elements": 2 }],
   "events": [{ "t": 0.8, "type": "add" | "update" | "delete" | "restore", "id": "…", "kind": "rectangle", "text": "…",
                "x": 120, "y": 220, "w": 200, "h": 90, "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1,
-               "strokeStyle": "dashed", "strokeColor": "#e03131", "backgroundColor": "#ffc9c9", "name": "<a frame's>", "frame": "<id>" }],
+               "strokeStyle": "dashed", "strokeColor": "#e03131", "backgroundColor": "#ffc9c9", "name": "<a frame's>", "frame": "<id>",
+               "icon": "database", "iconGroup": "<id>",                                   // a part of a library icon
+               "image": { "name": "vpc.svg", "type": "image/svg+xml", "kb": 4, "words": "Payments VPC · Ledger" },
+               "embed": "https://…",                                                      // a web embed's address
+               "status": "new", "link": "src/api/upload.ts" },
+             { "t": 3.8, "type": "mermaid", "source": "flowchart LR\n  A[Checkout] --> B{Card ok?}" }],
   "pauses": [{ "t": 39.2, "seconds": 8.1 }],
   "pointer": [{ "t0": 42.1, "t1": 43.4, "id": "<element under the pointer>" }],
   "final": { "png": "final.png", "scene": "final.excalidraw",
              "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…",
                             "strokeStyle": "dashed", "frame": "<id>", "groups": ["…"] }] },
   "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-sonnet-5.5", "on": true,
-               "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }],
+               "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?", "looking": "the chunk index you mentioned" }],
+               "held": [{ "t": 63.0, "after_picture": 5, "looking": "the retry arrow, already asked about" }],   // looked, asked nothing
                "late": 1, "stopped": "too slow here" },   // late, stopped: only when answers came too late
   "feedback": "confident about the client side, guessing on retries",
   "before_recording": 0

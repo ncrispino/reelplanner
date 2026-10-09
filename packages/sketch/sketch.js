@@ -60,6 +60,40 @@
   let api = null;
   const known = new Map();      // element id → { version, isDeleted }
   const lastLogged = new Map(); // element id → the update event to fold quick repeats into
+  // a picture put on the canvas (dropped, pasted or picked with Insert image): Excalidraw keeps its pixels, not its
+  // name, so the file is noted as it comes in and given to the next image that appears. An SVG's words (its <text>,
+  // <title>, <desc>) are read out of it, so sketch.md can say what a diagram someone dropped in says
+  const images = new Map(), pendingFiles = [];
+  function noteFiles(list) {
+    for (const f of list || []) {
+      if (!/^image\//.test(f.type)) continue;
+      const im = { name: f.name || null, type: f.type, kb: Math.round(f.size / 1024) };
+      pendingFiles.push(im);
+      if (f.type === "image/svg+xml") {
+        if (f.size > 2e6) status(`That SVG is ${(f.size / 1e6).toFixed(1)} MB: it may slow the page down. A PNG of it draws faster.`);
+        f.text().then((src) => {
+          const doc = new DOMParser().parseFromString(src, "image/svg+xml");
+          const said = [...doc.querySelectorAll("title, desc, text")].map((n) => n.textContent.replace(/\s+/g, " ").trim()).filter(Boolean);
+          const words = [...new Set(said)].join(" · ").split(" ");
+          if (words.length && words[0]) im.words = words.slice(0, 60).join(" ") + (words.length > 60 ? " …" : "");
+        }).catch(() => {});
+      }
+    }
+  }
+  addEventListener("drop", (e) => noteFiles(e.dataTransfer?.files), true);
+  addEventListener("paste", (e) => noteFiles(e.clipboardData?.files), true);
+  addEventListener("change", (e) => { if (e.target?.type === "file") noteFiles(e.target.files); }, true);
+  if (window.showOpenFilePicker) {
+    const pick = window.showOpenFilePicker.bind(window);
+    window.showOpenFilePicker = async (...a) => { const hs = await pick(...a); noteFiles(await Promise.all(hs.map((h) => h.getFile()))); return hs; };
+  }
+  // a Mermaid diagram (More tools → Mermaid to Excalidraw): its source is kept, the diagram's own words
+  function noteMermaid() {
+    const src = document.querySelector(".ttd-dialog textarea")?.value?.trim();
+    if (src && t0 != null) { session.events.push({ t: clock(), type: "mermaid", source: src.slice(0, 4000) }); sceneChanged(); }
+  }
+  addEventListener("click", (e) => { const b = e.target.closest?.(".ttd-dialog button"); if (b && /insert/i.test(b.textContent)) noteMermaid(); }, true);
+  addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && e.target.closest?.(".ttd-dialog")) noteMermaid(); }, true);
   // where an element really is: a freehand stroke, line or arrow is anchored at its first point, and its other points
   // can run left of it or above it, so its box comes from its points, not from x, y
   const boxOf = (el) => {
@@ -75,6 +109,10 @@
     if (el.backgroundColor && el.backgroundColor !== "transparent") b.backgroundColor = el.backgroundColor;
     if (el.name) b.name = el.name; if (el.frameId) b.frame = el.frameId; if (el.link) b.link = el.link;
     const cd = el.customData || {}; if (cd.status) b.status = cd.status; if (cd.inside) b.inside = cd.inside; if (cd.tagFor) b.tagFor = cd.tagFor;
+    // a part of an icon from the library (icons.js): which icon, and which one of them (its own group)
+    if (cd.icon) { b.icon = cd.icon; b.iconGroup = el.groupIds?.[0] || el.id; }
+    if (el.type === "image") { const im = images.get(el.id) || {}, f = el.fileId && api?.getFiles()[el.fileId]; if (!im.type && f?.mimeType) im.type = f.mimeType; images.set(el.id, im); b.image = im; }
+    if (el.type === "embeddable" || el.type === "iframe") b.embed = el.link || null;
     return b;
   };
   const brief = (el) => {
@@ -104,6 +142,7 @@
       const prev = known.get(el.id);
       if (prev && prev.version === el.version) continue;
       known.set(el.id, { version: el.version, isDeleted: el.isDeleted });
+      if (!prev && el.type === "image" && !images.has(el.id)) images.set(el.id, pendingFiles.shift() || {});
       if (t0 == null) { if (!prev && !el.isDeleted) session.before_recording++; continue; }
       const t = clock();
       if (!prev) { if (!el.isDeleted) session.events.push({ t, type: "add", ...brief(el) }); }
@@ -119,7 +158,7 @@
     }
   }
   createRoot($("canvas")).render(React.createElement(Excalidraw, {
-    excalidrawAPI: (a) => { api = a; },
+    excalidrawAPI: (a) => { api = a; setTimeout(() => a.updateLibrary({ libraryItems: window.reelIcons?.(convertToExcalidrawElements) || [], merge: true }).catch(() => {}), 0); },
     onChange: (elements, appState) => { onScene(elements); onSelect(appState); },
     initialData: { appState: { viewBackgroundColor: "#ffffff", currentItemFontFamily: 5 } },
     UIOptions: { canvasActions: { export: false, saveToActiveFile: false, loadScene: true, toggleTheme: false } },
@@ -163,36 +202,74 @@
   let partner = null, asking = false, lastAsk = -Infinity, heardSinceAsk = true;
   const remember = (on) => { try { localStorage.setItem("reelplanner.sketch.partner", on ? "on" : "off"); } catch {} };
   function partnerOn() { try { return localStorage.getItem("reelplanner.sketch.partner") !== "off"; } catch { return true; } }
-  $("partner-on").addEventListener("change", (e) => { remember(e.target.checked); if (session.partner) session.partner.on = e.target.checked; if (!e.target.checked) $("ask").classList.remove("show"); });
+  $("partner-on").addEventListener("change", (e) => { remember(e.target.checked); if (session.partner) session.partner.on = e.target.checked; if (!e.target.checked) { $("ask").classList.remove("show"); thinking(null); } });
   $("ask-close").addEventListener("click", () => $("ask").classList.remove("show"));
   const toDataUrl = (blob) => new Promise((r) => { const f = new FileReader(); f.onload = () => r(f.result); f.onerror = () => r(null); f.readAsDataURL(blob); });
+  // the partner deciding, shown as it comes: a pulsing line with what it is looking at (and its thinking, where the
+  // model shows it), then the question typed out in the card; when it holds back, the line says so and fades
+  let thinkFade = null;
+  function thinking(html, done) {
+    clearTimeout(thinkFade); const t = $("think");
+    if (html == null) { t.classList.remove("show", "fade", "done"); return; }
+    $("think-text").innerHTML = html; t.classList.add("show"); t.classList.remove("fade"); t.classList.toggle("done", !!done);
+    if (done) thinkFade = setTimeout(() => { t.classList.add("fade"); thinkFade = setTimeout(() => thinking(null), 700); }, 4500);
+  }
+  const tail = (x, n = 160) => (x = x.replace(/\s+/g, " ").trim()).length > n ? "…" + x.slice(-n) : x;
   async function ask(kf, blob) {
     const P = session.partner;
     // not while paused or at Finish: they are not sketching then, and a question would arrive after they have sent
     if (!partner || !P || !$("partner-on").checked || asking || !blob || !heardSinceAsk || pausedAt != null || $("review").classList.contains("open")) return;
     if (P.questions.length >= partner.max || clock() - lastAsk < partner.gap_s) return;
     asking = true; lastAsk = clock(); heardSinceAsk = false;
-    const sentAt = performance.now();
+    const sentAt = performance.now(), at = clock(), late = () => (performance.now() - sentAt) / 1000 > partner.stale_s;
+    let shown = false, a = {};
     try {
       const said = [...session.transcript.segments.map((x) => ({ t: x.t0, text: x.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
       asking$ = new AbortController();
-      const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json" }, signal: asking$.signal,
+      thinking(`${esc(partner.label.split(" ")[0])} is looking at your picture…`);
+      const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json", accept: "application/x-ndjson" }, signal: asking$.signal,
         body: JSON.stringify({ question: $("question").value.trim(), elements: drawn(), said, asked: P.questions.map((q) => ({ t: q.t, text: q.text })), png: await toDataUrl(blob) }) });
-      const j = await r.json().catch(() => ({}));
-      if (!j.ok) { status(`The question partner did not answer (${j.error || r.status}); keep going.`); heardSinceAsk = true; return; }
+      if (!r.ok || !r.body) { const j = await r.json().catch(() => ({})); throw new Error(j.error || r.status); }
+      const reader = r.body.getReader(), dec = new TextDecoder(); let buf = "";
+      for (;;) {
+        const { value, done } = await reader.read(); if (done) break;
+        buf += dec.decode(value, { stream: true }); let i;
+        while ((i = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, i); buf = buf.slice(i + 1); if (!line.trim()) continue;
+          a = JSON.parse(line);
+          if (!a.ok) throw new Error(a.error);
+          if (a.done || late() || !$("partner-on").checked) continue;
+          // as it comes: its thinking, what it is looking at, then the question
+          if (a.text) {
+            if (!shown) { shown = true; thinking(null); $("ask").removeAttribute("data-done"); $("ask-who").textContent = `A question · ${partner.label}`; $("ask").classList.add("show"); }
+            $("ask-text").textContent = a.text; $("ask-about").textContent = a.looking ? `looking at: ${a.looking}` : "";
+          } else if (a.looking || a.thinking) thinking(`${a.looking ? `Looking at: ${esc(a.looking)}` : ""}${a.thinking ? `${a.looking ? "<br>" : ""}<i>${esc(tail(a.thinking))}</i>` : ""}`);
+        }
+      }
+      if (!a.done) throw new Error("the answer stopped short");
       const took = (performance.now() - sentAt) / 1000;
-      if (j.text && took > partner.stale_s) {
+      if (a.text && took > partner.stale_s) {
         // about a picture they have moved on from: not shown. A model this slow here (a CPU busy recording) only
         // gets in the way, so after two it stops for this sketch
-        P.late = (P.late || 0) + 1; heardSinceAsk = true;
+        P.late = (P.late || 0) + 1; heardSinceAsk = true; thinking(null); if (shown) $("ask").classList.remove("show");
         if (P.late >= 2) { P.stopped = "too slow here"; $("partner-on").checked = false; status(`${partner.label} takes ${Math.round(took)} s to ask here, too late to help: questions are off for this sketch.`); }
         else status(`${partner.label} took ${Math.round(took)} s to ask (about an earlier picture): not shown.`);
         return;
       }
-      if (!j.text || !$("partner-on").checked) { heardSinceAsk = true; return; }
-      P.questions.push({ t: clock(), after_picture: kf.n, text: j.text });
-      $("ask-who").textContent = `A question · ${partner.label}`; $("ask-text").textContent = j.text; $("ask").classList.add("show");
-    } catch { heardSinceAsk = true; } finally { asking = false; }
+      if (!a.text || !$("partner-on").checked) {
+        // held back: what it looked at, kept, and said for a moment
+        heardSinceAsk = true; (P.held ??= []).push({ t: at, after_picture: kf.n, looking: a.looking || null });
+        if ($("partner-on").checked) thinking(`Nothing to ask yet${a.looking ? ` · looked at: ${esc(a.looking)}` : ""}`, true); else thinking(null);
+        return;
+      }
+      P.questions.push({ t: clock(), after_picture: kf.n, text: a.text, ...(a.looking ? { looking: a.looking } : {}) });
+      thinking(null);
+      $("ask-who").textContent = `A question · ${partner.label}`; $("ask-text").textContent = a.text; $("ask-about").textContent = a.looking ? `looking at: ${a.looking}` : "";
+      $("ask").setAttribute("data-done", ""); $("ask").classList.add("show");
+    } catch (e) {
+      heardSinceAsk = true; thinking(null); if (shown) $("ask").classList.remove("show");
+      if (e.name !== "AbortError") status(`The question partner did not answer (${e.message}); keep going.`);
+    } finally { asking = false; }
   }
 
   // ---------- keyframes: a picture each time a thought ends ----------
@@ -308,11 +385,17 @@
   const kin = () => api.getSceneElementsIncludingDeleted();
   const bumped = (e, patch) => ({ ...e, ...patch, version: e.version + 1, versionNonce: Math.floor(Math.random() * 2 ** 31), updated: Date.now() });
   const commit = (changed, added = []) => api.updateScene({ elements: [...kin().map((e) => changed.get(e.id) || e), ...added], captureUpdate: CaptureUpdateAction.IMMEDIATELY });
-  const words = (el) => { const l = kin().find((t) => t.containerId === el.id && !t.isDeleted); return String(l?.originalText ?? l?.text ?? el.originalText ?? el.text ?? el.name ?? el.type).replace(/\s+/g, " ").trim(); };
+  // an icon's part stands for the icon (its label, the text in its group); a picture goes by its file's name
+  const iconText = (el) => el.customData?.icon && kin().find((t) => t.type === "text" && !t.isDeleted && t.customData?.icon && t.groupIds?.[0] === el.groupIds?.[0]);
+  const words = (el) => { const l = kin().find((t) => t.containerId === el.id && !t.isDeleted) || iconText(el); return String(l?.originalText ?? l?.text ?? el.originalText ?? el.text ?? el.name ?? images.get(el.id)?.name ?? el.type).replace(/\s+/g, " ").trim(); };
   function onSelect(appState) {
     if (!api) return;
+    document.body.classList.toggle("sidebar-open", !!appState.openSidebar);   // the library open: the side column moves left of it
     const ids = Object.keys(appState.selectedElementIds || {}).filter((id) => appState.selectedElementIds[id]);
-    const els = api.getSceneElements().filter((e) => ids.includes(e.id) && !e.containerId && e.type !== "freedraw" && !e.customData?.tagFor);
+    // an icon selected is its parts: one of them (not its label) stands for it, so it gets one tag, one link
+    const seen = new Set();
+    const els = api.getSceneElements().filter((e) => ids.includes(e.id) && !e.containerId && e.type !== "freedraw" && !e.customData?.tagFor)
+      .filter((e) => { if (!e.customData?.icon) return true; const g = e.groupIds?.[0]; if (e.type === "text" || seen.has(g)) return false; seen.add(g); return true; });
     const key = els.map((e) => `${e.id}:${e.version}`).join();
     if (key === selected.key) return;
     selected = Object.assign(els, { key }); renderSel();
@@ -326,7 +409,7 @@
     $("sel-link").hidden = !one || one.type === "frame";
     $("sel-link").textContent = one?.link ? "Change link" : "Link to code";
     const opened = one && kin().find((f) => f.type === "frame" && !f.isDeleted && f.customData?.inside === one.id);
-    $("sel-open").hidden = !one || !(one.customData?.inside || ["rectangle", "ellipse", "diamond"].includes(one.type));
+    $("sel-open").hidden = !one || !(one.customData?.inside || one.customData?.icon || ["rectangle", "ellipse", "diamond", "image"].includes(one.type));
     $("sel-open").textContent = one?.customData?.inside ? "Back" : opened ? "Go inside" : "Open up";
     const st = new Set(selected.map((e) => e.customData?.status || ""));
     for (const b of bar.querySelectorAll("[data-status]")) b.setAttribute("aria-pressed", String(st.size === 1 && st.has(b.dataset.status)));

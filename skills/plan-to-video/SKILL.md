@@ -189,7 +189,8 @@ uploads work", "I'll draw what I think happens", "here's my mental model". Open 
    live caption and no whisper.cpp here), what they said is only in the recording: `$RP sketch-transcribe <folder>`
    makes one, by a hosted API when a key is set, so ask before running it. Its **Linked to code** list says which
    file each box is in their picture (start reading there; a path flagged as not in the repo is a difference already),
-   and **Today vs proposed** what they want changed.
+   and **Today vs proposed** what they want changed. A diagram they brought in (**Inserted from Mermaid**, an SVG's
+   words) is what they started from; what they changed after it is in the timeline.
 3. **Carry on** with what they asked for, with the folder as a source: an explainer pins it beside the code
    (**An explainer**, step 1); a plan quotes it in its problem. If the command exits 1 with no `sketch:` line (they
    closed the page without Send, or none opened: its last line says which), or they say they're done without

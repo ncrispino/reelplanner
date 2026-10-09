@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// The sketch page under real use (scripts/test/sketch-scenarios/, README.md there): 21 sessions written to be what
+// The sketch page under real use (scripts/test/sketch-scenarios/, README.md there): 22 sessions written to be what
 // engineers whiteboard and how they edit it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code
-// with numbered steps, alternatives, pointing, the page's link / mark / open up), each played on the real page
-// (`sketch --once`, the partner off) and checked:
+// with numbered steps, alternatives, pointing, the page's link / mark / open up, Mermaid, icons and an SVG), each
+// played on the real page (`sketch --once`, the partner off) and checked:
 //   - the command exits 0 after Send with its folder; no page error; every step could be made
 //   - the final drawing has each label it should (as typed, however Excalidraw wrapped it), none it should not, and
 //     every arrow between the right things
@@ -38,6 +38,9 @@ const TOLD = {
   link: [/_changed:_ linked [\s\S]*\*\*Linked to code\*\*/, "a box linked to a file, and the list of links"],
   mark: [/_changed:_ marked [\s\S]*\*\*Today vs proposed\*\*/, "a box marked today, new or going, and what is proposed"],
   openup: [/_changed:_ opened up [\s\S]*opened up from it/, "a box opened up, and its frame"],
+  icon: [/\*\*Boxes and shapes\*\*[\s\S]*- (database|queue|user|browser|phone|server|cloud|cache|lock|file|clock|mail|external) "/, "an icon from the library by what it is and its label"],
+  mermaid: [/_changed:_ inserted a Mermaid diagram[\s\S]*\*\*Inserted from Mermaid\*\*[\s\S]*```mermaid/, "a Mermaid insert, and its source"],
+  image: [/- (SVG )?picture "[^"]+"( \([^)]*\))? \(the words in it: /, "a dropped picture by its file, and an SVG's words"],
 };
 
 const queue = [...files], results = [];

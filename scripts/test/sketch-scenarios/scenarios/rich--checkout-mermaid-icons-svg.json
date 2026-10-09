@@ -1,0 +1,47 @@
+{
+  "id": "checkout-mermaid-icons-svg",
+  "title": "Checkout: a Mermaid flow from the doc, reshaped with icons and the VPC picture from the infra repo",
+  "persona": "A payments engineer who already has the checkout flow as Mermaid in a design doc and an exported VPC diagram, and wants to show where the slow, uncertain call is.",
+  "topic": "why declined cards make checkout slow",
+  "realism": "Nobody redraws what they already have: they paste the doc's Mermaid, drop in the infra diagram, then add the parts the doc never showed (the phone, the database, a queue, Stripe) and argue about one call.",
+  "steps": [
+    { "t": 2, "say": "I already had the checkout flow as Mermaid in our design doc, so I'll start from that." },
+    { "t": 3, "mermaid": { "source": "flowchart LR\n  A[Checkout] --> B{Card ok?}\n  B -->|yes| C[Order placed]\n  B -->|no| D[Show error]", "x": 250, "y": 110 } },
+    { "t": 8, "say": "The user is on the phone app." },
+    { "t": 9, "icon": { "icon": "phone", "id": "app", "x": 70, "y": 110, "label": "Mobile app" } },
+    { "t": 11, "add": [ { "type": "arrow", "id": "a1", "from": "app", "to": "@Checkout" } ] },
+    { "t": 15, "say": "When the order is placed it's written to the database, and an event goes on a queue." },
+    { "t": 16, "icon": { "icon": "database", "id": "db", "x": 480, "y": 440 } },
+    { "t": 17, "add": [ { "type": "arrow", "id": "a2", "from": "@Order placed", "to": "db" } ] },
+    { "t": 19, "icon": { "icon": "queue", "id": "q", "x": 680, "y": 450, "label": "Payment events" } },
+    { "t": 20, "add": [ { "type": "arrow", "id": "a3", "from": "@Order placed", "to": "q" } ] },
+    { "t": 24, "say": "The card check calls Stripe, I think synchronously, but I'm not sure." },
+    { "t": 25, "icon": { "icon": "external", "id": "stripe", "x": 250, "y": 430, "label": "Stripe" } },
+    { "t": 26, "add": [ { "type": "arrow", "id": "a4", "from": "@Card ok?", "to": "stripe", "label": "sync?", "strokeStyle": "dashed" } ] },
+    { "t": 29, "relabel": { "id": "db:label", "label": "Orders DB" } },
+    { "t": 31, "say": "That's the orders DB, specifically." },
+    { "t": 33, "image": { "name": "payments-vpc.svg", "id": "vpc", "x": 60, "y": 580, "width": 260, "height": 120,
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"260\" height=\"120\"><title>Payments VPC</title><rect x=\"4\" y=\"4\" width=\"252\" height=\"112\" rx=\"10\" fill=\"#eef3ff\" stroke=\"#3355aa\" stroke-width=\"2\"/><text x=\"16\" y=\"26\" font-family=\"sans-serif\" font-size=\"14\" fill=\"#3355aa\">Payments VPC</text><rect x=\"16\" y=\"40\" width=\"100\" height=\"60\" fill=\"#fff\" stroke=\"#3355aa\"/><text x=\"30\" y=\"75\" font-family=\"sans-serif\" font-size=\"13\">Card vault</text><rect x=\"140\" y=\"40\" width=\"100\" height=\"60\" fill=\"#fff\" stroke=\"#3355aa\"/><text x=\"150\" y=\"75\" font-family=\"sans-serif\" font-size=\"13\">Fraud scorer</text></svg>" } },
+    { "t": 36, "say": "And this is the VPC picture from our infra repo, the card vault and the fraud scorer live in there." },
+    { "t": 38, "mark": { "ids": ["q"], "as": "new" } },
+    { "t": 40, "say": "The queue is new, we're adding it in this change." },
+    { "t": 42, "point": { "ids": ["@Card ok?", "stripe"], "seconds": 3 } },
+    { "t": 46, "say": "This call is the slow one when the card is declined." },
+    { "t": 48, "note": "is the Stripe call inside the DB transaction?" },
+    { "t": 52, "say": "That's the part I want explained." }
+  ],
+  "expect": {
+    "final_labels": ["Checkout", "Card ok?", "Order placed", "Show error", "Mobile app", "Orders DB", "Payment events", "Stripe", "payments-vpc.svg"],
+    "absent_labels": ["Database"],
+    "arrows": [["Mobile app", "Checkout"], ["Checkout", "Card ok?"], ["Card ok?", "Order placed", "yes"], ["Order placed", "Orders DB"], ["Order placed", "Payment events"], ["Card ok?", "Stripe", "sync?"]],
+    "story": [
+      "The checkout flow (Checkout → Card ok? → Order placed / Show error) came from Mermaid they already had; they added the phone, the database, the queue and Stripe around it.",
+      "The database icon was renamed to Orders DB.",
+      "They are unsure whether the card check calls Stripe synchronously; that arrow is dashed and labeled 'sync?'.",
+      "The Payment events queue is new in this change.",
+      "The dropped VPC picture shows the Card vault and the Fraud scorer inside the Payments VPC.",
+      "The call they say is slow when a card is declined is the one from 'Card ok?' to Stripe (they pointed at both)."
+    ],
+    "partner_should_ask_about": ["whether the Stripe call happens inside the DB transaction", "what happens on the decline path before Show error"]
+  }
+}

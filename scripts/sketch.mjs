@@ -168,6 +168,12 @@ const server = createServer((req, res) => {
   }
   if (path === "api/sketch/partner" && req.method === "POST") {
     if (partner.off) return json(res, 404, { ok: false, error: "no partner" });
+    // the page reads the answer as it comes, one JSON line each time it grows: { thinking, looking, text, done }
+    if (/ndjson/.test(req.headers.accept || "")) {
+      res.writeHead(200, { "content-type": "application/x-ndjson", "cache-control": "no-store" });
+      return readJsonBody(req).then((b) => askPartner(partner, b, { onDelta: (a) => res.write(JSON.stringify({ ok: true, ...a }) + "\n") })).then(() => res.end(),
+        (e) => { console.error(`△ sketch: the partner did not answer (${e.message})`); res.end(JSON.stringify({ ok: false, error: e.message }) + "\n"); });
+    }
     return readJsonBody(req).then((b) => askPartner(partner, b)).then((text) => json(res, 200, { ok: true, text }),
       (e) => { console.error(`△ sketch: the partner did not answer (${e.message})`); json(res, 502, { ok: false, error: e.message }); });
   }
@@ -197,7 +203,7 @@ const server = createServer((req, res) => {
     });
   }
   if (path === "" || path === "index.html") return serve(res, PAGE, "index.html");
-  if (path === "sketch.js") return serve(res, PAGE, "sketch.js");
+  if (path === "sketch.js" || path === "icons.js") return serve(res, PAGE, path);
   if (path.startsWith("vendor/")) return serve(res, vendor.dir, path.slice("vendor/".length));
   res.writeHead(404); res.end("not found");
 });

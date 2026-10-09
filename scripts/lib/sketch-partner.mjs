@@ -3,6 +3,9 @@
 // records, at each picture: the canvas as an image, the boxes and arrows exactly as typed, and the words said and
 // typed so far. It never says how the code works: the sketch is their picture, and where it differs from the code is
 // what the explainer is about. Its questions are shown beside the canvas, never drawn on it, and kept in session.json.
+// It answers in two lines, streamed to the page as they come: LOOKING (what it is checking, shown while it decides,
+// so the person sees what it noticed even when it holds back) and then ASK (the question, typed out as it arrives) or
+// NONE. A model that shows its reasoning (a local thinking model's <think>, a reasoning field) streams that too.
 //
 // Where it runs (one OpenAI-style /chat/completions call either way):
 //   openrouter  recommended: anthropic/claude-sonnet-5.5, OPENROUTER_API_KEY (the key narration's hosted voice uses).
@@ -81,7 +84,10 @@ You may ask ONE short question (under 20 words) that helps them finish their own
 3. a box or word in the picture they never explained.
 Ask about their picture, in their words. You can read every label in the list above: never ask what a label says. Never ask about something you already asked about, even in other words: if it is still open, wait. Never ask what they already said.
 
-If nothing is worth asking right now, answer exactly NONE. Answer with the question alone, no preamble.`;
+Answer in exactly two lines, nothing before or after:
+LOOKING: what you are checking, under 12 words, in their words (they see this line while you decide)
+then either ASK: the question, or NONE.
+Answer NONE when what is open was already asked about, when they explained it, or when the picture is complete enough for now: a question they did not need is worse than none.`;
 
 /** The picture as text, as sketch.md says it: frames, shapes and their looks, arrows, text and what it sits by, marks. */
 export const describeDrawing = (els = []) => describeScene(els).join("\n").trim() || "(nothing yet)";
@@ -108,29 +114,78 @@ export function partnerMessages({ question, elements, said = [], asked = [], png
     { role: "user", content: [{ type: "text", text }, ...(png ? [{ type: "image_url", image_url: { url: png } }] : [])] }];
 }
 
-/** Ask the partner. → the question, or null when it has none. */
-export async function askPartner(p, input, { timeoutMs = p.provider === "local" ? 120000 : 30000, messages } = {}) {
-  const body = { model: p.model, messages: messages || partnerMessages(input), max_tokens: 2048, stream: false };   // room for a model that thinks first
+// the question in what a model wrote: the last sentence that asks something (a model sometimes thinks aloud first, "The
+// unsure line is …. I'll ask about that."), or null when it asks nothing
+function questionIn(out) {
+  out = String(out || "").trim().split(/\n\s*\n/)[0].trim().replace(/^["“]|["”]$/g, "");
+  if (!out || /^none\b/i.test(out)) return null;
+  const asks = out.replace(/\s+/g, " ").match(/[^.?!]*\?/g);
+  if (!asks) return null;
+  return clip(asks[asks.length - 1].trim().replace(/^["“(]+/, ""));
+}
+const clip = (q) => q.length > 240 ? q.slice(0, 237) + "…" : q;
+
+/**
+ * What the partner has written so far, read as the page shows it: its thinking (a reasoning model's, in <think> or
+ * the reasoning field), the LOOKING line (what it is weighing), and the question (ASK) as far as it has come; with
+ * `done`, the question as kept (null for NONE). A model that skips the two-line form is read as before.
+ */
+export function readAnswer(content = "", reasoning = "", done = false) {
+  let thinking = reasoning || "";
+  const open = content.lastIndexOf("<think>"), close = content.lastIndexOf("</think>");
+  if (open >= 0 && close < open) { thinking += content.slice(open + 7); content = content.slice(0, open); }
+  content = content.replace(/<think>([\s\S]*?)<\/think>/g, (_, t) => { thinking += t; return ""; }).trim();
+  const look = content.match(/^\s*LOOKING:[ \t]*([^\n]*)/im), ask = content.match(/^\s*ASK:\s*([\s\S]*)/im);
+  const looking = look ? look[1].trim() : "";
+  const none = /^\s*NONE\b/im.test(look ? content.slice(look.index + look[0].length) : content);
+  // while it streams, only what follows ASK: is the question; at the end, an answer without the two-line form is read
+  // whole, as before
+  let text = ask ? ask[1].trim() : "";
+  // an ASK line that asks is kept whole (a label it quotes may hold a "?" of its own)
+  if (done) text = none && !ask ? null : ask && /\?\s*$/.test(text.split("\n")[0]) ? clip(text.split("\n")[0].trim()) : questionIn(ask || look ? text : content);
+  return { thinking: thinking.trim(), looking, text, none, done };
+}
+
+/**
+ * Ask the partner. → the question, or null when it has none. With onDelta, the answer streams: onDelta gets
+ * readAnswer() of what has come so far, as it comes, and once more at the end (done).
+ */
+export async function askPartner(p, input, { timeoutMs = p.provider === "local" ? 120000 : 30000, messages, onDelta } = {}) {
+  const body = { model: p.model, messages: messages || partnerMessages(input), max_tokens: 2048, stream: !!onDelta };   // room for a model that thinks first
   const headers = { "content-type": "application/json" };
   if (p.keyEnv) headers.authorization = `Bearer ${process.env[p.keyEnv]}`;
   if (p.provider === "openrouter") Object.assign(headers, { "x-title": "reelplanner sketch", "http-referer": "https://github.com/ncrispino/reelplanner" });
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), timeoutMs);
-  let res;
-  try { res = await fetch(`${p.base}/chat/completions`, { method: "POST", headers, body: JSON.stringify(body), signal: ctl.signal }); }
-  catch (e) { throw new Error(e.name === "AbortError" ? `${p.model} did not answer in ${timeoutMs / 1000} s` : `${p.where}: ${e.message}`); }
+  const fail = (e) => new Error(e.name === "AbortError" ? `${p.model} did not answer in ${timeoutMs / 1000} s` : `${p.where}: ${e.message}`);
+  let res, content = "", reasoning = "";
+  try {
+    res = await fetch(`${p.base}/chat/completions`, { method: "POST", headers, body: JSON.stringify(body), signal: ctl.signal });
+    if (res.ok && /event-stream/.test(res.headers.get("content-type") || "")) {
+      // server-sent events: each data line a chunk of the answer (and of its reasoning, where the model shows it)
+      const dec = new TextDecoder(); let buf = "";
+      for await (const chunk of res.body) {
+        buf += dec.decode(chunk, { stream: true }); let i, grew = false;
+        while ((i = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+          if (!line.startsWith("data:") || line === "data: [DONE]") continue;
+          let d; try { d = JSON.parse(line.slice(5)).choices?.[0]?.delta || {}; } catch { continue; }
+          const r = d.reasoning ?? d.reasoning_content ?? "";
+          if (d.content || r) { content += d.content || ""; reasoning += r; grew = true; }
+        }
+        if (grew) onDelta(readAnswer(content, reasoning));
+      }
+    } else {
+      const j = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(`${p.where} ${p.model}: ${res.status} ${j?.error?.message || res.statusText}`);
+      const m = j?.choices?.[0]?.message || {};
+      content = Array.isArray(m.content) ? m.content.map((c) => c.text || "").join("") : String(m.content || "");
+      reasoning = m.reasoning || m.reasoning_content || "";
+    }
+  } catch (e) { throw e.message.startsWith(`${p.where} `) ? e : fail(e); }
   finally { clearTimeout(timer); }
-  const j = await res.json().catch(() => null);
-  if (!res.ok) throw new Error(`${p.where} ${p.model}: ${res.status} ${j?.error?.message || res.statusText}`);
-  let out = j?.choices?.[0]?.message?.content;
-  if (Array.isArray(out)) out = out.map((c) => c.text || "").join("");
-  out = String(out || "").replace(/<think>[\s\S]*?<\/think>/g, "").trim().split(/\n\s*\n/)[0].trim().replace(/^["“]|["”]$/g, "");
-  if (!out || /^none\b/i.test(out)) return null;
-  // a question, or nothing: a model sometimes thinks aloud first ("The unsure line is …. I'll ask about that."), so
-  // keep the last sentence that asks something, and drop an answer that asks nothing
-  const asks = out.replace(/\s+/g, " ").match(/[^.?!]*\?/g);
-  if (!asks) return null;
-  out = asks[asks.length - 1].trim().replace(/^["“(]+/, "");
-  return out.length > 240 ? out.slice(0, 237) + "…" : out;
+  const a = readAnswer(content, reasoning, true);
+  onDelta?.(a);
+  return a.text;
 }
 
 /** Load a local model before the first question (on a CPU the first one takes many seconds); errors are ignored. */

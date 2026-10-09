@@ -84,6 +84,9 @@ export function sketchMd(s, dir) {
   lines.push("", `## The final drawing`, "", s.final?.png ? `![final drawing](final.png)` : "_(empty canvas)_", "");
   const repo = repoTop(dir);
   lines.push(...describeScene(els, { exists: repo ? (f) => existsSync(join(repo, f)) : undefined }));
+  // a Mermaid diagram they put in: its source, as they wrote or pasted it (its boxes are in the drawing above, maybe moved)
+  const mermaid = (s.events || []).filter((e) => e.type === "mermaid" && e.source);
+  if (mermaid.length) { lines.push(`**Inserted from Mermaid**`, ""); for (const m of mermaid) lines.push(`At ${mmss(m.t)}:`, "", "```mermaid", m.source, "```", ""); }
   if ((s.notes || []).length) { lines.push(`## Typed notes`, ""); for (const n of s.notes) lines.push(`- **${mmss(n.t)}** ${n.text}`); lines.push(""); }
   if (s.before_recording) lines.push(`_${s.before_recording} element${s.before_recording === 1 ? " was" : "s were"} drawn before recording started._`, "");
   return lines.join("\n");

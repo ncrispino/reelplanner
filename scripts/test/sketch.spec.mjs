@@ -30,9 +30,50 @@ import { join } from "node:path";
 import { chmodSync } from "node:fs";
 import { createServer } from "node:http";
 import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
-import { resolvePartner, askPartner, RECOMMENDED } from "../lib/sketch-partner.mjs";
+import { resolvePartner, askPartner, readAnswer, RECOMMENDED } from "../lib/sketch-partner.mjs";
 import { describeScene, sceneChanges } from "../lib/sketch-scene.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
+
+// ---------- the partner's answer as it streams (no browser): LOOKING, then ASK or NONE ----------
+{
+  const r = (c, done, re = "") => readAnswer(c, re, done);
+  ok(r("LOOKING: the retry you were unsure of\nAS", false).text === "" && r("LOOKING: the retry you were unsure of\nAS", false).looking === "the retry you were unsure of"
+    && r("LOOKING: the retry\nASK: Where does the", false).text === "Where does the", "streaming: the looking line as soon as it is there, the question only after ASK:");
+  ok(r("LOOKING: nothing new\nNONE", true).text === null && r("NONE", true).text === null && r("LOOK", false).text === "", "NONE is no question; a half-written LOOKING is not shown as one");
+  ok(r('LOOKING: the loose arrow\nASK: Where does that "retry?" arrow end up?', true).text === 'Where does that "retry?" arrow end up?', "an ASK line is kept whole, a quoted label's ? and all");
+  ok(r("Where does the chunk index live?", true).text === "Where does the chunk index live?" && r("The unsure bit is retries. Where do retries happen?", true).text === "Where do retries happen?",
+    "an answer without the two lines is read as before: its last question");
+  ok(r("<think>the arrow has no end", false).thinking === "the arrow has no end" && r("<think>hm</think>LOOKING: x\nASK: Is it sync?", true).text === "Is it sync?" && r("", false, "weighing the cache").thinking === "weighing the cache",
+    "a model's thinking (<think>, or the reasoning field) is read apart from its answer");
+}
+
+// ---------- beyond boxes (no browser): an icon is one thing by its label, a picture by its file, a Mermaid insert ----------
+{
+  const part = (id, kind, x, y, more = {}) => ({ id, kind, x, y, w: 70, h: 20, icon: "database", iconGroup: "g1", groups: ["g1"], ...more });
+  const els = [
+    { id: "api", kind: "rectangle", label: "API", x: 0, y: 0, w: 120, h: 60 },
+    part("d1", "ellipse", 300, 0), part("d2", "line", 300, 10, { h: 50, w: 0 }), part("d3", "text", 310, 80, { text: "Orders DB", status: "new" }),
+    { id: "a1", kind: "arrow", from: "api", to: "d3", x: 120, y: 30, w: 180, h: 0 },
+    { id: "im", kind: "image", x: 0, y: 200, w: 200, h: 120, image: { name: "payments-vpc.svg", type: "image/svg+xml", words: "Payments VPC · Ledger" } },
+    { id: "em", kind: "embeddable", x: 300, y: 200, w: 300, h: 200, embed: "https://www.figma.com/file/abc" },
+  ];
+  const md = describeScene(els).join("\n");
+  ok(md.includes('- database "Orders DB"') && !/ellipse|line "|- line/.test(md) && md.includes('- "API" → "Orders DB"') && md.includes('- new: what they propose: "Orders DB"'),
+    `an icon's parts are one thing, named by its label: its arrows end on it, its mark is its own — ${md.split("**Arrows**")[0].slice(0, 160)}`);
+  ok(md.includes('- SVG picture "payments-vpc.svg" (the words in it: "Payments VPC · Ledger")') && md.includes('- web embed "https://www.figma.com/file/abc"'), "a picture by its file and an SVG's words; a web embed by its address");
+  const P = (t, type, id, more = {}) => ({ t, type, id, ...more });
+  const ch = sceneChanges({ events: [
+    P(1, "add", "d1", { kind: "ellipse", x: 300, y: 0, w: 70, h: 20, icon: "database", iconGroup: "g1" }), P(1, "add", "d2", { kind: "line", x: 300, y: 10, icon: "database", iconGroup: "g1" }),
+    P(1, "add", "d3", { kind: "text", text: "Database", x: 310, y: 80, icon: "database", iconGroup: "g1" }),
+    P(2.5, "update", "d3", { kind: "text", text: "Payments", icon: "database", iconGroup: "g1" }),   // naming it as it lands: not a rename
+    P(12, "update", "d3", { kind: "text", text: "Orders DB", icon: "database", iconGroup: "g1" }),
+    P(30, "update", "d1", { kind: "ellipse", x: 500, y: 300, icon: "database", iconGroup: "g1" }), P(30, "update", "d2", { kind: "line", x: 500, y: 310, icon: "database", iconGroup: "g1" }),
+    { t: 40, type: "mermaid", source: "flowchart LR\n  A --> B" },
+    P(60, "delete", "d1"), P(60, "delete", "d2"), P(60, "delete", "d3"),
+  ] }).map((c) => c.text);
+  ok(ch.length === 4 && ch[0] === 'renamed the database "Payments" → "Orders DB"' && /^moved "Orders DB"/.test(ch[1]) && /^inserted a Mermaid diagram \(`flowchart LR`, 1 line/.test(ch[2]) && ch[3] === 'erased the database "Orders DB"',
+    `an icon's changes are told once, as the icon's; a Mermaid insert is told — ${JSON.stringify(ch)}`);
+}
 
 // ---------- the picture and its changes in words (no browser): what sketch.md and the partner are told ----------
 {
@@ -124,7 +165,12 @@ const fakeModel = createServer((req, res) => {
     if (j.messages?.length === 1) { warmups++; return res.end(JSON.stringify({ choices: [{ message: { content: "NONE" } }] })); }   // the warm-up at start
     calls.push({ auth: req.headers.authorization || null, body: j });
     if (slowMs) return setTimeout(() => res.end(JSON.stringify({ choices: [{ message: { content: "A question about a picture long gone?" } }] })), slowMs);
-    res.end(JSON.stringify({ choices: [{ message: { content: calls.length === 1 ? "Where does the chunk index live?" : "NONE" } }] }));
+    const answer = calls.length === 1 ? "LOOKING: the chunk index you mentioned\nASK: Where does the chunk index live?" : "LOOKING: the upload path again\nNONE";
+    if (!j.stream) return res.end(JSON.stringify({ choices: [{ message: { content: answer } }] }));
+    // streamed as a server does, a few characters at a time
+    res.writeHead(200, { "content-type": "text/event-stream" });
+    const parts = answer.match(/[\s\S]{1,6}/g); let n = 0;
+    const tick = setInterval(() => { if (n < parts.length) return res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: parts[n++] } }] })}\n\n`); clearInterval(tick); res.end("data: [DONE]\n\n"); }, 40);
   });
 });
 await new Promise((r) => fakeModel.listen(0, "127.0.0.1", r));
@@ -177,8 +223,17 @@ try {
       { type: "rectangle", id: "ps", x: 120, y: 440, width: 90, height: 70, label: { text: "PaymentService" } },   // too narrow: Excalidraw wraps it
     ], { regenerateIds: false }) });
   });
+  // the partner's answer as it streams in: what it is looking at first, then the question typed out
+  await page.evaluate(() => { const seen = window.__seen = { think: [], ask: [] };
+    new MutationObserver(() => { const t = document.querySelector("#think-text").textContent, q = document.querySelector("#ask-text").textContent;
+      if (t && seen.think.at(-1) !== t) seen.think.push(t); if (q && seen.ask.at(-1) !== q) seen.ask.push(q); }).observe(document.querySelector("#side"), { subtree: true, childList: true, characterData: true }); });
   await page.waitForTimeout(4200); // the three sentences
-  ok(await page.isVisible("#ask") && (await page.textContent("#ask-text")) === "Where does the chunk index live?", `the partner's question is shown beside the canvas — ${await page.textContent("#ask")}`);
+  await page.waitForSelector("#ask[data-done]", { timeout: 15000 }).catch(() => {});
+  ok(await page.isVisible("#ask") && (await page.textContent("#ask-text")) === "Where does the chunk index live?" && (await page.textContent("#ask-about")) === "looking at: the chunk index you mentioned",
+    `the partner's question is shown beside the canvas, with what it looked at — ${await page.textContent("#ask")}`);
+  const seen = await page.evaluate(() => window.__seen);
+  ok(seen.think.some((t) => /is looking at your picture/.test(t)) && seen.think.some((t) => t === "Looking at: the chunk index you mentioned") && seen.ask.length >= 3 && seen.ask.at(-1) === "Where does the chunk index live?",
+    `…streamed: the looking line first, then the question in ${seen.ask.length} steps — ${JSON.stringify(seen).slice(0, 300)}`);
   const first = calls[0]?.body, userText = first?.messages?.[1]?.content?.[0]?.text || "";
   ok(first?.model === "qwen2.5vl:7b" && !calls[0].auth && first.messages[1].content.some((c) => c.type === "image_url" && c.image_url.url.startsWith("data:image/png;base64,")),
     "…asked of the local model, with no key, with the picture");
@@ -224,7 +279,7 @@ try {
   ok(s.final.elements.find((e) => e.id === "ps")?.label === "PaymentService" && !s.events.some((e) => /PaymentServic\n/.test(e.text || "")),
     `a label wrapped to fit its box is kept as typed — ${JSON.stringify(s.final.elements.find((e) => e.id === "ps")?.label)}`);
   ok(s.partner?.provider === "local" && s.partner.model === "qwen2.5vl:7b" && s.partner.on === true && s.partner.questions.length === 1
-    && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
+    && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].looking === "the chunk index you mentioned" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
   const md = readFileSync(join(dir, "sketch.md"), "utf8");
   ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
   ok(s.pointer.some((p) => p.id === "client") && s.pointer.some((p) => p.id === "api") && /\(typed\) not sure where the chunk index lives _\(pointing at "Client", "Upload API"\)_/.test(md),

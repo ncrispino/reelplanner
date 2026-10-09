@@ -5,6 +5,9 @@
 //
 //   describeScene(elements) → markdown lines: frames, shapes, arrows, text, groups, marks, layout
 //   sceneChanges(session)   → [{ t, text }]: renames, reroutes, erasures, restorations, restyles, moves
+//
+// Beyond boxes: an icon from the page's library (packages/sketch/icons.js) is one thing named by its label
+// (`database "Orders DB"`), a picture by its file (and an SVG by the words in it), a web embed by its address.
 
 // ---------- colours and styles, as a person would say them ----------
 const NAMED = { "#1e1e1e": "black", "#000000": "black", "#ffffff": "white", transparent: null };
@@ -26,16 +29,43 @@ export function styleOf(e) {
   return out.join(", ");
 }
 const one = (s) => String(s ?? "").replace(/\s*\n\s*/g, " / ").replace(/\s+/g, " ").trim();
-const nameOf = (e) => e ? one(e.label || e.text || e.name) : "";
-const quoted = (e) => nameOf(e) ? `"${nameOf(e)}"` : `a ${e?.kind || "shape"}${e?.kind === "freedraw" ? " stroke" : ""} with no label`;
-const SHAPES = new Set(["rectangle", "ellipse", "diamond", "image"]);
+const nameOf = (e) => e ? one(e.label || e.text || e.name || e.image?.name || e.embed) : "";
+// what kind of thing it is, in words: an icon by what it shows, a picture, a web embed
+const kindOf = (e) => e?.kind === "icon" ? e.icon : e?.kind === "image" ? (e.image?.type === "image/svg+xml" ? "SVG picture" : "picture") : e?.kind === "embeddable" || e?.kind === "iframe" ? "web embed" : e?.kind || "shape";
+const quoted = (e) => nameOf(e) ? `"${nameOf(e)}"` : `a ${kindOf(e)}${e?.kind === "freedraw" ? " stroke" : ""} with no label`;
+const SHAPES = new Set(["rectangle", "ellipse", "diamond", "image", "icon", "embeddable", "iframe"]);
+
+// an icon's parts (each carries icon and iconGroup) → one element of kind "icon", named by the text in it, where its
+// first part was; arrows bound to any part of it now end on it
+function collapseIcons(els) {
+  const parts = new Map(); for (const e of els) if (e.icon) { const g = e.iconGroup || e.id; parts.set(g, [...(parts.get(g) || []), e]); }
+  if (!parts.size) return els;
+  const one_ = new Map(), to = new Map();
+  for (const [g, ps] of parts) {
+    const glyph = ps.filter((p) => p.kind !== "text"), first = glyph[0] || ps[0], bs = ps.map(box);
+    const x = Math.min(...bs.map((b) => b.x0)), y = Math.min(...bs.map((b) => b.y0));
+    const any = (k) => ps.find((p) => p[k])?.[k];
+    const e = { id: first.id, kind: "icon", icon: first.icon, label: ps.filter((p) => p.kind === "text").map((p) => p.text).join(" ") || null,
+      x, y, w: Math.max(...bs.map((b) => b.x1)) - x, h: Math.max(...bs.map((b) => b.y1)) - y };
+    for (const k of ["strokeStyle", "strokeColor", "backgroundColor"]) if (first[k]) e[k] = first[k];
+    for (const k of ["status", "link", "frame"]) if (any(k)) e[k] = any(k);
+    const groups = (first.groups || []).filter((x) => x !== g); if (groups.length) e.groups = groups;
+    one_.set(g, e); for (const p of ps) to.set(p.id, e.id);
+  }
+  const out = [], done = new Set();
+  for (const e of els) {
+    if (e.icon) { const g = e.iconGroup || e.id; if (!done.has(g)) { done.add(g); out.push(one_.get(g)); } continue; }
+    out.push(e.from || e.to || e.inside ? { ...e, ...(e.from && { from: to.get(e.from) ?? e.from }), ...(e.to && { to: to.get(e.to) ?? e.to }), ...(e.inside && { inside: to.get(e.inside) ?? e.inside }) } : e);
+  }
+  return out;
+}
 const box = (e) => ({ x0: e.x, y0: e.y, x1: e.x + (e.w || 0), y1: e.y + (e.h || 0), cx: e.x + (e.w || 0) / 2, cy: e.y + (e.h || 0) / 2 });
 
 // ---------- the picture ----------
 const STATUS = { new: "proposed: new", going: "going away", today: "exists today" };
 /** `opts.exists(path)`: whether a linked file is in the repo (sketch.md knows the repo; the partner does not) */
 export function describeScene(els = [], opts = {}) {
-  els = els.filter((e) => !e.tagFor);   // a today/new/going tag is told as its thing's status, not as text
+  els = collapseIcons(els.filter((e) => !e.tagFor));   // a today/new/going tag is told as its thing's status, not as text
   const byId = new Map(els.map((e) => [e.id, e])), lines = [];
   const shapes = els.filter((e) => SHAPES.has(e.kind)), frames = els.filter((e) => e.kind === "frame");
   // a drawn line is a connection like an arrow (a tree's branch, a lane's edge), bound or not; marks are freehand;
@@ -54,7 +84,9 @@ export function describeScene(els = [], opts = {}) {
   }
   if (shapes.length) {
     lines.push("**Boxes and shapes**", "");
-    for (const e of shapes) lines.push(`- ${e.kind} ${quoted(e)}${st(e)}`);
+    // a picture: its file, and an SVG's own words; a web embed: its address
+    const inner = (e) => e.image?.words ? ` (the words in it: "${one(e.image.words)}")` : e.embed && nameOf(e) !== one(e.embed) ? ` (showing ${e.embed})` : "";
+    for (const e of shapes) lines.push(`- ${kindOf(e)} ${quoted(e)}${st(e)}${inner(e)}`);
     lines.push("");
   }
   if (arrows.length) {
@@ -141,7 +173,11 @@ const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart
 /** What they changed, in order: renamed, rerouted, erased, brought back, restyled, moved. Bursts on one thing merged. */
 export function sceneChanges(s) {
   const state = new Map(), labelOf = new Map(), out = [], adds = [];
-  const label = (id) => { const e = state.get(id); if (!e) return "something"; const l = labelOf.get(id) ?? e.text ?? e.name; return l ? `"${one(l)}"` : `a ${e.kind || "shape"} with no label`; };
+  // an icon's parts: which icon each belongs to, the part that stands for it, and its label's words
+  const iconOf = new Map(), iconRep = new Map(), iconText = new Map();
+  const label = (id) => {
+    const g = iconOf.get(id); if (g) { const l = iconText.get(g); return l ? `"${one(l)}"` : `a ${state.get(iconRep.get(g))?.icon || "icon"}`; }
+    const e = state.get(id); if (!e) return "something"; const l = labelOf.get(id) ?? e.text ?? e.name ?? e.image?.name; return l ? `"${one(l)}"` : `a ${kindOf(e)} with no label`; };
   // one entry per thing changed in a burst: a second change to it within 15 s updates the same entry
   const entry = (t, key, init) => {
     const last = [...out].reverse().find((x) => x.key === key);
@@ -156,8 +192,24 @@ export function sceneChanges(s) {
     const rel = Math.abs(best.dx) > Math.abs(best.dy) ? (best.dx < 0 ? "left of" : "right of") : (best.dy < 0 ? "above" : "below");
     return ` (now ${rel} ${label(best.o)})`;
   };
-  for (const ev of s.events || []) {
+  for (let ev of s.events || []) {
     if (ev.tagFor || state.get(ev.id)?.tagFor) { state.set(ev.id, { ...state.get(ev.id), ...ev }); continue; }   // a status tag: told as its thing's mark
+    // a Mermaid diagram put in: said once (its source is in sketch.md's own section); its boxes come as adds
+    if (ev.type === "mermaid") { entry(ev.t, `mm:${ev.t}`, { text: `inserted a Mermaid diagram (\`${one(ev.source).split(" / ")[0]}\`, ${ev.source.split("\n").length - 1 === 1 ? "1 line" : `${ev.source.split("\n").length - 1} lines`}; its source is under **Inserted from Mermaid**)` }); continue; }
+    // an icon: its label's words are its name (a rename told as the icon's), and one part stands for the rest
+    if (ev.icon || iconOf.has(ev.id)) {
+      const g = ev.iconGroup || iconOf.get(ev.id), prevPart = state.get(ev.id); iconOf.set(ev.id, g);
+      if ((ev.kind || prevPart?.kind) === "text") {
+        const was = iconText.get(g);
+        // (its first 6 s: naming the icon just taken from the library, not renaming it)
+        if (ev.type === "update" && ev.text != null && was != null && one(was) !== one(ev.text) && (ev.until ?? ev.t) - (state.get(iconRep.get(g))?.addedAt ?? -1e9) > 6) { const e = entry(ev.until ?? ev.t, `ren:${g}`, { was: one(was), what: `the ${state.get(iconRep.get(g))?.icon || "icon"}` }); e.now = one(ev.text); }
+        if (ev.text != null && ev.type !== "delete") iconText.set(g, ev.text);
+        state.set(ev.id, { ...prevPart, ...ev }); continue;
+      }
+      if (!iconRep.has(g) || state.get(iconRep.get(g))?.deleted && ev.type === "add") iconRep.set(g, ev.id);
+      if (iconRep.get(g) !== ev.id) { state.set(ev.id, { ...prevPart, ...ev, ...(ev.type === "delete" && { deleted: true }) }); continue; }
+      if (ev.type !== "delete") ev = { ...ev, kind: "icon" };
+    }
     const prev = state.get(ev.id), t = ev.until ?? ev.t;
     if (ev.type === "add") {
       state.set(ev.id, { ...ev, addedAt: ev.t });
@@ -172,7 +224,7 @@ export function sceneChanges(s) {
     }
     if (ev.type === "delete") {
       if (!prev) continue;
-      const what = prev.kind === "arrow" ? `the arrow ${arrowName(prev)}` : prev.kind === "freedraw" ? "a freehand stroke" : `the ${prev.kind} ${label(ev.id)}`;
+      const what = prev.kind === "arrow" ? `the arrow ${arrowName(prev)}` : prev.kind === "freedraw" ? "a freehand stroke" : `the ${kindOf(prev)} ${label(ev.id)}`;
       // drawn moments ago: an undo, or a quick change of mind; else an erase of something that stood a while
       if (!(prev.kind === "text" && prev.in)) Object.assign(entry(ev.t, `del:${ev.id}`, { text: ev.t - (prev.addedAt ?? -1e9) <= 15 ? `took back ${what}, drawn moments before` : `erased ${what}` }), { erased: prev.kind, at: ev.t });
       state.set(ev.id, { ...prev, deleted: true }); continue;
@@ -198,7 +250,8 @@ export function sceneChanges(s) {
     const sb = styleOf(prev), sa = styleOf(cur);
     if (sa !== sb && prev.kind !== "text") { const e = entry(t, `sty:${ev.id}`, { sty: true, target: ev.id, was: sb || "plain", name: label(ev.id) }); e.now = sa || "plain"; }
     // moved: a shape that went somewhere else (60 px or more), said by what it is next to where it ends up
-    if (SHAPES.has(prev.kind) && ev.x != null && prev.x != null && Math.hypot(ev.x - prev.x, ev.y - prev.y) >= 30) {
+    // (not in its first 5 s: that is putting it in place, as after a paste or a Mermaid insert, not a change of mind)
+    if (SHAPES.has(prev.kind) && ev.x != null && prev.x != null && Math.hypot(ev.x - prev.x, ev.y - prev.y) >= 30 && ev.t - (prev.addedAt ?? -1e9) > 5) {
       const e = entry(t, `mv:${ev.id}`, { mv: true, target: ev.id, name: label(ev.id) });
       state.set(ev.id, cur); e.where = near(ev.id);
     }
@@ -208,7 +261,7 @@ export function sceneChanges(s) {
   const used = new Set();
   for (const x of out.filter((x) => x.erased)) {
     const n = adds.find((a) => a.kind === x.erased && a.t >= x.at && a.t - x.at <= 15 && !used.has(a.id));
-    if (n) { used.add(n.id); x.text += `, replaced by a new ${n.kind} ${n.kind === "arrow" ? arrowName(state.get(n.id)) : label(n.id)}`; }
+    if (n) { used.add(n.id); x.text += `, replaced by a new ${kindOf(state.get(n.id))} ${n.kind === "arrow" ? arrowName(state.get(n.id)) : label(n.id)}`; }
   }
   return out.map((x) => {
     if (x.text) return { t: x.t, text: x.text };
