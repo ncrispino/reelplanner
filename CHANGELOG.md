@@ -8,6 +8,9 @@
   say how to update, instead of failing later on an import it does not have; on 22.0 to 22.19 they run, and
   `setup` and the curl installer say that `skills` asks for 22.20. `version.spec` keeps the docs and checks on
   the engines' version.
+- **PRs are merged with a merge commit, not squashed:** main keeps a PR's own commits. CONTRIBUTING, the PR
+  template, the templates the skill copies into a repo, the skill and `docs/lifecycle.md` say so; `reel pr-check
+  --tidy` still takes the contributor's own reviews off the branch before the merge.
 - **The README's quick start begins in a project you already have,** then a new one (a neighborhood bakery's
   site, in place of Bob Dylan's albums). Its Install names the Claude Code plugin (`/plugin marketplace add
   ncrispino/reelplanning`), and says the plugin is the skill only; `marketplace.json` describes it as

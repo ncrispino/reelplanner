@@ -135,7 +135,8 @@ The stages above assume one person per repo, who plans, reviews and merges. In a
 - **Who decides** (D-201): the contributor's plan review answers the plan's questions; their walkthrough
   review is their own check and adds nothing to the ledger. The maintainer's walkthrough review is the one
   that counts. Main gets the plan, its final decisions, `walkthrough.md` and the maintainer's reviews; the
-  contributor's reviews stay in the PR (`reel pr-check --tidy`, then Squash and merge).
+  contributor's reviews come off the branch before it merges (`reel pr-check --tidy`), and the merge is a merge
+  commit: main keeps the PR's own commits.
 - **Where the video lives** (D-213, D-215): the branch carries only the videos' text; the built video goes,
   packed, on a branch of its own, `video/pr-<n>`, never merged and deleted when the PR closes. The
   maintainer clones it and runs `reelplanning review` on it in the PR's checkout; `reel pr-check` checks

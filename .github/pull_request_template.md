@@ -29,4 +29,4 @@ file split in two, a default nobody sees). No video for these: the maintainer re
 - [ ] The fast tests pass, and the full suite passed on the last commit (`ready-to-merge`)
 - [ ] Over the line: a walkthrough a maintainer accepted, or `no-video`
 - [ ] `spec.md`, `system.json` and `glossary.md` say what changed
-- [ ] `reel pr-check --merge` passes; then `reel pr-check --tidy`, and Squash and merge
+- [ ] `reel pr-check --merge` passes; then `reel pr-check --tidy`, and merge (Create a merge commit, not squash)

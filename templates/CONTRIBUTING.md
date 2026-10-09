@@ -47,10 +47,11 @@ flag or command alone is not a choice that needs one; `reel pr-check` names it a
 
 ### What lands on main
 
-A PR is merged with GitHub's **Squash and merge**: one commit on main. It adds the plan, its final
-decisions, `walkthrough.md` (with the code check it answers), the maintainer's reviews, and the videos'
-text. Your own reviews stay in the PR's history: before merging, `reel pr-check --tidy` removes them from
-the branch in one commit.
+A PR is merged with GitHub's **Create a merge commit**, so main keeps the PR's own commits rather than one
+squashed commit. It adds the plan, its final decisions, `walkthrough.md` (with the code check it answers),
+the maintainer's reviews, and the videos' text. Your own reviews are not among them: before merging,
+`reel pr-check --tidy` removes them from the branch in one commit, so main's files never hold them (the
+branch's earlier commits, now in main's history, still do).
 
 ### Where the built video goes
 
@@ -95,7 +96,7 @@ The maintainer checks:
 - the other choices in the PR's text are accepted (ticked);
 - a contributor's own plan was reviewed before the code, and their code check found nothing left;
 - `.reelplanning/spec.md`, `system.json` and `glossary.md` say what changed;
-- `reel pr-check --base origin/main --merge` passes; then `reel pr-check --tidy`, and **Squash and merge**.
+- `reel pr-check --base origin/main --merge` passes; then `reel pr-check --tidy`, and merge with **Create a merge commit**.
 
 After merging, a maintainer brings the system video up to date on main, once for every PR merged since
 (`reelplanning spec-diff`, then `reelplanning build .reelplanning/system-video`).
