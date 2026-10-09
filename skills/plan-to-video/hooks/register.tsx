@@ -226,6 +226,7 @@ let current = 0
 let stream: AsyncGenerator<unknown, unknown> | null = null
 let imageRefused = false
 const frames = new Map<string, string>() // the last raster frame per video, so a redraw keeps the picture
+const pictures = new Map<string, { file: string; format: 'rgb'; width: number; height: number; generation: number }>() // the same for an Image
 let imageSize = { width: 0, height: 0 }
 let paneColumns = 0 // the pane's width as last drawn
 
@@ -294,7 +295,8 @@ async function playing($: EngineInterface, v: Video, stretches: { from: number; 
   for (const { from, to } of stretches) {
     const args = ['--from', String(from), '--to', String(to), '--as', mode]
     if (mode === 'raster') args.push('--cols', String(size.cols), '--rows', String(size.rows))
-    if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)))
+    // the frames in a folder of the video's own (renders/ is left out of git), kept after the stretch: a redraw shows the last
+    if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)), '--dir', `${v.dir}/renders/frames`)
     if (mode === 'jpeg') args.push('--width', '384', '--fps', '3', '--no-audio')
     await update($, playback, p => (p ? { ...p, status: 'playing' as const, t: from, progress: undefined } : p))
     for await (const line of lines(args)) {
@@ -309,11 +311,9 @@ async function playing($: EngineInterface, v: Video, stretches: { from: number; 
         } else if (kind === 'F' && mode === 'jpeg' && rest) {
           await update($, flip, () => jpegSvg(rest, 384, 216))
         } else if (kind === 'I' && rest) {
-          const res = await $.ui.blit({
-            requestId: PANE,
-            key: 'screen',
-            source: { file: rest, format: 'rgb', width: imageSize.width, height: imageSize.height, generation: Number(gen) },
-          })
+          const source = { file: rest, format: 'rgb' as const, width: imageSize.width, height: imageSize.height, generation: Number(gen) }
+          pictures.set(v.key, source)
+          const res = await $.ui.blit({ requestId: PANE, key: 'screen', source })
           if (res.deny && /alt/.test(res.deny)) {
             // this terminal draws the Image's words, not its picture: the half blocks instead, from here
             imageRefused = true
@@ -761,7 +761,7 @@ export const register: Register = on => {
       const t = $.ui.resolve(e)
       picture =
         mine?.mode === 'image' ? (
-          <t.Image key="screen" source={{ rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
+          <t.Image key="screen" source={pictures.get(v.key) ?? { rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
         ) : (
           <t.Raster key="screen" columns={size.cols} rows={size.rows} cells={frames.get(v.key) ?? blank(size.cols, size.rows)} />
         )
