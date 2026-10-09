@@ -48,13 +48,23 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
   const md = describeScene(scene).join("\n");
   ok(md.includes(`frame "Region A": "Queue", "Fetcher"`) && md.includes(`rectangle "Queue" (dashed)`) && md.includes(`rectangle "DB" (red, filled light red)`), "scene: a frame by its name with what is in it; dashed and colours said in words");
   ok(md.includes(`"Fetcher" → (nothing: a loose end)`) && md.includes(`"~50k/s" (next to the arrow "Queue" → "Fetcher")`) && md.includes(`- "DB", "Cache"`), "scene: a loose arrow end, a note tied to the arrow it sits by, a group");
-  ok(md.includes(`a freehand stroke: under "DB"`) && md.includes(`a freehand stroke: around or across "Cache"`) && /row 1: "Queue", "~50k\/s", "Fetcher"/.test(md), `scene: an underline and a circle by what they mark; rows left to right — ${md.split("\n").filter((l) => /freehand|row/.test(l)).join(" | ")}`);
+  ok(md.includes(`a freehand stroke: under "DB"`) && md.includes(`a freehand stroke: around "Cache"`) && /row 1: "Queue", "~50k\/s", "Fetcher"/.test(md), `scene: an underline and a circle by what they mark; rows left to right — ${md.split("\n").filter((l) => /freehand|row/.test(l)).join(" | ")}`);
   const steps = describeScene([R("b", "Browser", 40, 100), R("g", "Gateway", 300, 100), R("o", "Orders", 560, 100),
     { id: "a1", kind: "arrow", from: "b", to: "g", label: "1 POST /checkout", x: 200, y: 140, w: 100, h: 0 }, { id: "a3", kind: "arrow", from: "o", to: "b", label: "3 done", x: 300, y: 200, w: 260, h: 0 },
     { id: "a2", kind: "arrow", from: "g", to: "o", label: "2. create order", x: 460, y: 140, w: 100, h: 0 }]).join("\n");
   ok(steps.includes(`- 1: "Browser" → "Gateway" "POST /checkout"\n- 2: "Gateway" → "Orders" "create order"\n- 3: "Orders" → "Browser" "done"`) && steps.includes("Drawn in another order: 1, 3, 2"),
     "scene: numbered arrows gathered in their numbers' order, and drawn out of order said so");
   const ev = (t, type, id, more) => ({ t, type, id, ...more });
+  const redo = sceneChanges({ events: [
+    ev(1, "add", "a", { kind: "rectangle", x: 0, y: 0, w: 100, h: 60 }), ev(1, "add", "b", { kind: "rectangle", x: 300, y: 0, w: 100, h: 60 }),
+    ev(1, "add", "al", { kind: "text", in: "a", text: "API" }), ev(1, "add", "bl", { kind: "text", in: "b", text: "DB" }),
+    ev(2, "add", "x", { kind: "arrow", from: "a", to: "b" }), ev(2, "add", "xl", { kind: "text", in: "x", text: "async" }),
+    ev(4, "delete", "x", { kind: "arrow" }), ev(4, "delete", "xl", { kind: "text" }),
+    ev(30, "add", "y", { kind: "arrow", from: "b", to: "a" }), ev(30, "add", "yl", { kind: "text", in: "y", text: "sync" }),
+    ev(60, "delete", "y", { kind: "arrow" }), ev(61, "add", "z", { kind: "arrow", from: "a", to: "b" }), ev(61, "add", "zl", { kind: "text", in: "z", text: "write" }),
+  ] }).map((c) => c.text);
+  ok(redo[0] === `took back the arrow "async" ("API" → "DB"), drawn moments before` && redo[1] === `erased the arrow "sync" ("DB" → "API"), replaced by a new arrow "write" ("API" → "DB")`,
+    `changes: something erased right after it was drawn is taken back; an erase then a new one of its kind is a replacement — ${redo.join(" | ")}`);
   const changes = sceneChanges({ events: [
     ev(1, "add", "w", { kind: "rectangle", x: 100, y: 100, w: 160, h: 80 }), ev(1, "add", "wl", { kind: "text", in: "w", text: "Worker" }),
     ev(1, "add", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(1, "add", "sl", { kind: "text", in: "s", text: "Store" }),
@@ -68,7 +78,7 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
     ev(22, "restore", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(22, "restore", "sl", { kind: "text", in: "s", text: "Store" }),
   ] }).map((c) => c.text);
   ok(changes.join(" | ") === [`renamed the rectangle "Worker" → "Fetcher"`, `rerouted the arrow ("Fetcher" → "Store") → now ("Fetcher" → "Parser")`, `restyled "Store": plain → dashed`,
-    `moved "Parser" (now below "Store")`, `erased the rectangle "Store"`, `brought back "Store" (undo)`].join(" | "),
+    `moved "Parser" (now below "Store")`, `erased the rectangle "Store"`, `brought back "Store" (undo or redo)`].join(" | "),
     `changes: a rename in bursts told once, first name → last; a reroute; a restyle; a move by its new neighbour; an erase and an undo, each once — ${changes.join(" | ")}`);
 }
 
@@ -218,7 +228,7 @@ try {
   ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
   ok(s.pointer.some((p) => p.id === "client") && s.pointer.some((p) => p.id === "api") && /\(typed\) not sure where the chunk index lives _\(pointing at "Client", "Upload API"\)_/.test(md),
     `the pointer resting on a box is kept, and told with what was said then — ${JSON.stringify(s.pointer)} ${md.split("\n").find((l) => /pointing/.test(l))}`);
-  ok(/\*\*\d:\d\d\*\* _changed:_ erased the rectangle "Scratch"/.test(md) && /\*\*Where things are\*\*/.test(md), `sketch.md: the box replaced out of the scene is told as erased, in its place; and where things are — ${md.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
+  ok(/\*\*\d:\d\d\*\* _changed:_ took back the rectangle "Scratch", drawn moments before/.test(md) && /\*\*Where things are\*\*/.test(md), `sketch.md: the box drawn and replaced moments later is told as taken back, in its place; and where things are — ${md.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
   ok(/\*\*Questions while sketching:\*\* 1 from qwen2\.5vl:7b on their machine/.test(md) && /\*\*\d:\d\d\*\* _asked:_ Where does the chunk index live\?/.test(md), "sketch.md: who asked, and the question in its place");
   try {
     const probe = execFileSync("ffprobe", ["-v", "error", "-show_entries", "stream=codec_type:format=duration", "-of", "json", join(dir, "recording.webm")], { encoding: "utf8" });

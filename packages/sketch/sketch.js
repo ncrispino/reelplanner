@@ -137,8 +137,9 @@
     }
     return best;
   }
-  // a rest is a gesture between 0.4 s and 10 s; longer is a mouse left lying there
-  function restEnd(t) { if (resting && t - resting.t0 >= 0.4 && t - resting.t0 <= 10 && session.pointer.length < 3000) session.pointer.push({ t0: resting.t0, t1: t, id: resting.id }); resting = null; }
+  // a rest of 0.4 s or more is a gesture; one much longer is a gesture and then a mouse left lying there: its first
+  // 8 s are kept (the pointing), not the rest of the time it lay there
+  function restEnd(t) { if (resting && t - resting.t0 >= 0.4 && session.pointer.length < 3000) session.pointer.push({ t0: resting.t0, t1: +Math.min(t, resting.t0 + 8).toFixed(2), id: resting.id }); resting = null; }
   setInterval(() => {
     if (t0 == null || pausedAt != null) return restEnd(clock() ?? 0);
     // not while drawing (the pointer is on what it draws) or typing a note (the mouse just lies there)
@@ -411,5 +412,5 @@
   }
 
   // a hook for tests and for the step after this one
-  window.reelSketch = { session, get api() { return api; }, keyframe, clock };
+  window.reelSketch = { session, get api() { return api; }, keyframe, clock, pointing: () => ({ under: under(), pointer: { ...pointer }, resting, active: document.activeElement?.id || document.activeElement?.tagName }) };
 })();

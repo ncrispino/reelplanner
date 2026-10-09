@@ -77,8 +77,11 @@ export function describeScene(els = []) {
     for (const s of strokes) {
       const b = box(s), flat = (s.h || 0) < 30 && (s.w || 0) > 40;
       const under = flat ? named.filter((e) => { const x = box(e); return x.y1 <= b.cy + 6 && b.cy - x.y1 < 40 && x.x1 > b.x0 && x.x0 < b.x1; }) : [];
-      const over = named.filter((e) => { const x = box(e); return x.cx >= b.x0 && x.cx <= b.x1 && x.cy >= b.y0 && x.cy <= b.y1; });
-      lines.push(`- a ${s.kind === "line" ? "line" : "freehand stroke"}${s.label ? ` "${one(s.label)}"` : ""}${st(s)}${under.length ? `: under ${under.map(quoted).join(", ")}` : over.length ? `: around or across ${over.map(quoted).join(", ")}` : ": on empty space (see the pictures)"}`);
+      // around: the thing sits inside the stroke (a circle); across: the stroke only reaches its middle (a cross-out, or a circle's edge)
+      const inside = (x) => x.x0 >= b.x0 - 15 && x.x1 <= b.x1 + 15 && x.y0 >= b.y0 - 15 && x.y1 <= b.y1 + 15;
+      const around = named.filter((e) => inside(box(e))), across = named.filter((e) => { const x = box(e); return !inside(x) && x.cx >= b.x0 && x.cx <= b.x1 && x.cy >= b.y0 && x.cy <= b.y1; });
+      const on = [around.length ? `around ${around.map(quoted).join(", ")}` : "", across.length ? `across ${across.map(quoted).join(", ")}` : ""].filter(Boolean).join("; ");
+      lines.push(`- a ${s.kind === "line" ? "line" : "freehand stroke"}${s.label ? ` "${one(s.label)}"` : ""}${st(s)}${under.length ? `: under ${under.map(quoted).join(", ")}` : on ? `: ${on}` : ": on empty space (see the pictures)"}`);
     }
     lines.push("");
   }
@@ -113,7 +116,7 @@ export function describeScene(els = []) {
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 /** What they changed, in order: renamed, rerouted, erased, brought back, restyled, moved. Bursts on one thing merged. */
 export function sceneChanges(s) {
-  const state = new Map(), labelOf = new Map(), out = [];
+  const state = new Map(), labelOf = new Map(), out = [], adds = [];
   const label = (id) => { const e = state.get(id); if (!e) return "something"; const l = labelOf.get(id) ?? e.text ?? e.name; return l ? `"${one(l)}"` : `a ${e.kind || "shape"} with no label`; };
   // one entry per thing changed in a burst: a second change to it within 15 s updates the same entry
   const entry = (t, key, init) => {
@@ -131,13 +134,15 @@ export function sceneChanges(s) {
   };
   for (const ev of s.events || []) {
     const prev = state.get(ev.id), t = ev.until ?? ev.t;
-    if (ev.type === "add") { state.set(ev.id, { ...ev }); if (ev.in && ev.text != null) labelOf.set(ev.in, ev.text); continue; }
+    if (ev.type === "add") { state.set(ev.id, { ...ev, addedAt: ev.t }); if (ev.in && ev.text != null) labelOf.set(ev.in, ev.text); else if (!(ev.kind === "text" && ev.in)) adds.push({ t: ev.t, id: ev.id, kind: ev.kind }); continue; }
     if (ev.type === "delete") {
       if (!prev) continue;
-      if (!(prev.kind === "text" && prev.in)) entry(ev.t, `del:${ev.id}`, { text: `erased ${prev.kind === "arrow" ? `the arrow ${arrowName(prev)}` : prev.kind === "freedraw" ? "a freehand stroke" : `the ${prev.kind} ${label(ev.id)}`}` });
+      const what = prev.kind === "arrow" ? `the arrow ${arrowName(prev)}` : prev.kind === "freedraw" ? "a freehand stroke" : `the ${prev.kind} ${label(ev.id)}`;
+      // drawn moments ago: an undo, or a quick change of mind; else an erase of something that stood a while
+      if (!(prev.kind === "text" && prev.in)) Object.assign(entry(ev.t, `del:${ev.id}`, { text: ev.t - (prev.addedAt ?? -1e9) <= 15 ? `took back ${what}, drawn moments before` : `erased ${what}` }), { erased: prev.kind, at: ev.t });
       state.set(ev.id, { ...prev, deleted: true }); continue;
     }
-    if (ev.type === "restore") { if (!(prev?.kind === "text" && prev.in) && !(ev.kind === "text" && ev.in)) entry(ev.t, `res:${ev.id}`, { text: `brought back ${label(ev.id)} (undo)` }); state.set(ev.id, { ...prev, ...ev, deleted: false }); continue; }
+    if (ev.type === "restore") { if (!(prev?.kind === "text" && prev.in) && !(ev.kind === "text" && ev.in)) entry(ev.t, `res:${ev.id}`, { text: `brought back ${label(ev.id)} (undo or redo)` }); state.set(ev.id, { ...prev, ...ev, deleted: false }); continue; }
     if (ev.type !== "update" || !prev) continue;
     const cur = { ...prev, ...ev };
     // renamed: a label (text in a container) or a free text whose words changed; first words → last words
@@ -161,6 +166,12 @@ export function sceneChanges(s) {
       state.set(ev.id, cur); e.where = near(ev.id);
     }
     state.set(ev.id, cur);
+  }
+  // an erase followed soon by a new one of the same kind: a replacement, said on the erase
+  const used = new Set();
+  for (const x of out.filter((x) => x.erased)) {
+    const n = adds.find((a) => a.kind === x.erased && a.t >= x.at && a.t - x.at <= 15 && !used.has(a.id));
+    if (n) { used.add(n.id); x.text += `, replaced by a new ${n.kind} ${n.kind === "arrow" ? arrowName(state.get(n.id)) : label(n.id)}`; }
   }
   return out.map((x) => {
     if (x.text) return { t: x.t, text: x.text };

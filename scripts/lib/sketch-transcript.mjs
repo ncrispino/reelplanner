@@ -55,10 +55,20 @@ export function sketchMd(s, dir) {
   // what the pointer rested on since the picture before: "this one" said with the pointer on a box
   const named = new Map(); for (const ev of s.events || []) { if (ev.in && ev.text) named.set(ev.in, ev.text); else if (ev.text || ev.name) named.set(ev.id, ev.text || ev.name); }
   for (const e of els) if (e.label || e.text || e.name) named.set(e.id, e.label || e.text || e.name);
+  // the rests while what is on this line was said, each weighed by how long it overlaps that:
+  // a trace (three or more things in turn) is kept whole; otherwise what held the pointer for a real share of the
+  // time, so the end of the last gesture does not spill into this one
   const pointing = (from, to) => {
-    const ids = []; for (const p of s.pointer || []) if (p.t1 > from && p.t0 <= to && ids[ids.length - 1] !== p.id && named.has(p.id)) ids.push(p.id);
+    // the time it was said: the sentences' own span when the transcript has one, else the last 4 s
+    const said0 = Math.min(...(s.transcript?.segments || []).filter((x) => x.t1 > from && x.t1 <= to + 0.5).map((x) => x.t0));
+    const w0 = Math.max(from, Math.min(to - 4, Number.isFinite(said0) ? said0 : Infinity)), spans = [];
+    for (const p of s.pointer || []) { const o = Math.min(p.t1, to) - Math.max(p.t0, w0); if (o > 0 && named.has(p.id)) spans.push({ id: p.id, o }); }
+    const total = spans.reduce((n, x) => n + x.o, 0), ids = [];
+    for (const x of spans) if (ids[ids.length - 1] !== x.id) ids.push(x.id);
     const q = (id) => `"${String(named.get(id)).replace(/\s+/g, " ").trim()}"`;
-    return !ids.length ? "" : ids.length >= 3 ? ` _(traced with the pointer: ${ids.map(q).join(" → ")})_` : ` _(pointing at ${ids.map(q).join(", ")})_`;
+    if (ids.length >= 3) return ` _(traced with the pointer: ${ids.map(q).join(" → ")})_`;
+    const held = [...new Set(ids)].filter((id) => spans.filter((x) => x.id === id).reduce((n, x) => n + x.o, 0) >= 0.4 * total);
+    return held.length ? ` _(pointing at ${held.map(q).join(", ")})_` : "";
   };
   const timeline = [...kfs.map((k, i) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${pointing(i ? kfs[i - 1].t : -Infinity, k.t)}${k.file ? ` → [picture](${k.file})` : ""}` })),
     ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` })),
