@@ -23,7 +23,7 @@ You answer on the video, and the agent updates the plan.
 ```bash
 npm i -g github:ncrispino/reelplanner                                  # the `reelplanner` command
 reelplanner setup                                                      # ffmpeg, Chrome, a local voice (--dry-run to preview)
-npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g   # the skill: it asks which agents (add -y for every agent)
+npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
 ```
 
 In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:

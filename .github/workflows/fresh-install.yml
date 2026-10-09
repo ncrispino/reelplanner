@@ -1,7 +1,9 @@
 # A fresh machine, as a new user meets reelplanner (docs/releasing.md, "Check it from a fresh machine"): the README's
 # Install run as written, in a bare ubuntu:24.04 container, by a user with sudo (scripts/release/fresh-install.sh);
-# once with Node 22 from nvm, and once with Ubuntu's own older Node, which the CLI must refuse at once. It installs
-# the commit under test from GitHub, as the README's `npm i -g github:…` would.
+# once with Node 22 from nvm, and once with Ubuntu's own older Node, which the CLI must refuse at once; and on GitHub's
+# macOS runner, as its user (Homebrew's way: not a fresh Mac, but the steps a Mac runs). It installs the commit under
+# test from GitHub, as the README's `npm i -g github:…` would, and puts each step's seconds on the run's page.
+# A real VM, timed, or another architecture: scripts/release/ec2-fresh.sh, by hand.
 #
 # Not a required check: it runs when a PR changes the install's path, on a version tag, by hand, and each week,
 # since what the install fetches (`npx skills`, Ubuntu's packages, HyperFrames' downloads) moves on its own.
@@ -56,4 +58,22 @@ jobs:
           repository: ${{ env.REPO }}
           ref: ${{ env.REF }}
       - name: The README's Install, as written
-        run: bash scripts/release/fresh-install.sh --node "${{ matrix.node }}" --from "github:$REPO#$REF"
+        run: bash scripts/release/fresh-install.sh --node "${{ matrix.node }}" --from "github:$REPO#$REF" --times
+
+  mac:
+    name: fresh install (macOS)
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+      REF: ${{ github.event.pull_request.head.sha || inputs.ref || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPO }}
+          ref: ${{ env.REF }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: The README's Install, as written, on a Mac
+        run: bash scripts/release/fresh-install.sh --here --from "github:$REPO#$REF" --times

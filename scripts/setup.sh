@@ -20,7 +20,8 @@
 # sudo, or from an interactive terminal. Otherwise the step is reported with the command to run
 # yourself, and setup exits 1 so an agent calling it knows the machine is not ready.
 #
-# Steps: node ≥ 22.20 · ffmpeg · WebP · unzip (Linux) · Chrome headless (hyperframes browser ensure) · Kokoro TTS (pip) ·
+# Steps: node ≥ 22.20 · ffmpeg · WebP · unzip (Linux) · Chrome headless (hyperframes browser ensure; on Linux, the
+#        libraries it needs, and that it starts) · Kokoro TTS (pip) ·
 #        whisper.cpp (brew, or built into HyperFrames' own cache, no root) · HyperFrames' skills
 #        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanner/.env for this machine,
 #        or the repo's .reelplanner/), and, when it is local, whether it is fast enough here (one sentence, timed)
@@ -122,7 +123,43 @@ if [ "$DRY" = 1 ]; then
   else todo "download Chrome headless (about 260 MB): hyperframes browser ensure"; fi
 elif CHROME="$(hf browser path 2>/dev/null)" && [ -n "$CHROME" ] && [ -e "$CHROME" ]; then ok "Chrome headless ($CHROME)"
 elif [ "$OS" = Linux ] && [ "$DRY" = 0 ] && ! have unzip; then miss "Chrome headless: not downloaded, since unzip is missing (above)"
-else run hf browser ensure || miss "Chrome headless" "run: $RP hyperframes browser ensure"; fi
+else run hf browser ensure && CHROME="$(hf browser path 2>/dev/null)" || miss "Chrome headless" "run: $RP hyperframes browser ensure"; fi
+
+# ---- Chrome starts: Chrome's download links against shared libraries a fresh Debian or Ubuntu lacks (libnss3, libgbm1,
+# …), and finding its file says nothing of them. ldd names the missing ones; apt installs their packages, by the name
+# this release gives each (Ubuntu 24.04 renamed some: libasound2t64, libcups2t64). Then Chrome loads a page.
+chrome_starts() { local out; out="$("$1" --headless --no-sandbox --disable-gpu --dump-dom 'data:text/html,<p>rp-chrome-ok</p>' 2>/dev/null)"; [[ "$out" == *rp-chrome-ok* ]]; }
+lib_pkgs() {   # a missing library → its package's names, most recent first
+  case "$1" in
+    libnss3.so|libnssutil3.so|libsmime3.so) echo libnss3 ;;          libnspr4.so|libplc4.so|libplds4.so) echo libnspr4 ;;
+    libatk-1.0.so.0) echo libatk1.0-0t64 libatk1.0-0 ;;              libatk-bridge-2.0.so.0) echo libatk-bridge2.0-0t64 libatk-bridge2.0-0 ;;
+    libatspi.so.0) echo libatspi2.0-0t64 libatspi2.0-0 ;;            libcups.so.2) echo libcups2t64 libcups2 ;;
+    libasound.so.2) echo libasound2t64 libasound2 ;;                 libglib-2.0.so.0|libgio-2.0.so.0|libgobject-2.0.so.0) echo libglib2.0-0t64 libglib2.0-0 ;;
+    libdrm.so.2) echo libdrm2 ;;    libgbm.so.1) echo libgbm1 ;;    libxkbcommon.so.0) echo libxkbcommon0 ;;    libxshmfence.so.1) echo libxshmfence1 ;;
+    libXcomposite.so.1) echo libxcomposite1 ;;    libXdamage.so.1) echo libxdamage1 ;;    libXfixes.so.3) echo libxfixes3 ;;
+    libXrandr.so.2) echo libxrandr2 ;;    libXext.so.6) echo libxext6 ;;    libX11.so.6) echo libx11-6 ;;    libxcb.so.1) echo libxcb1 ;;
+    libpango-1.0.so.0) echo libpango-1.0-0 ;;    libcairo.so.2) echo libcairo2 ;;    libdbus-1.so.3) echo libdbus-1-3 ;;
+    libexpat.so.1) echo libexpat1 ;;    libudev.so.1) echo libudev1 ;;
+  esac
+}
+if [ "$OS" = Linux ] && [ -n "${CHROME:-}" ] && [ -x "$CHROME" ] && have ldd; then
+  LIBS="$(ldd "$CHROME" 2>/dev/null | awk '/not found/{print $1}' | sort -u | tr '\n' ' ')"; LIBS="${LIBS% }"
+  if [ -n "$LIBS" ]; then
+    PKGS=(); for so in $LIBS; do for c in $(lib_pkgs "$so"); do
+      # (read whole, not piped into grep -q: under pipefail, grep stopping early fails the pipe, as WebP's check found)
+      pol="$(apt-cache policy "$c" 2>/dev/null)"
+      if ! have apt-cache || { [[ "$pol" == *"Candidate: "* ]] && [[ "$pol" != *"Candidate: (none)"* ]]; }; then [[ " ${PKGS[*]} " == *" $c "* ]] || PKGS+=("$c"); break; fi
+    done; done
+    if [ "$DRY" = 1 ]; then todo "install the libraries Chrome needs ($LIBS)${PKGS[*]:+: apt-get install -y ${PKGS[*]}}"
+    elif have apt-get && [ "$SUDO" != none ] && [ "${#PKGS[@]}" -gt 0 ]; then
+      { as_root apt-get update && as_root apt-get install -y "${PKGS[@]}"; } || true
+    fi
+  fi
+  if [ "$DRY" = 0 ]; then
+    if chrome_starts "$CHROME"; then [ -n "$LIBS" ] && ok "Chrome headless starts (its libraries installed: ${PKGS[*]})"
+    else miss "Chrome headless does not start${LIBS:+: missing $LIBS}" "${PKGS[*]:+run: sudo apt-get install -y ${PKGS[*]}   (then setup again)}"; fi
+  fi
+fi
 
 # ---- the local voice (Kokoro, its models, whisper.cpp): only what narration here runs on this machine, from the
 # settings narrate reads; --hosted-voice skips it, --local-voice installs it anyway (scripts/lib/local-speed.mjs, --plan)
@@ -131,6 +168,23 @@ if PLAN="$(node "$ROOT/scripts/lib/local-speed.mjs" --plan ${VOICE:+"$VOICE"} "$
   read -r k w p <<<"${PLAN%%$'\n'*}"
   NEED_KOKORO="${k#kokoro=}" NEED_WHISPER="${w#whisper=}" HOSTED_PENDING="${p#pending=}"
   [[ "$PLAN" == *$'\n'* ]] && printf '%s\n' "${PLAN#*$'\n'}"
+fi
+
+# ---- the local voice's models (about 840 MB) start downloading now, beside what follows (pip, whisper.cpp, the skills),
+# not after it: the files HyperFrames fetches on first use, from where it fetches them, to where it looks for them
+# (scripts/lib/local-speed.mjs modelsMissing). Each lands whole or not at all; one that did not is fetched below, as
+# before. Where the network is slow, this is most of what setup waits for.
+MODELS_PID=""
+if [ "$DRY" = 0 ] && have curl && { [ "$NEED_KOKORO" = 1 ] || [ "$NEED_WHISPER" = 1 ]; }; then
+  HFC="$HOME/.cache/hyperframes" KO="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0"
+  fetch_model() { [ -s "$2" ] && return 0; mkdir -p "$(dirname "$2")" && curl -fsSL --retry 2 "$1" -o "$2.part" && mv "$2.part" "$2" || rm -f "$2.part"; }
+  {
+    [ "$NEED_KOKORO" = 1 ] && { fetch_model "$KO/kokoro-v1.0.onnx" "$HFC/tts/models/kokoro-v1.0.onnx" & fetch_model "$KO/voices-v1.0.bin" "$HFC/tts/voices/voices-v1.0.bin" & }
+    [ "$NEED_WHISPER" = 1 ] && fetch_model "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin" "$HFC/whisper/models/ggml-small.en.bin" &
+    wait
+  } >/dev/null 2>&1 &
+  MODELS_PID=$!
+  step "downloading the voice's models (about 840 MB) while the rest installs"
 fi
 
 # ---- Kokoro: local text-to-speech. HyperFrames runs it with python3, or with $HYPERFRAMES_PYTHON.
@@ -146,7 +200,7 @@ elif [ "$DRY" = 1 ]; then
 else
   # a stock Ubuntu's python3 has no pip: apt's python3-pip, as ffmpeg above
   if ! pip_ok && [ "$PY" = python3 ] && have apt-get && [ "$SUDO" != none ]; then
-    { as_root apt-get update && as_root apt-get install -y python3-pip; } || true
+    { as_root apt-get update && as_root apt-get install -y --no-install-recommends python3-pip; } || true   # (its recommends are a compiler)
   fi
   if ! pip_ok; then miss "Kokoro TTS: $PY has no pip" \
     "run: sudo apt-get install -y python3-pip (or make a venv with kokoro-onnx and soundfile, and export HYPERFRAMES_PYTHON=<venv>/bin/python), then setup again"
@@ -165,6 +219,24 @@ fi
 # ---- whisper.cpp: word timings for captions. HyperFrames looks on PATH, at $HYPERFRAMES_WHISPER_PATH,
 # and in its own build cache — so building there needs no root and no PATH change.
 WHISPER_DIR="$HOME/.cache/hyperframes/whisper/whisper.cpp"
+# On Linux, whisper.cpp's own prebuilt build for this version (its release b5454 is v1.9.5's build: whisper-cli and its
+# libraries, which it finds beside it; Ubuntu 22.04's glibc or newer), its checksum checked: seconds, where building it
+# takes minutes (two on two cores). Where it cannot run, it is built from source at the same version.
+WHISPER_TAG=v1.9.5 WHISPER_BUILD=b5454
+WHISPER_SHA_x64=a72becf15d7917f990f6313867a52638b82b7f9ef237fb0c980dac56a135781c
+WHISPER_SHA_arm64=6b95ebfc60447df48e70ef00a73bdc3f41679ed2d01ef465827206a2ff325149
+whisper_arch() { case "$(uname -m)" in x86_64|amd64) echo x64 ;; aarch64|arm64) echo arm64 ;; *) return 1 ;; esac; }
+prebuilt_whisper() {
+  local arch sha tmp rc=1
+  arch="$(whisper_arch)" || return 1; have curl && have sha256sum || return 1
+  sha="WHISPER_SHA_$arch"; sha="${!sha}"; tmp="$(mktemp -d)" || return 1
+  if curl -fsSL "https://github.com/ggml-org/whisper.cpp/releases/download/$WHISPER_BUILD/whisper-bin-ubuntu-$arch.tar.gz" -o "$tmp/w.tgz" \
+    && [ "$(sha256sum "$tmp/w.tgz" | cut -d' ' -f1)" = "$sha" ] && tar -xzf "$tmp/w.tgz" -C "$tmp" \
+    && [[ "$("$tmp/whisper-bin-ubuntu-$arch/whisper-cli" --help 2>&1)" == *sage* ]]; then
+    rm -rf "$WHISPER_DIR"; mkdir -p "$WHISPER_DIR/build" && mv "$tmp/whisper-bin-ubuntu-$arch" "$WHISPER_DIR/build/bin" && rc=0
+  fi
+  rm -rf "$tmp"; return $rc
+}
 whisper() {
   have whisper-cli && { command -v whisper-cli; return 0; }
   [ -n "${HYPERFRAMES_WHISPER_PATH:-}" ] && [ -x "$HYPERFRAMES_WHISPER_PATH" ] && { echo "$HYPERFRAMES_WHISPER_PATH"; return 0; }
@@ -174,7 +246,11 @@ whisper() {
 if [ "$NEED_WHISPER" != 1 ]; then :
 elif W="$(whisper)"; then ok "whisper.cpp ($W)"
 elif [ "$OS" = Darwin ] && have brew; then run brew install whisper-cpp || miss "whisper.cpp" "brew install whisper-cpp failed"
+elif [ "$OS" = Linux ] && whisper_arch >/dev/null && [ "$DRY" = 1 ]; then todo "fetch whisper.cpp $WHISPER_TAG, prebuilt (10 MB), into $WHISPER_DIR (built from source where it cannot run)"
+elif [ "$OS" = Linux ] && whisper_arch >/dev/null && step "fetching whisper.cpp $WHISPER_TAG, prebuilt (10 MB)" && prebuilt_whisper && W="$(whisper)"; then
+  ok "whisper.cpp ($W)"
 else
+  [ "$OS" = Linux ] && [ "$DRY" = 0 ] && whisper_arch >/dev/null && echo "△ the prebuilt whisper.cpp cannot run here (or could not be fetched): building it from source"
   cxx=""; for c in c++ g++ clang++; do have "$c" && { cxx="$c"; break; }; done
   if ! have git || ! have cmake || [ -z "$cxx" ]; then
     if have apt-get && [ "$SUDO" != none ]; then { as_root apt-get update && as_root apt-get install -y git cmake build-essential; } || true; cxx=c++
@@ -182,13 +258,13 @@ else
     else miss "whisper.cpp: building it needs git, cmake and a C++ compiler" "install them, then run setup again (or install whisper-cli yourself and put it on PATH)"; fi
   fi
   if ! [[ " ${MISSING[*]} " == *" whisper.cpp"* ]]; then
-    if [ "$DRY" = 1 ]; then todo "build whisper.cpp into $WHISPER_DIR (git clone + cmake; no root)"
+    if [ "$DRY" = 1 ]; then todo "build whisper.cpp $WHISPER_TAG into $WHISPER_DIR (git clone + cmake; no root)"
     else
-      step "building whisper.cpp into $WHISPER_DIR (a few minutes)"
+      step "building whisper.cpp $WHISPER_TAG into $WHISPER_DIR (a few minutes)"
       rm -rf "$WHISPER_DIR"; mkdir -p "$(dirname "$WHISPER_DIR")"
-      { git clone -q --depth 1 https://github.com/ggml-org/whisper.cpp "$WHISPER_DIR" \
-          && cmake -S "$WHISPER_DIR" -B "$WHISPER_DIR/build" -DCMAKE_BUILD_TYPE=Release >/dev/null \
-          && cmake --build "$WHISPER_DIR/build" -j 4 --config Release --target whisper-cli >/dev/null; } \
+      { git clone -q --depth 1 --branch "$WHISPER_TAG" https://github.com/ggml-org/whisper.cpp "$WHISPER_DIR" \
+          && cmake -S "$WHISPER_DIR" -B "$WHISPER_DIR/build" -DCMAKE_BUILD_TYPE=Release -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=OFF >/dev/null \
+          && cmake --build "$WHISPER_DIR/build" -j "$(nproc 2>/dev/null || echo 4)" --config Release --target whisper-cli >/dev/null; } \
         && W="$(whisper)" && ok "whisper.cpp ($W)" \
         || miss "whisper.cpp: the build failed" "see https://github.com/ggml-org/whisper.cpp#building, or set HYPERFRAMES_WHISPER_PATH"
     fi
@@ -215,6 +291,8 @@ else printf '✗ %s\n' "$N"; L="$(grep -m1 '^narration: ' <<<"$N")"; MISSING+=("
 # both are installed and no hosted engine is set; slow (over 20 s a line) says how to switch to the hosted voice.
 # Advice, never a failure: local narration always works. See scripts/lib/local-speed.mjs. Not when the local voice
 # was skipped (above): there is nothing local to time.
+# (the models downloading since the local voice's step: done first, so nothing fetches them twice)
+[ -n "$MODELS_PID" ] && wait "$MODELS_PID"
 if [ "$NEED_KOKORO" != 1 ] && [ "$NEED_WHISPER" != 1 ]; then :
 elif [ "$DRY" = 1 ]; then node "$ROOT/scripts/lib/local-speed.mjs" --dry-run "$PWD"
 else node "$ROOT/scripts/lib/local-speed.mjs" "$PWD"; fi
@@ -227,5 +305,6 @@ if [ "${#MISSING[@]}" -gt 0 ]; then
   exit 1
 fi
 if [ "$DRY" = 1 ]; then echo "✓ dry run done: the steps marked · would run"; exit 0; fi
-hf doctor || true
+# (no `hyperframes doctor` here: it checks what HyperFrames as a whole can use, Docker and a music model among them,
+# and says ✗ for each one reelplanner never runs; every tool reelplanner needs is checked above)
 echo "✓ reelplanner is set up"
