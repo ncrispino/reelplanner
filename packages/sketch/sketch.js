@@ -1,0 +1,313 @@
+// The sketch page (`reelplanning sketch`): one full-screen Excalidraw canvas where someone draws, says and types how
+// they think something works. Nothing here interprets the sketch; it records it faithfully, on one clock, for the
+// step after it (an agent, a model) to read:
+//
+//   recording.webm   the canvas as it was drawn, with the voice (the pointer drawn in, so "this one" can be seen)
+//   keyframes/       a picture of the canvas each time a thought ends (a pause in speech, a typed note, a lull
+//                    in drawing), with what was said since the one before: the same story for a model that takes
+//                    images but not video
+//   final.png        the finished drawing, and final.excalidraw, the scene itself (exact labels, which arrow joins
+//                    which box: what a model could misread from pixels)
+//   session.json     all of it on the recording's clock: the transcript, the notes, the keyframes, every edit
+//
+// Every time is in seconds on the recording's clock, so a time in session.json is a moment in recording.webm.
+// Served by scripts/sketch.mjs, which saves what Send posts; opened on its own (no server), Download gives a .zip.
+(() => {
+  "use strict";
+  const { React, createRoot, Excalidraw, exportToBlob, serializeAsJSON, convertToExcalidrawElements, CaptureUpdateAction } = window.ExcalidrawKit || {};
+  const $ = (id) => document.getElementById(id);
+  if (!Excalidraw) { $("status").textContent = "Excalidraw did not load (run `reelplanning vendor-excalidraw`)."; return; }
+
+  // ---------- the clock: seconds of recording, paused while the Finish panel is open ----------
+  let t0 = null, pausedAt = null, pausedTotal = 0;
+  const now = () => performance.now();
+  const clock = () => (t0 == null ? null : +(((pausedAt ?? now()) - t0 - pausedTotal) / 1000).toFixed(2));
+  const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+  const session = {
+    format: "reelplanning-sketch/1",
+    id: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z"),
+    question: "", context: null,
+    transcript: { source: "none", segments: [] },
+    notes: [], keyframes: [], events: [],
+    before_recording: 0,
+  };
+  const files = new Map(); // path in the bundle → Blob (keyframes; the rest is made at the end)
+
+  // ---------- context from the server, if there is one ----------
+  let server = false;
+  fetch("api/sketch/context").then((r) => r.ok ? r.json() : null).then((c) => {
+    if (!c || !c.ok) return;
+    server = true; session.context = c.context;
+    if (c.question && !$("question").value) $("question").value = c.question;
+    const x = c.context;
+    $("ctx").textContent = `${x.repoName} · ${x.branch || "detached"} @ ${(x.commit || "no commit").slice(0, 7)}${x.dirty ? " (uncommitted changes)" : ""}`;
+    $("ctx").title = `Saved to ${c.saveTo}`;
+  }).catch(() => {}).finally(() => { if (!server) $("send").hidden = true; });
+
+  // ---------- the canvas ----------
+  let api = null;
+  const known = new Map();      // element id → { version, isDeleted }
+  const lastLogged = new Map(); // element id → the update event to fold quick repeats into
+  const brief = (el) => {
+    const b = { id: el.id, kind: el.type };
+    if (el.text) b.text = el.text.slice(0, 300);
+    if (el.containerId) b.in = el.containerId;
+    if (el.startBinding?.elementId) b.from = el.startBinding.elementId;
+    if (el.endBinding?.elementId) b.to = el.endBinding.elementId;
+    return b;
+  };
+  function onScene(elements) {
+    // an element can also leave the scene outright (a scene replaced, a library cleared) rather than be marked deleted
+    if (elements.length < known.size) {
+      const here = new Set(elements.map((e) => e.id));
+      for (const [id, k] of known) if (!here.has(id)) {
+        known.delete(id);
+        if (t0 != null && !k.isDeleted) { session.events.push({ t: clock(), type: "delete", id }); sceneChanged(); }
+      }
+    }
+    for (const el of elements) {
+      const prev = known.get(el.id);
+      if (prev && prev.version === el.version) continue;
+      known.set(el.id, { version: el.version, isDeleted: el.isDeleted });
+      if (t0 == null) { if (!prev && !el.isDeleted) session.before_recording++; continue; }
+      const t = clock();
+      if (!prev) { if (!el.isDeleted) session.events.push({ t, type: "add", ...brief(el) }); }
+      else if (el.isDeleted && !prev.isDeleted) session.events.push({ t, type: "delete", id: el.id, kind: el.type });
+      else if (!el.isDeleted && prev.isDeleted) session.events.push({ t, type: "restore", ...brief(el) });
+      else if (!el.isDeleted) {
+        // a drag or a stroke changes an element dozens of times a second: one event per burst, with when it ended
+        const last = lastLogged.get(el.id);
+        if (last && t - (last.until ?? last.t) < 0.6) { last.until = t; Object.assign(last, brief(el)); }
+        else { const ev = { t, type: "update", ...brief(el) }; session.events.push(ev); lastLogged.set(el.id, ev); }
+      } else continue;
+      sceneChanged();
+    }
+  }
+  createRoot($("canvas")).render(React.createElement(Excalidraw, {
+    excalidrawAPI: (a) => { api = a; },
+    onChange: onScene,
+    initialData: { appState: { viewBackgroundColor: "#ffffff", currentItemFontFamily: 5 } },
+    UIOptions: { canvasActions: { export: false, saveToActiveFile: false, loadScene: true, toggleTheme: false } },
+  }));
+
+  // where the pointer is, drawn into the recording, so "this goes here" has a here
+  const pointer = { x: -1, y: -1, down: false };
+  addEventListener("pointermove", (e) => { pointer.x = e.clientX; pointer.y = e.clientY; }, { passive: true });
+  addEventListener("pointerdown", () => { pointer.down = true; }, { passive: true });
+  addEventListener("pointerup", () => { pointer.down = false; }, { passive: true });
+
+  // ---------- keyframes: a picture each time a thought ends ----------
+  let said = [], dirty = false, kfTimer = null, hearing = false;
+  function sceneChanged() { dirty = true; if (!hearing) schedule(2500); }
+  function schedule(ms) { clearTimeout(kfTimer); kfTimer = setTimeout(keyframe, ms); }
+  const live = () => api ? api.getSceneElements().filter((e) => !e.isDeleted) : [];
+  async function snapshot() {
+    const elements = live();
+    if (!elements.length) return null;
+    return exportToBlob({ elements, appState: { ...api.getAppState(), exportBackground: true, exportWithDarkMode: false, viewBackgroundColor: "#ffffff" },
+      files: api.getFiles(), mimeType: "image/png", exportPadding: 24 });
+  }
+  async function keyframe() {
+    clearTimeout(kfTimer);
+    if (t0 == null || pausedAt != null || (!dirty && !said.length)) return;
+    const t = clock(), n = session.keyframes.length + 1, text = said.join(" ").trim();
+    said = []; dirty = false;
+    const blob = await snapshot().catch(() => null);
+    const file = blob ? `keyframes/kf-${String(n).padStart(3, "0")}.png` : null;
+    if (blob) files.set(file, blob);
+    session.keyframes.push({ n, t, said: text, file, elements: live().length });
+  }
+
+  // ---------- recording: the canvas layers composed into one picture, with the mic ----------
+  let recorder = null, chunks = [], mic = null, draw = 0, mime = "", out = null;
+  function compose() {
+    const ctx = out.getContext("2d"), W = out.width, H = out.height;
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
+    for (const c of document.querySelectorAll("#canvas canvas")) if (c.width && c.height) ctx.drawImage(c, 0, 0, W, H);
+    if (pointer.x >= 0) {
+      const sx = W / innerWidth, r = (pointer.down ? 9 : 7) * sx;
+      ctx.beginPath(); ctx.arc(pointer.x * sx, pointer.y * sx, r, 0, Math.PI * 2);
+      ctx.fillStyle = pointer.down ? "rgba(184,85,46,.55)" : "rgba(184,85,46,.35)"; ctx.fill();
+    }
+    draw = requestAnimationFrame(compose);
+  }
+  async function startRecording() {
+    const scale = Math.min(devicePixelRatio || 1, 2, 1920 / innerWidth);
+    out = document.createElement("canvas");
+    out.width = Math.round(innerWidth * scale / 2) * 2; out.height = Math.round(innerHeight * scale / 2) * 2;
+    try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+    catch { mic = null; status("No microphone: recording the drawing only. Type notes instead."); }
+    compose();
+    const stream = out.captureStream(30);
+    if (mic) for (const tr of mic.getAudioTracks()) stream.addTrack(tr);
+    mime = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"].find((m) => window.MediaRecorder?.isTypeSupported(m)) || "";
+    recorder = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 2_500_000 } : undefined);
+    mime = recorder.mimeType || mime || "video/webm";
+    recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    recorder.start(1000);
+    t0 = now();
+    if (mic) startSpeech();
+  }
+
+  // ---------- speech: the browser's own recognizer, live; the audio is kept either way ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let sr = null, segStart = null, listening = false;
+  function startSpeech() {
+    if (!SR) { status("No live transcript in this browser. Your voice is still recorded and can be transcribed afterwards."); return; }
+    sr = new SR(); sr.continuous = true; sr.interimResults = true; sr.lang = navigator.language || "en-US";
+    session.transcript.source = "browser-speech"; session.transcript.lang = sr.lang;
+    sr.onresult = (e) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i], text = r[0].transcript.trim();
+        if (segStart == null) segStart = clock();
+        if (r.isFinal) {
+          if (text) {
+            session.transcript.segments.push({ t0: segStart, t1: clock(), text, confidence: +(r[0].confidence || 0).toFixed(2) });
+            said.push(text); caption(text, "");
+          }
+          segStart = null; hearing = false; schedule(700);
+        } else { interim += text + " "; hearing = true; }
+      }
+      if (interim) caption("", interim.trim());
+    };
+    sr.onerror = (e) => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { session.transcript.source = "none"; status("Live transcript is blocked here; your voice is still recorded."); } };
+    sr.onend = () => { if (listening) try { sr.start(); } catch {} };
+    listening = true; try { sr.start(); } catch {}
+  }
+  function stopSpeech() { listening = false; try { sr?.stop(); } catch {} }
+  let capTimer = 0;
+  function caption(final, interim) {
+    const c = $("caption"); c.innerHTML = "";
+    if (final) c.append(final + " ");
+    if (interim) { const s = document.createElement("span"); s.className = "interim"; s.textContent = interim; c.append(s); }
+    c.classList.add("show"); clearTimeout(capTimer); capTimer = setTimeout(() => c.classList.remove("show"), 3500);
+  }
+  function status(text) { $("status").textContent = text; }
+
+  // ---------- notes: typed, timestamped, and put on the canvas where you're looking ----------
+  $("note").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || !e.target.value.trim()) return;
+    e.preventDefault();
+    const text = e.target.value.trim(); e.target.value = "";
+    const note = { t: clock(), text, elementId: null };
+    if (api) {
+      // under what is already drawn, so a note never lands on top of a box; on an empty canvas, near the middle
+      const s = api.getAppState(), z = s.zoom?.value || 1, els = live();
+      let x = -s.scrollX + (s.width / 2 - 160) / z, y = -s.scrollY + (s.height / 3) / z;
+      if (els.length) { x = Math.min(...els.map((e) => e.x + Math.min(e.width, 0))); y = Math.max(...els.map((e) => e.y + Math.max(e.height, 0))) + 40; }
+      const [el] = convertToExcalidrawElements([{ type: "text", x, y, text, fontSize: 20, strokeColor: "#9C4524" }]);
+      api.updateScene({ elements: [...api.getSceneElementsIncludingDeleted(), el], captureUpdate: CaptureUpdateAction?.IMMEDIATELY });
+      note.elementId = el.id;
+    }
+    session.notes.push(note);
+    if (t0 != null) { said.push(`(typed) ${text}`); schedule(400); }
+  });
+
+  // ---------- the bar ----------
+  const recBtn = $("rec"), finBtn = $("finish");
+  setInterval(() => { const s = clock(); if (s != null) $("clock").textContent = fmt(s); }, 250);
+  recBtn.addEventListener("click", async () => {
+    if (t0 == null) {
+      recBtn.disabled = true; await startRecording(); recBtn.disabled = false;
+      recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause";
+      finBtn.disabled = false; if (!$("status").textContent.startsWith("No")) status("");
+    } else if (pausedAt == null) pause(); else resume();
+  });
+  function pause() { keyframe(); recorder?.pause(); stopSpeech(); pausedAt = now(); recBtn.classList.remove("on"); recBtn.querySelector(".label").textContent = "Resume"; }
+  function resume() { pausedTotal += now() - pausedAt; pausedAt = null; recorder?.resume(); if (mic) startSpeech(); recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause"; }
+
+  // ---------- finish: show exactly what will be sent ----------
+  let previewUrl = null;
+  finBtn.addEventListener("click", async () => {
+    if (pausedAt == null) pause();
+    await keyframe();
+    await new Promise((r) => { if (recorder?.state === "paused" || recorder?.state === "recording") { recorder.addEventListener("dataavailable", r, { once: true }); recorder.requestData(); } else r(); });
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(new Blob(chunks, { type: mime }));
+    $("playback").src = previewUrl;
+    const tr = $("transcript"); tr.innerHTML = "";
+    const lines = [...session.transcript.segments.map((s) => ({ t: s.t0, text: s.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
+    if (!lines.length) tr.innerHTML = `<p style="color:var(--ink-3)">${session.transcript.source === "none" ? "No live transcript; the audio is in the recording." : "Nothing said yet."}</p>`;
+    for (const l of lines) { const p = document.createElement("p"); const tm = document.createElement("time"); tm.textContent = fmt(l.t); p.append(tm, l.text); p.onclick = () => { $("playback").currentTime = l.t; }; tr.append(p); }
+    const fr = $("frames"); fr.innerHTML = "";
+    for (const k of session.keyframes) {
+      const d = document.createElement("div"); d.className = "kf";
+      if (k.file) { const img = document.createElement("img"); img.src = URL.createObjectURL(files.get(k.file)); img.alt = `Canvas at ${fmt(k.t)}`; d.append(img); }
+      const tm = document.createElement("time"); tm.textContent = fmt(k.t); d.append(tm, k.said || "(drawing)"); fr.append(d);
+    }
+    $("counts").textContent = `${session.keyframes.length} pictures · ${session.events.length} edits · ${fmt(clock() || 0)}`;
+    $("sent").style.display = "none";
+    $("review").classList.add("open");
+  });
+  $("keep").addEventListener("click", () => { $("review").classList.remove("open"); resume(); });
+
+  // ---------- the bundle ----------
+  async function bundle() {
+    await new Promise((r) => { if (!recorder || recorder.state === "inactive") return r(); recorder.addEventListener("stop", r, { once: true }); recorder.stop(); });
+    cancelAnimationFrame(draw); mic?.getTracks().forEach((t) => t.stop());
+    const ext = mime.includes("mp4") ? "mp4" : "webm";
+    const elements = live(), byId = new Map(elements.map((e) => [e.id, e]));
+    const finalEls = elements.filter((e) => !e.containerId).map((e) => {
+      const b = { id: e.id, kind: e.type, x: Math.round(e.x), y: Math.round(e.y), w: Math.round(e.width), h: Math.round(e.height) };
+      const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
+      if (e.text) b.text = e.text; if (label) b.label = label.text;
+      if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
+      if (e.frameId) b.frame = e.frameId; if (e.groupIds?.length) b.groups = e.groupIds; if (e.name) b.name = e.name;
+      return b;
+    });
+    const finalPng = await snapshot().catch(() => null);
+    const body = {
+      ...session, question: $("question").value.trim(), created: new Date().toISOString(),
+      duration_s: clock(), feedback: $("feedback").value.trim(),
+      recording: { file: `recording.${ext}`, mime, has_audio: !!mic, width: out?.width, height: out?.height, pointer_drawn: true },
+      final: { png: finalPng ? "final.png" : null, scene: "final.excalidraw", elements: finalEls },
+    };
+    const out_ = new Map(files);
+    out_.set("session.json", new Blob([JSON.stringify(body, null, 2)], { type: "application/json" }));
+    out_.set(`recording.${ext}`, new Blob(chunks, { type: mime }));
+    if (finalPng) out_.set("final.png", finalPng);
+    out_.set("final.excalidraw", new Blob([serializeAsJSON(api.getSceneElements(), api.getAppState(), api.getFiles(), "local")], { type: "application/json" }));
+    return out_;
+  }
+  let done = false;
+  $("send").addEventListener("click", async () => {
+    if (done) return; done = true;
+    const b = $("send"); b.disabled = true; b.textContent = "Sending…";
+    try {
+      const fd = new FormData(); for (const [path, blob] of await bundle()) fd.append(path, blob, path.split("/").pop());
+      const r = await fetch("api/sketch", { method: "POST", body: fd }), j = await r.json();
+      if (!j.ok) throw new Error(j.error || r.statusText);
+      sent(`Saved to <code>${esc(j.dir)}</code>. ${esc(j.next || "")}`);
+      b.textContent = "Sent";
+    } catch (e) { sent(`Could not send (${esc(e.message)}). Use Download instead.`); b.textContent = "Send failed"; done = false; b.disabled = false; }
+  });
+  $("download").addEventListener("click", async () => {
+    const z = zip(await bundle()); done = true;
+    const a = document.createElement("a"); a.href = URL.createObjectURL(await z); a.download = `sketch-${session.id}.zip`; a.click();
+    sent("Downloaded. Give the .zip to your agent, or unzip it next to the code it's about.");
+  });
+  function sent(html) { const s = $("sent"); s.innerHTML = html; s.style.display = "block"; $("keep").disabled = true; }
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // a zip with no compression (the video and pictures are compressed already): enough to hand over one file
+  const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = (u8) => { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  async function zip(entries) {
+    const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+    for (const [path, blob] of entries) {
+      const data = new Uint8Array(await blob.arrayBuffer()), name = enc.encode(`sketch-${session.id}/${path}`), crc = crc32(data);
+      const h = new DataView(new ArrayBuffer(30)); [[0, 0x04034b50, 4], [4, 20, 2], [8, 0, 2], [14, crc, 4], [18, data.length, 4], [22, data.length, 4], [26, name.length, 2]].forEach(([o, v, n]) => n === 4 ? h.setUint32(o, v, true) : h.setUint16(o, v, true));
+      parts.push(h.buffer, name, data);
+      const c = new DataView(new ArrayBuffer(46)); [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [16, crc, 4], [20, data.length, 4], [24, data.length, 4], [28, name.length, 2], [42, off, 4]].forEach(([o, v, n]) => n === 4 ? c.setUint32(o, v, true) : c.setUint16(o, v, true));
+      central.push(c.buffer, name); off += 30 + name.length + data.length;
+    }
+    const size = central.reduce((s, p) => s + p.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+    [[0, 0x06054b50, 4], [8, entries.size, 2], [10, entries.size, 2], [12, size, 4], [16, off, 4]].forEach(([o, v, n]) => n === 4 ? e.setUint32(o, v, true) : e.setUint16(o, v, true));
+    return new Blob([...parts, ...central, e.buffer], { type: "application/zip" });
+  }
+
+  // a hook for tests and for the step after this one
+  window.reelSketch = { session, get api() { return api; }, keyframe, clock };
+})();

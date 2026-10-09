@@ -56,7 +56,10 @@ const SCRIPT = ["version", "package", "case-study", "numerals", "hyperframes-ski
 // kind of question still a stop when the page goes seconds between ticks (stall).
 const PLAYER = ["answer-on-frame", "size", "band", "access", "stop", "details", "handoff", "revisit", "controls", "changes", "local-review",
   "marks", "finish", "rounds", "review-keys", "unclear", "group", "list", "parts-copy", "own-answer", "sound", "quiz", "decisions", "player", "frame-room", "ask", "explainer-finish", "guide-under", "guide-notes", "working", "record-reach", "stall"].map(P);
+// the sketch page: a browser spec, though its file sits with the script specs (scripts/test/sketch.spec.mjs)
+PLAYER.push(S("sketch"));
 const FAST = ["answer-on-frame", "size", "band", "access", "controls", "quiz", "decisions", "player", "frame-room", "ask", "guide-under", "guide-notes", "record-reach", "stall"].map(P);
+FAST.push(S("sketch"));
 // run on its own, over a built bundle (`npm run bundle:check`)
 const APART = [P("bundle")];
 // in the full run, run as this many shards side by side (the spec's own units; see the top)

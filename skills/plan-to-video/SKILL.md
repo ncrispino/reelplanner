@@ -186,6 +186,10 @@ written. What it can be of is open, so there is no list of kinds: the same princ
    `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
    repo by its path, hash and line count, never its text) and `video/` started with `kind: explainer`.
+   When they sketched it first (`$RP sketch`: a folder under `.reelplanning/sketches/` or `videos/sketches/`;
+   [docs/sketch.md](../../docs/sketch.md)), pin that folder too and read its `sketch.md` and keyframes before the
+   code: it is their picture of how it works, not a fact. The video then follows their picture's order and says
+   where the code agrees with it and where it does not (each difference with its source line), not a tour from scratch.
    Fill `explain.md`'s "What it will cover", "What it leaves out" and "Open threads" (what the sources leave open, said
    as what a plan would do where you can: "make the sweeper run on a timer (scene 5)").
 2. **What goes in the video** (explain-first step 1): their question first, in their words, and nothing that does

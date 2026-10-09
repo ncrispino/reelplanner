@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch it · reelplanning</title>
+<!-- The sketch page (`reelplanning sketch`): draw, say and type how you think something works, on one full-screen
+     Excalidraw canvas. It records the canvas with your voice, a transcript, a picture each time you finish a thought,
+     and the final drawing, and hands them to the repo as one folder: the input a video is made from. -->
+<link rel="stylesheet" href="vendor/excalidraw.css">
+<style>
+  :root { --ground: #F1EFE8; --paper: #FAF9F5; --ink: #141413; --ink-2: #3D3B37; --ink-3: #5C5953; --ink-rgb: 20,20,19; --accent: #B8552E; --accent-text: #9C4524;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ground: #0E0D0B; --paper: #141310; --ink: #F2EFE8; --ink-2: #CFCAC1; --ink-3: #A6A196; --ink-rgb: 242,239,232; --accent: #D2693F; --accent-text: #E3A184; } }
+  :root[data-theme="dark"] { --ground: #0E0D0B; --paper: #141310; --ink: #F2EFE8; --ink-2: #CFCAC1; --ink-3: #A6A196; --ink-rgb: 242,239,232; --accent: #D2693F; --accent-text: #E3A184; }
+  html, body { margin: 0; height: 100%; background: var(--ground); color: var(--ink); font: 14px/1.4 var(--sans); overflow: hidden; }
+  #canvas { position: fixed; inset: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .chip { background: var(--paper); border: 1px solid rgba(var(--ink-rgb), .14); border-radius: 12px; box-shadow: 0 2px 10px rgba(var(--ink-rgb), .08); }
+
+  /* what you are explaining: top right, under Excalidraw's own menu row */
+  #topic { position: fixed; top: 64px; right: 16px; z-index: 5; width: min(340px, calc(100% - 32px)); padding: 8px 12px; }
+  #topic label { display: block; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
+  #topic input { width: 100%; box-sizing: border-box; border: 0; background: transparent; color: var(--ink); font: 500 14px var(--sans); padding: 2px 0; outline: none; }
+  #topic .ctx { font: 11px var(--mono); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* the bar: bottom center, clear of Excalidraw's zoom (left) and help (right) */
+  #bar { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 8px;
+    padding: 6px; width: min(760px, calc(100% - 32px)); box-sizing: border-box; }
+  #rec { display: flex; align-items: center; gap: 8px; border: 0; border-radius: 9px; padding: 8px 12px; background: var(--accent); color: #fff; font-weight: 600; white-space: nowrap; }
+  #rec .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+  #rec.on .dot { animation: pulse 1.2s ease-in-out infinite; }
+  #rec.on { background: var(--ink); color: var(--paper); }
+  #rec.on .dot { background: var(--accent); }
+  @keyframes pulse { 50% { opacity: .35; } }
+  #clock { font: 12px var(--mono); color: var(--ink-3); min-width: 40px; }
+  #note { flex: 1; min-width: 0; border: 1px solid rgba(var(--ink-rgb), .14); border-radius: 9px; padding: 8px 10px; background: var(--ground); color: var(--ink); font: 14px var(--sans); outline: none; }
+  #note:focus { border-color: var(--accent); }
+  #finish { border: 1px solid rgba(var(--ink-rgb), .2); border-radius: 9px; padding: 8px 12px; background: transparent; font-weight: 600; white-space: nowrap; }
+  #finish:disabled { opacity: .45; cursor: default; }
+
+  /* what it is hearing, just above the bar */
+  #caption { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 5; max-width: min(760px, calc(100% - 32px)); padding: 6px 12px;
+    border-radius: 9px; background: rgba(var(--ink-rgb), .82); color: var(--paper); font-size: 15px; pointer-events: none; opacity: 0; transition: opacity .2s; }
+  #caption.show { opacity: 1; }
+  #caption .interim { opacity: .65; }
+  #status { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 4; font-size: 12px; color: var(--ink-3); pointer-events: none; white-space: nowrap; }
+
+  /* finish: what will be sent, to look at first */
+  #review { position: fixed; inset: 0; z-index: 20; display: none; place-items: center; background: rgba(var(--ink-rgb), .35); }
+  #review.open { display: grid; }
+  #review .panel { width: min(880px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow: auto; padding: 20px; box-sizing: border-box; }
+  #review h2 { margin: 0 0 4px; font-size: 18px; }
+  #review .sub { color: var(--ink-3); margin: 0 0 16px; }
+  #review .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { #review .grid { grid-template-columns: 1fr; } #bar { flex-wrap: wrap; } #note { order: 3; flex-basis: 100%; } #topic { top: 64px; } }
+  #review video { width: 100%; border-radius: 9px; background: #000; aspect-ratio: 16 / 10; }
+  #review h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
+  #transcript { max-height: 220px; overflow: auto; font-size: 13px; }
+  #transcript p { margin: 0 0 6px; }
+  #transcript time, .kf time { font: 11px var(--mono); color: var(--accent-text); margin-right: 6px; }
+  #frames { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin: 12px 0; }
+  .kf { flex: 0 0 140px; font-size: 11px; color: var(--ink-2); }
+  .kf img { width: 140px; height: 90px; object-fit: contain; background: #fff; border-radius: 6px; border: 1px solid rgba(var(--ink-rgb), .12); display: block; margin-bottom: 4px; }
+  #feedback { width: 100%; box-sizing: border-box; min-height: 64px; border: 1px solid rgba(var(--ink-rgb), .18); border-radius: 9px; padding: 8px 10px; background: var(--ground); color: var(--ink); font: 14px var(--sans); }
+  #review .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+  #review .row button { border-radius: 9px; padding: 8px 14px; border: 1px solid rgba(var(--ink-rgb), .2); background: transparent; font-weight: 600; }
+  #review .row .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #sent { margin-top: 12px; padding: 10px 12px; border-radius: 9px; background: var(--ground); font-size: 13px; display: none; }
+  #sent code { font: 12px var(--mono); }
+  .counts { font: 12px var(--mono); color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div id="canvas"></div>
+
+<div id="topic" class="chip">
+  <label for="question">What are you explaining?</label>
+  <input id="question" placeholder="e.g. how upload resume works" autocomplete="off">
+  <div class="ctx" id="ctx">not connected to a repo</div>
+</div>
+
+<div id="status">Press Record, then draw and talk. Type in the box to add a note.</div>
+<div id="caption" aria-live="polite"></div>
+
+<div id="bar" class="chip">
+  <button id="rec" type="button" title="Start, pause or resume recording"><span class="dot"></span><span class="label">Record</span></button>
+  <span id="clock">0:00</span>
+  <input id="note" placeholder="Type a note, Enter to add it (it goes on the canvas too)" autocomplete="off">
+  <button id="finish" type="button" disabled>Finish</button>
+</div>
+
+<div id="review" role="dialog" aria-modal="true" aria-labelledby="review-title">
+  <div class="panel chip">
+    <h2 id="review-title">Check what you're sending</h2>
+    <p class="sub">This is everything the next step gets. Play it back; if it's not what you meant, close this and keep going.</p>
+    <div class="grid">
+      <div><video id="playback" controls playsinline></video></div>
+      <div><h3>Transcript</h3><div id="transcript"></div></div>
+    </div>
+    <h3 style="margin-top:14px">Pictures at each pause <span class="counts" id="counts"></span></h3>
+    <div id="frames"></div>
+    <h3>Anything to flag? (optional)</h3>
+    <textarea id="feedback" placeholder="e.g. sure about the queue part, guessing on how retries work"></textarea>
+    <div class="row">
+      <button id="keep" type="button">Keep sketching</button>
+      <button id="download" type="button">Download instead</button>
+      <button id="send" class="primary" type="button">Send to the repo</button>
+    </div>
+    <div id="sent"></div>
+  </div>
+</div>
+
+<script>window.EXCALIDRAW_ASSET_PATH = new URL("vendor/", location.href).href;</script>
+<script src="vendor/excalidraw.js"></script>
+<script src="sketch.js"></script>
+</body>
+</html>
