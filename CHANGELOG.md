@@ -18,8 +18,11 @@
   switch to turn it off, and its questions are kept in `session.json` and in `sketch.md`'s timeline.
   `sketch.md` tells the person's changes of mind (renamed, rerouted, erased, moved, restyled, undone, paused) in its
   timeline, and the final drawing in words: frames and what is in them, dashes and colours, loose arrow ends, what a
-  note sits by, groups, what a freehand mark circles or underlines, and rows of where things are. Tried on 19 scenarios
-  written for it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps).
+  note sits by, groups, what a freehand mark circles or underlines, rows of where things are, numbered steps in order,
+  and what the pointer rested on while something was said ("this one" → "Resizer"). Labels are kept as typed, not
+  as Excalidraw wrapped them to fit their box. `sketch-scenarios.spec.mjs` (full run) plays 20 sessions written for
+  it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps, alternatives,
+  pointing) through the real page; `sketch-scenarios/judge.mjs` measures whether an agent can tell each one's story.
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
   CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.

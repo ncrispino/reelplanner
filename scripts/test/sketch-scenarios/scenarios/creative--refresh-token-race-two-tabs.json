@@ -1,0 +1,619 @@
+{
+  "id": "refresh-token-race-two-tabs",
+  "title": "Two tabs refresh the same token: timeline of the race",
+  "persona": "A frontend engineer chasing random logouts in a single-page app, drawing what they think happens when two open tabs refresh the session at the same moment.",
+  "topic": "why users get logged out when two tabs refresh the token at once",
+  "realism": "Race conditions are almost always whiteboarded as lanes with time running left to right; the order of events lives only in their horizontal position, and people mark 'the moment it breaks' with a vertical line and circle the overlap window rather than drawing arrows between the two lanes.",
+  "steps": [
+    {
+      "t": 2.5,
+      "say": "Okay, so this is the logout bug, I'm pretty sure it's a race between two tabs refreshing at the same time."
+    },
+    {
+      "t": 4.5,
+      "add": [
+        {
+          "id": "lbl_a",
+          "type": "text",
+          "x": 50,
+          "y": 162,
+          "text": "Tab A",
+          "fontSize": 20
+        },
+        {
+          "id": "lane_a",
+          "type": "line",
+          "x": 180,
+          "y": 175,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              680,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "t": 6.5,
+      "add": [
+        {
+          "id": "lbl_b",
+          "type": "text",
+          "x": 50,
+          "y": 292,
+          "text": "Tab B",
+          "fontSize": 20
+        },
+        {
+          "id": "lane_b",
+          "type": "line",
+          "x": 180,
+          "y": 305,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              680,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "t": 8.5,
+      "add": [
+        {
+          "id": "lbl_s",
+          "type": "text",
+          "x": 50,
+          "y": 422,
+          "text": "Auth server",
+          "fontSize": 20
+        },
+        {
+          "id": "lane_s",
+          "type": "line",
+          "x": 180,
+          "y": 435,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              680,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "t": 11.5,
+      "say": "Three lanes: tab A, tab B and the auth server, and time goes left to right."
+    },
+    {
+      "t": 13.5,
+      "add": [
+        {
+          "id": "time_axis",
+          "type": "arrow",
+          "x": 190,
+          "y": 525,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              660,
+              0
+            ]
+          ],
+          "label": "time"
+        }
+      ]
+    },
+    {
+      "t": 17.5,
+      "say": "Both tabs wake up at about the same moment, because the access token expires for both of them at once."
+    },
+    {
+      "t": 19.5,
+      "add": [
+        {
+          "id": "a_read",
+          "type": "rectangle",
+          "x": 190,
+          "y": 153,
+          "width": 110,
+          "height": 44,
+          "label": "read RT1"
+        }
+      ]
+    },
+    {
+      "t": 21.0,
+      "add": [
+        {
+          "id": "b_read",
+          "type": "rectangle",
+          "x": 220,
+          "y": 283,
+          "width": 110,
+          "height": 44,
+          "label": "read RT1"
+        }
+      ]
+    },
+    {
+      "t": 25.5,
+      "say": "Each one reads the refresh token, RT1, out of local storage, and there's no lock that I know of."
+    },
+    {
+      "t": 28.0,
+      "add": [
+        {
+          "id": "a_post",
+          "type": "rectangle",
+          "x": 360,
+          "y": 153,
+          "width": 160,
+          "height": 44,
+          "label": "POST /refresh (RT1)"
+        }
+      ]
+    },
+    {
+      "t": 30.0,
+      "add": [
+        {
+          "id": "b_post",
+          "type": "rectangle",
+          "x": 340,
+          "y": 283,
+          "width": 160,
+          "height": 44,
+          "label": "POST /refresh (RT1)"
+        }
+      ]
+    },
+    {
+      "t": 33.0,
+      "say": "Then they both post to refresh, with the same RT1."
+    },
+    {
+      "t": 35.5,
+      "add": [
+        {
+          "id": "rotate",
+          "type": "rectangle",
+          "x": 400,
+          "y": 413,
+          "width": 140,
+          "height": 44,
+          "label": "rotate"
+        }
+      ]
+    },
+    {
+      "t": 37.0,
+      "add": [
+        {
+          "id": "ar_a_rot",
+          "type": "arrow",
+          "from": "a_post",
+          "to": "rotate"
+        }
+      ]
+    },
+    {
+      "t": 41.5,
+      "say": "The server rotates it, so RT1 becomes RT2, and it sends RT2 back to tab A."
+    },
+    {
+      "t": 43.5,
+      "add": [
+        {
+          "id": "a_store",
+          "type": "rectangle",
+          "x": 605,
+          "y": 153,
+          "width": 110,
+          "height": 44,
+          "label": "store RT2"
+        }
+      ]
+    },
+    {
+      "t": 44.5,
+      "add": [
+        {
+          "id": "ar_rot_store",
+          "type": "arrow",
+          "from": "rotate",
+          "to": "a_store",
+          "label": "RT2"
+        }
+      ]
+    },
+    {
+      "t": 48.5,
+      "say": "Hmm, no, tab B's post lands after A's, A's request is already being handled, let me shift that over."
+    },
+    {
+      "t": 50.5,
+      "move": {
+        "id": "b_post",
+        "x": 430,
+        "y": 283
+      }
+    },
+    {
+      "t": 52.0,
+      "say": "And then tab B's request arrives."
+    },
+    {
+      "t": 53.0,
+      "add": [
+        {
+          "id": "reused",
+          "type": "rectangle",
+          "x": 600,
+          "y": 413,
+          "width": 200,
+          "height": 44,
+          "label": "RT1 reused → revoke all"
+        }
+      ]
+    },
+    {
+      "t": 54.5,
+      "add": [
+        {
+          "id": "ar_b_reused",
+          "type": "arrow",
+          "from": "b_post",
+          "to": "reused"
+        }
+      ]
+    },
+    {
+      "t": 59.0,
+      "say": "So when B comes in with RT1, the server sees an old token reused, and I think it revokes the whole token family."
+    },
+    {
+      "t": 60.5,
+      "restyle": {
+        "id": "reused",
+        "strokeColor": "#e03131",
+        "backgroundColor": "#ffc9c9"
+      }
+    },
+    {
+      "t": 62.5,
+      "add": [
+        {
+          "id": "b_logout",
+          "type": "rectangle",
+          "x": 700,
+          "y": 283,
+          "width": 140,
+          "height": 44,
+          "label": "401 → logout"
+        }
+      ]
+    },
+    {
+      "t": 63.5,
+      "add": [
+        {
+          "id": "ar_reused_401",
+          "type": "arrow",
+          "from": "reused",
+          "to": "b_logout"
+        }
+      ]
+    },
+    {
+      "t": 68.0,
+      "say": "Tab B gets a 401 and logs out, and then I'm guessing tab A's next call fails too, since RT2 was in the same family."
+    },
+    {
+      "t": 70.0,
+      "add": [
+        {
+          "id": "a_next",
+          "type": "rectangle",
+          "x": 735,
+          "y": 153,
+          "width": 125,
+          "height": 44,
+          "label": "next call 401?",
+          "strokeStyle": "dashed"
+        }
+      ]
+    },
+    {
+      "t": 72.0,
+      "relabel": {
+        "id": "rotate",
+        "label": "rotate RT1→RT2"
+      }
+    },
+    {
+      "t": 75.5,
+      "say": "And this is the moment it breaks, right here, when the second refresh hits the server."
+    },
+    {
+      "t": 77.5,
+      "add": [
+        {
+          "id": "break_line",
+          "type": "line",
+          "x": 590,
+          "y": 125,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              375
+            ]
+          ],
+          "strokeColor": "#e03131",
+          "strokeStyle": "dashed"
+        },
+        {
+          "id": "break_txt",
+          "type": "text",
+          "x": 600,
+          "y": 100,
+          "text": "breaks here",
+          "fontSize": 16,
+          "strokeColor": "#e03131"
+        }
+      ]
+    },
+    {
+      "t": 81.5,
+      "say": "And this is the overlap: both tabs are holding RT1 at the same time, that's the window."
+    },
+    {
+      "t": 83.0,
+      "pen": {
+        "points": [
+          [
+            350,
+            209
+          ],
+          [
+            357,
+            236
+          ],
+          [
+            357,
+            265
+          ],
+          [
+            349,
+            293
+          ],
+          [
+            333,
+            317
+          ],
+          [
+            311,
+            333
+          ],
+          [
+            287,
+            341
+          ],
+          [
+            263,
+            344
+          ],
+          [
+            239,
+            342
+          ],
+          [
+            215,
+            334
+          ],
+          [
+            193,
+            319
+          ],
+          [
+            176,
+            296
+          ],
+          [
+            168,
+            268
+          ],
+          [
+            167,
+            239
+          ],
+          [
+            173,
+            212
+          ],
+          [
+            184,
+            187
+          ],
+          [
+            198,
+            164
+          ],
+          [
+            216,
+            145
+          ],
+          [
+            239,
+            132
+          ],
+          [
+            265,
+            128
+          ],
+          [
+            290,
+            134
+          ],
+          [
+            312,
+            149
+          ],
+          [
+            330,
+            169
+          ],
+          [
+            343,
+            192
+          ],
+          [
+            353,
+            217
+          ],
+          [
+            357,
+            245
+          ]
+        ]
+      }
+    },
+    {
+      "t": 85.0,
+      "pause": 3
+    },
+    {
+      "t": 88.5,
+      "note": "not sure the server revokes the whole family or only rejects the second request"
+    },
+    {
+      "t": 93.5,
+      "say": "What I really don't know is whether we ever had a lock across tabs, like a broadcast channel, or if that was only ever talked about."
+    },
+    {
+      "t": 95.5,
+      "pen": {
+        "points": [
+          [
+            605,
+            467
+          ],
+          [
+            629,
+            469
+          ],
+          [
+            652,
+            466
+          ],
+          [
+            676,
+            465
+          ],
+          [
+            700,
+            468
+          ],
+          [
+            724,
+            469
+          ],
+          [
+            748,
+            466
+          ],
+          [
+            771,
+            466
+          ],
+          [
+            795,
+            469
+          ]
+        ]
+      }
+    },
+    {
+      "t": 98.0,
+      "say": "Yeah, that's my picture of it."
+    }
+  ],
+  "expect": {
+    "final_labels": [
+      "Tab A",
+      "Tab B",
+      "Auth server",
+      "time",
+      "read RT1",
+      "POST /refresh (RT1)",
+      "rotate RT1→RT2",
+      "store RT2",
+      "RT2",
+      "RT1 reused → revoke all",
+      "401 → logout",
+      "next call 401?",
+      "breaks here"
+    ],
+    "absent_labels": [
+      "rotate"
+    ],
+    "arrows": [
+      [
+        "rotate RT1→RT2",
+        "store RT2",
+        "RT2"
+      ],
+      [
+        "POST /refresh (RT1)",
+        "rotate RT1→RT2"
+      ],
+      [
+        "POST /refresh (RT1)",
+        "RT1 reused → revoke all"
+      ],
+      [
+        "RT1 reused → revoke all",
+        "401 → logout"
+      ]
+    ],
+    "story": [
+      "the drawing is a timeline: three horizontal lanes (Tab A, Tab B, Auth server) and time runs left to right, so a box further right happens later (said aloud, and the 'time' arrow at the bottom points right)",
+      "which lane a box sits on says who does it: there are two boxes both labelled 'read RT1' and two labelled 'POST /refresh (RT1)', one in Tab A's lane and one in Tab B's; only their vertical position tells them apart",
+      "Tab B reads RT1 slightly after Tab A, and both read it before Tab A has stored RT2",
+      "they first drew Tab B's POST before Tab A's, then moved it to the right so it lands after A's request (A's is already being handled)",
+      "the red dashed vertical line labelled 'breaks here' marks the moment it breaks: when Tab B's refresh with the old RT1 reaches the server, after the rotation",
+      "the freehand circle on the left is around both 'read RT1' boxes: the window where both tabs hold the same RT1 (said aloud: 'that's the window')",
+      "the red box 'RT1 reused → revoke all' is the failure; red was not given a legend, but it is the box they said logs everyone out",
+      "'next call 401?' is dashed and has a question mark: a guess that Tab A's next call also fails because RT2 was in the same family",
+      "the underline under 'RT1 reused → revoke all' (and the typed note) mark what they are unsure of: revoke the whole family, or just reject the second request",
+      "they do not know whether a cross-tab lock (e.g. a broadcast channel) was ever built"
+    ],
+    "partner_should_ask_about": [
+      "does the server revoke the whole token family on reuse, or only reject the second request",
+      "is there any cross-tab lock or shared refresh (broadcast channel, storage event) today",
+      "what does Tab A do after storing RT2: does its next call really fail (the dashed box)"
+    ]
+  }
+}

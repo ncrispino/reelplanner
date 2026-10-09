@@ -1,0 +1,69 @@
+{
+  "id": "session-store-relabel-churn",
+  "title": "Login sessions: one box renamed three times, arrow labels and a note rewritten",
+  "persona": "A full-stack developer, before asking the agent why users get logged out after every deploy, sketching where they think a login session lives.",
+  "topic": "where a logged-in session actually lives",
+  "realism": "Finding the right word is how people find the right model: calling it 'Cache' implies a fallback on miss, and noticing that is wrong ('if it's gone you're logged out') changes another arrow too. The renames carry the reasoning; the final names alone look like they were always known.",
+  "steps": [
+    {"t": 2.5, "say": "This is about where a logged-in session actually lives."},
+    {"t": 4.0, "add": [{"id": "browser", "type": "rectangle", "x": 60, "y": 250, "width": 150, "height": 70, "label": "Browser"}]},
+    {"t": 6.0, "add": [{"id": "api", "type": "rectangle", "x": 300, "y": 250, "width": 160, "height": 70, "label": "API"}]},
+    {"t": 7.0, "add": [{"id": "a1", "type": "arrow", "from": "browser", "to": "api", "label": "cookie"}]},
+    {"t": 10.0, "say": "The browser sends the cookie with every request to the API."},
+    {"t": 12.0, "add": [{"id": "store", "type": "rectangle", "x": 560, "y": 170, "width": 180, "height": 70, "label": "Cache", "strokeStyle": "dashed"}]},
+    {"t": 13.5, "add": [{"id": "a2", "type": "arrow", "from": "api", "to": "store", "label": "lookup"}]},
+    {"t": 17.0, "say": "The API looks the session up in the cache."},
+    {"t": 19.0, "add": [{"id": "db", "type": "rectangle", "x": 560, "y": 360, "width": 180, "height": 70, "label": "Postgres"}]},
+    {"t": 20.0, "add": [{"id": "a3", "type": "arrow", "from": "api", "to": "db", "label": "on miss"}]},
+    {"t": 23.0, "say": "And if it's not in the cache it falls back to Postgres."},
+    {"t": 27.5, "say": "Hmm, no, that's not right, it's not really a cache, if it's gone you're logged out."},
+    {"t": 29.0, "relabel": {"id": "store", "label": "Session store"}},
+    {"t": 31.0, "relabel": {"id": "a3", "label": "load user"}},
+    {"t": 34.5, "say": "So it's the session store, and Postgres is only for loading the user row."},
+    {"t": 36.0, "relabel": {"id": "db", "label": "Postgres (users)"}},
+    {"t": 38.0, "add": [{"id": "ttl", "type": "text", "x": 560, "y": 262, "text": "TTL 30 min?", "fontSize": 16}]},
+    {"t": 41.0, "say": "Sessions expire after thirty minutes, I think."},
+    {"t": 44.0, "relabel": {"id": "a2", "label": "GET sess:<id>"}},
+    {"t": 47.5, "say": "The lookup is literally a GET on sess colon the session id."},
+    {"t": 49.0, "relabel": {"id": "a1", "label": "session id cookie"}},
+    {"t": 53.0, "relabel": {"id": "ttl", "label": "TTL 30 min, sliding?"}},
+    {"t": 56.5, "say": "Actually I think the TTL slides, it gets reset when you make a request."},
+    {"t": 60.5, "say": "And to be concrete, the session store is Redis, its own instance, not the shared one."},
+    {"t": 62.0, "relabel": {"id": "store", "label": "Redis (sessions)"}},
+    {"t": 64.0, "restyle": {"id": "store", "strokeStyle": "solid", "strokeColor": "#1971c2", "backgroundColor": "#a5d8ff"}},
+    {"t": 67.0, "say": "I'm confident about that part, so it gets a solid line."},
+    {"t": 69.0, "add": [{"id": "deploy", "type": "rectangle", "x": 300, "y": 480, "width": 160, "height": 70, "label": "Deploy", "strokeColor": "#f08c00", "backgroundColor": "#ffec99"}]},
+    {"t": 70.5, "add": [{"id": "a4", "type": "arrow", "from": "deploy", "to": "store", "label": "flush?", "strokeStyle": "dashed", "strokeColor": "#e03131"}]},
+    {"t": 74.5, "say": "What I don't get is why a deploy logs everyone out, maybe something flushes Redis."},
+    {"t": 76.5, "say": "Let me move this note down so it's not in the way."},
+    {"t": 78.0, "move": {"id": "ttl", "x": 560, "y": 450}},
+    {"t": 80.5, "relabel": {"id": "ttl", "label": "TTL 30 min sliding, reset on each request"}},
+    {"t": 83.0, "note": "users get logged out after every deploy - is it the flush or the cookie signing key?"},
+    {"t": 85.0, "pause": 3},
+    {"t": 90.0, "relabel": {"id": "a4", "label": "FLUSHDB on migrate?"}},
+    {"t": 94.0, "say": "Or maybe it's the migration step that flushes it, I'm really not sure which."},
+    {"t": 98.0, "say": "That's my picture of it."}
+  ],
+  "expect": {
+    "final_labels": ["Browser", "API", "Redis (sessions)", "Postgres (users)", "session id cookie", "GET sess:<id>", "load user", "Deploy", "FLUSHDB on migrate?", "TTL 30 min sliding, reset on each request"],
+    "absent_labels": ["Cache", "Session store", "lookup", "on miss", "TTL 30 min?", "TTL 30 min, sliding?", "flush?"],
+    "arrows": [
+      ["Browser", "API", "session id cookie"],
+      ["API", "Redis (sessions)", "GET sess:<id>"],
+      ["API", "Postgres (users)", "load user"],
+      ["Deploy", "Redis (sessions)", "FLUSHDB on migrate?"]
+    ],
+    "story": [
+      "The box now called 'Redis (sessions)' is one element renamed twice: 'Cache' (drawn ~0:12) -> 'Session store' (~0:29) -> 'Redis (sessions)' (~1:02).",
+      "The first rename was a change of model, not of wording: it is not a cache because losing it logs you out, so the API -> Postgres arrow changed from 'on miss' to 'load user' at the same time; Postgres holds users, not a session fallback.",
+      "The second rename made it concrete (its own Redis instance, not the shared one), and the box went from dashed to solid blue because they became confident.",
+      "The API -> session store arrow was relabelled from 'lookup' to 'GET sess:<id>', and Browser -> API from 'cookie' to 'session id cookie' (that one silently).",
+      "The TTL text was edited twice: 'TTL 30 min?' -> 'TTL 30 min, sliding?' -> 'TTL 30 min sliding, reset on each request', and was moved below Postgres.",
+      "The open question is why deploys log everyone out: the dashed red Deploy -> Redis arrow went from 'flush?' to 'FLUSHDB on migrate?', and the typed note also suspects the cookie signing key."
+    ],
+    "partner_should_ask_about": [
+      "whether a deploy flushes Redis or rotates the cookie signing key",
+      "whether the TTL really slides on each request"
+    ]
+  }
+}

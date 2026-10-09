@@ -1,0 +1,508 @@
+{
+ "id": "alternatives-option-frames",
+ "title": "Cache invalidation: Option A vs Option B, one crossed out",
+ "persona": "A staff engineer on the catalog team deciding how product prices get out of the cache, before asking the agent for a plan; both options reuse the same App, Cache and DB.",
+ "topic": "TTL vs invalidate-on-write for the product cache",
+ "realism": "Side-by-side alternatives with the same component names in each, a first lean that is then reversed, and the loser crossed out is the standard design-review whiteboard; the choice and its reason are the point of the session.",
+ "steps": [
+  {
+   "t": 1.5,
+   "say": "Two ways to do this, I'll draw both."
+  },
+  {
+   "t": 3.5,
+   "add": [
+    {
+     "id": "a-app",
+     "type": "rectangle",
+     "x": 70,
+     "y": 150,
+     "width": 130,
+     "height": 60,
+     "label": "App"
+    },
+    {
+     "id": "a-cache",
+     "type": "rectangle",
+     "x": 270,
+     "y": 150,
+     "width": 140,
+     "height": 60,
+     "label": "Cache"
+    },
+    {
+     "id": "a-db",
+     "type": "rectangle",
+     "x": 270,
+     "y": 320,
+     "width": 140,
+     "height": 60,
+     "label": "DB"
+    }
+   ]
+  },
+  {
+   "t": 5.0,
+   "add": [
+    {
+     "id": "a1",
+     "type": "arrow",
+     "from": "a-app",
+     "to": "a-cache",
+     "label": "get"
+    },
+    {
+     "id": "a2",
+     "type": "arrow",
+     "from": "a-cache",
+     "to": "a-db",
+     "label": "miss"
+    }
+   ]
+  },
+  {
+   "t": 8.0,
+   "say": "Option A is what we have, the app reads the cache and a miss goes to the database."
+  },
+  {
+   "t": 10.0,
+   "add": [
+    {
+     "id": "a-ttl",
+     "type": "text",
+     "x": 80,
+     "y": 330,
+     "text": "TTL 60s",
+     "fontSize": 20
+    }
+   ]
+  },
+  {
+   "t": 12.5,
+   "say": "And entries just expire after sixty seconds."
+  },
+  {
+   "t": 14.5,
+   "frame": {
+    "id": "fa",
+    "name": "Option A: TTL only",
+    "children": [
+     "a-app",
+     "a-cache",
+     "a-db",
+     "a1",
+     "a2",
+     "a-ttl"
+    ]
+   }
+  },
+  {
+   "t": 17.0,
+   "say": "That's option A, TTL only."
+  },
+  {
+   "t": 20.0,
+   "add": [
+    {
+     "id": "b-app",
+     "type": "rectangle",
+     "x": 490,
+     "y": 150,
+     "width": 130,
+     "height": 60,
+     "label": "App"
+    },
+    {
+     "id": "b-cache",
+     "type": "rectangle",
+     "x": 700,
+     "y": 150,
+     "width": 140,
+     "height": 60,
+     "label": "Cache"
+    },
+    {
+     "id": "b-db",
+     "type": "rectangle",
+     "x": 490,
+     "y": 320,
+     "width": 130,
+     "height": 60,
+     "label": "DB"
+    },
+    {
+     "id": "b-cdc",
+     "type": "rectangle",
+     "x": 700,
+     "y": 320,
+     "width": 140,
+     "height": 60,
+     "label": "Change feed"
+    }
+   ]
+  },
+  {
+   "t": 23.0,
+   "say": "Option B, same app, same cache, but the database pushes changes out."
+  },
+  {
+   "t": 25.0,
+   "add": [
+    {
+     "id": "b1",
+     "type": "arrow",
+     "from": "b-app",
+     "to": "b-cache",
+     "label": "get"
+    },
+    {
+     "id": "b2",
+     "type": "arrow",
+     "from": "b-app",
+     "to": "b-db",
+     "label": "write price"
+    },
+    {
+     "id": "b3",
+     "type": "arrow",
+     "from": "b-db",
+     "to": "b-cdc"
+    },
+    {
+     "id": "b4",
+     "type": "arrow",
+     "from": "b-cdc",
+     "to": "b-cache",
+     "label": "delete key"
+    }
+   ]
+  },
+  {
+   "t": 29.0,
+   "say": "A price write lands in the DB, the change feed sees it and deletes the cache key."
+  },
+  {
+   "t": 31.0,
+   "frame": {
+    "id": "fb",
+    "name": "Option B: invalidate on write",
+    "children": [
+     "b-app",
+     "b-cache",
+     "b-db",
+     "b-cdc",
+     "b1",
+     "b2",
+     "b3",
+     "b4"
+    ]
+   }
+  },
+  {
+   "t": 34.0,
+   "say": "My first instinct is A, it's simpler and it's what we run today."
+  },
+  {
+   "t": 36.0,
+   "pen": {
+    "points": [
+     [
+      422,
+      322
+     ],
+     [
+      395,
+      371
+     ],
+     [
+      354,
+      410
+     ],
+     [
+      301,
+      436
+     ],
+     [
+      243,
+      445
+     ],
+     [
+      184,
+      437
+     ],
+     [
+      131,
+      413
+     ],
+     [
+      88,
+      375
+     ],
+     [
+      60,
+      326
+     ],
+     [
+      50,
+      272
+     ],
+     [
+      58,
+      218
+     ],
+     [
+      85,
+      169
+     ],
+     [
+      126,
+      130
+     ],
+     [
+      179,
+      104
+     ],
+     [
+      237,
+      95
+     ],
+     [
+      296,
+      103
+     ],
+     [
+      349,
+      127
+     ],
+     [
+      392,
+      165
+     ],
+     [
+      420,
+      214
+     ],
+     [
+      430,
+      268
+     ],
+     [
+      430,
+      316
+     ]
+    ]
+   }
+  },
+  {
+   "t": 39.5,
+   "say": "So I'd circle A."
+  },
+  {
+   "t": 42.0,
+   "pause": 5
+  },
+  {
+   "t": 45.0,
+   "say": "No, wait, the support tickets were about prices being stale at checkout."
+  },
+  {
+   "t": 49.0,
+   "say": "Sixty seconds of a wrong price is exactly the bug, so A is out."
+  },
+  {
+   "t": 50.5,
+   "pen": {
+    "points": [
+     [
+      70,
+      140
+     ],
+     [
+      109,
+      176
+     ],
+     [
+      148,
+      207
+     ],
+     [
+      187,
+      243
+     ],
+     [
+      226,
+      273
+     ],
+     [
+      264,
+      310
+     ],
+     [
+      303,
+      340
+     ],
+     [
+      342,
+      376
+     ],
+     [
+      381,
+      407
+     ],
+     [
+      420,
+      443
+     ]
+    ]
+   }
+  },
+  {
+   "t": 52.0,
+   "pen": {
+    "points": [
+     [
+      420,
+      140
+     ],
+     [
+      381,
+      176
+     ],
+     [
+      342,
+      207
+     ],
+     [
+      303,
+      243
+     ],
+     [
+      264,
+      273
+     ],
+     [
+      226,
+      310
+     ],
+     [
+      187,
+      340
+     ],
+     [
+      148,
+      376
+     ],
+     [
+      109,
+      407
+     ],
+     [
+      70,
+      443
+     ]
+    ]
+   }
+  },
+  {
+   "t": 55.0,
+   "say": "Crossing A out, we go with B."
+  },
+  {
+   "t": 57.5,
+   "add": [
+    {
+     "id": "pick",
+     "type": "text",
+     "x": 490,
+     "y": 500,
+     "text": "CHOSEN: B",
+     "fontSize": 28,
+     "strokeColor": "#2f9e44"
+    }
+   ]
+  },
+  {
+   "t": 60.5,
+   "say": "The part I'm not sure about is whether we already have a change feed on that table."
+  },
+  {
+   "t": 62.0,
+   "restyle": {
+    "id": "b-cdc",
+    "strokeStyle": "dashed"
+   }
+  },
+  {
+   "t": 65.5,
+   "say": "I think the search indexer reads one, maybe we can hang off that."
+  },
+  {
+   "t": 69.0,
+   "note": "keep TTL as a backstop in B? maybe 10 min"
+  },
+  {
+   "t": 73.0,
+   "say": "And I'd probably keep a long TTL in B as a safety net."
+  },
+  {
+   "t": 77.0,
+   "say": "That's it, B, and tell me if the change feed exists."
+  }
+ ],
+ "expect": {
+  "final_labels": [
+   "App",
+   "Cache",
+   "DB",
+   "Change feed",
+   "get",
+   "miss",
+   "write price",
+   "delete key",
+   "TTL 60s",
+   "Option A: TTL only",
+   "Option B: invalidate on write",
+   "CHOSEN: B"
+  ],
+  "absent_labels": [],
+  "arrows": [
+   [
+    "App",
+    "Cache",
+    "get"
+   ],
+   [
+    "Cache",
+    "DB",
+    "miss"
+   ],
+   [
+    "App",
+    "DB",
+    "write price"
+   ],
+   [
+    "DB",
+    "Change feed"
+   ],
+   [
+    "Change feed",
+    "Cache",
+    "delete key"
+   ]
+  ],
+  "story": [
+   "there are two alternatives drawn side by side: frame 'Option A: TTL only' and frame 'Option B: invalidate on write'",
+   "App, Cache and DB appear in both options; Change feed only in Option B; the 'TTL 60s' text belongs to Option A",
+   "in Option A the app reads the cache and a miss goes to the DB, and entries expire after 60 s; in Option B a price write goes to the DB, a change feed sees it and deletes the cache key",
+   "they first circled Option A (simpler, what runs today), then crossed Option A out with an X",
+   "they chose Option B ('CHOSEN: B') because the bug is stale prices at checkout, which a 60 s TTL causes",
+   "Change feed is dashed: they are unsure a change feed exists on that table (the search indexer may read one)",
+   "they are considering keeping a long TTL (maybe 10 min) in B as a backstop"
+  ],
+  "partner_should_ask_about": [
+   "whether a change feed already exists on the prices table",
+   "what happens to a cached price if the delete-key message is lost"
+  ]
+ }
+}

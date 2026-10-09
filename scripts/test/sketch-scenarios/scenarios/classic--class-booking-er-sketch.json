@@ -1,0 +1,85 @@
+{
+  "id": "class-booking-er-sketch",
+  "title": "ER sketch of a gym class-booking app, with a join table added late",
+  "persona": "Sam, a full-stack developer at a startup that sells gym class bookings, sketches the data model from memory before asking an agent to plan a waitlist feature, because classes have been overbooked.",
+  "topic": "the booking data model, before adding waitlists",
+  "realism": "Before touching a schema people draw the tables as boxes with their columns listed underneath the name, then join them with lines marked 1 and n. Drawing members-to-classes as many-to-many and then remembering it is a join table is the most common correction there is, and 'what we call it in the code' renames are typical.",
+  "steps": [
+    { "t": 1.5, "say": "This is the booking data model as I remember it." },
+    { "t": 4.0, "add": [ { "id": "members", "type": "rectangle", "x": 60, "y": 130, "width": 240, "height": 175, "label": "members\n--\nid\nemail\nname\nstripe_customer_id" } ] },
+    { "t": 7.5, "say": "Members, with the usual stuff, email, name, and the Stripe customer id." },
+    { "t": 10.5, "add": [ { "id": "classes", "type": "rectangle", "x": 340, "y": 130, "width": 190, "height": 200, "label": "classes\n--\nid\ntitle\nstarts_at\ncapacity\ncoach_id" } ] },
+    { "t": 14.0, "say": "Classes, a title, when it starts, the capacity, and who teaches it." },
+    { "t": 16.5, "add": [ { "id": "coaches", "type": "rectangle", "x": 340, "y": 440, "width": 170, "height": 120, "label": "coaches\n--\nid\nname" } ] },
+    { "t": 17.5, "add": [ { "id": "r_coach", "type": "arrow", "from": "coaches", "to": "classes", "label": "1 : n", "endArrowhead": null } ] },
+    { "t": 20.0, "say": "One coach teaches many classes." },
+    { "t": 22.5, "add": [ { "id": "r_mm", "type": "arrow", "from": "members", "to": "classes", "label": "n : n", "endArrowhead": null } ] },
+    { "t": 26.0, "say": "And members to classes is many to many, a member books lots of classes." },
+    { "t": 29.5, "say": "Which means there's a join table in between, obviously, that's bookings." },
+    { "t": 31.0, "delete": ["r_mm"] },
+    { "t": 33.0, "move": { "id": "classes", "x": 660, "y": 130 } },
+    { "t": 35.0, "move": { "id": "coaches", "x": 660, "y": 440 } },
+    { "t": 37.5, "say": "Let me shove classes over to make room." },
+    { "t": 40.0, "add": [ { "id": "bookings", "type": "rectangle", "x": 370, "y": 140, "width": 200, "height": 200, "label": "bookings\n--\nid\nmember_id\nclass_id\nstatus\ncreated_at" } ] },
+    { "t": 41.0, "add": [ { "id": "r_mb", "type": "arrow", "from": "members", "to": "bookings", "label": "1 : n", "endArrowhead": null } ] },
+    { "t": 42.0, "add": [ { "id": "r_cb", "type": "arrow", "from": "classes", "to": "bookings", "label": "1 : n", "endArrowhead": null } ] },
+    { "t": 45.5, "say": "Bookings has the member id, the class id, and a status, booked or cancelled." },
+    { "t": 47.0, "delete": ["r_cb"] },
+    { "t": 48.5, "undo": 1 },
+    { "t": 50.0, "say": "Oops, didn't mean to delete that one." },
+    { "t": 52.5, "relabel": { "id": "bookings", "label": "bookings\n--\nid\nmember_id\nclass_id\nstatus\nchecked_in_at\ncreated_at" } },
+    { "t": 56.0, "say": "Oh, and there's checked in at, I'm fairly sure, the instructors tap people in at the door." },
+    { "t": 58.0, "relabel": { "id": "classes", "label": "classes\n--\nid\ntitle\nstarts_at\ncapacity\ninstructor_id" } },
+    { "t": 60.0, "relabel": { "id": "coaches", "label": "instructors\n--\nid\nuser_id" } },
+    { "t": 65.0, "say": "And in the code they're instructors, not coaches, and I think it's not really its own table, it's a user with a role, so just a user id." },
+    { "t": 67.0, "restyle": { "id": "coaches", "strokeStyle": "dashed" } },
+    { "t": 69.5, "say": "Dashed because I'm not sure about that one." },
+    { "t": 74.0, "add": [ { "id": "waitlist", "type": "rectangle", "x": 350, "y": 430, "width": 230, "height": 145, "label": "waitlist_entries?\n--\nclass_id\nmember_id\nposition", "strokeColor": "#f08c00", "strokeStyle": "dashed" } ] },
+    { "t": 75.5, "add": [ { "id": "r_cw", "type": "arrow", "from": "classes", "to": "waitlist", "label": "1 : n", "endArrowhead": null, "strokeColor": "#f08c00", "strokeStyle": "dashed" } ] },
+    { "t": 80.5, "say": "And this is what I want to add, a waitlist, one class has many entries in order. Orange because it doesn't exist yet." },
+    { "t": 83.5, "note": "capacity: checked in app code I think (count bookings, then insert), probably a race" },
+    { "t": 88.0, "say": "The thing that worries me is capacity, I don't think there's any constraint in the database for it." },
+    { "t": 91.0, "note": "does cancelling a booking free the spot straight away?" },
+    { "t": 93.5, "say": "Okay, that's the model." }
+  ],
+  "expect": {
+    "final_labels": [
+      "members\n--\nid\nemail\nname\nstripe_customer_id",
+      "classes\n--\nid\ntitle\nstarts_at\ncapacity\ninstructor_id",
+      "bookings\n--\nid\nmember_id\nclass_id\nstatus\nchecked_in_at\ncreated_at",
+      "instructors\n--\nid\nuser_id",
+      "waitlist_entries?\n--\nclass_id\nmember_id\nposition",
+      "1 : n"
+    ],
+    "absent_labels": [
+      "n : n",
+      "coaches\n--\nid\nname",
+      "classes\n--\nid\ntitle\nstarts_at\ncapacity\ncoach_id",
+      "bookings\n--\nid\nmember_id\nclass_id\nstatus\ncreated_at"
+    ],
+    "arrows": [
+      ["members\n--\nid\nemail\nname\nstripe_customer_id", "bookings\n--\nid\nmember_id\nclass_id\nstatus\nchecked_in_at\ncreated_at", "1 : n"],
+      ["classes\n--\nid\ntitle\nstarts_at\ncapacity\ninstructor_id", "bookings\n--\nid\nmember_id\nclass_id\nstatus\nchecked_in_at\ncreated_at", "1 : n"],
+      ["instructors\n--\nid\nuser_id", "classes\n--\nid\ntitle\nstarts_at\ncapacity\ninstructor_id", "1 : n"],
+      ["classes\n--\nid\ntitle\nstarts_at\ncapacity\ninstructor_id", "waitlist_entries?\n--\nclass_id\nmember_id\nposition", "1 : n"]
+    ],
+    "story": [
+      "each box is a table: the first line is the table name, the lines under '--' are its columns",
+      "the lines are relationships read from the first box to the second: '1 : n' means one of the first has many of the second (one member, many bookings; one class, many bookings; one instructor, many classes; one class, many waitlist entries)",
+      "he first joined members and classes directly as 'n : n', deleted that line and added bookings as the join table between them",
+      "classes was moved right only to make room for bookings",
+      "a deleted bookings-to-classes line was restored straight away with undo: it was an accident, not a change of mind",
+      "bookings gained a checked_in_at column he remembered late (fairly sure: instructors check people in at the door)",
+      "'coaches' are called instructors in the code, and he thinks they are users with a role rather than a table of their own; the dashed outline marks that he is unsure of that table",
+      "the orange dashed waitlist_entries? table and its line do not exist yet: it is the feature he wants to add",
+      "he thinks class capacity is enforced in app code (count bookings, then insert) with no database constraint, and suspects a race that causes overbooking",
+      "he does not know whether cancelling a booking frees the spot straight away"
+    ],
+    "partner_should_ask_about": [
+      "where capacity is enforced and what stops two people taking the last spot at once",
+      "whether a cancelled booking still counts toward capacity (status stays 'cancelled' on the row)",
+      "whether instructors are really a separate table or users with a role (the dashed box)",
+      "how a waitlist entry should become a booking when a spot frees up"
+    ]
+  }
+}

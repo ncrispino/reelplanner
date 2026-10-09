@@ -1,0 +1,84 @@
+{
+  "id": "deploy-undo-crossout",
+  "title": "Deploys: undo, redo, a messy redraw, and the old path crossed out",
+  "persona": "A web developer who joined after the move to Kubernetes, sketching old versus new deploys before asking the agent to plan removing the last manual deploy script.",
+  "topic": "how the web app gets deployed now vs before",
+  "realism": "People keep the old way on the board and strike it through so the contrast stays visible, reach for Ctrl+Z when an arrow comes out wrong, and redraw a cluttered corner rather than fix it. An agent that reads only the final drawing would think rsync to the Prod VM is still a live path.",
+  "steps": [
+    {"t": 2.5, "say": "Let me draw how deploys work now, versus how they used to."},
+    {"t": 4.0, "add": [{"id": "laptop", "type": "rectangle", "x": 60, "y": 300, "width": 160, "height": 70, "label": "Dev laptop"}]},
+    {"t": 6.0, "add": [{"id": "prod", "type": "rectangle", "x": 640, "y": 520, "width": 170, "height": 70, "label": "Prod VM"}]},
+    {"t": 7.5, "add": [{"id": "aold", "type": "arrow", "from": "laptop", "to": "prod", "label": "rsync + ssh restart"}]},
+    {"t": 11.0, "say": "This is the old way, you'd rsync the build up and restart it over ssh."},
+    {"t": 13.0, "pen": {"points": [[385, 410], [400, 419], [415, 428], [430, 437], [445, 446], [460, 455], [475, 464], [485, 471]]}},
+    {"t": 14.5, "pen": {"points": [[385, 472], [400, 463], [415, 455], [430, 446], [445, 437], [460, 428], [475, 419], [486, 411]]}},
+    {"t": 17.5, "say": "I'm crossing it out instead of deleting it, so you can see what we used to do."},
+    {"t": 19.0, "restyle": {"id": "prod", "strokeStyle": "dashed", "strokeColor": "#e03131"}},
+    {"t": 21.0, "add": [{"id": "gha", "type": "rectangle", "x": 300, "y": 140, "width": 180, "height": 70, "label": "GitHub Actions"}]},
+    {"t": 22.5, "add": [{"id": "a1", "type": "arrow", "from": "laptop", "to": "gha", "label": "git push"}]},
+    {"t": 26.0, "say": "Now you push, and GitHub Actions builds it."},
+    {"t": 28.0, "add": [{"id": "a2", "type": "arrow", "from": "gha", "to": "prod", "label": "scp"}]},
+    {"t": 30.5, "say": "And then it scps the... no wait, that's the old way again."},
+    {"t": 31.5, "undo": 1},
+    {"t": 34.0, "add": [{"id": "reg", "type": "rectangle", "x": 620, "y": 140, "width": 160, "height": 70, "label": "Registry"}]},
+    {"t": 35.5, "add": [{"id": "a3", "type": "arrow", "from": "gha", "to": "reg", "label": "docker push"}]},
+    {"t": 38.5, "say": "Hmm, hang on, first it runs the tests, let me take that out."},
+    {"t": 40.0, "undo": 2},
+    {"t": 43.5, "say": "No, the tests are inside the Actions job, never mind, the registry was right."},
+    {"t": 45.0, "redo": 1},
+    {"t": 47.0, "add": [{"id": "a4", "type": "arrow", "from": "gha", "to": "reg", "label": "push image"}]},
+    {"t": 50.5, "say": "It pushes the image, that's the build-push action, not a docker push step."},
+    {"t": 52.0, "add": [
+      {"id": "p1", "type": "rectangle", "x": 600, "y": 320, "width": 90, "height": 50, "label": "pod"},
+      {"id": "p2", "type": "rectangle", "x": 650, "y": 345, "width": 90, "height": 50, "label": "pod"},
+      {"id": "p3", "type": "rectangle", "x": 720, "y": 330, "width": 90, "height": 50, "label": "pod?"}
+    ]},
+    {"t": 54.0, "add": [{"id": "a5", "type": "arrow", "from": "reg", "to": "p1"}]},
+    {"t": 57.5, "say": "And then the cluster pulls it, there's a few pods, ugh, that's a mess."},
+    {"t": 59.0, "delete": ["a5", "p1", "p2", "p3"]},
+    {"t": 61.0, "say": "Let me redraw that cleaner."},
+    {"t": 63.0, "add": [
+      {"id": "pa", "type": "rectangle", "x": 580, "y": 340, "width": 120, "height": 70, "label": "web-1"},
+      {"id": "pb", "type": "rectangle", "x": 740, "y": 340, "width": 120, "height": 70, "label": "web-2"}
+    ]},
+    {"t": 65.0, "add": [{"id": "fr", "type": "frame", "x": 560, "y": 300, "width": 310, "height": 140, "name": "k8s cluster", "children": ["pa", "pb"]}]},
+    {"t": 67.0, "add": [{"id": "a6", "type": "arrow", "from": "reg", "to": "pa", "label": "pull image"}]},
+    {"t": 70.5, "say": "Two web pods in the cluster, and they pull the new image."},
+    {"t": 72.0, "pause": 5},
+    {"t": 79.5, "say": "Oh, the thing that actually triggers the rollout is Argo, not Actions."},
+    {"t": 81.0, "add": [{"id": "argo", "type": "rectangle", "x": 330, "y": 240, "width": 150, "height": 60, "label": "Argo CD"}]},
+    {"t": 82.5, "add": [{"id": "a7", "type": "arrow", "from": "gha", "to": "argo", "label": "bump tag"}]},
+    {"t": 84.0, "add": [{"id": "a8", "type": "arrow", "from": "argo", "to": "pa", "label": "sync"}]},
+    {"t": 87.5, "say": "Actions bumps the image tag in the manifests repo, and Argo syncs the cluster."},
+    {"t": 89.0, "restyle": {"id": "a6", "strokeStyle": "dashed"}},
+    {"t": 92.0, "say": "So I'm not sure the pull arrow is right anymore, I'll leave it dashed."},
+    {"t": 94.0, "note": "old path (crossed out) = rsync to Prod VM; is Prod VM still running?"},
+    {"t": 98.0, "say": "And I honestly don't know if the old VM was ever shut down."},
+    {"t": 101.0, "say": "That's it."}
+  ],
+  "expect": {
+    "final_labels": ["Dev laptop", "Prod VM", "rsync + ssh restart", "GitHub Actions", "git push", "Registry", "push image", "web-1", "web-2", "k8s cluster", "pull image", "Argo CD", "bump tag", "sync"],
+    "absent_labels": ["scp", "docker push", "pod", "pod?"],
+    "arrows": [
+      ["Dev laptop", "Prod VM", "rsync + ssh restart"],
+      ["Dev laptop", "GitHub Actions", "git push"],
+      ["GitHub Actions", "Registry", "push image"],
+      ["Registry", "web-1", "pull image"],
+      ["GitHub Actions", "Argo CD", "bump tag"],
+      ["Argo CD", "web-1", "sync"]
+    ],
+    "story": [
+      "The Dev laptop -> Prod VM 'rsync + ssh restart' path is still in the final drawing but is the OLD way: they crossed it out with two freehand strokes at ~0:13 and said 'this is what we used to do'; Prod VM was then made dashed red. It must not be read as a current deploy path.",
+      "The current path is Dev laptop -> GitHub Actions ('git push') -> Registry ('push image') -> the k8s cluster.",
+      "At ~0:28 they drew a GitHub Actions -> Prod VM 'scp' arrow and undid it at once ('that's the old way again').",
+      "At ~0:34-0:45 they drew Registry and a 'docker push' arrow, undid both, then redid only Registry ('the tests are inside the Actions job'); the arrow was redrawn as 'push image' (the build-push action, not a docker push step).",
+      "A cluttered set of three overlapping 'pod' boxes was deleted at ~0:59 and redrawn cleanly as web-1 and web-2 inside a frame named 'k8s cluster'.",
+      "After a ~5 s pause they added Argo CD: Actions bumps the image tag and Argo syncs the cluster; that made them unsure of 'pull image', which they made dashed."
+    ],
+    "partner_should_ask_about": [
+      "whether the old Prod VM is still running or receiving traffic",
+      "what actually starts a rollout: Argo syncing, or the pods pulling a new image",
+      "where the manifests repo that Actions bumps lives"
+    ]
+  }
+}

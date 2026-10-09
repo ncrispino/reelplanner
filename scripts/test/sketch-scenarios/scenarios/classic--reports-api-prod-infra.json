@@ -1,0 +1,92 @@
+{
+  "id": "reports-api-prod-infra",
+  "title": "Prod infra for a reports API: replicas, ALB, primary/replica Postgres, a cron off to the side",
+  "persona": "Lin, a backend developer at a B2B analytics startup who inherited the reports API, sketches how she thinks it is deployed on AWS before asking an agent to plan moving the nightly rollup off a cron, after a night when the rollup ran twice.",
+  "topic": "how the reports API is deployed in prod",
+  "realism": "The deployment picture is the one people draw from memory and get the numbers wrong in (two replicas or three?), the replication arrow backwards, and the cron pointed at the wrong database. Colouring 'ours' versus 'AWS's' after the fact is how people mark what they can change, and the cron sits off to the side because it isn't behind the load balancer.",
+  "steps": [
+    { "t": 1.5, "say": "This is prod for the reports API, roughly how it's deployed." },
+    { "t": 3.0, "add": [ { "id": "lb", "type": "rectangle", "x": 350, "y": 110, "width": 180, "height": 55, "label": "load balancer" } ] },
+    { "t": 5.5, "say": "Traffic comes in through the load balancer." },
+    { "t": 8.0, "add": [
+      { "id": "api1", "type": "rectangle", "x": 230, "y": 240, "width": 120, "height": 60, "label": "api-1" },
+      { "id": "api2", "type": "rectangle", "x": 400, "y": 240, "width": 120, "height": 60, "label": "api-2" }
+    ] },
+    { "t": 9.0, "add": [
+      { "id": "l1", "type": "arrow", "from": "lb", "to": "api1" },
+      { "id": "l2", "type": "arrow", "from": "lb", "to": "api2" }
+    ] },
+    { "t": 12.5, "say": "Behind it the API containers, two of them, well, I think it's three now." },
+    { "t": 14.5, "add": [ { "id": "api3", "type": "rectangle", "x": 570, "y": 240, "width": 120, "height": 60, "label": "api-3" } ] },
+    { "t": 15.5, "add": [ { "id": "l3", "type": "arrow", "from": "lb", "to": "api3" } ] },
+    { "t": 18.5, "say": "Yeah, three, it autoscales somewhere between two and six." },
+    { "t": 20.5, "add": [ { "id": "ecs", "type": "text", "x": 230, "y": 312, "text": "ECS service reports-api, 2-6 tasks", "fontSize": 16 } ] },
+    { "t": 22.0, "group": { "ids": ["api1", "api2", "api3", "ecs"] } },
+    { "t": 23.5, "relabel": { "id": "lb", "label": "ALB (public)" } },
+    { "t": 26.0, "say": "And it's an ALB, the only thing that's public." },
+    { "t": 29.0, "add": [ { "id": "pg", "type": "rectangle", "x": 250, "y": 450, "width": 190, "height": 70, "label": "Postgres primary" } ] },
+    { "t": 30.0, "add": [ { "id": "w1", "type": "arrow", "from": "api2", "to": "pg", "label": "writes" } ] },
+    { "t": 33.0, "say": "They all talk to Postgres, the primary." },
+    { "t": 36.0, "say": "I'm only drawing it from one of them, they all do the same thing." },
+    { "t": 39.0, "add": [ { "id": "rr", "type": "rectangle", "x": 480, "y": 450, "width": 170, "height": 70, "label": "read replica" } ] },
+    { "t": 40.5, "add": [ { "id": "rep_wrong", "type": "arrow", "from": "rr", "to": "pg", "label": "replication" } ] },
+    { "t": 43.5, "say": "And there's a read replica, replicating from..." },
+    { "t": 47.0, "say": "No, other way around, the primary streams to the replica." },
+    { "t": 48.5, "delete": ["rep_wrong"] },
+    { "t": 50.5, "move": { "id": "rr", "x": 620, "y": 450 } },
+    { "t": 52.5, "add": [ { "id": "rep", "type": "arrow", "from": "pg", "to": "rr", "label": "async replication" } ] },
+    { "t": 54.0, "restyle": { "id": "rep", "strokeStyle": "dashed" } },
+    { "t": 58.0, "say": "Dashed because it's async, it can lag behind, and I've never actually checked by how much." },
+    { "t": 60.5, "add": [ { "id": "w2", "type": "arrow", "from": "api2", "to": "rr", "label": "report queries" } ] },
+    { "t": 64.5, "say": "And the heavy report queries go to the replica, I think, at least the CSV export ones do." },
+    { "t": 67.0, "add": [ { "id": "cron", "type": "rectangle", "x": 60, "y": 130, "width": 150, "height": 60, "label": "cron job?" } ] },
+    { "t": 71.5, "move": { "id": "cron", "x": 50, "y": 455 } },
+    { "t": 73.0, "add": [ { "id": "c1", "type": "arrow", "from": "cron", "to": "rr", "label": "rollup writes" } ] },
+    { "t": 77.0, "say": "Off to the side there's the nightly rollup, it's not behind the load balancer at all." },
+    { "t": 79.0, "relabel": { "id": "cron", "label": "nightly-rollup cron" } },
+    { "t": 84.0, "say": "Hmm, it writes the rollup tables, so it can't be pointed at the replica, the replica is read only." },
+    { "t": 85.5, "reroute": { "id": "c1", "to": "pg" } },
+    { "t": 89.0, "restyle": { "id": "lb", "strokeColor": "#1971c2", "backgroundColor": "#a5d8ff" } },
+    { "t": 90.0, "restyle": { "id": "pg", "strokeColor": "#1971c2", "backgroundColor": "#a5d8ff" } },
+    { "t": 91.0, "restyle": { "id": "rr", "strokeColor": "#1971c2", "backgroundColor": "#a5d8ff" } },
+    { "t": 92.0, "say": "Let me colour these in." },
+    { "t": 92.5, "restyle": { "id": "api1", "strokeColor": "#2f9e44", "backgroundColor": "#b2f2bb" } },
+    { "t": 93.5, "restyle": { "id": "api2", "strokeColor": "#2f9e44", "backgroundColor": "#b2f2bb" } },
+    { "t": 94.5, "restyle": { "id": "api3", "strokeColor": "#2f9e44", "backgroundColor": "#b2f2bb" } },
+    { "t": 95.5, "restyle": { "id": "cron", "strokeColor": "#2f9e44", "backgroundColor": "#b2f2bb" } },
+    { "t": 100.0, "say": "Green is ours, our code in our containers. Blue is managed by AWS, we don't touch it." },
+    { "t": 103.0, "note": "green = our code, blue = AWS managed (ALB, RDS)" },
+    { "t": 107.5, "note": "what stops the rollup running twice? I don't think anything does" },
+    { "t": 111.0, "say": "And I honestly don't know what makes sure the cron only runs once." }
+  ],
+  "expect": {
+    "final_labels": ["ALB (public)", "api-1", "api-2", "api-3", "ECS service reports-api, 2-6 tasks", "Postgres primary", "read replica", "nightly-rollup cron", "writes", "async replication", "report queries", "rollup writes"],
+    "absent_labels": ["load balancer", "cron job?", "replication"],
+    "arrows": [
+      ["ALB (public)", "api-1"],
+      ["ALB (public)", "api-2"],
+      ["ALB (public)", "api-3"],
+      ["api-2", "Postgres primary", "writes"],
+      ["api-2", "read replica", "report queries"],
+      ["Postgres primary", "read replica", "async replication"],
+      ["nightly-rollup cron", "Postgres primary", "rollup writes"]
+    ],
+    "story": [
+      "traffic enters through the ALB (public), the only public component, which spreads it over api-1, api-2 and api-3",
+      "the three API boxes are replicas of one ECS service, reports-api, that autoscales from 2 to 6 tasks; she first drew two and then remembered it is three now",
+      "the arrows to Postgres are drawn from api-2 only, standing for all replicas ('they all do the same thing')",
+      "writes go to the Postgres primary; heavy report queries (at least the CSV exports, she thinks) go to the read replica",
+      "she first drew replication from the replica to the primary, deleted it, and redrew it primary -> replica",
+      "the dashed replication line means async: the replica can lag, and she has never checked by how much",
+      "the nightly-rollup cron sits off to the side because it is not behind the load balancer; it was 'cron job?' until she named it",
+      "she first pointed the cron at the read replica and moved it to the primary, because it writes rollup tables and the replica is read-only",
+      "colour is ownership: green is their own code in their containers (the API replicas and the cron), blue is AWS-managed (ALB, the RDS primary and replica)",
+      "she does not think anything stops the rollup running twice"
+    ],
+    "partner_should_ask_about": [
+      "what runs the cron and what keeps it to one run per night (she typed she doesn't think anything does)",
+      "whether any request reads from the replica right after writing to the primary, given the replication lag she never measured",
+      "which report queries actually go to the replica (she said 'I think, at least the exports')"
+    ]
+  }
+}

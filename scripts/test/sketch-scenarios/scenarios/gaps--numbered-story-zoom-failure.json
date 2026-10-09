@@ -1,0 +1,582 @@
+{
+ "id": "numbered-story-zoom-failure",
+ "title": "Checkout as a numbered story, a zoom into one service, and what if the provider dies",
+ "persona": "An on-call engineer explaining to an agent what happens when a customer presses Pay, after an incident where orders got stuck in PENDING; they want to know whether their picture of the failure path is right.",
+ "topic": "what happens when someone presses Pay, and why orders get stuck PENDING",
+ "realism": "Incident retros are told as numbered steps on arrows, renumbered when the order turns out wrong, with one box blown up into its internals in a big box beside it and a red X over the dependency that failed; a box drawn and then erased ('no, we call them directly') is common.",
+ "steps": [
+  {
+   "t": 1.5,
+   "say": "Let me tell it as steps."
+  },
+  {
+   "t": 3.0,
+   "add": [
+    {
+     "id": "browser",
+     "type": "rectangle",
+     "x": 40,
+     "y": 110,
+     "width": 130,
+     "height": 70,
+     "label": "Browser"
+    },
+    {
+     "id": "gw",
+     "type": "rectangle",
+     "x": 240,
+     "y": 110,
+     "width": 150,
+     "height": 70,
+     "label": "API gateway"
+    }
+   ]
+  },
+  {
+   "t": 4.5,
+   "add": [
+    {
+     "id": "s1",
+     "type": "arrow",
+     "from": "browser",
+     "to": "gw",
+     "label": "1 POST /checkout"
+    }
+   ]
+  },
+  {
+   "t": 7.0,
+   "say": "One, the browser posts to checkout through the gateway."
+  },
+  {
+   "t": 9.0,
+   "add": [
+    {
+     "id": "order",
+     "type": "rectangle",
+     "x": 460,
+     "y": 110,
+     "width": 170,
+     "height": 70,
+     "label": "Order service"
+    }
+   ]
+  },
+  {
+   "t": 10.0,
+   "add": [
+    {
+     "id": "s2",
+     "type": "arrow",
+     "from": "gw",
+     "to": "order",
+     "label": "2 create order"
+    }
+   ]
+  },
+  {
+   "t": 13.0,
+   "say": "Two, the order service creates the order as pending."
+  },
+  {
+   "t": 15.0,
+   "add": [
+    {
+     "id": "pw",
+     "type": "rectangle",
+     "x": 720,
+     "y": 260,
+     "width": 150,
+     "height": 70,
+     "label": "Payment worker"
+    }
+   ]
+  },
+  {
+   "t": 16.0,
+   "add": [
+    {
+     "id": "apw",
+     "type": "arrow",
+     "from": "order",
+     "to": "pw"
+    }
+   ]
+  },
+  {
+   "t": 19.0,
+   "say": "Then there's a payment worker that, no, actually that got removed."
+  },
+  {
+   "t": 20.5,
+   "delete": [
+    "apw",
+    "pw"
+   ]
+  },
+  {
+   "t": 23.5,
+   "say": "The order service calls the payment provider directly now."
+  },
+  {
+   "t": 25.0,
+   "add": [
+    {
+     "id": "pay",
+     "type": "rectangle",
+     "x": 720,
+     "y": 110,
+     "width": 150,
+     "height": 70,
+     "label": "Payment provider"
+    }
+   ]
+  },
+  {
+   "t": 26.0,
+   "add": [
+    {
+     "id": "s4",
+     "type": "arrow",
+     "from": "order",
+     "to": "pay",
+     "label": "3 charge card"
+    }
+   ]
+  },
+  {
+   "t": 29.0,
+   "say": "Three, it charges the card."
+  },
+  {
+   "t": 31.5,
+   "say": "Hmm, no, stock gets reserved before the charge, otherwise we'd charge for things we don't have."
+  },
+  {
+   "t": 33.0,
+   "add": [
+    {
+     "id": "inv",
+     "type": "rectangle",
+     "x": 240,
+     "y": 260,
+     "width": 150,
+     "height": 70,
+     "label": "Inventory"
+    }
+   ]
+  },
+  {
+   "t": 34.0,
+   "add": [
+    {
+     "id": "s3",
+     "type": "arrow",
+     "from": "order",
+     "to": "inv",
+     "label": "3 reserve stock"
+    }
+   ]
+  },
+  {
+   "t": 35.5,
+   "relabel": {
+    "id": "s4",
+    "label": "4 charge card"
+   }
+  },
+  {
+   "t": 38.5,
+   "say": "So reserve stock is three and the charge is four."
+  },
+  {
+   "t": 40.0,
+   "add": [
+    {
+     "id": "s5",
+     "type": "arrow",
+     "from": "pay",
+     "to": "order",
+     "label": "5 webhook: paid"
+    }
+   ]
+  },
+  {
+   "t": 43.5,
+   "say": "Five, the provider calls us back with a webhook saying it's paid."
+  },
+  {
+   "t": 46.0,
+   "say": "Now inside the order service, let me blow it up."
+  },
+  {
+   "t": 48.0,
+   "add": [
+    {
+     "id": "handler",
+     "type": "rectangle",
+     "x": 70,
+     "y": 460,
+     "width": 150,
+     "height": 70,
+     "label": "Checkout handler"
+    },
+    {
+     "id": "saga",
+     "type": "rectangle",
+     "x": 290,
+     "y": 460,
+     "width": 150,
+     "height": 70,
+     "label": "Payment saga"
+    },
+    {
+     "id": "outbox",
+     "type": "rectangle",
+     "x": 510,
+     "y": 460,
+     "width": 150,
+     "height": 70,
+     "label": "Outbox"
+    }
+   ]
+  },
+  {
+   "t": 49.5,
+   "add": [
+    {
+     "id": "h1",
+     "type": "arrow",
+     "from": "handler",
+     "to": "saga",
+     "label": "start"
+    },
+    {
+     "id": "h2",
+     "type": "arrow",
+     "from": "saga",
+     "to": "outbox",
+     "label": "OrderPaid"
+    }
+   ]
+  },
+  {
+   "t": 51.0,
+   "add": [
+    {
+     "id": "fz",
+     "type": "frame",
+     "x": 40,
+     "y": 410,
+     "width": 650,
+     "height": 160,
+     "name": "inside Order service",
+     "children": [
+      "handler",
+      "saga",
+      "outbox",
+      "h1",
+      "h2"
+     ]
+    }
+   ]
+  },
+  {
+   "t": 52.5,
+   "add": [
+    {
+     "id": "zoom",
+     "type": "arrow",
+     "from": "order",
+     "x": 545,
+     "y": 182,
+     "points": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       222
+      ]
+     ],
+     "strokeStyle": "dotted"
+    }
+   ]
+  },
+  {
+   "t": 55.5,
+   "say": "The handler starts a saga, and when the webhook comes the saga writes order paid to the outbox."
+  },
+  {
+   "t": 58.0,
+   "pause": 4
+  },
+  {
+   "t": 60.0,
+   "say": "Now the incident, if the payment provider dies here."
+  },
+  {
+   "t": 61.0,
+   "restyle": {
+    "id": "pay",
+    "strokeColor": "#e03131"
+   }
+  },
+  {
+   "t": 62.5,
+   "pen": {
+    "points": [
+     [
+      725,
+      115
+     ],
+     [
+      742,
+      124
+     ],
+     [
+      760,
+      130
+     ],
+     [
+      778,
+      140
+     ],
+     [
+      795,
+      145
+     ],
+     [
+      812,
+      154
+     ],
+     [
+      830,
+      160
+     ],
+     [
+      848,
+      170
+     ],
+     [
+      865,
+      175
+     ]
+    ]
+   }
+  },
+  {
+   "t": 63.5,
+   "pen": {
+    "points": [
+     [
+      865,
+      115
+     ],
+     [
+      848,
+      124
+     ],
+     [
+      830,
+      130
+     ],
+     [
+      812,
+      140
+     ],
+     [
+      795,
+      145
+     ],
+     [
+      778,
+      154
+     ],
+     [
+      760,
+      160
+     ],
+     [
+      742,
+      170
+     ],
+     [
+      725,
+      175
+     ]
+    ]
+   }
+  },
+  {
+   "t": 65.0,
+   "add": [
+    {
+     "id": "fail",
+     "type": "text",
+     "x": 700,
+     "y": 200,
+     "text": "if this dies:\nstuck PENDING?",
+     "fontSize": 16,
+     "strokeColor": "#e03131"
+    }
+   ]
+  },
+  {
+   "t": 68.5,
+   "say": "Step five never comes, and I think nothing times the saga out, so the order sits in pending forever."
+  },
+  {
+   "t": 70.5,
+   "pen": {
+    "points": [
+     [
+      285,
+      455
+     ],
+     [
+      330,
+      440
+     ],
+     [
+      380,
+      438
+     ],
+     [
+      430,
+      445
+     ],
+     [
+      448,
+      470
+     ],
+     [
+      450,
+      510
+     ],
+     [
+      440,
+      538
+     ],
+     [
+      400,
+      548
+     ],
+     [
+      340,
+      548
+     ],
+     [
+      295,
+      540
+     ],
+     [
+      282,
+      505
+     ],
+     [
+      284,
+      468
+     ],
+     [
+      292,
+      452
+     ]
+    ]
+   }
+  },
+  {
+   "t": 73.5,
+   "say": "This saga is where I'd expect a timeout, and I don't think there is one."
+  },
+  {
+   "t": 76.0,
+   "note": "is there a reconciliation job that polls the provider for pending orders?"
+  },
+  {
+   "t": 80.0,
+   "say": "And the stock from step three stays reserved the whole time, which is the second bug."
+  },
+  {
+   "t": 84.0,
+   "say": "That's my version of it."
+  }
+ ],
+ "expect": {
+  "final_labels": [
+   "Browser",
+   "API gateway",
+   "Order service",
+   "Payment provider",
+   "Inventory",
+   "1 POST /checkout",
+   "2 create order",
+   "3 reserve stock",
+   "4 charge card",
+   "5 webhook: paid",
+   "Checkout handler",
+   "Payment saga",
+   "Outbox",
+   "start",
+   "OrderPaid",
+   "inside Order service",
+   "if this dies:\nstuck PENDING?"
+  ],
+  "absent_labels": [
+   "Payment worker",
+   "3 charge card"
+  ],
+  "arrows": [
+   [
+    "Browser",
+    "API gateway",
+    "1 POST /checkout"
+   ],
+   [
+    "API gateway",
+    "Order service",
+    "2 create order"
+   ],
+   [
+    "Order service",
+    "Inventory",
+    "3 reserve stock"
+   ],
+   [
+    "Order service",
+    "Payment provider",
+    "4 charge card"
+   ],
+   [
+    "Payment provider",
+    "Order service",
+    "5 webhook: paid"
+   ],
+   [
+    "Checkout handler",
+    "Payment saga",
+    "start"
+   ],
+   [
+    "Payment saga",
+    "Outbox",
+    "OrderPaid"
+   ]
+  ],
+  "story": [
+   "the story in step order is: 1 Browser \u2192 API gateway (POST /checkout), 2 API gateway \u2192 Order service (create order, PENDING), 3 Order service \u2192 Inventory (reserve stock), 4 Order service \u2192 Payment provider (charge card), 5 Payment provider \u2192 Order service (webhook: paid)",
+   "the charge was first numbered step 3 and renumbered to 4 when they realised stock is reserved before the charge; the reserve-stock arrow was drawn after the charge arrow",
+   "they first drew a Payment worker between Order service and the provider, then erased it: they believe the Order service calls the provider directly now",
+   "the frame 'inside Order service' is a zoom into the Order service box (a dotted arrow runs from the box to the frame): Checkout handler starts a Payment saga, which writes OrderPaid to an Outbox",
+   "the Payment provider is crossed out with a red X and outlined in red: the failure case is the provider dying, so step 5 never arrives",
+   "they circled the Payment saga as the place a timeout should be, and believe there is none, so the order stays PENDING forever",
+   "a second consequence they name: stock reserved in step 3 stays reserved",
+   "their open question: is there a reconciliation job that polls the provider for pending orders"
+  ],
+  "partner_should_ask_about": [
+   "what releases the reserved stock if payment never completes",
+   "whether anything retries or polls the provider when the webhook does not arrive"
+  ]
+ }
+}
