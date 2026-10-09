@@ -2,7 +2,15 @@
 // Sketch how you think something works, as input for a video: draw, talk and type on one full-screen canvas, and
 // the page hands what you made to the repo as one folder.
 //
-//   reelplanning sketch ["<what you are explaining>"] [--port <n>] [--out <dir>] [--no-open]
+//   reelplanning sketch                                   by hand: type what you're explaining on the page
+//   reelplanning sketch "<what you are explaining>" --once  from an agent: the question filled in, and it exits
+//                                                         after Send, printing `sketch: <folder>` as its last line
+//   [--port <n>] [--out <dir>] [--no-open]
+//
+// The question is optional: it only fills the page's "What are you explaining?" box, which names the folder and
+// heads sketch.md, and the person can change it there. An agent passes the topic from the request so the box is
+// filled when the page opens. --once is for an agent: it runs the command in the background and waits for it to
+// exit, then reads the folder it printed. Without --once the page stays up for another sketch until Ctrl-C.
 //
 // It serves the sketch page (packages/sketch/, an Excalidraw canvas) on localhost and opens it. Record, then
 // draw and talk; type a note and it lands on the canvas. Finish shows what will be sent; Send saves it here:
@@ -37,6 +45,7 @@ const die = (m) => { console.error(`✗ sketch: ${m}`); process.exit(1); };
 const VALUED = new Set(["--port", "--out"]);
 const question = args.filter((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1])).join(" ").trim();
 const port = Number(flag("port") || 8790);
+const once = args.includes("--once");
 
 const repo = repoTop(process.cwd());
 const git = (...a) => { try { return execFileSync("git", ["-C", repo, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
@@ -122,7 +131,7 @@ async function save(req) {
     ? `Next: reelplanning explain "${(s.question || "how this works").replace(/"/g, "'")}" ${rel} <the code it is about>`
     : `Next: give your agent ${rel}/sketch.md`;
   console.log(`✓ sketch saved → ${rel}/ (${got.size} files)\n  ${next}`);
-  return { ok: true, dir: rel, next };
+  return { ok: true, dir: rel, next, closing: once };
 }
 
 // ---------- the server ----------
@@ -136,7 +145,11 @@ function serve(res, root, urlPath) {
 const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
   if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || "." });
-  if (path === "api/sketch" && req.method === "POST") return save(req).then((r) => json(res, 200, r), (e) => { console.error(`✗ sketch: ${e.message}`); json(res, 400, { ok: false, error: e.message }); });
+  if (path === "api/sketch" && req.method === "POST") return save(req).then((r) => {
+    json(res, 200, r);
+    // --once: the agent waiting on this command reads the last line, then carries on with the folder
+    if (once) res.on("finish", () => { console.log(`sketch: ${r.dir}`); server.close(); setTimeout(() => process.exit(0), 200).unref(); });
+  }, (e) => { console.error(`✗ sketch: ${e.message}`); json(res, 400, { ok: false, error: e.message }); });
   if (path === "" || path === "index.html") return serve(res, PAGE, "index.html");
   if (path === "sketch.js") return serve(res, PAGE, "sketch.js");
   if (path.startsWith("vendor/")) return serve(res, vendor.dir, path.slice("vendor/".length));

@@ -4,9 +4,17 @@ Before an explainer, or instead of a written plan, you can show the agent how *y
 say it and type it on one canvas. `reelplanning sketch` records that and saves it into the repo as one folder, which
 the next step reads like any other source. Where your picture and the code disagree is what the video is about.
 
-```bash
-reelplanning sketch "how upload resume works"       # opens the page; --port, --out, --no-open
-```
+Two ways in:
+
+- **Ask your agent:** "let me sketch how upload resume works". The agent runs
+  `reelplanning sketch "how upload resume works" --once` in the background: the page opens with the topic filled in,
+  and when you press Send the command exits and prints `sketch: <folder>`, so the agent picks your sketch up and goes on.
+- **By hand:** `reelplanning sketch`, nothing else. Type what you're explaining in the box at the top right (or leave
+  it: the folder is then just `sketch`), sketch, Send, and give the folder to your agent. The page stays up for
+  another sketch until Ctrl-C.
+
+The text after `sketch` is optional either way: it only fills that box, which names the folder and heads `sketch.md`.
+Other options: `--port <n>`, `--out <dir>` (where the folder goes), `--no-open` (print the URL instead of opening it).
 
 ## The page
 

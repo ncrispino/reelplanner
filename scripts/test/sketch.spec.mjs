@@ -9,6 +9,8 @@
 //   - Send saves the folder: sketch.md (boxes, the arrow between them by label, the note), session.json, the
 //     scene, the pictures; in a repo with a record, under .reelplanning/sketches/, with a .gitignore for the media
 //   - Download gives the same folder as a .zip
+//   - --once (how an agent runs it): with no question the box starts empty, and after Send the command exits 0 with
+//     `sketch: <folder>` as its last line; without it, the command stays up
 // usage: node scripts/test/sketch.spec.mjs
 import { chromium } from "playwright-core";
 import { spawn, execFileSync } from "node:child_process";
@@ -117,6 +119,28 @@ try {
   const zip = join(repo, "dl.zip"); await (await dl).saveAs(zip);
   const bytes = readFileSync(zip);
   ok(bytes.readUInt32LE(0) === 0x04034b50 && bytes.includes(Buffer.from("/session.json")) && bytes.includes(Buffer.from("/recording.webm")), "Download gives a .zip of the folder");
+  ok(srv.exitCode == null, "without --once the command stays up after Send");
+
+  // --once with no question: the box starts empty; after Send the command exits 0, its last line the folder
+  const port2 = testPort(8794, 1);
+  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanning.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
+  let out2 = ""; once.stdout.on("data", (c) => (out2 += c));
+  const exited = new Promise((r) => once.on("exit", (code) => r(code)));
+  await serverUp(port2, { child: once, timeout: 60000 });
+  const p3 = await ctx.newPage(); await p3.goto(`http://127.0.0.1:${port2}/`); await p3.waitForFunction(() => window.reelSketch?.api);
+  ok(await p3.inputValue("#question") === "", "with no question given, the box starts empty");
+  await p3.click("#rec"); await p3.waitForTimeout(400);
+  await p3.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Worker" } }]) }); });
+  await p3.waitForTimeout(400);
+  await p3.click("#finish"); await p3.waitForSelector("#review.open"); await p3.click("#send");
+  await p3.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  ok((await p3.textContent("#sent")).includes("you can close this tab"), `the page says the agent has it — ${await p3.textContent("#sent")}`);
+  const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 10000))]);
+  const last = out2.trim().split("\n").pop();
+  ok(code === 0, `--once exits after Send — ${code}`);
+  ok(/^sketch: \.reelplanning\/sketches\/\d{4}-\d{2}-\d{2}-sketch$/.test(last) && existsSync(join(repo, last.slice("sketch: ".length), "sketch.md")),
+    `its last line names the folder, "sketch" when no question was given — ${last}`);
+  if (once.exitCode == null) once.kill();
 } finally {
   await b.close(); srv.kill(); rmSync(repo, { recursive: true, force: true });
 }

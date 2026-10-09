@@ -279,7 +279,8 @@
       const fd = new FormData(); for (const [path, blob] of await bundle()) fd.append(path, blob, path.split("/").pop());
       const r = await fetch("api/sketch", { method: "POST", body: fd }), j = await r.json();
       if (!j.ok) throw new Error(j.error || r.statusText);
-      sent(`Saved to <code>${esc(j.dir)}</code>. ${esc(j.next || "")}`);
+      sent(j.closing ? `Saved to <code>${esc(j.dir)}</code>. Your agent has it now; you can close this tab.`
+        : `Saved to <code>${esc(j.dir)}</code>. ${esc(j.next || "")}`);
       b.textContent = "Sent";
     } catch (e) { sent(`Could not send (${esc(e.message)}). Use Download instead.`); b.textContent = "Send failed"; done = false; b.disabled = false; }
   });

@@ -1,6 +1,6 @@
 ---
 name: plan-to-video
-description: "Plan with reelplanner. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanner/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanner video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanner style guide."
+description: "Plan with reelplanner. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanner/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanner video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Also when someone wants to sketch how they think something works ('let me sketch how … works'): open the sketch page. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanner style guide."
 ---
 
 # Plan → video (reelplanner)
@@ -173,6 +173,25 @@ The plan goes into the repo, and the person gets a review page, not text in the 
    check never asks for one by part.
 5. **Build the video** into `<plan-dir>/video/` (next section), with fresh eyes on it, and open it for the person.
 
+## A sketch first
+
+Someone wants to show you how they think something works before you explain it or plan from it: "let me sketch how
+uploads work", "I'll draw what I think happens", "here's my mental model". Open the sketch page for them:
+
+1. **Start it in the background** with the topic from their request: `$RP sketch "<the topic, in their words>"
+   --once`. It opens a full-screen canvas in their browser; the topic fills its "What are you explaining?" box. Tell
+   them in one line: draw and talk, type notes in the box at the bottom, then Finish and Send. Don't wait in the
+   foreground: they may take minutes.
+2. **When the command exits**, its last line is `sketch: <folder>`. Read that folder's `sketch.md` and look at its
+   keyframes (and `final.png`). It is their picture, not a fact.
+3. **Carry on** with what they asked for, with the folder as a source: an explainer pins it beside the code
+   (**An explainer**, step 1); a plan quotes it in its problem. If the command exits with no `sketch:` line, or they
+   say they're done without sending, ask whether to go on without it.
+
+They can also run `reelplanning sketch` themselves, with no topic (they type it on the page), and give you the folder.
+Never sketch for them: the point is their picture, so a sketch is always theirs. [docs/sketch.md](../../docs/sketch.md)
+has the folder's format.
+
 ## An explainer
 
 Someone wants to know what is going on, not to plan yet: "explain the review server", "what happened in this
@@ -186,8 +205,8 @@ written. What it can be of is open, so there is no list of kinds: the same princ
    `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
    repo by its path, hash and line count, never its text) and `video/` started with `kind: explainer`.
-   When they sketched it first (`$RP sketch`: a folder under `.reelplanning/sketches/` or `videos/sketches/`;
-   [docs/sketch.md](../../docs/sketch.md)), pin that folder too and read its `sketch.md` and keyframes before the
+   When they sketched it first (**A sketch first**: a folder under `.reelplanning/sketches/` or `videos/sketches/`),
+   pin that folder too and read its `sketch.md` and keyframes before the
    code: it is their picture of how it works, not a fact. The video then follows their picture's order and says
    where the code agrees with it and where it does not (each difference with its source line), not a tour from scratch.
    Fill `explain.md`'s "What it will cover", "What it leaves out" and "Open threads" (what the sources leave open, said

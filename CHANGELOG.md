@@ -39,6 +39,8 @@
   with what you said, and saves it all as one folder (`sketch.md` first, then `session.json` on the recording's
   clock, the scene, the recording and pictures) under `.reelplanning/sketches/` or `videos/sketches/`. The folder is
   a source for `explain`, and the skill makes the explainer say where your picture and the code agree and where not.
+  Run it bare (`reelplanning sketch`, the topic typed on the page), or ask your agent ("let me sketch how … works"):
+  the skill runs `sketch "<topic>" --once`, which exits after Send with `sketch: <folder>` as its last line.
   Excalidraw and React are built once per machine into `~/.reelplanning/vendor/` (`vendor-excalidraw`, optional
   dependencies); nothing comes from a CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
 - **Node 22.20 or later.** HyperFrames needs Node 22 and the `skills` installer 22.20, so `package.json`'s
