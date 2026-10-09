@@ -7,6 +7,7 @@
 <!-- The sketch page (`reelplanner sketch`): draw, say and type how you think something works, on one full-screen
      Excalidraw canvas. It records the canvas with your voice, a transcript, a picture each time you finish a thought,
      and the final drawing, and hands them to the repo as one folder: the input a video is made from. -->
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="vendor/excalidraw.css">
 <style>
   :root { --ground: #F1EFE8; --paper: #FAF9F5; --ink: #141413; --ink-2: #3D3B37; --ink-3: #5C5953; --ink-rgb: 20,20,19; --accent: #B8552E; --accent-text: #9C4524;
@@ -58,6 +59,7 @@
   #caption.show { opacity: 1; }
   #caption .interim { opacity: .65; }
   #status { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 4; font-size: 12px; color: var(--ink-3); pointer-events: none; white-space: nowrap; }
+  #status:not(:empty) { background: var(--paper); padding: 2px 8px; border-radius: 6px; }   /* readable over what is drawn */
 
   /* finish: what will be sent, to look at first */
   #review { position: fixed; inset: 0; z-index: 20; display: none; place-items: center; background: rgba(var(--ink-rgb), .35); }

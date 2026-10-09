@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { tmpdir } from "node:os";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { RP_COMMAND } from "./env.mjs";
 import { whisperPath } from "./local-speed.mjs";
 import { whisper } from "./tts-local.mjs";
@@ -57,12 +57,12 @@ export function sketchMd(s, dir) {
   lines.push(`## What they said and drew, in order`, "", `Each picture is the canvas when a thought ended; the text is what they said or typed since the one before.`, "");
   const kfs = s.keyframes || [];
   const timeline = [...kfs.map((k) => ({ t: k.t, line: `- **${mmss(k.t)}** ${k.said ? k.said : "_(drawing, nothing said)_"}${k.file ? ` → [picture](${k.file})` : ""}` })),
-    ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` }))].sort((a, b) => a.t - b.t);
-  for (const x of timeline) lines.push(x.line);
+    ...asked.map((q) => ({ t: q.t, line: `- **${mmss(q.t)}** _asked:_ ${q.text}` }))];
   // what was said after the last picture (a transcript made afterwards has no keyframe at each sentence's end)
   const lastT = kfs.length ? kfs[kfs.length - 1].t : -Infinity;
-  const after = (s.transcript?.segments || []).filter((x) => x.t0 >= lastT);
-  if (after.length) lines.push(`- **${mmss(after[0].t0)}** ${after.map((x) => x.text).join(" ")} _(said after the last picture)_`);
+  const after = (s.transcript?.segments || []).filter((x) => (x.t0 + x.t1) / 2 > lastT);
+  if (after.length) timeline.push({ t: after[0].t0, line: `- **${mmss(after[0].t0)}** ${after.map((x) => x.text).join(" ")} _(said after the last picture)_` });
+  for (const x of timeline.sort((a, b) => a.t - b.t)) lines.push(x.line);
   if (!kfs.length && !after.length) lines.push("_(no pictures: nothing was drawn or said while recording)_");
   lines.push("", `## The final drawing`, "", s.final?.png ? `![final drawing](final.png)` : "_(empty canvas)_", "");
   if (shapes.length) { lines.push(`**Boxes and shapes**`, ""); for (const e of shapes) lines.push(`- ${e.kind}${e.label ? ` "${e.label.replace(/\s+/g, " ")}"` : " (no label)"}`); lines.push(""); }
@@ -89,23 +89,49 @@ export function sketchTranscriber({ dir = process.cwd(), api, model } = {}) {
     : `whisper.cpp is not installed (\`${RP_COMMAND} setup --local-voice\`)${api === false ? "" : ", and no transcription API key is set (GROQ_API_KEY, OPENAI_API_KEY or OPENROUTER_API_KEY)"}` };
 }
 
-/** Words in order → sentences: a break after . ? ! or at a pause of a second or more. */
+/** Words in order → sentences: a break after . ? ! or at a pause of a second or more. (`words`: each one's words) */
 function segmentsOf(words) {
   const out = []; let cur = null;
   for (const w of words) {
     const text = String(w.text || "").trim(); if (!text) continue;
     if (cur && w.start - cur.t1 >= 1) { out.push(cur); cur = null; }
-    if (!cur) cur = { t0: +w.start.toFixed(2), t1: +w.end.toFixed(2), text, confidence: null };
-    else { cur.text += " " + text; cur.t1 = +w.end.toFixed(2); }
+    if (!cur) cur = { t0: +w.start.toFixed(2), t1: +w.end.toFixed(2), text, confidence: null, words: [w] };
+    else { cur.text += " " + text; cur.t1 = +w.end.toFixed(2); cur.words.push(w); }
     if (/[.?!]["')\]]?$/.test(text)) { out.push(cur); cur = null; }
   }
   if (cur) out.push(cur);
   return out;
 }
 
-/** Each keyframe's `said` again, from the words and the typed notes since the keyframe before it. */
-function resaid(s, words) {
-  const items = [...words.map((w) => ({ t: (w.start + w.end) / 2, text: String(w.text).trim() })),
+/**
+ * The stretches of the voice track with nothing in it (a second or more under -45 dB): whisper is known to make up
+ * words there ("I'm going to go ahead and do that", over and over, while someone draws in silence).
+ */
+function silences(wav) {
+  // silencedetect reports on stderr, and ffmpeg exits 0
+  const r = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", wav, "-af", "silencedetect=noise=-45dB:d=1", "-f", "null", "-"], { encoding: "utf8", timeout: 120000 });
+  return String(r.stderr || "");
+}
+function silenceSpans(log) {
+  const spans = []; let start = null;
+  for (const m of String(log).matchAll(/silence_(start|end): (-?[\d.]+)/g)) {
+    if (m[1] === "start") start = Math.max(0, Number(m[2])); else if (start != null) { spans.push([start, Number(m[2])]); start = null; }
+  }
+  if (start != null) spans.push([start, Infinity]);
+  return spans;
+}
+// how much of [t0, t1] lies in silence, 0..1 (a made-up sentence lies wholly in it; a real one's last word is often
+// stretched into the pause after it, so words are not judged one by one)
+const silentShare = (t0, t1, spans) => t1 <= t0 ? 1 : spans.reduce((n, [a, b]) => n + Math.max(0, Math.min(t1, b) - Math.max(t0, a)), 0) / (t1 - t0);
+
+/**
+ * Each keyframe's `said` again: whole sentences, never split, each with the first picture taken after its middle
+ * (whisper.cpp stretches a sentence's end to where the next begins, so its middle is the steadier mark; a picture
+ * taken while it was being said is the drawing it was about), and the typed notes at their time.
+ */
+const mid = (x) => (x.t0 + x.t1) / 2;
+function resaid(s, segments) {
+  const items = [...segments.map((x) => ({ t: mid(x), text: x.text })),
     ...(s.notes || []).filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].filter((x) => x.text).sort((a, b) => a.t - b.t);
   let prev = -Infinity;
   for (const k of s.keyframes || []) { k.said = items.filter((x) => x.t > prev && x.t <= k.t).map((x) => x.text).join(" "); prev = k.t; }
@@ -136,10 +162,14 @@ export async function transcribeSketch(dir, by, { lang } = {}) {
     } else if (by.kind === "api") words = await transcribe(by.api, readFileSync(wav), { lang });
     else throw new Error(by.why || "nothing here can transcribe it");
     words = words.filter((w) => Number.isFinite(w.start) && Number.isFinite(w.end));
-    const segments = segmentsOf(words), was = s.transcript?.source;
+    const spans = silenceSpans(silences(wav)), heard = words.length;
+    const kept = segmentsOf(words).filter((x) => silentShare(x.t0, x.t1, spans) < 0.8);
+    words = kept.flatMap((x) => x.words);
+    const segments = kept.map(({ words: _, ...x }) => x), was = s.transcript?.source;
     s.transcript = { source: by.kind, ...(by.kind === "api" ? { api: by.api.name, model: by.api.model } : { model: by.model }), lang,
-      made: new Date().toISOString(), ...(was && was !== "none" && was !== by.kind ? { replaced: was } : {}), segments };
-    resaid(s, words);
+      made: new Date().toISOString(), ...(was && was !== "none" && was !== by.kind ? { replaced: was } : {}),
+      ...(heard > words.length ? { dropped_in_silence: heard - words.length } : {}), segments };
+    resaid(s, segments);
     writeFileSync(sPath, JSON.stringify(s, null, 2) + "\n");
     writeFileSync(join(dir, "sketch.md"), sketchMd(s, dir));
     return { words, segments, by };

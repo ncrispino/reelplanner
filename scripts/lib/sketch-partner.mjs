@@ -70,7 +70,11 @@ export async function resolvePartner({ dir = process.cwd(), choice, model, env =
 
 const SYSTEM = `You are watching someone sketch, on a whiteboard, how they think part of a software system works, while they talk. Their picture is theirs: you are not there to correct it, explain the code, or suggest how it should work, and you do not know the code.
 
-Ask ONE short question (under 20 words) only when something in their picture or words is unclear or left open, so that answering it makes their own picture more complete. Good reasons: an arrow that points at nothing or has no meaning, a box that was never explained, a step that starts but never ends, something they said they are unsure of, two names that may be the same thing. Ask about their picture, in their words. Never ask something they already answered, and never repeat a question.
+You may ask ONE short question (under 20 words) that helps them finish their own picture. Look for, in this order:
+1. a line marked (they sound unsure): ask a concrete question about that very thing (where, which, when, what happens if), not "what are you unsure about";
+2. a step that starts but never ends, or an arrow that leads nowhere or has no meaning;
+3. a box or word in the picture they never explained.
+Ask about their picture, in their words. You can read every label in the list above: never ask what a label says. Never ask about something you already asked about, even in other words: if it is still open, wait. Never ask what they already said.
 
 If nothing is worth asking right now, answer exactly NONE. Answer with the question alone, no preamble.`;
 
@@ -90,15 +94,21 @@ export function describeDrawing(els = []) {
 }
 
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+// words that say "I'm guessing": a small model finds the open question far more often when the line is marked for it
+const HEDGE = /\b(i think|i guess|i believe|i'm not sure|not sure|not totally sure|unsure|maybe|probably|somehow|i don't know|no idea|i forget|might be|could be|kind of)\b/i;
 
 /** The request, as both servers take it. */
 export function partnerMessages({ question, elements, said = [], asked = [], png }) {
+  // earlier questions, as the page sends them ({ t, text }; a bare string has no time). A line said before the last
+  // question was there to be asked about already: only what came after it is marked unsure again
+  asked = asked.map((q) => typeof q === "string" ? { t: null, text: q } : q);
+  const since = Math.max(-Infinity, ...asked.map((q) => q.t ?? -Infinity));
   const text = [
     `What they are explaining: ${question || "(not given)"}`, "",
     "What is on the canvas now, as typed:", describeDrawing(elements), "",
     "What they have said and typed so far, oldest first:",
-    said.length ? said.slice(-40).map((x) => `[${mmss(x.t)}] ${x.text}`).join("\n") : "(nothing yet)", "",
-    asked.length ? `Questions you already asked (do not repeat): ${asked.map((q) => `"${q}"`).join("; ")}` : "You have asked nothing yet.", "",
+    said.length ? said.slice(-40).map((x) => `[${mmss(x.t)}] ${x.text}${x.t > since && HEDGE.test(x.text) ? "   (they sound unsure)" : ""}`).join("\n") : "(nothing yet)", "",
+    asked.length ? `You already asked about these; do not ask about them again, in any words:\n${asked.map((q) => `- ${q.text}`).join("\n")}` : "You have asked nothing yet.", "",
     "The picture is the canvas now. One question, or NONE.",
   ].join("\n");
   return [{ role: "system", content: SYSTEM },
@@ -106,8 +116,8 @@ export function partnerMessages({ question, elements, said = [], asked = [], png
 }
 
 /** Ask the partner. → the question, or null when it has none. */
-export async function askPartner(p, input, { timeoutMs = 25000 } = {}) {
-  const body = { model: p.model, messages: partnerMessages(input), max_tokens: 1024, stream: false };
+export async function askPartner(p, input, { timeoutMs = p.provider === "local" ? 120000 : 30000, messages } = {}) {
+  const body = { model: p.model, messages: messages || partnerMessages(input), max_tokens: 1024, stream: false };
   const headers = { "content-type": "application/json" };
   if (p.keyEnv) headers.authorization = `Bearer ${process.env[p.keyEnv]}`;
   if (p.provider === "openrouter") Object.assign(headers, { "x-title": "reelplanner sketch", "http-referer": "https://github.com/ncrispino/reelplanner" });
@@ -123,6 +133,12 @@ export async function askPartner(p, input, { timeoutMs = 25000 } = {}) {
   out = String(out || "").replace(/<think>[\s\S]*?<\/think>/g, "").trim().split(/\n\s*\n/)[0].trim().replace(/^["“]|["”]$/g, "");
   if (!out || /^none\b/i.test(out)) return null;
   return out.length > 240 ? out.slice(0, 237) + "…" : out;
+}
+
+/** Load a local model before the first question (on a CPU the first one takes many seconds); errors are ignored. */
+export function warmPartner(p) {
+  if (p.provider !== "local") return Promise.resolve();
+  return askPartner(p, null, { messages: [{ role: "user", content: "Answer NONE." }] }).catch(() => {});
 }
 
 /** How the page and the log name it: "claude-haiku-5.5 via OpenRouter", "gemma3:4b on this machine". */

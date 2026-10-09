@@ -37,7 +37,8 @@
   // ---------- context from the server, if there is one ----------
   let server = false;
   // held open while the page is: an agent waiting on `sketch --once` learns when the page is closed without Send
-  try { if (location.protocol.startsWith("http")) new EventSource("api/sketch/live"); } catch {}
+  let live$ = null;
+  try { if (location.protocol.startsWith("http")) live$ = new EventSource("api/sketch/live"); } catch {}
   fetch("api/sketch/context").then((r) => r.ok ? r.json() : null).then((c) => {
     if (!c || !c.ok) return;
     server = true; session.context = c.context;
@@ -119,12 +120,22 @@
     if (!partner || !P || !$("partner-on").checked || asking || !blob || !heardSinceAsk) return;
     if (P.questions.length >= partner.max || clock() - lastAsk < partner.gap_s) return;
     asking = true; lastAsk = clock(); heardSinceAsk = false;
+    const sentAt = performance.now();
     try {
       const said = [...session.transcript.segments.map((x) => ({ t: x.t0, text: x.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
       const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question: $("question").value.trim(), elements: drawn(), said, asked: P.questions.map((q) => q.text), png: await toDataUrl(blob) }) });
+        body: JSON.stringify({ question: $("question").value.trim(), elements: drawn(), said, asked: P.questions.map((q) => ({ t: q.t, text: q.text })), png: await toDataUrl(blob) }) });
       const j = await r.json().catch(() => ({}));
       if (!j.ok) { status(`The question partner did not answer (${j.error || r.status}); keep going.`); heardSinceAsk = true; return; }
+      const took = (performance.now() - sentAt) / 1000;
+      if (j.text && took > partner.stale_s) {
+        // about a picture they have moved on from: not shown. A model this slow here (a CPU busy recording) only
+        // gets in the way, so after two it stops for this sketch
+        P.late = (P.late || 0) + 1; heardSinceAsk = true;
+        if (P.late >= 2) { P.stopped = "too slow here"; $("partner-on").checked = false; status(`${partner.label} takes ${Math.round(took)} s to ask here, too late to help: questions are off for this sketch.`); }
+        else status(`${partner.label} took ${Math.round(took)} s to ask (about an earlier picture): not shown.`);
+        return;
+      }
       if (!j.text || !$("partner-on").checked) { heardSinceAsk = true; return; }
       P.questions.push({ t: clock(), after_picture: kf.n, text: j.text });
       $("ask-who").textContent = `A question · ${partner.label}`; $("ask-text").textContent = j.text; $("ask").classList.add("show");
@@ -321,6 +332,7 @@
       const fd = new FormData(); for (const [path, blob] of await bundle()) fd.append(path, blob, path.split("/").pop());
       const r = await fetch("api/sketch", { method: "POST", body: fd }), j = await r.json();
       if (!j.ok) throw new Error(j.error || r.statusText);
+      if (j.closing) live$?.close();   // the command is done with this page: no reconnecting to it
       const tx = j.transcribing ? ` Your voice is being transcribed on this machine (${esc(j.transcribing)}).` : "";
       sent(j.closing ? `Saved to <code>${esc(j.dir)}</code>.${tx} Your agent has it now; you can close this tab.`
         : `Saved to <code>${esc(j.dir)}</code>.${tx} ${esc(j.next || "")}`);

@@ -56,6 +56,13 @@ else off; `sketch` says which on start, and the page names it. Settings: `REELPL
 `REELPLANNER_SKETCH_BASE_URL`, or `.reelplanner/config.json`'s `"sketch": { "partner", "model", "base_url" }`.
 A partner named that cannot run (no key, no server, no vision model) stops `sketch` and says why.
 
+A question is only useful while the picture it is about is still on the canvas: an answer later than 30 s
+(`REELPLANNER_SKETCH_PARTNER_STALE_S`) is not shown, the page says so, and after two late ones the questions stop for
+that sketch. That matters for `local` on a machine with no GPU: measured on 4 CPU cores, `gemma3:4b` answers in 2–5 s
+on its own but in 85–100 s while the page records (Chromium's encoder takes about 1.5 cores), so there it never
+keeps up. On Apple silicon or with a GPU it does; OpenRouter does anywhere. A local model is loaded when `sketch`
+starts, so the first question does not also wait for that.
+
 ## The folder
 
 Saved to `.reelplanner/sketches/<date>-<slug>/` in a repo that keeps a record, else `videos/sketches/<date>-<slug>/`.
@@ -100,7 +107,8 @@ Finish is open, as the recording does).
   "final": { "png": "final.png", "scene": "final.excalidraw",
              "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…" }] },
   "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-haiku-5.5", "on": true,
-               "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }] },
+               "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }],
+               "late": 1, "stopped": "too slow here" },   // late, stopped: only when answers came too late
   "feedback": "confident about the client side, guessing on retries",
   "before_recording": 0
 }
@@ -127,7 +135,10 @@ The voice is in `recording.webm` whichever way, and two things read it there:
   key is set (`GROQ_API_KEY`, `OPENAI_API_KEY` or `OPENROUTER_API_KEY`); `--api` chooses the API, `--model` a whisper
   model, `--lang` the language spoken (default: the browser's).
 
-Words said after the last picture are listed in `sketch.md` after it, marked so.
+Whisper makes words up in silence (a long pause while drawing comes back as "I'm going to go ahead and do that",
+again and again): a sentence that lies almost wholly in the recording's silence is dropped, and
+`transcript.dropped_in_silence` counts the words. Sentences are given to pictures whole, each to the first picture
+after its middle, never split. Words said after the last picture are listed in `sketch.md` after it, marked so.
 
 ## Using it
 

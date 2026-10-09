@@ -53,18 +53,24 @@ appendFileSync(${JSON.stringify(join(tools, "calls.log"))}, JSON.stringify({ cmd
 if (cmd !== "transcribe") process.exit(2);
 mkdirSync(val("--dir"), { recursive: true });
 const w = (text, start) => ({ text, start, end: start + 0.08 });
-writeFileSync(join(val("--dir"), "transcript.json"), JSON.stringify([w("The", 0.05), w("worker", 0.15), w("polls.", 0.25), w("Then", 30), w("it", 30.1), w("sleeps.", 30.2)]));
+const silent = process.env.FAKE_SILENCE === "1";   // a voice for 3 s, then words made up in the silence after it
+writeFileSync(join(val("--dir"), "transcript.json"), JSON.stringify(silent
+  ? [w("Jobs", 0.5), w("go", 0.8), w("in", 1.1), w("the", 1.4), w("queue.", 1.7), w("I'm", 5), w("going", 5.5), w("to", 6), w("go", 6.5), w("ahead.", 7)]
+  : [w("The", 0.05), w("worker", 0.15), w("polls.", 0.25), w("Then", 30), w("it", 30.1), w("sleeps.", 30.2)]));
 `);
 const WHISPER = join(tools, "whisper-cli"); writeFileSync(WHISPER, "#!/bin/sh\nexit 0\n"); chmodSync(WHISPER, 0o755);
 const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^HYPERFRAMES_/.test(k) && !/_API_KEY$/.test(k)));
 // a stand-in for a local model server (Ollama's OpenAI-style API): it lists a text model and a vision one, asks one
 // question, then has none
-const calls = [];
+const calls = []; let warmups = 0, slowMs = 0;
 const fakeModel = createServer((req, res) => {
   let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
     res.setHeader("content-type", "application/json");
     if (req.url === "/v1/models") return res.end(JSON.stringify({ data: [{ id: "llama3:8b" }, { id: "qwen2.5vl:7b" }] }));
-    const j = JSON.parse(body || "{}"); calls.push({ auth: req.headers.authorization || null, body: j });
+    const j = JSON.parse(body || "{}");
+    if (j.messages?.length === 1) { warmups++; return res.end(JSON.stringify({ choices: [{ message: { content: "NONE" } }] })); }   // the warm-up at start
+    calls.push({ auth: req.headers.authorization || null, body: j });
+    if (slowMs) return setTimeout(() => res.end(JSON.stringify({ choices: [{ message: { content: "A question about a picture long gone?" } }] })), slowMs);
     res.end(JSON.stringify({ choices: [{ message: { content: calls.length === 1 ? "Where does the chunk index live?" : "NONE" } }] }));
   });
 });
@@ -122,9 +128,10 @@ try {
   const first = calls[0]?.body, userText = first?.messages?.[1]?.content?.[0]?.text || "";
   ok(first?.model === "qwen2.5vl:7b" && !calls[0].auth && first.messages[1].content.some((c) => c.type === "image_url" && c.image_url.url.startsWith("data:image/png;base64,")),
     "…asked of the local model, with no key, with the picture");
+  ok(warmups === 1, `…which was loaded once when the command started — ${warmups}`);
   ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`arrow "Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
     `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
-  ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes(`"Where does the chunk index live?"`)), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
+  ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes("- Where does the chunk index live?")), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
   await page.fill("#note", "not sure where the chunk index lives");
   await page.press("#note", "Enter");
   await page.waitForTimeout(800);
@@ -181,6 +188,13 @@ try {
   ok(s2.transcript.source === "whisper" && s2.transcript.replaced === "browser-speech" && s2.transcript.lang === "en"
     && s2.transcript.segments.map((x) => x.text).join("|") === "The worker polls.|Then it sleeps.", `…its sentences replace the browser's — ${JSON.stringify(s2.transcript)}`);
   ok(s2.keyframes[0].said.startsWith("The worker polls.") && s2.keyframes.some((k) => k.said.includes("(typed) not sure")), `…each picture's words made again, the typed note kept — ${JSON.stringify(s2.keyframes.map((k) => k.said))}`);
+  // whisper makes words up in silence: a sentence wholly in it is dropped, a real one kept whole
+  const quiet = join(repo, "quiet"); mkdirSync(quiet);
+  execFileSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "sine=frequency=300:duration=3", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=mono", "-filter_complex", "[1]atrim=duration=6[s];[0][s]concat=n=2:v=0:a=1", "-c:a", "libopus", join(quiet, "recording.webm")]);
+  writeFileSync(join(quiet, "session.json"), JSON.stringify({ format: "reelplanner-sketch/1", question: "q", recording: { file: "recording.webm", has_audio: true }, transcript: { source: "none", lang: "en-US", segments: [] }, notes: [], keyframes: [{ n: 1, t: 2.5, said: "" }, { n: 2, t: 8.5, said: "" }], events: [], final: { elements: [] } }));
+  const q = run(["sketch-transcribe", "quiet"], { ...WITH_WHISPER, FAKE_SILENCE: "1" }), qs = JSON.parse(readFileSync(join(quiet, "session.json"), "utf8"));
+  ok(q.code === 0 && qs.transcript.segments.map((x) => x.text).join("|") === "Jobs go in the queue." && qs.transcript.dropped_in_silence === 5 && qs.keyframes[0].said === "Jobs go in the queue." && qs.keyframes[1].said === "",
+    `words made up in silence are dropped; the real sentence is kept, with its picture — ${JSON.stringify(qs.transcript)} ${q.out}`);
   ok(md2.includes("**Transcript:** local whisper small.en, from the recording") && /\*\*0:30\*\* Then it sleeps\. _\(said after the last picture\)_/.test(md2), "…and sketch.md says where its words came from, and what was said after the last picture");
 
   // Download: the same folder as a .zip, from a fresh page
@@ -238,6 +252,24 @@ try {
   if (shut.exitCode == null) shut.kill();
   const lone = run(["sketch", "--once", "--port", String(testPort(8796, 3)), "--no-open"], { ...WITH_WHISPER, REELPLANNER_SKETCH_OPEN_WAIT_S: "1" });
   ok(lone.code === 1 && /✗ sketch: no page opened in 1 s/.test(lone.out), `--once: no page opened, it exits 1 — ${lone.out}`);
+
+  // a partner too slow to keep up (a local model on a busy CPU): an answer later than stale_s is not shown, and after
+  // two the questions stop for this sketch
+  slowMs = 1600;
+  const port5 = testPort(8798, 5);
+  const slow = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "x", "--port", String(port5), "--no-open"], { cwd: repo, env: { ...PARTNER_LOCAL, REELPLANNER_SKETCH_PARTNER_STALE_S: "1" }, stdio: "ignore" });
+  await serverUp(port5, { child: slow, timeout: 60000 });
+  const p5 = await ctx.newPage(); await p5.addInitScript(() => { delete window.SpeechRecognition; delete window.webkitSpeechRecognition; });
+  await p5.goto(`http://127.0.0.1:${port5}/`); await p5.waitForFunction(() => window.reelSketch?.api);
+  await p5.click("#rec"); await p5.waitForTimeout(300);
+  await p5.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Queue" } }]) }); });
+  await p5.fill("#note", "the queue holds jobs"); await p5.press("#note", "Enter");
+  await p5.waitForFunction(() => /not shown/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
+  ok(!(await p5.isVisible("#ask")) && /took \d+ s to ask \(about an earlier picture\): not shown/.test(await p5.textContent("#status")), `a late answer is not shown, and the page says why — ${await p5.textContent("#status")}`);
+  await p5.fill("#note", "workers pull from it"); await p5.press("#note", "Enter");
+  await p5.waitForFunction(() => /questions are off/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
+  ok(!(await p5.isChecked("#partner-on")) && !(await p5.isVisible("#ask")), `…after two, the questions stop for this sketch — ${await p5.textContent("#status")}`);
+  slow.kill(); await p5.close(); slowMs = 0;
 
   // OpenRouter, by default when its key is set: the recommended model, the key sent; a partner named that can't run says why
   const or = await resolvePartner({ dir: repo, env: { OPENROUTER_API_KEY: "k-test", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE } });

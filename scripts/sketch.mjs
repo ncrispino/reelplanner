@@ -47,7 +47,7 @@ import { TYPES } from "./lib/static-server.mjs";
 import { slugOf, repoTop } from "./lib/explainer.mjs";
 import { excalidrawVendor, buildExcalidrawVendor } from "./vendor-excalidraw.mjs";
 import { sketchMd, sketchTranscriber, transcribeSketch, transcriberName } from "./lib/sketch-transcript.mjs";
-import { resolvePartner, askPartner, partnerLabel } from "./lib/sketch-partner.mjs";
+import { resolvePartner, askPartner, partnerLabel, warmPartner } from "./lib/sketch-partner.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
@@ -79,7 +79,9 @@ const PAGE = join(ROOT, "packages", "sketch");
 let partner;
 try { partner = await resolvePartner({ dir: process.cwd(), choice: flag("partner"), model: flag("partner-model") }); }
 catch (e) { die(e.message); }
+if (!partner.off) warmPartner(partner);
 const PARTNER_GAP_S = Number(process.env.REELPLANNER_SKETCH_PARTNER_GAP_S ?? 20), PARTNER_MAX = 8;
+const PARTNER_STALE_S = Number(process.env.REELPLANNER_SKETCH_PARTNER_STALE_S ?? 30);   // an answer later than this is about an old picture
 const readJsonBody = (req, limit = 12e6) => new Promise((done, fail) => {
   let n = 0; const parts = [];
   req.on("data", (c) => { n += c.length; if (n > limit) { fail(new Error("too large")); req.destroy(); } else parts.push(c); });
@@ -155,7 +157,7 @@ function gone(why, hint = "") {
 const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
   if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || ".",
-    partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX } });
+    partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX, stale_s: PARTNER_STALE_S } });
   if (path === "api/sketch/partner" && req.method === "POST") {
     if (partner.off) return json(res, 404, { ok: false, error: "no partner" });
     return readJsonBody(req).then((b) => askPartner(partner, b)).then((text) => json(res, 200, { ok: true, text }),
