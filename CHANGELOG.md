@@ -13,6 +13,12 @@
   command, which says the new name and runs it. A review begun on the page before the rename keeps its marks.
   To move over: `npm rm -g reelplanning` (npm stops at `EEXIST` otherwise; `install.sh` does it), then install
   reelplanner. The entries below keep the old name.
+- **The Claude Code plugin is the skill's folder alone.** Its marketplace entry's source was the whole repository,
+  so installing it copied all of it into `~/.claude/plugins/cache` (117 MB), and Claude Code npm-installed the
+  root's `package.json` there (177 MB more), beside the marketplace's own clone (172 MB). The source is now
+  `skills/plan-to-video` (108 KB, `SKILL.md` and its style guide), and the entry in `marketplace.json` is its
+  manifest (`.claude-plugin/plugin.json` is gone; `sync-version.mjs` carries the version into the entry, and
+  `version.spec` keeps the plugin that folder alone). An install made before keeps its copy until the version moves.
 - **`setup`'s summary names a narration problem once:** a narration setting that cannot work was listed as
   `narration: narration: …` under "still missing".
 - **A fresh-install check** (`.github/workflows/fresh-install.yml`, `scripts/release/fresh-install.sh`): the README's

@@ -1,6 +1,6 @@
 // The skill runs its tooling as `npx -y reelplanner@<version>`, so the version it names has to be
 // the version package.json publishes — a skill pinned to an older release silently runs old code, and
-// one pinned to a newer release than exists fails on every command. Same for the plugin manifests,
+// one pinned to a newer release than exists fails on every command. Same for the plugin's entry in marketplace.json,
 // scripts/release/install.sh and the docs. `npm version` keeps them together (scripts/release/sync-version.mjs); this
 // catches a hand edit that did not.
 //
@@ -8,10 +8,10 @@
 // while the package is not on npm (installed from GitHub), `npx -y reelplanner@<version>` once it is. The
 // player's after-export lines keep a copy (they run in a browser); sync-version.mjs carries it there.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { VERSION, PINNED_FILES, RP_FILES, stale } from "../release/sync-version.mjs";
+import { VERSION, PINNED_FILES, RP_FILES, MARKETPLACE, stale } from "../release/sync-version.mjs";
 import { ROOT, ON_NPM, RP_COMMAND, RP_INSTALL, rpCommand } from "../lib/env.mjs";
 import { describe } from "../hyperframes-skills.mjs";
 import { agentBlock } from "../lib/agents.mjs";
@@ -25,9 +25,18 @@ test(`SKILL.md runs the tooling as npx -y reelplanner@${VERSION}`, () => {
   assert.ok(skill.includes(`\`npx -y reelplanner@${VERSION}\``), "SKILL.md does not define $RP as the pinned package");
 });
 test("the files that pin the version were all found (the curl installer among them)", () => assert.ok(PINNED_FILES.length >= 5 && PINNED_FILES.includes("scripts/release/install.sh"), PINNED_FILES.join(", ")));
-test("every pinned version and plugin manifest matches package.json", () => {
+test("every pinned version and the plugin's entry in marketplace.json match package.json", () => {
   const s = stale();
   assert.deepEqual(s, [], s.map((x) => `${x.file}: ${x.found}`).join("; ") + " — run: node scripts/release/sync-version.mjs");
+});
+// Claude Code copies a plugin's folder into its cache whole, and npm-installs a package.json with a lockfile there:
+// the plugin is the skill's folder alone, with no plugin.json (its entry in marketplace.json is its manifest)
+test("the Claude Code plugin is the skill's folder alone: marketplace.json's source is skills/plan-to-video, with no package.json", () => {
+  const entry = JSON.parse(readFileSync(join(ROOT, MARKETPLACE), "utf8")).plugins.find((p) => p.name === "reelplanner");
+  assert.equal(entry?.source, "./skills/plan-to-video");
+  const dir = join(ROOT, entry.source);
+  assert.ok(existsSync(join(dir, "SKILL.md")) && !existsSync(join(dir, "package.json")) && !existsSync(join(dir, ".claude-plugin")), readdirSync(dir).join(", "));
+  assert.ok(!existsSync(join(ROOT, ".claude-plugin", "plugin.json")), "a .claude-plugin/plugin.json at the root is read by nothing: the plugin's manifest is its entry in marketplace.json");
 });
 test("RP_COMMAND is `reelplanner` before npm and the pinned npx package after", () => {
   assert.equal(rpCommand("1.2.3", false), "reelplanner");
