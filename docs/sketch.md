@@ -1,15 +1,15 @@
 # Sketch: your picture of how it works, as input
 
 Before an explainer, or instead of a written plan, you can show the agent how *you* think something works: draw it,
-say it and type it on one canvas. `reelplanning sketch` records that and saves it into the repo as one folder, which
+say it and type it on one canvas. `reelplanner sketch` records that and saves it into the repo as one folder, which
 the next step reads like any other source. Where your picture and the code disagree is what the video is about.
 
 Two ways in:
 
 - **Ask your agent:** "let me sketch how upload resume works". The agent runs
-  `reelplanning sketch "how upload resume works" --once` in the background: the page opens with the topic filled in,
+  `reelplanner sketch "how upload resume works" --once` in the background: the page opens with the topic filled in,
   and when you press Send the command exits and prints `sketch: <folder>`, so the agent picks your sketch up and goes on.
-- **By hand:** `reelplanning sketch`, nothing else. Type what you're explaining in the box at the top right (or leave
+- **By hand:** `reelplanner sketch`, nothing else. Type what you're explaining in the box at the top right (or leave
   it: the folder is then just `sketch`), sketch, Send, and give the folder to your agent. The page stays up for
   another sketch until Ctrl-C.
 
@@ -34,7 +34,7 @@ The question at the top right ("what are you explaining?") names the folder and 
 
 ## The folder
 
-Saved to `.reelplanning/sketches/<date>-<slug>/` in a repo that keeps a record, else `videos/sketches/<date>-<slug>/`.
+Saved to `.reelplanner/sketches/<date>-<slug>/` in a repo that keeps a record, else `videos/sketches/<date>-<slug>/`.
 
 | File | What it is | In git |
 |---|---|---|
@@ -55,14 +55,14 @@ The recording and pictures stay on disk and out of git, as a render does (`sketc
 - **Exact names and connections**: `final.elements` in `session.json` (or `final.excalidraw`): a label read from
   pixels can be misread; this is the text as typed and which arrow joins which box.
 
-### `session.json` (format `reelplanning-sketch/1`)
+### `session.json` (format `reelplanner-sketch/1`)
 
 Every `t` is seconds on the recording's clock: a `t` is that moment in `recording.webm` (the clock stops while
 Finish is open, as the recording does).
 
 ```jsonc
 {
-  "format": "reelplanning-sketch/1",
+  "format": "reelplanner-sketch/1",
   "id": "20261008T190024Z", "question": "how upload resume works", "created": "…", "duration_s": 74.2,
   "context": { "repoName": "my-app", "remote": "…", "commit": "3488126…", "branch": "main", "dirty": false },
   "recording": { "file": "recording.webm", "mime": "video/webm;codecs=vp9,opus", "has_audio": true, "width": 1280, "height": 800, "pointer_drawn": true },
@@ -87,13 +87,13 @@ Finish is open, as the recording does).
 
 ## Using it
 
-The folder is a source like any other: `reelplanning explain "<question>" <sketch-folder> <the code>` pins its
+The folder is a source like any other: `reelplanner explain "<question>" <sketch-folder> <the code>` pins its
 committed text (`sketch.md`, `session.json`, `final.excalidraw`) beside the code, and the explainer says where your
 picture matches the code and where it does not. Without a record (`reel init`), give the agent `sketch.md`.
 
 ## Setup and privacy
 
-- The page runs on a build of Excalidraw and React made once per machine into `~/.reelplanning/vendor/` (`reelplanning
+- The page runs on a build of Excalidraw and React made once per machine into `~/.reelplanner/vendor/` (`reelplanner
   vendor-excalidraw`, which `sketch` runs on first use; a few seconds). Nothing is fetched from a CDN.
 - The microphone is used only while recording. The live caption is the browser's own speech recognition: in Chrome
   that sends the audio to Google. The recording itself stays on your machine.

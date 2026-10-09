@@ -2,8 +2,8 @@
 // Sketch how you think something works, as input for a video: draw, talk and type on one full-screen canvas, and
 // the page hands what you made to the repo as one folder.
 //
-//   reelplanning sketch                                   by hand: type what you're explaining on the page
-//   reelplanning sketch "<what you are explaining>" --once  from an agent: the question filled in, and it exits
+//   reelplanner sketch                                   by hand: type what you're explaining on the page
+//   reelplanner sketch "<what you are explaining>" --once  from an agent: the question filled in, and it exits
 //                                                         after Send, printing `sketch: <folder>` as its last line
 //   [--port <n>] [--out <dir>] [--no-open]
 //
@@ -14,16 +14,16 @@
 //
 // It serves the sketch page (packages/sketch/, an Excalidraw canvas) on localhost and opens it. Record, then
 // draw and talk; type a note and it lands on the canvas. Finish shows what will be sent; Send saves it here:
-//   .reelplanning/sketches/<date>-<slug>/   in a repo that keeps a record (reel init), else
+//   .reelplanner/sketches/<date>-<slug>/   in a repo that keeps a record (reel init), else
 //   videos/sketches/<date>-<slug>/          (--out <dir> to choose)
 // holding:
 //   sketch.md          what an agent reads first: the question, what was said with a picture at each pause, the
 //                      typed notes, the final drawing as boxes and arrows, the note left at Send
-//   session.json       the same, all of it on the recording's clock (format reelplanning-sketch/1; docs/sketch.md)
+//   session.json       the same, all of it on the recording's clock (format reelplanner-sketch/1; docs/sketch.md)
 //   recording.webm     the canvas as it was drawn, with the voice and the pointer
 //   keyframes/*.png    the canvas at each pause; final.png and final.excalidraw, the finished drawing and its scene
 // The recording and pictures stay on disk and out of git (a .gitignore in sketches/ says so), as a render does;
-// the text is committed. The folder is a source like any other: `reelplanning explain "<question>" <folder> <code>`.
+// the text is committed. The folder is a source like any other: `reelplanner explain "<question>" <folder> <code>`.
 //
 // The page needs Excalidraw built once on this machine (vendor-excalidraw, run here on first use). It reads the
 // microphone only while recording, and the live transcript is the browser's own (Chrome's sends audio to Google;
@@ -34,7 +34,7 @@ import { join, resolve, relative, normalize, extname, sep, basename } from "node
 import { execFileSync, spawn } from "node:child_process";
 import { platform } from "node:os";
 import { Readable } from "node:stream";
-import { ROOT, rpInitialized } from "./lib/env.mjs";
+import { ROOT, rpInitialized, rpDirOf, RP_COMMAND } from "./lib/env.mjs";
 import { TYPES } from "./lib/static-server.mjs";
 import { slugOf, repoTop } from "./lib/explainer.mjs";
 import { excalidrawVendor, buildExcalidrawVendor } from "./vendor-excalidraw.mjs";
@@ -49,7 +49,7 @@ const once = args.includes("--once");
 
 const repo = repoTop(process.cwd());
 const git = (...a) => { try { return execFileSync("git", ["-C", repo, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
-const rp = repo && join(repo, ".reelplanning");
+const rp = repo && rpDirOf(repo);
 const base = flag("out") ? resolve(flag("out")) : repo ? (rpInitialized(rp) ? join(rp, "sketches") : join(repo, "videos", "sketches")) : resolve("sketches");
 const context = {
   repoName: repo ? basename(repo) : basename(process.cwd()), repo: repo ? "." : null,
@@ -108,7 +108,7 @@ async function save(req) {
   }
   if (!got.has("session.json")) throw new Error("no session.json");
   const s = JSON.parse(got.get("session.json").toString("utf8"));
-  if (s.format !== "reelplanning-sketch/1") throw new Error(`unknown format ${s.format}`);
+  if (s.format !== "reelplanner-sketch/1") throw new Error(`unknown format ${s.format}`);
   const date = new Date().toLocaleDateString("en-CA"); // this machine's day, as yyyy-mm-dd
   const slug = slugOf(s.question || "sketch").toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "sketch";
   let name = `${date}-${slug}`; for (let i = 2; existsSync(join(base, name)); i++) name = `${date}-${slug}-${i}`;
@@ -128,7 +128,7 @@ async function save(req) {
   if (!existsSync(ignore)) writeFileSync(ignore, "# a sketch's text is committed; its recording and pictures stay on disk, as a render does\n*/recording.*\n*/keyframes/\n*/final.png\n");
   const rel = relative(process.cwd(), dir) || ".";
   const next = rpInitialized(rp)
-    ? `Next: reelplanning explain "${(s.question || "how this works").replace(/"/g, "'")}" ${rel} <the code it is about>`
+    ? `Next: ${RP_COMMAND} explain "${(s.question || "how this works").replace(/"/g, "'")}" ${rel} <the code it is about>`
     : `Next: give your agent ${rel}/sketch.md`;
   console.log(`✓ sketch saved → ${rel}/ (${got.size} files)\n  ${next}`);
   return { ok: true, dir: rel, next, closing: once };

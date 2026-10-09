@@ -1,4 +1,4 @@
-// The sketch page (`reelplanning sketch`): one full-screen Excalidraw canvas where someone draws, says and types how
+// The sketch page (`reelplanner sketch`): one full-screen Excalidraw canvas where someone draws, says and types how
 // they think something works. Nothing here interprets the sketch; it records it faithfully, on one clock, for the
 // step after it (an agent, a model) to read:
 //
@@ -16,7 +16,7 @@
   "use strict";
   const { React, createRoot, Excalidraw, exportToBlob, serializeAsJSON, convertToExcalidrawElements, CaptureUpdateAction } = window.ExcalidrawKit || {};
   const $ = (id) => document.getElementById(id);
-  if (!Excalidraw) { $("status").textContent = "Excalidraw did not load (run `reelplanning vendor-excalidraw`)."; return; }
+  if (!Excalidraw) { $("status").textContent = "Excalidraw did not load (run `reelplanner vendor-excalidraw`)."; return; }
 
   // ---------- the clock: seconds of recording, paused while the Finish panel is open ----------
   let t0 = null, pausedAt = null, pausedTotal = 0;
@@ -25,7 +25,7 @@
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
   const session = {
-    format: "reelplanning-sketch/1",
+    format: "reelplanner-sketch/1",
     id: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z"),
     question: "", context: null,
     transcript: { source: "none", segments: [] },

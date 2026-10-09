@@ -188,7 +188,7 @@ uploads work", "I'll draw what I think happens", "here's my mental model". Open 
    (**An explainer**, step 1); a plan quotes it in its problem. If the command exits with no `sketch:` line, or they
    say they're done without sending, ask whether to go on without it.
 
-They can also run `reelplanning sketch` themselves, with no topic (they type it on the page), and give you the folder.
+They can also run `reelplanner sketch` themselves, with no topic (they type it on the page), and give you the folder.
 Never sketch for them: the point is their picture, so a sketch is always theirs. [docs/sketch.md](../../docs/sketch.md)
 has the folder's format.
 
@@ -205,7 +205,7 @@ written. What it can be of is open, so there is no list of kinds: the same princ
    `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
    repo by its path, hash and line count, never its text) and `video/` started with `kind: explainer`.
-   When they sketched it first (**A sketch first**: a folder under `.reelplanning/sketches/` or `videos/sketches/`),
+   When they sketched it first (**A sketch first**: a folder under `.reelplanner/sketches/` or `videos/sketches/`),
    pin that folder too and read its `sketch.md` and keyframes before the
    code: it is their picture of how it works, not a fact. The video then follows their picture's order and says
    where the code agrees with it and where it does not (each difference with its source line), not a tour from scratch.

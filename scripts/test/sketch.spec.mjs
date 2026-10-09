@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The sketch page (`reelplanning sketch`, docs/sketch.md), end to end in a headless browser with a fake microphone and
+// The sketch page (`reelplanner sketch`, docs/sketch.md), end to end in a headless browser with a fake microphone and
 // a stand-in speech recognizer:
 //   - the page loads its Excalidraw from the machine's vendor build, with the question and the repo's commit shown
 //   - recording composes the canvas with the voice: a webm with a video and an audio stream, seekable (ffmpeg's copy)
@@ -7,7 +7,7 @@
 //   - edits are events on the recording's clock; an element that leaves the scene is a delete
 //   - Finish pauses the clock (and the recording); Keep sketching resumes it
 //   - Send saves the folder: sketch.md (boxes, the arrow between them by label, the note), session.json, the
-//     scene, the pictures; in a repo with a record, under .reelplanning/sketches/, with a .gitignore for the media
+//     scene, the pictures; in a repo with a record, under .reelplanner/sketches/, with a .gitignore for the media
 //   - Download gives the same folder as a .zip
 //   - --once (how an agent runs it): with no question the box starts empty, and after Send the command exits 0 with
 //     `sketch: <folder>` as its last line; without it, the command stays up
@@ -24,13 +24,13 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
 const repo = mkdtempSync(join(tmpdir(), "rp-sketch-"));
 execFileSync("git", ["init", "-q"], { cwd: repo });
 writeFileSync(join(repo, "a.txt"), "x\n");
-mkdirSync(join(repo, ".reelplanning")); writeFileSync(join(repo, ".reelplanning", "decisions.json"), "[]\n");
+mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner", "decisions.json"), "[]\n");
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "add", "."], { cwd: repo });
 execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"], { cwd: repo });
 const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
 
 const port = testPort(8793);
-const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanning.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
+const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
 let said = ""; srv.stdout.on("data", (c) => (said += c));
 await serverUp(port, { child: srv, timeout: 120000 });
 
@@ -87,16 +87,16 @@ try {
   await page.fill("#feedback", "guessing on retries");
   await page.click("#send");
   await page.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
-  ok((await page.textContent("#sent")).includes(".reelplanning/sketches/"), `Send says where it went — ${await page.textContent("#sent")}`);
+  ok((await page.textContent("#sent")).includes(".reelplanner/sketches/"), `Send says where it went — ${await page.textContent("#sent")}`);
   ok(!errors.length, `no page errors — ${errors.join(" | ")}`);
 
-  const base = join(repo, ".reelplanning", "sketches"), name = readdirSync(base).find((n) => !n.startsWith("."));
+  const base = join(repo, ".reelplanner", "sketches"), name = readdirSync(base).find((n) => !n.startsWith("."));
   const dir = join(base, name || "none");
   ok(/^\d{4}-\d{2}-\d{2}-upload-resume-works$/.test(name || ""), `the folder is named by the day and the question — ${name}`);
   for (const f of ["sketch.md", "session.json", "final.excalidraw", "final.png", "recording.webm", "keyframes/kf-001.png"]) ok(existsSync(join(dir, f)), `saved ${f}`);
   ok(readFileSync(join(base, ".gitignore"), "utf8").includes("*/recording.*"), "the recording and pictures are kept out of git");
   const s = JSON.parse(readFileSync(join(dir, "session.json"), "utf8"));
-  ok(s.format === "reelplanning-sketch/1" && s.context.commit === head && s.feedback === "guessing on retries", "session.json: format, commit, the note at Send");
+  ok(s.format === "reelplanner-sketch/1" && s.context.commit === head && s.feedback === "guessing on retries", "session.json: format, commit, the note at Send");
   ok(s.transcript.segments.map((x) => x.text).join("|") === "the upload starts in the client|it sends each chunk to the API|a failed chunk is retried", `the transcript, in order — ${JSON.stringify(s.transcript.segments)}`);
   ok(s.transcript.segments.every((x, i, a) => x.t1 >= x.t0 && (!i || x.t0 >= a[i - 1].t1)), "each sentence has a start and an end, in order, on one clock");
   ok(s.keyframes.some((k) => k.said === "the upload starts in the client" && k.file), `a keyframe pairs a picture with what was said — ${JSON.stringify(s.keyframes)}`);
@@ -110,7 +110,7 @@ try {
     const p = JSON.parse(probe), kinds = p.streams.map((x) => x.codec_type).sort().join();
     ok(kinds === "audio,video" && Number(p.format.duration) > 3, `the recording has the canvas and the voice, with a duration — ${kinds}, ${p.format.duration}`);
   } catch { console.log("· no ffprobe here: the recording's streams are not checked"); }
-  ok(said.includes("✓ sketch saved") && said.includes("reelplanning explain"), "the command says where it went and what to run next");
+  ok(said.includes("✓ sketch saved") && said.includes("reelplanner explain"), "the command says where it went and what to run next");
 
   // Download: the same folder as a .zip, from a fresh page
   const p2 = await ctx.newPage(); await p2.goto(`http://127.0.0.1:${port}/`); await p2.waitForFunction(() => window.reelSketch?.api);
@@ -123,7 +123,7 @@ try {
 
   // --once with no question: the box starts empty; after Send the command exits 0, its last line the folder
   const port2 = testPort(8794, 1);
-  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanning.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
+  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, stdio: ["ignore", "pipe", "pipe"] });
   let out2 = ""; once.stdout.on("data", (c) => (out2 += c));
   const exited = new Promise((r) => once.on("exit", (code) => r(code)));
   await serverUp(port2, { child: once, timeout: 60000 });
@@ -138,7 +138,7 @@ try {
   const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 10000))]);
   const last = out2.trim().split("\n").pop();
   ok(code === 0, `--once exits after Send — ${code}`);
-  ok(/^sketch: \.reelplanning\/sketches\/\d{4}-\d{2}-\d{2}-sketch$/.test(last) && existsSync(join(repo, last.slice("sketch: ".length), "sketch.md")),
+  ok(/^sketch: \.reelplanner\/sketches\/\d{4}-\d{2}-\d{2}-sketch$/.test(last) && existsSync(join(repo, last.slice("sketch: ".length), "sketch.md")),
     `its last line names the folder, "sketch" when no question was given — ${last}`);
   if (once.exitCode == null) once.kill();
 } finally {
