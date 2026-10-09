@@ -4,9 +4,10 @@
 
 - **`/reel`: the video plays in a Claude Code pane.** The Claude Code plugin now carries a hooks module beside the
   skill (`skills/plan-to-video/hooks/`). `/reel` lists the plans with a video; a plan's video plays at the top of the
-  pane (its render's frames from `reel-frames`, as half blocks in a terminal, a kitty picture in kitty or Ghostty, a
-  few frames a second in the desktop and mobile apps; its captions and its sound), stops at each choice, plays the
-  branch picked and goes on (or stops at each call of a walkthrough), the answers are sent
+  pane (its render's frames from `reel-frames`: the picture itself in kitty or Ghostty, a few frames a second in the
+  desktop and mobile apps, the browser player in any other terminal; its sound), stops at each choice, plays the
+  branch picked and goes on (or stops at each call of a walkthrough), comments are left at their moment (`m`), the
+  answers and comments are sent
   as the player's Send sends them (a row in `.reelplanner/inbox/`, claimed by a waiting session or filed by this one
   with `reel-intake`), and **Watch** opens the player: the local page from a terminal, an Artifact in a cloud session,
   where localhost is out of reach. When the agent opens a video for review, a band above the prompt offers it. The

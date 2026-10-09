@@ -342,14 +342,19 @@ approved or with changes asked.
 The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
 `renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes; the first play says
 how far the render has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
-(kitty, Ghostty) the picture is the render itself, as sharp as in the browser. In any other truecolor terminal it is
-drawn in block elements, four pixels to a cell in the two colors that fit them best: the scenes, diagrams and motion
-come through, small text does not, and the captions run under the picture so the words are always there. In the
-desktop and mobile apps it is three frames a second, with no sound there (**With sound** opens the full player).
+(kitty, Ghostty) the picture is the render itself, as sharp as in the browser. Any other terminal opens the browser
+player instead (`reelplanner review --detach`), and the pane says so, with the link, and keeps the choices, the
+comments and Send: drawn in a terminal's character cells, a frame is a few dozen blocks across, and nothing in it can
+be read. In the desktop and mobile apps the pane shows three frames a second, with the captions under them and no
+sound there (`w` opens the full player).
 
-Under the picture: the caption, a timeline with a mark at each stop (filled once answered), and the keys: `p` play or
-pause, `r` replay, `b` and `n` the previous and next stop, `w` the full player, `l` all plans. The card for a stop
-appears when the video stops there; `o` opens a field for an answer in your own words.
+The pane, top to bottom: the picture; the timeline, with a mark at each stop (filled once answered) and at each
+comment, and the keys (`p` play or pause, `r` replay, `b` and `n` the previous and next stop); the stage, which is the
+card for the stop when the video stops there (its options by number, `e` explain more, `o` your own words) and
+otherwise what comes next; and **Your review**, the answers and comments so far in the video's order. `m` leaves a
+comment at the moment the video is at: the video waits while you write and plays on after, and the comment is filed
+as a note at that moment, as the player's are. Drawing on the video (a circle, a box around something) is the
+browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
 
 Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and

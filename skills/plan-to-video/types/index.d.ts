@@ -13,7 +13,7 @@ export type ReelplannerPlayback = {
   t: number
   /** Where this stretch stops: the next choice, or the end. */
   until: number
-  mode: 'raster' | 'image' | 'jpeg'
+  mode: 'image' | 'jpeg'
   cols: number
   rows: number
   progress?: number
@@ -38,6 +38,9 @@ export type ReelplannerAnswer = { option: string; label: string; options?: strin
 
 /** A verdict on a walkthrough video's call. */
 export type ReelplannerVerdict = { verdict: 'accept' | 'flag' | 'own'; own?: string; at: string }
+
+/** A comment left on the video as it played: at `t` seconds, in the reviewer's words. */
+export type ReelplannerComment = { id: string; t: number; text: string; at: string }
 
 /** What became of the last Send for a video. */
 export type ReelplannerSent = { at: string; path: string; how: 'waiter' | 'prompt' }
@@ -65,6 +68,8 @@ declare module 'claude-code' {
       flip: string | null
       /** The own-words field open in the pane (`<video>:<stop id>`, or `<video>:note`), null while none is. */
       composing: string | null
+      /** Keyed like `answers`' videos: the comments left on each video, in the order they were left. */
+      comments: Record<string, ReelplannerComment[]>
     }
   }
 }

@@ -11,10 +11,10 @@ const planMap = {
   planDir: `.reelplanner/plans/${SLUG}`,
   totalSeconds: 90,
   frames: [
-    { index: 1, title: 'Hook', compositionId: '01-hook', narration: 'You asked for a small plan.' },
-    { index: 2, title: 'Question 1', compositionId: '02-q1', narration: 'Question one. I recommend B.', decision: 'q1' },
-    { index: 3, title: 'Question 2', compositionId: '03-q2', narration: 'Question two.', decision: 'q2' },
-    { index: 4, title: 'The plan', compositionId: '04-plan' },
+    { index: 1, title: 'Hook', compositionId: '01-hook', narration: 'You asked for a small plan.', start: 0 },
+    { index: 2, title: 'Question 1', compositionId: '02-q1', narration: 'Question one. I recommend B.', decision: 'q1', start: 15 },
+    { index: 3, title: 'Question 2', compositionId: '03-q2', narration: 'Question two.', decision: 'q2', start: 45 },
+    { index: 4, title: 'The plan', compositionId: '04-plan', start: 80 },
   ],
   decisions: [
     {
@@ -43,14 +43,7 @@ const walkMap = {
 }
 
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
-/** A Raster frame of `cols` × `rows` cells, every cell a half block in one color. */
-function frame(cols: number, rows: number, rgb: number) {
-  const words = new Uint32Array(cols * rows * 3)
-  for (let i = 0; i < cols * rows; i++) words.set([0x2580, rgb, rgb], i * 3)
-  return (new Uint8Array(words.buffer) as unknown as { toBase64(): string }).toBase64()
-}
-
-function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop' } = {}) {
+function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean } = {}) {
   const files = new Map<string, string>([
     [`${PLAN}/video/plan-map.json`, JSON.stringify(planMap)],
     [`${PLAN}/plan.md`, '# A small plan'],
@@ -69,7 +62,9 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?:
   on('session.root', () => ({ value: ROOT }))
   let now = Date.parse('2026-10-09T12:00:00Z')
   on('clock.now', () => ({ value: (now += 1000) }))
-  on('env.get', ($, e) => ({ value: e.name === 'CLAUDE_CODE_REMOTE' && opts.cloud ? 'true' : undefined }))
+  on('env.get', ($, e) => ({
+    value: e.name === 'CLAUDE_CODE_REMOTE' && opts.cloud ? 'true' : e.name === 'KITTY_WINDOW_ID' && opts.kitty ? '1' : undefined,
+  }))
   on('fs.read', ($, e) => {
     const text = files.get(e.path)
     if (text === undefined) throw new Error(`ENOENT ${e.path}`)
@@ -105,9 +100,8 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?:
     const arg = (n: string) => e.argv[e.argv.indexOf(n) + 1]
     if (e.argv.includes('--render')) yield { stream: 'stdout' as const, text: 'P 100\nR /repo/renders/terminal.mp4\n' }
     else {
-      const cols = Number(arg('--cols')), rows = Number(arg('--rows'))
-      const picture = arg('--as') === 'jpeg' ? '/9j/4AAQSkZJRg==' : frame(cols, rows, 0x3366cc)
-      yield { stream: 'stdout' as const, text: `V 90 ${cols} ${rows}\nA none test\nF ${arg('--from')} ${picture}\n` }
+      const line = arg('--as') === 'jpeg' ? `F ${arg('--from')} /9j/4AAQSkZJRg==` : `I ${arg('--from')} /repo/renders/frames/frame-0.rgb 0`
+      yield { stream: 'stdout' as const, text: `V 90 640 360\nA none test\n${line}\n` }
       yield { stream: 'stdout' as const, text: `E ${arg('--to')}\n` }
     }
     return { value: { code: 0, signal: null } } as never
@@ -116,7 +110,13 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?:
     blits.push(e)
     return { value: {} }
   })
-  return { files, prompts, spawned, blits }
+  // `reelplanner review --detach`, the browser player
+  const ran: string[][] = []
+  on('process.run', ($, e) => {
+    ran.push([...e.argv])
+    return { value: { exitCode: 0, stdout: '✓ review page: http://127.0.0.1:8787/\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+  })
+  return { files, prompts, spawned, blits, ran }
 }
 
 const pane = <P extends 'terminal' | 'desktop' | 'mobile'>(surface: P) =>
@@ -201,7 +201,7 @@ test('in a cloud session, Watch asks Claude to publish the player as an Artifact
   const { prompts } = world(on, { cloud: true })
   const ui = await $.ui.mount(pane('mobile'))
   await ui.press({ key: `open-${SLUG}` })
-  expect(await ui.find({ type: 'Button', text: /With sound/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', text: /with sound/i })).toBeDefined()
   await ui.press({ key: 'watch' })
   expect(prompts[0]).toContain('Artifact')
   expect(prompts[0]).toContain(`${PLAN}/video`)
@@ -230,17 +230,55 @@ test('when the agent opens a video for review, the band above the prompt offers 
   expect(await ui.find({ type: 'Link' })).toMatchObject({ props: expect.objectContaining({ href: 'http://127.0.0.1:8787/' }) })
 })
 
-test('the video plays in the pane, stops at the choice, and after the answer plays its branch and goes on', async ($, on) => {
-  const { spawned, blits } = world(on)
+test('in a terminal without kitty graphics, the browser player opens, and the pane keeps the choices and says how to watch here', async ($, on) => {
+  const { ran } = world(on)
   const ui = await $.ui.mount(pane('terminal'))
   await ui.press({ key: `open-${SLUG}` })
-  expect(await ui.find({ type: 'Raster', key: 'screen' })).toBeDefined()
+  expect(ran).toEqual([expect.arrayContaining(['review', '--detach', `${PLAN}/video`])])
+  expect(await ui.find({ type: 'Text', text: /plays in your browser/ })).toBeDefined()
+  expect(await ui.find({ type: 'Link', key: undefined })).toMatchObject({ props: expect.objectContaining({ href: 'http://127.0.0.1:8787/' }) })
+  expect(await ui.find({ type: 'Text', text: /kitty or Ghostty/ })).toBeDefined()
+  // no picture in the pane, and no coarse one offered: drawn in character cells the video cannot be read
+  expect(await ui.find({ type: 'Image' })).toBeUndefined()
+  expect(await ui.find({ type: 'Button', key: 'play' })).toBeUndefined()
+  // the choices, the comments and Send stay in the pane
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', key: 'comment' })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
+test('comments left as it plays are kept by time and filed as notes at their moment', async ($, on) => {
+  const { files } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'play' }) // plays to choice 1, at 0:20
+  await ui.press({ key: 'comment' })
+  await ui.input({ key: 'comment-field', text: 'the cache diagram is clear' })
+  expect(await ui.find({ type: 'Text', text: /0:20 the cache diagram is clear/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /your review · 1 item/i })).toBeDefined()
+  await ui.press({ key: 'opt-b' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'approve' })
+  const row = JSON.parse(files.get([...files.keys()].filter(f => f.includes('/inbox/')).pop() ?? '') ?? '{}')
+  expect(row.review.annotations).toEqual(
+    expect.arrayContaining([expect.objectContaining({ kind: 'note', comment: 'the cache diagram is clear', t: 20, frame: expect.objectContaining({ index: 2 }) })]),
+  )
+  await ui.press({ key: 'library' })
+})
+
+test('the video plays in the pane, stops at the choice, and after the answer plays its branch and goes on', async ($, on) => {
+  const { spawned, blits } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  expect(await ui.find({ type: 'Image', key: 'screen' })).toBeDefined()
   await ui.press({ key: 'play' })
   const stretch = (a: string[]) => [a[a.indexOf('--from') + 1], a[a.indexOf('--to') + 1]]
   const plays = () => spawned.filter(a => !a.includes('--render'))
   expect(spawned[0]).toEqual(expect.arrayContaining(['reel-frames', `${PLAN}/video`, '--render']))
   expect(stretch(plays()[0] ?? [])).toEqual(['0', '20']) // from the start to choice 1
-  expect(blits).toEqual([expect.objectContaining({ requestId: 'reelplanner', key: 'screen' })])
+  expect(blits).toEqual([
+    expect.objectContaining({ requestId: 'reelplanner', key: 'screen', source: expect.objectContaining({ file: '/repo/renders/frames/frame-0.rgb', format: 'rgb' }) }),
+  ])
   expect(await ui.find({ type: 'Text', text: /0:20 \/ 1:30 · stopped at choice 1/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // the card, now the video is still
 

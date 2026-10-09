@@ -3,9 +3,8 @@
 #
 #   kitty    the same in a real kitty on a virtual display (Xvfb), its screen grabbed as it is: the sharp picture
 #            (kitty.py, then cut.py for the captions). Needs kitty, Xvfb and xdotool.
-#   play     /reel plays videos/l2-upload-resume in the pane, stops at its first choice, the answer's branch
-#            plays, and it goes on to the next (play.py). Its render is made first if the checkout has none
-#            (about 8 minutes, once; renders/ is left out of git).
+#            The video's render is made first if the checkout has none (about 8 minutes, once; renders/ is
+#            left out of git).
 #   review   the agent opens a plan video with `reelplanner review`, the band offers it, the pane answers its
 #            three choices and sends, and Claude files the review (record.py)
 #
@@ -14,14 +13,14 @@
 # screens (render.py, with pyte and Pillow). Stretches where nothing new happens are played faster and the
 # caption says so; nothing is made up.
 #
-# usage: scripts/demo/reel-pane/run.sh [kitty|play|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
+# usage: scripts/demo/reel-pane/run.sh [kitty|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
 #                                                                Pillow, and a `claude` that is signed in
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 HERE="$ROOT/scripts/demo/reel-pane"
-FLOW="${1:-play}"
+FLOW="${1:-kitty}"
 OUT="$(realpath -m "${2:-reel-pane-$FLOW.mp4}")"
-case "$FLOW" in kitty) COLS=0 ROWS=0;; play) COLS=190 ROWS=54;; review) COLS=150 ROWS=44;; *) echo "usage: run.sh [kitty|play|review] [out.mp4]"; exit 1;; esac
+case "$FLOW" in kitty) COLS=0 ROWS=0;; review) COLS=150 ROWS=44;; *) echo "usage: run.sh [kitty|review] [out.mp4]"; exit 1;; esac
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/reel-pane-demo.XXXXXX")"
 echo "working in $WORK"
 
@@ -67,12 +66,12 @@ tmux kill-session -t demo 2>/dev/null || true
   "env -u CLAUDE_CODE_REMOTE -u CLAUDE_CODE_CHILD_SESSION -u TMUX HOME=$WORK/home TERM=xterm-256color COLORTERM=truecolor claude; sleep 900")
 until tmux capture-pane -t demo -p | grep -q "auto mode on\|for shortcuts"; do sleep 1; done
 mkdir -p "$WORK/run"
-if [ "$FLOW" = play ]; then python3 "$HERE/play.py" "$WORK/run" videos/l2-upload-resume; else python3 "$HERE/record.py" "$WORK/run"; fi
+python3 "$HERE/record.py" "$WORK/run"
 (cd "$WORK/demo" && HOME="$WORK/home" node bin/reelplanner.mjs review --stop >/dev/null 2>&1 || true)
 tmux kill-session -t demo 2>/dev/null || true
 
-# review: caption 10 is "c: send it…", Claude working on the review, played at 4x (play.py marks its own)
-SPEED=$([ "$FLOW" = review ] && echo 10:4 || echo "") COLS=$COLS ROWS=$ROWS python3 "$HERE/render.py" "$WORK/run" "$WORK/frames"
+# caption 10 is "c: send it…", Claude working on the review, played at 4x
+SPEED=10:4 COLS=$COLS ROWS=$ROWS python3 "$HERE/render.py" "$WORK/run" "$WORK/frames"
 ffmpeg -y -loglevel error -f concat -safe 0 -i "$WORK/frames/list.txt" -vf "fps=25,format=yuv420p" \
   -c:v libx264 -crf 22 -preset medium -movflags +faststart "$OUT"
 echo "✓ $OUT"
