@@ -34,38 +34,38 @@ packages/player/test/last-run.png
 # the pictures fresh eyes looked at (made again by each run)
 videos/*/fresh-eyes/shots/
 
-# reelplanning in a shared repo (templates/gitignore; the contributing plan, D-213): a plan folder carries
+# reelplanner in a shared repo (templates/gitignore; the contributing plan, D-213): a plan folder carries
 # only its videos' text, and a PR's built video goes on video/pr-<n>, never merged
-.reelplanning/plans/*/*video/assets/
-.reelplanning/plans/*/*video/capture/
-.reelplanning/plans/*/*video/audio_meta.json
-.reelplanning/plans/*/*video/audio_engine_meta.json
+.reelplanner/plans/*/*video/assets/
+.reelplanner/plans/*/*video/capture/
+.reelplanner/plans/*/*video/audio_meta.json
+.reelplanner/plans/*/*video/audio_engine_meta.json
 # this repo's plans from before that rule keep their videos' other assets committed as they are; their voice and
-# renders are not (D-305 ended that exception: .reelplanning/.gitignore and the lines above leave them out)
-!.reelplanning/plans/2026-09-2[0-7]-*/*video/assets/
-!.reelplanning/plans/2026-09-2[0-7]-*/*video/capture/
-!.reelplanning/plans/2026-09-2[0-7]-*/*video/audio_meta.json
-!.reelplanning/plans/2026-09-2[0-7]-*/*video/audio_engine_meta.json
+# renders are not (D-305 ended that exception: .reelplanner/.gitignore and the lines above leave them out)
+!.reelplanner/plans/2026-09-2[0-7]-*/*video/assets/
+!.reelplanner/plans/2026-09-2[0-7]-*/*video/capture/
+!.reelplanner/plans/2026-09-2[0-7]-*/*video/audio_meta.json
+!.reelplanner/plans/2026-09-2[0-7]-*/*video/audio_engine_meta.json
 # an explainer (explain-first step 5, D-249): its text goes into git (explain.md, sources.json, the storyboard,
 # script and frames, its reviews), never a transcript or its built video (voice, images, captures)
-.reelplanning/explainers/*/video/assets/
-.reelplanning/explainers/*/video/capture/
-.reelplanning/explainers/*/video/audio_meta.json
-.reelplanning/explainers/*/video/audio_engine_meta.json
+.reelplanner/explainers/*/video/assets/
+.reelplanner/explainers/*/video/capture/
+.reelplanner/explainers/*/video/audio_meta.json
+.reelplanner/explainers/*/video/audio_engine_meta.json
 
-# the plan guide: a video's guide (its full page and its parts) is built from plan.md, git and the runs by `reelplanning
+# the plan guide: a video's guide (its full page and its parts) is built from plan.md, git and the runs by `reelplanner
 # guide`, never committed (like a render, D-213); a plan with no video yet gets <plan-dir>/guide/index.html, the same.
 # A step's picture fragment the agent writes (<plan-dir>/guide/step-<n>.html) is committed.
-.reelplanning/plans/*/*video/guide/
-.reelplanning/explainers/*/video/guide/
-.reelplanning/plans/*/guide/index.html
-.reelplanning/plans/*/guide/parts.json
-.reelplanning/plans/*/guide/.cache/
+.reelplanner/plans/*/*video/guide/
+.reelplanner/explainers/*/video/guide/
+.reelplanner/plans/*/guide/index.html
+.reelplanner/plans/*/guide/parts.json
+.reelplanner/plans/*/guide/.cache/
 
 # keys (narration-check, narrate): never committed
 .env
 
 # what each reviewed version was built from that nothing makes again (screenshots, captured text), kept small and
 # committed so `reel rebuild` can build it again (scripts/lib/versions.mjs); never a voice file or a video
-!.reelplanning/media/**
-!.reelplanning/**/versions/**
+!.reelplanner/media/**
+!.reelplanner/**/versions/**

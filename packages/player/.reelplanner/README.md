@@ -1,6 +1,6 @@
-# .reelplanning
+# .reelplanner
 
-The canonical record for **review-page** (brownfield): what the system is, what we call its parts, how they look on the stage, and what has been decided. Every plan and every plan video builds from these files; the tools are in the reelplanning repo (`scripts/reel.mjs`), the format in its `docs/project-dir.md`.
+The canonical record for **review-page** (brownfield): what the system is, what we call its parts, how they look on the stage, and what has been decided. Every plan and every plan video builds from these files; the tools are in the reelplanner repo (`scripts/reel.mjs`), the format in its `docs/project-dir.md`.
 
 Three rules:
 

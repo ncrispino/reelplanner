@@ -1,5 +1,5 @@
 {
-  "name": "reelplanning",
+  "name": "reelplanner",
   "kind": "brownfield",
   "components": [
     {
@@ -34,7 +34,7 @@
       "id": "player",
       "name": "The review player",
       "role": "artifact",
-      "files": ["packages/player/reelplanning-player.js"],
+      "files": ["packages/player/reelplanner-player.js"],
       "stage": { "x": 632, "y": 405, "w": 270, "h": 110 }
     },
     {
@@ -48,7 +48,7 @@
       "id": "headless",
       "name": "The headless run",
       "role": "automation",
-      "files": [".reelplanning/config.json", "templates/reelplanning/config.json", "scripts/lib/inbox.mjs", "scripts/lib/sandbox.mjs"],
+      "files": [".reelplanner/config.json", "templates/reelplanner/config.json", "scripts/lib/inbox.mjs", "scripts/lib/sandbox.mjs"],
       "stage": { "x": 946, "y": 175, "w": 270, "h": 110 }
     },
     {
@@ -83,7 +83,7 @@
       "id": "system-video",
       "name": "The system video",
       "role": "artifact",
-      "files": [".reelplanning/system-video/", "scripts/spec-diff.mjs", "scripts/system-review.mjs"],
+      "files": [".reelplanner/system-video/", "scripts/spec-diff.mjs", "scripts/system-review.mjs"],
       "stage": { "x": 1260, "y": 30, "w": 270, "h": 100 }
     },
     {
@@ -103,7 +103,7 @@
     {
       "id": "action",
       "name": "The push-triggered workflow",
-      "files": [".github/workflows/reelplanning-revise.yml"],
+      "files": [".github/workflows/reelplanner-revise.yml"],
       "on": "2026-09-24",
       "plan": "2026-09-22-m3-revise-loop",
       "why": "revise-loop step 5: a review reaches a waiting session, or the review server starts the headless run",
@@ -174,7 +174,7 @@
   ],
   "stage": {
     "kind": "dataflow",
-    "why": "reelplanning is two loops over the same parts, and only a graph with return edges can show a loop. The edges are real hand-offs, each carrying something to the next part (the review, the inbox row, reviews/<kind>-<time>.md, the script, the video). The review loop runs round the outside: along the top from the review server to the revise step, down the right to finish-project, back along the bottom to plan-diff and up to the review player. The build loop starts inside, at the implement step, and takes the same path, with the walkthrough fix step in place of the revise step. The headless run sits on the review's path because a review nobody is waiting for goes through it; a session that is waiting takes it instead. The system video hangs off the reel CLI above the top row, and the plan-to-video skill, which makes every video but hands no file along an edge, stands apart beside it.",
+    "why": "reelplanner is two loops over the same parts, and only a graph with return edges can show a loop. The edges are real hand-offs, each carrying something to the next part (the review, the inbox row, reviews/<kind>-<time>.md, the script, the video). The review loop runs round the outside: along the top from the review server to the revise step, down the right to finish-project, back along the bottom to plan-diff and up to the review player. The build loop starts inside, at the implement step, and takes the same path, with the walkthrough fix step in place of the revise step. The headless run sits on the review's path because a review nobody is waiting for goes through it; a session that is waiting takes it instead. The system video hangs off the reel CLI above the top row, and the plan-to-video skill, which makes every video but hands no file along an edge, stands apart beside it.",
     "rail": { "x": 80, "y": 150, "w": 500, "slotH": 90, "gap": 20, "slots": 6 }
   }
 }
