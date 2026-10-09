@@ -341,10 +341,15 @@ approved or with changes asked.
 
 The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
 `renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes; the first play says
-how far the render has got. `reelplanner reel-frames <video-dir>` streams it: in a terminal as colored half blocks
-(two pixels a cell, any truecolor terminal), as a sharp picture where the terminal draws kitty graphics (kitty,
-Ghostty), and in the desktop and mobile apps as three frames a second, with no sound there (**Watch with sound** opens
-the full player).
+how far the render has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
+(kitty, Ghostty) the picture is the render itself, as sharp as in the browser. In any other truecolor terminal it is
+drawn in block elements, four pixels to a cell in the two colors that fit them best: the scenes, diagrams and motion
+come through, small text does not, and the captions run under the picture so the words are always there. In the
+desktop and mobile apps it is three frames a second, with no sound there (**With sound** opens the full player).
+
+Under the picture: the caption, a timeline with a mark at each stop (filled once answered), and the keys: `p` play or
+pause, `r` replay, `b` and `n` the previous and next stop, `w` the full player, `l` all plans. The card for a stop
+appears when the video stops there; `o` opens a field for an answer in your own words.
 
 Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and

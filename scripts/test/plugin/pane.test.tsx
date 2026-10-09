@@ -146,7 +146,8 @@ test('the library lists the plan, and a choice answered on any surface is filed 
 
   const ui = await $.ui.mount(pane('terminal'))
   await ui.press({ key: `open-${SLUG}` })
-  await ui.press({ key: 'chip-send' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
   expect(await ui.find({ type: 'Text', text: /1 not answered/ })).toBeDefined()
   await ui.press({ key: 'approve' })
 
@@ -168,9 +169,11 @@ test('own words are an `own` answer with the note the player adds', async ($, on
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount(pane(surface))
     await ui.press({ key: `open-${SLUG}` })
+    expect(await ui.find({ type: 'Input' })).toBeUndefined() // the field opens on asking
+    await ui.press({ key: 'own' })
     await ui.input({ key: 'own-q1', text: 'Neither: ask the host' })
     expect(await ui.find({ type: 'Text', text: /Who clears it\?/ })).toBeDefined()
-    await ui.press({ key: 'chip-send' })
+    await ui.press({ key: 'next' })
     await ui.press({ key: 'changes' })
     const row = JSON.parse(files.get([...files.keys()].filter(f => f.includes('/inbox/')).pop() ?? '') ?? '{}')
     expect(row.verdict).toBe('changes')
@@ -185,7 +188,8 @@ test("a walkthrough's calls are accepted or flagged", async ($, on) => {
   const { files } = world(on, { walkthrough: true })
   const ui = await $.ui.mount(pane('mobile'))
   await ui.press({ key: `open-${SLUG}` })
-  expect(await ui.find({ type: 'Text', text: /Chose: a JSON file/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /a JSON file/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /instead of SQLite/ })).toBeDefined()
   await ui.press({ key: 'flag' })
   await ui.press({ key: 'approve' })
   const row = JSON.parse(files.get([...files.keys()].filter(f => f.includes('/inbox/')).pop() ?? '') ?? '{}')
@@ -197,7 +201,7 @@ test('in a cloud session, Watch asks Claude to publish the player as an Artifact
   const { prompts } = world(on, { cloud: true })
   const ui = await $.ui.mount(pane('mobile'))
   await ui.press({ key: `open-${SLUG}` })
-  expect(await ui.find({ type: 'Button', text: /Watch with sound/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', text: /With sound/ })).toBeDefined()
   await ui.press({ key: 'watch' })
   expect(prompts[0]).toContain('Artifact')
   expect(prompts[0]).toContain(`${PLAN}/video`)
@@ -237,13 +241,14 @@ test('the video plays in the pane, stops at the choice, and after the answer pla
   expect(spawned[0]).toEqual(expect.arrayContaining(['reel-frames', `${PLAN}/video`, '--render']))
   expect(stretch(plays()[0] ?? [])).toEqual(['0', '20']) // from the start to choice 1
   expect(blits).toEqual([expect.objectContaining({ requestId: 'reelplanner', key: 'screen' })])
-  expect(await ui.find({ type: 'Text', text: /choice 1: answer below/ })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: /0:20 \/ 1:30/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /0:20 \/ 1:30 · stopped at choice 1/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // the card, now the video is still
 
   await ui.press({ key: 'opt-b' })
   // B's branch, then on from where the question resumes to choice 2
   expect(plays().slice(1).map(stretch)).toEqual([['25', '30'], ['30', '50']])
-  expect(await ui.find({ type: 'Text', text: /choice 2: answer below/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /stopped at choice 2/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Who clears it\?/ })).toBeDefined()
   await ui.press({ key: 'library' })
 })
 

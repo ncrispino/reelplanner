@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Record the /reel pane working in a real Claude Code session, as a captioned mp4 (about a minute).
 #
+#   kitty    the same in a real kitty on a virtual display (Xvfb), its screen grabbed as it is: the sharp picture
+#            (kitty.py, then cut.py for the captions). Needs kitty, Xvfb and xdotool.
 #   play     /reel plays videos/l2-upload-resume in the pane, stops at its first choice, the answer's branch
 #            plays, and it goes on to the next (play.py). Its render is made first if the checkout has none
 #            (about 8 minutes, once; renders/ is left out of git).
@@ -12,14 +14,14 @@
 # screens (render.py, with pyte and Pillow). Stretches where nothing new happens are played faster and the
 # caption says so; nothing is made up.
 #
-# usage: scripts/demo/reel-pane/run.sh [play|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
+# usage: scripts/demo/reel-pane/run.sh [kitty|play|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
 #                                                                Pillow, and a `claude` that is signed in
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 HERE="$ROOT/scripts/demo/reel-pane"
 FLOW="${1:-play}"
 OUT="$(realpath -m "${2:-reel-pane-$FLOW.mp4}")"
-case "$FLOW" in play) COLS=190 ROWS=54;; review) COLS=150 ROWS=44;; *) echo "usage: run.sh [play|review] [out.mp4]"; exit 1;; esac
+case "$FLOW" in kitty) COLS=0 ROWS=0;; play) COLS=190 ROWS=54;; review) COLS=150 ROWS=44;; *) echo "usage: run.sh [kitty|play|review] [out.mp4]"; exit 1;; esac
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/reel-pane-demo.XXXXXX")"
 echo "working in $WORK"
 
@@ -40,10 +42,24 @@ json.dump({"hasCompletedOnboarding": True, "theme": "dark",
           open(f"{w}/home/.claude.json", "w"))
 PY
 
-if [ "$FLOW" = play ]; then
+if [ "$FLOW" != review ]; then
   V=videos/l2-upload-resume
   if [ -f "$ROOT/$V/renders/terminal.mp4" ]; then mkdir -p "$WORK/demo/$V/renders" && cp "$ROOT/$V/renders/terminal.mp4" "$WORK/demo/$V/renders/" && touch "$WORK/demo/$V/renders/terminal.mp4"; fi
   (cd "$WORK/demo" && node bin/reelplanner.mjs reel-frames "$V" --render | grep -v '^P ' || true)
+fi
+
+if [ "$FLOW" = kitty ]; then
+  printf '#!/bin/sh\ncd %s/demo\nexec env -u CLAUDE_CODE_REMOTE -u CLAUDE_CODE_CHILD_SESSION -u TMUX HOME=%s/home claude\n' "$WORK" "$WORK" > "$WORK/launch.sh"
+  chmod +x "$WORK/launch.sh"
+  Xvfb :97 -screen 0 1920x1080x24 >/dev/null 2>&1 & XVFB=$!
+  sleep 2
+  mkdir -p "$WORK/run"
+  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh"
+  kill $XVFB 2>/dev/null || true
+  (cd "$WORK/demo" && HOME="$WORK/home" node bin/reelplanner.mjs review --stop >/dev/null 2>&1 || true)
+  python3 "$HERE/cut.py" "$WORK/run" "$OUT"
+  echo "✓ $OUT"
+  exit 0
 fi
 
 tmux kill-session -t demo 2>/dev/null || true

@@ -8,8 +8,10 @@
 //
 // Without --render, the stretch [--from, --to) plays: ffmpeg decodes it in real time and each frame is printed
 // in the form the pane draws (--as):
-//   raster   cells for a Raster, each cell one '▀' whose foreground is the upper pixel and background the
-//            lower: --cols × --rows cells from a frame of cols × 2·rows pixels (every truecolor terminal)
+//   raster   cells for a Raster: each cell a block element over four pixels (2 × 2), the two colors that fit
+//            them best as its foreground and background, so a cell draws a quarter, a half, a diagonal or
+//            three quarters (--cols × --rows cells from a frame of 2·cols × 2·rows pixels; every truecolor
+//            terminal). --blocks half draws one '▀' per two pixels instead (cols × 2·rows).
 //   image    a raw RGB frame written to a ring of files under --dir, for an Image (kitty, Ghostty)
 //   jpeg     the frame as a small JPEG, for an Svg on a surface with no terminal (the desktop and mobile apps)
 // and the sound plays alongside, on this machine (ffplay, or afplay on macOS), unless --no-audio.
@@ -35,7 +37,7 @@ import { hyperframesBin } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
-const VALUED = new Set(["--from", "--to", "--as", "--cols", "--rows", "--width", "--dir", "--fps"]);
+const VALUED = new Set(["--from", "--to", "--as", "--cols", "--rows", "--width", "--dir", "--fps", "--blocks"]);
 const dirArg = args.find((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1]));
 if (!dirArg || args.includes("--help")) {
   console.log("usage: reelplanner reel-frames <video-dir> --render | [--from s] [--to s] [--as raster|image|jpeg] [--cols n] [--rows n] [--width px] [--dir d] [--fps n] [--no-audio]");
@@ -97,9 +99,11 @@ function play() {
   const to = Math.min(total, Number(flag("to", total)) || total);
   if (to <= from) { say(`E ${from}`); process.exit(0); }
   let W, H;
-  if (as === "raster") { W = Number(flag("cols", 64)); H = 2 * Number(flag("rows", 18)); }
+  const quad = flag("blocks", "quad") !== "half";
+  const cols = Number(flag("cols", 64)), rows = Number(flag("rows", 18));
+  if (as === "raster") { W = quad ? 2 * cols : cols; H = 2 * rows; }
   else { W = Number(flag("width", as === "jpeg" ? 384 : 640)) & ~1; H = Math.round((W * 9) / 16) & ~1; }
-  say(`V ${total.toFixed(3)} ${W} ${as === "raster" ? H / 2 : H}`);
+  say(as === "raster" ? `V ${total.toFixed(3)} ${cols} ${rows}` : `V ${total.toFixed(3)} ${W} ${H}`);
 
   const children = [];
   const stop = () => { for (const c of children) { try { c.kill("SIGTERM"); } catch { /* gone */ } } };
@@ -150,7 +154,7 @@ function play() {
     while (buf.length >= frameBytes) {
       const px = buf.subarray(0, frameBytes);
       buf = buf.subarray(frameBytes);
-      if (as === "raster") say(`F ${at()} ${cells(px, W, H / 2)}`);
+      if (as === "raster") say(`F ${at()} ${quad ? quadCells(px, cols, rows) : cells(px, cols, rows)}`);
       else {
         const path = join(ring, `frame-${n % 8}.rgb`);
         writeFileSync(path, px);
@@ -175,6 +179,50 @@ function cells(px, cols, rows) {
       words[i] = 0x2580;
       words[i + 1] = (px[top] << 16) | (px[top + 1] << 8) | px[top + 2];
       words[i + 2] = (px[bottom] << 16) | (px[bottom + 1] << 8) | px[bottom + 2];
+    }
+  }
+  return Buffer.from(words.buffer).toString("base64");
+}
+
+// The block element for each set of lit quarters (bit 0 upper left, 1 upper right, 2 lower left, 3 lower right).
+const QUADS = [0x20, 0x2598, 0x259d, 0x2580, 0x2596, 0x258c, 0x259e, 0x259b, 0x2597, 0x259a, 0x2590, 0x259c, 0x2584, 0x2599, 0x259f, 0x2588];
+
+/** Raster cells of 2 × 2 pixels: for each cell, the split of its four pixels into two colors with the least error. */
+function quadCells(px, cols, rows) {
+  const W = cols * 2;
+  const words = new Uint32Array(cols * rows * 3);
+  const p = [0, 0, 0, 0].map(() => [0, 0, 0]);
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      for (let k = 0; k < 4; k++) {
+        const o = ((2 * y + (k >> 1)) * W + 2 * x + (k & 1)) * 3;
+        p[k][0] = px[o]; p[k][1] = px[o + 1]; p[k][2] = px[o + 2];
+      }
+      let best = Infinity, bestMask = 0, fg = [0, 0, 0], bg = [0, 0, 0];
+      // masks 0..7 are enough: mask m and 15 - m are the same split with the colors swapped
+      for (let m = 0; m < 8; m++) {
+        const a = [0, 0, 0], b = [0, 0, 0];
+        let na = 0, nb = 0;
+        for (let k = 0; k < 4; k++) {
+          const t = (m >> k) & 1 ? a : b;
+          t[0] += p[k][0]; t[1] += p[k][1]; t[2] += p[k][2];
+          if ((m >> k) & 1) na++; else nb++;
+        }
+        if (na) { a[0] /= na; a[1] /= na; a[2] /= na; }
+        if (nb) { b[0] /= nb; b[1] /= nb; b[2] /= nb; }
+        let err = 0;
+        for (let k = 0; k < 4; k++) {
+          const t = (m >> k) & 1 ? a : b;
+          err += (p[k][0] - t[0]) ** 2 + (p[k][1] - t[1]) ** 2 + (p[k][2] - t[2]) ** 2;
+        }
+        if (err < best) { best = err; bestMask = m; fg = a; bg = b; }
+      }
+      const i = (y * cols + x) * 3;
+      const rgb = (c) => (Math.round(c[0]) << 16) | (Math.round(c[1]) << 8) | Math.round(c[2]);
+      // mask 0 is one color for the whole cell: a space on it
+      words[i] = QUADS[bestMask];
+      words[i + 1] = bestMask ? rgb(fg) : 0x01000000;
+      words[i + 2] = rgb(bg);
     }
   }
   return Buffer.from(words.buffer).toString("base64");

@@ -31,6 +31,7 @@ cap_font = ImageFont.truetype(SANS, 30)
 step_font = ImageFont.truetype(SANS_BOLD, 22)
 
 BG, FG = (24, 24, 27), (220, 220, 220)
+QUADS = {"▘": 1, "▝": 2, "▀": 3, "▖": 4, "▌": 5, "▞": 6, "▛": 7, "▗": 8, "▚": 9, "▐": 10, "▜": 11, "▄": 12, "▙": 13, "▟": 14, "█": 15}
 NAMED = {
     "black": (0, 0, 0), "red": (205, 49, 49), "green": (13, 188, 121), "brown": (229, 229, 16), "yellow": (229, 229, 16),
     "blue": (36, 114, 200), "magenta": (188, 63, 188), "cyan": (17, 168, 205), "white": (229, 229, 229),
@@ -67,9 +68,12 @@ def draw_screen(ansi, caption, step):
             px, py = OX + x * cw, OY + y * ch
             if bg != BG:
                 d.rectangle([px, py, px + cw - 1, py + ch - 1], fill=bg)
-            if c.data == "▀":
-                d.rectangle([px, py, px + cw - 1, py + ch // 2 - 1], fill=fg)
-                d.rectangle([px, py + ch // 2, px + cw - 1, py + ch - 1], fill=bg)
+            if c.data in QUADS:  # block elements: drawn as the quarters they light, as a terminal does
+                m = QUADS[c.data]
+                for k in range(4):
+                    x0, y0 = px + (k & 1) * (cw // 2), py + (k >> 1) * (ch // 2)
+                    w_, h_ = (cw // 2 if not k & 1 else cw - cw // 2), (ch // 2 if not k >> 1 else ch - ch // 2)
+                    d.rectangle([x0, y0, x0 + w_ - 1, y0 + h_ - 1], fill=fg if (m >> k) & 1 else bg)
                 continue
             if c.data.strip():
                 d.text((px, py + 2), {"⏵": "▸", "⏸": "‖"}.get(c.data, c.data), font=bold if c.bold else font, fill=fg)

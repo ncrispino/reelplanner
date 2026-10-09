@@ -35,8 +35,9 @@ In Claude Code, the skill can come as a plugin instead of the third line, kept u
 
 The plugin is the skill, plus `/reel`: the video plays in a pane in Claude Code, beside the conversation, with its
 captions under it and its sound, stops at each open choice, takes your answer, plays the branch you picked, and goes
-on; Send files your answers as the player's Send does. In a terminal the picture is drawn in colored half blocks (a
-sharp picture in kitty and Ghostty); in the desktop and mobile apps it is a few frames a second. When the agent opens a
+on; Send files your answers as the player's Send does. In kitty or Ghostty the picture is as sharp as in the browser;
+other terminals draw it in colored block elements (the scenes come through, small text does not), and the desktop
+and mobile apps show a few frames a second. When the agent opens a
 video for review, a band above the prompt offers it there ([details](./docs/reference.md#the-reel-pane-in-claude-code)).
 The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
 when they are missing, but running them first is quicker).

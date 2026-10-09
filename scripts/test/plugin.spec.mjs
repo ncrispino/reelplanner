@@ -50,7 +50,7 @@ if (spawnSync("ffmpeg", ["-version"]).status !== 0) {
   });
   test("reel-frames: a stretch plays as Raster cells, one half block per two pixels, at the video's pace", () => {
     const started = Date.now();
-    const out = frames("--from", "0.5", "--to", "1.5", "--cols", "8", "--rows", "3", "--no-audio");
+    const out = frames("--from", "0.5", "--to", "1.5", "--cols", "8", "--rows", "3", "--blocks", "half", "--no-audio");
     assert.equal(out[0], "V 2.000 8 3");
     const f = out.filter((l) => l.startsWith("F "));
     assert.ok(f.length >= 11 && f.length <= 13, `${f.length} frames for a second at 12 fps`);
@@ -59,6 +59,14 @@ if (spawnSync("ffmpeg", ["-version"]).status !== 0) {
     assert.ok(words.every((w, i) => i % 3 !== 0 || w === 0x2580), "every cell is a '▀'");
     assert.match(out[out.length - 1], /^E 1\.500$/);
     assert.ok(Date.now() - started >= 800, "played in real time, not dumped");
+  });
+  test("reel-frames: by default each cell is a block element over 2 × 2 pixels, in the two colors that fit them", () => {
+    const f = frames("--to", "0.2", "--cols", "8", "--rows", "3", "--no-audio").filter((l) => l.startsWith("F "));
+    const words = new Uint32Array(Uint8Array.from(Buffer.from(f[0].split(" ")[2], "base64")).buffer);
+    const quads = new Set([0x20, 0x2598, 0x259d, 0x2580, 0x2596, 0x258c, 0x259e, 0x259b]);
+    assert.equal(words.length, 8 * 3 * 3);
+    assert.ok(words.every((w, i) => i % 3 !== 0 || quads.has(w)), "every cell is a space or a quarter block");
+    assert.ok(new Set(words.filter((_, i) => i % 3 === 0)).size > 2, "the test card's edges draw more than one shape");
   });
   test("reel-frames: as JPEGs, a few a second, for the desktop and mobile apps", () => {
     const f = frames("--as", "jpeg", "--width", "96", "--fps", "3", "--to", "1", "--no-audio").filter((l) => l.startsWith("F "));

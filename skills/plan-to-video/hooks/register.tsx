@@ -38,6 +38,7 @@ const publishing = atom({ plugin: 'reelplanner', key: 'publishing' } as const, n
 const busy = atom({ plugin: 'reelplanner', key: 'busy' } as const, null as string | null)
 const playback = atom({ plugin: 'reelplanner', key: 'playback' } as const, null as ReelplannerPlayback | null)
 const flip = atom({ plugin: 'reelplanner', key: 'flip' } as const, null as string | null)
+const composing = atom({ plugin: 'reelplanner', key: 'composing' } as const, null as string | null)
 
 // --- plan-map.json, the file the player reads (scripts/plan-map.mjs) -------------------------------
 
@@ -745,8 +746,10 @@ export const register: Register = on => {
     const other: ReelplannerWhich = isPlanVideo(v.which) ? 'walkthrough-video' : 'video'
     const hasOther = v.inPlans && plan ? (isPlanVideo(v.which) ? plan.calls !== null : plan.choices !== null) : false
 
-    // the screen: the video's own frames, with its clock and captions under it
+    // --- the screen, and the strip under it: caption, timeline, keys ---------------------------------
     const playing = mine?.status === 'playing'
+    const rendering = mine?.status === 'rendering'
+    const stopped = !playing && !rendering // the card for this stop shows only while the video is still
     const toggle = () => {
       if (playing) return stopPlayback($)
       const s = stretch(map, v.which, stop)
@@ -758,13 +761,7 @@ export const register: Register = on => {
       const t = $.ui.resolve(e)
       picture =
         mine?.mode === 'image' ? (
-          <t.Image
-            key="screen"
-            source={{ rgba: 'AAAA/w==', width: 1, height: 1 }}
-            columns={size.cols}
-            rows={size.rows}
-            alt={map.title ?? 'the video'}
-          />
+          <t.Image key="screen" source={{ rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
         ) : (
           <t.Raster key="screen" columns={size.cols} rows={size.rows} cells={frames.get(v.key) ?? blank(size.cols, size.rows)} />
         )
@@ -774,145 +771,213 @@ export const register: Register = on => {
         'Svg' in els && svg ? (
           <els.Svg source={svg} alt={map.title ?? 'the video'} width={Math.min(480, width * 8)} />
         ) : (
-          <Text dimColor>▶ Press Play: the video plays here, a few frames a second (its sound: Watch with sound).</Text>
+          <Text dimColor>▶ The video plays here, a few frames a second. With sound: Full player.</Text>
         )
     }
     const captions = await loadCaptions($, v.dir)
+    const total = map.totalSeconds ?? 0
     const t = mine?.t ?? stretch(map, v.which, stop).from
-    const caption = captions.find(c => c.start <= t + 0.05 && t < c.end)?.text
-    const atStop = mine?.status === 'ended' && stop < stops.length
-    const state = !mine
-      ? 'Press p to play'
-      : mine.status === 'rendering'
-        ? `Making the video's render for the terminal (once)… ${mine.progress ?? 0}%`
+    // the captions under the picture where the picture is too coarse to read its own (all but kitty's)
+    const caption = playing && mine?.mode !== 'image' ? captions.find(c => c.start <= t + 0.05 && t < c.end)?.text : undefined
+
+    // the timeline: what has played, the playhead, and a mark at each stop (filled once answered)
+    const cols = size.cols
+    const marks = new Map<number, Decision | Call>()
+    for (const s of stops) if (total > 0 && s.at !== undefined) marks.set(Math.min(cols - 1, Math.floor((s.at / total) * cols)), s)
+    const head = total > 0 ? Math.min(cols - 1, Math.floor((t / total) * cols)) : 0
+    const cells: { ch: string; kind: 'played' | 'head' | 'rest' | 'done' | 'open' | 'here' }[] = []
+    for (let i = 0; i < cols; i++) {
+      const s = marks.get(i)
+      if (s) cells.push({ ch: done(s.id) ? '◆' : '◇', kind: s === stops[stop] ? 'here' : done(s.id) ? 'done' : 'open' })
+      else if (i === head) cells.push({ ch: '●', kind: 'head' })
+      else cells.push({ ch: i < head ? '━' : '─', kind: i < head ? 'played' : 'rest' })
+    }
+    const runs: { text: string; kind: (typeof cells)[number]['kind'] }[] = []
+    for (const c of cells) {
+      const last = runs[runs.length - 1]
+      if (last && last.kind === c.kind) last.text += c.ch
+      else runs.push({ text: c.ch, kind: c.kind })
+    }
+    const timeline = (
+      <Text key="timeline" wrap="truncate-end">
+        {runs.map((r, i) =>
+          r.kind === 'played' || r.kind === 'head' ? (
+            <Text key={`r${i}`} color="claude">{r.text}</Text>
+          ) : r.kind === 'done' ? (
+            <Text key={`r${i}`} color="success">{r.text}</Text>
+          ) : r.kind === 'here' ? (
+            <Text key={`r${i}`} color="warning" bold>{r.text}</Text>
+          ) : r.kind === 'open' ? (
+            <Text key={`r${i}`} bold>{r.text}</Text>
+          ) : (
+            <Text key={`r${i}`} dimColor>{r.text}</Text>
+          ),
+        )}
+      </Text>
+    )
+    const where = !mine
+      ? 'ready'
+      : rendering
+        ? `preparing the video for this terminal, once · ${mine.progress ?? 0}%`
         : mine.status === 'failed'
-          ? `Could not play: ${mine.message ?? ''}`
-          : mine.status === 'playing'
-            ? `▶ playing to ${stop < stops.length ? `choice ${stop + 1}` : 'the end'}${mine.audio && !mine.audio.startsWith('none') ? ' · sound on' : ''}`
-            : atStop
-              ? `⏸ choice ${stop + 1}: answer below`
+          ? `could not play: ${mine.message ?? ''}`
+          : playing
+            ? mine.audio && !mine.audio.startsWith('none')
+              ? 'playing · sound on'
+              : 'playing'
+            : mine.status === 'ended' && stop < stops.length
+              ? `stopped at ${isPlanVideo(v.which) ? 'choice' : 'call'} ${stop + 1}`
               : mine.status === 'ended'
-                ? '■ the end'
-                : '⏸ paused'
-    const screen = (
-      <Box flexDirection="column">
-        {picture}
-        <Text bold wrap="truncate-end">
-          {caption ?? ' '}
+                ? 'the end'
+                : 'paused'
+    const controls = (
+      <Box key="controls" gap={2} flexWrap="wrap">
+        <Button key="play" plain hotkey="p" onPress={() => toggle()}>
+          {playing || rendering ? '‖ Pause' : '▶ Play'}
+        </Button>
+        <Button key="replay" plain hotkey="r" onPress={() => playTo($, v, stop, size)}>
+          ↺ Replay
+        </Button>
+        <Button key="prev" plain hotkey="b" onPress={() => go(stop - 1)}>
+          ‹ Back
+        </Button>
+        <Button key="next" plain hotkey="n" onPress={() => go(stop + 1)}>
+          {stop >= stops.length - 1 ? 'Send ›' : 'Next stop ›'}
+        </Button>
+        <Text dimColor>
+          {clock(t)} / {clock(total)} · {where}
         </Text>
-        <Box gap={1} flexWrap="wrap">
-          <Text dimColor>
-            {clock(t)} / {clock(map.totalSeconds)} · {state}
-          </Text>
-          <Button key="play" hotkey="p" label={playing ? '‖ Pause' : '▶ Play'} onPress={() => toggle()} />
-          <Button key="replay" hotkey="r" label="↺ Replay" onPress={() => playTo($, v, stop, size)} />
-        </Box>
       </Box>
     )
-
     const header = (
-      <Box flexDirection="column">
+      <Box key="header" justifyContent="space-between" gap={1}>
         <Text bold wrap="truncate-end">
           {map.title ?? v.slug}
         </Text>
-        <Box gap={1} flexWrap="wrap">
-          <Button key="library" hotkey="l" label="‹ All plans" onPress={() => stopPlayback($).then(() => update($, open, () => null))} />
+        <Box gap={2}>
           {hasOther && (
-            <Button
-              key="other"
-              label={isPlanVideo(v.which) ? 'Walkthrough video' : 'Plan video'}
-              onPress={() => openPane($, { slug: v.slug, which: other })}
-            />
+            <Button key="other" plain onPress={() => openPane($, { slug: v.slug, which: other })}>
+              {isPlanVideo(v.which) ? 'Walkthrough' : 'Plan video'}
+            </Button>
           )}
           {link ? (
-            <Link href={link} label="Full player" />
+            <Link href={link} label="Full player ↗" />
           ) : (
-            <Button
-              key="watch"
-              hotkey="w"
-              label={cloud ? 'Watch with sound (Artifact)' : 'Full player (browser)'}
-              onPress={() => openPlayer($, v)}
-            />
+            <Button key="watch" plain hotkey="w" onPress={() => openPlayer($, v)}>
+              {cloud ? 'With sound ↗' : 'Full player ↗'}
+            </Button>
           )}
+          <Button key="library" plain hotkey="l" onPress={() => stopPlayback($).then(() => update($, open, () => null))}>
+            All plans
+          </Button>
         </Box>
+      </Box>
+    )
+    const screen = (
+      <Box key="screen-box" flexDirection="column">
+        {header}
+        {picture}
+        {mine?.mode !== 'image' && (
+          <Text bold wrap="truncate-end">
+            {caption ?? ' '}
+          </Text>
+        )}
+        {timeline}
+        {controls}
         {working && <Text dimColor>{working}</Text>}
       </Box>
     )
 
-    const chips = (
-      <Box gap={1} flexWrap="wrap">
-        <Text dimColor>{isPlanVideo(v.which) ? 'choices' : 'calls'}</Text>
-        {stops.map((s, i) => (
-          <Button key={`chip-${s.id}`} plain onPress={() => go(i)}>
-            {i === stop ? <Text bold>[{i + 1}{done(s.id) ? '✓' : ''}]</Text> : <Text dimColor={done(s.id)}>{i + 1}{done(s.id) ? '✓' : ''}</Text>}
-          </Button>
-        ))}
-        <Button key="chip-send" plain onPress={() => go(stops.length)}>
-          {stop === stops.length ? <Text bold>[Send]</Text> : 'Send'}
+    // own words: a field opened on asking, so the card stays a short list of keys until then
+    const writing = await read($, composing)
+    const ownField = (id: string, label: string, onSubmit: (text: string) => unknown) =>
+      Input && writing === `${v.key}:${id}` ? (
+        <Input
+          key={`own-${id}`}
+          label={label}
+          placeholder="type, then Enter"
+          autoFocus
+          onSubmit={value => {
+            if (!value.trim()) return update($, composing, () => null)
+            return update($, composing, () => null).then(() => onSubmit(value.trim()))
+          }}
+        />
+      ) : null
+    const ownButton = (id: string, label: string) =>
+      Input ? (
+        <Button key="own" plain hotkey="o" onPress={() => update($, composing, w => (w === `${v.key}:${id}` ? null : `${v.key}:${id}`))}>
+          {label}
         </Button>
-      </Box>
-    )
+      ) : null
 
+    // --- the end: the review, to send ------------------------------------------------------------------
     if (stop >= stops.length) {
       const left = stops.filter(s => !done(s.id)).length
       const note = (await read($, notes))[v.key] ?? ''
       return (
         <Box flexDirection="column" gap={1}>
-          {header}
           {screen}
-          {chips}
-          <Text bold>Your review</Text>
-          <Box flexDirection="column">
+          <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
+            <Text color="claude" bold>
+              Your review
+            </Text>
             {stops.map((s, i) => {
               const a = isPlanVideo(v.which) ? allAnswers[`${v.key}:${s.id}`] : undefined
               const j = isPlanVideo(v.which) ? undefined : allVerdicts[`${v.key}:${s.id}`]
               const said = a ? a.label : j ? (j.verdict === 'own' ? `instead: ${j.own}` : j.verdict) : 'not answered'
               return (
-                <Text key={`sum-${s.id}`} dimColor={!a && !j} wrap="truncate-end">
-                  {i + 1}. {'question' in s ? s.question : s.chose} — {said}
+                <Text key={`sum-${s.id}`} wrap="truncate-end">
+                  {a || j ? <Text color="success">◆ </Text> : <Text dimColor>◇ </Text>}
+                  {i + 1}. {'question' in s ? s.question : s.chose} <Text dimColor>→</Text> {a || j ? <Text bold>{said}</Text> : <Text dimColor>{said}</Text>}
                 </Text>
               )
             })}
+            {left > 0 && (
+              <Text color="warning">
+                {left} not answered: {isPlanVideo(v.which) ? 'they stay open questions' : 'they go on as the agent decided'}.
+              </Text>
+            )}
+            {note && <Text dimColor>Note for the agent: {note}</Text>}
+            <Box gap={2} marginTop={1} flexWrap="wrap">
+              <Button key="approve" plain hotkey="a" onPress={() => send($, v, 'approve')}>
+                <Text color="success" bold>
+                  Approve and send
+                </Text>
+              </Button>
+              <Button key="changes" plain hotkey="c" onPress={() => send($, v, 'changes')}>
+                Send: changes needed
+              </Button>
+              {ownButton('note', note ? 'Change the note' : 'Add a note for the agent')}
+            </Box>
+            {ownField('note', 'A note for the agent', text => update($, notes, n => ({ ...n, [v.key]: text })))}
+            {lastSent && (
+              <Text dimColor>
+                Sent {lastSent.at.slice(11, 16)} → {lastSent.how === 'waiter' ? 'the waiting session' : 'this session'} (
+                {lastSent.path.replace(`${root}/`, '')})
+              </Text>
+            )}
           </Box>
-          {left > 0 && (
-            <Text color="warning">
-              {left} not answered: {isPlanVideo(v.which) ? 'they stay open questions' : 'they go on as the agent decided'}.
-            </Text>
-          )}
-          {Input && (
-            <Input
-              key="note"
-              label="Anything your agent should know first"
-              value={note}
-              onInput={value => update($, notes, n => ({ ...n, [v.key]: value }))}
-              onSubmit={value => update($, notes, n => ({ ...n, [v.key]: value }))}
-            />
-          )}
-          <Box gap={1} flexWrap="wrap">
-            <Button key="approve" hotkey="a" label="Approve and send" variant="primary" onPress={() => send($, v, 'approve')} />
-            <Button key="changes" hotkey="c" label="Send: changes needed" onPress={() => send($, v, 'changes')} />
-          </Box>
-          {terminal && <Text dimColor>keys: a approve and send · c send, changes needed · p play · l all plans · esc prompt</Text>}
-          {lastSent && (
-            <Text dimColor>
-              Sent {lastSent.at.slice(0, 16).replace('T', ' ')} →{' '}
-              {lastSent.how === 'waiter' ? 'the waiting session' : 'this session'} ({lastSent.path.replace(`${root}/`, '')})
-            </Text>
-          )}
         </Box>
       )
     }
 
     const s = stops[stop]
-    if (!s) return header
-    const keys =
-      'question' in s
-        ? `keys: p play/pause · 1–${Math.min(9, s.options.length)} choose · e explain more · n next · b back · r replay · w full player · esc prompt`
-        : 'keys: p play/pause · a accept · f flag · n next · b back · r replay · w full player · esc prompt'
-    const nav = (
-      <Box gap={1}>
-        <Button key="prev" hotkey="b" label="‹ Back" onPress={() => go(stop - 1)} />
-        <Button key="next" hotkey="n" label={stop === stops.length - 1 ? 'To Send ›' : 'Next ›'} onPress={() => go(stop + 1)} />
+    if (!s) return screen
+
+    // while it plays: one line on what comes next (and what was just picked)
+    const prev = stops[stop - 1]
+    const prevAnswer = prev ? (allAnswers[`${v.key}:${prev.id}`]?.label ?? allVerdicts[`${v.key}:${prev.id}`]?.verdict) : undefined
+    const coming = (
+      <Box flexDirection="column">
+        {prevAnswer && t < stretch(map, v.which, stop).from && (
+          <Text color="success">
+            ◆ {prevAnswer}: its part of the video plays, then on to {isPlanVideo(v.which) ? 'choice' : 'call'} {stop + 1}
+          </Text>
+        )}
+        <Text dimColor wrap="truncate-end">
+          Next stop · {isPlanVideo(v.which) ? 'choice' : 'call'} {stop + 1} of {stops.length} at {clock(s.at)} ·{' '}
+          {'question' in s ? s.question : s.chose}
+        </Text>
       </Box>
     )
 
@@ -938,59 +1003,44 @@ export const register: Register = on => {
         }))
       }
       const isChosen = (o: Option) => (a?.option === 'multi' ? (a.options ?? []).includes(o.id) : a?.option === o.id)
+      if (!stopped) return <Box flexDirection="column" gap={1}>{screen}{coming}</Box>
       return (
         <Box flexDirection="column" gap={1}>
-          {header}
           {screen}
-          {chips}
-          <Box flexDirection="column">
-            <Text dimColor={!atStop} bold={atStop}>
+          <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
+            <Text color="claude" bold>
               Choice {stop + 1} of {stops.length}
-              {q.planStep ? ` · step ${q.planStep}` : ''} · at {clock(q.at)}
+              {q.planStep ? ` · step ${q.planStep}` : ''}
               {q.kind === 'multi' ? ' · pick any' : ''}
             </Text>
             <Text bold>{q.question}</Text>
             {q.questionMore && <Text dimColor>{q.questionMore}</Text>}
+            <Box flexDirection="column" marginTop={1}>
+              {q.options.map((o, i) => (
+                <Box key={`o-${o.id}`} flexDirection="column">
+                  <Button
+                    key={`opt-${o.id}`}
+                    plain
+                    hotkey={i < 9 ? String(i + 1) : undefined}
+                    onPress={() => (q.kind === 'multi' ? toggleOption(o) : answer({ option: o.id, label: o.label }, o))}
+                  >
+                    <Text bold={isChosen(o)}>{o.label}</Text>
+                    {o.recommended ? <Text color="success"> ★ recommended</Text> : ''}
+                    {isChosen(o) ? <Text color="success"> ✓ your answer</Text> : ''}
+                  </Button>
+                  {o.why && <Text dimColor>{'   '}{o.why}</Text>}
+                </Box>
+              ))}
+            </Box>
+            <Box gap={2} marginTop={1} flexWrap="wrap">
+              <Button key="unclear" plain hotkey="e" onPress={() => answer({ option: 'unclear', label: 'Explain this more' })}>
+                {a?.option === 'unclear' ? <Text bold>Explain this more ✓</Text> : 'Explain this more'}
+              </Button>
+              {ownButton(q.id, a?.option === 'own' ? 'Change my own answer' : 'Answer in my own words')}
+            </Box>
+            {ownField(q.id, 'Your answer', text => answer({ option: 'own', label: text }))}
+            {a?.option === 'own' && <Text color="success">◆ Your answer: {a.label}</Text>}
           </Box>
-          <Box flexDirection="column">
-            {q.options.map((o, i) => (
-              <Box key={`o-${o.id}`} flexDirection="column">
-                <Button
-                  key={`opt-${o.id}`}
-                  hotkey={i < 9 ? String(i + 1) : undefined}
-                  variant={isChosen(o) ? 'primary' : undefined}
-                  onPress={() => (q.kind === 'multi' ? toggleOption(o) : answer({ option: o.id, label: o.label }, o))}
-                >
-                  {terminal && i < 9 ? `${i + 1} ` : ''}
-                  {o.id.toUpperCase()}. {o.label}
-                  {o.recommended ? <Text dimColor> (recommended)</Text> : ''}
-                  {isChosen(o) ? ' ✓' : ''}
-                </Button>
-                {o.why && <Text dimColor>{'     '}{o.why}</Text>}
-              </Box>
-            ))}
-          </Box>
-          <Box gap={1} flexWrap="wrap">
-            <Button
-              key="unclear"
-              hotkey="e"
-              variant={a?.option === 'unclear' ? 'primary' : undefined}
-              label="Explain this more"
-              onPress={() => answer({ option: 'unclear', label: 'Explain this more' })}
-            />
-          </Box>
-          {Input && (
-            <Input
-              key={`own-${q.id}`}
-              label="Or in your own words"
-              placeholder="type, then Enter"
-              value={a?.option === 'own' ? a.label : ''}
-              onSubmit={value => (value.trim() ? answer({ option: 'own', label: value.trim() }) : undefined)}
-            />
-          )}
-          {a && <Text color="success">Answer: {a.label}</Text>}
-          {nav}
-          {terminal && <Text dimColor>{keys}</Text>}
         </Box>
       )
     }
@@ -1002,36 +1052,31 @@ export const register: Register = on => {
       await update($, verdicts, all => ({ ...all, [`${v.key}:${c.id}`]: { ...next, at } }))
       await go(stop + 1, c.at)
     }
+    if (!stopped) return <Box flexDirection="column" gap={1}>{screen}{coming}</Box>
     return (
       <Box flexDirection="column" gap={1}>
-        {header}
         {screen}
-        {chips}
-        <Box flexDirection="column">
-          <Text dimColor={!atStop} bold={atStop}>
-            Call {stop + 1} of {stops.length} ({c.id.toUpperCase()}){c.planStep ? ` · step ${c.planStep}` : ''} · at {clock(c.at)}
+        <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
+          <Text color="claude" bold>
+            Call {stop + 1} of {stops.length}
+            {c.planStep ? ` · step ${c.planStep}` : ''} · the agent decided this on its own
           </Text>
-          <Text bold>Chose: {c.chose}</Text>
-          {c.insteadOf && <Text>Instead of: {c.insteadOf}</Text>}
-          {c.why && <Text dimColor>Why: {c.why}</Text>}
-          {c.check && <Text dimColor>Check: {c.check}</Text>}
+          <Text bold>{c.chose}</Text>
+          {c.insteadOf && <Text>instead of {c.insteadOf}</Text>}
+          {c.why && <Text dimColor>why: {c.why}</Text>}
+          {c.check && <Text dimColor>check it: {c.check}</Text>}
+          <Box gap={2} marginTop={1} flexWrap="wrap">
+            <Button key="accept" plain hotkey="a" onPress={() => judge({ verdict: 'accept' })}>
+              {j?.verdict === 'accept' ? <Text color="success" bold>Accept ✓</Text> : <Text color="success">Accept</Text>}
+            </Button>
+            <Button key="flag" plain hotkey="f" onPress={() => judge({ verdict: 'flag' })}>
+              {j?.verdict === 'flag' ? <Text color="warning" bold>Flag it ✓</Text> : <Text color="warning">Flag it</Text>}
+            </Button>
+            {ownButton(c.id, 'Say what to do instead')}
+          </Box>
+          {ownField(c.id, 'What to do instead', text => judge({ verdict: 'own', own: text }))}
+          {j?.verdict === 'own' && <Text color="success">◆ Instead: {j.own}</Text>}
         </Box>
-        <Box gap={1} flexWrap="wrap">
-          <Button key="accept" hotkey="a" label="Accept" variant={j?.verdict === 'accept' ? 'primary' : undefined} onPress={() => judge({ verdict: 'accept' })} />
-          <Button key="flag" hotkey="f" label="Flag it" variant={j?.verdict === 'flag' ? 'primary' : undefined} onPress={() => judge({ verdict: 'flag' })} />
-        </Box>
-        {Input && (
-          <Input
-            key={`own-${c.id}`}
-            label="Or say what to do instead"
-            placeholder="type, then Enter"
-            value={j?.verdict === 'own' ? (j.own ?? '') : ''}
-            onSubmit={value => (value.trim() ? judge({ verdict: 'own', own: value.trim() }) : undefined)}
-          />
-        )}
-        {j && <Text color="success">Verdict: {j.verdict === 'own' ? `instead: ${j.own}` : j.verdict}</Text>}
-        {nav}
-        {terminal && <Text dimColor>{keys}</Text>}
       </Box>
     )
   })

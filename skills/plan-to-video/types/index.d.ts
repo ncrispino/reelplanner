@@ -63,6 +63,8 @@ declare module 'claude-code' {
       playback: ReelplannerPlayback | null
       /** The last frame as an Svg, for a surface with no terminal to blit to. */
       flip: string | null
+      /** The own-words field open in the pane (`<video>:<stop id>`, or `<video>:note`), null while none is. */
+      composing: string | null
     }
   }
 }
