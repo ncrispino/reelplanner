@@ -446,12 +446,24 @@
       link(fileList[fileOn] ? fileList[fileOn] + at : typed);
     }
   });
+  // the view on some things, fitted into the part of the window nothing covers: right of Excalidraw's style panel,
+  // left of the topic and question column, below the toolbar, above the selection and note bars. (Excalidraw's own
+  // scrollToContent centres on the whole window, which put an opened-up frame half under the question card.)
+  function fitView(els, maxZoom) {
+    if (!els.length) return;
+    const bs = els.map(boxOf), x0 = Math.min(...bs.map((b) => b.x)), y0 = Math.min(...bs.map((b) => b.y));
+    const w = Math.max(1, Math.max(...bs.map((b) => b.x + b.w)) - x0), h = Math.max(1, Math.max(...bs.map((b) => b.y + b.h)) - y0);
+    const wide = innerWidth >= 900, side = $("side").getBoundingClientRect();
+    const left = wide ? 210 : 16, right = wide && side.width ? side.left - 16 : innerWidth - 16, top = 72, bottom = innerHeight - (wide ? 170 : 220);
+    const zoom = Math.max(0.1, Math.min((right - left - 48) / w, (bottom - top - 48) / h, maxZoom));
+    api.updateScene({ appState: { zoom: { value: zoom }, scrollX: (left + right) / 2 / zoom - (x0 + w / 2), scrollY: (top + bottom) / 2 / zoom - (y0 + h / 2) } });
+  }
   // open up: a frame beside the thing for its insides (to the right of everything, level with it), an arrow to it
   $("sel-open").addEventListener("click", () => {
     const el = selected[0]; if (!el) return;
-    if (el.customData?.inside) { const back = kin().find((e) => e.id === el.customData.inside && !e.isDeleted); api.scrollToContent(back ? api.getSceneElements() : undefined, { fitToViewport: true, viewportZoomFactor: 0.8, animate: true }); return; }
+    if (el.customData?.inside) { fitView(api.getSceneElements(), 1); return; }
     const opened = kin().find((f) => f.type === "frame" && !f.isDeleted && f.customData?.inside === el.id);
-    if (opened) { api.scrollToContent(opened, { fitToViewport: true, viewportZoomFactor: 0.55, animate: true }); return; }
+    if (opened) { fitView([opened], 1.5); return; }
     const live2 = api.getSceneElements(), right = Math.max(...live2.map((e) => e.x + Math.max(e.width, 0)));
     const W = 620, H = 400, x = right + 160, y = el.y + el.height / 2 - H / 2;
     const [f] = convertToExcalidrawElements([{ type: "frame", x, y, width: W, height: H, name: `inside ${words(el)}`, children: [] }]);
@@ -462,7 +474,7 @@
     commit(new Map([[el.id, bumped(el, { boundElements: [...(el.boundElements || []), { id: a.id, type: "arrow" }] })]]),
       [{ ...f, customData: { inside: el.id } }, arrow, ...arrowEls.filter((e) => e !== a)]);
     api.updateScene({ appState: { selectedElementIds: { [f.id]: true } } });
-    api.scrollToContent(api.getSceneElements().find((e) => e.id === f.id), { fitToViewport: true, viewportZoomFactor: 0.55, animate: true });
+    fitView([f], 1.5);
     status(`Draw what is inside "${words(el)}" in the frame; Back returns to the whole picture.`);
   });
   // today / new / going: a tag on the thing (grouped with it, so they move together), and its status in the record

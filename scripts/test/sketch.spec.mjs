@@ -331,9 +331,22 @@ try {
   const tags = await p6.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.customData?.tagFor).map((e) => `${e.customData.tagFor}:${e.text}`).sort().join(","));
   ok(tags === "ftp:− going,up:+ new" && await p6.getAttribute('[data-status="new"]', "aria-pressed") === "true", `Today / New / Going: a tag on each, the button pressed — ${tags}`);
   await p6.click("#sel-open"); await p6.waitForTimeout(900);
-  const opened = await p6.evaluate(() => { const a = window.reelSketch.api, f = a.getSceneElements().find((e) => e.type === "frame"); return { name: f?.name, inside: f?.customData?.inside, zoom: a.getAppState().zoom.value, sel: window.reelSketch.selected() }; });
-  ok(opened.name === "inside Upload API" && opened.inside === "up" && opened.zoom !== 1 && (await p6.textContent("#sel-open")) === "Back", `Open up: a frame "inside Upload API", the view on it, Back offered — ${JSON.stringify(opened)}`);
+  // where things are on screen, and whether the page's own cards (the topic and question column, the selection and
+  // note bars) cover any of it
+  const clear = (ids) => p6.evaluate((ids) => {
+    const a = window.reelSketch.api, s = a.getAppState(), z = s.zoom.value, els = a.getSceneElements().filter((e) => !ids || ids.includes(e.id));
+    const r = { x0: Math.min(...els.map((e) => (e.x + s.scrollX) * z)), y0: Math.min(...els.map((e) => (e.y + s.scrollY) * z)),
+      x1: Math.max(...els.map((e) => (e.x + e.width + s.scrollX) * z)), y1: Math.max(...els.map((e) => (e.y + e.height + s.scrollY) * z)) };
+    const hit = ["#side", "#sel", "#bar"].filter((q) => { const b = document.querySelector(q).getBoundingClientRect(); return b.width && b.left < r.x1 && b.right > r.x0 && b.top < r.y1 && b.bottom > r.y0; });
+    return { inView: r.x0 >= 0 && r.y0 >= 0 && r.x1 <= innerWidth && r.y1 <= innerHeight, hit, zoom: +z.toFixed(2), r: Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v)])) };
+  }, ids);
+  const opened = await p6.evaluate(() => { const a = window.reelSketch.api, f = a.getSceneElements().find((e) => e.type === "frame"); return { id: f?.id, name: f?.name, inside: f?.customData?.inside, sel: window.reelSketch.selected() }; });
+  const onFrame = await clear([opened.id]);
+  ok(opened.name === "inside Upload API" && opened.inside === "up" && onFrame.inView && !onFrame.hit.length && onFrame.zoom > 1 && (await p6.textContent("#sel-open")) === "Back",
+    `Open up: a frame "inside Upload API", the view on it (closer, all in view, under none of the page's cards), Back offered — ${JSON.stringify({ ...opened, ...onFrame })}`);
   await p6.click("#sel-open"); await p6.waitForTimeout(900);
+  const whole = await clear(null);
+  ok(whole.inView && !whole.hit.length, `…Back: the whole picture in view, under none of the page's cards — ${JSON.stringify(whole)}`);
   await p6.click("#finish"); await p6.waitForSelector("#review.open"); await p6.click("#send"); await p6.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
   const d6 = join(repo, (await p6.textContent("#sent")).match(/Saved to (\S+?)\. /)[1]), md6 = readFileSync(join(d6, "sketch.md"), "utf8");
   ok(md6.includes('_changed:_ linked "Upload API" to `src/api/upload.ts`') && md6.includes('_changed:_ marked "FTP drop" as going away') && md6.includes('_changed:_ opened up "Upload API" into a frame'),
