@@ -40,7 +40,8 @@ Every project we plan for gets one directory, committed in that project's repo. 
                      Unset: one person, as before. And `pr.issue`: `"required"` makes `reel pr-check` fail a PR
                      whose text links no issue; `"off"`, the default
   inbox/             reviews submitted on the local review page, until a session or a headless run handles them (not committed);
-                     also `.server.json` and `server.log`, the review server `reelplanner review --detach` started
+                     also `.server.json` and `server.log`, the review server `reelplanner review --detach` started.
+                     A repo not set up keeps the same in `~/.reelplanner/inbox/<repo-key>/` (below)
   you.pending.jsonl  only while it has something in it: the summaries `reel record` could not add to your own
                      `~/.reelplanner/you.jsonl` (a run fenced to the repo, a read-only home), one line per review.
                      Committed with the review, so it reaches the machine you next run on; the next `reel record`
@@ -77,9 +78,15 @@ Every project we plan for gets one directory, committed in that project's repo. 
 ```
 
 The repo counts as set up once `decisions.json` is here. A `.reelplanner/` holding only setup files (`.env`,
-`config.json`, `.gitignore`, made for the hosted voice before any plan) is not: `reel status` says so, a review
-downloads instead of landing in `inbox/`, and `reel init` sets the folder up over them, keeping `.env` and merging
-`config.json` into its template (your keys win).
+`config.json`, `.gitignore`, made for the hosted voice before any plan) is not: `reel status` says so, and `reel
+init` sets the folder up over them, keeping `.env` and merging `config.json` into its template (your keys win).
+
+A repo that is not set up (one video, the skill's first level) still takes **Send**, with nothing added to it: the
+review server keeps its inbox in this machine's folder, `~/.reelplanner/inbox/<repo-key>/` (`REELPLANNER_HOME`
+moves it; the key is the repo folder's name and a short hash of its path), laid out as `inbox/` above, and
+`review --wait`, `inbox` and `inbox done` there use it. No headless run starts there: a review waits for a
+session. Once `reel init` sets the repo up, its own `inbox/` is used; a review still waiting in the machine's is
+named by `reelplanner inbox` and finished by `inbox done`, never picked up by `--wait`.
 
 ## Three rules
 
