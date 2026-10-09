@@ -65,7 +65,7 @@ writeFileSync(out, JSON.stringify({ tts_provider: "fake", voice_id: req.voice ||
 
 const LINES = [
   "An agent hands you its plan, and you approve it.",
-  "reelplanner turns that plan into a short narrated video.",
+  "It turns that plan into a short narrated video.",   // no name of say.mjs NAME_SAID: a line handed over as it is
   "Each plan gets two videos, one before the code and one after.",
 ];
 const script = (lines) => `# SCRIPT\n\n**Voice:** am_michael\n\n---\n\n${lines.map((t, i) => `## Line ${i + 1} — beat (Frame ${i + 1})\n\n**Delivery:** Plain.\n\n    ${t}\n`).join("\n")}`;
@@ -124,7 +124,7 @@ try {
 
   // ── one line edited: only it is voiced ──
   writeFileSync(join(tmp, "prev_meta.json"), m1);
-  setLine(1, "reelplanner turns that plan into a short narrated video you review by watching it.");
+  setLine(1, "It turns that plan into a short narrated video you review by watching it.");
   const dry = JSON.parse(execFileSync("node", [join(ROOT, "scripts", "narrate.mjs"), P, "--dry-run", "--json"], { encoding: "utf8", env }));
   ok("--dry-run --json names the one line to narrate before anything runs", dry.narrate.join() === "2" && dry.keep.join() === "1,3" && dry.estimate_s > 0, JSON.stringify(dry));
   const c = narrationCost(P, []);
