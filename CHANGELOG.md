@@ -13,8 +13,8 @@
   (Firefox, or the browser's recognizer blocked), local whisper transcribes the recording after Send when whisper.cpp
   is installed; `sketch-transcribe <folder>` does it for any sketch later (local whisper, else a transcription API).
   A partner model can ask one short question beside the canvas when something in the picture is unclear (never
-  explaining the code): `anthropic/claude-haiku-5.5` through OpenRouter, recommended, when `OPENROUTER_API_KEY` is
-  set, or a vision model on a local Ollama or LM Studio (`--partner openrouter|local|off`); the page names it, with a
+  explaining the code): `anthropic/claude-sonnet-5.5` through OpenRouter, recommended (it asked the best questions
+  and held back best of the models tried, in 1.5–6 s for about $0.002 a question), when `OPENROUTER_API_KEY` is set, or a vision model on a local Ollama or LM Studio (`--partner openrouter|local|off`); the page names it, with a
   switch to turn it off, and its questions are kept in `session.json` and in `sketch.md`'s timeline.
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a

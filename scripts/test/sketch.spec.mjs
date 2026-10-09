@@ -45,6 +45,9 @@ const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "
 // a stand-in for HyperFrames' `transcribe` (local whisper) and a whisper.cpp for it to be found by: two sentences, the
 // second said after the last picture; and an environment with neither, nor any transcription API key
 const tools = mkdtempSync(join(tmpdir(), "rp-sketch-tools-"));
+// never this machine's ~/.reelplanner (its .env may hold a real OPENROUTER_API_KEY): the runner sets a home of its own,
+// and run alone the spec makes one, for itself and every command it starts
+process.env.REELPLANNER_HOME ||= join(tools, "home");
 const FAKE_HF = join(tools, "fake-hyperframes.mjs");
 writeFileSync(FAKE_HF, `import { writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
@@ -273,7 +276,7 @@ try {
 
   // OpenRouter, by default when its key is set: the recommended model, the key sent; a partner named that can't run says why
   const or = await resolvePartner({ dir: repo, env: { OPENROUTER_API_KEY: "k-test", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE } });
-  ok(or.provider === "openrouter" && or.model === RECOMMENDED && RECOMMENDED === "anthropic/claude-haiku-5.5", `auto with OPENROUTER_API_KEY: OpenRouter, ${RECOMMENDED} — ${JSON.stringify(or)}`);
+  ok(or.provider === "openrouter" && or.model === RECOMMENDED && RECOMMENDED === "anthropic/claude-sonnet-5.5", `auto with OPENROUTER_API_KEY: OpenRouter, ${RECOMMENDED} — ${JSON.stringify(or)}`);
   process.env.OPENROUTER_API_KEY = "k-test"; calls.length = 1;   // the stand-in's next answer is NONE
   const none2 = await askPartner(or, { question: "q", elements: [], said: [], asked: [] });
   ok(none2 === null && calls[1]?.auth === "Bearer k-test" && calls[1].body.model === RECOMMENDED, `…the key goes with the request, and NONE is no question — ${JSON.stringify(calls[1]?.auth)}`);

@@ -9,7 +9,7 @@
 //
 // --partner: a model that asks one short question beside the canvas when something in the picture is unclear
 // (scripts/lib/sketch-partner.mjs; docs/sketch.md, "Questions while you sketch"). By default OpenRouter's
-// anthropic/claude-haiku-5.5 when OPENROUTER_API_KEY is set, else a local model server's vision model, else none.
+// anthropic/claude-sonnet-5.5 when OPENROUTER_API_KEY is set, else a local model server's vision model, else none.
 //
 // The question is optional: it only fills the page's "What are you explaining?" box, which names the folder and
 // heads sketch.md, and the person can change it there. An agent passes the topic from the request so the box is

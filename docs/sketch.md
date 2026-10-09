@@ -46,9 +46,21 @@ typed something since the last. The switch under the topic turns it off (remembe
 
 | `--partner` | What runs | What leaves the machine |
 |---|---|---|
-| `openrouter` (recommended) | `anthropic/claude-haiku-5.5` through OpenRouter: it sees images, is made for quick answers, and costs $0.10 / $0.50 per million tokens (a fraction of a cent a question; not yet timed against the others). Needs `OPENROUTER_API_KEY`, the key the hosted voice uses | each picture, the drawing as text, and the words so far |
+| `openrouter` (recommended) | `anthropic/claude-sonnet-5.5` through OpenRouter, 1.5–6 s and about $0.002–0.003 a question (2.5¢ at most a sketch). Needs `OPENROUTER_API_KEY`, the key the hosted voice uses | each picture, the drawing as text, and the words so far |
 | `local` | a vision model on an OpenAI-compatible server here: Ollama (`:11434`) or LM Studio (`:1234`), the first vision model it lists (`ollama pull gemma3:4b` if none) | nothing (the live caption is still the browser's: in Chrome, Google's) |
 | `off` | nothing | nothing |
+
+Why that model: the candidates were given the same picture and words, in four cases (they sounded unsure; a question
+already answered; a question already asked; nothing left open), each two or three times, in October 2026. Sonnet 5.5
+asked about what they were unsure of every time, held back when nothing was open or it had asked already, and when it
+did ask again it found a new thread ("when an upload stops halfway and starts again, how does the client know which
+chunks already arrived?"). `openai/gpt-6-luna` is the budget pick (`--partner-model openai/gpt-6-luna`: ~2.5 s, about
+$0.0001 a question, a little weaker at holding back); `google/gemini-3.8-flash` held back best but took 4–15 s;
+`anthropic/claude-haiku-5.5` asked about the same thing again; `qwen/qwen3.8-flash` and `z-ai/glm-5.3-flash` often
+ran out of tokens thinking and answered nothing. Models that hear the voice directly (`google/gemini-3.8-flash`,
+`qwen/qwen3.8-omni-flash`, `xiaomi/mimo-v2.6-flash`) asked the same questions from 18 s of the recording's audio as
+from its transcript, at about the same time and cost, and none asked better than Sonnet 5.5 does from the words; so the
+partner is sent the words. (`thinkingmachines/inkling-small` took text well, but its provider refused audio.)
 
 With none named (`auto`), it is OpenRouter when `OPENROUTER_API_KEY` is set, else a local server with a vision model,
 else off; `sketch` says which on start, and the page names it. Settings: `REELPLANNER_SKETCH_PARTNER`,
@@ -106,7 +118,7 @@ Finish is open, as the recording does).
                "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1 }],
   "final": { "png": "final.png", "scene": "final.excalidraw",
              "elements": [{ "id": "…", "kind": "arrow", "x": 320, "y": 265, "w": 240, "h": 0, "label": "chunks", "from": "…", "to": "…" }] },
-  "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-haiku-5.5", "on": true,
+  "partner": { "provider": "openrouter" | "local", "model": "anthropic/claude-sonnet-5.5", "on": true,
                "questions": [{ "t": 41.2, "after_picture": 3, "text": "Where does the chunk index live?" }],
                "late": 1, "stopped": "too slow here" },   // late, stopped: only when answers came too late
   "feedback": "confident about the client side, guessing on retries",

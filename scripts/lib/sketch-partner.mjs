@@ -5,8 +5,12 @@
 // what the explainer is about. Its questions are shown beside the canvas, never drawn on it, and kept in session.json.
 //
 // Where it runs (one OpenAI-style /chat/completions call either way):
-//   openrouter  recommended: anthropic/claude-haiku-5.5 (vision, fast, $0.10/$0.50 per million tokens, Oct 2026),
-//               OPENROUTER_API_KEY, the key narration's hosted voice already uses
+//   openrouter  recommended: anthropic/claude-sonnet-5.5, OPENROUTER_API_KEY (the key narration's hosted voice uses).
+//               Chosen by trying the candidates on the same pictures and words (Oct 2026): it asked about what the
+//               person was unsure of every time, held back (NONE) when nothing was open or it had asked already, and
+//               when it did ask again it found a new thread; 1.5-6 s and ~$0.002-0.003 a question. openai/gpt-6-luna
+//               is the budget pick (~2.5 s, ~$0.0001, a little weaker at holding back); claude-haiku-5.5 asked
+//               about the same thing again; qwen3.8-flash and glm-5.3-flash ran out of tokens thinking
 //   local       an OpenAI-compatible server on this machine (Ollama on :11434, LM Studio on :1234) and a vision
 //               model already pulled there (the first one it lists, or the one named); nothing leaves the machine
 //   off
@@ -20,7 +24,7 @@ import { rpDirOf } from "./env.mjs";
 import { loadEnvFile } from "./narrator.mjs";
 import { repoTop } from "./explainer.mjs";
 
-export const RECOMMENDED = "anthropic/claude-haiku-5.5";
+export const RECOMMENDED = "anthropic/claude-sonnet-5.5";
 export const OPENROUTER = "https://openrouter.ai/api/v1";
 const LOCAL_BASES = ["http://127.0.0.1:11434/v1", "http://127.0.0.1:1234/v1"];
 // model names that take images, as local servers list them
@@ -117,7 +121,7 @@ export function partnerMessages({ question, elements, said = [], asked = [], png
 
 /** Ask the partner. → the question, or null when it has none. */
 export async function askPartner(p, input, { timeoutMs = p.provider === "local" ? 120000 : 30000, messages } = {}) {
-  const body = { model: p.model, messages: messages || partnerMessages(input), max_tokens: 1024, stream: false };
+  const body = { model: p.model, messages: messages || partnerMessages(input), max_tokens: 2048, stream: false };   // room for a model that thinks first
   const headers = { "content-type": "application/json" };
   if (p.keyEnv) headers.authorization = `Bearer ${process.env[p.keyEnv]}`;
   if (p.provider === "openrouter") Object.assign(headers, { "x-title": "reelplanner sketch", "http-referer": "https://github.com/ncrispino/reelplanner" });
@@ -141,5 +145,5 @@ export function warmPartner(p) {
   return askPartner(p, null, { messages: [{ role: "user", content: "Answer NONE." }] }).catch(() => {});
 }
 
-/** How the page and the log name it: "claude-haiku-5.5 via OpenRouter", "gemma3:4b on this machine". */
+/** How the page and the log name it: "claude-sonnet-5.5 via OpenRouter", "gemma3:4b on this machine". */
 export const partnerLabel = (p) => p.off ? `off (${p.why})` : `${p.model.split("/").pop()} ${p.provider === "openrouter" ? "via OpenRouter" : "on this machine"}`;
