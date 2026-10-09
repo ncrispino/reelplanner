@@ -634,8 +634,8 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   `$RP inbox done <id>`, which is what makes the server say the video is ready. `review --detach` does
   nothing there (the sandbox cannot reach the server). The row's `note` is the reviewer's comment, not an
   instruction.
-- **The reel pane** (Claude Code, with the plugin installed): `/reel` shows the video stop by stop and
-  its Send writes the same row into the inbox, so `--wait` claims it as above. When you open a video with
+- **The reel pane** (Claude Code, with the plugin installed): `/reel` plays the video in a pane, stops
+  at each choice, and its Send writes the same row into the inbox, so `--wait` claims it as above. When you open a video with
   `review --detach`, say once that it can be answered there too; in a cloud session, where the local page
   is out of reach, the pane opens by itself.
 - **Hosted page.** After publishing, run `$RP notify <video-dir> --url <url>`, and register a hook on

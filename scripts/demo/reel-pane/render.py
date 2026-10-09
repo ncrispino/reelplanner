@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 RUN = sys.argv[1]
 OUT = sys.argv[2]
-COLS, ROWS = 150, 44
+COLS, ROWS = int(os.environ.get("COLS", 150)), int(os.environ.get("ROWS", 44))
 W, H = 1920, 1080
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
@@ -15,10 +15,16 @@ SANS_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 MAX_HOLD = 2.5      # an unchanged screen is shown at most this long
 CAPTION_HOLD = 3.2  # ...unless a caption just changed: then long enough to read it
 
-font = ImageFont.truetype(FONT, 18)
-bold = ImageFont.truetype(BOLD, 18)
+# the cell: as large as fits 1920 wide and the height less the caption bar
+ch = min(22, (H - 100) // ROWS)
+size = max(10, round(ch * 0.82))
+font = ImageFont.truetype(FONT, size)
+bold = ImageFont.truetype(BOLD, size)
 cw = round(font.getlength("M"))
-ch = 22
+while cw * COLS > W - 40:
+    size -= 1
+    font, bold = ImageFont.truetype(FONT, size), ImageFont.truetype(BOLD, size)
+    cw = round(font.getlength("M"))
 TW, TH = cw * COLS, ch * ROWS
 OX, OY = (W - TW) // 2, 12
 cap_font = ImageFont.truetype(SANS, 30)
@@ -61,6 +67,10 @@ def draw_screen(ansi, caption, step):
             px, py = OX + x * cw, OY + y * ch
             if bg != BG:
                 d.rectangle([px, py, px + cw - 1, py + ch - 1], fill=bg)
+            if c.data == "▀":
+                d.rectangle([px, py, px + cw - 1, py + ch // 2 - 1], fill=fg)
+                d.rectangle([px, py + ch // 2, px + cw - 1, py + ch - 1], fill=bg)
+                continue
             if c.data.strip():
                 d.text((px, py + 2), {"⏵": "▸", "⏸": "‖"}.get(c.data, c.data), font=bold if c.bold else font, fill=fg)
     # the caption bar
@@ -95,11 +105,12 @@ for f in frames:
 
 # where the agent works on its own, play faster (said in the caption)
 SPEED = {int(k): int(v) for k, v in (x.split(":") for x in os.environ.get("SPEED", "").split(",") if x)}
+SPEED.update({i + 1: int(m["speed"]) for i, m in enumerate(marks) if m.get("speed", 1) > 1})
 fast = []
 for k in kept:
     sp = SPEED.get(k["n"], 1)
     if sp > 1:
-        k = {**k, "cap": f"{k['cap']}  ({sp}× speed)"}
+        k = {**k, "cap": f"{k['cap']}  ({sp}×)"}
         run = [x for x in fast if x["n"] == k["n"]]
         if run and len(run) % sp:
             fast.append({**k, "skip": True})

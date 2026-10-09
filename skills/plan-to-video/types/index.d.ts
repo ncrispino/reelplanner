@@ -1,8 +1,25 @@
 /** Which of a plan's two videos: the plan video (before the build) or the walkthrough video (after it). */
 export type ReelplannerWhich = 'video' | 'walkthrough-video'
 
-/** The video the pane shows, and which of its stops; null shows the library. */
-export type ReelplannerOpen = { slug: string; which: ReelplannerWhich; stop: number } | null
+/** The video the pane shows, and which of its stops; null shows the library. `dir` names a built video outside
+ * `.reelplanner/plans/` (`/reel <video-dir>`). */
+export type ReelplannerOpen = { slug: string; which: ReelplannerWhich; stop: number; dir?: string } | null
+
+/** The video playing in the pane: its render being made, playing, paused, or stopped at a choice. */
+export type ReelplannerPlayback = {
+  key: string
+  status: 'rendering' | 'playing' | 'paused' | 'ended' | 'failed'
+  /** Where it is, in the video's seconds. */
+  t: number
+  /** Where this stretch stops: the next choice, or the end. */
+  until: number
+  mode: 'raster' | 'image' | 'jpeg'
+  cols: number
+  rows: number
+  progress?: number
+  audio?: string
+  message?: string
+}
 
 /** One plan in the library, as its folder stands. */
 export type ReelplannerPlan = {
@@ -43,6 +60,9 @@ declare module 'claude-code' {
       /** The video whose player Claude was asked to publish as an Artifact. */
       publishing: string | null
       busy: string | null
+      playback: ReelplannerPlayback | null
+      /** The last frame as an Svg, for a surface with no terminal to blit to. */
+      flip: string | null
     }
   }
 }

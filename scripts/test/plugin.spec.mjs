@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // The Claude Code plugin: the skill's folder, and beside SKILL.md the hooks module that adds `/reel` (a pane that
-// shows a plan's video stop by stop and files the answers as the player does; skills/plan-to-video/hooks/).
+// plays a plan's video, stops at each choice and files the answers as the player does; skills/plan-to-video/hooks/).
 // Its manifest is its entry in .claude-plugin/marketplace.json (version.spec.mjs keeps it that way), so the plugin
 // is named `reelplanner` only once installed. This spec lays the folder out as an install does (the entry written
 // as .claude-plugin/plugin.json, in a scratch folder), then has Claude Code validate it and run its tests
 // (scripts/test/plugin/*.test.tsx) against the engine. Without a `claude` that has `plugin test`, those two say so
-// and pass: the checks before them still run.
+// and pass: the checks before them still run. reel-frames, which streams the pane's picture, is run on a test clip.
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdtempSync, writeFileSync, mkdirSync, readdirSync, copyFileSync } from "node:fs";
 import { join } from "node:path";
@@ -35,6 +35,37 @@ test("every state reference in the module names the plugin as installed", () => 
   assert.ok(named.length > 0);
   assert.deepEqual([...new Set(named)], [entry.name]);
 });
+
+// reel-frames, the pane's picture: on a two-second test clip standing in for a video's render
+if (spawnSync("ffmpeg", ["-version"]).status !== 0) {
+  console.log("- reel-frames: skipped (no ffmpeg)");
+} else {
+  const video = mkdtempSync(join(tmpdir(), "reelplanner-frames-"));
+  writeFileSync(join(video, "index.html"), "<!doctype html>");
+  mkdirSync(join(video, "renders"));
+  spawnSync("ffmpeg", ["-loglevel", "error", "-f", "lavfi", "-i", "testsrc=size=320x180:rate=12:duration=2", "-pix_fmt", "yuv420p", join(video, "renders", "terminal.mp4")]);
+  const frames = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts/reel-frames.mjs"), video, ...a], { encoding: "utf8", timeout: 60_000 }).stdout.trim().split("\n");
+  test("reel-frames: the render is found, not made again", () => {
+    assert.deepEqual(frames("--render"), [`R ${join(video, "renders", "terminal.mp4")}`]);
+  });
+  test("reel-frames: a stretch plays as Raster cells, one half block per two pixels, at the video's pace", () => {
+    const started = Date.now();
+    const out = frames("--from", "0.5", "--to", "1.5", "--cols", "8", "--rows", "3", "--no-audio");
+    assert.equal(out[0], "V 2.000 8 3");
+    const f = out.filter((l) => l.startsWith("F "));
+    assert.ok(f.length >= 11 && f.length <= 13, `${f.length} frames for a second at 12 fps`);
+    const words = new Uint32Array(Uint8Array.from(Buffer.from(f[0].split(" ")[2], "base64")).buffer);
+    assert.equal(words.length, 8 * 3 * 3);
+    assert.ok(words.every((w, i) => i % 3 !== 0 || w === 0x2580), "every cell is a '▀'");
+    assert.match(out[out.length - 1], /^E 1\.500$/);
+    assert.ok(Date.now() - started >= 800, "played in real time, not dumped");
+  });
+  test("reel-frames: as JPEGs, a few a second, for the desktop and mobile apps", () => {
+    const f = frames("--as", "jpeg", "--width", "96", "--fps", "3", "--to", "1", "--no-audio").filter((l) => l.startsWith("F "));
+    assert.ok(f.length >= 2 && f.length <= 4, String(f.length));
+    assert.ok(f.every((l) => l.split(" ")[2].startsWith("/9j/")), "each frame is a JPEG");
+  });
+}
 
 const claude = spawnSync("claude", ["plugin", "test", "--help"], { encoding: "utf8" });
 if (claude.status !== 0) {

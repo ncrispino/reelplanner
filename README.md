@@ -33,10 +33,11 @@ In Claude Code, the skill can come as a plugin instead of the third line, kept u
 /plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill, plus `/reel`: a pane in Claude Code that shows a plan's video stop by stop (each open choice
-with what the video says there, its still and its options), takes your answers, and sends them as the player's Send
-does. It works in a terminal and in a cloud session, where the review page on localhost is out of reach, and when the
-agent opens a video for review a band above the prompt offers it there ([details](./docs/reference.md#the-reel-pane-in-claude-code)).
+The plugin is the skill, plus `/reel`: the video plays in a pane in Claude Code, beside the conversation, with its
+captions under it and its sound, stops at each open choice, takes your answer, plays the branch you picked, and goes
+on; Send files your answers as the player's Send does. In a terminal the picture is drawn in colored half blocks (a
+sharp picture in kitty and Ghostty); in the desktop and mobile apps it is a few frames a second. When the agent opens a
+video for review, a band above the prompt offers it there ([details](./docs/reference.md#the-reel-pane-in-claude-code)).
 The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
 when they are missing, but running them first is quicker).
 

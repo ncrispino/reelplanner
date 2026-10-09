@@ -329,12 +329,22 @@ Then the tooling and `setup`, as in [Install](#install). This keeps the skill up
 ### The reel pane in Claude Code
 
 `/reel` opens a pane listing the plans with a built video, newest first, each with its open choices or calls and
-whether it has been reviewed; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one. A plan's video
-is shown stop by stop, read from its `plan-map.json`: the question, what the video says there, the frame's still where
-`snapshots/` has one (drawn in the terminal on kitty or Ghostty, scaled down on the desktop and mobile apps), and each
-option with its why and the recommended one marked. Pick one, choose **Explain this more**, or answer in your own words
-(on surfaces with a text field). A walkthrough video's calls are accepted, flagged, or answered with what to do
-instead. The last stop sums the review up, takes a note for the agent, and sends it, approved or with changes asked.
+whether it has been reviewed; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
+`/reel <video-dir>` any built video. The video plays at once, at the top of the pane: its own frames, its captions under
+them word for word, its clock, and its sound on the machine the session runs on (`ffplay`, or `afplay` on macOS). It
+stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one
+marked: pick one (its digit), choose **Explain this more**, or answer in your own words (on surfaces with a text field),
+and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
+each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `r` replays the
+stretch, `n` and `b` move between stops. The last stop sums the review up, takes a note for the agent, and sends it,
+approved or with changes asked.
+
+The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
+`renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes; the first play says
+how far the render has got. `reelplanner reel-frames <video-dir>` streams it: in a terminal as colored half blocks
+(two pixels a cell, any truecolor terminal), as a sharp picture where the terminal draws kitty graphics (kitty,
+Ghostty), and in the desktop and mobile apps as three frames a second, with no sound there (**Watch with sound** opens
+the full player).
 
 Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and

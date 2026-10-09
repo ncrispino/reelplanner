@@ -18,14 +18,14 @@ const planMap = {
   ],
   decisions: [
     {
-      id: 'q1', kind: 'one', frameIndex: 2, planStep: 1, at: 20, question: 'Where does the cache live?',
+      id: 'q1', kind: 'one', frameIndex: 2, planStep: 1, at: 20, resumeAt: 30, question: 'Where does the cache live?',
       options: [
-        { id: 'a', label: 'In memory', why: 'Fast, lost on restart.', recommended: false },
-        { id: 'b', label: 'On disk', why: 'Survives a restart.', recommended: true },
+        { id: 'a', label: 'In memory', why: 'Fast, lost on restart.', recommended: false, branch: { start: 20, end: 25 } },
+        { id: 'b', label: 'On disk', why: 'Survives a restart.', recommended: true, branch: { start: 25, end: 30 } },
       ],
     },
     {
-      id: 'q2', kind: 'one', frameIndex: 3, planStep: 2, at: 50, question: 'Who clears it?',
+      id: 'q2', kind: 'one', frameIndex: 3, planStep: 2, at: 50, resumeAt: 55, question: 'Who clears it?',
       options: [
         { id: 'a', label: 'A timer', recommended: true },
         { id: 'b', label: 'The user', recommended: false },
@@ -43,7 +43,14 @@ const walkMap = {
 }
 
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
-function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean } = {}) {
+/** A Raster frame of `cols` × `rows` cells, every cell a half block in one color. */
+function frame(cols: number, rows: number, rgb: number) {
+  const words = new Uint32Array(cols * rows * 3)
+  for (let i = 0; i < cols * rows; i++) words.set([0x2580, rgb, rgb], i * 3)
+  return (new Uint8Array(words.buffer) as unknown as { toBase64(): string }).toBase64()
+}
+
+function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop' } = {}) {
   const files = new Map<string, string>([
     [`${PLAN}/video/plan-map.json`, JSON.stringify(planMap)],
     [`${PLAN}/plan.md`, '# A small plan'],
@@ -88,7 +95,28 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean } = {}) {
   })
   on('ui.toast', () => ({ value: undefined }))
   on('ui.open', () => ({ value: { isPlaced: true } }) as never)
-  return { files, prompts }
+  on('session.surface', () => ({ value: opts.surface ?? 'terminal' }) as never)
+  on('clock.after', () => ({ deny: 'autoplay on open is left to the press in these tests' }))
+  // reel-frames beneath: the render is there; a stretch is one frame, then its end
+  const spawned: string[][] = []
+  const blits: unknown[] = []
+  on('process.spawn', async function* ($: unknown, e: { argv: readonly string[] }) {
+    spawned.push([...e.argv])
+    const arg = (n: string) => e.argv[e.argv.indexOf(n) + 1]
+    if (e.argv.includes('--render')) yield { stream: 'stdout' as const, text: 'P 100\nR /repo/renders/terminal.mp4\n' }
+    else {
+      const cols = Number(arg('--cols')), rows = Number(arg('--rows'))
+      const picture = arg('--as') === 'jpeg' ? '/9j/4AAQSkZJRg==' : frame(cols, rows, 0x3366cc)
+      yield { stream: 'stdout' as const, text: `V 90 ${cols} ${rows}\nA none test\nF ${arg('--from')} ${picture}\n` }
+      yield { stream: 'stdout' as const, text: `E ${arg('--to')}\n` }
+    }
+    return { value: { code: 0, signal: null } } as never
+  } as never)
+  on('ui.blit', ($, e) => {
+    blits.push(e)
+    return { value: {} }
+  })
+  return { files, prompts, spawned, blits }
 }
 
 const pane = <P extends 'terminal' | 'desktop' | 'mobile'>(surface: P) =>
@@ -169,7 +197,7 @@ test('in a cloud session, Watch asks Claude to publish the player as an Artifact
   const { prompts } = world(on, { cloud: true })
   const ui = await $.ui.mount(pane('mobile'))
   await ui.press({ key: `open-${SLUG}` })
-  expect(await ui.find({ type: 'Button', text: /Publish the player/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', text: /Watch with sound/ })).toBeDefined()
   await ui.press({ key: 'watch' })
   expect(prompts[0]).toContain('Artifact')
   expect(prompts[0]).toContain(`${PLAN}/video`)
@@ -196,4 +224,37 @@ test('when the agent opens a video for review, the band above the prompt offers 
   const ui = await $.ui.mount(pane('terminal'))
   expect(await ui.find({ type: 'Text', text: /Where does the cache live\?/ })).toBeDefined()
   expect(await ui.find({ type: 'Link' })).toMatchObject({ props: expect.objectContaining({ href: 'http://127.0.0.1:8787/' }) })
+})
+
+test('the video plays in the pane, stops at the choice, and after the answer plays its branch and goes on', async ($, on) => {
+  const { spawned, blits } = world(on)
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  expect(await ui.find({ type: 'Raster', key: 'screen' })).toBeDefined()
+  await ui.press({ key: 'play' })
+  const stretch = (a: string[]) => [a[a.indexOf('--from') + 1], a[a.indexOf('--to') + 1]]
+  const plays = () => spawned.filter(a => !a.includes('--render'))
+  expect(spawned[0]).toEqual(expect.arrayContaining(['reel-frames', `${PLAN}/video`, '--render']))
+  expect(stretch(plays()[0] ?? [])).toEqual(['0', '20']) // from the start to choice 1
+  expect(blits).toEqual([expect.objectContaining({ requestId: 'reelplanner', key: 'screen' })])
+  expect(await ui.find({ type: 'Text', text: /choice 1: answer below/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /0:20 \/ 1:30/ })).toBeDefined()
+
+  await ui.press({ key: 'opt-b' })
+  // B's branch, then on from where the question resumes to choice 2
+  expect(plays().slice(1).map(stretch)).toEqual([['25', '30'], ['30', '50']])
+  expect(await ui.find({ type: 'Text', text: /choice 2: answer below/ })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
+test('on the desktop app the frames come as an Svg, a few a second, with no sound', async ($, on) => {
+  const { spawned } = world(on, { surface: 'desktop' })
+  const ui = await $.ui.mount(pane('desktop'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'play' })
+  const args = spawned.find(a => !a.includes('--render')) ?? []
+  expect(args).toEqual(expect.arrayContaining(['--as', 'jpeg', '--no-audio']))
+  const svg = await ui.find({ type: 'Svg' })
+  expect(String((svg?.props as { source?: string } | undefined)?.source)).toContain('data:image/jpeg;base64,/9j/')
+  await ui.press({ key: 'library' })
 })
