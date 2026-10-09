@@ -163,6 +163,7 @@ try {
       { type: "rectangle", id: "client", x: 120, y: 220, width: 200, height: 90, label: { text: "Client" } },
       { type: "rectangle", id: "api", x: 560, y: 220, width: 200, height: 90, label: { text: "Upload API" } },
       { type: "arrow", x: 320, y: 265, width: 240, height: 0, label: { text: "chunks" }, start: { id: "client" }, end: { id: "api" } },
+      { type: "rectangle", id: "ps", x: 120, y: 440, width: 90, height: 70, label: { text: "PaymentService" } },   // too narrow: Excalidraw wraps it
     ], { regenerateIds: false }) });
   });
   await page.waitForTimeout(4200); // the three sentences
@@ -209,6 +210,8 @@ try {
   ok(s.notes.length === 1 && s.notes[0].elementId && s.keyframes.some((k) => k.said.includes("(typed) not sure")), "the typed note is timed, on the canvas, and in a keyframe");
   ok(s.events.some((e) => e.type === "delete" && e.id === "scratch"), "an element replaced out of the scene is a delete");
   ok(s.events.some((e) => e.type === "add" && e.kind === "arrow" && e.from === "client" && e.to === "api"), "the arrow's ends are in its add event");
+  ok(s.final.elements.find((e) => e.id === "ps")?.label === "PaymentService" && !s.events.some((e) => /PaymentServic\n/.test(e.text || "")),
+    `a label wrapped to fit its box is kept as typed — ${JSON.stringify(s.final.elements.find((e) => e.id === "ps")?.label)}`);
   ok(s.partner?.provider === "local" && s.partner.model === "qwen2.5vl:7b" && s.partner.on === true && s.partner.questions.length === 1
     && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
   const md = readFileSync(join(dir, "sketch.md"), "utf8");

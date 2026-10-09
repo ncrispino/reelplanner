@@ -71,7 +71,8 @@
   };
   const brief = (el) => {
     const b = { id: el.id, kind: el.type, x: Math.round(el.x), y: Math.round(el.y), w: Math.round(el.width), h: Math.round(el.height) };
-    if (el.text) b.text = el.text.slice(0, 300);
+    const typed = el.originalText ?? el.text;   // as typed: Excalidraw wraps a label to its box ("PaymentServic\ne")
+    if (typed) b.text = typed.slice(0, 300);
     if (el.containerId) b.in = el.containerId;
     b.from = el.startBinding?.elementId || null; b.to = el.endBinding?.elementId || null;
     if (el.type !== "arrow" && el.type !== "line") { delete b.from; delete b.to; }
@@ -149,6 +150,7 @@
   addEventListener("pointerup", () => { pointer.down = false; }, { passive: true });
 
   // ---------- the partner: at a picture, maybe one short question (scripts/lib/sketch-partner.mjs) ----------
+  let asking$ = null;   // the question in flight, dropped at Finish
   let partner = null, asking = false, lastAsk = -Infinity, heardSinceAsk = true;
   const remember = (on) => { try { localStorage.setItem("reelplanner.sketch.partner", on ? "on" : "off"); } catch {} };
   function partnerOn() { try { return localStorage.getItem("reelplanner.sketch.partner") !== "off"; } catch { return true; } }
@@ -164,7 +166,8 @@
     const sentAt = performance.now();
     try {
       const said = [...session.transcript.segments.map((x) => ({ t: x.t0, text: x.text })), ...session.notes.filter((n) => n.t != null).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
-      const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json" },
+      asking$ = new AbortController();
+      const r = await fetch("api/sketch/partner", { method: "POST", headers: { "content-type": "application/json" }, signal: asking$.signal,
         body: JSON.stringify({ question: $("question").value.trim(), elements: drawn(), said, asked: P.questions.map((q) => ({ t: q.t, text: q.text })), png: await toDataUrl(blob) }) });
       const j = await r.json().catch(() => ({}));
       if (!j.ok) { status(`The question partner did not answer (${j.error || r.status}); keep going.`); heardSinceAsk = true; return; }
@@ -194,7 +197,7 @@
     return elements.filter((e) => !e.containerId).map((e) => {
       const b = { id: e.id, kind: e.type, x: Math.round(e.x), y: Math.round(e.y), w: Math.round(e.width), h: Math.round(e.height) };
       const label = e.boundElements?.map((x) => byId.get(x.id)).find((x) => x?.type === "text");
-      if (e.text) b.text = e.text; if (label) b.label = label.text;
+      if (e.text) b.text = e.originalText ?? e.text; if (label) b.label = label.originalText ?? label.text;
       if (e.startBinding?.elementId) b.from = e.startBinding.elementId; if (e.endBinding?.elementId) b.to = e.endBinding.elementId;
       if (e.groupIds?.length) b.groups = e.groupIds;
       return looks(e, b);
@@ -323,6 +326,7 @@
   // ---------- finish: show exactly what will be sent ----------
   let previewUrl = null;
   finBtn.addEventListener("click", async () => {
+    asking$?.abort();
     if (pausedAt == null) pause();
     await keyframe();
     await new Promise((r) => { if (recorder?.state === "paused" || recorder?.state === "recording") { recorder.addEventListener("dataavailable", r, { once: true }); recorder.requestData(); } else r(); });
