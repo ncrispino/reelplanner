@@ -28,7 +28,7 @@ export function guideHtml(data, { part = null, title, fontsBase = null } = {}) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ${full ? "The guide" : "A part of the guide"} (the plan guide, plan 2026-09-28-plan-guide). Built by \`reelplanning guide\` from plan.md, the
+<!-- ${full ? "The guide" : "A part of the guide"} (the plan guide, plan 2026-09-28-plan-guide). Built by \`reelplanner guide\` from plan.md, the
      ledger, the plan map, walkthrough.md, git and runs/: build it again, never edit it here. Not committed. -->
 <title>${esc(title)}</title>
 ${A.theme}${full ? `<script>(function(){var r=document.documentElement;if(!/[?&#]theme=/.test(location.search+location.hash)&&matchMedia("(prefers-color-scheme: dark)").matches)r.setAttribute("data-theme","dark");})();</script>\n<style data-rp-faces data-base="${esc(fontsBase)}">\n${facesCss(fontsBase)}\n</style>\n` : ""}<style>

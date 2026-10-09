@@ -8,7 +8,7 @@
 // built only from sets is still reported. The narration runs for the whole beat, so any stretch with
 // neither is text with nothing happening under it.
 //
-// usage: reelplanning motion-static <project-dir> [--gap 2.5] [--tail 3.0]
+// usage: reelplanner motion-static <project-dir> [--gap 2.5] [--tail 3.0]
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 import { readTimeline, scriptsOf } from "./lib/timeline.mjs";
@@ -17,7 +17,7 @@ const args = process.argv.slice(2);
 const num = (n, d) => (args.includes(`--${n}`) ? Number(args[args.indexOf(`--${n}`) + 1]) : d);
 const project = args.find((a) => !a.startsWith("--")) || ".";
 const GAP = num("gap", 2.5), TAIL = num("tail", 3.0);
-const dir = resolve(project);   // relative to the caller, not to wherever reelplanning is installed
+const dir = resolve(project);   // relative to the caller, not to wherever reelplanner is installed
 const fdir = join(dir, "compositions/frames");
 if (!existsSync(fdir)) { console.error(`✗ no frames in ${project}`); process.exit(1); }
 

@@ -7,13 +7,13 @@
 //
 // A row is NOT trusted input. It was written by whoever had the page open, so `planDir` is checked
 // against the repo rather than believed: it has to resolve inside the repo, live under a
-// `.reelplanning/plans/` directory, and already hold a plan.md. A review for a plan that does not
+// `.reelplanner/plans/` directory, and already hold a plan.md. A review for a plan that does not
 // exist is a review for nothing.
 //
 // The one other thing a review can be for is the system video, which has no plan. Its row names the
-// video's own folder (`.reelplanning/system-video`, the plan map's `reviewDir`) — or, from a page
-// built before that existed, the record `.reelplanning` with project "system-video". Either way the
-// folder must resolve inside the repo, sit directly in a `.reelplanning/`, and hold a built system
+// video's own folder (`.reelplanner/system-video`, the plan map's `reviewDir`) — or, from a page
+// built before that existed, the record `.reelplanner` with project "system-video". Either way the
+// folder must resolve inside the repo, sit directly in a `.reelplanner/`, and hold a built system
 // video: a plan-map.json and a STORYBOARD.md whose front matter says `kind: system`. That review is
 // filed under its own id, as the video's reviews/<id>.json, and sorted by system-review into
 // reviews/<id>.md (review.md lists them all): one file per review, since reviews now arrive on their
@@ -22,12 +22,12 @@
 // `note` is the reviewer's message to the agent. It is printed as quoted text, labelled, and never
 // acted on by this script — read it the way you read a comment on a pull request.
 //
-// usage: reelplanning reel-intake <row.json> [--repo <root>] [--dry]
+// usage: reelplanner reel-intake <row.json> [--repo <root>] [--dry]
 import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve, join, relative } from "node:path";
 
-import { ROOT, repoRoot } from "./lib/env.mjs";
+import { ROOT, repoRoot, otherRpPath } from "./lib/env.mjs";
 import { reviewId } from "./lib/inbox.mjs";
 import { fileReview, reviewKind, verdictOf } from "./lib/reviews.mjs";
 const args = process.argv.slice(2);
@@ -36,7 +36,7 @@ const DRY = args.includes("--dry");
 const rowPath = args.find((a) => !a.startsWith("--") && a !== flag("repo", null));
 // the repo this review belongs to: --repo, else the one the caller is standing in
 const REPO = resolve(flag("repo", "") || repoRoot(process.cwd()));
-if (!rowPath) { console.error("usage: reelplanning reel-intake <row.json> [--repo <root>] [--dry]"); process.exit(1); }
+if (!rowPath) { console.error("usage: reelplanner reel-intake <row.json> [--repo <root>] [--dry]"); process.exit(1); }
 if (!existsSync(rowPath)) { console.error(`✗ ${rowPath} not found`); process.exit(1); }
 
 const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
@@ -47,16 +47,18 @@ if (!review || typeof review !== "object" || !Array.isArray(review.annotations))
 // --- the plan directory, checked rather than believed ---
 const claimed = String(row.planDir || "");
 if (!claimed) die("this row names no plan directory — it cannot be recorded against anything");
-const pd = resolve(REPO, claimed);
-const rel = relative(REPO, pd);
+let pd = resolve(REPO, claimed);
+let rel = relative(REPO, pd);
 if (!rel || rel.startsWith("..") || resolve(REPO, rel) !== pd) die(`planDir "${claimed}" resolves outside the repo`);
+// a page built before the rename (D-312) names the record's old folder: the plan is where the rename moved it
+if (!existsSync(pd) && otherRpPath(rel) && existsSync(resolve(REPO, otherRpPath(rel)))) { pd = resolve(REPO, otherRpPath(rel)); rel = relative(REPO, pd); }
 // the system video: its folder, or (older pages) the record itself with the system video's project name
-const sysClaim = /(^|\/)\.reelplanning\/system-video$/.test(rel) ? pd
-  : /(^|\/)\.reelplanning$/.test(rel) && (row.project === "system-video" || row.kind === "system") ? join(pd, "system-video") : null;
+const sysClaim = /(^|\/)\.reelplann(?:er|ing)\/system-video$/.test(rel) ? pd
+  : /(^|\/)\.reelplann(?:er|ing)$/.test(rel) && (row.project === "system-video" || row.kind === "system") ? join(pd, "system-video") : null;
 if (sysClaim) { intakeSystem(sysClaim); process.exit(0); }
 // an explainer (explain-first step 3): its own folder, with explain.md; `reel record` files it there, and adds nothing
 // to the decision log
-if (/(^|\/)\.reelplanning\/explainers\/[^/]+$/.test(rel)) {
+if (/(^|\/)\.reelplann(?:er|ing)\/explainers\/[^/]+$/.test(rel)) {
   if (!existsSync(join(pd, "explain.md"))) die(`no explain.md in ${rel} — not an explainer, nothing to record this review against`);
   console.log(`review of ${row.title || rel} (an explainer)`);
   console.log(`  submitted ${row.submittedAt || review.exportedAt || "?"} · ${review.annotations.filter((a) => a.kind !== "approve").length} mark(s), ${(review.questions || []).length} question(s) · watched ${Math.round((review.watch?.completion ?? 0) * 100)}%`);
@@ -67,7 +69,7 @@ if (/(^|\/)\.reelplanning\/explainers\/[^/]+$/.test(rel)) {
   execFileSync(process.execPath, [join(ROOT, "scripts", "reel.mjs"), "record", pd, filed.path], { stdio: "inherit" });
   process.exit(0);
 }
-if (!/(^|\/)\.reelplanning\/plans\/[^/]+$/.test(rel)) die(`planDir "${rel}" is not a plan directory (expected …/.reelplanning/plans/<plan>, an explainer's …/.reelplanning/explainers/<name>, or the system video's .reelplanning/system-video)`);
+if (!/(^|\/)\.reelplann(?:er|ing)\/plans\/[^/]+$/.test(rel)) die(`planDir "${rel}" is not a plan directory (expected …/.reelplanner/plans/<plan>, an explainer's …/.reelplanner/explainers/<name>, or the system video's .reelplanner/system-video)`);
 if (!existsSync(join(pd, "plan.md"))) die(`no plan.md in ${rel} — nothing to record this review against`);
 
 const counts = [

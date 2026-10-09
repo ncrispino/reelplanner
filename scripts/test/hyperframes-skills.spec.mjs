@@ -43,12 +43,12 @@ try {
 
   test("--check exits 1 and prints the missing file and the fix", () => {
     let out = "", code = 0;
-    try { execFileSync(process.execPath, [SCRIPT, "--check"], { env: { ...process.env, REELPLANNING_SKILLS_DIR: dir }, stdio: "pipe" }); }
+    try { execFileSync(process.execPath, [SCRIPT, "--check"], { env: { ...process.env, REELPLANNER_SKILLS_DIR: dir }, stdio: "pipe" }); }
     catch (e) { code = e.status; out = String(e.stderr); }
     assert.equal(code, 1);
     assert.match(out, /media-fetch\.mjs imports "\.\.\/\.\.\/\.\.\/\.\.\/packages\/cli\/src\/media-use\/lib\/media-fetch\.mjs"/);
     assert.match(out, /does not exist/);
-    assert.match(out, /fix: reelplanning hyperframes-skills/);
+    assert.match(out, /fix: reelplanner hyperframes-skills/);
   });
 
   test("the skills pin follows the exact hyperframes version in package.json", () => assert.match(pinnedRef(), /^v\d+\.\d+\.\d+$/));

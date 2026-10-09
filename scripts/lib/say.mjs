@@ -1,6 +1,6 @@
 // Commands, flags, paths and file names: written in SCRIPT.md as they are written, said by the voice as spoken.
 //
-// A script says `claude -p`, `--dry-run`, `plan.md`, `/work`, `~/.reelplanning/you.jsonl`. Kokoro drops a
+// A script says `claude -p`, `--dry-run`, `plan.md`, `/work`, `~/.reelplanner/you.jsonl`. Kokoro drops a
 // flag's dashes ("claude p"), reads `plan.md` as "plan MD" and `~/` as "tilde slash", so the voice is handed
 // the spoken form (`say`, run by narrate on each line's text before the TTS and the line's key). The
 // captions show the script's own words, and a word that is a flag, a path or a file name is code
@@ -15,7 +15,7 @@
 //   -p, --dry-run                   dash p, dash dash dry-run                    "dash p" → -p, "dash dash you" → --you
 //   plan.md, you.jsonl              plan dot md, you dot json L                  "dot md", "dot M D", "dot json L" → .md, .jsonl
 //   /work, scripts/narrate.mjs      slash work, scripts slash narrate dot mjs    "slash work" → /work
-//   ~/.reelplanning                 home dot reelplanning                        "tilde slash" → ~/
+//   ~/.reelplanner                  home dot reelplanner                         "tilde slash" → ~/
 //   snake_case                      snake underscore case                        "underscore" → _
 //   noreply@anthropic.com           noreply at anthropic dot com                 (the domain only: anthropic.com)
 //   D-110                           D-110 (Kokoro says "D one hundred ten", as the ledger reads it)
@@ -67,7 +67,7 @@ export function codeWord(text) {
   return a.core && codeKind(a.core) ? a : null;
 }
 
-// a path, file or address said part by part: "~/.reelplanning/you.jsonl" → "home dot reelplanning slash you dot json L"
+// a path, file or address said part by part: "~/.reelplanner/you.jsonl" → "home dot reelplanner slash you dot json L"
 function sayPath(core) {
   let s = core.replace(/^https?:\/\//, "");
   const out = [];
@@ -128,7 +128,7 @@ function flagAt(ws, i) {
   const a = segAt(ws, i + 1);
   return a && /^[A-Za-z]$/.test(a.core) && !ENGLISH.has(a.core.toLowerCase()) ? { text: `-${a.core}${a.post}`, end: i + 2 } : null;
 }
-// a folder or file name at i, after a lead or a slash: a word, or "dot" and a word (a dotfile: "dot reelplanning")
+// a folder or file name at i, after a lead or a slash: a word, or "dot" and a word (a dotfile: "dot reelplanner")
 const partAt = (ws, i, dotOk) => {
   if (dotOk && lw(ws, i) === "dot" && bareTok(ws, i)) { const a = segAt(ws, i + 1); return a ? { core: `.${a.core}`, post: a.post, pre: "", end: i + 2 } : null; }
   const a = segAt(ws, i); return a ? { ...a, end: i + 1 } : null;

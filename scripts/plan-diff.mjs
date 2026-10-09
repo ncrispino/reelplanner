@@ -27,18 +27,19 @@
 // build's rounds, never an earlier build's, and of its third round's kept findings only those an earlier round
 // had not kept for the same reason (`left`; the rest are `again`, D-245).
 //
-// usage: reelplanning plan-diff <project-dir> [--against HEAD]
+// usage: reelplanner plan-diff <project-dir> [--against HEAD]
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { leftAfter } from "./lib/fresh-eyes.mjs";
 import { execFileSync } from "node:child_process";
 import { resolve, join, relative } from "node:path";
 import { createHash } from "node:crypto";
+import { otherRpPath } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const project = args.find((a) => !a.startsWith("--")) || "";
 const againstIdx = args.indexOf("--against");
 const against = againstIdx >= 0 ? args[againstIdx + 1] : "HEAD";
-const dir = resolve(project);   // relative to the caller, not to wherever reelplanning is installed
+const dir = resolve(project);   // relative to the caller, not to wherever reelplanner is installed
 const mapPath = join(dir, "plan-map.json");
 if (!existsSync(mapPath)) { console.error(`✗ no plan-map.json in ${project}`); process.exit(1); }
 
@@ -83,7 +84,12 @@ const cur = build(readFileSync(mapPath, "utf8"),
 
 // ---- the previous build
 // `<rev>:./<path>` is read relative to cwd, so running git in the project finds the project's own repo
-const git = (p, rev = against) => { try { return execFileSync("git", ["show", `${rev}:./${p}`], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }); } catch { return null; } };
+// (a build from before the rename, D-312, is at the record folder's old name: tried second, from the repo's top)
+const prefix = (() => { try { return execFileSync("git", ["rev-parse", "--show-prefix"], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } })();
+const git = (p, rev = against) => {
+  for (const at of [`./${p}`, otherRpPath(prefix + p)].filter(Boolean)) try { return execFileSync("git", ["show", `${rev}:${at}`], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }); } catch { /* not there */ }
+  return null;
+};
 let prev = null, prevText = null;
 if (existsSync(against)) prev = build(prevText = readFileSync(against, "utf8"), () => "", "");
 else {

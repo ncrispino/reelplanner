@@ -84,7 +84,7 @@ try {
   writeFileSync(join(tmp, "annotations.json"), JSON.stringify(review));
   reel("init", tmp, "--name", "finish", "--kind", "greenfield");
   reel("new-plan", tmp, "upload-resume", "--plan", join(tmp, "plan.md"), "--date", "2026-01-01");
-  const pd = join(tmp, ".reelplanning/plans/2026-01-01-upload-resume");
+  const pd = join(tmp, ".reelplanner/plans/2026-01-01-upload-resume");
   reel("record", pd, join(tmp, "annotations.json"));
   const mds = readdirSync(join(pd, "reviews")).filter((f) => f.endsWith(".md"));
   const act = mds.length === 1 ? readFileSync(join(pd, "reviews", mds[0]), "utf8") : "";

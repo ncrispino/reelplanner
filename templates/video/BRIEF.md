@@ -10,7 +10,7 @@ audience: <who reviews it, and what they already know (the videos before it)>
 length: about four minutes, <n> chapters (style guide §1: 3–5 minutes; a walkthrough video about two, §8)
 angle: how-to-process
 narration: yes
-style_preset: .reelplanning/theme/frame.md (the project theme)
+style_preset: .reelplanner/theme/frame.md (the project theme)
 music: none
 ---
 

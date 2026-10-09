@@ -14,13 +14,13 @@
 // reviewer saw (the commit before it was recorded), and the ledger as it stood then. Nothing is added
 // to the ledger: those reviews are in it already. Running it again changes nothing.
 //
-// usage: reelplanning migrate-reviews [<dir>] [--dry-run]   (every .reelplanning/plans/*/ under <dir>, default .)
+// usage: reelplanner migrate-reviews [<dir>] [--dry-run]   (every .reelplanner/plans/*/ under <dir>, default .)
 import { existsSync, readFileSync, writeFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { join, resolve, relative, dirname, basename } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileReview, reviewKind, reviewTime, reviewsDir, reviewOf, ledgerFor, listReviews } from "./lib/reviews.mjs";
 import { actOnMarkdown } from "./lib/review-scope.mjs";
-import { realPath } from "./lib/env.mjs";
+import { realPath, isRpDirName, otherRpPath } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry-run");
@@ -28,14 +28,14 @@ const top = resolve(args.find((a) => !a.startsWith("--")) || ".");
 const OLD = ["plan.resolved.md", "walkthrough.resolved.md", "revise-scope.json", "walkthrough-scope.json", "walkthrough-revise-scope.json", "README.md"];
 const SKIP = new Set(["node_modules", ".git", "renders", "snapshots"]);
 
-// every <…>/.reelplanning/plans/<plan>/ with a plan.md
+// every <…>/.reelplanner/plans/<plan>/ with a plan.md
 function planDirs(d, out = [], depth = 0) {
   if (depth > 8) return out;
   let entries; try { entries = readdirSync(d, { withFileTypes: true }); } catch { return out; }
   for (const e of entries) {
     if (!e.isDirectory() || SKIP.has(e.name)) continue;
     const p = join(d, e.name);
-    if (e.name === ".reelplanning" && existsSync(join(p, "plans"))) { for (const x of readdirSync(join(p, "plans"))) if (existsSync(join(p, "plans", x, "plan.md"))) out.push(join(p, "plans", x)); }
+    if (isRpDirName(e.name) && existsSync(join(p, "plans"))) { for (const x of readdirSync(join(p, "plans"))) if (existsSync(join(p, "plans", x, "plan.md"))) out.push(join(p, "plans", x)); }
     else planDirs(p, out, depth + 1);
   }
   return out;
@@ -48,7 +48,8 @@ const parse = (t) => { try { return JSON.parse(t); } catch { return null; } };
 let repo = tryGit(top, "rev-parse", "--show-toplevel")?.trim() || null;
 // a file's path in the repo, from where it really is (git's top is the real path; `top` may name it through a link)
 const inRepo = (abs) => relative(repo, realPath(abs)).split("\\").join("/");
-const at = (rev, abs) => (repo && rev ? tryGit(repo, "show", `${rev}:${inRepo(abs)}`) : null);
+// a file as `rev` had it, at the record folder's old name too (a commit from before the rename, D-312)
+const at = (rev, abs) => (repo && rev ? tryGit(repo, "show", `${rev}:${inRepo(abs)}`) ?? (otherRpPath(inRepo(abs)) && tryGit(repo, "show", `${rev}:${otherRpPath(inRepo(abs))}`)) : null);
 
 let filedN = 0, removedN = 0;
 for (const pd of planDirs(top).sort()) {
@@ -58,7 +59,7 @@ for (const pd of planDirs(top).sort()) {
     const abs = join(pd, file);
     // every version: the committed ones oldest first, then the working copy
     const versions = [];
-    if (repo) for (const rev of (tryGit(repo, "log", "--format=%H", "--", inRepo(abs)) || "").split("\n").filter(Boolean).reverse()) {
+    if (repo) for (const rev of (tryGit(repo, "log", "--format=%H", "--", inRepo(abs), ...[otherRpPath(inRepo(abs))].filter(Boolean)) || "").split("\n").filter(Boolean).reverse()) {
       const text = at(rev, abs); if (text != null) versions.push({ rev, text });
     }
     if (existsSync(abs)) versions.push({ rev: null, text: readFileSync(abs, "utf8") });

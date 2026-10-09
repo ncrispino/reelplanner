@@ -2,13 +2,13 @@
 # Apply the repo page's About box (the description and the topics) from docs/github-topics.txt, with your own
 # GitHub CLI login (`gh auth login`; setting topics needs admin rights on the repo, so it is run by its owner).
 #
-#   sh scripts/release/github-about.sh [<owner/repo>]   default: ncrispino/reelplanning
+#   sh scripts/release/github-about.sh [<owner/repo>]   default: ncrispino/reelplanner
 #   sh scripts/release/github-about.sh --dry-run [<owner/repo>]   print the command, change nothing
 #
 # The topics replace the repo's current ones (gh repo edit --add-topic adds; --remove-topic drops the rest).
 set -eu
 DRY=0; [ "${1:-}" = "--dry-run" ] && { DRY=1; shift; }
-REPO=${1:-ncrispino/reelplanning}
+REPO=${1:-ncrispino/reelplanner}
 here=$(cd "$(dirname "$0")/../.." && pwd); f="$here/docs/github-topics.txt"
 [ -f "$f" ] || { echo "✗ $f not found" >&2; exit 1; }
 desc=$(awk '/^Description/{getline; print; exit}' "$f")

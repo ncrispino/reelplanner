@@ -23,7 +23,7 @@ import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scr
 import { until, loaded, frames } from "./wait.mjs";
 import { planGuideRepo } from "./plan-guide-repo.mjs";
 
-const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough", PLAN = ".reelplanning/plans/2026-09-28-plan-guide";
+const VIDEO = ".reelplanner/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough", PLAN = ".reelplanner/plans/2026-09-28-plan-guide";
 const T = mkdtempSync(join(tmpdir(), "rp-guide-notes-")), OUT = join(T, "review");
 const REPO = planGuideRepo(join(T, "repo"));
 execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(REPO, VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
@@ -363,7 +363,7 @@ try {
     await p.locator("[data-yours]").click();
     await until(p, () => !document.querySelector(".rpn-list").hidden);
     const li = await p.evaluate(() => { const l = document.querySelector(".rpn-list"); return { go: l.querySelector("[data-go]")?.textContent, qt: l.querySelector(".qt")?.textContent, cmd: l.querySelector(".foot code")?.textContent }; });
-    check("…Your notes lists it (where, the quote), with the export and its command", li.go === "What you can do now · step 1" && li.qt === `“${s.text}”` && /reel record \.reelplanning\/plans\/2026-09-28-plan-guide ~\/Downloads\/annotations\.json/.test(li.cmd || ""), JSON.stringify(li));
+    check("…Your notes lists it (where, the quote), with the export and its command", li.go === "What you can do now · step 1" && li.qt === `“${s.text}”` && /reel record \.reelplanner\/plans\/2026-09-28-plan-guide ~\/Downloads\/annotations\.json/.test(li.cmd || ""), JSON.stringify(li));
     await shot(p, "10-standalone-notes.png");
     const [dl] = await Promise.all([p.waitForEvent("download"), p.locator(".rpn-list [data-export]").click()]);
     const own = JSON.parse(readFileSync(await dl.path(), "utf8"));
@@ -386,7 +386,7 @@ try {
       const reel = (...a) => execFileSync(process.execPath, [join(ROOT, "scripts/reel.mjs"), ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
       reel("init", tmp, "--name", "notes", "--kind", "greenfield");
       reel("new-plan", tmp, "plan-guide", "--plan", join(ROOT, PLAN, "plan.md"), "--date", "2026-01-01");
-      const pd = join(tmp, ".reelplanning/plans/2026-01-01-plan-guide");
+      const pd = join(tmp, ".reelplanner/plans/2026-01-01-plan-guide");
       copyFileSync(join(ROOT, PLAN, "walkthrough.md"), join(pd, "walkthrough.md"));
       writeFileSync(join(tmp, "annotations.json"), JSON.stringify(exported));
       reel("record", pd, join(tmp, "annotations.json"), "--kind", "plan");
@@ -394,7 +394,7 @@ try {
       const step1 = (md.split(/^- \*\*Step 1\*\*$/m)[1] || "").split(/^- \*\*/m)[0];
       check("reel record: under Step 1, the guide's note: where it is, its words, pointing at the quote", step1.includes(`comment in the guide (What you can do now · step 1, at \`${n1.detail.anchor}\`): "${W1b}" (pointing at "${s1.text}")`) && step1.includes(`"${W3}" (pointing at "review")`) && step1.includes(`"${W4}" (pointing at "The guide page")`), step1 || md.slice(0, 1200));
       // reel-intake: the same review, sent from the hosted page as a row
-      writeFileSync(join(tmp, "row.json"), JSON.stringify({ planDir: ".reelplanning/plans/2026-01-01-plan-guide", project: "video", title: "The plan guide", submittedAt: "2026-01-02T10:00:00Z", review: { ...exported, exportedAt: "2026-01-02T10:00:00Z" } }));
+      writeFileSync(join(tmp, "row.json"), JSON.stringify({ planDir: ".reelplanner/plans/2026-01-01-plan-guide", project: "video", title: "The plan guide", submittedAt: "2026-01-02T10:00:00Z", review: { ...exported, exportedAt: "2026-01-02T10:00:00Z" } }));
       execFileSync(process.execPath, [join(ROOT, "scripts/reel-intake.mjs"), join(tmp, "row.json"), "--repo", tmp], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
       const mds = readdirSync(join(pd, "reviews")).filter((f) => f.endsWith(".md"));
       const newest = mds.map((f) => readFileSync(join(pd, "reviews", f), "utf8")).find((t) => t !== md && t.includes(W1b)) || "";

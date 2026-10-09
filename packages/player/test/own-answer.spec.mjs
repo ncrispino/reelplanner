@@ -105,7 +105,7 @@ if (qz) {
 // box, scrolling inside it, capped at 2 lines (the owner: at 3 it pushed a card's why behind "Read why in full");
 // under the frame it keeps 4 (above). The contributing walkthrough answers its calls on the frame.
 {
-  const WALK = ".reelplanning/plans/2026-09-26-contributing/walkthrough-video";
+  const WALK = ".reelplanner/plans/2026-09-26-contributing/walkthrough-video";
   await p.goto(`http://127.0.0.1:${port}/packages/player/?project=${WALK}`);
   await p.evaluate(() => { try { localStorage.clear(); } catch {} }); await p.reload();
   await loaded(p);

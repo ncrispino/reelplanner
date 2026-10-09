@@ -79,7 +79,7 @@ try {
     ok(fams.every((x) => f.loaded.includes(x)) && f.files.length >= faces.faces.length && f.inHead, `the page's faces (${fams.join(", ")}) are declared in its head and load from packages/player/fonts, not the system`, JSON.stringify(f));
     const first = (v) => String(v).split(",")[0].trim().replace(/["']/g, "");
     ok(first(f.sans) === faces.roles.sans.family && first(f.serif) === faces.roles.serif.family && first(f.mono) === faces.roles.mono.family && first(f.chrome) === faces.roles.sans.family, `--sans, --serif and --mono are the list's, and the chrome's text reads --sans — ${f.sans}`, JSON.stringify(f));
-    const src = readFileSync(join(ROOT, "packages/player/reelplanning-player.js"), "utf8"), style = src.slice(src.indexOf("const STYLE = `"), src.indexOf("\n`;\n", src.indexOf("const STYLE = `")));
+    const src = readFileSync(join(ROOT, "packages/player/reelplanner-player.js"), "utf8"), style = src.slice(src.indexOf("const STYLE = `"), src.indexOf("\n`;\n", src.indexOf("const STYLE = `")));
     const named = (style.match(/Inter|Garamond|JetBrains/g) || []).length, viaSans = (style.match(/var\(--sans\)/g) || []).length;
     ok(named === 0 && viaSans >= 40, `the player's styles name no family: ${viaSans} rules read var(--sans), none spells one out`, `${named} named`);
     // colours, both themes, from the tokens as computed: the accent, and the three inks on every surface text sits on
@@ -128,7 +128,7 @@ try {
     const qc = await b.newContext({ viewport: { width: 1440, height: 1000 } }), q = await open("", { ctx: qc });
     const names = await R(q, () => { const el = document.querySelector("#rp"), was = el.planMap.slug, out = [];
       delete el.planMap.slug;
-      for (const src of ["../../.reelplanning/plans/2026-09-22-m3-revise-loop/video/index.html", ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video/index.html", "../../.reelplanning/system-video/index.html", ".reelplanning/explainers/2026-09-29-x/video/index.html", "2026-09-22-m3-revise-loop/index.html"]) {
+      for (const src of ["../../.reelplanner/plans/2026-09-22-m3-revise-loop/video/index.html", ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video/index.html", "../../.reelplanner/system-video/index.html", ".reelplanner/explainers/2026-09-29-x/video/index.html", "2026-09-22-m3-revise-loop/index.html"]) {
         Object.defineProperty(el, "src", { configurable: true, get: () => src }); out.push(el.slug); }
       el.markWatched("seen"); const keys = Object.keys(localStorage).filter((k) => k.startsWith("rp:watched:"));
       delete el.src; el.planMap.slug = was; localStorage.removeItem("rp:watched:2026-09-22-m3-revise-loop"); return { out, keys }; });
@@ -144,7 +144,7 @@ try {
     // a video not on this page (bundle-player's videos): said, not a link that would open another video
     await R(q, () => { const el = document.querySelector("#rp"); el.setAttribute("videos", "l2-access system"); el.renderBefore(); });
     const offRows = await rowsOf(q);
-    ok(offRows[0].tag === "A" && offRows[0].w === "Watched" && offRows[1].tag === "DIV" && !offRows[1].href && offRows[1].w === "Not on this page" && /reelplanning review/.test(offRows[1].title),
+    ok(offRows[0].tag === "A" && offRows[0].w === "Watched" && offRows[1].tag === "DIV" && !offRows[1].href && offRows[1].w === "Not on this page" && /reelplanner review/.test(offRows[1].title),
       "a video the page does not carry: “Not on this page”, no link, and how to open every video in its title", JSON.stringify(offRows));
     await qc.close();
     // a chapter's row (2026-09-24-memory--walkthrough, chapter 2): that chapter played through is watching it
@@ -230,8 +230,8 @@ try {
   //   - the meaning is 15 px or more, line height about 1.5, at most about 62 characters a line, and 7:1 or more
   //     against the panel, in the dark theme and the light one
   {
-    const REAL = ".reelplanning/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
-    const now = parseGlossary(readFileSync(join(ROOT, ".reelplanning/glossary.md"), "utf8"));
+    const REAL = ".reelplanner/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
+    const now = parseGlossary(readFileSync(join(ROOT, ".reelplanner/glossary.md"), "utf8"));
     const FILE = /[\w.~-]*[\w>]\/|\b[\w<>-]+\.(?:md|json|jsonl|mjs|js|sh|html)\b|<[a-z][\w-]*>|data-[\w-]+=|#{2,}\s|--[a-z]/;
     const q = await b.newPage({ viewport: { width: 1440, height: 900 } });
     q.on("pageerror", (e) => fails.push("page error: " + String(e).slice(0, 160)));
@@ -459,12 +459,12 @@ try {
   ok(old.card && old.terms, "a video built before this: no card and no Terms button", JSON.stringify(old));
   await p.close();
 
-  // ════ two repos on one port, as `reelplanning review` serves every repo on 8787: each page bundle-player packs names
+  // ════ two repos on one port, as `reelplanner review` serves every repo on 8787: each page bundle-player packs names
   // its repo, and the player keeps a review's record and its watched marks under it; the viewer's own settings carry
   // over. Repo A's page is opened for one plan video (p1), which builds on A's system video at chapter 2 (built: carried
   // on the page), a plan not built yet (p0) and a video A does not have (gone). Both repos have a video called "system".
   {
-    const T = mkdtempSync(join(tmpdir(), "rp-two-repos-")), SERVE = join(T, "serve"), rpA = join(T, "ra", ".reelplanning"), rpB = join(T, "rb", ".reelplanning");
+    const T = mkdtempSync(join(tmpdir(), "rp-two-repos-")), SERVE = join(T, "serve"), rpA = join(T, "ra", ".reelplanner"), rpB = join(T, "rb", ".reelplanner");
     const copy = (to) => { scratchCopy(join(ROOT, project), to); return to; };
     const sysA = copy(join(rpA, "system-video")), p1 = copy(join(rpA, "plans", "p1", "video")), sysB = copy(join(rpB, "system-video"));
     for (const r of [rpA, rpB]) writeFileSync(join(r, "decisions.json"), "[]");

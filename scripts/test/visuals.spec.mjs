@@ -133,7 +133,7 @@ try {
   ok("…two underlines 9 px apart are not lines of text, and pass", r.code === 0, r.out);
   r = lint(frame("page-mock", { css: ".v-page { position:absolute; left:100px; top:100px; width:172px; height:250px; } .v-page .bar { height:5px; background:rgba(var(--rp-ink-rgb),0.22); margin-bottom:7px; }", body: `<div class="v-page"><h>Like a Rolling Stone</h><div class="bar" style="width:92%"></div><div class="bar" style="width:86%"></div></div>` }));
   ok("…bars one after another in a page mock's flow fail", r.code === 1 && /2 empty bars \(\.bar\) stand where words go/.test(r.out), r.out);
-  for (const st of ["layout", "pipeline"]) { const t = lint(join(ROOT, "templates", "reelplanning", "theme", "stages", `${st}.html`)); ok(`…the theme's ${st} stage holds words, not bars`, !/rule 1/.test(t.out), t.out); }
+  for (const st of ["layout", "pipeline"]) { const t = lint(join(ROOT, "templates", "reelplanner", "theme", "stages", `${st}.html`)); ok(`…the theme's ${st} stage holds words, not bars`, !/rule 1/.test(t.out), t.out); }
   const roomCss = `${blockCss} .v-head { position:absolute; left:640px; font:400 44px/1.15 "EB Garamond"; }`;
   r = lint(frame("room-tight", { css: roomCss, body: `<div class="v-head" id="v-head" style="top:210px">plain words, no meaning to click</div><div class="v-block" data-detail="data-block">the list</div>` }));
   ok("frame-lint rule 5: a heading ending within 40 px above a marked thing fails (the player's label goes there)", r.code === 1 && /data-detail="data-block" has #v-head within 40 px above it/.test(r.out), r.out);
@@ -142,7 +142,7 @@ try {
 
   // ── the theme's blocks pass as they ship ─────────────────────────────────────────────────────────────
   for (const b of ["code-diff", "terminal-run"]) {
-    const src = readFileSync(join(ROOT, "templates", "reelplanning", "theme", "blocks", `${b}.html`), "utf8").replaceAll("FID", `f01-${b}`);
+    const src = readFileSync(join(ROOT, "templates", "reelplanner", "theme", "blocks", `${b}.html`), "utf8").replaceAll("FID", `f01-${b}`);
     const style = (src.match(/<style>([\s\S]*?)<\/style>/) || [])[1], script = (src.match(/<script>([\s\S]*?)<\/script>/) || [])[1];
     const markup = src.replace(/<!--[\s\S]*?-->/g, "").replace(/<style>[\s\S]*?<\/style>/, "").replace(/<script>[\s\S]*?<\/script>/, "");
     r = lint(frame(`block-${b}`, { css: style, body: markup, tl: script }));
@@ -204,10 +204,10 @@ try {
   writeFileSync(reg, JSON.stringify({ transitions: [{ name: "zoom-through", gsap_template: [
     'tl.to(__OLD__, { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: __DUR__, ease: "power3.in" }, __T__);',
     'tl.fromTo(__NEW__, { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: __DUR__, ease: "power3.out" }, __T__);'] }] }));
-  const zr = spawnSync("node", [join(ROOT, "scripts", "scale-only-zoom.mjs"), Z], { encoding: "utf8", env: { ...process.env, REELPLANNING_TRANSITIONS: reg } });
+  const zr = spawnSync("node", [join(ROOT, "scripts", "scale-only-zoom.mjs"), Z], { encoding: "utf8", env: { ...process.env, REELPLANNER_TRANSITIONS: reg } });
   const after = readFileSync(join(Z, "index.html"), "utf8");
   ok("scale-only-zoom: both zoom-through lines lose their blur and keep their scale; the crossfade is untouched", /2 zoom-through line\(s\)/.test(zr.stdout) && !/blur/.test(after) && /\{ scale: 0\.5, opacity: 0 \}, \{ scale: 1, opacity: 1, duration: 0\.4/.test(after) && after.includes('tl.to("#el-02", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 14);'), zr.stdout + after);
-  const z2 = spawnSync("node", [join(ROOT, "scripts", "scale-only-zoom.mjs"), Z], { encoding: "utf8", env: { ...process.env, REELPLANNING_TRANSITIONS: reg } });
+  const z2 = spawnSync("node", [join(ROOT, "scripts", "scale-only-zoom.mjs"), Z], { encoding: "utf8", env: { ...process.env, REELPLANNER_TRANSITIONS: reg } });
   ok("…and a second run changes nothing", /no blurred zoom-through/.test(z2.stdout) && readFileSync(join(Z, "index.html"), "utf8") === after, z2.stdout);
 
   // ── variety ──────────────────────────────────────────────────────────────────────────────────────────

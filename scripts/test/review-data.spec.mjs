@@ -13,7 +13,7 @@ import { ROOT } from "../lib/env.mjs";
 import { asksMore } from "../lib/reviews.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "review-data-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
+process.env.REELPLANNER_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${detail}` : ""}`); if (!cond) failed++; };
@@ -89,7 +89,7 @@ try {
   run("reel.mjs", "init", tmp, "--name", "drafts", "--kind", "greenfield");
   writeFileSync(join(tmp, "plan.md"), plan);
   run("reel.mjs", "new-plan", tmp, "drafts", "--plan", join(tmp, "plan.md"), "--date", "2026-09-23");
-  const pd = join(tmp, ".reelplanning/plans/2026-09-23-drafts");
+  const pd = join(tmp, ".reelplanner/plans/2026-09-23-drafts");
   const vd = join(pd, "video"); mkdirSync(vd, { recursive: true });
   writeFileSync(join(vd, "STORYBOARD.md"), storyboard);
   run("plan-map.mjs", vd);
@@ -110,23 +110,23 @@ try {
   ok("what to act on: a pick-all answer names every pick, and its ledger entry", /\*\*Q2\*\* \(step 2\)[^\n]*: \*\*Web, Slides\*\* \(picked all that apply\) → D-002/.test(resolved), r.out + resolved);
   ok("what to act on: a note on an answer is kept under it", /\*\*Q1\*\* \(step 1\)[^\n]*: \*\*Local storage\*\* \(not the recommendation\) → D-001\n  - their note: "only until accounts exist/.test(resolved), resolved);
   ok("what to act on: rewinds and slow-downs, by step", /\*\*Step 1\*\*[\s\S]*rewound or slowed down: went back to 1\.5s from 4\.8s/.test(resolved) && /\*\*Step 2\*\*[\s\S]*rewound or slowed down: slowed to 0\.75× at 9s/.test(resolved), resolved);
-  const ledger = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions;
+  const ledger = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions;
   const d1 = ledger.find((d) => d.questionId === "q1"), d2 = ledger.find((d) => d.questionId === "q2");
-  ok("reel record: the note travels with the decision", d1?.note === "only until accounts exist, then move to Postgres" && /\*\*Note:\*\* only until/.test(readFileSync(join(tmp, ".reelplanning/decisions.md"), "utf8")));
+  ok("reel record: the note travels with the decision", d1?.note === "only until accounts exist, then move to Postgres" && /\*\*Note:\*\* only until/.test(readFileSync(join(tmp, ".reelplanner/decisions.md"), "utf8")));
   ok("reel record: a pick-all answer is recorded as the set of picks", d2?.chosen === "Web, Slides" && (d2?.chosenIds || []).join() === "a,c");
   const scope = JSON.parse(run("revise-scope.mjs", pd).out);
   ok("revise-scope: a step the reviewer rewound or slowed down on goes to the revise, to be said more plainly", scope.steps.some((s) => s.step === 2 && s.reasons.some((r) => r.kind === "hard-to-follow" && /slowed to 0\.75×/.test(r.comment))), JSON.stringify(scope.steps));
   ok("revise-scope: a note on an answer sends its step to the revise", scope.steps.some((s) => s.step === 1 && s.reasons.some((x) => x.kind === "answer-note")), JSON.stringify(scope.steps));
 
   // "Explain this more": never a decision; the step is revised and the question asked again
-  const pdU = join(tmp, ".reelplanning/plans/2026-09-23-unclear");
+  const pdU = join(tmp, ".reelplanner/plans/2026-09-23-unclear");
   run("reel.mjs", "new-plan", tmp, "unclear", "--plan", join(tmp, "plan.md"), "--date", "2026-09-23");
   mkdirSync(join(pdU, "video"), { recursive: true }); writeFileSync(join(pdU, "video", "STORYBOARD.md"), storyboard); run("plan-map.mjs", join(pdU, "video"));
   writeFileSync(join(tmp, "unclear.json"), JSON.stringify({ version: 1, verdict: "changes", exportedAt: "2026-09-23T00:00:00Z", annotations: [],
     decisions: [{ id: "q1", option: "unclear", label: "Explain this more", planStep: 1, t: 8.9, recommended: false, note: "what does S3 cost here?" }] }));
-  const before = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions.length;
+  const before = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions.length;
   const ru = run("reel.mjs", "record", pdU, join(tmp, "unclear.json"));
-  const after = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions.length;
+  const after = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions.length;
   const resU = readFileSync(join(pdU, "reviews", "plan-20260923T000000Z.md"), "utf8"), scopeU = JSON.parse(run("revise-scope.mjs", pdU).out);
   ok("reel record: 'explain this more' adds nothing to the ledger, and says so", after === before && /asked to explain more, not decided: q1/.test(ru.out), ru.out);
   ok("what to act on: it reads as not decided, with what is unclear, and names no ledger entry", /\*\*Q1\*\* \(step 1\)[^\n]*: \*\*asked to explain this more\*\*, not decided[^\n]*What is unclear: "what does S3 cost here\?"/.test(resU) && !/→ D-/.test(resU), resU);
@@ -137,28 +137,28 @@ try {
   writeFileSync(join(tmp, "unclear-own.json"), JSON.stringify({ version: 1, verdict: "changes", exportedAt: "2026-09-23T01:00:00Z", annotations: [],
     decisions: [{ id: "q1", option: "own", own: true, label: "what does S3 even mean here? need more first", planStep: 1, t: 8.9, recommended: false }] }));
   const ruo = run("reel.mjs", "record", pdU, join(tmp, "unclear-own.json"));
-  const afterO = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions.length;
+  const afterO = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions.length;
   const resO = readFileSync(join(pdU, "reviews", "plan-20260923T010000Z.md"), "utf8");
   ok("reel record: own words asking for more add nothing to the ledger, and read as not decided with the words", afterO === before && /asked to explain more, not decided: q1/.test(ruo.out) && /asked to explain this more\*\*, not decided[^\n]*What is unclear: "what does S3 even mean here\? need more first"/.test(resO), ruo.out + resO);
 
   // a revise can ask a NEW question under an old id: it is a new decision, not "already recorded"
-  const n0 = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions.length;
+  const n0 = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions.length;
   const vm = JSON.parse(readFileSync(join(vd, "plan-map.json"), "utf8"));
   vm.decisions[0].question = "Where do drafts live, now that accounts exist?";
   writeFileSync(join(vd, "plan-map.json"), JSON.stringify(vm));
   writeFileSync(join(tmp, "round2.json"), JSON.stringify({ ...ann, exportedAt: "2026-09-24T00:00:00Z", decisions: [{ id: "q1", option: "a", label: "Postgres", planStep: 1, t: 8.9, recommended: true }] }));
   run("reel.mjs", "record", pd, join(tmp, "round2.json"));
-  const n1 = JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions;
+  const n1 = JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions;
   ok("reel record: a reworded question under an old id is recorded as a new decision", n1.length === n0 + 1 && n1.at(-1).question === "Where do drafts live, now that accounts exist?", JSON.stringify(n1.at(-1)));
   ok("reel record: round 2's review is kept beside round 1's, never over it", readdirSync(join(pd, "reviews")).sort().join() === "plan-20260923T000000Z.json,plan-20260923T000000Z.md,plan-20260924T000000Z.json,plan-20260924T000000Z.md", readdirSync(join(pd, "reviews")).join());
   run("reel.mjs", "record", pd);
-  ok("reel record: and recording it again (the newest review, by default) adds nothing", JSON.parse(readFileSync(join(tmp, ".reelplanning/decisions.json"), "utf8")).decisions.length === n0 + 1 && readdirSync(join(pd, "reviews")).length === 4);
+  ok("reel record: and recording it again (the newest review, by default) adds nothing", JSON.parse(readFileSync(join(tmp, ".reelplanner/decisions.json"), "utf8")).decisions.length === n0 + 1 && readdirSync(join(pd, "reviews")).length === 4);
 
   // seven open questions: a warning, not a failure
   const seven = plan.replace(/## Open questions for the reviewer[\s\S]*/, "## Open questions for the reviewer\n\n" + Array.from({ length: 7 }, (_, i) => `${i + 1}. **Question number ${i + 1} about topic${i}?** (step 1)\n- **A · yes.**\n- **B · no.**\n`).join("\n"));
   writeFileSync(join(tmp, "seven.md"), seven);
   run("reel.mjs", "new-plan", tmp, "seven", "--plan", join(tmp, "seven.md"), "--date", "2026-09-23");
-  const c = run("reel.mjs", "check", join(tmp, ".reelplanning/plans/2026-09-23-seven"));
+  const c = run("reel.mjs", "check", join(tmp, ".reelplanner/plans/2026-09-23-seven"));
   ok("reel check: seven open questions warn, and do not fail", c.code === 0 && /△ 7 open questions/.test(c.out), c.out);
 } finally {
   rmSync(tmp, { recursive: true, force: true });

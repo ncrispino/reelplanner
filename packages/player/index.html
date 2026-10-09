@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <style>
   /* the page is the ground the paper frame sits on: a shade darker than the paper, in both themes */
-  /* the same tokens as the player's (reelplanning-player.js STYLE): three solid inks for text, and the
+  /* the same tokens as the player's (reelplanner-player.js STYLE): three solid inks for text, and the
      darker coral (D-142) only for what needs you */
   :root { --ground: #F1EFE8; --paper: #FAF9F5; --ink: #141413; --ink-2: #3D3B37; --ink-3: #5C5953; --ink-rgb: 20,20,19; --accent: #B8552E; --accent-text: #9C4524; }
   /* The player tells the page which theme it is in (its own chrome is inside a shadow root, so the
@@ -29,10 +29,10 @@
   input { flex: 1; min-width: 0; font: 13px/1.4 var(--mono); padding: 6px 8px; border: 1px solid var(--ink-20); border-radius: 6px; background: var(--paper); color: var(--ink); }
   form button { font: inherit; padding: 6px 12px; border: 1px solid var(--ink-20); border-radius: 6px; background: var(--paper); color: var(--ink); cursor: pointer; }
   /* the player sizes its stage to the height left under this bar */
-  reelplanning-player { display: block; --rp-above: 64px; }
+  reelplanner-player { display: block; --rp-above: 64px; }
   /* on a phone the video runs edge to edge, so the page keeps no side padding of its own;
      the player pads its own chrome, and the header keeps the gutter. */
-  @media (max-width: 600px) { body { padding: 0; } header { min-height: 44px; padding: 0 16px; margin-bottom: 0; gap: 8px; } h1 { font-size: 17px; } form { right: 16px; top: 44px; width: calc(100% - 32px); } reelplanning-player { --rp-above: 44px; } }
+  @media (max-width: 600px) { body { padding: 0; } header { min-height: 44px; padding: 0 16px; margin-bottom: 0; gap: 8px; } h1 { font-size: 17px; } form { right: 16px; top: 44px; width: calc(100% - 32px); } reelplanner-player { --rp-above: 44px; } }
   /* a detail open beside the player takes the right of the window; the header gives it that room */
   html[data-rp-panel="beside"] header { padding-right: min(560px, 44vw); }
 </style>
@@ -43,12 +43,12 @@
   <button class="lnk" id="switch" type="button">Open another…</button>
   <form id="open" hidden onsubmit="location.search='?project='+encodeURIComponent(p.value);return false"><input id="p" placeholder="videos/l1-upload-resume" aria-label="Project folder" /><button>Open</button></form>
 </header>
-<reelplanning-player id="rp"></reelplanning-player>
+<reelplanner-player id="rp"></reelplanner-player>
 <script type="module">
-  import "./reelplanning-player.js";
+  import "./reelplanner-player.js";
   const project = new URLSearchParams(location.search).get("project") || "videos/l1-upload-resume";
   // dev-only: a video's review-page name (system, a plan's folder, <plan>--walkthrough; "Before you watch" links use it) opens its folder
-  if (!project.includes("/")) { const q = new URLSearchParams(location.search), w = /^(.+?)(--walkthrough)?$/.exec(project); q.set("project", project === "system" ? ".reelplanning/system-video" : `.reelplanning/plans/${w[1]}/${w[2] ? "walkthrough-video" : "video"}`); location.replace(`?${q}`); }
+  if (!project.includes("/")) { const q = new URLSearchParams(location.search), w = /^(.+?)(--walkthrough)?$/.exec(project); q.set("project", project === "system" ? ".reelplanner/system-video" : `.reelplanner/plans/${w[1]}/${w[2] ? "walkthrough-video" : "video"}`); location.replace(`?${q}`); }
   const slug = project.replace(/\/+$/, "").split("/").pop();
   const title = document.getElementById("title"); title.textContent = slug; document.title = `${slug} · review`; // the slug until the plan map gives its title
   document.getElementById("p").value = project;

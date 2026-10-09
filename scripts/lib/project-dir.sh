@@ -1,7 +1,7 @@
 # Shared by the shell scripts: where the caller's project is, and how to run the pinned HyperFrames.
 #
 # A project directory argument is relative to the CALLER's working directory, never to wherever
-# reelplanning is installed: under `npx` $ROOT is a package in the npm cache, which holds no projects and
+# reelplanner is installed: under `npx` $ROOT is a package in the npm cache, which holds no projects and
 # must not be written to.
 resolve_project() {
   local p="$1"

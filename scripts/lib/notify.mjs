@@ -1,14 +1,14 @@
 // Tell the person a video is ready: a desktop notification with the link and what is waiting.
 //
-// It is reelplanning's own, not the agent's, so it works the same under any agent (D-064). Where the
+// It is reelplanner's own, not the agent's, so it works the same under any agent (D-064). Where the
 // agent has notifications of its own (a phone push, a message in the session) it sends those too.
 //
 // Two rules: it always prints the same text to stdout (a headless box, an SSH session and a CI log
 // all still see it), and it never throws. A build that passed does not fail because a notification
 // daemon is missing.
 //
-//   REELPLANNING_NOTIFY=0          no desktop notification (stdout only)
-//   REELPLANNING_NOTIFY_CMD="…"    run this instead of the OS command, as `<cmd> <title> <body>`
+//   REELPLANNER_NOTIFY=0           no desktop notification (stdout only)
+//   REELPLANNER_NOTIFY_CMD="…"     run this instead of the OS command, as `<cmd> <title> <body>`
 //                                  (a phone push such as ntfy, or a stub in a test)
 import { spawn } from "node:child_process";
 import { readFileSync, existsSync, statSync } from "node:fs";
@@ -88,9 +88,9 @@ export function notify({ title, line, url }, { platform = osPlatform(), env = pr
   title = String(title || "Video ready to review");
   const body = [line, url].filter(Boolean).join("\n");
   try { log(`🔔 ${title}\n   ${[line, url].filter(Boolean).join("\n   ")}`); } catch { /* stdout closed: still try the desktop */ }
-  if (env.REELPLANNING_NOTIFY === "0") return Promise.resolve({ printed: true, shown: false, via: "off" });
+  if (env.REELPLANNER_NOTIFY === "0") return Promise.resolve({ printed: true, shown: false, via: "off" });
   let exe, args, extra = {};
-  if (env.REELPLANNING_NOTIFY_CMD) { const argv = splitCommand(env.REELPLANNING_NOTIFY_CMD); [exe, args] = [argv[0], [...argv.slice(1), title, body]]; }
+  if (env.REELPLANNER_NOTIFY_CMD) { const argv = splitCommand(env.REELPLANNER_NOTIFY_CMD); [exe, args] = [argv[0], [...argv.slice(1), title, body]]; }
   else [exe, args, extra] = osCommand(platform, title, body);
   return new Promise((ok) => {
     let done = false;

@@ -1,15 +1,16 @@
 // Where things are (this package, a Chromium, a dependency, the repo a path is in), worked out on the
 // machine it runs on rather than written down.
 import { existsSync, readdirSync, readFileSync, statSync, mkdirSync, copyFileSync, realpathSync } from "node:fs";
-import { join, resolve, dirname, basename } from "node:path";
+import { join, resolve, dirname, basename, sep } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { execFileSync, spawn } from "node:child_process";
+import "./old-names.mjs"; // a setting's old name (REELPLANNING_*) read as its new one, before anything reads it
 
 /**
  * This package's root, from this file's own location: the checkout, or the installed package in the
- * npx cache. Use it to read reelplanning's OWN files (templates, the player, package.json) and
+ * npx cache. Use it to read reelplanner's OWN files (templates, the player, package.json) and
  * nothing else — never to resolve a path the caller passed, and never to write to.
  */
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -91,7 +92,7 @@ export const FULL = process.env.RP_FULL === "1" || process.argv.includes("--full
  * A spec's scratch copy of a committed tree: every file copied, and every symlink in it replaced by a
  * copy of what it points at. `cpSync` keeps a symlink a symlink (rewritten to the absolute path of its
  * target, and `dereference` does not reach links below the top), so a write "into the copy" through
- * one lands in the committed file: eval/projects/<p>/.reelplanning/plans/<plan>/video and
+ * one lands in the committed file: eval/projects/<p>/.reelplanner/plans/<plan>/video and
  * walkthrough-video are links to videos/<slug>, and lifecycle.spec rewrote videos/w1-upload-resume/
  * plan-map.json that way on every run. `filter(src)` as cpSync's: false leaves that path (and all
  * under it) out.
@@ -108,19 +109,19 @@ export function scratchCopy(src, dst, filter = () => true) {
 export const VERSION = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).version;
 
 /**
- * How people run reelplanning, the one place that says: every command a person sees (the review page's
+ * How people run reelplanner, the one place that says: every command a person sees (the review page's
  * after-export lines, `--help`, setup's and the skills check's hints, the Codex note) is written with it.
- * The package is not on npm yet, so it is installed from GitHub (`npm i -g github:ncrispino/reelplanning`,
- * scripts/release/install.sh) and run as `reelplanning`. Once it is published, set ON_NPM to true: the commands then say
- * `npx -y reelplanning@<version>`, and `node scripts/release/sync-version.mjs` (run by `npm version`)
+ * The package is not on npm yet, so it is installed from GitHub (`npm i -g github:ncrispino/reelplanner`,
+ * scripts/release/install.sh) and run as `reelplanner`. Once it is published, set ON_NPM to true: the commands then say
+ * `npx -y reelplanner@<version>`, and `node scripts/release/sync-version.mjs` (run by `npm version`)
  * carries the change into the player's copy; scripts/test/version.spec.mjs fails until it has.
- * The skill (skills/plan-to-video/SKILL.md) agrees: its `$RP` is `reelplanning` when that is on the PATH.
+ * The skill (skills/plan-to-video/SKILL.md) agrees: its `$RP` is `reelplanner` when that is on the PATH.
  */
 export const ON_NPM = false;
-export const rpCommand = (version = VERSION, onNpm = ON_NPM) => onNpm ? `npx -y reelplanning@${version}` : "reelplanning";
+export const rpCommand = (version = VERSION, onNpm = ON_NPM) => onNpm ? `npx -y reelplanner@${version}` : "reelplanner";
 export const RP_COMMAND = rpCommand();
-/** The global install that puts `reelplanning` on the PATH, from the same choice. */
-export const RP_INSTALL = ON_NPM ? "npm i -g reelplanning" : "npm i -g github:ncrispino/reelplanning";
+/** The global install that puts `reelplanner` on the PATH, from the same choice. */
+export const RP_INSTALL = ON_NPM ? "npm i -g reelplanner" : "npm i -g github:ncrispino/reelplanner";
 
 /**
  * Where an installed dependency lives. Not always ROOT/node_modules: under `npx` the dependencies are
@@ -143,7 +144,7 @@ export function pkgDir(name, from = ROOT) {
 /** A file inside an installed dependency, or an error naming what is missing. */
 export function depFile(name, rel) {
   const dir = pkgDir(name), p = dir && join(dir, rel);
-  if (!p || !existsSync(p)) throw new Error(`${name}/${rel} not found next to reelplanning at ${ROOT} — reinstall reelplanning`);
+  if (!p || !existsSync(p)) throw new Error(`${name}/${rel} not found next to reelplanner at ${ROOT} — reinstall reelplanner`);
   return p;
 }
 
@@ -175,19 +176,19 @@ export const staticServer = (port, { dir = ROOT } = {}) => { const d = resolve(d
 /**
  * The pinned HyperFrames CLI's entry script. Run it with `node`, never as `npx hyperframes`: from a
  * user's repo npx finds no local install and resolves (or downloads) the newest release instead of
- * the version reelplanning pins, and `npx --no-install hyperframes` simply fails there.
+ * the version reelplanner pins, and `npx --no-install hyperframes` simply fails there.
  */
 export const hyperframesBin = () => depFile("hyperframes", "bin/hyperframes.mjs");
 
 /**
- * The root of the repo a path belongs to: the directory holding its `.reelplanning/`, else its git
+ * The root of the repo a path belongs to: the directory holding its `.reelplanner/`, else its git
  * top level, else the working directory. Paths written into committed files are relative to this,
- * never to wherever reelplanning itself is installed.
+ * never to wherever reelplanner itself is installed.
  */
 export function repoRoot(p = process.cwd()) {
   let d = resolve(p);
   for (let i = 0; i < 12; i++) {
-    if (basename(d) === ".reelplanning") return dirname(d);
+    if (isRpDirName(basename(d))) return dirname(d);
     if (hasRp(d)) return d;
     const up = dirname(d); if (up === d) break; d = up;
   }
@@ -213,23 +214,72 @@ export function realPath(p) {
 }
 
 /**
- * Whether a `.reelplanning/` folder is set up (`reel init` ran): it holds the decision log, decisions.json. A folder
+ * Whether a `.reelplanner/` folder is set up (`reel init` ran): it holds the decision log, decisions.json. A folder
  * with only setup files in it (.env, config.json, .gitignore: the hosted voice's key, made before any plan) is not:
  * the repo then has no record, a review downloads, and the first plan still runs `reel init`.
  */
 export function rpInitialized(rp) { return !!rp && existsSync(join(rp, "decisions.json")); }
-/** This machine's own folder, ~/.reelplanning (REELPLANNING_HOME): your memory (you.jsonl) and the machine's .env. */
-export function machineDir() { return resolve(process.env.REELPLANNING_HOME || join(homedir(), ".reelplanning")); }
+
 /**
- * Whether `d` holds a repo's `.reelplanning/`. The machine's own ~/.reelplanning is not one (unless `reel init` set up
- * the home folder itself), so a repo under your home with no `.reelplanning/` of its own does not take your home
- * folder for its root, nor its .env for the repo's.
+ * The project folder's name in a repo, `.reelplanner/`; before the rename (D-312) it was `.reelplanning/`, which is
+ * still found: rpDirOf() takes it when a repo has no `.reelplanner/`, and says once how to rename it.
+ */
+export const RP_DIR = ".reelplanner", OLD_RP_DIR = ".reelplanning";
+/** Whether a folder's name is the project folder's, new or old. */
+export const isRpDirName = (name) => name === RP_DIR || name === OLD_RP_DIR;
+/** The project folder in `root` as it is there: `.reelplanner/`, else an old `.reelplanning/`, else null. Says nothing. */
+export function findRpDir(root) {
+  for (const n of [RP_DIR, OLD_RP_DIR]) { const d = join(root, n); if (existsSync(d)) return d; }
+  return null;
+}
+const toldOld = new Set();
+/**
+ * The project folder of the repo at `root`: its `.reelplanner/`, else its old `.reelplanning/` (said once on stderr,
+ * with the `git mv` that renames it), else the `.reelplanner/` to make there. The sample projects' records inside this
+ * package keep the old name and are taken quietly.
+ */
+export function rpDirOf(root) {
+  const found = findRpDir(root);
+  if (!found) return join(root, RP_DIR);
+  if (basename(found) === OLD_RP_DIR) {
+    const at = realPath(found);
+    if (!toldOld.has(at) && !at.startsWith(realPath(ROOT) + sep) && at !== realPath(machineDir())) {
+      toldOld.add(at);
+      process.stderr.write(`△ ${found}: the project folder's old name; it is still read, and \`git mv ${OLD_RP_DIR} ${RP_DIR}\` in ${resolve(root)} renames it\n`);
+    }
+  }
+  return found;
+}
+
+/**
+ * A repo-relative path in the record under the folder's other name (`.reelplanner/…` ↔ `.reelplanning/…`), else null:
+ * for a git lookup that reaches back before the rename (D-312), when the record's files were at the old name.
+ */
+export function otherRpPath(p) {
+  const q = String(p).replace(/(^|\/)\.reelplann(er|ing)(?=\/)/, (m, a, e) => `${a}.reelplann${e === "er" ? "ing" : "er"}`);
+  return q === String(p) ? null : q;
+}
+
+/**
+ * This machine's own folder, ~/.reelplanner (REELPLANNER_HOME): your memory (you.jsonl) and the machine's .env.
+ * Before the rename it was ~/.reelplanning: that one is used while there is no ~/.reelplanner.
+ */
+export function machineDir(env = process.env) {
+  if (env.REELPLANNER_HOME) return resolve(env.REELPLANNER_HOME);
+  const fresh = join(homedir(), RP_DIR), old = join(homedir(), OLD_RP_DIR);
+  return resolve(!existsSync(fresh) && existsSync(old) ? old : fresh);
+}
+/**
+ * Whether `d` holds a repo's `.reelplanner/` (or its old `.reelplanning/`). The machine's own ~/.reelplanner is not
+ * one (unless `reel init` set up the home folder itself), so a repo under your home with no `.reelplanner/` of its own
+ * does not take your home folder for its root, nor its .env for the repo's.
  */
 export function hasRp(d) {
-  const rp = join(d, ".reelplanning");
+  const rp = findRpDir(d);
+  if (!rp) return false;
   // compared by where they really are: the working directory is the real path (macOS's /private/var/…), while
   // HOME can name it through a link (/var/…)
-  return existsSync(rp) && (realPath(rp) !== realPath(machineDir()) || rpInitialized(rp));
+  return realPath(rp) !== realPath(machineDir()) || rpInitialized(rp);
 }
 
 // The same answers for the shell scripts:

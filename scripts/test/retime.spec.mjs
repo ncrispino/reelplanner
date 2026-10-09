@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// `reelplanning retime-frames` after a revise that renumbers the storyboard. audio_meta.json is keyed
+// `reelplanner retime-frames` after a revise that renumbers the storyboard. audio_meta.json is keyed
 // by `## Frame N`, composition ids are kept stable, and a deleted beat shifts every later frame's
 // number while its file keeps its name. The voice line a composition had before is found through the
 // old storyboard's `- src:` for that id, not through the number at the front of its file name.

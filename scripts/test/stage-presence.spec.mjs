@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// `reelplanning stage-presence` on the two shapes of rail a frame can draw. Every frame carries the
+// `reelplanner stage-presence` on the two shapes of rail a frame can draw. Every frame carries the
 // shared stage stylesheet, so the CSS for both the 500x640 rail and the 44x640 spine is on every
 // frame; which one the frame costs is decided by the element it draws, not by the rules it carries.
 //   - a video whose spine (the step ticks) is still on every beat reports and exits 0 with a △: the ticks

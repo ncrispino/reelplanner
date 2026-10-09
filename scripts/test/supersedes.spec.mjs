@@ -20,8 +20,8 @@ import { supersedesOf } from "../lib/plan-md.mjs";
 import { ledgerAsOf } from "../lib/reviews.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-supersedes-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
-const rp = join(tmp, ".reelplanning"), plan = "2026-09-27-later", pd = join(rp, "plans", plan);
+process.env.REELPLANNER_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
+const rp = join(tmp, ".reelplanner"), plan = "2026-09-27-later", pd = join(rp, "plans", plan);
 const write = (p, s) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, s); };
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 const run = (...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: process.env }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };

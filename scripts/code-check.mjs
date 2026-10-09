@@ -13,15 +13,15 @@
 // and it reads the plan and the diff itself (a pointer keeps the brief short; --inline-diff pastes the diff
 // in). It writes its answers to <plan-dir>/code-check/findings.md, in the fixed shape below, which `reel audit` reads.
 //
-// usage: reelplanning code-check <plan-dir> --base <ref> [--head <ref>] [--inline-diff] [-- <path>…]
-//        reelplanning code-check <plan-dir> --prompt     print the prompt that starts the checker
+// usage: reelplanner code-check <plan-dir> --base <ref> [--head <ref>] [--inline-diff] [-- <path>…]
+//        reelplanner code-check <plan-dir> --prompt      print the prompt that starts the checker
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, resolve, basename, dirname, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 import { freshAgentHow } from "./lib/agents.mjs";
 import { isRule, specCites } from "./lib/ledger.mjs";
 import { callsTouched, callWords } from "./lib/call-lines.mjs";
-import { realPath } from "./lib/env.mjs";
+import { realPath, isRpDirName } from "./lib/env.mjs";
 
 const argv = process.argv.slice(2);
 const dd = argv.indexOf("--");
@@ -41,7 +41,7 @@ if (args.includes("--prompt")) {
   if (!existsSync(briefPath)) die(`no brief yet: run code-check ${rel(pd)} --base <ref> first`);
   // the launcher's instruction goes to stderr, so the prompt on stdout is exactly what the checker gets
   console.error(`launch the checker as ${freshAgentHow({ repo })}, with exactly the prompt below and nothing else`);
-  console.log(`You are the code checker for a reelplanning plan. You did not write this code: judge it from the brief
+  console.log(`You are the code checker for a reelplanner plan. You did not write this code: judge it from the brief
 and the repository alone, not from anything the agent that wrote it said. Everything you need is in one file:
 
   ${rel(briefPath)}
@@ -62,7 +62,7 @@ const planText = read(join(pd, "plan.md"));
 const planName = basename(pd);
 
 // the ledger: this plan's own decisions, and the ones it cites as in force
-let rp = pd; while (rp !== dirname(rp) && basename(rp) !== ".reelplanning") rp = dirname(rp);
+let rp = pd; while (rp !== dirname(rp) && !isRpDirName(basename(rp))) rp = dirname(rp);
 const ledger = existsSync(join(rp, "decisions.json")) ? JSON.parse(read(join(rp, "decisions.json"))).decisions || [] : [];
 const cited = new Set([...(read(join(pd, "plan.md")).split(/^## Decisions in force/m)[1] || "").split(/^## /m)[0].matchAll(/\bD-\d{3}\b/g)].map((m) => m[0]));
 // (a rule folded into spec.md applies when the plan cites its section there, D-306)

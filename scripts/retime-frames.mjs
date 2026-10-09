@@ -20,7 +20,7 @@
 // and left alone — guessing at which array element is a time and which is an opacity is how you
 // silently wreck a hand-authored frame.
 //
-// usage: reelplanning retime-frames <project-dir> [--against <ref|file>] [--helpers name[@i],…] [--ignore name,…] [--dry-run]
+// usage: reelplanner retime-frames <project-dir> [--against <ref|file>] [--helpers name[@i],…] [--ignore name,…] [--dry-run]
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, resolve, relative } from "node:path";
@@ -30,8 +30,8 @@ const project = argv.find((a) => !a.startsWith("--")) || "";
 const DRY = argv.includes("--dry-run");
 const ai = argv.indexOf("--against");
 const against = ai >= 0 ? argv[ai + 1] : "HEAD";
-if (!project) { console.error("usage: reelplanning retime-frames <project-dir> [--against <ref|file>] [--helpers name[@i],…] [--ignore name,…] [--dry-run]"); process.exit(1); }
-const dir = resolve(project);   // relative to the caller, not to wherever reelplanning is installed
+if (!project) { console.error("usage: reelplanner retime-frames <project-dir> [--against <ref|file>] [--helpers name[@i],…] [--ignore name,…] [--dry-run]"); process.exit(1); }
+const dir = resolve(project);   // relative to the caller, not to wherever reelplanner is installed
 const metaPath = join(dir, "audio_meta.json");
 if (!existsSync(metaPath)) { console.error(`✗ no audio_meta.json in ${project}`); process.exit(1); }
 

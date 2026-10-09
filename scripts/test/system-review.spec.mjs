@@ -12,10 +12,10 @@ import { tmpdir } from "node:os";
 import { ROOT, scratchCopy } from "../lib/env.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-sysreview-"));
-const rp = join(tmp, ".reelplanning"), sv = join(rp, "system-video");
+const rp = join(tmp, ".reelplanner"), sv = join(rp, "system-video");
 mkdirSync(sv, { recursive: true });
-for (const f of ["spec.md", "system.json", "glossary.md"]) cpSync(join(ROOT, ".reelplanning", f), join(rp, f));
-cpSync(join(ROOT, ".reelplanning/system-video/STORYBOARD.md"), join(sv, "STORYBOARD.md"));
+for (const f of ["spec.md", "system.json", "glossary.md"]) cpSync(join(ROOT, ".reelplanner", f), join(rp, f));
+cpSync(join(ROOT, ".reelplanner/system-video/STORYBOARD.md"), join(sv, "STORYBOARD.md"));
 // a plan beside it, so the plan path is exercised in the same repo
 scratchCopy(join(ROOT, "eval/projects/media-service/.reelplanning/plans/2026-09-12-upload-resume"), join(rp, "plans/2026-09-12-upload-resume"));   // its video folders are links to videos/
 const run = (script, ...a) => { try { return { code: 0, out: execFileSync("node", [join(ROOT, "scripts", script), ...a], { encoding: "utf8", cwd: tmp, stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
@@ -35,7 +35,7 @@ try {
   ok(`plan-map: every storyboard tag lands on its frame (${want} tags)`, want > 0 && tagged === want, `${tagged} of ${want} ${pm.out}`);
   const sb8 = (sb.split(/^(?=## Frame \d+)/m).find((b) => /^## Frame 8 /.test(b)) || "").match(/^- components:\s*(.+)$/m)?.[1].split(",").map((x) => x.trim()) || [];
   ok("plan-map: a frame names its spec section and its parts", !!f8.specSection && f8.components.length > 0 && f8.components.join() === sb8.join(), JSON.stringify(f8));
-  ok("plan-map: the map says it is the system video, and where its review is filed", map.kind === "system" && map.reviewDir === ".reelplanning/system-video", JSON.stringify({ kind: map.kind, reviewDir: map.reviewDir }));
+  ok("plan-map: the map says it is the system video, and where its review is filed", map.kind === "system" && map.reviewDir === ".reelplanner/system-video", JSON.stringify({ kind: map.kind, reviewDir: map.reviewDir }));
   // a video can ship with its quick checks off: `checks: off` in its BRIEF.md front matter, carried into the map (the
   // player starts with them off; the viewer's own choice still wins). With no such line the map says nothing: on.
   writeFileSync(join(sv, "BRIEF.md"), "---\nworkflow: faceless-explainer\nchecks: off\n---\n\n# The system video\n");
@@ -107,10 +107,10 @@ try {
   ok("system-review: a quick check the reviewer disagreed with is a comment in their words, with what they answered, not a miss",
     i7.code === 0 && md4.includes(`### 1. Comment · frame ${fk3.index} `) && /they answered:\*\* "[^"]+"; the video's answer is "/.test(md4) && /words:\*\* "I thought the revise step rebuilds every frame, and it should"/.test(md4) && !/Missed quick check/.test(md4), md4 || i7.out);
 
-  // the page built before reviewDir existed sends planDir ".reelplanning" with the system video's project
-  writeFileSync(join(tmp, "old.json"), JSON.stringify({ ...row, planDir: ".reelplanning", kind: undefined }));
+  // the page built before reviewDir existed sends planDir ".reelplanner" with the system video's project
+  writeFileSync(join(tmp, "old.json"), JSON.stringify({ ...row, planDir: ".reelplanner", kind: undefined }));
   const i2 = run("reel-intake.mjs", join(tmp, "old.json"), "--repo", tmp, "--dry");
-  ok("reel-intake: accepts the older spelling (.reelplanning + project system-video)", i2.code === 0 && /system video: \.reelplanning\/system-video/.test(i2.out), i2.out);
+  ok("reel-intake: accepts the older spelling (.reelplanner + project system-video)", i2.code === 0 && /system video: \.reelplanner\/system-video/.test(i2.out), i2.out);
 
   // ---- still checked, not believed ----
   const refuse = (name, patch, re) => {
@@ -119,16 +119,16 @@ try {
     ok(`reel-intake refuses: ${name}`, r.code !== 0 && re.test(r.out), r.out);
   };
   refuse("a planDir outside the repo", { planDir: "../../etc" }, /outside the repo/);
-  refuse("the record itself, claimed by another project", { planDir: ".reelplanning", project: "l2-upload-resume", kind: undefined }, /not a plan directory/);
-  refuse("a plan directory with no plan.md", { planDir: ".reelplanning/plans/2026-01-01-nope", kind: undefined }, /no plan\.md/);
+  refuse("the record itself, claimed by another project", { planDir: ".reelplanner", project: "l2-upload-resume", kind: undefined }, /not a plan directory/);
+  refuse("a plan directory with no plan.md", { planDir: ".reelplanner/plans/2026-01-01-nope", kind: undefined }, /no plan\.md/);
   refuse("marks on frames the system video does not have", { review: { ...review, annotations: [{ ...review.annotations[0], frame: { index: 1, compositionId: "01-some-other-video" } }] } }, /another video/);
   writeFileSync(join(sv, "STORYBOARD.md"), readFileSync(join(sv, "STORYBOARD.md"), "utf8").replace(/^kind: system$/m, "kind: plan"));
   refuse("a folder called system-video that is not one", {}, /not a system video/);
   // and a plan's review still goes the plan's way
-  const pr = { ...row, planDir: ".reelplanning/plans/2026-09-12-upload-resume", project: "video", kind: undefined, review: { ...review, quizzes: [], annotations: [] } };
+  const pr = { ...row, planDir: ".reelplanner/plans/2026-09-12-upload-resume", project: "video", kind: undefined, review: { ...review, quizzes: [], annotations: [] } };
   writeFileSync(join(tmp, "plan.json"), JSON.stringify(pr));
   const i3 = run("reel-intake.mjs", join(tmp, "plan.json"), "--repo", tmp, "--dry");
-  ok("reel-intake: a plan's review still goes to its plan", i3.code === 0 && /plan: \.reelplanning\/plans\/2026-09-12-upload-resume/.test(i3.out) && /reel record/.test(i3.out), i3.out);
+  ok("reel-intake: a plan's review still goes to its plan", i3.code === 0 && /plan: \.reelplanner\/plans\/2026-09-12-upload-resume/.test(i3.out) && /reel record/.test(i3.out), i3.out);
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

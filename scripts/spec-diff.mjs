@@ -14,7 +14,7 @@
 // glossary's "Other words" (D-216) are meanings only: a change there is listed apart and rebuilds nothing.
 // It also says what the update costs: how many lines have to be narrated again, and for how long.
 //
-// usage: reelplanning spec-diff [<repo or .reelplanning dir>] [--since <git rev>] [--json]
+// usage: reelplanner spec-diff [<repo or .reelplanner dir>] [--since <git rev>] [--json]
 //   --since   compare against this revision instead of the system video's last commit
 //   --json    print the full result as JSON
 import { readFileSync, existsSync } from "node:fs";
@@ -22,14 +22,14 @@ import { resolve, join, dirname, basename, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 import { narrationCost, costSentence } from "./lib/narration.mjs";
 import { parseGlossary, rowFor, listOf } from "./lib/terms.mjs";
-import { realPath } from "./lib/env.mjs";
+import { realPath, rpDirOf, isRpDirName } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
 const pos = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--since");
 let rp = resolve(pos[0] || ".");
-for (let i = 0; i < 6 && basename(rp) !== ".reelplanning"; i++) { if (existsSync(join(rp, ".reelplanning"))) { rp = join(rp, ".reelplanning"); break; } rp = dirname(rp); }
-if (basename(rp) !== ".reelplanning") { console.error(`✗ no .reelplanning/ at or above ${pos[0] || "."}`); process.exit(1); }
+for (let i = 0; i < 6 && !isRpDirName(basename(rp)); i++) { if (existsSync(rpDirOf(rp))) { rp = rpDirOf(rp); break; } rp = dirname(rp); }
+if (!isRpDirName(basename(rp))) { console.error(`✗ no .reelplanner/ at or above ${pos[0] || "."}`); process.exit(1); }
 rp = realPath(rp);   // as git names it, so its paths below are inside git's top (not /var/… for /private/var/…)
 
 const git = (...a) => { try { return execFileSync("git", ["-C", rp, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return ""; } };
@@ -91,7 +91,7 @@ r.frames = !existsSync(sbPath) ? null : readFileSync(sbPath, "utf8").split(/\n(?
 // the glossary rows no beat of the system video explains: the video is behind on each until one does
 r.undefined = r.frames === null ? [] : Object.keys(rowsNow).filter((k) => !defined.has(k));
 // what the update costs to narrate: the lines of those frames plus any line already edited and not yet
-// voiced — every other line keeps its voice (`reelplanning narrate`), so this, not the video's length, is the cost
+// voiced — every other line keeps its voice (`reelplanner narrate`), so this, not the video's length, is the cost
 const cost = r.frames && narrationCost(sv, r.frames.map((f) => f.frame));
 r.narration = cost ? { ...cost, sentence: costSentence(cost) } : null;
 
@@ -104,4 +104,4 @@ if (touched(r.other).length) console.log(`  (other words, meanings only, which t
 if (r.frames === null) console.log("· no system-video/STORYBOARD.md to match against");
 else if (r.undefined.length) console.log(`words no beat explains yet: ${r.undefined.join(", ")} — add a beat, or a sentence to the beat that fits, tagged \`- defines: <term>\``);
 if (r.frames !== null) console.log(r.frames.length ? `frames to rebuild:\n${r.frames.map((f) => `  ${f.frame} — ${f.title} (${f.why.join("; ")})`).join("\n")}` : "✓ no system-video frame explains anything that changed");
-if (r.narration) console.log(`cost: ${r.narration.sentence}${r.narration.lines.length ? ` (\`reelplanning narrate ${relative(process.cwd(), sv) || "."}\` voices just those)` : ""}`);
+if (r.narration) console.log(`cost: ${r.narration.sentence}${r.narration.lines.length ? ` (\`reelplanner narrate ${relative(process.cwd(), sv) || "."}\` voices just those)` : ""}`);

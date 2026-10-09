@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The local review page (`reelplanning review`): the Finish panel says what will happen to the review
+// The local review page (`reelplanner review`): the Finish panel says what will happen to the review
 // before it is sent (GET /api/review, asked again each time the panel opens), and its Send POSTs the
 // review row to the page's own server, /api/review, in the same shape the hosted page writes to its
 // store; only when that endpoint answers, and quietly not otherwise. Anything changed after a send
@@ -19,12 +19,12 @@ function serve(port, api) {
     const path = new URL(req.url, "http://x").pathname;
     if (path === "/api/review") {
       if (!api) { res.writeHead(404).end(); return; }
-      // the review server in a repo with no decision log (review.mjs: no .reelplanning/decisions.json): it takes no review
+      // the review server in a repo with no decision log (review.mjs: no .reelplanner/decisions.json): it takes no review
       if (api === "norecord") { posts.push({ refused: req.method }); res.writeHead(409, { "content-type": "application/json" }).end(JSON.stringify({ ok: false, error: "not set up: download the review instead" })); return; }
       if (req.method === "GET") { res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, ...state, inbox: 0 })); return; }
       let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
         posts.push({ type: req.headers["content-type"], row: JSON.parse(body) });
-        res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: "l2-test", path: ".reelplanning/inbox/l2-test.json", duplicate: false, handledBy: "session", message: "your open session has it" }));
+        res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: "l2-test", path: ".reelplanner/inbox/l2-test.json", duplicate: false, handledBy: "session", message: "your open session has it" }));
       });
       return;
     }
@@ -125,14 +125,14 @@ await r.close(); C.srv.close();
 // ---- the system video: its row and its commands name the video's own folder ----
 const sys = await q.evaluate(() => {
   const rp = document.querySelector("#rp");
-  rp.planMap = { ...rp.planMap, project: "system-video", planDir: ".reelplanning", kind: "system", reviewDir: ".reelplanning/system-video" };
+  rp.planMap = { ...rp.planMap, project: "system-video", planDir: ".reelplanner", kind: "system", reviewDir: ".reelplanner/system-video" };
   const row = rp.reviewRow(rp.exportPayload());
   const old = (() => { const m = rp.planMap; rp.planMap = { ...m, kind: undefined, reviewDir: undefined }; const r = rp.reviewTarget(); rp.planMap = m; return r; })();
   return { planDir: row.planDir, kind: row.kind, text: rp.handoffText(), old };
 });
-ok(sys.planDir === ".reelplanning/system-video" && sys.kind === "system", `a system-video row names the video's folder — ${sys.planDir} (${sys.kind})`);
-ok(/system-review ~\/Downloads\/annotations\.json --video \.reelplanning\/system-video$/m.test(sys.text) && !/reel record|\bmv\b/.test(sys.text), `its commands sort it with system-review (it files the download in reviews/), not reel record:\n${sys.text}`);
-ok(sys.old === ".reelplanning/system-video", "a system video's map from before `kind` is still found by its project name");
+ok(sys.planDir === ".reelplanner/system-video" && sys.kind === "system", `a system-video row names the video's folder — ${sys.planDir} (${sys.kind})`);
+ok(/system-review ~\/Downloads\/annotations\.json --video \.reelplanner\/system-video$/m.test(sys.text) && !/reel record|\bmv\b/.test(sys.text), `its commands sort it with system-review (it files the download in reviews/), not reel record:\n${sys.text}`);
+ok(sys.old === ".reelplanner/system-video", "a system video's map from before `kind` is still found by its project name");
 await q.close(); B.srv.close();
 
 await b.close();

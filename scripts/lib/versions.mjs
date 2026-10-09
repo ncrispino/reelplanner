@@ -2,19 +2,19 @@
 //
 // Git keeps a video's text: its storyboard, script, frames, plan map and narration record. It leaves out what the
 // build makes again (renders, snapshots, the vendored animation library, the guide), the voice (made again by
-// `narrate`), and, in a repo set up as reelplanning's templates say, the rest of `assets/` and `capture/`. Some of
+// `narrate`), and, in a repo set up as reelplanner's templates say, the rest of `assets/` and `capture/`. Some of
 // that cannot be made again: a screenshot shown in a scene, the text a video was captured from, an image fetched or
 // generated at build time. A later version that recaptures a screenshot under the same name overwrites it, and the
 // earlier version is gone. So each reviewed version keeps those files, small and committed:
 //
-//   .reelplanning/media/<sha256, 16 hex>.<ext>          the store: one file per content, shared by every video and
+//   .reelplanner/media/<sha256, 16 hex>.<ext>          the store: one file per content, shared by every video and
 //                                                         version (a PNG is kept as lossless WebP when that is smaller
 //                                                         and gives back the same pixels; anything else as it is)
 //   <plan-dir>/versions/<video>/<build id>.json          a version: what it was built from (below). <video> is the
 //                                                         folder's name (video, walkthrough-video); an explainer's is
-//                                                         under its folder, the system video's under .reelplanning/
+//                                                         under its folder, the system video's under .reelplanner/
 //
-//   { "format": 1, "video": ".reelplanning/plans/<plan>/video", "build": "<the player's buildSig()>", "id": "<build id>",
+//   { "format": 1, "video": ".reelplanner/plans/<plan>/video", "build": "<the player's buildSig()>", "id": "<build id>",
 //     "keptAt": "…", "keptBy": "review" | "record" | "keep",
 //     "commit": "<HEAD when kept>", "dirty": [<files of the video that differed from it>],
 //     "scenes": { "<path>": "<sha256, 16 hex>" },          every file of the video git has (or will have): what a
@@ -24,16 +24,16 @@
 //     "regenerated": { "assets/voice/": 12, "audio_meta.json": 1, … },   the voice and its word timings: voiced again
 //     "rebuilt": ["renders/", "guide/", …],               made again by the build
 //     "lost": [{ "path", "sha256", "size", "why" }],      neither kept nor reproducible (audio or video never is: D-305)
-//     "tools": { "reelplanning": "0.2.0", "hyperframes": "0.8.52", "skills": { "ref": "v0.8.52", "faceless-explainer": "<folder hash>", … } },
+//     "tools": { "reelplanner": "0.2.0", "hyperframes": "0.8.52", "skills": { "ref": "v0.8.52", "faceless-explainer": "<folder hash>", … } },
 //     "narration": { "voice", "speed", "model", "provider", "lines" }, "audio": { "sfx": [...], "bgm": … } }
 //
 // "Version" is the build signature the review player already uses (its buildSig(): the plan map's `changes.at`, else
 // its frames), so one version is one build a reviewer could have watched. Keeping it is idempotent: the same build
 // kept again changes nothing, except that a version kept before its video was committed points at the commit once the
-// video is committed with the same scenes. `reelplanning review <video-dir>` keeps the version it opens, `reel record`
+// video is committed with the same scenes. `reelplanner review <video-dir>` keeps the version it opens, `reel record`
 // the version a review was of; `reel rebuild <video-dir> --keep` keeps the current one by hand.
 //
-// Only a video inside a set-up `.reelplanning/` (plans, explainers, the system video) in a git repo keeps versions.
+// Only a video inside a set-up `.reelplanner/` (plans, explainers, the system video) in a git repo keeps versions.
 // Audio and video files are never stored (D-305): a sound effect from the pinned media catalog is fetched again by the
 // build; one that is not is listed as lost.
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, copyFileSync, realpathSync, rmSync, mkdtempSync } from "node:fs";
@@ -41,7 +41,7 @@ import { join, resolve, dirname, basename, relative, extname, sep } from "node:p
 import { tmpdir, homedir } from "node:os";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { ROOT, VERSION, pkgDir, depFile, GSAP, rpInitialized } from "./env.mjs";
+import { ROOT, VERSION, pkgDir, depFile, GSAP, rpInitialized, isRpDirName } from "./env.mjs";
 import { skillsDir } from "../hyperframes-skills.mjs";
 
 export const STORE = "media";
@@ -61,20 +61,20 @@ const git = (cwd, ...args) => { const r = spawnSync("git", args, { cwd, encoding
 const real = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
 export const human = (n) => n >= 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`;
 
-/** The review player's build signature (reelplanning-player.js buildSig()): a version's name. */
+/** The review player's build signature (reelplanner-player.js buildSig()): a version's name. */
 export const buildSig = (map) => map ? map.changes?.at || JSON.stringify((map.frames || []).map((f) => [f.compositionId, f.start, f.end])) : null;
 /** A version's file name: the signature, hashed (a signature can be a list of frames, or hold colons). */
 export const sigId = (sig) => createHash("sha1").update(String(sig)).digest("hex").slice(0, 12);
 
 /**
- * Where a video's versions go, or `{ skip }`: the `.reelplanning/` the video folder is in (set up: decisions.json),
+ * Where a video's versions go, or `{ skip }`: the `.reelplanner/` the video folder is in (set up: decisions.json),
  * the git repo it is in, the folder the manifests go in and the store.
  */
 export function videoInfo(videoDir) {
   const dir = real(videoDir);
   let rp = null;
-  for (let d = dirname(dir); d !== dirname(d); d = dirname(d)) if (basename(d) === ".reelplanning") { rp = d; break; }
-  if (!rp || !rpInitialized(rp)) return { dir, skip: "not a video of a set-up .reelplanning/ (plans, explainers, the system video)" };
+  for (let d = dirname(dir); d !== dirname(d); d = dirname(d)) if (isRpDirName(basename(d))) { rp = d; break; }
+  if (!rp || !rpInitialized(rp)) return { dir, skip: "not a video of a set-up .reelplanner/ (plans, explainers, the system video)" };
   const top = git(dir, "rev-parse", "--show-toplevel");
   if (!top) return { dir, skip: "not in a git repository" };
   const owner = dirname(dir), name = basename(dir);
@@ -127,7 +127,7 @@ export function shippedIndex() {
     }
   };
   try { add(skillsDir(), "skills:"); } catch { /* no skills installed: nothing counts as shipped by them */ }
-  add(join(ROOT, "packages", "player", "fonts"), "reelplanning:packages/player/fonts/");
+  add(join(ROOT, "packages", "player", "fonts"), "reelplanner:packages/player/fonts/");
   try { const g = depFile(...GSAP); SHIPPED.set(fileSha(g), "gsap:dist/gsap.min.js"); } catch { /* not installed */ }
   return SHIPPED;
 }
@@ -196,9 +196,9 @@ function toolsNow() {
   const lock = readJson(join(homedir(), ".agents", ".skill-lock.json"))?.skills || {};
   const skills = {};
   for (const s of ["faceless-explainer", "media-use", "hyperframes-creative"]) if (lock[s]) { skills.ref ??= lock[s].ref || "main"; skills[s] = lock[s].skillFolderHash || null; }
-  // reelplanning run from a checkout (its own repo, `npm link`): the commit too, since the version moves slower than the code
+  // reelplanner run from a checkout (its own repo, `npm link`): the commit too, since the version moves slower than the code
   const own = existsSync(join(ROOT, ".git")) ? git(ROOT, "rev-parse", "HEAD")?.trim() || null : null;
-  return { reelplanning: VERSION, ...(own ? { reelplanningCommit: own } : {}), hyperframes: hf, skills };
+  return { reelplanner: VERSION, ...(own ? { reelplannerCommit: own } : {}), hyperframes: hf, skills };
 }
 function narrationOf(dir) {
   const rec = readJson(join(dir, ".hyperframes", "narration.json")), eng = readJson(join(dir, "audio_engine_meta.json"));
@@ -277,7 +277,7 @@ export function restoreShipped(manifest, outDir) {
   const back = [], missing = [], idx = shippedIndex();
   const where = (from) => {
     const [kind, ...r] = String(from).split(":"), rel = r.join(":");
-    try { return kind === "skills" ? join(skillsDir(), rel) : kind === "reelplanning" ? join(ROOT, rel) : kind === "gsap" ? depFile(...GSAP) : null; } catch { return null; }
+    try { return kind === "skills" ? join(skillsDir(), rel) : (kind === "reelplanner" || kind === "reelplanning") ? join(ROOT, rel) : kind === "gsap" ? depFile(...GSAP) : null; } catch { return null; }
   };
   for (const s of manifest.shipped || []) {
     let src = where(s.from);

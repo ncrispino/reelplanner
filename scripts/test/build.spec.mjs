@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// `reelplanning build <video-dir>` (and `reel build`): the chain after the frames are written, one line
+// `reelplanner build <video-dir>` (and `reel build`): the chain after the frames are written, one line
 // a stage with its time, stopping at the first failure (revise-loop step 9, D-085). Against a scratch
-// project and a fake audio engine (REELPLANNING_TTS_ENGINE, as narrate.spec), under the real
+// project and a fake audio engine (REELPLANNER_TTS_ENGINE, as narrate.spec), under the real
 // faceless-explainer audio.mjs, so no Kokoro or whisper runs. The scratch frames are not a finished
 // HyperFrames project, so finish-project stops the build: that is the "first failure" here, and verify
 // never runs after it.
@@ -26,7 +26,7 @@ const tmp = mkdtempSync(join(tmpdir(), "rp-build-spec-"));
 const P = join(tmp, "video"), ENGINE = join(tmp, "fake-engine.mjs"), LOG = join(tmp, "tts.log");
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 2000)}` : ""}`); if (!cond) failed++; };
-if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) { console.error("✗ build.spec needs HyperFrames' faceless-explainer skill — run `reelplanning hyperframes-skills`"); process.exit(1); }
+if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) { console.error("✗ build.spec needs HyperFrames' faceless-explainer skill — run `reelplanner hyperframes-skills`"); process.exit(1); }
 
 // the fake engine: voices each requested line (bytes differ every call), and for `--only sfx` keeps the
 // sidecar as it is with no sfx, as the real engine's merge does for a storyboard with no sfx: cues
@@ -48,13 +48,13 @@ mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, JSON.stringify({ tts_provider: "fake", voice_id: req.voice || "am_michael", bgm: null, bgm_pending: false, voices, sfx: [], total_duration_s: 1 }, null, 2));
 `);
 
-const LINES = ["An agent hands you its plan, and you approve it.", "reelplanning turns that plan into a short narrated video.", "Each plan gets two videos, one before the code and one after."];
+const LINES = ["An agent hands you its plan, and you approve it.", "reelplanner turns that plan into a short narrated video.", "Each plan gets two videos, one before the code and one after."];
 const script = (lines) => `# SCRIPT\n\n**Voice:** am_michael\n\n---\n\n${lines.map((t, i) => `## Line ${i + 1} — beat (Frame ${i + 1})\n\n**Delivery:** Plain.\n\n    ${t}\n`).join("\n")}`;
 // `plain: agent`: these beats are about the build's stages, not their words (D-216 would ask for its meaning)
 const storyboard = (ids) => `---\ntitle: test\nplain: agent\nmusic: none\n---\n\n${ids.map((id, i) => `## Frame ${i + 1} — beat ${i + 1}\n\n- src: compositions/frames/${id}.html\n- duration: 5s\n`).join("\n")}`;
 // frame 2 also calls `wiggle(el, 1.2)`, a project helper retime-frames cannot tell a time from a length in
 const frame = (id) => `<div data-composition-id="f-${id}"><script>const tl = gsap.timeline({ paused: true }); tl.to("#a", { opacity: 1 }, 0.9); tl.to("#b", { opacity: 1 }, 1.8);${id === "02-beat" ? " wiggle(el, 1.2);" : ""}</script></div>`;
-const env = { ...process.env, REELPLANNING_TTS_ENGINE: ENGINE, FAKE_TTS_LOG: LOG };
+const env = { ...process.env, REELPLANNER_TTS_ENGINE: ENGINE, FAKE_TTS_LOG: LOG };
 const build = (...a) => {
   writeFileSync(LOG, "");
   let r; try { r = { code: 0, out: execFileSync("node", [join(ROOT, "scripts", "build.mjs"), P, ...a], { encoding: "utf8", env, cwd: tmp, stdio: ["ignore", "pipe", "pipe"] }) }; }
@@ -80,7 +80,7 @@ try {
 
   // one line edited: its frame is the one with the unrecognised call
   const f2 = read("compositions/frames/02-beat.html"), f1 = read("compositions/frames/01-beat.html");
-  writeFileSync(join(P, "SCRIPT.md"), script([LINES[0], "reelplanning turns that plan into a short narrated video that you review by watching.", LINES[2]]));
+  writeFileSync(join(P, "SCRIPT.md"), script([LINES[0], "reelplanner turns that plan into a short narrated video that you review by watching.", LINES[2]]));
   const b2 = build();
   ok("an edited line: only it is narrated, and retime-frames stops the build with its own message", b2.code === 1 && b2.voiced.join() === "02"
     && b2.stages.join() === "✓check-terms,·check-sources,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,✗retime-frames" && /wiggle\(… 1\.2\)/.test(b2.out) && /--ignore <name,…>/.test(b2.out), b2.out);
@@ -94,7 +94,7 @@ try {
   ok("and again, unchanged: retime-frames is skipped, no frame moves a second time", /· retime-frames +\d+\.\d s +skipped: no line changed/.test(b4.out) && read("compositions/frames/02-beat.html") === f2b, b4.out);
 
   // a line inserted: the frames renumber, and outside git there is nothing to pair them by
-  writeFileSync(join(P, "SCRIPT.md"), script([LINES[0], "A new beat, inserted second.", "reelplanning turns that plan into a short narrated video that you review by watching.", LINES[2]]));
+  writeFileSync(join(P, "SCRIPT.md"), script([LINES[0], "A new beat, inserted second.", "reelplanner turns that plan into a short narrated video that you review by watching.", LINES[2]]));
   writeFileSync(join(P, "STORYBOARD.md"), storyboard(["01-beat", "01b-beat", "02-beat", "03-beat"]));
   writeFileSync(join(P, "compositions", "frames", "01b-beat.html"), frame("01b-beat"));
   const b5 = build("--ignore", "wiggle");
@@ -115,7 +115,7 @@ try {
   const t3 = tb("terms_check: strict\n", "That is why decision D-056 stays.");
   ok("…and passes once the sentence says what it is", /^✓ check-terms /m.test(t3.out), t3.out);
   let usage; try { execFileSync("node", [join(ROOT, "scripts", "build.mjs")], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { usage = `${e.stdout}${e.stderr}`; }
-  ok("no video folder: the usage, and a failure", /usage: reelplanning build <video-dir>/.test(usage || ""), usage);
+  ok("no video folder: the usage, and a failure", /usage: reelplanner build <video-dir>/.test(usage || ""), usage);
   // the length against its budget (style guide §1): a plan video's minutes, a walkthrough's, the system video's own
   const lenDir = (sub, beats, fm = "") => { const d = join(tmp, "len", sub); mkdirSync(d, { recursive: true }); writeFileSync(join(d, "STORYBOARD.md"), `---\ntitle: t\n${fm}---\n\n` + beats.map((s, i) => `## Frame ${i + 1}\n\n- duration: ${s}s\n`).join("\n")); return d; };
   const four = videoLength(lenDir("plan/video", [60, 60, 60, 60])), eight = videoLength(lenDir("plan/walkthrough-video", Array(8).fill(60))), sys = videoLength(lenDir("system-video", Array(9).fill(60), "kind: system\n"));
@@ -127,7 +127,7 @@ try {
   ok("length: a 1:50 walkthrough is in its budget", two.kind === "walkthrough" && two.verdict === "ok" && /^1:50 \(a walkthrough video: aim 1–2 min\)$/.test(lengthLine(two)), lengthLine(two));
   ok("length: a 3:20 walkthrough is long", four2.verdict === "long" && /long for a walkthrough video \(aim 1–2 min; past 3 is long\)/.test(lengthLine(four2)), lengthLine(four2));
   ok("length: a 9-minute system video is past its aim but not long", sys.kind === "system" && sys.verdict === "ok" && /past it/.test(lengthLine(sys)), lengthLine(sys));
-  ok("length: this repo's m3 walkthrough (14.6 min) is too long", videoLength(join(ROOT, ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video")).verdict === "over");
+  ok("length: this repo's m3 walkthrough (14.6 min) is too long", videoLength(join(ROOT, ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video")).verdict === "over");
   // hold-durations: a hold is a floor; holds.json's "tail" is a pause after every line (the system video's 0.8 s)
   { const d = join(tmp, "holds"); mkdirSync(join(d, ".hyperframes"), { recursive: true });
     writeFileSync(join(d, "STORYBOARD.md"), [1, 2, 3].map((n) => `## Frame ${n} — b${n}\n\n- duration: 1s\n`).join("\n"));

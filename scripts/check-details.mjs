@@ -15,8 +15,8 @@
 // Details in the frame: a frame that marks (data-detail) a name its scene does not give fails; a scene whose
 // detail its frame marks nowhere is a warning, a failure under `details_check: strict` in the front matter.
 //
-// usage: reelplanning check-details <video-dir> [--no-browser]
-//        reelplanning check-details --page <file.html> [<file.html> …] [--no-browser]
+// usage: reelplanner check-details <video-dir> [--no-browser]
+//        reelplanner check-details --page <file.html> [<file.html> …] [--no-browser]
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -28,7 +28,7 @@ const argv = process.argv.slice(2);
 const noBrowser = argv.includes("--no-browser");
 const pageMode = argv.includes("--page");
 const args = argv.filter((a) => !a.startsWith("--"));
-if (!args.length) { console.error("usage: reelplanning check-details <video-dir> [--no-browser] | --page <file.html> …"); process.exit(1); }
+if (!args.length) { console.error("usage: reelplanner check-details <video-dir> [--no-browser] | --page <file.html> …"); process.exit(1); }
 
 const fails = [], warns = [];
 const fail = (where, msg) => fails.push(`${where}: ${msg}`);
@@ -76,18 +76,18 @@ else {
   // a part of the guide may open from the corner chip where the frame marks nothing (the plan guide, step 3): said, never failed
   for (const [at, n, part] of unmarked) (strict && !part ? fail : warn)(at, `${part ? "guide part" : "detail"} ${n}: nothing in its frame is marked data-detail="${n}" (the thing ${part ? "the part" : "the page"} explains), so the player shows the corner chip${strict && !part ? " (details_check: strict)" : ""}`);
   // the plan map's pages: a map written before a tag was removed would still send the player to one, and the guide's
-  // parts it lists (built by `reelplanning guide` into guide/, never committed) must each be there
+  // parts it lists (built by `reelplanner guide` into guide/, never committed) must each be there
   const guided = new Map();
   try { for (const d of JSON.parse(readFileSync(join(dir, "plan-map.json"), "utf8")).details || []) { if (d.guide) { guided.set(d.name, `frame ${d.frameIndex}`); continue; } if (!names.has(d.name)) names.set(d.name, `plan-map.json (frame ${d.frameIndex}; rerun plan-map)`); } } catch {}
   if (!names.size && !guided.size) { console.log(`✓ check-details ${args[0]}: no details`); process.exit(0); }
   for (const [name, at] of names) {
     const file = join(dir, "details", `${name}.html`);
-    if (!existsSync(file)) fail(`detail ${name}`, `details/${name}.html is missing (linked from ${at}); start it with: reelplanning detail new ${args[0]} ${name} --kind ${kindOf.get(name) || "<kind>"}`);
+    if (!existsSync(file)) fail(`detail ${name}`, `details/${name}.html is missing (linked from ${at}); start it with: reelplanner detail new ${args[0]} ${name} --kind ${kindOf.get(name) || "<kind>"}`);
     else pages.push({ label: `details/${name}.html`, file });
   }
   for (const [name, at] of guided) {
     const file = join(dir, "guide", `${name}.html`);
-    if (!existsSync(file)) fail(`guide part ${name}`, `guide/${name}.html is missing (opened from ${at}); build the guide: reelplanning guide ${args[0]}`);
+    if (!existsSync(file)) fail(`guide part ${name}`, `guide/${name}.html is missing (opened from ${at}); build the guide: reelplanner guide ${args[0]}`);
     else pages.push({ label: `guide/${name}.html`, file });
   }
   if (existsSync(join(dir, "details"))) for (const f of readdirSync(join(dir, "details")).filter((f) => f.endsWith(".html")))

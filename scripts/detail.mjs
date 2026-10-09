@@ -3,15 +3,15 @@
 // print the storyboard tags that link it to a beat. The templates are starting points; a kind with no
 // template of its own (or none given) starts from `fresh` (D-024, D-085).
 //
-// usage: reelplanning detail new <video-dir> <name> [--kind <kind>] [--data <file.json>] [--force]
-//        reelplanning detail kinds
-//        reelplanning detail restyle <video-dir> [<name> …]
+// usage: reelplanner detail new <video-dir> <name> [--kind <kind>] [--data <file.json>] [--force]
+//        reelplanner detail kinds
+//        reelplanner detail restyle <video-dir> [<name> …]
 //   restyle  bring pages already built up to today's templates: their rp-theme script, token block (the
 //            player's paper, inks, coral and faces) and rp-bridge are replaced by the templates'; the page's
 //            own content and styles are left as they are. No video rebuild: the pages are read as they are.
 //   --data   fill the template's JSON block from a file (table, evidence, code, explore, try)
 // Then fill it, tag the beat (- detail: <name>, - detail_title, - detail_why, optionally - detail_kind)
-// and run `reelplanning check-details <video-dir>`.
+// and run `reelplanner check-details <video-dir>`.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT } from "./lib/env.mjs";
@@ -28,7 +28,7 @@ const [cmd, videoDir, name] = pos;
 
 if (cmd === "kinds") { for (const [k, v] of Object.entries(KINDS)) console.log(`${k.padEnd(10)} ${v}`); process.exit(0); }
 if (cmd === "restyle") {
-  if (!videoDir) die("usage: reelplanning detail restyle <video-dir> [<name> …]");
+  if (!videoDir) die("usage: reelplanner detail restyle <video-dir> [<name> …]");
   const dir = join(videoDir, "details");
   if (!existsSync(dir)) { console.log(`✓ ${videoDir}: no details`); process.exit(0); }
   const tpl = readFileSync(join(ROOT, "templates", "details", "fresh.html"), "utf8");
@@ -45,10 +45,10 @@ if (cmd === "restyle") {
     if (now !== was) { writeFileSync(file, now); changed++; }
     console.log(`  ${now !== was ? "restyled " : "unchanged"} details/${f}`);
   }
-  console.log(`✓ ${changed} of ${files.length} page(s) restyled from the templates. Their own styles are as they were: coral is only for the call and the part a comment is on. Then run: reelplanning check-details ${videoDir}`);
+  console.log(`✓ ${changed} of ${files.length} page(s) restyled from the templates. Their own styles are as they were: coral is only for the call and the part a comment is on. Then run: reelplanner check-details ${videoDir}`);
   process.exit(0);
 }
-if (cmd !== "new" || !videoDir || !name) die("usage: reelplanning detail new <video-dir> <name> [--kind <kind>] [--data <file.json>] [--force]   (reelplanning detail kinds: the templates; detail restyle <video-dir>: pages already built, to today's look)");
+if (cmd !== "new" || !videoDir || !name) die("usage: reelplanner detail new <video-dir> <name> [--kind <kind>] [--data <file.json>] [--force]   (reelplanner detail kinds: the templates; detail restyle <video-dir>: pages already built, to today's look)");
 const kind = opt("kind") || "fresh";
 if (!/^[a-z0-9][a-z0-9-]*$/.test(kind)) die(`--kind "${kind}": a word of lower-case letters, digits and dashes`);
 const template = kind in KINDS ? kind : "fresh";
@@ -72,4 +72,4 @@ console.log(`  ${opt("data") ? "Check its content" : "Fill it: the slots are lis
     - detail_kind: ${kind}   (optional: the word the panel shows)
     - detail_title: <what the panel's header says>
     - detail_why: <the one sentence the narration says about what opening it gives you that the video does not>
-  and run: reelplanning check-details ${videoDir}`);
+  and run: reelplanner check-details ${videoDir}`);

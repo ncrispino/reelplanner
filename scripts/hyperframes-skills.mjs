@@ -18,15 +18,15 @@
 // Where they go: `npx skills add … -g` (vercel-labs/skills) with no agent named, which puts the real
 // files in ~/.agents/skills — read directly by Codex, Cursor, Amp and the other "universal" agents —
 // and links them into every other agent it detects (~/.claude/skills for Claude Code). One copy, so
-// one TTS patch covers every agent. REELPLANNING_SKILLS_AGENTS="claude-code codex" limits the agents;
-// REELPLANNING_SKILLS_DIR overrides where the pipeline reads (and patches) them.
+// one TTS patch covers every agent. REELPLANNER_SKILLS_AGENTS="claude-code codex" limits the agents;
+// REELPLANNER_SKILLS_DIR overrides where the pipeline reads (and patches) them.
 //
-// usage: reelplanning hyperframes-skills            ensure: install the pinned skills unless they
+// usage: reelplanner hyperframes-skills             ensure: install the pinned skills unless they
 //                                                   already check out clean, then patch TTS speed
-//        reelplanning hyperframes-skills --force    reinstall even if the check passes
-//        reelplanning hyperframes-skills --check    report only; exit 1 if a script cannot load
-//        reelplanning hyperframes-skills --dry-run  say what ensure would do, change nothing
-//        reelplanning hyperframes-skills --dir      print the skills directory the pipeline reads
+//        reelplanner hyperframes-skills --force     reinstall even if the check passes
+//        reelplanner hyperframes-skills --check     report only; exit 1 if a script cannot load
+//        reelplanner hyperframes-skills --dry-run   say what ensure would do, change nothing
+//        reelplanner hyperframes-skills --dir       print the skills directory the pipeline reads
 import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
@@ -40,7 +40,7 @@ import { ROOT, RP_COMMAND } from "./lib/env.mjs";
 export const CANDIDATE_DIRS = [join(homedir(), ".agents", "skills"), join(homedir(), ".claude", "skills")];
 const installedIn = () => CANDIDATE_DIRS.filter((d) => existsSync(join(d, "faceless-explainer", "SKILL.md")));
 export function skillsDir() {
-  if (process.env.REELPLANNING_SKILLS_DIR) return process.env.REELPLANNING_SKILLS_DIR;
+  if (process.env.REELPLANNER_SKILLS_DIR) return process.env.REELPLANNER_SKILLS_DIR;
   const found = installedIn();
   return found.find((d) => !brokenImports(d, ENTRIES).length) || found[0] || CANDIDATE_DIRS[0];
 }
@@ -48,7 +48,7 @@ const SKILL_LOCK = join(homedir(), ".agents", ".skill-lock.json");
 // the `skills` installer the HyperFrames CLI itself shells out to, pinned for the same reason
 const SKILLS_CLI = "skills@1.7.0";
 
-// HyperFrames' core set at the pinned tag, plus the one workflow skill reelplanning drives
+// HyperFrames' core set at the pinned tag, plus the one workflow skill reelplanner drives
 export const INSTALL = ["hyperframes", "hyperframes-animation", "hyperframes-audio", "hyperframes-cli", "hyperframes-core",
   "hyperframes-creative", "hyperframes-keyframes", "hyperframes-registry", "hyperframes-studio", "media-use", "faceless-explainer"];
 
@@ -122,14 +122,14 @@ export function describe(broken, ref) {
     lines.push(`    → ${tilde(b.target)} does not exist`);
     if (b.chain.length > 1) lines.push(`    needed by ${b.chain.map(skillRel).join(" → ")}`);
   }
-  lines.push(`  fix: ${RP_COMMAND} hyperframes-skills   (reinstalls HyperFrames' skills at ${ref}, the version reelplanning pins, and re-applies the TTS speed patch)`);
+  lines.push(`  fix: ${RP_COMMAND} hyperframes-skills   (reinstalls HyperFrames' skills at ${ref}, the version reelplanner pins, and re-applies the TTS speed patch)`);
   lines.push("  cause: `hyperframes init` and `hyperframes skills update` refresh the skills from GitHub main; run init with HYPERFRAMES_SKIP_SKILLS=1");
   return lines.join("\n");
 }
 
 /** The `npx skills add` arguments that install the pinned set for every agent on this machine. */
 export function installArgs(ref) {
-  const agents = (process.env.REELPLANNING_SKILLS_AGENTS || "").split(/[\s,]+/).filter(Boolean);
+  const agents = (process.env.REELPLANNER_SKILLS_AGENTS || "").split(/[\s,]+/).filter(Boolean);
   return ["-y", SKILLS_CLI, "add", `https://github.com/heygen-com/hyperframes/tree/${ref}/skills`,
     "-g", "-y", ...agents.flatMap((a) => ["-a", a]), ...INSTALL.flatMap((s) => ["-s", s])];
 }
@@ -151,22 +151,22 @@ function main() {
 
   if (CHECK) {
     if (broken.length) { console.error(describe(broken, ref)); process.exit(1); }
-    if (drifted.length) console.log(`△ skills installed from ${[...new Set(drifted.map(([, r]) => r))].join(", ")}, not ${ref} (${drifted.map(([s]) => s).join(", ")}) — they load, but \`reelplanning hyperframes-skills\` puts back the pinned set`);
+    if (drifted.length) console.log(`△ skills installed from ${[...new Set(drifted.map(([, r]) => r))].join(", ")}, not ${ref} (${drifted.map(([s]) => s).join(", ")}) — they load, but \`reelplanner hyperframes-skills\` puts back the pinned set`);
     console.log(`✓ HyperFrames skills load: ${ENTRIES.length} scripts, every relative import resolves`);
     return;
   }
 
   // a stale copy anywhere an agent reads counts: that agent would run it
-  const staleIn = process.env.REELPLANNING_SKILLS_DIR ? [] : installedIn().filter((d) => brokenImports(d, ENTRIES).length);
+  const staleIn = process.env.REELPLANNER_SKILLS_DIR ? [] : installedIn().filter((d) => brokenImports(d, ENTRIES).length);
   const need = FORCE || broken.length || staleIn.length || drifted.length || !INSTALL.every((s) => existsSync(join(skillsDir(), s)));
   if (DRY) {
     if (!need) console.log(`✓ HyperFrames skills already at ${ref} in ${tilde(skillsDir())} and loading — nothing to install`);
     else console.log(`· would install HyperFrames skills at ${ref}: npx ${installArgs(ref).join(" ")}` +
-      (!process.env.REELPLANNING_SKILLS_DIR && !installedIn().length ? `\n  (now: not installed for any agent)`
+      (!process.env.REELPLANNER_SKILLS_DIR && !installedIn().length ? `\n  (now: not installed for any agent)`
         : broken.length || staleIn.length ? `\n  (now: scripts cannot load in ${[...new Set([...(broken.length ? [skillsDir()] : []), ...staleIn])].map(tilde).join(", ")})`
         : drifted.length ? `\n  (now: installed from ${[...new Set(drifted.map(([, r]) => r))].join(", ")})`
         : `\n  (now: not installed in ${tilde(skillsDir())})`));
-    console.log("· would then re-apply the TTS speed patch (reelplanning patch-tts-speed)");
+    console.log("· would then re-apply the TTS speed patch (reelplanner patch-tts-speed)");
     return;
   }
   if (need) {

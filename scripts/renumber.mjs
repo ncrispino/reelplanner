@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // `reel renumber` (the contributing plan, step 4; D-171): decision numbers stay in order across the repo,
 // and the PR merged second fixes the clash. Run on the branch, once `git rebase <base>` (or a merge of it)
-// stops at a conflict in .reelplanning/decisions.json, or any time the branch's new ids clash with the
+// stops at a conflict in .reelplanner/decisions.json, or any time the branch's new ids clash with the
 // base's (`reel pr-check` says so):
 //
 //   - takes the base's log as it is, and adds the branch's own new entries after its last, in their order
@@ -9,7 +9,7 @@
 //   - a base entry the branch superseded is marked so, by the new id;
 //   - rewrites the new entries' ids where the branch's plan folders mention them: plan.md,
 //     walkthrough.md, reviews/*.md;
-//   - lists the video frames that still say an old id (`reelplanning build` rebuilds them once their text
+//   - lists the video frames that still say an old id (`reelplanner build` rebuilds them once their text
 //     says the new one);
 //   - writes decisions.md from the log, and terms-index.json again from every storyboard (a conflict in
 //     it is never merged by hand).
@@ -18,14 +18,14 @@
 // side of the conflict holds the entries the base does not. An entry is the branch's own when the base
 // holds no entry that decided the same thing (the same plan, question, date and answer), whatever its id.
 //
-// usage: reelplanning renumber [<repo>] [--base <ref>] [--dry-run]
+// usage: reelplanner renumber [<repo>] [--base <ref>] [--dry-run]
 //   --base      the log to build on (default origin/main)
 //   --dry-run   say what would change, write nothing
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
-import { join, resolve, relative } from "node:path";
+import { join, resolve, relative, basename } from "node:path";
 import { writeLedger, entryKey } from "./lib/contributing.mjs";
-import { ROOT as PKG, rpInitialized } from "./lib/env.mjs";
+import { ROOT as PKG, rpInitialized, rpDirOf, RP_DIR, OLD_RP_DIR } from "./lib/env.mjs";
 
 const argv = process.argv.slice(2);
 const flag = (n) => { const i = argv.indexOf(`--${n}`); return i >= 0 ? argv[i + 1] : undefined; };
@@ -36,11 +36,13 @@ let ROOT;
 try { ROOT = execFileSync("git", ["-C", resolve(pos[0] || "."), "rev-parse", "--show-toplevel"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
 catch { die(`${resolve(pos[0] || ".")} is not in a git repo`); }
 const git = (...a) => { try { return execFileSync("git", ["-C", ROOT, ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], maxBuffer: 256 << 20 }); } catch { return null; } };
-const RP = join(ROOT, ".reelplanning"), LOG = ".reelplanning/decisions.json", rel = (p) => relative(process.cwd(), p) || ".";
-if (!rpInitialized(RP)) die(`${existsSync(RP) ? `${RP} is not set up yet (no decisions.json): nothing to renumber` : `no .reelplanning/ in ${ROOT}`}`);
+const RP = rpDirOf(ROOT), LOG = `${basename(RP)}/decisions.json`, rel = (p) => relative(process.cwd(), p) || ".";
+// the log as `ref` has it: where this branch keeps it, or in the folder's other name (a base from before the rename, D-312)
+const logAt = (ref) => git("show", `${ref}:${LOG}`) ?? git("show", `${ref}:${basename(RP) === RP_DIR ? OLD_RP_DIR : RP_DIR}/decisions.json`);
+if (!rpInitialized(RP)) die(`${existsSync(RP) ? `${RP} is not set up yet (no decisions.json): nothing to renumber` : `no .reelplanner/ in ${ROOT}`}`);
 const base = flag("base") || "origin/main";
 const parse = (t) => { try { const j = JSON.parse(t); return Array.isArray(j?.decisions) ? j : null; } catch { return null; } };
-const baseLog = parse(git("show", `${base}:${LOG}`));
+const baseLog = parse(logAt(base));
 if (!baseLog) die(`no decision log on ${base} (${LOG}): fetch it, or pass --base <ref>`);
 
 const onBase = new Set(baseLog.decisions.map(entryKey));
@@ -107,10 +109,10 @@ for (const p of plans) {
 console.log(`${dry ? "· would take" : "✓ took"} ${base}'s log (${baseLog.decisions.length} entries, the last ${baseLog.decisions.at(-1)?.id || "none"}) and ${dry ? "add" : "added"} this branch's ${own.length} after it, read from ${from}`);
 console.log(moved.length ? `${dry ? "· would renumber" : "✓ renumbered"}: ${moved.map(([a, b]) => `${a} → ${b}`).join(", ")}` : "· no id changes: this branch's entries already follow the base's last");
 if (edits.length) console.log(`${dry ? "· would rewrite" : "✓ rewrote"} their mentions in ${edits.join(", ")}`);
-if (frames.length) console.log(`△ the videos still say an old id; change these lines, then \`reelplanning build\` their video:\n${frames.map((f) => `  ${f}`).join("\n")}`);
+if (frames.length) console.log(`△ the videos still say an old id; change these lines, then \`reelplanner build\` their video:\n${frames.map((f) => `  ${f}`).join("\n")}`);
 if (dry) process.exit(0);
 writeLedger(RP, ledger);
 console.log(`✓ ${rel(join(RP, "decisions.json"))} and decisions.md: ${merged.length} entries`);
 // the terms index is never merged by hand: written again from every storyboard, both branches' words included
-try { execFileSync(process.execPath, [join(PKG, "scripts", "terms-index.mjs"), RP], { stdio: "inherit" }); } catch { console.log("△ terms-index did not run: run `reelplanning terms-index .reelplanning`"); }
-console.log(`next: \`git add .reelplanning\`, then \`git rebase --continue\` (or commit the merge), and \`reel pr-check\``);
+try { execFileSync(process.execPath, [join(PKG, "scripts", "terms-index.mjs"), RP], { stdio: "inherit" }); } catch { console.log("△ terms-index did not run: run `reelplanner terms-index .reelplanner`"); }
+console.log(`next: \`git add .reelplanner\`, then \`git rebase --continue\` (or commit the merge), and \`reel pr-check\``);

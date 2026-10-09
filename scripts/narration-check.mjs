@@ -2,19 +2,19 @@
 // Voice one sentence with the narration engine you picked, and say whether it works: a minute's test of a
 // hosted provider with a real key, before a whole video is narrated with it (docs/reference.md, "Narration engines").
 //
-// It resolves the settings as `narrate` does (scripts/lib/narrator.mjs: .reelplanning/config.json's narration
-// here, then the environment: the shell's, then .reelplanning/.env, then a .env beside it, then this machine's
-// ~/.reelplanning/.env), with any flag below over
+// It resolves the settings as `narrate` does (scripts/lib/narrator.mjs: .reelplanner/config.json's narration
+// here, then the environment: the shell's, then .reelplanner/.env, then a .env beside it, then this machine's
+// ~/.reelplanner/.env), with any flag below over
 // them; voices the sentence in a
 // scratch folder of its own; gets its word timings; and prints, a line each: the engine and why; the speech
 // request (seconds taken, audio length, format); the word timings (count, the first few, whether they cover
 // the audio); the cost of a minute of narration where docs/reference.md gives a figure; and on a failure the
 // API's status and answer and what to set or change. It writes nothing in the repo and prints no key.
 //
-// usage: reelplanning narration-check [--tts <provider>] [--model <id>] [--voice <id>] [--base-url <url>]
+// usage: reelplanner narration-check [--tts <provider>] [--model <id>] [--voice <id>] [--base-url <url>]
 //          [--timings local|api|provider] [--timings-api groq|openai|openrouter] [--whisper-model <name>]
 //          [--text "<sentence>"] [--speed <x>] [--keep <dir>]
-//        reelplanning narration-check --local          is local narration fast enough here?
+//        reelplanner narration-check --local           is local narration fast enough here?
 //   --tts            openai, openai-compatible, deepinfra, openrouter, elevenlabs or kokoro (local); with no flag
 //                    at all, what narrate would use here (the default, HyperFrames' engine, is checked as kokoro)
 //   --timings        where word timings come from: the provider's own, a transcription API, or local whisper
@@ -26,13 +26,13 @@
 //                    stopped after 30 s, and a verdict: about N s a line, M minutes for a plan video, fine or slow;
 //                    slow (over 20 s a line) says how to switch to the hosted voice (scripts/lib/local-speed.mjs).
 //                    Every check of local Kokoro + local whisper ends with that verdict.
-// Keys go in ~/.reelplanning/.env (this machine, every repo), the repo's .reelplanning/.env (git ignores it), or
-// the shell's environment; the engine line says which file a setting or key came from. A .reelplanning/.env git would
+// Keys go in ~/.reelplanner/.env (this machine, every repo), the repo's .reelplanner/.env (git ignores it), or
+// the shell's environment; the engine line says which file a setting or key came from. A .reelplanner/.env git would
 // commit is warned about. Exits 1 when the speech or the timings fail (or --local finds Kokoro or whisper missing),
 // 2 on a usage error; slow is not a failure.
 //
-//   reelplanning narration-check --tts openrouter                 # one key, OPENROUTER_API_KEY, for both (recommended)
-//   reelplanning narration-check --tts openai --timings-api groq
+//   reelplanner narration-check --tts openrouter                 # one key, OPENROUTER_API_KEY, for both (recommended)
+//   reelplanner narration-check --tts openai --timings-api groq
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
@@ -43,7 +43,7 @@ import { SPEED_TEXT, timeoutS, speedVerdict, localToolsMissing, modelsMissing, f
 import { RP_COMMAND } from "./lib/env.mjs";
 
 const VALUE_FLAGS = ["tts", "model", "voice", "base-url", "timings", "timings-api", "whisper-model", "text", "speed", "keep"], BOOL_FLAGS = ["local"];
-const USAGE = "usage: reelplanning narration-check [--tts <provider>] [--model <id>] [--voice <id>] [--base-url <url>] [--timings local|api|provider] [--timings-api groq|openai|openrouter] [--whisper-model <name>] [--text \"<sentence>\"] [--speed <x>] [--keep <dir>] | --local";
+const USAGE = "usage: reelplanner narration-check [--tts <provider>] [--model <id>] [--voice <id>] [--base-url <url>] [--timings local|api|provider] [--timings-api groq|openai|openrouter] [--whisper-model <name>] [--text \"<sentence>\"] [--speed <x>] [--keep <dir>] | --local";
 const argv = process.argv.slice(2), opt = {};
 for (let i = 0; i < argv.length; i++) {
   const n = argv[i].replace(/^--/, "");
@@ -82,7 +82,7 @@ else if (s.engine === "hyperframes" && (!s.error || flagged)) {
   // HyperFrames' own engine voices with local Kokoro and times with whisper small.en (unless a HeyGen or
   // ElevenLabs key steers it, which `setup --dry-run` says): the same calls as tts "kokoro"
   s = narrationSettings(here, process.env, { ...over, tts: "kokoro" });
-  why = flagged ? `from the command line, with no --tts: local Kokoro` : "the default: no narration.tts in .reelplanning/config.json, no REELPLANNING_TTS, so HyperFrames' engine, whose local Kokoro + whisper small.en are checked here";
+  why = flagged ? `from the command line, with no --tts: local Kokoro` : "the default: no narration.tts in .reelplanner/config.json, no REELPLANNER_TTS, so HyperFrames' engine, whose local Kokoro + whisper small.en are checked here";
 }
 const hostOf = (u) => { try { return new URL(u).host; } catch { return String(u); } };
 const KEY_PAGES = { OPENAI_API_KEY: "https://platform.openai.com/api-keys", DEEPINFRA_API_KEY: "https://deepinfra.com/dash/api_keys", OPENROUTER_API_KEY: "https://openrouter.ai/settings/keys", ELEVENLABS_API_KEY: "https://elevenlabs.io/app/settings/api-keys", GROQ_API_KEY: "https://console.groq.com/keys" };
@@ -98,7 +98,7 @@ const finish = () => {
   process.exit(failed ? 1 : 0);
 };
 
-if (s.error) { fail(`engine: ${s.error}`, opt.tts ? "change the flags above" : "change .reelplanning/config.json's narration, or try one with --tts"); finish(); }
+if (s.error) { fail(`engine: ${s.error}`, opt.tts ? "change the flags above" : "change .reelplanner/config.json's narration, or try one with --tts"); finish(); }
 const speech = s.tts === "kokoro" ? "local Kokoro (hyperframes tts)" : `${s.tts} ${s.model} at ${hostOf(s.base)} (key ${s.keyEnv}${process.env[s.keyEnv] ? keyFrom(s.keyEnv) : ", not set"})`;
 const timedBy = s.timings === "provider" ? "the provider's own"
   : s.timings === "api" ? `${s.timingsApi.name} ${s.timingsApi.model} at ${hostOf(s.timingsApi.base)} (key ${s.timingsApi.keyEnv}${s.timingsApi.keyEnv === s.keyEnv ? ", the same" : process.env[s.timingsApi.keyEnv] ? keyFrom(s.timingsApi.keyEnv) : ", not set"})`

@@ -142,7 +142,7 @@ export async function builtSide(planDir, { repo, planTitle, cacheDir = null, who
   let cats = wt.categories.map((c) => ({ ...c, files: [] }));
   if (!wt.hasCategories && pairs.length) {
     gaps.push({ where: "walkthrough.md", what: "has no ## Categories of change: the files are grouped by folder" });
-    const top = (p) => p.split("/").slice(0, p.startsWith(".reelplanning/plans/") ? 3 : p.includes("/") ? (p.split("/").length > 2 ? 2 : 1) : 0).join("/") || "(the repo's top)";
+    const top = (p) => p.split("/").slice(0, /^\.reelplann(?:er|ing)\/plans\//.test(p) ? 3 : p.includes("/") ? (p.split("/").length > 2 ? 2 : 1) : 0).join("/") || "(the repo's top)";
     const groups = new Map(); for (const p of allPaths) { const t = top(p); groups.set(t, [...(groups.get(t) || []), p]); }
     cats = [...groups.entries()].sort((a, b) => b[1].length - a[1].length).map(([t, ps]) => ({ id: slugify(t.split("/").filter(Boolean).slice(-1)[0] || t), name: t === "(the repo's top)" ? t : `\`${t}/\``, paths: t.includes("(") ? ps : [t], commits: [], steps: null, runs: [], sum: "", files: [] }));
   }

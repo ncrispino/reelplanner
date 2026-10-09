@@ -41,7 +41,7 @@ import { reviewFacts, memoryLines } from "../lib/memory.mjs";
 const tmp = mkdtempSync(join(tmpdir(), "rp-fresh-eyes-spec-"));
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 1500)}` : ""}`); if (!cond) failed++; };
-const RP = join(tmp, ".reelplanning"), PD = join(RP, "plans", "2026-10-01-sample"), V = join(PD, "video");
+const RP = join(tmp, ".reelplanner"), PD = join(RP, "plans", "2026-10-01-sample"), V = join(PD, "video");
 const run = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), ...a], { cwd: tmp, encoding: "utf8" });
 
 mkdirSync(join(V, "compositions", "frames"), { recursive: true }); mkdirSync(join(PD, "reviews"), { recursive: true });
@@ -50,7 +50,7 @@ writeFileSync(join(RP, "glossary.md"), "# Glossary\n\n| Term | id | Meaning |\n|
 writeFileSync(join(PD, "plan.md"), "# Sample plan\n\n## The problem\n\nSECRET-PLAN-TEXT\n\n### Step 1 — One\n\nx\n");
 writeFileSync(join(V, "STORYBOARD.md"), `---
 title: "A sample video"
-plan_dir: .reelplanning/plans/2026-10-01-sample
+plan_dir: .reelplanner/plans/2026-10-01-sample
 terms: saved review file = the file the page writes when you press Send
 recap: 2026-09-01-older | Older: what the older plan decided
 ---
@@ -182,7 +182,7 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   const say = (n) => `Scene ${n} says its own thing, number ${n}.`;
   mkdirSync(join(B, "compositions", "frames"), { recursive: true });
   const N = 7, ids = Array.from({ length: N }, (_, i) => `0${i + 1}-s${i + 1}`);
-  writeFileSync(join(B, "STORYBOARD.md"), `---\ntitle: "A rebuilt video"\nplan_dir: .reelplanning/plans/2026-10-02-rebuild\n---\n\n` + ids.map((id, i) => `## Frame ${i + 1} — S${i + 1}\n\n- voiceover: "${say(i + 1)}"\n- src: compositions/frames/${id}.html\n- duration: 4s\n`).join("\n"));
+  writeFileSync(join(B, "STORYBOARD.md"), `---\ntitle: "A rebuilt video"\nplan_dir: .reelplanner/plans/2026-10-02-rebuild\n---\n\n` + ids.map((id, i) => `## Frame ${i + 1} — S${i + 1}\n\n- voiceover: "${say(i + 1)}"\n- src: compositions/frames/${id}.html\n- duration: 4s\n`).join("\n"));
   writeFileSync(join(B, "SCRIPT.md"), "# SCRIPT\n\n" + ids.map((id, i) => `## Line ${i + 1} — S${i + 1} (Frame ${i + 1})\n\n    ${say(i + 1)}\n`).join("\n"));
   ids.forEach((id, i) => writeFileSync(join(B, "compositions", "frames", `${id}.html`), `<div>words of scene ${i + 1}</div>\n`));
   writeFileSync(join(B, "index.html"), "<html></html>\n");

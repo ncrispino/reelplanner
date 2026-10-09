@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { testPort, serverUp, staticServer, depFile, GSAP } from "../lib/env.mjs";
 
-const dir = mkdtempSync(join(tmpdir(), "rp-static-")), v = join(dir, ".reelplanning/plans/p/video");
+const dir = mkdtempSync(join(tmpdir(), "rp-static-")), v = join(dir, ".reelplanner/plans/p/video");
 mkdirSync(join(v, "assets/vendor"), { recursive: true }); mkdirSync(join(dir, "own/assets/vendor"), { recursive: true });
 writeFileSync(join(v, "index.html"), '<!doctype html><script src="assets/vendor/gsap.min.js"></script>');
 writeFileSync(join(dir, "own/assets/vendor/gsap.min.js"), "/* its own */");

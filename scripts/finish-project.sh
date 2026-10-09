@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # After the frame workers have written compositions/frames/*.html and the narration is final:
 # captions (sentence-level) → index → transitions (zoom-through scale-only) → clip-duration fix → local gsap → final voice slot → plan map → terms index → guide → details → check.
-# usage: reelplanning finish-project <project-dir>   (or any HyperFrames project dir)
+# usage: reelplanner finish-project <project-dir>   (or any HyperFrames project dir)
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"; P="${1:?usage: reelplanning finish-project <project-dir>}"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"; P="${1:?usage: reelplanner finish-project <project-dir>}"
 . "$ROOT/scripts/lib/project-dir.sh"; P_DIR="$(resolve_project "${P}")"
 # HyperFrames' skills: ~/.agents/skills when `npx skills` installed them (every agent links there), else ~/.claude/skills
 SK="$(hf_skills_dir)"; S="$SK/faceless-explainer/scripts"
@@ -40,7 +40,7 @@ const re=new RegExp("(<audio[^>]*src=\"assets/voice/"+String(last.frame).padStar
 if(re.test(s)){ s=s.replace(re,"$1"+last.duration_s+"$2"); fs.writeFileSync("index.html",s); console.log("final voice slot →",last.duration_s+"s"); }
 '
 node "$ROOT/scripts/plan-map.mjs" "$P_DIR"
-# which video explains each word, repo-wide (.reelplanning/terms-index.json): every storyboard's `- defines:`
+# which video explains each word, repo-wide (.reelplanner/terms-index.json): every storyboard's `- defines:`
 node "$ROOT/scripts/terms-index.mjs" "$P_DIR"
 # what moved since the last committed build, so the player can offer to play just those beats
 # (`build --against <ref>` sets RP_PLAN_DIFF_AGAINST: another build to compare against than the last commit)

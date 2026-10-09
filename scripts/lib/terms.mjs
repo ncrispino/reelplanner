@@ -8,17 +8,18 @@
 //                  the system video has the system video before it; `before: none` opts out.
 //   terms          the words this video defines itself: `terms: a, b, c`. A beat that defines one says so
 //                  with `- defines: <term>`.
-//   glossary       term → meaning, from the nearest .reelplanning/glossary.md (the lookup frame-lint uses);
+//   glossary       term → meaning, from the nearest .reelplanner/glossary.md (the lookup frame-lint uses);
 //                  each row's `display`, the plain word a viewer sees and hears where it differs from the
 //                  files' name (D-127: "choice" for a call), and `definedIn`, the beat that explains it
 //                  (the system video's, from the repo's terms index)
 //   terms index    every video's `- defines:` lines, repo-wide: word → the videos and beats that explain it
-//                  (definesIndex; finish-project writes it to .reelplanning/terms-index.json)
+//                  (definesIndex; finish-project writes it to .reelplanner/terms-index.json)
 //   ids            every id the script says (D-056, A12, D1, k3, q2) → what it is, in a few words, from
 //                  decisions.json, the plan's walkthrough.md (or a prerequisite's), or this storyboard
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { parseCalls } from "./autonomy.mjs";
+import { rpDirOf, isRpDirName } from "./env.mjs";
 
 export const DEFAULT_BEFORE = { video: "system", gives: "what the parts are and how a review goes" };
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -70,12 +71,12 @@ export function parseBefore(fm, kind = null) {
   });
 }
 
-/** The .reelplanning folder a video belongs to: the one it sits in, or the nearest one above it. */
+/** The .reelplanner folder a video belongs to: the one it sits in, or the nearest one above it. */
 export function rpDirFor(dir) {
   let d = resolve(dir);
   for (let i = 0; i < 12 && d !== dirname(d); i++, d = dirname(d)) {
-    if (basename(d) === ".reelplanning") return d;
-    if (existsSync(join(d, ".reelplanning", "glossary.md")) || existsSync(join(d, ".reelplanning", "decisions.json"))) return join(d, ".reelplanning");
+    if (isRpDirName(basename(d))) return d;
+    if (existsSync(join(rpDirOf(d), "glossary.md")) || existsSync(join(rpDirOf(d), "decisions.json"))) return rpDirOf(d);
   }
   return null;
 }
@@ -91,9 +92,9 @@ export function videoDirFor(rp, video) {
 /** The review page's name for a video folder (bundle-player's slugFor, without its -2 for a clash). */
 export function slugOf(dir) {
   const p = resolve(dir).split(sep).join("/").replace(/\/+$/, "");
-  const e = p.match(/\.reelplanning\/explainers\/([^/]+)\/video$/);
+  const e = p.match(/\.reelplann(?:er|ing)\/explainers\/([^/]+)\/video$/);
   if (e) return `${e[1]}--explainer`;
-  const m = p.match(/\.reelplanning\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
+  const m = p.match(/\.reelplann(?:er|ing)\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
   return m?.[3] ? "system" : m ? (m[2] === "video" ? m[1] : `${m[1]}--walkthrough`) : basename(p);
 }
 
@@ -102,7 +103,7 @@ export function resolvePrereqs(dir, list) {
   const rp = rpDirFor(dir), out = [], missing = [];
   // the system video comes first by default only for a video of the project record itself (a plan's, a
   // walkthrough's); a video kept elsewhere in the repo (an example, an eval) names what it needs, if anything
-  const inRecord = resolve(dir).split(sep).includes(".reelplanning");
+  const inRecord = resolve(dir).split(sep).some(isRpDirName);
   for (const b of list) {
     if (b.default && !inRecord) continue;
     const vdir = videoDirFor(rp, b.video), map = vdir ? readJson(join(vdir, "plan-map.json")) : null;
@@ -127,7 +128,7 @@ export function termForms(term) {
 /** The nearest glossary.md above a video (frame-lint's lookup): [{ term, id, meaning, forms, display }]. */
 export function glossaryFor(dir) {
   for (let d = resolve(dir), i = 0; i < 12 && d !== dirname(d); i++, d = dirname(d)) {
-    const g = basename(d) === ".reelplanning" ? join(d, "glossary.md") : join(d, ".reelplanning", "glossary.md");
+    const g = isRpDirName(basename(d)) ? join(d, "glossary.md") : join(rpDirOf(d), "glossary.md");
     if (!existsSync(g)) continue;
     return parseGlossary(readFileSync(g, "utf8"));
   }
@@ -259,7 +260,7 @@ export function termsElsewhere(rp, dir = null) {
 /** Words a newcomer trips on that the glossary may not carry: the repo's own list, then the package's. */
 export function jargonFor(dir, root) {
   const rp = rpDirFor(dir), words = new Set();
-  for (const f of [rp && join(rp, "jargon.txt"), join(root, "templates", "reelplanning", "jargon.txt")].filter(Boolean))
+  for (const f of [rp && join(rp, "jargon.txt"), join(root, "templates", "reelplanner", "jargon.txt")].filter(Boolean))
     for (const l of readText(f).split("\n")) { const w = l.replace(/#.*$/, "").trim().toLowerCase(); if (w) words.add(w); }
   return [...words];
 }

@@ -32,7 +32,7 @@
 // were inserted or removed since then (the frames renumbered), the pairing comes from the last commit
 // instead (retime-frames' own default).
 //
-// usage: reelplanning build <video-dir> [--speed 1.25] [--voice <id>] [--helpers <names>] [--ignore <names>] [--against <ref>] [--render] [--verbose]
+// usage: reelplanner build <video-dir> [--speed 1.25] [--voice <id>] [--helpers <names>] [--ignore <names>] [--against <ref>] [--render] [--verbose]
 //        (also `reel build <video-dir> …`)
 //   --speed, --voice      handed to narrate
 //   --helpers, --ignore   handed to retime-frames (what its "unrecognised call" stop asks for)
@@ -54,8 +54,8 @@ const argv = process.argv.slice(2);
 const VALUED = ["--speed", "--voice", "--helpers", "--ignore", "--against"];
 const flag = (n) => { const i = argv.indexOf(`--${n}`); return i >= 0 && i + 1 < argv.length ? argv[i + 1] : null; };
 const project = argv.find((a, i) => !a.startsWith("--") && !VALUED.includes(argv[i - 1]));
-if (!project) { console.error("usage: reelplanning build <video-dir> [--speed 1.25] [--voice <id>] [--helpers <names>] [--ignore <names>] [--against <ref>] [--render] [--verbose]"); process.exit(1); }
-const dir = resolve(project);   // relative to the caller, never to where reelplanning is installed
+if (!project) { console.error("usage: reelplanner build <video-dir> [--speed 1.25] [--voice <id>] [--helpers <names>] [--ignore <names>] [--against <ref>] [--render] [--verbose]"); process.exit(1); }
+const dir = resolve(project);   // relative to the caller, never to where reelplanner is installed
 for (const f of ["STORYBOARD.md", "SCRIPT.md"]) if (!existsSync(join(dir, f))) { console.error(`✗ build: no ${f} in ${project}`); process.exit(1); }
 const VERBOSE = argv.includes("--verbose");
 const S = join(skillsDir(), "faceless-explainer", "scripts");
@@ -65,7 +65,7 @@ const env = { ...process.env, HYPERFRAMES_NO_TELEMETRY: "1", HYPERFRAMES_NO_UPDA
   HYPERFRAMES_TTS_CONCURRENCY: process.env.HYPERFRAMES_TTS_CONCURRENCY || "1", HYPERFRAMES_TRANSCRIBE_TIMEOUT_MS: process.env.HYPERFRAMES_TRANSCRIBE_TIMEOUT_MS || "600000" };
 // narrate's test seam (a stand-in for media-use's audio engine) reaches fetch-sfx too, the way narrate hands it to audio.mjs
 if (flag("against")) env.RP_PLAN_DIFF_AGAINST = flag("against");   // finish-project hands it to plan-diff
-if (process.env.REELPLANNING_TTS_ENGINE && !env.HF_MEDIA_ENGINE) env.HF_MEDIA_ENGINE = resolve(process.env.REELPLANNING_TTS_ENGINE);
+if (process.env.REELPLANNER_TTS_ENGINE && !env.HF_MEDIA_ENGINE) env.HF_MEDIA_ENGINE = resolve(process.env.REELPLANNER_TTS_ENGINE);
 
 // the HyperFrames skill scripts the stages run must load before anything is touched (finish-project.sh says why)
 { const c = spawnSync(process.execPath, [join(ROOT, "scripts", "hyperframes-skills.mjs"), "--check"], { encoding: "utf8" });
@@ -133,7 +133,7 @@ const STAGES = [
     const pics = (readJson(join(dir, "guide", "parts.json"))?.gaps || []).filter((g) => /^scene \d+$/.test(g.where) && /picture/.test(g.what));
     const unopened = (r.out || "").split("\n").find((l) => /^\s*△ not opened in a browser/.test(l));
     if (r.status === 0 && unopened) { r.warn = true; r.out = `${(r.out || "").split("\n").find((l) => /^✓ /.test(l)) || ""}\n${unopened.trim()}\n`; }
-    else if (r.status === 0 && pics.length) { r.warn = true; r.out += `\n△ ${pics.length} scene picture(s) missing: ${pics.map((g) => g.where.replace("scene ", "")).join(", ")} (reelplanning snapshot .)\n`; }
+    else if (r.status === 0 && pics.length) { r.warn = true; r.out += `\n△ ${pics.length} scene picture(s) missing: ${pics.map((g) => g.where.replace("scene ", "")).join(", ")} (reelplanner snapshot .)\n`; }
     else if (r.status === 0) r.out = (r.out || "").split("\n").filter((l) => /^✓ /.test(l.trim())).at(0) || r.out;
     return r;
   }],
@@ -158,16 +158,16 @@ const t0 = Date.now();
 for (const [name, fn] of STAGES) {
   const t = Date.now(), r = fn();
   if (r.skip) { console.log(`${r.warn ? "△" : "·"} ${name.padEnd(w)}  ${secs(Date.now() - t).padStart(7)}  skipped: ${r.skip}`); continue; }
-  // a version built again (`reel rebuild`, REELPLANNING_REBUILD=1) is built as it was reviewed: a check that has grown
+  // a version built again (`reel rebuild`, REELPLANNER_REBUILD=1) is built as it was reviewed: a check that has grown
   // stricter since judges it, but does not stop it (verify.sh goes on past its own checks the same way)
-  if (r.status !== 0 && process.env.REELPLANNING_REBUILD === "1" && SOFT_IN_REBUILD.has(name)) {
+  if (r.status !== 0 && process.env.REELPLANNER_REBUILD === "1" && SOFT_IN_REBUILD.has(name)) {
     console.log(`△ ${name.padEnd(w)}  ${secs(Date.now() - t).padStart(7)}  failed, and a rebuild goes on (the version as it was reviewed): ${last(r.out).replace(/^[✗△]\s*/, "").slice(0, 110)}`);
     continue;
   }
   if (r.status !== 0) {
     console.log(`✗ ${name.padEnd(w)}  ${secs(Date.now() - t).padStart(7)}  stopped here (exit ${r.status}); what it said:`);
     if (!VERBOSE) console.log((r.out || "").replace(/\n+$/, "").split("\n").slice(-60).map((l) => `    ${l}`).join("\n"));
-    if (name === "retime-frames") console.log(`  nothing after it ran. Re-run \`reelplanning build ${project}\` with the flags it asks for: the frames still to retime are kept in ${relative(process.cwd(), PENDING)}`);
+    if (name === "retime-frames") console.log(`  nothing after it ran. Re-run \`reelplanner build ${project}\` with the flags it asks for: the frames still to retime are kept in ${relative(process.cwd(), PENDING)}`);
     process.exit(1);
   }
   console.log(`${r.warn ? "△" : "✓"} ${name.padEnd(w)}  ${secs(Date.now() - t).padStart(7)}  ${VERBOSE ? "" : last(r.out).replace(/^[✓△]\s*/, "").slice(0, 110)}`);

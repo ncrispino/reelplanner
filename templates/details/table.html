@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!--
-  reelplanning detail · TABLE   (templates/details/table.html; kind: table)
+  reelplanner detail · TABLE   (templates/details/table.html; kind: table)
   For anything with more than four rows: every risk, every config value, the options side by side.
   The reviewer sorts by any column and copies any cell. It stays a real table down to 480 px (the player's
   panel is wider than that); narrower, with more than three columns, each row stacks: the anchorBy value,
   the short values on one line, each after its column's name, and the longest value under them.
 
-  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanning detail new <video-dir> <name>
+  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanner detail new <video-dir> <name>
   --kind table --data rows.json, which writes it for you). Nothing else in this file needs touching.
     title     the page title (the player's panel header shows it)
     intro     one sentence, 140 characters at most: what to look for (optional). The panel already shows
@@ -71,7 +71,7 @@
 })();
 </script>
 <style>
-/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+/* the player's tokens (packages/player/reelplanner-player.js), light and dark: paper and tile; text in three solid inks
    (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
    and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
    is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */

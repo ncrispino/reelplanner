@@ -1,4 +1,4 @@
-// `reelplanning guide --check` (the plan guide, step 2): the page as built drops nothing plan.md says, every fold can be
+// `reelplanner guide --check` (the plan guide, step 2): the page as built drops nothing plan.md says, every fold can be
 // opened by a visible control, nothing is only in motion or only by dragging, nothing is made up, nothing says the
 // video again, every place the video stops for you is on its timeline as what it is (a pause, the list, choices shown
 // without a pause) and every choice it stops on links to that moment, no Markdown fence is left as text, and it neither

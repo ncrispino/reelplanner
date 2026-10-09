@@ -13,7 +13,7 @@
 //   △  a scene that states a number, or quotes a thing, with no `- source:`; ✗ under `sources_check: strict`
 //   △  a source that cannot be read here (a transcript on another machine), or changed since it was pinned
 //
-// usage: reelplanning check-sources <video-dir>
+// usage: reelplanner check-sources <video-dir>
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve, relative } from "node:path";
 import { storyboardFrames, frontMatter, fmValue } from "./lib/terms.mjs";
@@ -21,7 +21,7 @@ import { parseScript } from "./lib/narration.mjs";
 import { explainerDirOf, readSources, resolveRefs, sourceText, privateIn, cut, maskOf, repoTop } from "./lib/explainer.mjs";
 
 const target = process.argv[2];
-if (!target) { console.error("usage: reelplanning check-sources <video-dir>"); process.exit(1); }
+if (!target) { console.error("usage: reelplanner check-sources <video-dir>"); process.exit(1); }
 const dir = resolve(target), read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const sb = read(join(dir, "STORYBOARD.md"));
 if (!sb) { console.error(`✗ check-sources: no STORYBOARD.md in ${target}`); process.exit(1); }
@@ -34,7 +34,7 @@ const fails = [], warns = [], seen = new Set();
 const fail = (t) => fails.push(t), warn = (t) => { if (!seen.has(t)) { seen.add(t); warns.push(t); } };
 const edir = explainerDirOf(dir), pinned = edir ? readSources(edir) : readSources(dir);
 const repo = repoTop(dir) || resolve(dir, "..");
-if (!pinned) fail(`no sources.json ${edir ? `in ${relative(process.cwd(), edir)}` : "beside this video"}: nothing is pinned, so no fact can name its source (\`reelplanning explain\` writes it)`);
+if (!pinned) fail(`no sources.json ${edir ? `in ${relative(process.cwd(), edir)}` : "beside this video"}: nothing is pinned, so no fact can name its source (\`reelplanner explain\` writes it)`);
 const sources = pinned?.sources || [];
 
 // ── the text of a frame: what is quoted (inside a data-artifact), and all of what shows ─────────────────

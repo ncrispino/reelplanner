@@ -1,14 +1,14 @@
 // Names: how each tool and product is written in a script and how it is shown, kept once for the project
-// in .reelplanning/names.md (the package's templates/reelplanning/names.md when a repo has none).
+// in .reelplanner/names.md (the package's templates/reelplanner/names.md when a repo has none).
 //
 //   | Written | Shown | A command's next words |
-//   | reelplanning, ReelPlanning | `reelplanning` | build, review, setup |
+//   | reelplanner, reel planner, ReelPlanner | `reelplanner` | build, review, setup |
 //   | github | GitHub | |
 //
 // A Shown in backticks is code: the name of a tool or a command, shown in code markup (the mono chip)
 // wherever it appears, in its own spelling ("Reel status" in a script shows as `reel status`). A Shown
 // without backticks is a plain word, shown with that case ("github" → GitHub, "cli" → CLI). A command's
-// next words are the words that carry its code run on ("reel status", "claude -p", "npx reelplanning
+// next words are the words that carry its code run on ("reel status", "claude -p", "npx reelplanner
 // build"); another code name next to it carries it on too.
 //
 // captions-sentences applies it to each caption word (showNames); check-terms warns on a listed name on
@@ -24,7 +24,7 @@ import { codeWord } from "./say.mjs";
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const esc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-/** names.md's table → [{ shown, code, forms: [["reel","planning"], ["reelplanning"]], then: [["dash","p"]] }]. */
+/** names.md's table → [{ shown, code, forms: [["reel","planner"], ["reelplanner"]], then: [["dash","p"]] }]. */
 export function parseNames(md) {
   const rows = [];
   let cols = null;
@@ -41,20 +41,20 @@ export function parseNames(md) {
   return rows;
 }
 
-/** The names a video uses: its repo's .reelplanning/names.md, else the package's. */
+/** The names a video uses: its repo's .reelplanner/names.md, else the package's. */
 export function namesFor(dir, root) {
   const rp = rpDirFor(dir);
   const own = rp && join(rp, "names.md");
   if (own && existsSync(own)) return parseNames(readText(own));
-  return root ? parseNames(readText(join(root, "templates", "reelplanning", "names.md"))) : [];
+  return root ? parseNames(readText(join(root, "templates", "reelplanner", "names.md"))) : [];
 }
 
-// A caption word's core: the word without the punctuation around it or a possessive ("reelplanning's," → reelplanning).
+// A caption word's core: the word without the punctuation around it or a possessive ("reelplanner's," → reelplanner).
 const split = (text) => {
   const m = /^([^\p{L}\p{N}]*)(.*?)((?:['’]s)?[^\p{L}\p{N}]*)$/u.exec(String(text));
   return m ? { pre: m[1], core: m[2], post: m[3] } : { pre: "", core: String(text), post: "" };
 };
-// a word that is itself a path, a flag, a file or code (bin/reelplanning.mjs, --you, .reelplanning, `x`) is left as it is
+// a word that is itself a path, a flag, a file or code (bin/reelplanner.mjs, --you, .reelplanner, `x`) is left as it is
 const CODEY = /[\/\\@=$`<>{}]|^[-.]|\.[a-z]{1,5}$/i;
 
 /** The row a run of words starting at k spells (the longest form; an exact spelling before a case-blind one) → { row, n } or null. */
@@ -91,7 +91,7 @@ export function showNames(words, names = []) {
       out[i].text = parts[i].pre + s + parts[i].post; parts[i].core = s;
       if (row.code) codeAt[i] = s;
     }
-    // a command carries its code run on over its next words ("reel status"), or another code name ("npx reelplanning")
+    // a command carries its code run on over its next words ("reel status"), or another code name ("npx reelplanner")
     let e = k + n;
     if (row.code) for (let cur = row; cur && e < out.length && !/[.,;:!?)\u2014]$/.test(parts[e - 1].post) && !parts[e].pre;) {
       const next = cur.then.filter((t) => t.length <= out.length - e && t.every((w, j) => cores[e + j].toLowerCase() === w.toLowerCase())).sort((a, b) => b.length - a.length)[0];
@@ -128,8 +128,8 @@ export function showNames(words, names = []) {
 /**
  * On-screen text held to the list: [{ text, code, artifact }] (code: inside code markup or a mono face;
  * artifact: a real thing's own words, which keep theirs) → [{ text, found, want, why }]. A code name
- * outside code markup is a warning, and so is a listed name spelled another way outside code ("ReelPlanning",
- * "Github"). A word inside a path or a command line (bin/reelplanning.mjs) is part of it and passes.
+ * outside code markup is a warning, and so is a listed name spelled another way outside code ("ReelPlanner",
+ * "Github"). A word inside a path or a command line (bin/reelplanner.mjs) is part of it and passes.
  */
 export function namesOnScreen(units, names) {
   const out = [];

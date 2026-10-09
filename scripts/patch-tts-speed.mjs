@@ -18,7 +18,7 @@
 // of its own in ~/.claude/skills; every distinct copy found is patched, and --check checks the one
 // the pipeline runs (hyperframes-skills.mjs --dir).
 //
-// usage: reelplanning patch-tts-speed [--check]
+// usage: reelplanner patch-tts-speed [--check]
 import { readFileSync, writeFileSync, existsSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { skillsDir, CANDIDATE_DIRS } from "./hyperframes-skills.mjs";
@@ -32,20 +32,20 @@ const ANCHOR = `  const args = ["hyperframes", "tts", writeTmpText(text), "--voi
 const ADDED = `  if (speed && speed !== 1) args.push("--speed", String(speed));   // reelplanning: patch-tts-speed.mjs`;
 
 if (!existsSync(TTS)) {
-  console.error(`✗ ${TTS} not found — run \`reelplanning hyperframes-skills\` first`);
+  console.error(`✗ ${TTS} not found — run \`reelplanner hyperframes-skills\` first`);
   process.exit(1);
 }
 
 if (CHECK) {
   if (readFileSync(TTS, "utf8").includes(ADDED.trim())) { console.log(`✓ tts.mjs already forwards --speed to Kokoro`); process.exit(0); }
   console.error("✗ tts.mjs does NOT forward --speed to Kokoro — narration would come out at ~150 wpm");
-  console.error("  fix: reelplanning patch-tts-speed");
+  console.error("  fix: reelplanner patch-tts-speed");
   process.exit(1);
 }
 
 // every distinct copy an agent could run: the one the pipeline uses first, then any other
 const seen = new Set(), copies = [];
-for (const d of [skillsDir(), ...(process.env.REELPLANNING_SKILLS_DIR ? [] : CANDIDATE_DIRS)]) {
+for (const d of [skillsDir(), ...(process.env.REELPLANNER_SKILLS_DIR ? [] : CANDIDATE_DIRS)]) {
   const f = join(d, REL);
   if (!existsSync(f)) continue;
   const real = realpathSync(f);

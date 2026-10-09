@@ -1,5 +1,5 @@
 /* The guide's page: one renderer for the full guide (the page under the video, D-264) and for a part of it (a page the
-   local review player opens over the paused frame). Made from #guide-data, which `reelplanning guide` writes from
+   local review player opens over the paused frame). Made from #guide-data, which `reelplanner guide` writes from
    plan.md, walkthrough.md, runs/, the reviews and the ledger: nothing typed in.
 
    It answers what a reader asks, in the order they ask it (guide-clarity.md in the plan guide's folder):
@@ -36,7 +36,7 @@ const cap = (s) => String(s || "").charAt(0).toUpperCase() + String(s || "").sli
 const capWord = (s) => (/^[a-z][a-z]*[\s,;:]/.test(String(s || "")) ? cap(s) : String(s || ""));
 const lowerFirst = (s) => (/^[A-Z][a-z]/.test(String(s || "")) ? s.charAt(0).toLowerCase() + s.slice(1) : String(s || ""));
 // what this browser keeps for the guide, and the review record it shares with the player, per repo: the page names its
-// repo (bundle-player's <meta name="reelplanning-repo">), as the review page's player does (reelplanning-player.js recordKey)
+// repo (bundle-player's <meta name="reelplanning-repo">), as the review page's player does (reelplanner-player.js recordKey)
 const REPO = (document.querySelector('meta[name="reelplanning-repo"]')?.getAttribute("content") || "").trim();
 const GKEY = REPO ? `rpg@${REPO}:${G.slug}` : `rpg:${G.slug}`, recordKey = (src) => (REPO ? `reelplanning@${REPO}:annotations:${src}` : `reelplanning:annotations:${src}`);
 const store = { get(k, d) { try { const v = localStorage.getItem(`${GKEY}:${k}`); return v ? JSON.parse(v) : d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(`${GKEY}:${k}`, JSON.stringify(v)); } catch {} } };
@@ -495,9 +495,9 @@ document.addEventListener("click", (e) => { const a = e.target.closest("a.fl[dat
 
 /* ── worked examples: each case its tab; the input, what happens, the edge cases; the real output a click away ─── */
 // a field's words start with a capital, unless they start with code or a name written in lower case on purpose
-const capMd = (t) => String(t || "").replace(/^(\s*)(?!(?:reel|reelplanning|npm|npx|git|gh|node|ffmpeg)\b)([a-z])(?=[a-z' ,])/, (_, sp, c) => sp + c.toUpperCase());
+const capMd = (t) => String(t || "").replace(/^(\s*)(?!(?:reel|reelplanner|npm|npx|git|gh|node|ffmpeg)\b)([a-z])(?=[a-z' ,])/, (_, sp, c) => sp + c.toUpperCase());
 const FIELD_NAMES = { input: "Input", happens: "What happens", predict: "Before you look", edges: "Edge cases", why: "Why" };
-const isCmd = (t) => /^`[^`\n]+`$/.test(String(t || "").trim()) && /^(?:\$\s*)?(?:npx\s+reelplanning|reelplanning|reel|npm|npx|node|git|gh|cat)\s/.test(String(t).trim().slice(1, -1));
+const isCmd = (t) => /^`[^`\n]+`$/.test(String(t || "").trim()) && /^(?:\$\s*)?(?:npx\s+reelplanner|reelplanner|reel|npm|npx|node|git|gh|cat)\s/.test(String(t).trim().slice(1, -1));
 function exampleBody(s, e, k) {
   const pid = `${s.id}-ex-${k + 1}`;
   // the input, the same block every time: a command with its Copy, a line of code, or words
@@ -799,7 +799,7 @@ function inShort() {
   rows.push([`<a href="#now">${BUILT ? "What you can do now" : G.built ? "What it lets you do" : "What it would let you do"}</a>`, canList()]);
   if (BUILT) {
     // a run of it working, from this repo first (one from a scratch repo only when there is none), said as it was made
-    const own = (c) => Number(!/^(?:npx\s+)?(?:reelplanning|reel)\b/.test(c)) + Number(!/^(?:reelplanning|reel|npx|npm|node)\b/.test(c));
+    const own = (c) => Number(!/^(?:npx\s+)?(?:reelplanner|reel)\b/.test(c)) + Number(!/^(?:reelplanner|reel|npx|npm|node)\b/.test(c));
     // the project's own command before another tool's (a grep), then one that finished cleanly before one that stopped
     const ranOk = (R.tryIt || []).filter((x) => x.from === "ran" && x.exit != null).sort((a, b) => Number(!!a.scratch) - Number(!!b.scratch) || own(a.cmd) - own(b.cmd) || Number(a.exit !== 0) - Number(b.exit !== 0) || (a.step ?? 99) - (b.step ?? 99)), ok = ranOk[0];
     // a run that stops: why, in the words of the worked example that shows it (its "What happens"), and a link to it
@@ -858,7 +858,7 @@ function trySection() {
   const all = R.tryIt || [];
   const steps = G.steps || [];
   const use = BUILT ? all.filter((x) => x.from !== "planned" || !all.some((y) => y.step === x.step && y.from !== "planned")) : all;
-  const WARN = `<p class="warn" role="note"><b>Writes to the project's record.</b> It files into <code>.reelplanning/</code> (the plans, reviews and decision log): run it here only when you mean to.</p>`;
+  const WARN = `<p class="warn" role="note"><b>Writes to the project's record.</b> It files into <code>.reelplanner/</code> (the plans, reviews and decision log): run it here only when you mean to.</p>`;
   const item = (x) => { const r = x.run && runOf(x.run);
     const note = x.from === "ran" && x.what ? x.what : null;   // a saved run's own note on its command: its scenario
     const place = x.missing?.length && !x.scratch ? `<p class="q3">It names <code>${x.missing.map(esc).join("</code>, <code>")}</code>, which this repo does not have: put your own in ${x.missing.length === 1 ? "its" : "their"} place.</p>` : "";
@@ -874,7 +874,7 @@ function trySection() {
   }
   // here: what runs in this checkout as it is (a command naming a plan or file this repo does not have is not offered
   // here); from a scratch repo: each run made in one set up for it, named by its scenario, with the setup once
-  const scratch = use.filter((x) => x.scratch), here = use.filter((x) => !x.scratch && !(x.missing?.length && x.from !== "ran" && !/<[^>]+>/.test(x.cmd) && x.missing.some((p) => /^\.reelplanning\/(?:plans|explainers)\//.test(p))));
+  const scratch = use.filter((x) => x.scratch), here = use.filter((x) => !x.scratch && !(x.missing?.length && x.from !== "ran" && !/<[^>]+>/.test(x.cmd) && x.missing.some((p) => /^\.reelplann(?:er|ing)\/(?:plans|explainers)\//.test(p))));
   const dropped = use.filter((x) => !x.scratch && !here.includes(x));
   // run this here: what really ran in this repo and names nothing to fill in; the commands the walkthrough only names
   // (not run, or with a <placeholder>) go apart, as named; runs from a scratch repo, apart again, each command once
@@ -883,7 +883,7 @@ function trySection() {
   const scratchRuns = Object.values({ ...(G.exRuns || {}), ...(G.built?.runs || {}) }).filter((r) => r.scratch), again = scratchRuns.length - scratch.filter((x) => x.from === "ran").length;
   const say = !use.length ? "The walkthrough names no command to run, so there is nothing here to copy yet."
     : `${ran.length ? `${ran.length === 1 ? "The command under Run this here" : `The ${count(ran.length, "command")} under Run this here`} really ran in this repo, and what ${ran.length === 1 ? "it" : "each"} printed is saved, so you know what to expect: run ${ran.length === 1 ? "it" : "them"} from the repository's top folder. `
-      : scratchRuns.length && !named.length ? "Nothing here is to run in this repo as it is: every run saved for it was made in a scratch repo set up for it. " : "Nothing here was run in this repo as it is and saved, so there is nothing proven to run here. "}${named.length ? `${cap(count(named.length, "more command"))} ${named.length === 1 ? "is" : "are"} named by the walkthrough and never run for it (under Named, not run). ` : ""}${scratchRuns.length ? `${cap(count(scratchRuns.length, "run"))} ${scratchRuns.length === 1 ? "was" : "were"} made in a scratch repo set up for ${scratchRuns.length === 1 ? "it" : "them"}${again > 0 ? `, ${count(scratch.length, "command")} in all (${again === 1 ? "one ran" : `${NUM[again] || again} ran`} again on other input, shown once here)` : ""}: the paths they name are that repo's, so they are shown, folded, to read rather than to run here. ` : ""}<code>reelplanning</code> is the tool; <code>reel</code> is its second command, for the project's record (plans, reviews, decisions).`;
+      : scratchRuns.length && !named.length ? "Nothing here is to run in this repo as it is: every run saved for it was made in a scratch repo set up for it. " : "Nothing here was run in this repo as it is and saved, so there is nothing proven to run here. "}${named.length ? `${cap(count(named.length, "more command"))} ${named.length === 1 ? "is" : "are"} named by the walkthrough and never run for it (under Named, not run). ` : ""}${scratchRuns.length ? `${cap(count(scratchRuns.length, "run"))} ${scratchRuns.length === 1 ? "was" : "were"} made in a scratch repo set up for ${scratchRuns.length === 1 ? "it" : "them"}${again > 0 ? `, ${count(scratch.length, "command")} in all (${again === 1 ? "one ran" : `${NUM[again] || again} ran`} again on other input, shown once here)` : ""}: the paths they name are that repo's, so they are shown, folded, to read rather than to run here. ` : ""}<code>reelplanner</code> is the tool; <code>reel</code> is its second command, for the project's record (plans, reviews, decisions).`;
   const hereHtml = ran.length ? fold(`Run this here <span class="n">${ran.length}</span>`, groupsHtml(ran), { id: "try-here", cls: "grp" }) : "";
   const namedHtml = named.length ? fold(`Named, not run <span class="n">${named.length}</span>`, `<p class="q3">The walkthrough names these; none was run and saved for it, so what they print is not shown. A word in &lt;angle brackets&gt; is yours to fill in.</p>${groupsHtml(named)}`, { id: "try-named", cls: "grp" }) : "";
   const scratchHtml = scratch.length ? fold(`Shown from a scratch repo <span class="n">${scratch.length}</span>`, `${setup ? `<p class="q3"><b>The scratch repo:</b> ${inl(setup)}</p>` : ""}${groupsHtml(scratch)}`, { id: "try-scratch", cls: "grp" }) : "";
@@ -1355,7 +1355,7 @@ window.RPGuide = { G, watchHref, expandAll, openAt };
    This block is the review page's, and it is the whole interface between the two; the rest of this file does not know
    it is embedded, and this block only reads the page the rest drew (by ids, a.wm and [data-seek]). A video's page made
    from its parts (scripts/lib/guide-page.mjs, its Watch links a[data-watch]) carries this block too, from here.
-   The review page (packages/player/reelplanning-player.js, <reelplanning-guide>) shows this page in a same-origin frame
+   The review page (packages/player/reelplanner-player.js, <reelplanner-guide>) shows this page in a same-origin frame
    under its player, as tall as the window: the page scrolls down to the frame, then the guide scrolls itself.
 
    The param:  ?embed=1   (beside the usual src=, review= and theme=). Without it, or in no frame, nothing here runs.

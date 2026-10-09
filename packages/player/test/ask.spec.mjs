@@ -10,7 +10,7 @@
 //   - the capability's refusals: not_granted hides the hosted path for the rest of the view (the next question goes
 //     with the review); rate_limited says so and is never retried by the page
 //   - an underlined word's card: "Still unclear? Ask about this" opens Ask with the word in the box
-//   - the local page (a stand-in for `reelplanning review`'s /api/ask): a session waiting answers, the page asks
+//   - the local page (a stand-in for `reelplanner review`'s /api/ask): a session waiting answers, the page asks
 //     until it has, and shows where the answer came from; with none waiting it says so, and it goes with the review
 // usage: node packages/player/test/ask.spec.mjs
 import { chromium } from "playwright-core"; import { readFileSync, existsSync, statSync } from "node:fs"; import { join, normalize, extname } from "node:path"; import { createServer } from "node:http";

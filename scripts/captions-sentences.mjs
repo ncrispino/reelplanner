@@ -15,7 +15,7 @@
 // written, one word over their times; a flag, a path or a file name is code. A script from before that says
 // the spoken form itself ("names dot md") is shown written too (unspell: "names.md", one word over the run).
 //
-// usage: reelplanning captions-sentences <project-dir> [--max-words 14]
+// usage: reelplanner captions-sentences <project-dir> [--max-words 14]
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { numerals } from "./numerals.mjs";
@@ -23,7 +23,7 @@ import { ROOT } from "./lib/env.mjs";
 import { namesFor, showNames, withCaptionCode, ensureCaptionCodeFonts } from "./lib/names.mjs";
 import { saidWords, unspell } from "./lib/say.mjs";
 
-const dir = process.argv[2]; if (!dir) { console.error("usage: reelplanning captions-sentences <project-dir>"); process.exit(1); }
+const dir = process.argv[2]; if (!dir) { console.error("usage: reelplanner captions-sentences <project-dir>"); process.exit(1); }
 const mi = process.argv.indexOf("--max-words"); const MAX = mi > 0 ? Number(process.argv[mi + 1]) : 14;
 const TAIL = 0.12;
 const NAMES = namesFor(dir, ROOT);
@@ -32,7 +32,7 @@ const sb = readFileSync(join(dir, "STORYBOARD.md"), "utf8");
 const script = readFileSync(join(dir, "SCRIPT.md"), "utf8");
 const meta = JSON.parse(readFileSync(join(dir, "audio_meta.json"), "utf8"));
 const capPath = join(dir, "compositions/captions.html");
-if (!existsSync(capPath)) { console.error(`✗ no compositions/captions.html in ${dir}: run reelplanning finish-project ${dir}, which builds it first`); process.exit(1); }
+if (!existsSync(capPath)) { console.error(`✗ no compositions/captions.html in ${dir}: run reelplanner finish-project ${dir}, which builds it first`); process.exit(1); }
 
 // frame starts (cumulative durations, storyboard order)
 const durs = [...sb.matchAll(/^- duration:\s*([\d.]+)s?/gm)].map((m) => parseFloat(m[1]));
@@ -91,7 +91,7 @@ groups.sort((a, b) => a.start - b.start);
 for (let k = 0; k + 1 < groups.length; k++) if (groups[k].end > groups[k + 1].start) groups[k].end = +(groups[k + 1].start - 0.01).toFixed(3);
 let html = readFileSync(capPath, "utf8");
 const re = /var GROUPS = \[[\s\S]*?\];\n/;
-if (!re.test(html)) { console.error(`✗ ${capPath} has no \`var GROUPS = [...]\` line to fill: rebuild it with reelplanning finish-project ${dir}`); process.exit(1); }
+if (!re.test(html)) { console.error(`✗ ${capPath} has no \`var GROUPS = [...]\` line to fill: rebuild it with reelplanner finish-project ${dir}`); process.exit(1); }
 html = html.replace(re, `var GROUPS = ${JSON.stringify(groups)};\n`);
 const coded = withCaptionCode(html);
 if (coded.error) console.error(`△ captions-sentences: ${coded.error}; names show as plain words`);
@@ -106,6 +106,6 @@ console.log(`✓ captions-sentences: ${groups.length} groups from the script (av
 // often enough that this fails rather than going on without them
 if (skipped.length) {
   console.error(`✗ captions-sentences: ${skipped.length} frame(s) got NO captions — ${skipped.join(", ")}`);
-  console.error(`  Word timings missing? Run: reelplanning transcribe-missing ${dir}`);
+  console.error(`  Word timings missing? Run: reelplanner transcribe-missing ${dir}`);
   process.exit(1);
 }

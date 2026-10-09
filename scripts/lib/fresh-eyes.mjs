@@ -224,12 +224,12 @@ export function strayFindings(videoDir, stamp) {
 export function freshEyesState(videoDir) {
   const stamp = readStamp(videoDir), cur = buildOf(videoDir);
   const build = { id: cur.id, scope: cur.scope };
-  if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanning fresh-eyes\` on it, launch the newcomer and the designer (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
+  if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanner fresh-eyes\` on it, launch the newcomer and the designer (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
   const round = stamp.round || 1, f = findingsOf(videoDir), lines = [], unanswered = [], outOfScope = [];
   const sameBuild = buildOfStamp(stamp) === cur.id, nothingNew = !sameBuild && cur.scope && !cur.scope.length;
   const missing = Object.keys(rolesFor(videoDir)).filter((r) => !f[r]);
   const stray = strayFindings(videoDir, stamp), rel = (p) => relative(process.cwd(), p) || p;
-  if (sameBuild) for (const r of missing) if (!stray.some((x) => x.role === r)) lines.push({ level: "warn", text: `fresh eyes, round ${round}: no ${r}.md yet (launch the ${r}, a fresh agent with no context of this conversation, with exactly the prompt from \`reelplanning fresh-eyes <video-dir> --prompt ${r}\`: it prints how, per agent)` });
+  if (sameBuild) for (const r of missing) if (!stray.some((x) => x.role === r)) lines.push({ level: "warn", text: `fresh eyes, round ${round}: no ${r}.md yet (launch the ${r}, a fresh agent with no context of this conversation, with exactly the prompt from \`reelplanner fresh-eyes <video-dir> --prompt ${r}\`: it prints how, per agent)` });
   for (const r of Object.keys(rolesFor(videoDir)).filter((x) => f[x])) {
     const md = read(join(feDir(videoDir), `${r}.md`)), s = fileStamp(md), role = fileRole(md);
     if (role && role !== r) lines.push({ level: "fail", text: `fresh eyes: ${r}.md holds the ${role}'s findings (its first line says so): each agent writes its own file, at the path its prompt names` });
@@ -248,7 +248,7 @@ export function freshEyesState(videoDir) {
   if (!sameBuild) {
     // the set on disk is an earlier build's: the rebuild has not had its look yet (or changed nothing a viewer sees)
     if (nothingNew) lines.push({ level: "ok", text: `fresh eyes: nothing a viewer sees changed since the last build (plan-diff): its rounds stand` });
-    else lines.push({ level: "warn", text: `fresh eyes: this build has not had fresh eyes yet (${cur.scope ? `scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed since the last build` : "every scene"}): run \`reelplanning fresh-eyes\` (round 1 of ${ROUNDS} of this build; the last build's rounds go to fresh-eyes/build-${(buildsKept(videoDir).at(-1) || 0) + 1}/)` });
+    else lines.push({ level: "warn", text: `fresh eyes: this build has not had fresh eyes yet (${cur.scope ? `scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed since the last build` : "every scene"}): run \`reelplanner fresh-eyes\` (round 1 of ${ROUNDS} of this build; the last build's rounds go to fresh-eyes/build-${(buildsKept(videoDir).at(-1) || 0) + 1}/)` });
   } else if (!unanswered.length && !missing.length && !stray.length) {
     const by = (k) => all.filter((x) => x.answer?.kind === k).length;
     const tally = all.length ? `${all.length} finding${all.length === 1 ? "" : "s"} answered (${by("fixed")} fixed, ${by("meaning")} a meaning, ${by("kept")} kept)` : "no findings";

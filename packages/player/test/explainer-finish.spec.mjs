@@ -21,7 +21,7 @@ try {
   await p.evaluate(() => { try { localStorage.clear(); } catch {} }); await p.reload();
   await p.waitForFunction(() => document.querySelector("#rp")?.shadowRoot?.querySelector("hyperframes-player")?.ready && document.querySelector("#rp").planMap, null, { timeout: 90000 });
   // read as an explainer: its kind, and no questions to decide
-  await p.evaluate(() => { const el = document.querySelector("#rp"); el.planMap.kind = "explainer"; el.planMap.decisions = []; el.planMap.planDir = ".reelplanning/explainers/2026-09-29-review-server"; el.updateStatus(); });   // drawn again, as a page whose map said so from the start
+  await p.evaluate(() => { const el = document.querySelector("#rp"); el.planMap.kind = "explainer"; el.planMap.decisions = []; el.planMap.planDir = ".reelplanner/explainers/2026-09-29-review-server"; el.updateStatus(); });   // drawn again, as a page whose map said so from the start
   const state = () => p.evaluate(() => { const el = document.querySelector("#rp"), h = el.shadowRoot.querySelector(".handoff");
     return { open: !h.hidden, ends: [...h.querySelectorAll("[data-review]")].map((x) => `${x.dataset.review}:${x.querySelector("b").textContent}`), pressed: [...h.querySelectorAll("[data-review]")].filter((x) => x.getAttribute("aria-pressed") === "true").map((x) => x.dataset.review),
       verdict: el.exportPayload().verdict, approves: el.annotations.filter((a) => a.kind === "approve").length, text: h.textContent, oq: h.querySelector("label[for=rp-openq]")?.textContent || "", title: el.shadowRoot.querySelector('[data-act="finish"]').title }; });
@@ -41,7 +41,7 @@ try {
   await p.locator("#rp").locator("[data-openq]").fill("make a waiting review easy to see"); await p.locator("#rp").locator("[data-openq]").dispatchEvent("change"); await p.waitForTimeout(200);
   const row = await p.evaluate(() => { const el = document.querySelector("#rp"); return el.reviewRow(el.exportPayload()); });
   ok(row.review.kind === "explainer" && row.review.end === "plan", "the review itself says its kind and its end");
-  ok(row.kind === "explainer" && row.planDir === ".reelplanning/explainers/2026-09-29-review-server" && row.verdict === "plan", "the row names its kind and the explainer's folder, for the server to file it there");
+  ok(row.kind === "explainer" && row.planDir === ".reelplanner/explainers/2026-09-29-review-server" && row.verdict === "plan", "the row names its kind and the explainer's folder, for the server to file it there");
   ok(row.review.annotations.some((a) => a.open && a.comment === "make a waiting review easy to see"), "your words on what you want next go with the review");
   // Ask about this answers from the explainer's sources, not a plan (step 3)
   const prompt = await p.evaluate(() => { const el = document.querySelector("#rp"); el.planMap.explainer = { question: "explain the review server", commit: "dee5830", sources: [{ id: "scripts/review.mjs", shape: "files", lines: 376 }] }; el.planMap.frames[1].source = "scripts/review.mjs:200-230"; return el.askPrompt({ question: "why one run?", t: el.planMap.frames[1].start + 0.5, frame: { index: el.planMap.frames[1].index } }); });

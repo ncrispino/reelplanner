@@ -47,7 +47,7 @@ export function identityOf(review) {
  * from: every person reviewing on a page of their own is its owner, so it cannot tell two people apart. It
  * still matches a review recorded as "owner", so a repo that lists it keeps working, with `warn` saying to
  * list the id instead (the review's own, when it carries one). Listed beside an id, "owner" matches only
- * reviews that carry no id (recorded before reelplanning kept the owner's), with no warning.
+ * reviews that carry no id (recorded before reelplanner kept the owner's), with no warning.
  */
 export function maintainerOf(review, list) {
   const { who, id } = identityOf(review);
@@ -57,7 +57,7 @@ export function maintainerOf(review, list) {
   if (who === "owner" && list.includes("owner") && list.some((m) => m.startsWith("id:")))
     return id ? { is: false, by: null, warn: "" } : { is: true, by: "owner", warn: "" };
   if (who === "owner" && list.includes("owner"))
-    return { is: true, by: "owner", warn: `counted as a maintainer's because config.json's maintainers lists "owner", which names whoever published the review page, on anyone's page: ${id ? `list this reviewer as "${id}" in its place` : `this review carries no viewer id (recorded before reelplanning kept the owner's); the next one sent from the hosted page does, and \`reel record\` names it to list in "owner"'s place`}` };
+    return { is: true, by: "owner", warn: `counted as a maintainer's because config.json's maintainers lists "owner", which names whoever published the review page, on anyone's page: ${id ? `list this reviewer as "${id}" in its place` : `this review carries no viewer id (recorded before reelplanner kept the owner's); the next one sent from the hosted page does, and \`reel record\` names it to list in "owner"'s place`}` };
   return { is: false, by: null, warn: "" };
 }
 
@@ -80,7 +80,7 @@ export function linkedIssues(body) {
   return [...new Set(text.match(re) || [])];
 }
 
-// A voice file, an image or a video: never under .reelplanning/plans/ in a PR (D-213); fonts and text are fine.
+// A voice file, an image or a video: never under .reelplanner/plans/ in a PR (D-213); fonts and text are fine.
 export const MEDIA = /\.(wav|mp3|m4a|aac|ogg|oga|opus|flac|png|jpe?g|gif|webp|avif|bmp|tiff?|mp4|m4v|webm|mov|mkv|avi)$/i;
 
 /** decisions.json as given, and decisions.md regenerated from it (the table, then each entry). */
@@ -89,7 +89,7 @@ export function writeLedger(rp, ledger) {
   // A decision made in conversation has no recommendation on record (`recommended: null`): not flagged as against it.
   const rows = ledger.decisions.map((d) => `| ${d.id} | ${d.date} | ${d.plan} | ${d.step ?? ""} | ${d.question} | **${d.chosen}**${d.recommended === false ? " (not the recommendation)" : ""}${d.tags?.length ? ` [${d.tags.join(", ")}]` : ""} | ${d.status}${d.supersededBy ? ` by ${d.supersededBy}` : d.supersededByPlan ? ` by the plan ${d.supersededByPlan}` : d.foldedInto ? ` into ${d.foldedInto}` : ""}${d.supersedes?.length ? `, supersedes ${d.supersedes.join(", ")}` : ""} |`);
   const details = ledger.decisions.map((d) => `### ${d.id} — ${d.question}\n\n- **Chosen:** ${d.chosen}${d.why ? ` — ${d.why}` : ""}\n- **Not chosen:** ${(d.options || []).filter((o) => o.id !== d.chosenId && !(d.chosenIds || []).includes(o.id)).map((o) => `${o.label}${o.why ? ` (${o.why})` : ""}`).join("; ") || "—"}${d.note ? `\n- **Note:** ${d.note}` : ""}${d.own ? `\n- **The reviewer's words:** ${d.own}` : ""}\n- **Where:** ${d.plan}, step ${d.step ?? "?"}${d.stepTitle ? ` (${d.stepTitle})` : ""}; components: ${(d.components || []).join(", ") || "—"}\n- **Status:** ${d.status}${d.supersededBy ? `, superseded by ${d.supersededBy} on ${d.supersededOn}` : d.supersededByPlan ? `, superseded by the plan ${d.supersededByPlan} as a whole on ${d.supersededOn}` : d.foldedInto ? `, folded into ${d.foldedInto} on ${d.foldedOn}` : ""}${d.supersedes?.length ? `; supersedes ${d.supersedes.join(", ")}` : ""}\n`);
-  const head = readFileSync(join(ROOT, "templates", "reelplanning", "decisions.md"), "utf8").trim();
+  const head = readFileSync(join(ROOT, "templates", "reelplanner", "decisions.md"), "utf8").trim();
   writeFileSync(join(rp, "decisions.md"), `${head}\n${rows.join("\n")}\n\n${details.join("\n")}`);
 }
 

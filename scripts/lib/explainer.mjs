@@ -4,7 +4,7 @@
 // It knows sources: each one pinned by its FORM (how it is read and hashed) and described by its SHAPE (how a
 // video and a guide show it), and one rule for the guide, by size.
 //
-//   <.reelplanning>/explainers/<date>-<slug>/
+//   <.reelplanner>/explainers/<date>-<slug>/
 //     explain.md      what you asked, in your words; what it will cover and leave out
 //     sources.json    { question, title, created, commit, sources: [pinned source …] }
 //     video/          the video (kind: explainer), built as any other
@@ -21,6 +21,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, relative, dirname, extname, sep } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
+import { rpDirOf } from "./env.mjs";
 
 /** Over this many lines a source is far longer than a video can show: it gets a guide part (plan step 1). */
 export const GUIDE_LINES = 200;
@@ -82,10 +83,10 @@ function filesUnder(repo, abs) {
 }
 
 /**
- * Pin one source, given as you would name it. `repo` is the repo's top folder, `rp` its .reelplanning/.
+ * Pin one source, given as you would name it. `repo` is the repo's top folder, `rp` its .reelplanner/.
  * Throws with a plain reason when it cannot be pinned (nothing by that name, gh not there).
  */
-export function pinSource(spec, { repo, rp = join(repo, ".reelplanning"), head = null } = {}) {
+export function pinSource(spec, { repo, rp = rpDirOf(repo), head = null } = {}) {
   const s = String(spec).trim(); if (!s) throw new Error("an empty source");
   const HEAD = head || tryGit(repo, "rev-parse", "--short=12", "HEAD")?.trim() || null;
   // a decision, by its id
@@ -232,7 +233,7 @@ export const endOf = (review) => { const e = review?.end ?? review?.verdict; ret
  * at the pinned commit, so a later edit never makes an old explainer fail. → { text, note } (text null when it
  * cannot be read here; `note` says why, or that it changed since it was pinned).
  */
-export function sourceText(src, { repo, rp = join(repo, ".reelplanning"), path = null } = {}) {
+export function sourceText(src, { repo, rp = rpDirOf(repo), path = null } = {}) {
   const at = (commit, p) => tryGit(repo, "show", `${commit}:${p}`);
   const disk = (p) => { try { return readFileSync(p, "utf8"); } catch { return null; } };
   switch (src.form) {
@@ -384,7 +385,7 @@ export function explainerReviewMd({ id, review, name }) {
   const day = String(review?.submittedAt || review?.exportedAt || "").replace("T", " ").slice(0, 16);
   L.push(`# Explainer review · ${day || id} · ${end ? END_WORDS[end] : "not finished"}`, "");
   L.push(end === "done" ? "**Done:** you know what you wanted to know. Nothing to rebuild." : end === "more" ? "**Explain more:** the next version rebuilds the scenes your comments are on, and adds a scene for each question below; fresh eyes again. It is a new build of the same explainer."
-    : end === "plan" ? `**Plan this:** a plan starts from what you said: \`reel new-plan <repo> <slug> --from .reelplanning/explainers/${name}\` quotes it in the plan's problem, and its video leans on this explainer (D-248).` : "**Not finished:** ask before acting.", "");
+    : end === "plan" ? `**Plan this:** a plan starts from what you said: \`reel new-plan <repo> <slug> --from .reelplanner/explainers/${name}\` quotes it in the plan's problem, and its video leans on this explainer (D-248).` : "**Not finished:** ask before acting.", "");
   L.push("**Nothing goes into the decision log.** It holds only answers to a plan's questions, and an explainer asks none: a comment here is kept with this review, and reaches a decision only by way of a plan (Plan this).", "");
   const cs = commentsOf(review), qs = askedOf(review), next = wantNextOf(review), checks = review?.quizzes || [];
   L.push(`From [${id}.json](${id}.json): ${[cs.length && `${cs.length} comment${cs.length === 1 ? "" : "s"}`, qs.length && `${qs.length} question${qs.length === 1 ? "" : "s"}`, checks.length && `${checks.length} quick check${checks.length === 1 ? "" : "s"}`].filter(Boolean).join(", ") || "nothing said"}; watched ${Math.round((review?.watch?.completion ?? 0) * 100)}%.`, "");

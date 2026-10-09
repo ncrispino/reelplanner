@@ -1,9 +1,9 @@
-// <reelplanning-player>: the review player. A HyperFrames video with what a review needs around it: marks and
+// <reelplanner-player>: the review player. A HyperFrames video with what a review needs around it: marks and
 // comments on the frame, the plan's questions answered on it, the record of the review beneath it, and Finish, which
-// hands the review to the agent. <reelplanning-guide>, at the end of this file, shows the video's guide under it.
+// hands the review to the agent. <reelplanner-guide>, at the end of this file, shows the video's guide under it.
 //
-//   <reelplanning-player src="videos/l1-upload-resume/index.html"
-//                        plan-map="videos/l1-upload-resume/plan-map.json"></reelplanning-player>
+//   <reelplanner-player src="videos/l1-upload-resume/index.html"
+//                        plan-map="videos/l1-upload-resume/plan-map.json"></reelplanner-player>
 //
 // Every annotation is time-anchored AND plan-anchored:
 //   { id, kind: "stroke"|"arrow"|"box"|"wait"|"note", t, frame: {index, compositionId, title},
@@ -19,9 +19,9 @@
 // and every control with its keyboard letter on it.
 
 import "../../node_modules/@hyperframes/player/dist/hyperframes-player.js";
-// How the reviewer runs reelplanning in the lines shown after an export: RP_COMMAND in scripts/lib/env.mjs, the one
+// How the reviewer runs reelplanner in the lines shown after an export: RP_COMMAND in scripts/lib/env.mjs, the one
 // place that says, copied here by scripts/release/sync-version.mjs (scripts/test/version.spec.mjs checks they agree).
-const RP_COMMAND = "reelplanning";
+const RP_COMMAND = "reelplanner";
 // HyperFrames mutes and locks all audio when its user agent says it is inside the Claude desktop app
 // (`Claude/<n>` + `Electron`), and refuses to unmute. A review is narrated, so in the app it played in
 // silence while our mute button said the sound was on. The lock is only that user-agent check; turn it
@@ -1436,7 +1436,7 @@ h4 .count{font-weight:400;color:var(--ink-3)}
 .stage[data-size="narrow"] .hits .cmore{padding:1px 7px;font-size:var(--fs-xs)}   /* a phone's card is small: its "More" takes its corner and no more */
 .decision.band .walk{z-index:5}   /* over the frame's cards and their "More" */
 /* The guide under the video (D-264). The page carries the open video's guide under the player
-   (<reelplanning-guide>); scrolled out of view, the frame becomes a small player that keeps playing: a card in the
+   (<reelplanner-guide>); scrolled out of view, the frame becomes a small player that keeps playing: a card in the
    window's bottom-right corner (a slim bar along a phone's foot) with play/pause, the time and the way back up.
    The frame itself is what shrinks: it leaves the page's flow (a placeholder of its size keeps the page where it
    was, so nothing under it moves) and is scaled into the card with a transform, so the video inside keeps its size
@@ -1518,7 +1518,7 @@ h4 .count{font-weight:400;color:var(--ink-3)}
 @media (pointer:coarse){button kbd,.idle .meta .kh,.markbox .k{display:none!important}}
 `;
 
-// What this browser keeps of a review, per video, and what it marks watched, are kept per repo: `reelplanning review`
+// What this browser keeps of a review, per video, and what it marks watched, are kept per repo: `reelplanner review`
 // serves every repo on the same port (8787) by default, and one origin is one localStorage, so two repos' `system`
 // videos (or any two videos of the same name) shared their comments, answers and "Watched". bundle-player names the
 // repo on the page (the player's `repo` attribute; the guide's <meta name="reelplanning-repo">), and the keys carry it:
@@ -1666,7 +1666,7 @@ const leadOf = (said) => {
   return { lead: lead.map((c) => c.t).join(" ").replace(/[;:,]$/, "."), more: rest && !/^\S*[-/.<`]/.test(rest) && !CODEISH.test(rest.split(" ").slice(0, 2).join(" ")) ? rest.charAt(0).toUpperCase() + rest.slice(1) : rest };
 };
 
-export class ReelplanningPlayer extends HTMLElement {
+export class ReelplannerPlayer extends HTMLElement {
   static get observedAttributes() { return ["src", "plan-map", "runtime-src"]; }
   constructor() {
     super();
@@ -1737,7 +1737,7 @@ export class ReelplanningPlayer extends HTMLElement {
     })();
     return this._viewerReady;
   }
-  // Served by `reelplanning review` (localhost), the page's own server takes the review: the Finish
+  // Served by `reelplanner review` (localhost), the page's own server takes the review: the Finish
   // panel says what will happen to it (from GET /api/review, asked again each time the panel opens,
   // since a session may have started meanwhile), and its Send POSTs the same row the hosted page
   // writes to its store to /api/review; the server files it in the repo for the waiting session or a
@@ -1879,7 +1879,7 @@ export class ReelplanningPlayer extends HTMLElement {
       case "reload": return "Done — reload to watch the new version";
       case "done": return w.making ? `Recorded. ${Who} is making the new video` : "Done: recorded, no new video";
       case "stopped": return hosted ? `${Who} could not finish it${w.error ? ` — ${w.error}` : ""}. The commands under Finish still work.`
-        : `The run stopped before it finished: its log is ${w.log || `.reelplanning/inbox/runs/${w.id}.log`}`;
+        : `The run stopped before it finished: its log is ${w.log || `.reelplanner/inbox/runs/${w.id}.log`}`;
       default: return String(w.state || "");
     }
   }
@@ -2842,7 +2842,7 @@ export class ReelplanningPlayer extends HTMLElement {
     const v = p.video;
     if (p.away === "not-built") return { short: "Not built yet", long: `Not built yet: the video ${v} is planned in this repo but has not been made, so this page cannot carry it` };
     if (p.away === "not-found") return { short: "Not found here", long: `Not found here: this repo has no video called ${v} (it may be in another repo, or renamed)` };
-    if (p.away === "too-big") return { short: "Not on this page", long: "Left off this page to keep it small enough to host: `reelplanning review` with no folder opens every video in this repo" };
+    if (p.away === "too-big") return { short: "Not on this page", long: "Left off this page to keep it small enough to host: `reelplanner review` with no folder opens every video in this repo" };
     return null;
   }
   // every video on the card watched, and the viewer picked no level: the video starts without its scenes for newcomers
@@ -2888,7 +2888,7 @@ export class ReelplanningPlayer extends HTMLElement {
           : `Not watched in this browser${this._localApi?.known ? ", and your file has no review that watched it" : ""}`;
         // not on this page: why, where bundle-player knows (its `away` on the row: the video is not built yet, this repo
         // has no video of that name, or it was left off to keep the page small enough to host)
-        const away = here ? null : this.awayWords(p), off = away ? `${away.long}` : "Not on this page: `reelplanning review` with no folder opens every video in this repo";
+        const away = here ? null : this.awayWords(p), off = away ? `${away.long}` : "Not on this page: `reelplanner review` with no folder opens every video in this repo";
         const tip = here ? `Open ${name(p)} on the review page. ${said}.` : w ? `${said}. ${off}.` : `${off}.`;
         const tag = here ? `a class="pre" href="${esc(this.prereqHref(p))}"` : 'div class="pre" data-off';
         return `<${tag}${w ? " data-watched" : ""} title="${esc(tip)}"><span class="pt">${esc(name(p))}</span><span class="pl">${p.seconds ? esc(this.fmt(p.seconds)) : ""}</span><span class="pg"${givesWords(p.gives).ids ? ` title="${esc(`Decisions ${givesWords(p.gives).ids}`)}"` : ""}>${esc(givesWords(p.gives).text)}</span><span class="pw">${w ? "Watched" : here ? "Not watched here" : away ? away.short : "Not on this page"}</span></${here ? "a" : "div"}>`;
@@ -3025,7 +3025,7 @@ export class ReelplanningPlayer extends HTMLElement {
   // ---- words the viewer knows (D-218) -------------------------------------------------------------------
   // A word stays underlined until the viewer knows it: looked up (its card, or its More in Terms), the scene that
   // explains it watched (in this video, played to the scene's end; elsewhere, the video its definedIn names
-  // marked watched, D-128), or, on the local review page, what ~/.reelplanning/you.jsonl says (GET /api/review's
+  // marked watched, D-128), or, on the local review page, what ~/.reelplanner/you.jsonl says (GET /api/review's
   // `known`). Then it reads plainly: still in Terms, still a click away from its meaning, not underlined.
   knownKeys() { if (!this._known) { let a = []; try { a = JSON.parse(localStorage.getItem(KNOWN_KEY) || "[]"); } catch {} this._known = new Set(Array.isArray(a) ? a : []); } return this._known; }
   isKnown(x) {
@@ -3128,7 +3128,7 @@ export class ReelplanningPlayer extends HTMLElement {
   // glossary and this scene's narration and frame, each answer saying where it came from. Who answers:
   //   a hosted page (a Claude Artifact declaring `sample`): Claude, on the viewer's own account; the first call asks
   //     their consent; called only on a click, never retried by the page (rate_limited backs off to the viewer);
-  //   the local page (`reelplanning review`): the agent session waiting on it (`review --wait`) answers in a few seconds
+  //   the local page (`reelplanner review`): the agent session waiting on it (`review --wait`) answers in a few seconds
   //     (POST /api/ask, then GET /api/ask?id= until it has); with none waiting, the page says so;
   //   anywhere else, or nobody to answer: the question goes with your review, answered in the next version.
   // Every question is kept in the review (`questions`), counts in `reel memory lost` like a word looked up, and goes to
@@ -3401,7 +3401,7 @@ ${clip(gloss || "(none)", 9000)}`;
   checkNo(q) { const n = /^k(\d+)$/i.exec(q?.id || ""); return n ? Number(n[1]) : (this.planMap?.quizzes || []).indexOf(q) + 1; }
 
   // ---- the guide under the video (D-264) -----------------------------------
-  // The review page carries the open video's guide under the player (<reelplanning-guide for="rp">, at the end of this
+  // The review page carries the open video's guide under the player (<reelplanner-guide for="rp">, at the end of this
   // file). The video stays first; the guide is what you scroll down to. The guide attaches itself here once it has
   // found the video's guide page (attachGuide), and from then on:
   //  · scrolled out of view, the frame becomes a small player in the corner (a slim bar along a phone's foot) that
@@ -3551,7 +3551,7 @@ ${clip(gloss || "(none)", 9000)}`;
     this.syncMiniStill(t);
   }
   // Paused, the small player shows its chapter settled: the guide's own picture of it (a scene of the chapter at rest,
-  // as \`reelplanning guide\` took it for the page), never a frame caught half way (a title alone, an empty box, a
+  // as \`reelplanner guide\` took it for the page), never a frame caught half way (a title alone, an empty box, a
   // terminal half drawn); playing, or with a question waiting, the live frame. A chapter with no picture keeps the frame.
   syncMiniStill(t = this.watchedT()) {
     const img = this.$?.(".mstill"); if (!img) return;
@@ -3856,7 +3856,7 @@ ${clip(gloss || "(none)", 9000)}`;
     if (d.guide && !d.band && this._under) { if (this._dopen) this.closeDetail(); this.openUnder(d, { from }); return; }
     // …and on a review page that carries the guide under the video but has not attached it yet (it is still finding
     // it): the part waits for it, never a page of its own (the bundle carries no part pages)
-    if (d.guide && !d.band && this.id && document.querySelector(`reelplanning-guide[for="${CSS.escape(this.id)}"]`)) {
+    if (d.guide && !d.band && this.id && document.querySelector(`reelplanner-guide[for="${CSS.escape(this.id)}"]`)) {
       if (this.player && !this.player.paused) this.player.pause();
       this._underWant = { d, from }; this.status(`${d.title || d.name}: opening the guide, under the video`); return;
     }
@@ -4651,7 +4651,7 @@ ${clip(gloss || "(none)", 9000)}`;
     b.title = on ? "Quick checks: on, the video stops at each one — K turns them off" : "Quick checks: off, the video plays on past them — K turns them on";
   }
   // The scenes that are a quick check of their own: the check's frame, tagged with it (`- quiz:`, as plan-map.mjs
-  // writes every check's frame; the scenes `reelplanning chapters --no-checks` cuts out), and asking nothing else.
+  // writes every check's frame; the scenes `reelplanner chapters --no-checks` cuts out), and asking nothing else.
   checkScenes() {
     const m = this.planMap; if (this._checkScenesFor === m) return this._checkScenes; this._checkScenesFor = m;
     const fr = m?.frames || [];
@@ -6796,7 +6796,7 @@ ${clip(gloss || "(none)", 9000)}`;
   // an explainer: a video of something already there; it asks nothing to decide, and Finish ends
   // it with Done, Explain more or Plan this instead of Approve and Request changes
   get isExplainer() { return this.planMap?.kind === "explainer"; }
-  // a quick video: its repo keeps no decision log (no .reelplanning/decisions.json: none at all, or only setup files),
+  // a quick video: its repo keeps no decision log (no .reelplanner/decisions.json: none at all, or only setup files),
   // which bundle-player says with `record="none"`, as the review server decides it (no record: a review downloads).
   // There is nothing to run `reel record` on: the review is the download, and the agent is told where it is.
   get isQuick() { return this.getAttribute("record") === "none" && !this.isSystem; }
@@ -6815,7 +6815,7 @@ ${clip(gloss || "(none)", 9000)}`;
       { cmd: `git add ${d} && git commit -m "Review: ${title}" && git push` },
     ];
     return [
-      // run from the reviewer's repo, where reelplanning is installed (RP_COMMAND), not a checkout
+      // run from the reviewer's repo, where reelplanner is installed (RP_COMMAND), not a checkout
       { cmd: `${RP_COMMAND} reel record ${d} ~/Downloads/annotations.json` },
       { cmd: `git add ${d} && git commit -m "Review: ${title}" && git push` },
     ];
@@ -7126,11 +7126,11 @@ ${clip(gloss || "(none)", 9000)}`;
     this.showHandoff({ fold: false });
   }
 }
-customElements.define("reelplanning-player", ReelplanningPlayer);
+customElements.define("reelplanner-player", ReelplannerPlayer);
 
 // ---- the guide under the video (D-264) ------------------------------------------------------------
-// <reelplanning-guide for="rp"></reelplanning-guide>, under the player on the review page (scripts/bundle-player.mjs puts
-// it there): the open video's guide (guide/index.html beside its plan map, as `reelplanning guide` builds it) in a
+// <reelplanner-guide for="rp"></reelplanner-guide>, under the player on the review page (scripts/bundle-player.mjs puts
+// it there): the open video's guide (guide/index.html beside its plan map, as `reelplanner guide` builds it) in a
 // same-origin frame as tall as the window. The page scrolls down to the frame; once the frame fills the window the guide
 // scrolls itself, and back at its top the page scrolls again. So the guide runs as on its own page (its sticky stage, its
 // reading line, its note box and Ask), its styles stay in its frame, and it never has to be measured. It takes no room
@@ -7154,12 +7154,12 @@ iframe{display:block;width:100%;height:100vh;height:calc(100svh - var(--rp-foot,
 // <explainer>--explainer; anything else, its folder (in a bundle, the folder is that name)
 function reviewName(src) {
   const p = String(src || "").replace(/[?#].*$/, "").replace(/\/index\.html$/, "").replace(/\/+$/, "");
-  const e = p.match(/\.reelplanning\/explainers\/([^/]+)\/video$/); if (e) return `${e[1]}--explainer`;
-  const m = p.match(/\.reelplanning\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
+  const e = p.match(/\.reelplann(?:er|ing)\/explainers\/([^/]+)\/video$/); if (e) return `${e[1]}--explainer`;
+  const m = p.match(/\.reelplann(?:er|ing)\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/);
   return m?.[3] ? "system" : m ? (m[2] === "video" ? m[1] : `${m[1]}--walkthrough`) : p.split("/").pop() || "";
 }
 const slugOf = (s) => String(s || "").replace(/[?#].*$/, "").replace(/\/index\.html$/, "").replace(/\/+$/, "").split("/").pop();
-export class ReelplanningGuide extends HTMLElement {
+export class ReelplannerGuide extends HTMLElement {
   connectedCallback() {
     if (this.shadowRoot) return;
     this.attachShadow({ mode: "open" }).innerHTML = `<style>${GUIDE_STYLE}</style><section class="gu" hidden aria-labelledby="gu-t"><header class="gh"><span class="k">Guide</span><h2 id="gu-t"></h2><p class="hint">Everything the video shows, and more. Highlight anything in it to leave a note, as you mark the video; Watch this moment plays it in the small player.</p></header><iframe title="The guide to this video"></iframe></section>`;
@@ -7294,4 +7294,4 @@ export class ReelplanningGuide extends HTMLElement {
     }
   }
 }
-customElements.define("reelplanning-guide", ReelplanningGuide);
+customElements.define("reelplanner-guide", ReelplannerGuide);

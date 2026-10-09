@@ -16,8 +16,8 @@ import { launchOpts, testPort, serverUp, staticServer } from "../../../scripts/l
 import { until, seeked, still, movedOn, now } from "./wait.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
 
-const PLAN = ".reelplanning/plans/2026-09-24-answer-on-the-video/video";
-const WALK = ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video";
+const PLAN = ".reelplanner/plans/2026-09-24-answer-on-the-video/video";
+const WALK = ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video";
 const port = testPort(8903);
 const srv = staticServer(port);
 await serverUp(port, { child: srv });

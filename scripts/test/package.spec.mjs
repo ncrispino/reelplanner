@@ -1,5 +1,5 @@
 // What `npm publish` ships (package.json "files"): everything the CLI needs and nothing else. A user who
-// runs `npx -y reelplanning@<version>` gets only these files, so a script that imports or reads a file left
+// runs `npx -y reelplanner@<version>` gets only these files, so a script that imports or reads a file left
 // out of "files" works in this checkout and fails for everyone else; and a video, a test or a plan in the
 // package makes every install larger for nothing. The publish workflow runs this in the full suite.
 import assert from "node:assert/strict";
@@ -21,7 +21,7 @@ test(`the package holds files (${files.length}, ${Math.round(pack.size / 1e3)} k
 
 test("no media, tests, videos, plans or example projects", () => {
   const bad = files.filter((f) => /\.(mp4|webm|wav|mp3|gif|png|jpe?g)$/i.test(f)
-    || /^(videos|media|docs|\.reelplanning|\.github)\//.test(f) || /(^|\/)test\//.test(f) || /^scripts\/release\//.test(f)
+    || /^(videos|media|docs|\.reelplanner|\.github)\//.test(f) || /(^|\/)test\//.test(f) || /^scripts\/release\//.test(f)
     || (/^eval\//.test(f) && !/^eval\/case-studies\/(TEMPLATE\.md|REPLICATE\.md|kit\/)/.test(f)));
   assert.deepEqual(bad, []);
 });
@@ -39,7 +39,7 @@ test(`every relative import in the ${code.length} shipped scripts is shipped`, (
     const src = readFileSync(join(ROOT, f), "utf8");
     const specs = [...src.matchAll(/^\s*(?:import|export)\b[^;"'`]*?(?:\bfrom\s*)?["'](\.\.?\/[^"']+)["']/gm), ...src.matchAll(/\bimport\(\s*["'](\.\.?\/[^"']+)["']\s*\)/g)];
     for (const [, spec] of specs) {
-      if (spec.includes("node_modules/")) continue; // a dependency: beside reelplanning under npx (bundle-player rewrites it)
+      if (spec.includes("node_modules/")) continue; // a dependency: beside reelplanner under npx (bundle-player rewrites it)
       if (!shipped.has(posix.normalize(posix.join(dirname(f), spec)))) missing.push(`${f} imports ${spec}`);
     }
   }

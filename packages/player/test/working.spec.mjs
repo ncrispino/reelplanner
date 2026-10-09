@@ -26,7 +26,7 @@ function serve(port) {
     if (path === "/api/review/status") { st.asked++; return u.searchParams.get("id") === "l2-test" ? send(200, { ok: true, id: "l2-test", ...st.status }) : send(404, { ok: false, error: "no such review" }); }
     if (path === "/api/review") {
       if (req.method === "GET") return send(200, { ok: true, sessionWaiting: st.handledBy === "session", agentCommand: null, inbox: 0 });
-      let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => send(200, { ok: true, id: "l2-test", path: ".reelplanning/inbox/l2-test.json", duplicate: false, handledBy: st.handledBy, message: "your open session has it" }));
+      let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => send(200, { ok: true, id: "l2-test", path: ".reelplanner/inbox/l2-test.json", duplicate: false, handledBy: st.handledBy, message: "your open session has it" }));
       return;
     }
     if (path === `/${project}/plan-map.json`) { res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" }).end(JSON.stringify(st.rebuilt ? REBUILT : MAP)); return; }
@@ -125,7 +125,7 @@ const sendReview = async (p, verdict = null) => {
   const p = await open();
   await sendReview(p, "approve");
   await textIs(p, /Waiting/);
-  A.st.status = { state: "done", by: "agent", build: SIG, log: ".reelplanning/inbox/runs/l2-test.log" };
+  A.st.status = { state: "done", by: "agent", build: SIG, log: ".reelplanner/inbox/runs/l2-test.log" };
   await textIs(p, /^Done/);
   let s = await strip(p);
   ok(s.text === "Done: recorded, no new video" && !s.pop && s.live === "0" && s.time === "", `done without a rebuild: no popup, the line says so — "${s.text}"`);
@@ -157,10 +157,10 @@ const sendReview = async (p, verdict = null) => {
   await textIs(p, /Waiting/);
   let s = await strip(p);
   ok(s.anim === "none" && s.live === "1", `under reduced motion the line does not move — animation ${s.anim}`);
-  A.st.status = { state: "stopped", by: "agent", build: SIG, log: ".reelplanning/inbox/runs/l2-test.log" };
+  A.st.status = { state: "stopped", by: "agent", build: SIG, log: ".reelplanner/inbox/runs/l2-test.log" };
   await textIs(p, /stopped/);
   s = await strip(p);
-  ok(s.text === "The run stopped before it finished: its log is .reelplanning/inbox/runs/l2-test.log" && s.live === "0" && !s.pop, `stopped: the line says so, with the run's log — "${s.text}"`);
+  ok(s.text === "The run stopped before it finished: its log is .reelplanner/inbox/runs/l2-test.log" && s.live === "0" && !s.pop, `stopped: the line says so, with the run's log — "${s.text}"`);
   await p.close();
 }
 

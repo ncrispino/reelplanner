@@ -10,7 +10,7 @@
 //   - plan-map on a rebuild names the last build's pictures (the order the build runs in)
 //   - verify (lint, check, details, fresh eyes, snapshot) sets them again: every frame has a thumbnail, each
 //     names a picture in snapshots/, the one at its midpoint; the rest of the map (plan-diff's `changes`) kept
-//   - `reelplanning snapshot` alone does the same, and `plan-map --thumbs` with no pictures leaves none stale
+//   - `reelplanner snapshot` alone does the same, and `plan-map --thumbs` with no pictures leaves none stale
 //   - the choice itself: the picture nearest a frame's midpoint of those inside it (not the first listed, not
 //     an end-of-timeline picture), a frame with none inside it takes none further than its length away, and
 //     one frame's choice never changes another's
@@ -79,12 +79,12 @@ ok("each thumbnail is the picture at its frame's midpoint", JSON.stringify(named
 ok("the rest of the map is kept (plan-diff's changes)", map().changes?.build === "abc123" && map().frames.length === 3, JSON.stringify(map().changes));
 ok("verify says the thumbnails were set", /plan-map\.json thumbnails: 3 of 3 frames/.test(r.stdout), r.stdout.slice(-800));
 
-// `reelplanning snapshot` alone: a fresh clone (snapshots/ is not in git) gets them back
+// `reelplanner snapshot` alone: a fresh clone (snapshots/ is not in git) gets them back
 rmSync(join(P, "snapshots"), { recursive: true, force: true });
-r = node(join(ROOT, "bin", "reelplanning.mjs"), "plan-map", P, "--thumbs");
+r = node(join(ROOT, "bin", "reelplanner.mjs"), "plan-map", P, "--thumbs");
 ok("plan-map --thumbs with no pictures leaves no thumbnail naming a missing file, and says so", r.status === 0 && named().every((x) => x === null) && /△ plan-map\.json thumbnails: 0 of 3/.test(r.stdout), r.stdout + r.stderr);
-r = node(join(ROOT, "bin", "reelplanning.mjs"), "snapshot", P);
-ok("reelplanning snapshot takes the pictures and sets the thumbnails again", r.status === 0 && there(), r.stdout + r.stderr);
+r = node(join(ROOT, "bin", "reelplanner.mjs"), "snapshot", P);
+ok("reelplanner snapshot takes the pictures and sets the thumbnails again", r.status === 0 && there(), r.stdout + r.stderr);
 
 rmSync(tmp, { recursive: true, force: true });
 if (failed) { console.error(`\n✗ ${failed} check(s) failed`); process.exit(1); }

@@ -18,9 +18,9 @@ import { chromium } from "playwright-core"; import { launchOpts, testPort, serve
 import { until, seeked, still, settled, now } from "./wait.mjs";
 import { readFileSync } from "node:fs"; import { join } from "node:path";
 
-const L2 = "videos/l2-upload-resume", CONTRIB = ".reelplanning/plans/2026-09-26-contributing/walkthrough-video";
+const L2 = "videos/l2-upload-resume", CONTRIB = ".reelplanner/plans/2026-09-26-contributing/walkthrough-video";
 // the system video is rebuilt whenever the system changes: its first quick check's time comes from its plan map
-const SYSTEM = ".reelplanning/system-video", firstCheck = (v) => JSON.parse(readFileSync(join(ROOT, v, "plan-map.json"), "utf8")).quizzes[0].at;
+const SYSTEM = ".reelplanner/system-video", firstCheck = (v) => JSON.parse(readFileSync(join(ROOT, v, "plan-map.json"), "utf8")).quizzes[0].at;
 const RUNS = [
   [L2, 58.446, "choice 1", "Choice 1 · Step 1"], [L2, 139.492, "choice 2", "CHOICE 2 · STEP 4"], [L2, 191.801, "choice 3", "CHOICE 3 · STEP 5"],
   ...(FULL ? [[CONTRIB, 64.207, "call A2"], [CONTRIB, 71.802, "grouped calls"], [CONTRIB, 113.188, "quick check 1"], [SYSTEM, firstCheck(SYSTEM), "quick check 1"], ["videos/w1-upload-resume", 57.294, "quick check 1"]] : []),
@@ -80,7 +80,7 @@ for (const [project, at, what, heading] of RUNS) {
 // captions): going back undoes that set, leaving a group inline visible, which the page's hidden on the captions'
 // parent did not reach. Met again after going back, no caption is seen while the question is up.
 {
-  const V = ".reelplanning/plans/2026-09-27-details-in-the-frame/video";
+  const V = ".reelplanner/plans/2026-09-27-details-in-the-frame/video";
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
   p.on("pageerror", (e) => fails.push(`captions: page error ${String(e).slice(0, 120)}`));
   await p.goto(`http://127.0.0.1:${port}/packages/player/?project=${V}`);
@@ -108,7 +108,7 @@ for (const [project, at, what, heading] of RUNS) {
 // thing; this is what the reviewer sees). Alone, or in `npm test`, one scene of each rebuilt walkthrough; with --full,
 // every marked scene of them.
 {
-  const VIDS = [".reelplanning/plans/2026-09-29-explain-first/walkthrough-video", ".reelplanning/plans/2026-09-27-walkthroughs-that-help/walkthrough-video", ".reelplanning/plans/2026-09-26-contributing/walkthrough-video"];
+  const VIDS = [".reelplanner/plans/2026-09-29-explain-first/walkthrough-video", ".reelplanner/plans/2026-09-27-walkthroughs-that-help/walkthrough-video", ".reelplanner/plans/2026-09-26-contributing/walkthrough-video"];
   for (const V of VIDS) {
     const p = await b.newPage({ viewport: { width: 1440, height: 1000 } });
     p.on("pageerror", (e) => fails.push(`${V}: page error ${String(e).slice(0, 120)}`));

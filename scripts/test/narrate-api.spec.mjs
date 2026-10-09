@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Hosted narration (scripts/lib/narrator.mjs, narrate-engine.mjs, tts-api.mjs): `reelplanning narrate` with
-// .reelplanning/config.json's `narration.tts` set, under the REAL faceless-explainer audio.mjs, against a fake
+// Hosted narration (scripts/lib/narrator.mjs, narrate-engine.mjs, tts-api.mjs): `reelplanner narrate` with
+// .reelplanner/config.json's `narration.tts` set, under the REAL faceless-explainer audio.mjs, against a fake
 // HTTP server in this process that answers as each API does. No real key, no network, no Kokoro, no whisper.
 //   - openai + groq timings: the speech and transcription requests' shapes, the key only in its header, the
 //     wavs (a streamed wav's header made exact), word timings mapped onto the line's own words, the record's model
@@ -9,7 +9,7 @@
 //     local narration (config.json's kokoro, or the default) with Kokoro missing stops, saying what to run either way
 //   - 429 and 503 are retried (Retry-After honoured) and the run ends clean; a refused key stops it, kept lines back
 //   - a missing key stops the run before any request, naming the variable; a dry run only says so; no key in any output;
-//     a key in a .env beside the project is read, and one in the repo's .reelplanning/.env over it
+//     a key in a .env beside the project is read, and one in the repo's .reelplanner/.env over it
 //   - deepinfra (its own word timings), elevenlabs (character alignment, speed held to 1.2), openai-compatible with
 //     whisper-1 timings, openrouter (mp3 made a wav, its own transcriber, one key for both): each switch re-voices
 //     (the key's model), and a Kokoro voice is kept across Kokoro hosts
@@ -27,13 +27,13 @@ import { fakeTtsApis, KEYS } from "./fake-tts-apis.mjs";
 
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 1500)}` : ""}`); if (!cond) failed++; };
-if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) { console.error("✗ narrate-api.spec needs HyperFrames' faceless-explainer skill — run `reelplanning hyperframes-skills`"); process.exit(1); }
+if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) { console.error("✗ narrate-api.spec needs HyperFrames' faceless-explainer skill — run `reelplanner hyperframes-skills`"); process.exit(1); }
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-narrate-api-"));
-const P = join(tmp, "video"), CFG = join(tmp, ".reelplanning", "config.json");
-// this machine's .env (~/.reelplanning/.env) is read by every narration command: a scratch one, never the real one
+const P = join(tmp, "video"), CFG = join(tmp, ".reelplanner", "config.json");
+// this machine's .env (~/.reelplanner/.env) is read by every narration command: a scratch one, never the real one
 const RPHOME = join(tmp, "rp-home"), HOME_ENV = join(RPHOME, ".env");
-process.env.REELPLANNING_HOME = RPHOME;
+process.env.REELPLANNER_HOME = RPHOME;
 
 // ── the fake APIs (fake-tts-apis.mjs) ────────────────────────────────────────────────────────────
 const api = await fakeTtsApis(testPort(28640));
@@ -50,20 +50,20 @@ const LINES = [
 const script = (lines) => `# SCRIPT\n\n${lines.map((t, i) => `## Line ${i + 1} — beat (Frame ${i + 1})\n\n    ${t}\n`).join("\n")}`;
 const storyboard = (n, music = "none") => `---\ntitle: test\nmusic: ${music}\n---\n\n${Array.from({ length: n }, (_, i) => `## Frame ${i + 1} — beat ${i + 1}\n\n- duration: 5s\n`).join("\n")}`;
 const setLines = (lines) => writeFileSync(join(P, "SCRIPT.md"), script(lines));
-const config = (narration) => { mkdirSync(join(tmp, ".reelplanning"), { recursive: true }); writeFileSync(CFG, JSON.stringify({ narration }, null, 2)); };
-const baseEnv = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(REELPLANNING_|HYPERFRAMES_TTS|HF_MEDIA)/.test(k) && !/_API_KEY$/.test(k)));
+const config = (narration) => { mkdirSync(join(tmp, ".reelplanner"), { recursive: true }); writeFileSync(CFG, JSON.stringify({ narration }, null, 2)); };
+const baseEnv = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^(REELPLANNER_|HYPERFRAMES_TTS|HF_MEDIA)/.test(k) && !/_API_KEY$/.test(k)));
 const narrate = (args = [], env = {}) => new Promise((done) => {
   const before = log.length;
   // (a null in `env` leaves that variable out altogether)
-  const all = Object.fromEntries(Object.entries({ ...baseEnv, ...KEYS, REELPLANNING_TTS_RETRY_MS: "20", REELPLANNING_HOME: RPHOME, ...env }).filter(([, v]) => v != null));
+  const all = Object.fromEntries(Object.entries({ ...baseEnv, ...KEYS, REELPLANNER_TTS_RETRY_MS: "20", REELPLANNER_HOME: RPHOME, ...env }).filter(([, v]) => v != null));
   const c = spawn(process.execPath, [join(ROOT, "scripts", "narrate.mjs"), P, ...args], { env: all, stdio: ["ignore", "pipe", "pipe"] });
   let out = ""; c.stdout.on("data", (d) => { out += d; }); c.stderr.on("data", (d) => { out += d; });
   c.on("close", (code) => done({ code, out, reqs: log.slice(before) }));
 });
-// another of reelplanning's scripts on the project, with the same environment as narrate
+// another of reelplanner's scripts on the project, with the same environment as narrate
 const tool = (name, env = {}) => new Promise((done) => {
   const before = log.length;
-  const all = Object.fromEntries(Object.entries({ ...baseEnv, ...KEYS, REELPLANNING_TTS_RETRY_MS: "20", REELPLANNING_HOME: RPHOME, ...env }).filter(([, v]) => v != null));
+  const all = Object.fromEntries(Object.entries({ ...baseEnv, ...KEYS, REELPLANNER_TTS_RETRY_MS: "20", REELPLANNER_HOME: RPHOME, ...env }).filter(([, v]) => v != null));
   const c = spawn(process.execPath, [join(ROOT, "scripts", name), P], { env: all, stdio: ["ignore", "pipe", "pipe"] });
   let out = ""; c.stdout.on("data", (d) => { out += d; }); c.stderr.on("data", (d) => { out += d; });
   c.on("close", (code) => done({ code, out, reqs: log.slice(before) }));
@@ -127,13 +127,13 @@ try {
   ok("transcribe-missing, hosted narration: the line's words from the hosted transcriber (groq), lined up with the line's own words, in both meta files",
     tm.code === 0 && transReqs(tm).length === 1 && speechReqs(tm).length === 0 && /transcribing serially with groq whisper-large-v3-turbo/.test(tm.out)
       && json("audio_meta.json").voices[1].words.map((w) => w.text).join(" ") === "A line voiced with no local voice installed." && json("audio_engine_meta.json").voices[1].words.length === 8 && noKeyIn(tm.out), tm.out);
-  const LOCAL_HINT = "Either install the local voice: `reelplanning setup --local-voice` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put REELPLANNING_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanning/.env (a key from https://openrouter.ai/settings/keys), then run `reelplanning narration-check`";
+  const LOCAL_HINT = "Either install the local voice: `reelplanner setup --local-voice` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanner/.env (a key from https://openrouter.ai/settings/keys), then run `reelplanner narration-check`";
   config({ tts: "kokoro" });
   const w0s = wavs();
   setLines([LINES[0], "A line for a voice that is not installed.", ...LINES.slice(2)]);
   const lv2 = await narrate([], NO_KOKORO);
   ok("local Kokoro named (config.json) and not installed: stops before anything is touched, saying exactly what to run either way",
-    lv2.code === 1 && lv2.reqs.length === 0 && lv2.out.includes(`✗ narrate: Kokoro TTS is not installed, and narration here is local Kokoro (from .reelplanning/config.json's narration). ${LOCAL_HINT}`) && JSON.stringify(wavs()) === JSON.stringify(w0s), lv2.out);
+    lv2.code === 1 && lv2.reqs.length === 0 && lv2.out.includes(`✗ narrate: Kokoro TTS is not installed, and narration here is local Kokoro (from .reelplanner/config.json's narration). ${LOCAL_HINT}`) && JSON.stringify(wavs()) === JSON.stringify(w0s), lv2.out);
   const lv3 = await narrate(["--dry-run"], NO_KOKORO);
   ok("…a dry run only says so", lv3.code === 0 && lv3.out.includes(`△ Kokoro TTS is not installed, and narration here is local Kokoro`), lv3.out);
   config({});
@@ -154,7 +154,7 @@ try {
   ok("…the kept lines byte for byte", ["01.wav", "03.wav", "04.wav", "05.wav"].every((f) => wavs()[f] === w1[f]) && wavs()["02.wav"] !== w1["02.wav"]);
   fail.speech.push(500, 500, 500, 500, 500);
   setLines([LINES[0], "It's made into a short video.", ...LINES.slice(2)]);
-  const r3b = await narrate([], { REELPLANNING_TTS_RETRY_MS: "1" });
+  const r3b = await narrate([], { REELPLANNER_TTS_RETRY_MS: "1" });
   ok("…and after its retries (4) a line that still fails is named and left for the next run", r3b.code === 1 && speechReqs(r3b).length === 5 && /HTTP 500.*after 5 tries/.test(r3b.out) && /no voice came back for frame\(s\) 2/.test(r3b.out), r3b.out);
   const r3c = await narrate();
   ok("…which voices only it", r3c.code === 0 && speechReqs(r3c).length === 1, r3c.out);
@@ -166,45 +166,45 @@ try {
   ok("a refused key (401) stops the run, naming the variable; the kept lines are back as they were",
     r4.code === 1 && /refused the key in OPENAI_API_KEY \(HTTP 401/.test(r4.out) && /kept lines are back as they were/.test(r4.out) && ["01.wav", "03.wav"].every((f) => wavs()[f] === w2[f]) && !r4.out.includes("sk-wrong"), r4.out);
   const r5 = await narrate([], { OPENAI_API_KEY: "" });
-  ok("a missing key stops the run before any request, and says what to set and where: this machine's ~/.reelplanning/.env or the repo's",
-    r5.code === 1 && r5.reqs.length === 0 && /OPENAI_API_KEY is not set: narration "openai" with word timings from groq needs it: export it in your shell, or put it in ~\/\.reelplanning\/\.env \(this machine, every repo\) or the repo's \.reelplanning\/\.env/.test(r5.out), r5.out);
+  ok("a missing key stops the run before any request, and says what to set and where: this machine's ~/.reelplanner/.env or the repo's",
+    r5.code === 1 && r5.reqs.length === 0 && /OPENAI_API_KEY is not set: narration "openai" with word timings from groq needs it: export it in your shell, or put it in ~\/\.reelplanner\/\.env \(this machine, every repo\) or the repo's \.reelplanner\/\.env/.test(r5.out), r5.out);
   const r5d = await narrate(["--dry-run"], { OPENAI_API_KEY: "", GROQ_API_KEY: "" });
   ok("…a dry run only says so, both of them", r5d.code === 0 && r5d.reqs.length === 0 && /△ OPENAI_API_KEY and GROQ_API_KEY are not set/.test(r5d.out), r5d.out);
   writeFileSync(join(tmp, ".env"), `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);
   const r5e = await narrate([], { OPENAI_API_KEY: null });
   ok("…and a key in a .env beside the project is read", r5e.code === 0 && speechReqs(r5e).length === 1 && noKeyIn(r5e.out), r5e.out);
-  // the repo's .reelplanning/.env, which walking up from the video folder never reaches here, and over that .env
-  writeFileSync(join(tmp, ".reelplanning", ".env"), `# narration keys\nOPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);
+  // the repo's .reelplanner/.env, which walking up from the video folder never reaches here, and over that .env
+  writeFileSync(join(tmp, ".reelplanner", ".env"), `# narration keys\nOPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);
   writeFileSync(join(tmp, ".env"), "OPENAI_API_KEY=sk-a-stale-one-beside\n");
   setLines([LINES[0], "A line voiced with the key kept in the record's folder.", ...LINES.slice(2)]);
   const r5f = await narrate([], { OPENAI_API_KEY: null });
-  ok("…and a key in the repo's .reelplanning/.env is read for a video, over a .env beside it", r5f.code === 0 && speechReqs(r5f).length === 1
+  ok("…and a key in the repo's .reelplanner/.env is read for a video, over a .env beside it", r5f.code === 0 && speechReqs(r5f).length === 1
     && speechReqs(r5f)[0].headers.authorization === `Bearer ${KEYS.OPENAI_API_KEY}` && noKeyIn(r5f.out) && !r5f.out.includes("sk-a-stale-one-beside"), r5f.out);
-  rmSync(join(tmp, ".env")); rmSync(join(tmp, ".reelplanning", ".env"));
+  rmSync(join(tmp, ".env")); rmSync(join(tmp, ".reelplanner", ".env"));
 
-  // ── this machine's ~/.reelplanning/.env (REELPLANNING_HOME's, here): read last; its REELPLANNING_TTS picks the engine
-  //    with no narration.tts in config.json; the repo's .reelplanning/.env and the shell win over it ──
+  // ── this machine's ~/.reelplanner/.env (REELPLANNER_HOME's, here): read last; its REELPLANNER_TTS picks the engine
+  //    with no narration.tts in config.json; the repo's .reelplanner/.env and the shell win over it ──
   mkdirSync(RPHOME, { recursive: true });
   const homeEnv = (lines) => writeFileSync(HOME_ENV, lines.join("\n") + "\n");
   config({ timings_base_url: `${BASE}/groq/openai/v1` });   // no tts: the engine comes from the machine's .env
-  homeEnv([`REELPLANNING_TTS=openai`, `REELPLANNING_TTS_BASE_URL=${BASE}/openai/v1`, `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}`]);
+  homeEnv([`REELPLANNER_TTS=openai`, `REELPLANNER_TTS_BASE_URL=${BASE}/openai/v1`, `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}`]);
   setLines([LINES[0], "A line voiced with the machine's own settings.", ...LINES.slice(2)]);
   const h1 = await narrate([], { OPENAI_API_KEY: null });
-  ok("~/.reelplanning/.env: its REELPLANNING_TTS picks the engine (no narration.tts in config.json) and its key is used",
+  ok("~/.reelplanner/.env: its REELPLANNER_TTS picks the engine (no narration.tts in config.json) and its key is used",
     h1.code === 0 && speechReqs(h1).length === 1 && speechReqs(h1)[0].path === "/openai/v1/audio/speech" && speechReqs(h1)[0].headers.authorization === `Bearer ${KEYS.OPENAI_API_KEY}` && noKeyIn(h1.out), h1.out);
-  ok("…and narrate says the setting came from that file", h1.out.includes(`REELPLANNING_TTS in ${HOME_ENV}`), h1.out);
+  ok("…and narrate says the setting came from that file", h1.out.includes(`REELPLANNER_TTS in ${HOME_ENV}`), h1.out);
   const STALE_HOME = "sk-a-stale-one-on-the-machine";
-  homeEnv([`REELPLANNING_TTS=openai`, `REELPLANNING_TTS_BASE_URL=${BASE}/openai/v1`, `OPENAI_API_KEY=${STALE_HOME}`]);
-  writeFileSync(join(tmp, ".reelplanning", ".env"), `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);
+  homeEnv([`REELPLANNER_TTS=openai`, `REELPLANNER_TTS_BASE_URL=${BASE}/openai/v1`, `OPENAI_API_KEY=${STALE_HOME}`]);
+  writeFileSync(join(tmp, ".reelplanner", ".env"), `OPENAI_API_KEY=${KEYS.OPENAI_API_KEY}\n`);
   setLines([LINES[0], "A line voiced with the repo's key over the machine's.", ...LINES.slice(2)]);
   const h2 = await narrate([], { OPENAI_API_KEY: null });
-  ok("…the repo's .reelplanning/.env wins over it", h2.code === 0 && speechReqs(h2)[0]?.headers.authorization === `Bearer ${KEYS.OPENAI_API_KEY}` && !h2.out.includes(STALE_HOME), h2.out);
-  rmSync(join(tmp, ".reelplanning", ".env"));
+  ok("…the repo's .reelplanner/.env wins over it", h2.code === 0 && speechReqs(h2)[0]?.headers.authorization === `Bearer ${KEYS.OPENAI_API_KEY}` && !h2.out.includes(STALE_HOME), h2.out);
+  rmSync(join(tmp, ".reelplanner", ".env"));
   setLines([LINES[0], "A line voiced with the shell's key over the machine's.", ...LINES.slice(2)]);
   const h3 = await narrate([], {});
   ok("…and so does the shell", h3.code === 0 && speechReqs(h3)[0]?.headers.authorization === `Bearer ${KEYS.OPENAI_API_KEY}` && !h3.out.includes(STALE_HOME), h3.out);
-  const h4 = await narrate(["--dry-run"], { REELPLANNING_HOME: join(tmp, "rp-home-none"), OPENAI_API_KEY: null });
-  ok("…another REELPLANNING_HOME, with no .env: no engine from it (HyperFrames' own)", h4.code === 0 && !/reelplanning's engine/.test(h4.out) && !h4.out.includes(HOME_ENV), h4.out);
+  const h4 = await narrate(["--dry-run"], { REELPLANNER_HOME: join(tmp, "rp-home-none"), OPENAI_API_KEY: null });
+  ok("…another REELPLANNER_HOME, with no .env: no engine from it (HyperFrames' own)", h4.code === 0 && !/reelplanner's engine/.test(h4.out) && !h4.out.includes(HOME_ENV), h4.out);
   rmSync(HOME_ENV);
 
   // ── deepinfra: its own word timings, same Kokoro voice as local ──
@@ -263,7 +263,7 @@ if (f("only") !== "bgm" || req.bgm.mode !== "retrieve") process.exit(4);
 writeFileSync(f("out"), JSON.stringify({ ...m, bgm: { path: "assets/bgm.mp3", volume: 0.2, mode: "retrieve", query: req.bgm.query }, bgm_provider: "fake" }));`);
   writeFileSync(join(P, "STORYBOARD.md"), storyboard(LINES.length, "calm piano"));
   setLines([...LINES.slice(0, 4), "Then you approve it, or ask for a change."]);
-  const r9 = await narrate([], { REELPLANNING_MEDIA_ENGINE: MEDIA });
+  const r9 = await narrate([], { REELPLANNER_MEDIA_ENGINE: MEDIA });
   const m9 = json("audio_meta.json");
   ok("music comes from HyperFrames' engine on the last call, merged under the voices", r9.code === 0 && m9.bgm?.path === "assets/bgm.mp3" && m9.bgm.query === "calm piano" && m9.voices.length === 5 && json("audio_engine_meta.json").bgm_provider === "fake", `${JSON.stringify(m9.bgm)}\n${r9.out}`);
 
@@ -274,10 +274,10 @@ writeFileSync(f("out"), JSON.stringify({ ...m, bgm: { path: "assets/bgm.mp3", vo
   ok("…openai has no timings of its own: says to pick api or local", /returns no word timings of its own: set narration.timings to "api"/.test(S({ tts: "openai", timings: "provider" }).error));
   ok("…openai-compatible needs a base URL", /needs a base URL: narration.base_url/.test(S({ tts: "openai-compatible", model: "m", voice: "v" }).error));
   ok("…a whisper model alone asks for tts kokoro", /needs a "tts" too/.test(S({ whisper_model: "base.en" }).error));
-  const env1 = S({ tts: "openai" }, { REELPLANNING_TTS: "elevenlabs" });
-  ok("…the environment wins over config.json", env1.tts === "elevenlabs" && env1.from.includes("REELPLANNING_TTS"));
+  const env1 = S({ tts: "openai" }, { REELPLANNER_TTS: "elevenlabs" });
+  ok("…the environment wins over config.json", env1.tts === "elevenlabs" && env1.from.includes("REELPLANNER_TTS"));
   const loc = S({ tts: "kokoro", whisper_model: "base.en" });
-  ok("…local Kokoro with a smaller whisper: one line at a time, whisper base.en in the key", loc.engine === "reelplanning" && !loc.hosted && loc.concurrency === 1 && loc.keyModel === "kokoro + whisper base.en" && !loc.missing.length);
+  ok("…local Kokoro with a smaller whisper: one line at a time, whisper base.en in the key", loc.engine === "reelplanner" && !loc.hosted && loc.concurrency === 1 && loc.keyModel === "kokoro + whisper base.en" && !loc.missing.length);
   const orr = S({ tts: "openrouter" }, { GROQ_API_KEY: "x" });
   ok("…openrouter: Deepgram Aura-2 and aura-2-apollo-en by default (its Kokoro route is slow), timed by openrouter openai/whisper-1 even with a Groq key, one key missing once",
     orr.model === "deepgram/aura-2" && orr.voice === "aura-2-apollo-en" && orr.family === "openrouter deepgram" && orr.timingsApi.name === "openrouter" && orr.timingsApi.model === "openai/whisper-1" && orr.missing.join() === "OPENROUTER_API_KEY", JSON.stringify(orr));
@@ -305,7 +305,7 @@ writeFileSync(f("out"), JSON.stringify({ ...m, bgm: { path: "assets/bgm.mp3", vo
     JSON.stringify(alignWords("Run claude dash p now.", [{ text: "run", start: 0, end: 0.2 }, { text: "cloud", start: 0.2, end: 0.5 }, { text: "dash-p", start: 0.5, end: 0.8 }, { text: "now", start: 0.9, end: 1.1 }]).map((w) => [w.text, w.start, w.end]))
       === JSON.stringify([["Run", 0, 0.2], ["claude", 0.2, 0.527], ["dash", 0.527, 0.745], ["p", 0.745, 0.8], ["now.", 0.9, 1.1]]));
   ok("…and nothing heard is no timings, not made-up ones", alignWords("Hello there.", []).length === 0);
-  // a server that answers mp3 whatever it was asked for: ffmpeg (which reelplanning needs anyway) makes it a wav
+  // a server that answers mp3 whatever it was asked for: ffmpeg (which reelplanner needs anyway) makes it a wav
   if (!ffmpeg) ok("toWav: audio that is not a wav goes through ffmpeg (skipped: ffmpeg is not on PATH)", true);
   else {
     const mp3 = join(tmp, "t.mp3");

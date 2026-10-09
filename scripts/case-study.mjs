@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // reel case-study — one prompt, three arms (text only, HTML, ours), each to a finished site, and the page
-// that sets them side by side (the case-study plan, .reelplanning/plans/2026-09-26-case-study/).
+// that sets them side by side (the case-study plan, .reelplanner/plans/2026-09-26-case-study/).
 //
 //   reel case-study <slug> --prompt <file> [--from <commit>] [--folder <name>] [--title <words>]
 //                   [--model <id>] [--claude-code <version>] [--into <dir>]
@@ -22,7 +22,7 @@
 //       the models and Claude Code versions, the first and last times, prompts, responses and tool calls, from
 //       metadata only; with --site, the voice and model each video was narrated with
 //
-// The kit it copies is in eval/case-studies/ (TEMPLATE.md, REPLICATE.md, kit/). Same as `reelplanning case-study`.
+// The kit it copies is in eval/case-studies/ (TEMPLATE.md, REPLICATE.md, kit/). Same as `reelplanner case-study`.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, readdirSync, statSync, chmodSync, rmSync, mkdtempSync, realpathSync, cpSync } from "node:fs";
 import { resolve, join, dirname, relative, basename } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,8 +61,8 @@ export const ARMS = [
     "ask for `report.html` (`report.prompt.txt`), read it, then open the site",
     "ask in chat",
     "you would ship it"] },
-  { id: "ours", title: "Ours (reelplanning)", claudeArgs: "", do: [
-    "\"Use reelplanning to plan: \" and the prompt; the plan video",
+  { id: "ours", title: "Ours (reelplanner)", claudeArgs: "", do: [
+    "\"Use reelplanner to plan: \" and the prompt; the plan video",
     "the plan video on the review page",
     "revised steps, rebuilt scenes",
     "build, choices recorded, stop at a step's fifth",
@@ -94,31 +94,31 @@ function sheet(arm, v) {
   return fill(read(join(KIT, "kit", "SHEET.md")), { ...v, arm_title: arm.title, first_prompt: v.first[arm.id].trimEnd(), stages });
 }
 
-// reelplanning is not on npm yet (`npm view reelplanning` says 404): it installs from GitHub (docs/reference.md,
+// reelplanner is not on npm yet (`npm view reelplanner` says 404): it installs from GitHub (docs/reference.md,
 // "Install"), and while the repo is private from a tarball `npm pack` makes in a checkout. The one place the kit names it.
-export const GITHUB = "github:ncrispino/reelplanning";
+export const GITHUB = "github:ncrispino/reelplanner";
 const lines = (...l) => l.join("\n") + "\n";
 const dockerExtra = {
   text: { root: "", user: "", net: "" },
   html: { root: "", user: "", net: "" },
-  // this arm only: reelplanning, its skill and its video tools (ffmpeg, a headless Chrome, TTS, whisper.cpp)
+  // this arm only: reelplanner, its skill and its video tools (ffmpeg, a headless Chrome, TTS, whisper.cpp)
   ours: {
-    // the review page `reelplanning review` serves inside the container, on its 127.0.0.1:8787, opens in your browser
+    // the review page `reelplanner review` serves inside the container, on its 127.0.0.1:8787, opens in your browser
     net: " --network host",
     root: lines(
-      "# this arm only: what reelplanning's video tools need (ffmpeg; unzip for Chrome; Python for the TTS; a compiler for whisper.cpp; a headless Chrome's libraries)",
+      "# this arm only: what reelplanner's video tools need (ffmpeg; unzip for Chrome; Python for the TTS; a compiler for whisper.cpp; a headless Chrome's libraries)",
       "RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg unzip python3 python3-pip python3-venv cmake build-essential \\",
       " && npx -y playwright-core install-deps chromium && rm -rf /var/lib/apt/lists/*",
-      "# this arm only: reelplanning itself, not on npm yet: a reelplanning-<version>.tgz beside this file when there is one (`npm pack`",
+      "# this arm only: reelplanner itself, not on npm yet: a reelplanner-<version>.tgz beside this file when there is one (`npm pack`",
       "# in a checkout, while the repo is private: REPLICATE.md, \"1. Install\"), else from GitHub",
-      `ARG REELPLANNING=${GITHUB}`,
-      "COPY smoke.sh reelplanning*.tgz /opt/case-study/",
-      "RUN t=$(ls /opt/case-study/reelplanning*.tgz 2>/dev/null | head -n1); npm i -g \"${t:-$REELPLANNING}\" && rm -f /opt/case-study/reelplanning*.tgz"),
+      `ARG REELPLANNER=${GITHUB}`,
+      "COPY smoke.sh reelplanner*.tgz /opt/case-study/",
+      "RUN t=$(ls /opt/case-study/reelplanner*.tgz 2>/dev/null | head -n1); npm i -g \"${t:-$REELPLANNER}\" && rm -f /opt/case-study/reelplanner*.tgz"),
     user: "\n" + lines(
-      "# this arm only: the skill (from the package just installed), reelplanning's setup, and a smoke render that proves",
+      "# this arm only: the skill (from the package just installed), reelplanner's setup, and a smoke render that proves",
       "# the image makes a video: a line of speech, its word timings, ten seconds of video (REPLICATE.md, \"1. Install\")",
-      "RUN npx -y skills add \"$(npm root -g)/reelplanning\" --skill plan-to-video -g -y -a claude-code \\",
-      " && reelplanning setup && sh /opt/case-study/smoke.sh").trimEnd(),
+      "RUN npx -y skills add \"$(npm root -g)/reelplanner\" --skill plan-to-video -g -y -a claude-code \\",
+      " && reelplanner setup && sh /opt/case-study/smoke.sh").trimEnd(),
   },
 };
 
@@ -126,17 +126,17 @@ const MEDIA_EXT = ["wav", "mp3", "m4a", "mp4", "webm", "mov"];
 /**
  * What the site's git leaves out, written to its .git/info/exclude when the arm starts (start.sh; RUNBOOK.md in a
  * cloud session): the built videos' media, as in a shared repo (templates/gitignore), and any voice file, video or
- * render under .reelplanning/. D-305: no voice files or renders are committed anywhere, and a kept site's history
+ * render under .reelplanner/. D-305: no voice files or renders are committed anywhere, and a kept site's history
  * is committed here, as site.bundle.
  */
 export function siteExclude() {
   const shared = read(join(ROOT, "templates", "gitignore")).split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
   return lines("# reel case-study: the built videos' media stay out of the site's history (D-305; `reel case-study keep` refuses a history holding them)",
-    ...shared, ".reelplanning/system-video/assets/", ".reelplanning/system-video/capture/", ".reelplanning/**/renders/",
-    ...MEDIA_EXT.map((e) => `.reelplanning/**/*.${e}`), "# keys (narration's OPENROUTER_API_KEY …) stay out of the history: the site is published", ".env", "**/.env");
+    ...shared, ".reelplanner/system-video/assets/", ".reelplanner/system-video/capture/", ".reelplanner/**/renders/",
+    ...MEDIA_EXT.map((e) => `.reelplanner/**/*.${e}`), "# keys (narration's OPENROUTER_API_KEY …) stay out of the history: the site is published", ".env", "**/.env");
 }
-/** A path a kept site's history must not hold (D-305): a voice file, a video or a render under .reelplanning/. */
-export const isMedia = (p) => p.startsWith(".reelplanning/") && (new RegExp(`\\.(${MEDIA_EXT.join("|")})$`, "i").test(p) || p.includes("/renders/"));
+/** A path a kept site's history must not hold (D-305): a voice file, a video or a render under .reelplanner/. */
+export const isMedia = (p) => /^\.reelplann(?:er|ing)\//.test(p) && (new RegExp(`\\.(${MEDIA_EXT.join("|")})$`, "i").test(p) || p.includes("/renders/"));
 
 function scaffold() {
   const slug = argv[0];
@@ -149,7 +149,7 @@ function scaffold() {
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(folder)) die(`--folder ${folder}: one folder name, no slashes`);
   const rel = relative(process.cwd(), dir) || ".";
   const html = { plan: read(join(KIT, "kit", "html-plan.txt")).trim(), report: read(join(KIT, "kit", "html-report.txt")).trim() };
-  const first = { text: prompt, html: `${prompt.trimEnd()}\n\n${html.plan}\n`, ours: `Use reelplanning to plan: ${prompt}` };
+  const first = { text: prompt, html: `${prompt.trimEnd()}\n\n${html.plan}\n`, ours: `Use reelplanner to plan: ${prompt}` };
   // the start: nothing (greenfield), or a commit and its file list
   let start = "empty (greenfield)", startFiles = { "README.md": "# The start\n\nNothing: the agent starts in an empty folder (`git init` only). This case study is greenfield.\n" };
   if (from) {
@@ -298,10 +298,11 @@ function keep() {
   // D-305: the bundle is committed here, so the site's history must hold no voice file, video or render
   const media = [...new Set(gitIn(src, "log", ...SITE_REFS, "--name-only", "--format=").stdout.split("\n").filter(isMedia))];
   if (media.length) {
-    const specs = [...MEDIA_EXT.map((e) => `'.reelplanning/*.${e}'`), "'.reelplanning/*/renders/*'"].join(" ");
+    const top = media[0].split("/")[0];   // .reelplanner, or a site's old .reelplanning
+    const specs = [...MEDIA_EXT.map((e) => `'${top}/*.${e}'`), `'${top}/*/renders/*'`].join(" ");
     const ex = join(armDir, "site.exclude");
     if (!existsSync(ex)) { mkdirSync(armDir, { recursive: true }); writeFileSync(ex, siteExclude()); }
-    die(`${rel(src)}: its history holds ${media.length} voice file(s), video(s) or render(s) under .reelplanning/ (${media.slice(0, 3).join(", ")}${media.length > 3 ? ", …" : ""}), and no voice file or render is committed in this repo (D-305), a bundle included. ` +
+    die(`${rel(src)}: its history holds ${media.length} voice file(s), video(s) or render(s) under .reelplanner/ (${media.slice(0, 3).join(", ")}${media.length > 3 ? ", …" : ""}), and no voice file or render is committed in this repo (D-305), a bundle included. ` +
       `The arm's start lists them in the site's .git/info/exclude (site.exclude). For a history that has them: ignore them, stop tracking them (they stay on disk), and take them out of every commit (the commit hashes change), then keep it again:\n` +
       `  cat ${rel(ex)} >> ${rel(join(src, ".git", "info", "exclude"))}\n` +
       `  git -C ${rel(src)} rm -r --cached --ignore-unmatch -q -- ${specs} && git -C ${rel(src)} commit -qm "Stop tracking the built videos' media"\n` +

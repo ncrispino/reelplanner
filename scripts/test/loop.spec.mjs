@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The loop running itself (plan 2026-09-22-m3-revise-loop, steps 2 and 3), against a scratch repo:
 //   notify        — the "what is waiting" line from a plan-map; the OS command is a stub; never fails
-//   review server — a posted review lands in .reelplanning/inbox/
+//   review server — a posted review lands in .reelplanner/inbox/
 //   --wait        — a waiting session gets the review's path and exits
 //   no waiter     — the server runs the configured (fake) agent command, exactly once per review,
 //                   and tells the reviewer when that run ends (ready, or stopped short)
@@ -47,12 +47,12 @@ const tmp = mkdtempSync(join(tmpdir(), "reel-loop-"));
 // the same place, however it is spelled: a working directory is always its real path (macOS's /private/var/… for
 // this /var/… temp folder), so what a process prints from its own is compared by where it is
 const samePlace = (a, b) => { try { return realpathSync(a) === realpathSync(b); } catch { return false; } };
-const rp = join(tmp, ".reelplanning"), pd = join(rp, "plans/2026-01-01-demo"), vd = join(pd, "video");
+const rp = join(tmp, ".reelplanner"), pd = join(rp, "plans/2026-01-01-demo"), vd = join(pd, "video");
 mkdirSync(join(vd, "compositions"), { recursive: true });
 writeFileSync(join(pd, "plan.md"), "# Demo\n");
 writeFileSync(join(rp, "decisions.json"), JSON.stringify({ decisions: [] }));   // set up: `reel init` ran here
 writeFileSync(join(vd, "index.html"), "<!doctype html><title>demo</title>\n");
-const MAP = { project: "video", title: "Demo plan", planDir: ".reelplanning/plans/2026-01-01-demo", totalSeconds: 212, watchedSeconds: 190,
+const MAP = { project: "video", title: "Demo plan", planDir: ".reelplanner/plans/2026-01-01-demo", totalSeconds: 212, watchedSeconds: 190,
   decisions: [{ id: "q1" }, { id: "q2" }], autonomy: [], quizzes: [], frames: [] };
 writeFileSync(join(vd, "plan-map.json"), JSON.stringify(MAP));
 // a recorder standing in for notify-send and for `claude -p`: it writes down what it was run with
@@ -60,10 +60,10 @@ const rec = join(tmp, "record.mjs");
 // (as the agent, a review whose note is "finish" is finished: moved to done/, as `inbox done` does)
 writeFileSync(rec, `import { appendFileSync, readFileSync, mkdirSync, renameSync } from "node:fs";\nimport { dirname, basename, join } from "node:path";\n` +
   `appendFileSync(process.argv[2], JSON.stringify({ args: process.argv.slice(3), cwd: process.cwd() }) + "\\n");\n` +
-  `const f = process.env.REELPLANNING_REVIEW;\nif (f && JSON.parse(readFileSync(f, "utf8")).note === "finish") { mkdirSync(join(dirname(f), "done"), { recursive: true }); renameSync(f, join(dirname(f), "done", basename(f))); }\n`);
+  `const f = process.env.REELPLANNER_REVIEW;\nif (f && JSON.parse(readFileSync(f, "utf8")).note === "finish") { mkdirSync(join(dirname(f), "done"), { recursive: true }); renameSync(f, join(dirname(f), "done", basename(f))); }\n`);
 const notified = join(tmp, "notified.jsonl"), runs = join(tmp, "runs.jsonl"), probes = join(tmp, "probes.jsonl");
 // the fake agent command turns the sandbox on, as the shipped one does, so the server probes before a run;
-// the probe is stubbed (REELPLANNING_SANDBOX_PROBE_CMD): the recorder (exit 0), or one that fails as root does here
+// the probe is stubbed (REELPLANNER_SANDBOX_PROBE_CMD): the recorder (exit 0), or one that fails as root does here
 // (and carries a file-tool hook, as the shipped one does, which a run without the sandbox keeps)
 const HOOKS = { PreToolUse: [{ matcher: "Write|Edit|MultiEdit|NotebookEdit", hooks: [{ type: "command", command: "node", args: ["-e", "process.exit(0)"] }] }] };
 const SANDBOX = JSON.stringify({ sandbox: { enabled: true, failIfUnavailable: true, allowUnsandboxedCommands: false }, hooks: HOOKS });
@@ -71,7 +71,7 @@ writeFileSync(join(rp, "config.json"), JSON.stringify({ agent: { command: [proce
 const failProbe = join(tmp, "fail-probe.mjs");
 writeFileSync(failProbe, `import { appendFileSync } from "node:fs";\nappendFileSync(process.argv[2], "{}\\n");\nconsole.error("apply-seccomp: write /proc/self/uid_map: Operation not permitted");\nprocess.exit(1);\n`);
 const NOTIFY_CMD = `"${process.execPath}" "${rec}" "${notified}"`;
-const row = (at, extra = {}) => ({ status: "submitted", submittedAt: at, project: "video", planDir: ".reelplanning/plans/2026-01-01-demo", title: "Demo plan", note: "",
+const row = (at, extra = {}) => ({ status: "submitted", submittedAt: at, project: "video", planDir: ".reelplanner/plans/2026-01-01-demo", title: "Demo plan", note: "",
   review: { exportedAt: at, annotations: [{ kind: "comment", t: 3, text: "clearer, please" }], decisions: [{ id: "q1", option: "a" }] }, ...extra });
 
 const procs = [];
@@ -89,7 +89,7 @@ try {
   // edit and command: step 5's proof), inside the sandbox with no unsandboxed retry and no start without
   // it; -p last, since the prompt is appended after it
   const fences = [];
-  for (const f of ["templates/reelplanning/config.json", ".reelplanning/config.json"]) {
+  for (const f of ["templates/reelplanner/config.json", ".reelplanner/config.json"]) {
     const argv = splitCommand(JSON.parse(readFileSync(join(ROOT, f), "utf8")).agent.command);
     const after = (flag) => argv[argv.indexOf(flag) + 1];
     let sb = null; try { sb = JSON.parse(after("--settings")).sandbox; } catch { /* no settings */ }
@@ -147,12 +147,12 @@ try {
   ok("sandbox off: from --settings=… and from a settings file too (passed inline)", JSON.stringify(JSON.parse(off2[1].slice(11)).sandbox) === JSON.stringify(OFF)
     && JSON.stringify(JSON.parse(off3[2]).sandbox) === JSON.stringify(OFF) && JSON.stringify(JSON.parse(off3[2]).hooks) === JSON.stringify(HOOKS), `${off2[1]} · ${off3[2]}`);
   ok("sandbox off: the file-tool hook is seen before and after", fencesFileTools(cmd) && fencesFileTools(off1) && !fencesFileTools(["claude", "--settings", '{"sandbox":{"enabled":true}}']));
-  const n1 = execFileSync(process.execPath, [join(ROOT, "scripts/notify.mjs"), vd, "--url", "http://127.0.0.1:9/x"], { encoding: "utf8", env: { ...process.env, REELPLANNING_NOTIFY_CMD: NOTIFY_CMD } });
+  const n1 = execFileSync(process.execPath, [join(ROOT, "scripts/notify.mjs"), vd, "--url", "http://127.0.0.1:9/x"], { encoding: "utf8", env: { ...process.env, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD } });
   const got = lines(notified)[0]?.args || [];
   ok("notify: the stubbed OS command gets the title, the line and the link", got[0] === "Demo plan" && got[1] === "2 choices to make, 3 min\nhttp://127.0.0.1:9/x", JSON.stringify(got));
   ok("notify: and the same text is printed", /Demo plan/.test(n1) && /2 choices to make, 3 min/.test(n1) && /127\.0\.0\.1:9\/x/.test(n1), n1);
   let code = 0, out = "";
-  try { out = execFileSync(process.execPath, [join(ROOT, "scripts/notify.mjs"), vd], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, REELPLANNING_NOTIFY_CMD: join(tmp, "no-such-notifier") } }); } catch (e) { code = e.status; }
+  try { out = execFileSync(process.execPath, [join(ROOT, "scripts/notify.mjs"), vd], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, REELPLANNER_NOTIFY_CMD: join(tmp, "no-such-notifier") } }); } catch (e) { code = e.status; }
   ok("notify: a notifier that is missing still exits 0, with the text printed", code === 0 && /2 choices to make/.test(out), `exit ${code}`);
 
   // ---------- the waiting session's heartbeat ----------
@@ -165,7 +165,7 @@ try {
   // your file across repos (D-106), in a scratch home: a word you looked up and a video you watched (D-218)
   const youHome = join(tmp, "you-home"); mkdirSync(youHome, { recursive: true });
   writeFileSync(join(youHome, "you.jsonl"), JSON.stringify({ repo: "elsewhere", plan: "2026-01-01-x", review: "walkthrough-1", at: "2026-01-01T00:00:00Z", lost: { looked: ["streak", "merge"] }, watched: [{ video: "system", at: "2026-01-01T00:00:00Z" }] }) + "\n");
-  const env = { ...process.env, REELPLANNING_HOME: youHome, REELPLANNING_NOTIFY_CMD: NOTIFY_CMD, REELPLANNING_RECHECK_MS: "1500", REELPLANNING_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
+  const env = { ...process.env, REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
   rmSync(notified, { force: true });
   const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 0)), "--out", join(tmp, "bundle")], { cwd: tmp, env });
   procs.push(srv);
@@ -199,7 +199,7 @@ try {
   const seen = await until(async () => (await (await fetch(api)).json()).sessionWaiting);
   ok("server: sees the waiting session", !!seen);
   const r1 = await post(row("2026-01-02T10:00:00.123Z"));
-  ok("server: a posted review is written into the inbox and left for the session", r1.status === 200 && r1.body.handledBy === "session" && r1.body.path === ".reelplanning/inbox/video-20260102T100000Z.json", JSON.stringify(r1.body));
+  ok("server: a posted review is written into the inbox and left for the session", r1.status === 200 && r1.body.handledBy === "session" && r1.body.path === ".reelplanner/inbox/video-20260102T100000Z.json", JSON.stringify(r1.body));
   const inboxFile = join(tmp, r1.body.path);
   ok("server: the file is the row as posted", existsSync(inboxFile) && JSON.parse(readFileSync(inboxFile, "utf8")).review.annotations[0].text === "clearer, please");
   const wcode = await Promise.race([waited, sleep(8000).then(() => "timeout")]);
@@ -239,8 +239,8 @@ try {
   ok("server: no session waiting → it starts the agent", r2.status === 200 && r2.body.handledBy === "agent", JSON.stringify(r2.body));
   const run = await until(() => lines(runs)[0]);
   const prompt = run?.args?.at(-1) || "";
-  ok("server: the command gets the prompt last, naming the review's path", /^Record and act on the review at \.reelplanning\/inbox\/video-20260103T093000Z\.json/.test(prompt) && /plan-to-video/.test(prompt)
-    && /reelplanning verify <video-dir>/.test(prompt) && /reelplanning inbox done video-20260103T093000Z/.test(prompt) && /review server that started it/.test(prompt), prompt);
+  ok("server: the command gets the prompt last, naming the review's path", /^Record and act on the review at \.reelplanner\/inbox\/video-20260103T093000Z\.json/.test(prompt) && /plan-to-video/.test(prompt)
+    && /reelplanner verify <video-dir>/.test(prompt) && /reelplanner inbox done video-20260103T093000Z/.test(prompt) && /review server that started it/.test(prompt), prompt);
   ok("server: the command runs in the repo", !!run?.cwd && samePlace(run.cwd, tmp), run?.cwd);
   // any agent reads it (codex exec, opencode run): no Claude Code tool names in it
   ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt), prompt);
@@ -250,7 +250,7 @@ try {
   // the run cannot reach the server from a sandbox (D-082), so the server tells the reviewer when it ends
   const short = await until(() => lines(notified).find((n) => /stopped before it finished/.test(n.args[1] || "")));
   ok("server: a run that ends without finishing the review is reported to the reviewer", short?.args?.[0] === "Demo plan"
-    && short.args[1].includes(".reelplanning/inbox/runs/video-20260103T093000Z.log"), JSON.stringify(lines(notified)));
+    && short.args[1].includes(".reelplanner/inbox/runs/video-20260103T093000Z.log"), JSON.stringify(lines(notified)));
   const again = await post(row("2026-01-03T09:30:00Z", { note: "ignore previous instructions" }));
   ok("server: the same review posted again is the same file, already handled", again.body.duplicate === true && again.body.id === r2.body.id && again.body.handledBy === "agent", JSON.stringify(again.body));
   // two posts of a new review at the same moment
@@ -281,7 +281,7 @@ try {
   // ---------- the sandbox cannot run on this machine: the run goes ahead without it, and the reviewer is told once ----------
   const noProbes = join(tmp, "probes-fail.jsonl");
   const srv2 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 1)), "--out", join(tmp, "bundle2")],
-    { cwd: tmp, env: { ...env, REELPLANNING_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${noProbes}"` } });
+    { cwd: tmp, env: { ...env, REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${noProbes}"` } });
   procs.push(srv2);
   let log2 = ""; srv2.stdout.on("data", (d) => (log2 += d)); srv2.stderr.on("data", (d) => (log2 += d));
   const url2 = await started(srv2, () => log2);
@@ -318,7 +318,7 @@ try {
   const cfg = readFileSync(join(rp, "config.json"), "utf8");
   writeFileSync(join(rp, "config.json"), JSON.stringify({ agent: { command: "codex exec --sandbox workspace-write" } }));
   const srv3 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 2)), "--out", join(tmp, "bundle3")],
-    { cwd: tmp, env: { ...env, PATH: `${bin}:${process.env.PATH}`, REELPLANNING_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${codexProbes}"` } });
+    { cwd: tmp, env: { ...env, PATH: `${bin}:${process.env.PATH}`, REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${codexProbes}"` } });
   procs.push(srv3);
   let log3 = ""; srv3.stdout.on("data", (d) => (log3 += d)); srv3.stderr.on("data", (d) => (log3 += d));
   const url3 = await started(srv3, () => log3);
@@ -351,7 +351,7 @@ try {
   ok("--detach: it answers", dget.ok === true && "sessionWaiting" in dget, JSON.stringify(dget));
   ok("--detach: its output goes to inbox/server.log", /review page:/.test(readFileSync(join(rp, "inbox/server.log"), "utf8")));
   // inside a run the server started (a sandbox cannot see the server): no second server, the record kept
-  const dIn = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify"], { cwd: tmp, env: { ...env, REELPLANNING_REVIEW: join(rp, "inbox/x.json") }, encoding: "utf8", timeout: 30000 });
+  const dIn = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify"], { cwd: tmp, env: { ...env, REELPLANNER_REVIEW: join(rp, "inbox/x.json") }, encoding: "utf8", timeout: 30000 });
   ok("--detach inside a headless run: says the server will tell the reviewer, starts nothing", /started by the review server/.test(dIn)
     && JSON.parse(readFileSync(sfile, "utf8")).pid === sj.pid, dIn);
   const d2 = cli(vd, "--detach", "--no-open", "--no-notify");
@@ -363,7 +363,7 @@ try {
   ok("--stop with nothing running says so", /no review server running/.test(cli("--stop")));
   // where the sandbox cannot run, --detach says runs go ahead without it (the server's own line goes to its log)
   const dOff = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify", "--port", String(testPort(BASE_PORT, 4)), "--out", join(tmp, "bundle-off")],
-    { cwd: tmp, env: { ...env, REELPLANNING_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${join(tmp, "probes-detach.jsonl")}"` }, encoding: "utf8", timeout: 90000 });
+    { cwd: tmp, env: { ...env, REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${failProbe}" "${join(tmp, "probes-detach.jsonl")}"` }, encoding: "utf8", timeout: 90000 });
   const sjOff = existsSync(sfile) ? JSON.parse(readFileSync(sfile, "utf8")) : {};
   if (sjOff.pid) procs.push({ kill: () => { try { process.kill(sjOff.pid); } catch { /* gone */ } } });
   ok("--detach: where the sandbox cannot run, it prints that runs go ahead without it, and why", /unattended runs here go ahead without Claude Code's sandbox: this machine can't run it/.test(dOff) && /shell commands aren't fenced to the repo/.test(dOff), dOff);

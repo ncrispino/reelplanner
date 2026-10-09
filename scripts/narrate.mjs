@@ -24,7 +24,7 @@
 // so the only cost is starting node twice more a line. The storyboard's music is fetched once, by
 // the last call: the others are handed a storyboard that says `music: none`.
 //
-// usage: reelplanning narrate <video-dir> [--speed 1.25] [--voice <id>] [--dry-run] [--json] [--adopt]
+// usage: reelplanner narrate <video-dir> [--speed 1.25] [--voice <id>] [--dry-run] [--json] [--adopt]
 //   --speed    synthesised pace; default the one the project was last narrated at, else 1.25, the style
 //              guide's (Kokoro needs patch-tts-speed for it)
 //   --voice    the voice; default the one the project was last narrated with, else the remembered one
@@ -33,13 +33,13 @@
 //              narration of its current SCRIPT.md (only when you know they match)
 //
 // Which engine: HyperFrames' own (local Kokoro + whisper, or HeyGen / ElevenLabs when it finds their keys), unless
-// .reelplanning/config.json's `narration.tts` or REELPLANNING_TTS names one (scripts/lib/narrator.mjs): then
-// reelplanning's engine (scripts/lib/narrate-engine.mjs), handed to audio.mjs the same way, voices the lines through
+// .reelplanner/config.json's `narration.tts` or REELPLANNER_TTS names one (scripts/lib/narrator.mjs): then
+// reelplanner's engine (scripts/lib/narrate-engine.mjs), handed to audio.mjs the same way, voices the lines through
 // a hosted API (OpenAI, an OpenAI-compatible server, DeepInfra, ElevenLabs) or local Kokoro, with word timings from
 // the provider, a transcription API or local whisper at a model of your choosing, several lines per call. The
 // provider, its model and where the timings come from make the key's model, so switching any of them re-voices.
 //
-// Test seam: REELPLANNING_TTS_ENGINE names a stand-in for media-use's audio engine. It is handed to
+// Test seam: REELPLANNER_TTS_ENGINE names a stand-in for media-use's audio engine. It is handed to
 // audio.mjs as HF_MEDIA_ENGINE (audio.mjs's own override), the Kokoro speed gate is skipped, and the
 // model in the key is the engine's file name, so a test runs the real adapter with no Kokoro or whisper.
 import { existsSync, readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync, readdirSync, rmSync, renameSync } from "node:fs";
@@ -57,8 +57,8 @@ const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i >= 0 && i + 1 < argv.length ? argv[i + 1] : d; };
 const has = (n) => argv.includes(`--${n}`);
 const project = argv.find((a, i) => !a.startsWith("--") && !["--speed", "--voice"].includes(argv[i - 1]));
-if (!project) { console.error("usage: reelplanning narrate <video-dir> [--speed 1.25] [--voice <id>] [--dry-run] [--json] [--adopt]"); process.exit(1); }
-const dir = resolve(project);   // relative to the caller, never to where reelplanning is installed
+if (!project) { console.error("usage: reelplanner narrate <video-dir> [--speed 1.25] [--voice <id>] [--dry-run] [--json] [--adopt]"); process.exit(1); }
+const dir = resolve(project);   // relative to the caller, never to where reelplanner is installed
 const die = (m) => { console.error(`✗ narrate: ${m}`); process.exit(1); };
 if (!existsSync(join(dir, "SCRIPT.md"))) die(`no SCRIPT.md in ${project}`);
 if (!existsSync(join(dir, "STORYBOARD.md"))) die(`no STORYBOARD.md in ${project}`);
@@ -67,7 +67,7 @@ const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } ca
 const r3 = (x) => Number(x.toFixed(3));
 const SK = skillsDir();
 const ADAPTER = join(SK, "faceless-explainer", "scripts", "audio.mjs");
-const FAKE = process.env.REELPLANNING_TTS_ENGINE ? resolve(process.env.REELPLANNING_TTS_ENGINE) : null;
+const FAKE = process.env.REELPLANNER_TTS_ENGINE ? resolve(process.env.REELPLANNER_TTS_ENGINE) : null;
 
 // ── what this build asks for: provider, voice, speed, model ──────────────────────────────────────
 const record = readJson(recordPath(dir)), prevEngine = readJson(join(dir, "audio_engine_meta.json")) || {};
@@ -76,12 +76,12 @@ const prevProgress = readJson(progressPath(dir));
 // system video, at 1.1) is not re-voiced at the default by the next plain `build`.
 const speed = Number(flag("speed", null)) || Number(record?.speed) || Number(prevProgress?.speed) || 1.25;
 let provider = "kokoro", tts = null;
-// reelplanning's engine, when the settings name a provider (never under the test seam above)
+// reelplanner's engine, when the settings name a provider (never under the test seam above)
 loadEnvFile(dir);
 { const w = envFileWarning(dir); if (w) console.log(w); }
 const S = FAKE ? { engine: "hyperframes" } : narrationSettings(dir);
 if (S.error) die(S.error);
-const OWN = S.engine === "reelplanning";
+const OWN = S.engine === "reelplanner";
 if (OWN) provider = S.tts;
 else if (!FAKE) {
   // the engine's own choice (HeyGen credential → ElevenLabs key → Kokoro), made the way it makes it
@@ -91,15 +91,15 @@ else if (!FAKE) {
     tts = await import(pathToFileURL(join(lib, "tts.mjs")).href);
     loadEnvFromDir(dir);
     provider = tts.pickProvider(null);
-  } catch (e) { die(`cannot load media-use's TTS library from ${SK} (${e.message}) — run \`reelplanning hyperframes-skills\``); }
+  } catch (e) { die(`cannot load media-use's TTS library from ${SK} (${e.message}) — run \`reelplanner hyperframes-skills\``); }
 }
-// (Kokoro through reelplanning's engine is named as HyperFrames' engine names it, so a video keeps its lines)
+// (Kokoro through reelplanner's engine is named as HyperFrames' engine names it, so a video keeps its lines)
 const model = FAKE ? `fake ${basename(FAKE)}`
-  : OWN ? process.env.REELPLANNING_TTS_MODEL || keyModel(S, { kokoroModel: modelId("kokoro", { hyperframesCli: hyperframesCliPath() }).split(" + ")[0] })
+  : OWN ? process.env.REELPLANNER_TTS_MODEL || keyModel(S, { kokoroModel: modelId("kokoro", { hyperframesCli: hyperframesCliPath() }).split(" + ")[0] })
   : modelId(provider, { hyperframesCli: hyperframesCliPath() });
 // A rebuild keeps the voice the project was made with; a new project takes the remembered one, then
 // the engine's default. Changing voice is a flag, and re-voices every line (the key holds the voice).
-// With reelplanning's engine a recorded voice is kept only where it still exists: a video voiced by Kokoro
+// With reelplanner's engine a recorded voice is kept only where it still exists: a video voiced by Kokoro
 // (locally or on DeepInfra) keeps am_michael on either; one switched to OpenAI takes the settings' voice.
 const same = (m) => !OWN || (!!m && familyOf(m) === S.family);
 let voice = flag("voice", null) || (same(record?.model) && record?.voice) || (same(prevProgress?.model) && prevProgress?.voice)
@@ -109,7 +109,7 @@ if (!voice && !FAKE && (!OWN || S.family === "kokoro")) {
   try { voice = JSON.parse(r.stdout).voice?.value || null; } catch { /* no remembered voice */ }
 }
 if (!voice) voice = tts ? await tts.resolveVoiceId({ provider, userVoice: null, lang: "en" }) : OWN ? S.voice : "am_michael";
-if (!voice) die(`no voice for narration "${S.tts}": set narration.voice in .reelplanning/config.json (one of the server's voices), or pass --voice`);
+if (!voice) die(`no voice for narration "${S.tts}": set narration.voice in .reelplanner/config.json (one of the server's voices), or pass --voice`);
 
 const plan = planNarration(dir, { voice, speed, model, adopt: has("adopt") });
 const from = { record: "the narration record", git: `the narration committed in ${plan.note}`, adopt: "the current voice files (--adopt)", progress: "a run that did not finish", none: "nothing (no narration record yet)" }[plan.source]
@@ -122,7 +122,7 @@ if (has("json") && has("dry-run")) {
 console.log(`narrate ${project}: ${voice} · ×${speed} · ${model}`);
 console.log(`  kept lines from ${from}`);
 console.log(`  ${costSentence(cost)}${plan.narrate.length ? `: frame${plan.narrate.length === 1 ? "" : "s"} ${plan.narrate.map((l) => l.frame).join(", ")}` : ""}`);
-if (OWN) console.log(`  reelplanning's engine: ${S.hosted ? "hosted" : "local Kokoro"}, ${S.concurrency} line${S.concurrency === 1 ? "" : "s"} at a time (${S.from.join(" and ")})`);
+if (OWN) console.log(`  reelplanner's engine: ${S.hosted ? "hosted" : "local Kokoro"}, ${S.concurrency} line${S.concurrency === 1 ? "" : "s"} at a time (${S.from.join(" and ")})`);
 // a missing key stops the run before anything is touched, saying what to set (a dry run only says so)
 if (OWN && S.missing.length && plan.narrate.length) {
   const them = S.missing.length === 1 ? "it" : "them";
@@ -131,12 +131,12 @@ if (OWN && S.missing.length && plan.narrate.length) {
 }
 // narration here runs the local voice and it is not installed (`setup` skips it when narration is hosted, or with
 // --hosted-voice): stop before anything is touched, saying both ways on. (Not under a stand-in HyperFrames CLI.)
-if (plan.narrate.length && !FAKE && !process.env.REELPLANNING_HYPERFRAMES_BIN) {
+if (plan.narrate.length && !FAKE && !process.env.REELPLANNER_HYPERFRAMES_BIN) {
   const need = localVoiceNeeds(OWN ? S : { engine: "hyperframes" }, { provider });
   const gone = localToolsMissing(process.env, need);
   if (gone.length) {
     const why = OWN ? `narration here is ${S.tts === "kokoro" ? "local Kokoro" : `${S.tts}, timed by local whisper`} (from ${S.from.join(" and ")})` : "narration here is the local voice (the default: no hosted voice is set)";
-    const m = `${gone.join(" and ")} ${gone.length === 1 ? "is" : "are"} not installed, and ${why}. Either install the local voice: \`${RP_COMMAND} setup --local-voice\` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put ${HOSTED_LINES.join(" and ")} in ~/.reelplanning/.env (a key from ${KEYS_URL}), then run \`${RP_COMMAND} narration-check\``;
+    const m = `${gone.join(" and ")} ${gone.length === 1 ? "is" : "are"} not installed, and ${why}. Either install the local voice: \`${RP_COMMAND} setup --local-voice\` (free; about 840 MB once; needs Python 3.10+), or narrate with the hosted voice: put ${HOSTED_LINES.join(" and ")} in ~/.reelplanner/.env (a key from ${KEYS_URL}), then run \`${RP_COMMAND} narration-check\``;
     if (has("dry-run")) console.log(`  △ ${m}`); else die(m);
   }
 }
@@ -175,7 +175,7 @@ try {
   // a frame an edited one is about to be written to (a line inserted in the middle renumbers the rest).
   // The copies are in the project, not in a scratch dir, so a run killed before it finishes loses none.
   mkdirSync(PDIR, { recursive: true });
-  writeFileSync(join(PDIR, ".gitignore"), "# reelplanning narrate's progress while it runs (removed when it finishes)\n*\n");
+  writeFileSync(join(PDIR, ".gitignore"), "# reelplanner narrate's progress while it runs (removed when it finishes)\n*\n");
   for (const l of plan.keep) {
     stash(join(dir, l.keep.path), l.key);
     progress.lines[l.key] = { text: l.text, path: stashRel(l.key, extOf(l.keep.path)), sha256: l.keep.sha256, duration_s: l.keep.duration_s, words: l.keep.words };
@@ -185,26 +185,26 @@ try {
   const putBack = () => { for (const l of plan.keep) { const c = stashOf(l.key, extOf(l.keep.path)); if (resolve(join(dir, l.keep.path)) !== c) copyFileSync(c, join(dir, l.keep.path)); } };
 
   if (plan.narrate.length) {
-    if (!existsSync(ADAPTER)) die(`${ADAPTER} not found — run \`reelplanning hyperframes-skills\``);
+    if (!existsSync(ADAPTER)) die(`${ADAPTER} not found — run \`reelplanner hyperframes-skills\``);
     const env = { ...process.env, HYPERFRAMES_NO_TELEMETRY: "1", HYPERFRAMES_NO_UPDATE_CHECK: "1", HYPERFRAMES_SKIP_SKILLS: "1" };
     // one line at a time: at the engine's default of 4, the whisper runs fight over the cores and time out with no words
     env.HYPERFRAMES_TTS_CONCURRENCY = process.env.HYPERFRAMES_TTS_CONCURRENCY || "1";
     env.HYPERFRAMES_TRANSCRIBE_TIMEOUT_MS = process.env.HYPERFRAMES_TRANSCRIBE_TIMEOUT_MS || "600000";
     if (FAKE) env.HF_MEDIA_ENGINE = FAKE;
     else if (OWN) {
-      // reelplanning's engine, under the same adapter; music and sound effects still go to HyperFrames' engine
+      // reelplanner's engine, under the same adapter; music and sound effects still go to HyperFrames' engine
       env.HF_MEDIA_ENGINE = join(ROOT, "scripts", "lib", "narrate-engine.mjs");
-      env.REELPLANNING_MEDIA_ENGINE = process.env.REELPLANNING_MEDIA_ENGINE || join(SK, "media-use", "audio", "scripts", "audio.mjs");
-      env.REELPLANNING_NARRATION = JSON.stringify({ ...S, keyModel: model });
+      env.REELPLANNER_MEDIA_ENGINE = process.env.REELPLANNER_MEDIA_ENGINE || join(SK, "media-use", "audio", "scripts", "audio.mjs");
+      env.REELPLANNER_NARRATION = JSON.stringify({ ...S, keyModel: model });
       // a hosted line waits on the network, not the CPU: several to a call, the engine runs them at once
       env.HYPERFRAMES_TTS_CONCURRENCY = String(S.concurrency);
     }
     if (!FAKE) {
       const chk = spawnSync(process.execPath, [join(ROOT, "scripts", "hyperframes-skills.mjs"), "--check"], { stdio: ["ignore", "ignore", "inherit"] });
       if (chk.status !== 0) die("not started — the HyperFrames skills above cannot load");
-      if (provider === "kokoro" && speed !== 1 && !OWN) {   // reelplanning's engine hands Kokoro --speed itself
+      if (provider === "kokoro" && speed !== 1 && !OWN) {   // reelplanner's engine hands Kokoro --speed itself
         const p = spawnSync(process.execPath, [join(ROOT, "scripts", "patch-tts-speed.mjs"), "--check"], { stdio: "inherit" });
-        if (p.status !== 0) die("not started — Kokoro would drop --speed (run `reelplanning patch-tts-speed`)");
+        if (p.status !== 0) die("not started — Kokoro would drop --speed (run `reelplanner patch-tts-speed`)");
       }
       // `hyperframes tts` / `transcribe` are run through npx: put the pinned CLI first on PATH
       const hf = pkgDir("hyperframes");
@@ -225,7 +225,7 @@ try {
       const final = i === calls.length - 1, cdir = join(work, `call-${i + 1}`);
       mkdirSync(cdir);
       const script = join(cdir, "SCRIPT.md");
-      writeFileSync(script, `# SCRIPT — only the lines to narrate (reelplanning narrate)\n\n${scriptFor(lines)}`);
+      writeFileSync(script, `# SCRIPT — only the lines to narrate (reelplanner narrate)\n\n${scriptFor(lines)}`);
       // the filtered script must read back to exactly the lines and text the keys were made from
       const back = parseScript(readFileSync(script, "utf8"));
       if (JSON.stringify(back) !== JSON.stringify(lines.map((l) => ({ frame: l.frame, text: l.said })))) fail("the filtered SCRIPT.md does not read back to the same lines");
@@ -304,7 +304,7 @@ try {
     + (stale.length ? ` · removed ${stale.length} voice file(s) of lines no longer in SCRIPT.md` : "")
     + (missing.length ? `\n  no voice came back for frame(s) ${missing.join(", ")} (see the anomalies above); run narrate again to retry just those` : ""));
   const noWords = voices.filter((v) => !v.words.length).map((v) => Number(v.id));
-  if (noWords.length) console.log(`  △ no word timings for frame(s) ${noWords.join(", ")} — \`reelplanning transcribe-missing ${project}\` repairs them`);
+  if (noWords.length) console.log(`  △ no word timings for frame(s) ${noWords.join(", ")} — \`reelplanner transcribe-missing ${project}\` repairs them`);
   process.exitCode = missing.length ? 1 : 0;
 } finally { rmSync(work, { recursive: true, force: true }); }
 

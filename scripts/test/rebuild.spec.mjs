@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // The versions of a video, kept so an earlier one can be built again (scripts/lib/versions.mjs, scripts/rebuild.mjs),
-// against a scratch repo set up as reelplanning's templates say (a video's assets/ and capture/ left out of git) and a
+// against a scratch repo set up as reelplanner's templates say (a video's assets/ and capture/ left out of git) and a
 // tiny built video: a screenshot, a picture recaptured later under the same name, the text it was captured from, a
 // font the pinned tools ship, a voice file, a render and a sound no tool makes again.
-//   - version 1, opened for review (`reelplanning review <video-dir>`): its manifest beside the plan, its screenshots
-//     and captured text in .reelplanning/media/; the font counted as shipped, the voice as regenerated, the render as
+//   - version 1, opened for review (`reelplanner review <video-dir>`): its manifest beside the plan, its screenshots
+//     and captured text in .reelplanner/media/; the font counted as shipped, the voice as regenerated, the render as
 //     rebuilt, the sound as lost; nothing audio or video in the store; neither ignored by git
 //   - a recapture overwrites a screenshot, a scene changes, a review is recorded (`reel record`): version 2, the store
 //     holding both pictures, the unchanged ones once
@@ -13,7 +13,7 @@
 //   - `reel rebuild --version 1 --no-build` puts version 1 together in a folder of its own: its scenes from its commit,
 //     its screenshot's bytes, and says what is made again; the current video is untouched
 //   - a version kept before its video was committed points at the commit once the video is committed as it was
-//   - `reel rebuild --version 1` builds it there, the voice made again by the stand-in engine (REELPLANNING_TTS_ENGINE),
+//   - `reel rebuild --version 1` builds it there, the voice made again by the stand-in engine (REELPLANNER_TTS_ENGINE),
 //     never in the current video
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, copyFileSync, rmSync, statSync } from "node:fs";
@@ -28,8 +28,8 @@ import { AV } from "../lib/versions.mjs";
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${String(detail).slice(0, 2500)}` : ""}`); if (!cond) failed++; };
 const tmp = mkdtempSync(join(tmpdir(), "rp-rebuild-spec-"));
-const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning"), pd = join(rp, "plans", "2026-10-01-demo"), vd = join(pd, "video");
-const env = { ...process.env, REELPLANNING_HOME: join(tmp, "home"), GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@example.com", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@example.com" };
+const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner"), pd = join(rp, "plans", "2026-10-01-demo"), vd = join(pd, "video");
+const env = { ...process.env, REELPLANNER_HOME: join(tmp, "home"), GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@example.com", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@example.com" };
 const run = (script, ...a) => { const r = spawnSync(process.execPath, [join(ROOT, "scripts", script), ...a], { cwd: tmp, env, encoding: "utf8", maxBuffer: 64 << 20 }); return { code: r.status, out: `${r.stdout}${r.stderr}` }; };
 const git = (...a) => execFileSync("git", ["-c", "commit.gpgsign=false", ...a], { cwd: repo, env, encoding: "utf8" });
 const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex");
@@ -50,7 +50,7 @@ function png(w, h, seed) {
 const ffmpeg = spawnSync("ffmpeg", ["-version"], { stdio: "ignore" }).status === 0;
 const pixels = (p) => createHash("sha1").update(spawnSync("ffmpeg", ["-v", "error", "-i", p, "-f", "rawvideo", "-pix_fmt", "rgba", "-"], { maxBuffer: 1 << 28 }).stdout).digest("hex");
 
-const MAP = (at, title) => JSON.stringify({ project: "video", title, planDir: ".reelplanning/plans/2026-10-01-demo", totalSeconds: 6, decisions: [], quizzes: [], autonomy: [],
+const MAP = (at, title) => JSON.stringify({ project: "video", title, planDir: ".reelplanner/plans/2026-10-01-demo", totalSeconds: 6, decisions: [], quizzes: [], autonomy: [],
   frames: [{ index: 1, compositionId: "f1", start: 0, end: 3 }, { index: 2, compositionId: "f2", start: 3, end: 6 }], changes: { at, baseline: true, changedFrames: [] } }, null, 2);
 const frame = (n, text) => `<div data-composition-id="f${n}"><h1>${text}</h1><img src="assets/shots/${n === 1 ? "page.png" : "after.jpg"}"></div>\n`;
 const LINES = ["Drafts are lost when the tab closes.", "This plan keeps them on the server."];
@@ -100,7 +100,7 @@ try {
   for (let t = Date.now(); Date.now() - t < 120000 && !/review page: http/.test(log) && srv.exitCode === null;) await new Promise((r) => setTimeout(r, 100));
   srv.kill();
   const vdir = join(pd, "versions", "video"), store = join(rp, "media");
-  ok("review: says it kept version 1, and where", /✓ version 1 of \.reelplanning\/plans\/2026-10-01-demo\/video kept for `reel rebuild`: 3 file\(s\)/.test(log), log);
+  ok("review: says it kept version 1, and where", /✓ version 1 of \.reelplanner\/plans\/2026-10-01-demo\/video kept for `reel rebuild`: 3 file\(s\)/.test(log), log);
   ok("…and the sound no tool makes again is said, not kept", /△ not kept, and not made again by a rebuild: assets\/sfx\/whoosh-custom\.mp3/.test(log), log);
   const m1f = ls(vdir); const m1 = m1f.length ? json(join(vdir, m1f[0])) : {};
   ok("version 1: one manifest beside the plan, named by its build", m1f.length === 1 && m1.keptBy === "review" && m1.build === "2026-10-01T10:00:00.000Z" && m1.commit === c1 && m1.dirty.length === 0, JSON.stringify(m1f));
@@ -112,9 +112,9 @@ try {
     && m1.lost?.length === 1 && m1.lost[0].path === "assets/sfx/whoosh-custom.mp3", JSON.stringify({ r: m1.regenerated, b: m1.rebuilt, l: m1.lost }));
   if (font) ok("…the font the pinned skills ship: shipped, not stored", m1.shipped?.some((s) => s.path === "assets/fonts/Inter-400.woff2" && /^skills:hyperframes-creative\//.test(s.from)) && !m1.files.some((f) => /woff2/.test(f.path)), JSON.stringify(m1.shipped));
   ok("…the scenes git has, the tools and the narration it was built with", m1.scenes?.["compositions/frames/02-plan.html"] && m1.scenes?.["plan-map.json"] && !m1.scenes?.["assets/shots/page.png"]
-    && m1.tools?.reelplanning && m1.narration?.voice === "am_michael" && m1.narration?.speed === 1.25 && m1.narration?.lines === 2 && m1.audio?.sfx?.length === 1, JSON.stringify({ s: m1.scenes, t: m1.tools, n: m1.narration }));
+    && m1.tools?.reelplanner && m1.narration?.voice === "am_michael" && m1.narration?.speed === 1.25 && m1.narration?.lines === 2 && m1.audio?.sfx?.length === 1, JSON.stringify({ s: m1.scenes, t: m1.tools, n: m1.narration }));
   ok("the store holds no audio or video", ls(store).length === 3 && !ls(store).some((f) => AV.test(f)), ls(store).join(", "));
-  const ignored = spawnSync("git", ["check-ignore", ...ls(store).map((f) => join(".reelplanning/media", f)), join(".reelplanning/plans/2026-10-01-demo/versions/video", m1f[0])], { cwd: repo });
+  const ignored = spawnSync("git", ["check-ignore", ...ls(store).map((f) => join(".reelplanner/media", f)), join(".reelplanner/plans/2026-10-01-demo/versions/video", m1f[0])], { cwd: repo });
   ok("…and git ignores neither the store nor the versions", ignored.status === 1 && !String(ignored.stdout).trim(), `${ignored.status} ${ignored.stdout}${ignored.stderr}`);
 
   // ── a recapture overwrites a screenshot, a scene changes: version 2, recorded ──
@@ -129,7 +129,7 @@ try {
   const c2 = git("rev-parse", "HEAD").trim();
   writeFileSync(join(tmp, "review.json"), JSON.stringify({ version: 1, project: "video", exportedAt: "2026-10-02T11:00:00Z", verdict: "changes", decisions: [], quizzes: [], autonomy: [], annotations: [{ kind: "comment", t: 4, text: "say when" }] }));
   const rec = run("reel.mjs", "record", pd, join(tmp, "review.json"));
-  ok("record: keeps the version the review was of, version 2", rec.code === 0 && /✓ version 2 of \.reelplanning\/plans\/2026-10-01-demo\/video kept for `reel rebuild`: 3 file\(s\)/.test(rec.out), rec.out);
+  ok("record: keeps the version the review was of, version 2", rec.code === 0 && /✓ version 2 of \.reelplanner\/plans\/2026-10-01-demo\/video kept for `reel rebuild`: 3 file\(s\)/.test(rec.out), rec.out);
   const vs = ls(vdir).map((f) => json(join(vdir, f))), m2 = vs.find((m) => m.build === "2026-10-02T10:00:00.000Z");
   ok("…its manifest: the new commit, kept by record", vs.length === 2 && m2?.commit === c2 && m2.keptBy === "record", JSON.stringify(vs.map((m) => [m.build, m.commit])));
   const after1 = m1.files.find((f) => f.path === "assets/shots/after.jpg"), after2 = m2?.files.find((f) => f.path === "assets/shots/after.jpg");
@@ -153,15 +153,15 @@ try {
   function* walk(d, r = "") { for (const e of readdirSync(join(d, r))) { const p = r ? `${r}/${e}` : e; if (statSync(join(d, p)).isDirectory()) yield* walk(d, p); else yield p; } }
   const now = snapshot(), out = join(tmp, "v1");
   const rb = run("rebuild.mjs", vd, "--version", "1", "--out", out, "--no-build");
-  const ov = join(out, ".reelplanning", "plans", "2026-10-01-demo", "video");
-  ok("rebuild --version 1 --no-build: put together, and says so", rb.code === 0 && /rebuild \.reelplanning\/plans\/2026-10-01-demo\/video, version 1 of 2/.test(rb.out) && /✓ scenes from commit [0-9a-f]{7}: every file as reviewed/.test(rb.out), rb.out);
+  const ov = join(out, ".reelplanner", "plans", "2026-10-01-demo", "video");
+  ok("rebuild --version 1 --no-build: put together, and says so", rb.code === 0 && /rebuild \.reelplanner\/plans\/2026-10-01-demo\/video, version 1 of 2/.test(rb.out) && /✓ scenes from commit [0-9a-f]{7}: every file as reviewed/.test(rb.out), rb.out);
   ok("…the screenshot recaptured since: version 1's bytes", existsSync(join(ov, "assets/shots/after.jpg")) && sha(join(ov, "assets/shots/after.jpg")) === sha256(AFTER1), rb.out);
   ok(`…the PNG: ${pageEntry?.as === "webp-lossless" ? "the same pixels" : "the same bytes"}`, existsSync(join(ov, "assets/shots/page.png")) && (pageEntry?.as === "webp-lossless" ? pixels(join(ov, "assets/shots/page.png")) === pixels(join(vd, "assets/shots/page.png")) : sha(join(ov, "assets/shots/page.png")) === sha(join(vd, "assets/shots/page.png"))), rb.out);
   ok("…the scenes of version 1, and its plan map", /Keep them on the server<\/h1>/.test(readFileSync(join(ov, "compositions/frames/02-plan.html"), "utf8")) && json(join(ov, "plan-map.json")).title === "Demo v1"
     && readFileSync(join(ov, "capture/extracted/visible-text.txt"), "utf8").startsWith("Drafts are lost"), rb.out);
   ok("…in a worktree of the whole repo at version 1's commit: its plan.md, the ledger as it was then, the history", execFileSync("git", ["rev-parse", "HEAD"], { cwd: out, encoding: "utf8" }).trim() === c1
-    && !/ten seconds/.test(readFileSync(join(out, ".reelplanning", "plans", "2026-10-01-demo", "plan.md"), "utf8")) && !existsSync(join(out, ".reelplanning", "plans", "2026-10-01-demo", "reviews"))
-    && existsSync(join(out, ".reelplanning", "theme", "frame.md")) && git("worktree", "list").includes(out), rb.out);
+    && !/ten seconds/.test(readFileSync(join(out, ".reelplanner", "plans", "2026-10-01-demo", "plan.md"), "utf8")) && !existsSync(join(out, ".reelplanner", "plans", "2026-10-01-demo", "reviews"))
+    && existsSync(join(out, ".reelplanner", "theme", "frame.md")) && git("worktree", "list").includes(out), rb.out);
   const g2 = run("guide.mjs", vd, "--no-thumbs", "--quiet");
   ok("…its guide built again from that commit: the same page as version 1's, not the one made now", existsSync(join(ov, "guide", "index.html")) && readFileSync(join(ov, "guide", "index.html"), "utf8") === guide1
     && g2.code === 0 && readFileSync(join(vd, "guide", "index.html"), "utf8") !== guide1 && /✓ its guide, made from the commit/.test(rb.out), rb.out);
@@ -188,7 +188,7 @@ try {
   ok("…once committed as it was, it points at that commit", /✓ version 3 of .*: now at commit [0-9a-f]{7}/.test(k3b.out) && m3()?.commit === git("rev-parse", "HEAD").trim() && m3()?.dirty.length === 0, k3b.out);
 
   // ── built again: the voice made anew, in the rebuild's folder only ──
-  if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) console.log("· (the build part skipped: no HyperFrames skills here — reelplanning hyperframes-skills)");
+  if (!existsSync(join(skillsDir(), "faceless-explainer", "scripts", "audio.mjs"))) console.log("· (the build part skipped: no HyperFrames skills here — reelplanner hyperframes-skills)");
   else {
     const ENGINE = join(tmp, "fake-engine.mjs");
     writeFileSync(ENGINE, `import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";\nimport { join, dirname } from "node:path";\n` +
@@ -198,10 +198,10 @@ try {
       `  return { id: l.id, path: "assets/voice/" + l.id + ".wav", duration_s: 2, words: l.text.split(/\\s+/).map((t, i) => ({ id: "w" + i, text: t, start: i * 0.2, end: i * 0.2 + 0.15 })) }; });\n` +
       `mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, JSON.stringify({ tts_provider: "fake", voice_id: req.voice, bgm: null, voices, sfx: [] }));\n`);
     const voiceBefore = sha(join(vd, "assets/voice/01.wav"));
-    const b = spawnSync(process.execPath, [join(ROOT, "scripts", "rebuild.mjs"), vd, "--version", "1", "--out", join(tmp, "v1-built")], { cwd: tmp, env: { ...env, REELPLANNING_TTS_ENGINE: ENGINE }, encoding: "utf8", maxBuffer: 64 << 20 });
-    const bo = `${b.stdout}${b.stderr}`, bv = join(tmp, "v1-built", ".reelplanning", "plans", "2026-10-01-demo", "video");
+    const b = spawnSync(process.execPath, [join(ROOT, "scripts", "rebuild.mjs"), vd, "--version", "1", "--out", join(tmp, "v1-built")], { cwd: tmp, env: { ...env, REELPLANNER_TTS_ENGINE: ENGINE }, encoding: "utf8", maxBuffer: 64 << 20 });
+    const bo = `${b.stdout}${b.stderr}`, bv = join(tmp, "v1-built", ".reelplanner", "plans", "2026-10-01-demo", "video");
     ok("rebuild --version 1: runs the build there, the voice made again by this machine's engine (said, as it is not the recorded one)",
-      /▶ reelplanning build /.test(bo) && /✓ narrate/.test(bo) && /△ the voice was made with kokoro-v1\.0 \+ whisper small\.en .*here it is fake fake-engine\.mjs/.test(bo) && /RIFF new voice/.test(readFileSync(join(bv, "assets/voice/01.wav"), "utf8")), bo);
+      /▶ reelplanner build /.test(bo) && /✓ narrate/.test(bo) && /△ the voice was made with kokoro-v1\.0 \+ whisper small\.en .*here it is fake fake-engine\.mjs/.test(bo) && /RIFF new voice/.test(readFileSync(join(bv, "assets/voice/01.wav"), "utf8")), bo);
     ok("…a build that stops says where to go on from (the scratch frames are no finished project)", b.status === 0 ? /✓ version 1 of .* built again/.test(bo) : /its build stopped \(above\)/.test(bo), bo);
     ok("…and the current video's voice is as it was", sha(join(vd, "assets/voice/01.wav")) === voiceBefore);
   }

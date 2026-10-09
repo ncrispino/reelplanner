@@ -26,8 +26,8 @@ import { recordedBy } from "../lib/reviews.mjs";
 import { maintainerOf, roleOf } from "../lib/contributing.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-contributing-"));
-process.env.REELPLANNING_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
-const repo = join(tmp, "repo"), rp = join(repo, ".reelplanning");
+process.env.REELPLANNER_HOME = join(tmp, "home");   // `reel record` adds a summary to your memory: keep it out of the real home
+const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
 const sh = (cmd, ...a) => execFileSync(cmd, a, { cwd: repo, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, GIT_EDITOR: "true" } });
 const git = (...a) => sh("git", ...a);
 const tryGit = (...a) => { try { return { code: 0, out: git(...a) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
@@ -106,7 +106,7 @@ try {
   r = checkJson("", "");
   ok("pr-check: no change, nothing to say", r.code === 0 && !r.crosses && r.size === 0, JSON.stringify(r));
 
-  // ---- the issue: config.json's `pr.issue` (off by default; required in reelplanning's own repo) ----
+  // ---- the issue: config.json's `pr.issue` (off by default; required in reelplanner's own repo) ----
   git("checkout", "-q", "-b", "issue-base");
   const setIssue = (v) => { const c = JSON.parse(readFileSync(join(rp, "config.json"), "utf8")); c.pr = { issue: v }; writeFileSync(join(rp, "config.json"), JSON.stringify(c, null, 2)); };
   ok("pr-check: off by default, a PR that links no issue is fine", (() => { const x = checkJson("Fixes a typo.", ""); return x.code === 0 && x.issueRequired === false && !x.fails.length; })());
@@ -118,7 +118,7 @@ try {
   ok("pr-check (pr.issue required): a PR that links no issue fails, saying how to fix it", r.code === 1 && r.issueRequired && r.fails.some((f) => /^links no issue: .*"Closes #<number>"/.test(f)), JSON.stringify(r));
   const OURS = readFileSync(join(ROOT, ".github", "pull_request_template.md"), "utf8");
   ok("…the PR template left as it is (\"Issue: Closes #\", the hints in comments) links none", linked(OURS).fails.some((f) => /^links no issue/.test(f)));
-  for (const [text, want] of [[OURS.replace("Closes #", "Closes #12"), "#12"], ["Refs #7", "#7"], ["Part of ncrispino/reelplanning#31.", "ncrispino/reelplanning#31"], ["See https://github.com/ncrispino/reelplanning/issues/40", "https://github.com/ncrispino/reelplanning/issues/40"], ["#5 is why", "#5"]]) {
+  for (const [text, want] of [[OURS.replace("Closes #", "Closes #12"), "#12"], ["Refs #7", "#7"], ["Part of ncrispino/reelplanner#31.", "ncrispino/reelplanner#31"], ["See https://github.com/ncrispino/reelplanner/issues/40", "https://github.com/ncrispino/reelplanner/issues/40"], ["#5 is why", "#5"]]) {
     r = linked(text);
     ok(`…links ${want}: passes, and says so`, r.code === 0 && !r.fails.length && r.issues.includes(want) && r.say.issue.some((l) => l.includes(want)), JSON.stringify({ text, r }));
   }
@@ -150,10 +150,10 @@ try {
   ok("reel record: a contributor's plan review joins the log (the plan's decisions, D-201)", rec.code === 0 && ledger().map((d) => `${d.id} ${d.chosen}`).join() === "D-001 8790", rec.out);
   writeFileSync(join(pd, "walkthrough.md"), "# Built\n\n### Step 1 — Do it\n\nThe port is 8790 (D-001), in `bin/tool.mjs`.\n\n| id | step | chose | instead of | why | check |\n|---|---|---|---|---|---|\n| A1 | 1 | Fail with a message [visible] | try the next port | clearer | bin/tool.mjs |\n");
   mkdirSync(join(pd, "walkthrough-video"), { recursive: true });
-  const wmap = { project: "walkthrough-video", planDir: ".reelplanning/plans/2026-09-27-port", plan: readPlanMd(join(pd, "plan.md")),
+  const wmap = { project: "walkthrough-video", planDir: ".reelplanner/plans/2026-09-27-port", plan: readPlanMd(join(pd, "plan.md")),
     autonomy: [{ id: "a1", chose: "Fail with a message", insteadOf: "try the next port", why: "clearer", check: "bin/tool.mjs" }] };
   writeFileSync(join(pd, "walkthrough-video", "plan-map.json"), JSON.stringify(wmap, null, 2) + "\n");
-  writeFileSync(join(pd, "walkthrough-video", "STORYBOARD.md"), "---\nplan_dir: .reelplanning/plans/2026-09-27-port\n---\n\n## Frame 1 — The port\n\nThe port is D-001.\n");
+  writeFileSync(join(pd, "walkthrough-video", "STORYBOARD.md"), "---\nplan_dir: .reelplanner/plans/2026-09-27-port\n---\n\n## Frame 1 — The port\n\nThe port is D-001.\n");
   write("bin/tool.mjs", `// usage: tool [--verbose] [--port <n>]\nconst verbose = process.argv.includes("--verbose");\nconst port = 8790;\n`);
   commit("port plan");
 
@@ -169,18 +169,18 @@ try {
   ok("reel renumber: main's log as it is, the branch's D-001 after its last, as D-002", rn.code === 0 && /D-001 → D-002/.test(rn.out) && ledger().map((d) => `${d.id} ${d.plan} ${d.chosen}`).join(" | ") === "D-001 2026-09-27-cache In the repo | D-002 2026-09-27-port 8790", `${rn.out}\n${JSON.stringify(ledger())}`);
   ok("reel renumber: its mentions rewritten in the plan folder; the frames that still say it are listed", /The port is 8790 \(D-002\)/.test(readFileSync(join(pd, "walkthrough.md"), "utf8")) && /STORYBOARD\.md:\d+ says D-001/.test(rn.out), rn.out);
   ok("reel renumber: decisions.md written from the log, no conflict left", !/<<<<<<<|>>>>>>>/.test(readFileSync(join(rp, "decisions.md"), "utf8")) && /\| D-002 \| 2026-09-27 \| 2026-09-27-port \|/.test(readFileSync(join(rp, "decisions.md"), "utf8")));
-  git("add", "-A", ".reelplanning"); const cont = tryGit("rebase", "--continue");
+  git("add", "-A", ".reelplanner"); const cont = tryGit("rebase", "--continue");
   ok("the rebase goes on", cont.code === 0 && !existsSync(join(repo, ".git", "rebase-merge")), cont.out);
   r = checkJson(TICKED, "");
   ok("pr-check: after renumber, no id names another entry", !r.fails.some((f) => /different entry/.test(f)) && r.say.ids.some((l) => /1 new, after origin\/main's last/.test(l)), JSON.stringify(r));
 
   // ---- no media under a plan folder (D-213) ----
-  write(".reelplanning/plans/2026-09-27-port/walkthrough-video/assets/voice/f01.wav", "RIFF");
+  write(".reelplanner/plans/2026-09-27-port/walkthrough-video/assets/voice/f01.wav", "RIFF");
   // init's .gitignore leaves the voice out (D-305): a contributor who adds it anyway (`git add -f`) is what pr-check catches
-  git("add", "-f", "--", ".reelplanning/plans/2026-09-27-port/walkthrough-video/assets/voice/f01.wav"); git("commit", "-q", "-m", "a voice file");
+  git("add", "-f", "--", ".reelplanner/plans/2026-09-27-port/walkthrough-video/assets/voice/f01.wav"); git("commit", "-q", "-m", "a voice file");
   r = checkJson(TICKED, "");
-  ok("pr-check: a voice file added under a plan folder fails", r.code === 1 && r.fails.some((f) => /adds \.reelplanning\/plans\/2026-09-27-port\/walkthrough-video\/assets\/voice\/f01\.wav/.test(f)), JSON.stringify(r.fails));
-  git("rm", "-q", "-r", ".reelplanning/plans/2026-09-27-port/walkthrough-video/assets"); git("commit", "-q", "-m", "no voice");
+  ok("pr-check: a voice file added under a plan folder fails", r.code === 1 && r.fails.some((f) => /adds \.reelplanner\/plans\/2026-09-27-port\/walkthrough-video\/assets\/voice\/f01\.wav/.test(f)), JSON.stringify(r.fails));
+  git("rm", "-q", "-r", ".reelplanner/plans/2026-09-27-port/walkthrough-video/assets"); git("commit", "-q", "-m", "no voice");
   // …nor a voice file or render anywhere else (D-305): a worked example under videos/ keeps its narration as .mp3
   for (const f of ["videos/x1/assets/voice/01.wav", "videos/x1/renders/chapters/ch1.mp4", "videos/x1/assets/voice/01.mp3"]) write(f, "x");
   git("add", "-f", "--", "videos/x1"); git("commit", "-q", "-m", "an example with its wav and a render");
@@ -256,7 +256,7 @@ try {
   const pack = join(tmp, "pr-video"), slugW = "2026-09-27-port--walkthrough", slugP = "2026-09-27-port";
   mkdirSync(join(pack, slugW), { recursive: true }); mkdirSync(join(pack, slugP), { recursive: true });
   writeFileSync(join(pack, "index.html"), "<!doctype html><html><head></head><body>player</body></html>");
-  writeFileSync(join(pack, "reelplanning-player.js"), "");
+  writeFileSync(join(pack, "reelplanner-player.js"), "");
   writeFileSync(join(pack, "library.json"), JSON.stringify({ slugs: [slugW, slugP] }));
   writeFileSync(join(pack, slugW, "plan-map.json"), readFileSync(join(pd, "walkthrough-video", "plan-map.json")));
   mkdirSync(join(pd, "video"), { recursive: true });
@@ -281,7 +281,7 @@ try {
   writeFileSync(pendingPath(rp), [line("ana@example.com", "r1"), line("Sam@Example.com", "r2"), line("owner", "r3")].join("\n") + "\n");
   const you = join(tmp, "you.jsonl"), mv = movePending(rp, you);
   ok("memory: a pending line moves only into the file of the reviewer it names; another's waits", mv.moved === 2 && readYou(you).map((f) => f.review).join() === "r2,r3" && readYou(pendingPath(rp)).map((f) => f.review).join() === "r1", JSON.stringify({ mv, you: readYou(you), left: readYou(pendingPath(rp)) }));
-  ok(".gitattributes keeps both sides' lines of you.pending.jsonl", /^\.reelplanning\/you\.pending\.jsonl\s+merge=union$/m.test(readFileSync(join(ROOT, ".gitattributes"), "utf8")) && /you\.pending\.jsonl\s+merge=union/.test(readFileSync(join(ROOT, "templates", "gitignore"), "utf8")));
+  ok(".gitattributes keeps both sides' lines of you.pending.jsonl", /^\.reelplanner\/you\.pending\.jsonl\s+merge=union$/m.test(readFileSync(join(ROOT, ".gitattributes"), "utf8")) && /you\.pending\.jsonl\s+merge=union/.test(readFileSync(join(ROOT, "templates", "gitignore"), "utf8")));
 } catch (e) {
   console.log(`✗ the spec stopped: ${e.stack || e.message}${e.stdout ? `\n${e.stdout}${e.stderr}` : ""}`); failed++;
 } finally {

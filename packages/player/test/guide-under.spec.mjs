@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The guide under the video (D-264), on the review page bundle-player builds: the video stays first,
-// in the player with everything it does; the open video's guide sits under it (<reelplanning-guide>, its guide page in a
+// in the player with everything it does; the open video's guide sits under it (<reelplanner-guide>, its guide page in a
 // frame as tall as the window, ?embed=1: no top bar); scrolled out of view the frame becomes a small player in the corner
 // (a slim bar on a phone) that keeps playing, and scrolling back puts it back in its place, the page never jumping;
 // "Watch this moment" in the guide seeks this player and plays, never leaving the page; a marked thing on the frame
@@ -17,10 +17,10 @@ import { until, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } fro
 import { planGuideRepo } from "./plan-guide-repo.mjs";
 import { webpEncoder } from "../../../scripts/lib/guide/pictures.mjs";
 
-const VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough";
+const VIDEO = ".reelplanner/plans/2026-09-28-plan-guide/walkthrough-video", SLUG = "2026-09-28-plan-guide--walkthrough";
 const T = mkdtempSync(join(tmpdir(), "rp-guide-under-")), OUT = join(T, "review");
 // (and the plan's own video, whose plan.md changed after its plan review: its guide marks what changed)
-const PLAN_VIDEO = ".reelplanning/plans/2026-09-28-plan-guide/video", PLAN_SLUG = "2026-09-28-plan-guide";
+const PLAN_VIDEO = ".reelplanner/plans/2026-09-28-plan-guide/video", PLAN_SLUG = "2026-09-28-plan-guide";
 const REPO = planGuideRepo(join(T, "repo"));
 execFileSync(process.execPath, [join(ROOT, "scripts/bundle-player.mjs"), OUT, join(REPO, VIDEO), join(REPO, PLAN_VIDEO)], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
 // the guide's pictures need ffmpeg and something that makes WebP (lib/guide/pictures.mjs); the tests need neither

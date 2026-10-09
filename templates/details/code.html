@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!--
-  reelplanning detail · CODE   (templates/details/code.html; kind: code)
+  reelplanner detail · CODE   (templates/details/code.html; kind: code)
   Only when the code itself is what the reviewer judges: an API contract, a tricky function, a migration,
   a change to an interface or to data. Never by default (D-023): a value or a behaviour opens onto its
   evidence or a before-and-after instead.
 
-  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanning detail new <video-dir> <name>
+  Fill: edit ONLY the JSON in <script id="rp-data"> below (or: reelplanner detail new <video-dir> <name>
   --kind code --data code.json). Nothing else in this file needs touching.
     title    the page title
     intro    one sentence, 140 characters at most: how to read these lines (optional). The panel already
@@ -65,7 +65,7 @@
 })();
 </script>
 <style>
-/* the player's tokens (packages/player/reelplanning-player.js), light and dark: paper and tile; text in three solid inks
+/* the player's tokens (packages/player/reelplanner-player.js), light and dark: paper and tile; text in three solid inks
    (--ink first, --ink-2 reading text and secondary lines, --ink-3 times, counts and hints: each 4.5:1 or more on the paper
    and the tile; --ink-72 and --ink-55 are their old names); the darker coral (D-142), --accent-text at text size, for what
    is yours or waiting on you (A24): the call, and the part you comment on. Never for what is current or a state. */

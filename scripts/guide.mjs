@@ -2,7 +2,7 @@
 // The plan guide (plan 2026-09-28-plan-guide): build a video's guide, the page behind the video that shows more than it
 // can and that you work with. Made from plan.md (D-244: the one source), the ledger and the plan map, and after the build
 // from walkthrough.md, git and runs/; for an explainer, from its pinned sources. Nothing is typed in, and nothing it
-// writes is committed (D-213): `reelplanning build` writes it again, after the plan map, and bundle-player publishes it.
+// writes is committed (D-213): `reelplanner build` writes it again, after the plan map, and bundle-player publishes it.
 //
 //   <video-dir>/guide/index.html    the full page: every part in one flow, "Watch this moment" back to the player
 //   <video-dir>/guide/<part>.html   each part, which the local review page opens over the paused frame (a scene's
@@ -16,7 +16,7 @@
 // each source that needs one (sources.json: needsPart, or guide, true). A plan folder builds each of its videos' guides
 // (or, with no video yet, <plan-dir>/guide/index.html). The system video has no guide.
 //
-// usage: reelplanning guide <video-dir | plan-dir | explainer-dir> [--check] [--out <file>] [--quiet] [--no-thumbs] [--outside]
+// usage: reelplanner guide <video-dir | plan-dir | explainer-dir> [--check] [--out <file>] [--quiet] [--no-thumbs] [--outside]
 //   --check      also check the page as built, and list what plan.md does not say (exit 1 on a failure, never on a gap)
 //   --out        write the full page to this file instead (no parts)
 //   --no-thumbs  leave the scenes' pictures out (quicker; the page says each is missing)
@@ -31,7 +31,7 @@ const argv = process.argv.slice(2);
 const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : null; };
 const flag = (k) => argv.includes(`--${k}`);
 const pos = argv.filter((a, i) => !a.startsWith("--") && argv[i - 1] !== "--out");
-if (!pos.length) { console.error("usage: reelplanning guide <video-dir | plan-dir | explainer-dir> [--check] [--out <file>] [--quiet] [--no-thumbs] [--outside]"); process.exit(1); }
+if (!pos.length) { console.error("usage: reelplanner guide <video-dir | plan-dir | explainer-dir> [--check] [--out <file>] [--quiet] [--no-thumbs] [--outside]"); process.exit(1); }
 const quiet = flag("quiet"), say = (s) => { if (!quiet) console.log(s); };
 const kb = (s) => `${Math.max(1, Math.round(Buffer.byteLength(s) / 1024)).toLocaleString()} KB`;
 // a page written whole or not at all: a bundle copying the guide as it is built again (two at once, side by side in the

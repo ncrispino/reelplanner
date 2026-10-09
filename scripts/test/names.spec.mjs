@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Names (names.md): how each tool and product is written in a script and shown to the viewer.
 //   - the list parses: a Shown in backticks is code (with a command's next words), a plain Shown a spelling
-//   - captions: a tool's name is shown in code markup, in its own spelling ("ReelPlanning" → `reelplanning`),
-//     a command's next words join it (`reelplanning build`, one chip), a path is left alone, a plain name
+//   - captions: a tool's name is shown in code markup, in its own spelling ("ReelPlanner" → `reelplanner`),
+//     a command's next words join it (`reelplanner build`, one chip), a path is left alone, a plain name
 //     gets its case (GitHub); captions-sentences writes the marks into caption_groups.json and the caption
 //     layer, which draws <code class="cap-code"> inside the word's span; caption-fades still runs after it,
 //     and a second run changes nothing; the chip reads: the words' size and weight, a solid fill, its letters at 7:1
@@ -34,18 +34,20 @@ const shown = (ws) => ws.map((x) => (x.code ? `[${x.text}${x.run ? `/${x.run}` :
 
 try {
   // ── the list ──
-  const N = parseNames(readFileSync(join(ROOT, "templates", "reelplanning", "names.md"), "utf8"));
-  const rp = N.find((r) => r.shown === "reelplanning"), gh = N.find((r) => r.shown === "GitHub");
-  ok("names.md parses: `reelplanning` is code, caught as ReelPlanning too, with its commands as next words", rp?.code && rp.forms.some((f) => f.join(" ") === "ReelPlanning") && rp.then.some((t) => t.join(" ") === "build"), JSON.stringify(rp));
+  const N = parseNames(readFileSync(join(ROOT, "templates", "reelplanner", "names.md"), "utf8"));
+  const rp = N.find((r) => r.shown === "reelplanner"), gh = N.find((r) => r.shown === "GitHub");
+  ok("names.md parses: `reelplanner` is code, caught as ReelPlanner and as the spoken reel planner too, with its commands as next words", rp?.code && rp.forms.some((f) => f.join(" ") === "ReelPlanner") && rp.forms.some((f) => f.join(" ") === "reel planner") && rp.then.some((t) => t.join(" ") === "build"), JSON.stringify(rp));
   ok("…GitHub is a plain name, caught as github", gh && !gh.code && gh.forms.some((f) => f.join(" ") === "github"), JSON.stringify(gh));
-  ok("the repo's own list is the package's (this repo keeps .reelplanning/names.md)", readFileSync(join(ROOT, ".reelplanning", "names.md"), "utf8").includes("| reelplanning, ReelPlanning"));
+  ok("the repo's own list is the package's (this repo keeps .reelplanner/names.md)", readFileSync(join(ROOT, ".reelplanner", "names.md"), "utf8").includes("| reelplanner, reel planner, ReelPlanner"));
 
   // ── captions ──
-  ok("a caption shows the product as code, its own spelling, even at a sentence's start", shown(showNames(words("reelplanning turns that plan into a video,"), N)) === "[reelplanning] turns that plan into a video,");
-  ok("…and ReelPlanning, as a script might spell it, as `reelplanning`", shown(showNames(words("That's ReelPlanning: a plan you watch"), N)) === "That's [reelplanning:] a plan you watch");
-  const cmd = showNames(words("run reelplanning build now"), N);
-  ok("a command stays lowercase and is one chip: `reelplanning build`", shown(cmd) === "run [reelplanning/start] [build/end] now" && cmd[1].code === "reelplanning" && cmd[2].code === "build", JSON.stringify(cmd));
-  ok("…a runner and the command join too (`npx reelplanning build`); `Reel status` shows as `reel status`", shown(showNames(words("try npx reelplanning build."), N)) === "try [npx/start] [reelplanning/mid] [build./end]" && shown(showNames(words("Reel status ends with memory."), N)) === "[reel/start] [status/end] ends with memory.");
+  ok("a caption shows the product as code, its own spelling, even at a sentence's start", shown(showNames(words("reelplanner turns that plan into a video,"), N)) === "[reelplanner] turns that plan into a video,");
+  ok("…and ReelPlanner, as a script might spell it, as `reelplanner`", shown(showNames(words("That's ReelPlanner: a plan you watch"), N)) === "That's [reelplanner:] a plan you watch");
+  const spoken = showNames(words("Say reel planner aloud"), N);
+  ok("…and the name as it is said, reel planner, as one `reelplanner`", spoken[1].code === "reelplanner" && spoken[1].text === "reelplanner" && spoken[2].text === "" && spoken[3].text === "aloud", JSON.stringify(spoken));
+  const cmd = showNames(words("run reelplanner build now"), N);
+  ok("a command stays lowercase and is one chip: `reelplanner build`", shown(cmd) === "run [reelplanner/start] [build/end] now" && cmd[1].code === "reelplanner" && cmd[2].code === "build", JSON.stringify(cmd));
+  ok("…a runner and the command join too (`npx reelplanner build`); `Reel status` shows as `reel status`", shown(showNames(words("try npx reelplanner build."), N)) === "try [npx/start] [reelplanner/mid] [build./end]" && shown(showNames(words("Reel status ends with memory."), N)) === "[reel/start] [status/end] ends with memory.");
   {
     // the script's own markup over several words: each word code, one run, the backticks never left beside a word
     const cw = (s) => showNames(words(s), N).map((x) => (x.code ? `${x.code}/${x.run || "-"}` : "·")).join(" ");
@@ -55,21 +57,21 @@ try {
     ok("…and over one word names.md does not list (`jq`.), code too, with no run", cw("simple to read with `jq`.") === "· · · · jq/-" && cw("a `todo` list") === "· todo/- ·",
       `${cw("simple to read with `jq`.")} | ${cw("a `todo` list")}`);
   }
-  ok("a path is left as it is written, in code markup; a plain name gets its case, no markup", shown(showNames(words("bin/reelplanning.mjs and the github action, the cli"), N)) === "[bin/reelplanning.mjs] and the GitHub action, the CLI");
+  ok("a path is left as it is written, in code markup; a plain name gets its case, no markup", shown(showNames(words("bin/reelplanner.mjs and the github action, the cli"), N)) === "[bin/reelplanner.mjs] and the GitHub action, the CLI");
   ok("HyperFrames the framework stays a name; `hyperframes` the command is code", shown(showNames(words("HyperFrames runs hyperframes check"), N)) === "HyperFrames runs [hyperframes/start] [check/end]");
 
   // captions-sentences on a video, with this repo's caption layer (the preset skin's shape)
   const V = join(tmp, "video");
   w(join(V, "STORYBOARD.md"), "---\ntitle: t\n---\n\n## Frame 1 — one\n\n- src: compositions/frames/f1.html\n- duration: 4s\n");
-  w(join(V, "SCRIPT.md"), "# SCRIPT\n\n## Line 1 — one (Frame 1)\n\n    reelplanning turns a plan into a video. Run reelplanning build.\n");
-  const said = "reelplanning turns a plan into a video. Run reelplanning build.".split(" ");
+  w(join(V, "SCRIPT.md"), "# SCRIPT\n\n## Line 1 — one (Frame 1)\n\n    reelplanner turns a plan into a video. Run reelplanner build.\n");
+  const said = "reelplanner turns a plan into a video. Run reelplanner build.".split(" ");
   w(join(V, "audio_meta.json"), JSON.stringify({ voices: [{ frame: 1, duration_s: 4, words: said.map((t, i) => ({ text: t.replace(/[.]/g, ""), start: i * 0.4, end: i * 0.4 + 0.35 })) }] }));
-  const layer = readFileSync(join(ROOT, ".reelplanning", "system-video", "compositions", "captions.html"), "utf8")
+  const layer = readFileSync(join(ROOT, ".reelplanner", "system-video", "compositions", "captions.html"), "utf8")
     .replace(/var GROUPS = \[[\s\S]*?\];\n/, "var GROUPS = [];\n").replace(/\n?\s*\/\* rp-caption-code[\s\S]*?\n\s*\}\n(?=\s*var GROUPS)/, "\n").replace(/__rpShowWord\((\w+), w\);/, "$1.textContent = String(w.text);").replace(/\n?<style data-rp-caption-code>[\s\S]*?<\/style>/, "");
   w(join(V, "compositions", "captions.html"), layer);
   let r = run("captions-sentences.mjs", [V]);
   const groups = JSON.parse(readFileSync(join(V, "caption_groups.json"), "utf8")), all = groups.flatMap((g) => g.words);
-  ok("captions-sentences: the product word carries code, the command a run of two", r.code === 0 && all[0].text === "reelplanning" && all[0].code === "reelplanning" && !all[0].run && all.find((x) => x.text === "build.")?.run === "end" && all.filter((x) => x.code).length === 3, r.out + JSON.stringify(all));
+  ok("captions-sentences: the product word carries code, the command a run of two", r.code === 0 && all[0].text === "reelplanner" && all[0].code === "reelplanner" && !all[0].run && all.find((x) => x.text === "build.")?.run === "end" && all.filter((x) => x.code).length === 3, r.out + JSON.stringify(all));
   const html1 = readFileSync(join(V, "compositions", "captions.html"), "utf8");
   ok("…the caption layer draws it (the word builder calls __rpShowWord) and carries the chip's style, no coral", /__rpShowWord\(span, w\);/.test(html1) && !/span\.textContent = String\(w\.text\)/.test(html1) && /<style data-rp-caption-code>[\s\S]*\.cap-code[\s\S]*JetBrains Mono/.test(html1) && !/coral/.test(html1.match(/<style data-rp-caption-code>[\s\S]*?<\/style>/)[0].replace(/\/\*[\s\S]*?\*\//g, "")), html1.slice(-1500));
   // the chip reads: the words' own size, a solid fill, and letters at strong contrast on it, in each karaoke
@@ -90,7 +92,7 @@ try {
     if (grey && ink0) for (const a of [0.55, 1]) pill.push(contrast(hex(ink0), over([255, 255, 255], a, hex(grey))));
     ok("the caption chip is the words' size and weight, solid, its letters at 7:1 or more on the dark pill in either karaoke state", /font-size:\s*1em;/.test(base) && /font-weight:\s*inherit;/.test(base) && !/rp-tile-2|cap-accent-2/.test(css) && pill.length === 2 && pill.every((c) => c >= 7), JSON.stringify({ base, pill }));
     // the card: canvas letters on currentColor pulled 60% to ink; a word still to come is ink 40% on the canvas
-    const tok = readFileSync(join(ROOT, "templates", "reelplanning", "theme", "tokens.html"), "utf8");
+    const tok = readFileSync(join(ROOT, "templates", "reelplanner", "theme", "tokens.html"), "utf8");
     const theme = (sel) => { const b = tok.slice(tok.indexOf(sel)); return { ink: hex(b.match(/--rp-ink:(#[0-9A-Fa-f]{6})/)[1]), paper: hex(b.match(/--rp-paper:(#[0-9A-Fa-f]{6})/)[1]) }; };
     const pull = Number(card.match(/color-mix\(in srgb, currentColor, var\(--cap-ink, var\(--rp-ink\)\) (\d+)%\)/)?.[1]) / 100;
     const cards = [];
@@ -113,9 +115,9 @@ try {
   const el = (tag) => ({ tag, children: [], attrs: {}, className: "", set textContent(t) { this.children = [{ text: t }]; }, get textContent() { return this.children.map((c) => (c.text != null ? c.text : c.textContent)).join(""); }, appendChild(c) { this.children.push(c); }, setAttribute(k, v) { this.attrs[k] = v; } });
   const ctx = { document: { createElement: el, createTextNode: (t) => ({ text: t }) } };
   vm.runInNewContext(`${fn}; this.show = __rpShowWord;`, ctx);
-  const span = el("span"); ctx.show(span, { text: "reelplanning:", code: "reelplanning", run: "start" });
+  const span = el("span"); ctx.show(span, { text: "reelplanner:", code: "reelplanner", run: "start" });
   const code = span.children.find((c) => c.tag === "code");
-  ok("…and draws a code word as <code class=\"cap-code\"> inside the word's span; the span's text is the word (the player reads it)", code?.className === "cap-code" && code.textContent === "reelplanning" && code.attrs["data-run"] === "start" && span.textContent === "reelplanning:", JSON.stringify(span));
+  ok("…and draws a code word as <code class=\"cap-code\"> inside the word's span; the span's text is the word (the player reads it)", code?.className === "cap-code" && code.textContent === "reelplanner" && code.attrs["data-run"] === "start" && span.textContent === "reelplanner:", JSON.stringify(span));
   const plain = el("span"); ctx.show(plain, { text: "turns" });
   ok("…a plain word is plain text", plain.textContent === "turns" && !plain.children.some((c) => c.tag));
   ok("withCaptionCode says so on a caption layer it does not know", !!withCaptionCode("<template><script>el.innerHTML = w.text;</script></template>").error);
@@ -130,11 +132,11 @@ try {
   const C = join(tmp, "check");
   w(join(C, "STORYBOARD.md"), "---\ntitle: c\n---\n\n## Frame 1 — one\n\n- src: compositions/frames/f1.html\n- duration: 4s\n");
   const frame = (body) => w(join(C, "compositions", "frames", "f1.html"), `<div data-composition-id="f1"><style>.m { font:500 26px/1 "JetBrains Mono"; } .s { font:400 40px/1 Inter; }</style>${body}</div>`);
-  frame('<div class="s">reelplanning builds the video</div><div class="s">ReelPlanning, on Github</div>');
+  frame('<div class="s">reelplanner builds the video</div><div class="s">ReelPlanner, on Github</div>');
   let c = run("check-terms.mjs", [C]);
-  ok("check-terms: a lowercase product name in a sans label warns (show it as code)", c.code === 0 && /frame 1, on screen: "reelplanning" — show it as `reelplanning`/.test(c.out), c.out);
-  ok("…so do ReelPlanning and Github", /"ReelPlanning" — show it as `reelplanning`/.test(c.out) && /"Github" — show it as GitHub/.test(c.out) && /3 names on screen not as names\.md shows them/.test(c.out), c.out);
-  frame('<div class="s">made by <code>reelplanning</code></div><div class="m">reelplanning · the whole system</div><div class="s">bin/reelplanning.mjs</div><div data-artifact="terminal"><div class="s">ReelPlanning v1</div></div><div class="s">on GitHub</div>');
+  ok("check-terms: a lowercase product name in a sans label warns (show it as code)", c.code === 0 && /frame 1, on screen: "reelplanner" — show it as `reelplanner`/.test(c.out), c.out);
+  ok("…so do ReelPlanner and Github", /"ReelPlanner" — show it as `reelplanner`/.test(c.out) && /"Github" — show it as GitHub/.test(c.out) && /3 names on screen not as names\.md shows them/.test(c.out), c.out);
+  frame('<div class="s">made by <code>reelplanner</code></div><div class="m">reelplanner · the whole system</div><div class="s">bin/reelplanner.mjs</div><div data-artifact="terminal"><div class="s">ReelPlanner v1</div></div><div class="s">on GitHub</div>');
   c = run("check-terms.mjs", [C]);
   ok("…in <code>, in the mono, in a path, in a real thing's own text, or spelled right, it passes", c.code === 0 && !/names\.md/.test(c.out), c.out);
   frame('<div class="s">the plan</div>');
@@ -144,14 +146,14 @@ try {
   w(join(C, "SCRIPT.md"), "# SCRIPT\n\n## Line 1 — one (Frame 1)\n\n    The server starts claude -p, and reads names.md, not a dash of it.\n");
   c = run("check-terms.mjs", [C]);
   ok("…written as it is written, it passes", c.code === 0 && !/spelled out/.test(c.out), c.out);
-  ok("namesOnScreen alone: code passes, a sans label warns", namesOnScreen([{ text: "npx reelplanning build", code: true }], N).length === 0 && namesOnScreen([{ text: "the reelplanning page" }], N).length === 1);
+  ok("namesOnScreen alone: code passes, a sans label warns", namesOnScreen([{ text: "npx reelplanner build", code: true }], N).length === 0 && namesOnScreen([{ text: "the reelplanner page" }], N).length === 1);
 
   // ── written and said (lib/say.mjs) ──
   const SAID = [
     ["Run claude -p on plan.md, then open /work.", "Run claude dash p on plan dot md, then open slash work."],
     ["Pass --dry-run, or --speed=1.25.", "Pass dash dash dry-run, or dash dash speed equals 1.25."],
-    ["It lands in ~/.reelplanning/you.jsonl.", "It lands in home dot reelplanning slash you dot json L."],
-    ["See scripts/narrate.mjs and CONTRIBUTING.md (and .reelplanning/).", "See scripts slash narrate dot mjs and CONTRIBUTING dot md (and dot reelplanning)."],
+    ["It lands in ~/.reelplanner/you.jsonl.", "It lands in home dot reelplanner slash you dot json L."],
+    ["See scripts/narrate.mjs and CONTRIBUTING.md (and .reelplanner/).", "See scripts slash narrate dot mjs and CONTRIBUTING dot md (and dot reelplanner)."],
     ["Mail noreply@anthropic.com.", "Mail noreply at anthropic dot com."],
   ];
   const badSaid = SAID.filter(([a, b]) => say(a) !== b).map(([a]) => `${a} → ${say(a)}`);
@@ -171,7 +173,7 @@ try {
     && old[4].text === "-p," && old[4].start === 4 && old[4].end === 5.9 && old[7].start === 8 && old[7].end === 13.9 && old[9].start === 15 && old[9].end === 16.9, JSON.stringify(old));
   ok("…and the words dash, dot and slash in a sentence stay words", shown(unspell(words("a cross and a dash, a dot on the map, a slash of red, in a dash a moment later, one slash"))) === "a cross and a dash, a dot on the map, a slash of red, in a dash a moment later, one slash");
   ok("…shown as code: `claude -p` is one chip, a file name and a path chips of their own", shown(showNames(old, N)) === "the server starts [claude/start] [-p,/end] and reads [plan.resolved.md,] from [/work]");
-  ok("…a flag joins the command before it (`reel memory --you`, `npx reelplanning build --dry-run`)", shown(showNames(unspell(words("Reel memory dash dash you reads it")), N)) === "[reel/start] [memory/mid] [--you/end] reads it" && shown(showNames(words("try npx reelplanning build --dry-run now"), N)) === "try [npx/start] [reelplanning/mid] [build/mid] [--dry-run/end] now");
+  ok("…a flag joins the command before it (`reel memory --you`, `npx reelplanner build --dry-run`)", shown(showNames(unspell(words("Reel memory dash dash you reads it")), N)) === "[reel/start] [memory/mid] [--you/end] reads it" && shown(showNames(words("try npx reelplanner build --dry-run now"), N)) === "try [npx/start] [reelplanner/mid] [build/mid] [--dry-run/end] now");
   ok("spelledOut: what check-terms warns on", JSON.stringify(spelledOut("starts claude dash p, reads names dot md: and dash dash you.")) === JSON.stringify([{ said: "dash p", shown: "-p" }, { said: "names dot md", shown: "names.md" }, { said: "dash dash you", shown: "--you" }]), JSON.stringify(spelledOut("starts claude dash p, reads names dot md: and dash dash you.")));
 
   // captions-sentences on a script written as written: aligned by what was said, shown as written, timings kept

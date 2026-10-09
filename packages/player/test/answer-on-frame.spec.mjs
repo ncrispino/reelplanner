@@ -58,13 +58,13 @@ import { spawnSync } from "node:child_process";
 import { launchOpts, testPort, FULL, ROOT, vendorFile } from "../../../scripts/lib/env.mjs";
 import * as W from "./wait.mjs";
 
-const PLAN = ".reelplanning/plans/2026-09-24-answer-on-the-video/video";
-const LOOP = ".reelplanning/plans/2026-09-22-m3-revise-loop/video";
-const WALK = ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video";
-const SYS = ".reelplanning/system-video";
-const AWALK = ".reelplanning/plans/2026-09-24-answer-on-the-video/walkthrough-video";
-const FOLLOW = ".reelplanning/plans/2026-09-25-videos-you-can-follow/video";
-const FWALK = ".reelplanning/plans/2026-09-25-videos-you-can-follow/walkthrough-video";
+const PLAN = ".reelplanner/plans/2026-09-24-answer-on-the-video/video";
+const LOOP = ".reelplanner/plans/2026-09-22-m3-revise-loop/video";
+const WALK = ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video";
+const SYS = ".reelplanner/system-video";
+const AWALK = ".reelplanner/plans/2026-09-24-answer-on-the-video/walkthrough-video";
+const FOLLOW = ".reelplanner/plans/2026-09-25-videos-you-can-follow/video";
+const FWALK = ".reelplanner/plans/2026-09-25-videos-you-can-follow/walkthrough-video";
 const port = testPort(8891);
 
 // ---- units and shards (see the usage above) ------------------------------------------------------
@@ -103,14 +103,14 @@ if (process.argv.includes("--units")) {
   process.exit(0);
 }
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".css": "text/css", ".wav": "audio/wav", ".mp3": "audio/mpeg", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
-// Served as `reelplanning review` serves it: the top page marked as the server's own, /api/review taking
+// Served as `reelplanner review` serves it: the top page marked as the server's own, /api/review taking
 // a send, and gsap from the package where a plan video's git-ignored assets/vendor has not been built. Two things are made here rather than kept as files:
 //   - the revise-loop video's second choice as a frame built before step 1: its cards lose their
 //     letters (data-plan-option, and the "-opt-a" ids, renamed in its script too), so only their order is left
 //   - the Bob Dylan video's plan map with its first choice made pick-all: its frame has a card per option
 //   - under /__band/, any video as one built after the band: every frame's root carries data-band="bottom"
 //     (this plan's video already keeps its lowest sixth for the captions, so the band's eighth is empty)
-//   - this plan's plan map with k2's explained_at set, as \`reelplanning plan-map\` lifts it from the storyboard
+//   - this plan's plan map with k2's explained_at set, as \`reelplanner plan-map\` lifts it from the storyboard
 const OLD_FRAME = `/${LOOP}/compositions/frames/25-decision-q2.html`;
 const rewrite = {
   [OLD_FRAME]: (html) => html.replace(/ data-plan-option="[a-z]"/g, "").replace(/ data-option="[a-z]"/g, "").replace(/opt-([a-d])\b/g, "card$1"),
@@ -136,7 +136,7 @@ const srv = createServer((req, res) => {
   const tagged = path.startsWith("/__band/"); if (tagged) path = path.slice("/__band".length);
   if (path === "/api/review") {
     if (req.method === "GET") { res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, sessionWaiting: true, agentCommand: null, inbox: 0 })); return; }
-    let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => { posts.push(JSON.parse(body)); res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: `r${posts.length}`, path: `.reelplanning/inbox/r${posts.length}.json`, message: "your open session has it" })); });
+    let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => { posts.push(JSON.parse(body)); res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify({ ok: true, id: `r${posts.length}`, path: `.reelplanner/inbox/r${posts.length}.json`, message: "your open session has it" })); });
     return;
   }
   if (virtual[path]) { res.writeHead(200, { "content-type": "application/json" }).end(virtual[path]()); return; }
@@ -921,7 +921,7 @@ try {
   // cards or anything laid out by them (it covered the heading at 1440 × 900 on the answer-in-the-frame walkthrough's
   // k1). Every quick check of that walkthrough, answered wrong with a click, at 1440 × 900 and 1024 × 800.
   {
-    const IWALK = ".reelplanning/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
+    const IWALK = ".reelplanner/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
     const walkClear = (P) => P.p.evaluate(() => {
       const el = document.querySelector("#rp"), r = el.shadowRoot, d = r.querySelector(".decision"), sb = r.querySelector(".stage").getBoundingClientRect(), walk = d.querySelector(".walk");
       const pc = (b) => b && { left: sb.left + (b.l / 100) * sb.width, top: sb.top + (b.t / 100) * sb.height, right: sb.left + ((b.l + b.w) / 100) * sb.width, bottom: sb.top + ((b.t + b.h) / 100) * sb.height };
@@ -956,7 +956,7 @@ try {
     // opened where the row folded behind it), at 1440 × 900 and 1024 × 800: no chip meets Play, the time, the chapter
     // line or the buttons at the right; each is in the window; and a click at each chip's centre lands on it.
     {
-      const IWALK = ".reelplanning/plans/2026-09-25-answer-in-the-frame/walkthrough-video", VWALK = ".reelplanning/plans/2026-09-25-videos-you-can-follow/walkthrough-video";
+      const IWALK = ".reelplanner/plans/2026-09-25-answer-in-the-frame/walkthrough-video", VWALK = ".reelplanner/plans/2026-09-25-videos-you-can-follow/walkthrough-video";
       const barClear = (P) => P.p.evaluate(() => {
         const el = document.querySelector("#rp"), r = el.shadowRoot, d = r.querySelector(".decision");
         const seen = (x) => x.getClientRects().length > 0 && x.getBoundingClientRect().width > 0 && getComputedStyle(x).visibility !== "hidden";
@@ -1021,7 +1021,7 @@ try {
   // Every quick check of this plan's video and of the answer-in-the-frame walkthrough, answered wrong with a click, at
   // 1440 × 900; and k1 again zoomed in to 200%: no why, note, chip or card tag meets any card's words.
   {
-    const IWALK = ".reelplanning/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
+    const IWALK = ".reelplanner/plans/2026-09-25-answer-in-the-frame/walkthrough-video";
     const SHOTS16 = process.env.RP_SHOTS || null;
     const wordsClear = (P) => P.p.evaluate(() => {
       const el = document.querySelector("#rp"), r = el.shadowRoot, d = r.querySelector(".decision"), p = el._pendingDecision, q = p.kind === "quiz" ? p.q : p;

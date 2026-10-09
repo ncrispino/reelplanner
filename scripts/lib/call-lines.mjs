@@ -16,7 +16,7 @@
 // in a file, its own commits' lines when they wrote any there (a step with no **Commits:** line of its own takes the
 // plan's commits, and of those the ones whose message names the call's step or its id are its own), else the plan's.
 // A change only to comments or spacing (a comment reworded, a line re-indented, a blank line) touches no call.
-// The blame is cached in .reelplanning/.cache/blame.json, by each file's blob: the same file text, the same lines.
+// The blame is cached in .reelplanner/.cache/blame.json, by each file's blob: the same file text, the same lines.
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -83,8 +83,8 @@ export function placeCalls(rp, ledger, { repo } = {}) {
     const wt = readWalkthrough(wtPath), title = existsSync(join(dir, "plan.md")) ? (readFileSync(join(dir, "plan.md"), "utf8").match(/^#\s+(.+)$/m) || [])[1] || "" : "";
     const ok = planCommits(repo, wt, { planTitle: title }).commits.filter((c) => !c.missing && c.full);
     if (!ok.length) { for (const d of ds) unplaced.push({ d, plan, why: "its walkthrough.md names no commits this clone has" }); continue; }
-    const own = `.reelplanning/plans/${plan}/`, filesOf = new Map(), said = new Map();
-    for (const c of ok) filesOf.set(c.full, (tryGit(repo, "show", "--name-only", "--no-renames", "--format=", c.full) || "").split("\n").filter((p) => p && !p.startsWith(own) && !isGenerated(p)));
+    const own = [".reelplanner", ".reelplanning"].map((d) => `${d}/plans/${plan}/`), filesOf = new Map(), said = new Map();   // (its commits from before the rename, D-312: .reelplanning/)
+    for (const c of ok) filesOf.set(c.full, (tryGit(repo, "show", "--name-only", "--no-renames", "--format=", c.full) || "").split("\n").filter((p) => p && !own.some((o) => p.startsWith(o)) && !isGenerated(p)));
     for (const c of ok) said.set(c.full, tryGit(repo, "show", "-s", "--format=%B", c.full) || c.subject || "");
     for (const d of ds) {
       const key = String(d.questionId || "").replace(/^autonomy-/, ""), row = wt.calls.find((c) => c.key === key) || null;

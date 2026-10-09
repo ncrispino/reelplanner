@@ -2,7 +2,7 @@
 // `npm run review`, plus the one thing a fresh clone lacks.
 //
 // A plan video's (and the system video's) assets/vendor/ is build output — `vendor-gsap` writes it, and
-// .reelplanning/.gitignore keeps it out of git — so in a fresh clone every frame of those videos points at
+// .reelplanner/.gitignore keeps it out of git — so in a fresh clone every frame of those videos points at
 // an assets/vendor/gsap.min.js that is not there, the page throws "gsap is not defined", and a spec that
 // loads the video fails. Here a missing …/assets/vendor/gsap.min.js is answered with the one gsap the
 // pipeline copies in (vendor-gsap.sh) and bundle-player supplies (scripts/lib/env.mjs vendorFile), so

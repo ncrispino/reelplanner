@@ -20,11 +20,11 @@ const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`
 
 // ---- plan-map: a stop beat from the storyboard
 {
-  const tmp = mkdtempSync(join(tmpdir(), "rp-stop-")), pd = join(tmp, ".reelplanning", "plans", "2099-01-01-x"), vd = join(pd, "walkthrough-video");
+  const tmp = mkdtempSync(join(tmpdir(), "rp-stop-")), pd = join(tmp, ".reelplanner", "plans", "2099-01-01-x"), vd = join(pd, "walkthrough-video");
   mkdirSync(vd, { recursive: true });
   writeFileSync(join(pd, "plan.md"), "# X\n\n## The problem\n\nx\n\n### Step 1 — One\n\nx\n");
   writeFileSync(join(pd, "walkthrough.md"), "# W\n\n| id | Step | Chose | Instead of | Why | Check |\n|---|---|---|---|---|---|\n| A1 | 1 | Retry three times [close] | five | enough | src/a.ts |\n| A2 | 1 | Hex bitmap [visible] | an array | small | src/b.ts |\n| D1 | 1 | No sweep [deviation] | a sweep | later | src/c.ts |\n");
-  writeFileSync(join(vd, "STORYBOARD.md"), "---\nplan_dir: .reelplanning/plans/2099-01-01-x\n---\n\n## Frame 1 — Calls\n- src: compositions/frames/01-calls.html\n- duration: 6\n- plan_step: 1\n- autonomy: a1, A2\n\n## Frame 2 — Deviation\n- src: compositions/frames/02-dev.html\n- duration: 5\n- plan_step: 1\n- autonomy: d1\n");
+  writeFileSync(join(vd, "STORYBOARD.md"), "---\nplan_dir: .reelplanner/plans/2099-01-01-x\n---\n\n## Frame 1 — Calls\n- src: compositions/frames/01-calls.html\n- duration: 6\n- plan_step: 1\n- autonomy: a1, A2\n\n## Frame 2 — Deviation\n- src: compositions/frames/02-dev.html\n- duration: 5\n- plan_step: 1\n- autonomy: d1\n");
   execFileSync("git", ["init", "-q"], { cwd: tmp });
   execFileSync("node", [join(ROOT, "scripts", "plan-map.mjs"), vd], { cwd: tmp, stdio: "ignore" });
   const m = JSON.parse(readFileSync(join(vd, "plan-map.json"), "utf8")), g = (m.autonomyGroups || [])[0];

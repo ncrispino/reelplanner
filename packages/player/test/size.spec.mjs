@@ -31,9 +31,9 @@ import { chromium } from "playwright-core"; import { createServer } from "node:h
 import { readFileSync, existsSync, statSync } from "node:fs"; import { join, normalize, extname } from "node:path"; import { tmpdir } from "node:os";
 import { launchOpts, testPort, FULL, ROOT, vendorFile } from "../../../scripts/lib/env.mjs";
 
-const PLAN = ".reelplanning/plans/2026-09-24-answer-on-the-video/video";
-const FOLLOW = ".reelplanning/plans/2026-09-25-videos-you-can-follow/video";
-const LOOPW = ".reelplanning/plans/2026-09-22-m3-revise-loop/walkthrough-video";
+const PLAN = ".reelplanner/plans/2026-09-24-answer-on-the-video/video";
+const FOLLOW = ".reelplanner/plans/2026-09-25-videos-you-can-follow/video";
+const LOOPW = ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video";
 const port = testPort(8897);
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".css": "text/css", ".wav": "audio/wav", ".mp3": "audio/mpeg", ".png": "image/png", ".jpg": "image/jpeg", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
 // the videos-you-can-follow plan video with the storyboard's "More" words, as answer-on-frame.spec.mjs makes it

@@ -129,7 +129,7 @@ export function writeAtomic(file, text) {
  * every line, and one that moves to a new model re-voices them all.
  */
 export function modelId(provider, { hyperframesCli } = {}) {
-  if (process.env.REELPLANNING_TTS_MODEL) return process.env.REELPLANNING_TTS_MODEL;
+  if (process.env.REELPLANNER_TTS_MODEL) return process.env.REELPLANNER_TTS_MODEL;
   if (provider === "heygen") return "heygen starfish";           // word timings come with the audio: no whisper
   const whisper = " + whisper small.en";                          // what the engine's transcribeWav runs for English
   if (provider === "elevenlabs") return `elevenlabs eleven_multilingual_v2${whisper}`;
@@ -196,7 +196,7 @@ export function keptLines(dir, { voice, speed, model, adopt = false } = {}) {
       source = "git";
       note = g.rev.slice(0, 7);
       // the voice those files were made with is on record in the engine sidecar; the speed is not, so
-      // the speed asked for now is assumed (reelplanning has synthesised at 1.25 since patch-tts-speed)
+      // the speed asked for now is assumed (reelplanner has synthesised at 1.25 since patch-tts-speed)
       const eng = readJson(join(dir, "audio_engine_meta.json"));
       const madeWith = eng?.voice_id || voice;
       // (whether they were voiced as written or as said is not on record: both keys lead to them)

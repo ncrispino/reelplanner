@@ -5,18 +5,18 @@
 // opens the browser: what the agent runs, in the background, the moment a video is ready.
 //
 // It is also where a local review comes back (plan step 3). Finish opens a panel that says what will happen (from GET /api/review), and its Send POSTs the review row to
-// `/api/review`; the server writes it into the repo's .reelplanning/inbox/ and then:
-//   - a main session is waiting (`reelplanning review --wait` running as one of its background
+// `/api/review`; the server writes it into the repo's .reelplanner/inbox/ and then:
+//   - a main session is waiting (`reelplanner review --wait` running as one of its background
 //     tasks, which keeps a heartbeat in the inbox): that command claims the review, prints its path
 //     and exits, and the session wakes;
 //   - no session is waiting: the server claims it and starts the repo's headless agent command
-//     (`agent.command` in .reelplanning/config.json: `claude -p`, `codex exec`, `opencode run`) on it;
+//     (`agent.command` in .reelplanner/config.json: `claude -p`, `codex exec`, `opencode run`) on it;
 //   - no command either: it waits in the inbox for the next session to pick up.
 // When a headless run it started exits, the server tells the reviewer: it rebuilds its page and sends
 // "ready" if the run finished the review (`inbox done`), or says the run stopped short. The run cannot
 // do that itself: in Claude Code's sandbox (D-082) its shell has its own network and process
 // namespaces, so it can neither see nor reach this server, and `review --detach` from inside such a
-// run (REELPLANNING_REVIEW set) only says so.
+// run (REELPLANNER_REVIEW set) only says so.
 // Where that command turns on a sandbox that cannot run on this machine (checked once, without a model:
 // scripts/lib/sandbox.mjs), the run goes ahead without it (the owner's call on A18: do more rather than
 // hold back): the sandbox is turned off in the command's --settings, auto mode, --permission-prompts
@@ -27,19 +27,19 @@
 // A review is claimed exactly once (scripts/lib/inbox.mjs), so one review never starts two runs.
 // Once the page is up it also sends the "video ready" notification (scripts/lib/notify.mjs).
 // Each video named on the command line has its version kept first, so `reel rebuild` can build it again once the video
-// has moved on (scripts/lib/versions.mjs): the files the repo leaves out that nothing makes again, in .reelplanning/media/.
+// has moved on (scripts/lib/versions.mjs): the files the repo leaves out that nothing makes again, in .reelplanner/media/.
 //
 // The server has to outlive the session that started it: "no session is open" (the laptop was
 // closed, the session ended) is the case a headless run is for, and a server started as one of the
 // session's own background tasks dies with it. `--detach` starts it in its own process group, logging
-// to .reelplanning/inbox/server.log, records it in .reelplanning/inbox/.server.json ({ pid, port, url,
+// to .reelplanner/inbox/server.log, records it in .reelplanner/inbox/.server.json ({ pid, port, url,
 // … }), prints the URL and returns. A second `--detach` reuses the running server: it bundles the
 // videos asked for into that server's folder (it serves from disk, so a rebuilt video is current) and
 // prints the URL; there is one server per repo. `--stop` stops it.
 //
-// usage: reelplanning review [<video-dir> …] [--out <dir>] [--port <n>] [--no-open] [--no-notify] [--detach]
-//        reelplanning review --stop                     stop the detached server
-//        reelplanning review --wait [--timeout <s>]     wait for a review to land (see `inbox`)
+// usage: reelplanner review [<video-dir> …] [--out <dir>] [--port <n>] [--no-open] [--no-notify] [--detach]
+//        reelplanner review --stop                      stop the detached server
+//        reelplanner review --wait [--timeout <s>]      wait for a review to land (see `inbox`)
 //   <video-dir>   a built project (has index.html), relative to YOUR working directory. With none,
 //                 the whole repo: its system video, every plan's video and walkthrough video, and every
 //                 explainer, under a library that lists every plan and how far it has got. Or a folder
@@ -48,7 +48,7 @@
 //                 packed again, and Send lands in the inbox of the repo you run it in. Each of its
 //                 videos' plan map is compared with the checkout's, and a difference is said: the
 //                 video was built from another version of the plan.
-//   --out         where to put the bundle (default: <tmp>/reelplanning-review/<first project>)
+//   --out         where to put the bundle (default: <tmp>/reelplanner-review/<first project>)
 //   --port        first port to try (default 8787; the next free one is used)
 //   --no-open     print the URL, don't launch a browser
 //   --no-notify   don't send the "video ready" notification
@@ -58,7 +58,7 @@
 // POST /api/ask      a question asked on the page (Ask about this) → { ok, id, handledBy: session|review, message }
 // GET  /api/ask?id=  { ok, answered, answer?, from? }: the waiting session's answer, once it has written it
 // GET  /api/review   { sessionWaiting, agentCommand, unsandboxed, inbox, known }: what Send will do, shown when Finish opens the panel;
-//                    `known`, what ~/.reelplanning/you.jsonl says you know ({ looked: [word keys], watched: [videos] }, D-218)
+//                    `known`, what ~/.reelplanner/you.jsonl says you know ({ looked: [word keys], watched: [videos] }, D-218)
 // GET  /api/review/status?id=   { ok, id, state: waiting|working|done|stopped, by: session|agent|null, step?, since, build, log? }:
 //                    where one sent review is, for the page's strip after Send. Read from the inbox and claim files (and, for
 //                    a headless run this server started, from that run's end), nothing the agent writes for it. `build` is
@@ -70,7 +70,7 @@ import { resolve, join, dirname, basename, extname, normalize, relative } from "
 import { tmpdir, platform, hostname } from "node:os";
 import { execFileSync, spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { ROOT, repoRoot, rpInitialized, hasRp, realPath } from "./lib/env.mjs";
+import { ROOT, repoRoot, rpInitialized, hasRp, realPath, rpDirOf } from "./lib/env.mjs";
 import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs";
 import { sandboxProblem, unsandboxedNote } from "./lib/sandbox.mjs";
 import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion } from "./lib/inbox.mjs";
@@ -86,10 +86,10 @@ const valued = new Set(["--out", "--port", "--timeout", "--repo"]);
 // written relative to the repo, never climbs out through a link (macOS's /var/… for /private/var/…)
 const projects = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i - 1])).map((p) => realPath(p));
 
-// ---------- the detached server: .reelplanning/inbox/.server.json ----------
-// a repo's .reelplanning/ once `reel init` set it up (its decisions.json): a folder of setup files only (the hosted
+// ---------- the detached server: .reelplanner/inbox/.server.json ----------
+// a repo's .reelplanner/ once `reel init` set it up (its decisions.json): a folder of setup files only (the hosted
 // voice's .env and config.json) has no record to file a review in, so the review downloads instead
-const findRp = (from) => { const r = join(repoRoot(from), ".reelplanning"); return rpInitialized(r) ? r : null; };
+const findRp = (from) => { const r = rpDirOf(repoRoot(from)); return rpInitialized(r) ? r : null; };
 const serverFile = (r) => join(r, "inbox", ".server.json");
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
 // the recorded server, when its process is alive and its endpoint answers. Its first answer can wait on the
@@ -103,7 +103,7 @@ async function runningServer(r) {
 }
 if (args.includes("--stop")) {
   const r = findRp(projects[0] || process.cwd());
-  if (!r) { console.error("✗ no .reelplanning/ here or above"); process.exit(1); }
+  if (!r) { console.error("✗ no .reelplanner/ here or above"); process.exit(1); }
   // only a process that answers as this repo's review server is stopped: a recorded pid may since
   // have gone to something else
   const s = await runningServer(r);
@@ -117,11 +117,11 @@ if (args.includes("--stop")) {
 }
 let rp = null;
 if (!projects.length) {
-  // the whole repo: find its .reelplanning/ and every built video in it
+  // the whole repo: find its .reelplanner/ and every built video in it
   let setupOnly = null;
-  // (the nearest .reelplanning/ is this repo's: one of setup files only stops the search, never a parent's past it)
-  for (let d = process.cwd(), i = 0; i < 8 && !rp && !setupOnly; i++, d = dirname(d)) if (hasRp(d)) { if (rpInitialized(join(d, ".reelplanning"))) rp = join(d, ".reelplanning"); else setupOnly = join(d, ".reelplanning"); }
-  if (!rp) { console.error(setupOnly ? `✗ ${relative(process.cwd(), setupOnly) || setupOnly} is not set up yet (no decisions.json, only setup files): no library to open — pass a video folder: reelplanning review <video-dir>` : "✗ no .reelplanning/ here or above — pass a video folder: reelplanning review <video-dir>"); process.exit(1); }
+  // (the nearest .reelplanner/ is this repo's: one of setup files only stops the search, never a parent's past it)
+  for (let d = process.cwd(), i = 0; i < 8 && !rp && !setupOnly; i++, d = dirname(d)) if (hasRp(d)) { if (rpInitialized(rpDirOf(d))) rp = rpDirOf(d); else setupOnly = rpDirOf(d); }
+  if (!rp) { console.error(setupOnly ? `✗ ${relative(process.cwd(), setupOnly) || setupOnly} is not set up yet (no decisions.json, only setup files): no library to open — pass a video folder: reelplanner review <video-dir>` : "✗ no .reelplanner/ here or above — pass a video folder: reelplanner review <video-dir>"); process.exit(1); }
   const built = (d) => existsSync(join(d, "index.html"));
   if (built(join(rp, "system-video"))) projects.push(join(rp, "system-video"));
   const plans = existsSync(join(rp, "plans")) ? readdirSync(join(rp, "plans")).sort().reverse() : [];
@@ -135,8 +135,8 @@ for (const p of projects) if (!existsSync(join(p, "index.html"))) { console.erro
 
 // A folder bundle-player packed (its library.json and the player beside it): served as it is. It is not
 // in the repo it reviews (a clone of the PR's video branch), so a review lands in the repo run from.
-const packedDir = projects.length === 1 && existsSync(join(projects[0], "library.json")) && existsSync(join(projects[0], "reelplanning-player.js")) ? projects[0] : null;
-if (!packedDir && projects.some((p) => existsSync(join(p, "library.json")) && existsSync(join(p, "reelplanning-player.js")))) { console.error("✗ a packed folder is served on its own: pass it alone"); process.exit(1); }
+const packedDir = projects.length === 1 && existsSync(join(projects[0], "library.json")) && (existsSync(join(projects[0], "reelplanner-player.js")) || existsSync(join(projects[0], "reelplanning-player.js"))) ? projects[0] : null;   // (reelplanning-player.js: packed before the rename)
+if (!packedDir && projects.some((p) => existsSync(join(p, "library.json")) && (existsSync(join(p, "reelplanner-player.js")) || existsSync(join(p, "reelplanning-player.js"))))) { console.error("✗ a packed folder is served on its own: pass it alone"); process.exit(1); }
 
 // where a review submitted on this page lands: the repo the videos belong to
 const RP = rp || findRp(packedDir ? process.cwd() : projects[0]);
@@ -158,12 +158,12 @@ if (packedDir) {
 
 // The version opened, kept for `reel rebuild` (scripts/lib/versions.mjs): each video named here (the library opens
 // every video, and keeps none), once per build; a video it cannot keep is no reason to stop the page.
-if (!packedDir && !rp && !process.env.REELPLANNING_REVIEW_DETACHED) for (const p of projects) {
+if (!packedDir && !rp && !process.env.REELPLANNER_REVIEW_DETACHED) for (const p of projects) {
   try { for (const l of keepLines(keepVersion(p, { by: "review" }))) console.log(l); }
   catch (e) { console.log(`△ ${relative(process.cwd(), p) || "."}: its version not kept for \`reel rebuild\` (${e.message})`); }
 }
 
-const bundle = (dir) => packedDir ? undefined : execFileSync(process.execPath, [join(ROOT, "scripts", "bundle-player.mjs"), dir, ...projects, ...(rp ? ["--reelplanning", rp] : [])], { stdio: ["ignore", "inherit", "inherit"] });
+const bundle = (dir) => packedDir ? undefined : execFileSync(process.execPath, [join(ROOT, "scripts", "bundle-player.mjs"), dir, ...projects, ...(rp ? ["--reelplanner", rp] : [])], { stdio: ["ignore", "inherit", "inherit"] });
 // one video: open it; the whole repo: open on the library
 const pageUrl = (base, dir) => rp ? base : `${base}?project=${encodeURIComponent(JSON.parse(readFileSync(join(dir, "library.json"), "utf8")).slugs[0])}`;
 const announce = (url) => {
@@ -181,21 +181,21 @@ const announce = (url) => {
 };
 
 if (args.includes("--detach")) {
-  if (process.env.REELPLANNING_REVIEW) {
+  if (process.env.REELPLANNER_REVIEW) {
     // a headless run the review server started: in a sandbox it would not find that server and would
     // start a second one that dies with the command. The server notifies when this run exits.
     console.log("· started by the review server on a review: when this run exits, that server rebuilds its page and tells the reviewer");
     process.exit(0);
   }
-  if (!RP) { console.error(`✗ --detach needs the videos to be in a repo set up with \`reel init\` (.reelplanning/decisions.json; it records the server there); run \`reelplanning review\` without it`); process.exit(1); }
+  if (!RP) { console.error(`✗ --detach needs the videos to be in a repo set up with \`reel init\` (.reelplanner/decisions.json; it records the server there); run \`reelplanner review\` without it`); process.exit(1); }
   const running = await runningServer(RP);
-  if (running && packedDir) { console.error(`✗ the review server already running (pid ${running.pid}) serves its own folder; a packed folder needs a server of its own: \`reelplanning review --stop\`, then this again (or run it without --detach)`); process.exit(1); }
+  if (running && packedDir) { console.error(`✗ the review server already running (pid ${running.pid}) serves its own folder; a packed folder needs a server of its own: \`reelplanner review --stop\`, then this again (or run it without --detach)`); process.exit(1); }
   if (running) {
     // one server per repo: put these videos in the folder it serves, and point at them
     bundle(running.out);
     const url = pageUrl(running.base, running.out);
     console.log(`✓ review page: ${url}`);
-    console.log(`  (the review server already running, pid ${running.pid}; \`reelplanning review --stop\` stops it)`);
+    console.log(`  (the review server already running, pid ${running.pid}; \`reelplanner review --stop\` stops it)`);
     if (running.unsandboxed) console.log(running.unsandboxed);
     announce(url);
     process.exit(0);
@@ -204,7 +204,7 @@ if (args.includes("--detach")) {
   mkdirSync(join(RP, "inbox"), { recursive: true });
   try { unlinkSync(serverFile(RP)); } catch {}
   const log = join(RP, "inbox", "server.log"), fd = openSync(log, "a");
-  const child = spawn(process.execPath, [fileURLToPath(import.meta.url), ...args.filter((a) => a !== "--detach")], { cwd: process.cwd(), detached: true, stdio: ["ignore", fd, fd], env: { ...process.env, REELPLANNING_REVIEW_DETACHED: "1" } });
+  const child = spawn(process.execPath, [fileURLToPath(import.meta.url), ...args.filter((a) => a !== "--detach")], { cwd: process.cwd(), detached: true, stdio: ["ignore", fd, fd], env: { ...process.env, REELPLANNER_REVIEW_DETACHED: "1" } });
   child.unref(); closeSync(fd);
   let s = null;
   for (let i = 0; i < 1200 && !s; i++) {
@@ -214,19 +214,19 @@ if (args.includes("--detach")) {
   }
   if (!s) { console.error(`✗ the review server did not start; its output is in ${relative(process.cwd(), log)}`); process.exit(1); }
   console.log(`✓ review page: ${s.url}`);
-  console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${relative(process.cwd(), log)}; \`reelplanning review --stop\` stops it)`);
+  console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${relative(process.cwd(), log)}; \`reelplanner review --stop\` stops it)`);
   if (s.unsandboxed) console.log(s.unsandboxed);
   process.exit(0);
 }
 
-const out = packedDir || resolve(flag("out", join(tmpdir(), "reelplanning-review", rp ? basename(dirname(rp)) : basename(projects[0]))));
+const out = packedDir || resolve(flag("out", join(tmpdir(), "reelplanner-review", rp ? basename(dirname(rp)) : basename(projects[0]))));
 bundle(out);
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json",
   ".mp3": "audio/mpeg", ".wav": "audio/wav", ".mp4": "video/mp4", ".vtt": "text/vtt", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml", ".woff2": "font/woff2", ".woff": "font/woff", ".ttf": "font/ttf", ".otf": "font/otf", ".txt": "text/plain" };
 // ---------- the review coming back ----------
-const RECHECK_MS = Number(process.env.REELPLANNING_RECHECK_MS) || 15000;
+const RECHECK_MS = Number(process.env.REELPLANNER_RECHECK_MS) || 15000;
 const json = (res, code, body) => res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" }).end(JSON.stringify(body));
 const agentCommand = () => { const c = readConfig(RP)?.agent?.command; return c ? [].concat(c).join(" ") : null; };
 // Unattended runs go ahead without the sandbox on this machine when agent.command turns on Claude
@@ -249,7 +249,7 @@ const afterRun = (id) => ({ code, signal, done }) => {
   if (done) {
     try { bundle(out); } catch (e) { console.error(`✗ rebuilding the page after ${id}: ${e.message}`); }
     line = `revised after your review${map ? `: ${waitingLine(map)}` : ""}`;
-  } else line = `the run on your review stopped before it finished (exit ${code ?? signal}); its log: .reelplanning/inbox/runs/${id}.log`;
+  } else line = `the run on your review stopped before it finished (exit ${code ?? signal}); its log: .reelplanner/inbox/runs/${id}.log`;
   ran.set(id, { ended: true, done, at: new Date().toISOString() });   // after the rebuild: the page asks for its build next
   console.log(`${done ? "✓" : "△"} run on ${id} ended (exit ${code ?? signal}): ${line}`);
   if (!args.includes("--no-notify")) notify({ title, line, url }).then((r) => { if (!r.shown) console.log(`  (no desktop notification: ${r.error || r.via})`); });
@@ -265,7 +265,7 @@ const sigOf = (m) => m ? m.changes?.at || JSON.stringify((m.frames || []).map((f
 function buildFor(row) {
   const pd = String(row.planDir || "").replace(/\/+$/, ""), proj = String(row.project || "");
   const path = !pd ? proj : basename(pd) === proj ? pd : `${pd}/${proj}`;
-  const m = path.match(/\.reelplanning\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/), e = path.match(/\.reelplanning\/explainers\/([^/]+)\/video$/);
+  const m = path.match(/\.reelplann(?:er|ing)\/(?:plans\/([^/]+)\/(video|walkthrough-video)|(system-video))$/), e = path.match(/\.reelplann(?:er|ing)\/explainers\/([^/]+)\/video$/);
   const slug = e ? `${e[1]}--explainer` : m?.[3] ? "system" : m ? (m[2] === "video" ? m[1] : `${m[1]}--walkthrough`) : basename(path);
   const read = (f) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return null; } };
   const own = projects.find((p) => basename(p) === proj);
@@ -327,7 +327,7 @@ async function deliver(id) {
   return { handledBy: "inbox", message: `saved; the next session picks it up (${r.reason})` };
 }
 
-// What your file across repos (~/.reelplanning/you.jsonl, D-106) says you know (D-218): the words you looked up in
+// What your file across repos (~/.reelplanner/you.jsonl, D-106) says you know (D-218): the words you looked up in
 // any review, and the videos of this repo you watched. The player shows a known word plainly, not underlined.
 function knownHere() {
   try {
@@ -353,7 +353,7 @@ async function handleApi(req, res, path) {
   const hosts = [`127.0.0.1:${port}`, `localhost:${port}`];
   if (!hosts.includes(String(req.headers.host))) return json(res, 403, { ok: false, error: "wrong host" });
   if (req.headers.origin && !hosts.some((h) => req.headers.origin === `http://${h}`)) return json(res, 403, { ok: false, error: "cross-origin" });
-  if (!RP) return json(res, 409, { ok: false, error: "these videos are not in a repo set up with reel init (.reelplanning/decisions.json) — download the review instead" });
+  if (!RP) return json(res, 409, { ok: false, error: "these videos are not in a repo set up with reel init (.reelplanner/decisions.json) — download the review instead" });
   if (path === "api/ask") return handleAsk(req, res);
   if (path === "api/review/status") {
     if (req.method !== "GET") return json(res, 405, { ok: false, error: "GET it, with ?id=" });
@@ -433,7 +433,7 @@ console.log(`  (serving until stopped; Finish, then Send, files the review in ${
 const off = await unsandboxed();
 if (off) console.log(unsandboxedLine(off));
 // started by --detach: say where this server is, so the next --detach reuses it and --stop finds it
-if (process.env.REELPLANNING_REVIEW_DETACHED === "1" && RP) {
+if (process.env.REELPLANNER_REVIEW_DETACHED === "1" && RP) {
   const file = serverFile(RP);
   writeFileSync(file, JSON.stringify({ pid: process.pid, port, url, base, out, projects: projects.map((p) => relative(dirname(RP), p)), startedAt: new Date().toISOString(), ...(off ? { unsandboxed: unsandboxedLine(off) } : {}) }, null, 2) + "\n");
   const forget = () => { try { if (JSON.parse(readFileSync(file, "utf8")).pid === process.pid) unlinkSync(file); } catch {} };

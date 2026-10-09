@@ -2,7 +2,7 @@
 
 The stage is a picture of **what the plan changes**, so its form comes from the plan's shape rather
 than from whatever the last project used (style guide §5). A project records its choice in
-`.reelplanning/system.json` as `stage: { kind, why }`, and `why` is a sentence someone can disagree
+`.reelplanner/system.json` as `stage: { kind, why }`, and `why` is a sentence someone can disagree
 with — not "it is the default".
 
 | file | kind | use it when the plan changes… | the mistake it avoids |
@@ -24,6 +24,6 @@ chain and no place on the artefact, it is a rail step and nothing more. That is 
 nodes they sat disconnected for the whole video, a checklist wearing the costume of an architecture.
 
 **Presence.** Whichever kind you pick, the full stage is context and not the subject: it earns the
-cast beat, the beats that change it, and the resolved plan. `reelplanning stage-presence <video-dir>`
+cast beat, the beats that change it, and the resolved plan. `reelplanner stage-presence <video-dir>`
 reports the share of beats that draw it (nothing runs it for you): run it to check, and over half is
 worth fixing.
