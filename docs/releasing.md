@@ -1,6 +1,6 @@
 # Releasing
 
-The skill pins the npm package (`npx -y reelplanner@<version>` in `SKILL.md`), so a release is one version number in several places. `npm version` moves all of them together: it bumps `package.json`, runs `scripts/release/sync-version.mjs` (the `version` npm script), which rewrites every `reelplanner@<version>` in the skill, docs, README, `scripts/release/install.sh` and the player, plus both `.claude-plugin` manifests, then commits and tags `v<version>`. `npm test` fails if any of them drift (`scripts/test/version.spec.mjs`). Each release gets a section in `CHANGELOG.md` (shipped in the package).
+The skill pins the npm package (`npx -y reelplanner@<version>` in `SKILL.md`), so a release is one version number in several places. `npm version` moves all of them together: it bumps `package.json`, runs `scripts/release/sync-version.mjs` (the `version` npm script), which rewrites every `reelplanner@<version>` in the skill, docs, README, `scripts/release/install.sh` and the player, plus the plugin's version in `.claude-plugin/marketplace.json` (its entry is the plugin's manifest: the plugin is the skill's folder), then commits and tags `v<version>`. `npm test` fails if any of them drift (`scripts/test/version.spec.mjs`). Each release gets a section in `CHANGELOG.md` (shipped in the package).
 
 ```bash
 npm run test:full               # green first: every spec, exhaustive (headless Chromium, specs side by side)

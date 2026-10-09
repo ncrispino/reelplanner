@@ -26,7 +26,7 @@ import { tmpdir, homedir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { kokoro, whisper } from "./tts-local.mjs";
-import { loadEnvFile, narrationSettings, heygenSet, envSource, envFileLabel, homeEnvPath, DEFAULT_WHISPER } from "./narrator.mjs";
+import { loadEnvFile, narrationSettings, heygenSet, envSource, setAs, envFileLabel, homeEnvPath, DEFAULT_WHISPER } from "./narrator.mjs";
 import { RP_COMMAND, machineDirShown } from "./env.mjs";
 
 // A plan video has 40–100 lines; 60 is a typical one.
@@ -90,7 +90,7 @@ export function localVoicePlan(dir, { hostedVoice = false, localVoice = false, e
   if (!need.kokoro) {
     const what = s.engine === "reelplanner" ? s.tts : "HeyGen";
     const from = s.engine !== "reelplanner" ? "a HeyGen credential is set"
-      : `from ${envSource("REELPLANNER_TTS", env) || (env.REELPLANNER_TTS ? "the shell's REELPLANNER_TTS" : ".reelplanner/config.json")}`;
+      : `from ${envSource("REELPLANNER_TTS", env) || (env.REELPLANNER_TTS ? `the shell's ${setAs("REELPLANNER_TTS", env)}` : ".reelplanner/config.json")}`;
     return { ...need, pending: false, lines: [need.whisper
       ? `✓ local voice: Kokoro skipped — speech is hosted (${what}, ${from}), but its word timings are local, so whisper.cpp is still installed; \`${rp} setup --local-voice\` installs Kokoro anyway`
       : `✓ local voice: skipped — narration is hosted (${what}, ${from}); \`${rp} setup --local-voice\` installs it anyway`] };

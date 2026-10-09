@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Carry package.json's version into every place that pins it: the skill's `npx -y reelplanner@<v>`,
-// the docs, scripts/release/install.sh and the Claude Code plugin manifests. And carry how people run reelplanner
-// (RP_COMMAND in scripts/lib/env.mjs: `reelplanner` while the package is not on npm, `npx -y
+// the docs, scripts/release/install.sh and the Claude Code plugin's entry in .claude-plugin/marketplace.json (the
+// plugin is the skill folder, with no plugin.json of its own: the entry is its manifest). And carry how people run
+// reelplanner (RP_COMMAND in scripts/lib/env.mjs: `reelplanner` while the package is not on npm, `npx -y
 // reelplanner@<v>` once it is) into the player's after-export lines and the guide's export
 // (guide-review.js), which run in a browser and so keep a copy of it.
 //
@@ -32,8 +33,8 @@ export const PINNED_FILES = [
   "skills/plan-to-video/SKILL.md", ...md("skills/plan-to-video/references"),
   "README.md", ...md("docs"), "scripts/release/install.sh", "packages/player/reelplanner-player.js", "packages/player/guide-review.js",
 ].filter((f) => existsSync(join(ROOT, f)));
-/** The plugin manifests, whose version fields must match. */
-export const MANIFESTS = [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"];
+/** The marketplace, whose plugin entry's version must match. */
+export const MARKETPLACE = ".claude-plugin/marketplace.json";
 
 /** Every place a version is written down that is not VERSION: [{ file, found }]. */
 export function stale() {
@@ -45,9 +46,7 @@ export function stale() {
     if (!found.length) out.push({ file: f, found: "no RP_COMMAND" });
     for (const m of found) if (m[2] !== RP_COMMAND) out.push({ file: f, found: `RP_COMMAND "${m[2]}", env.mjs says "${RP_COMMAND}"` });
   }
-  const plugin = JSON.parse(readFileSync(join(ROOT, MANIFESTS[0]), "utf8"));
-  if (plugin.version !== VERSION) out.push({ file: MANIFESTS[0], found: plugin.version });
-  for (const p of JSON.parse(readFileSync(join(ROOT, MANIFESTS[1]), "utf8")).plugins || []) if (p.name === "reelplanner" && p.version !== VERSION) out.push({ file: MANIFESTS[1], found: p.version });
+  for (const p of JSON.parse(readFileSync(join(ROOT, MARKETPLACE), "utf8")).plugins || []) if (p.name === "reelplanner" && p.version !== VERSION) out.push({ file: MARKETPLACE, found: p.version });
   return out;
 }
 
@@ -57,12 +56,10 @@ function sync() {
       .replace(RP_CONST, (m, head) => RP_FILES.includes(f) ? `${head}${JSON.stringify(RP_COMMAND)}` : m);
     if (out !== src) { writeFileSync(join(ROOT, f), out); console.log(`✓ ${f}`); }
   }
-  const plugin = JSON.parse(readFileSync(join(ROOT, MANIFESTS[0]), "utf8"));
-  if (plugin.version !== VERSION) { plugin.version = VERSION; writeFileSync(join(ROOT, MANIFESTS[0]), JSON.stringify(plugin, null, 2) + "\n"); console.log(`✓ ${MANIFESTS[0]}`); }
-  const market = JSON.parse(readFileSync(join(ROOT, MANIFESTS[1]), "utf8"));
+  const market = JSON.parse(readFileSync(join(ROOT, MARKETPLACE), "utf8"));
   let touched = false;
   for (const p of market.plugins || []) if (p.name === "reelplanner" && p.version !== VERSION) { p.version = VERSION; touched = true; }
-  if (touched) { writeFileSync(join(ROOT, MANIFESTS[1]), JSON.stringify(market, null, 2) + "\n"); console.log(`✓ ${MANIFESTS[1]}`); }
+  if (touched) { writeFileSync(join(ROOT, MARKETPLACE), JSON.stringify(market, null, 2) + "\n"); console.log(`✓ ${MARKETPLACE}`); }
   console.log(`✓ everything pins reelplanner@${VERSION}`);
 }
 
