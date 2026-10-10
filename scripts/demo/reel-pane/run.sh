@@ -19,7 +19,8 @@
 # usage: scripts/demo/reel-pane/run.sh [kitty|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
 #                                                                Pillow, and a `claude` that is signed in
 #
-# The README's GIF (docs/media/reel-pane.gif) is the kitty mp4 through gif.sh.
+# The README's GIF (docs/media/reel-pane.gif) is a highlight of the kitty run, through gif.sh: the run's footage cut
+# again with only some steps (cut.py --steps 1-2,5-7,9,14-19 --faster 16=3,18=1.5), captioned (compose.py).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 HERE="$ROOT/scripts/demo/reel-pane"

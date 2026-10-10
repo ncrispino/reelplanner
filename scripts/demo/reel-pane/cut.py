@@ -9,11 +9,28 @@ captions are drawn on a plain bar over the transcript side (ffmpeg drawtext): a 
 Several run dirs, comma-separated, are cut one after another into one video (kitty.py's review part, then its
 fullscreen part).
 
-usage: cut.py <run-dir>[,<run-dir>…] <out.mp4> [--bare]"""
+--steps picks some of the steps, by their numbers in the whole cut (1, 2, …, as the captions number them):
+`--steps 1-2,5-7,9` is a highlight (the README's GIF). --faster <n>=<x>,… plays step n x times faster again.
+
+usage: cut.py <run-dir>[,<run-dir>…] <out.mp4> [--bare] [--steps <list>] [--faster <n>=<x>,…]"""
 import json, os, subprocess, sys, tempfile
 
 RUNS, OUT = sys.argv[1].split(","), sys.argv[2]
 BARE = "--bare" in sys.argv[3:]
+arg = lambda name: sys.argv[sys.argv.index(name) + 1] if name in sys.argv else None
+
+
+def numbers(spec):
+    """`1-3,7` -> {1, 2, 3, 7}"""
+    out = set()
+    for part in spec.split(","):
+        lo, _, hi = part.partition("-")
+        out.update(range(int(lo), int(hi or lo) + 1))
+    return out
+
+
+PICK = numbers(arg("--steps")) if arg("--steps") else None
+FASTER = {int(k): float(v) for k, v in (kv.split("=") for kv in arg("--faster").split(","))} if arg("--faster") else {}
 
 
 def duration(path):
@@ -50,10 +67,15 @@ for RUN in RUNS:
         if m.get("stop"):
             break  # the video ends here; the rest is the recorder winding down
         steps.append((RUN, m, m["t"], marks[i + 1]["t"] if i + 1 < len(marks) else end))
+n = 0  # the step's number in the whole cut, as the captions number them
 for i, (RUN, m, a, b) in enumerate(steps):
     if b - a < 0.2 or m.get("skip"):
         continue  # a skip mark cuts its stretch: a wait with nothing on the screen changing
-    sp = m.get("speed", 1)
+    n += 1
+    if PICK is not None and n not in PICK:
+        continue
+    sp = m.get("speed", 1) * FASTER.get(n, 1)
+    sp = int(sp) if sp == int(sp) else round(sp, 2)
     vf = f"setpts=PTS/{sp},fps=15,"
     if not BARE:
         cap = m["caption"] + (f"  ({sp}×)" if sp > 1 else "")

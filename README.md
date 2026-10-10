@@ -104,11 +104,11 @@ takes your answers and comments, and sends them to Claude in the same conversati
 with **Changes needed** Claude revises the plan and rebuilds the scenes that change, and the pane plays the new
 version's changes; with **Approve** Claude builds the plan.
 
-<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, seeks, stops at each choice, takes an answer with a comment on it and a comment on a scene, sends the review with Changes needed; Claude, in the conversation, files it, edits that scene and rebuilds the video; the pane plays just the change, then goes full screen and back." width="100%">
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, seeks, stops at each choice, takes an answer with a comment on it and a comment on a scene, sends the review with Changes needed; Claude, in the conversation, files it, edits that scene and rebuilds the video; the pane plays just the change." width="100%">
 
 <p align="center"><i>/reel in kitty on one of this repo's sample videos: the review sent with Changes needed, Claude
-filing it, editing the scene and rebuilding the video in the same conversation, the change played, then full screen
-(2 min 50 s; waits sped up, as the cards say).</i></p>
+filing it, editing the scene and rebuilding the video in the same conversation, then just the change played (75 s,
+the highlights of one real session; waits sped up, as the captions say).</i></p>
 
 **What it needs:**
 
