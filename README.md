@@ -89,6 +89,8 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 - The agent writes the plan and makes a narrated video of it, in `videos/<name>/`. Building the video takes
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
+- Along the way it asks a few [quick checks](#explain-it-yourself-first): what will the plan do in a case the
+  video did not show? A wrong guess marks a place where you expected something else.
 - Comment on any moment, then press **Finish review**:
   - For a quick video, it downloads `annotations.json` to your downloads folder. Give the agent that path,
     and it updates the plan.
@@ -133,6 +135,46 @@ Agents write plans faster than people can read them. A long plan gets skimmed, a
 
 Spec Kit is far more widely used, and for a one-line fix or a plan you can read in a minute, text is faster.
 More tools, with sources: [docs/comparison.md](./docs/comparison.md).
+
+## Explain it yourself first
+
+You and your agent often hold different pictures of the same code. You think the client retries a failed upload;
+the agent, reading the code, plans as if the server does. Neither picture is written down, so the gap shows up
+late, as a plan that misses the point or a change that surprises you. reelplanner puts your picture on the table
+early, so you and the agent can line the two up, or decide together which one should change: yours, or the code.
+
+**Sketch it.** Ask your agent to let you sketch first ("let me sketch how uploads work, then plan the change"), or
+run `reelplanner sketch`. A whiteboard opens ([Excalidraw](https://github.com/excalidraw/excalidraw)) that records
+you drawing and talking through how you think it works: boxes, arrows, icons, a Mermaid diagram you already have,
+which box is which file, what exists today and what you propose. A model may ask one short question when something
+is unclear, never explaining the code to you. The agent gets `sketch.md`, everything you drew and said in order
+with every change of mind, and starts its explanation or plan from where your picture and the code differ.
+[docs/sketch.md](./docs/sketch.md)
+
+<img src="docs/media/sketch-page.png" alt="The sketch page: a checkout flow from Mermaid, icons for Stripe, the orders database and a new queue marked new, a note typed on the canvas, and the partner's question beside it." width="100%">
+
+**Quick checks.** Each plan video asks you to predict what the plan or the code will do ("when the same review is
+sent twice, how many runs start?"). A check comes after the next step, on a case the video did not show, so it
+tests the rule rather than your memory of the last sentence. A wrong answer is useful: your answers go back with
+the review, and "Expected something else?" under a check says how you think it should work, as a comment on that
+step. The player's Quick checks switch (`K`) turns them off.
+
+Why it helps, from research on how people understand things:
+
+- People believe they understand how things work in far more depth than they do, until they try to explain it
+  ([Rozenblit & Keil, 2002](https://doi.org/10.1207/s15516709cog2605_1)). Explaining out loud also builds the right
+  picture: students prompted to explain as they read learned more
+  ([Chi et al., 1994](https://doi.org/10.1207/s15516709cog1803_3)).
+- Developers already go to the whiteboard to share their picture of a system, but the drawings, and the design
+  decisions in them, are mostly lost ([Cherubini et al., CHI 2007](https://doi.org/10.1145/1240624.1240714)). A
+  sketch keeps them, timed, where an agent can read them.
+- How well a person and an AI do together depends not only on how accurate the AI is, but on whether the person's
+  picture of it is right ([Bansal et al., HCOMP 2019](https://doi.org/10.1609/hcomp.v7i1.5285)).
+- Answering a question makes understanding last: a test beat rereading on a test a week later
+  ([Roediger & Karpicke, 2006](https://doi.org/10.1111/j.1467-9280.2006.01693.x)). And help that does the thinking
+  for you can leave you worse off: high school students practising with a plain GPT-4 chat did worse on the exam
+  once it was gone, while a tutor built to make them think did not do that harm
+  ([Bastani et al., PNAS 2025](https://doi.org/10.1073/pnas.2422633122)). Quick checks are that kind of guard.
 
 ## How it works
 
