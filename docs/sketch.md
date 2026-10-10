@@ -30,9 +30,9 @@ a bar at the bottom:
 - **Typing.** There is no separate note box: double-click the canvas (or press `T`) and type, as on a whiteboard.
   Text of your own (not a box's label or an icon's name) is a note: when you finish it, it is timed, goes in the
   words of the next picture as `(typed) …` and to the partner, and `sketch.md` lists it under **Typed notes**.
-- **How this works** (the **?** in the bar) lists the page's moves: talking and pointing, typing, the icons, Mermaid,
-  pictures, what the selection bar does, and Finish. It opens by itself the first time in a browser, and closes
-  when you press Record.
+- **How this works** (the **?** in the bar) is three steps (Record and talk; point and type; Finish and Send) and
+  where the rest is: icons, Mermaid, pictures, the selection bar. It opens by itself the first time in a browser,
+  and closes when you press Record.
 - **Finish** pauses and shows exactly what will be sent: the recording to play back, the transcript (click a line
   to jump there), a picture at each pause, and a box for anything to flag. **Keep sketching** goes back and resumes;
   **Send to the repo** saves the folder; **Download instead** gives a `.zip` of it (also what a page opened without

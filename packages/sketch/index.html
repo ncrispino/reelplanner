@@ -94,18 +94,18 @@
   @media (max-width: 700px) { #sel { bottom: 168px; } #sel .what { max-width: 110px; } }
 
   /* how this works: open on an empty canvas before recording, and from the ? in the bar */
-  #help { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 8; display: none; width: min(620px, calc(100% - 32px)); max-height: calc(100% - 180px);
+  #help { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 8; display: none; width: min(440px, calc(100% - 32px)); max-height: calc(100% - 180px);
     overflow: auto; box-sizing: border-box; padding: 18px 20px 14px; }
   #help.show { display: block; }
-  #help h2 { margin: 0 0 2px; font-size: 17px; }
-  #help .lede { margin: 0 0 12px; color: var(--ink-3); font-size: 13px; }
-  #help .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 22px; }
-  #help h3 { margin: 0 0 4px; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--accent-text); }
-  #help ul { margin: 0; padding-left: 16px; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
-  #help li { margin: 0 0 3px; }
+  #help h2 { margin: 0 0 10px; font-size: 17px; }
   #help b { color: var(--ink); font-weight: 600; }
-  #help kbd { font: 11px var(--mono); border: 1px solid rgba(var(--ink-rgb), .25); border-radius: 4px; padding: 0 4px; }
-  #help .end { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 12px; font-size: 12px; color: var(--ink-3); }
+  #help .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 8px; }
+  #help .steps li { counter-increment: step; position: relative; padding-left: 32px; font-size: 15px; line-height: 22px; color: var(--ink-2); }
+  #help .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font: 600 12px/22px var(--sans); text-align: center; }
+  #help .tips { display: grid; grid-template-columns: max-content 1fr; gap: 5px 14px; margin: 14px 0 0; padding-top: 12px; border-top: 1px solid rgba(var(--ink-rgb), .12); font-size: 13px; }
+  #help .tips dt { color: var(--ink-3); }
+  #help .tips dd { margin: 0; color: var(--ink-2); min-width: 0; }
+  #help .end { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; font-size: 12px; color: var(--ink-3); }
   #help-close { border: 0; border-radius: 9px; padding: 7px 14px; background: var(--ink); color: var(--paper); font-weight: 600; }
 
   /* what it is hearing, just above the bar */
@@ -161,7 +161,7 @@
 </div>
 </div>
 
-<div id="status">Press Record, then draw and talk. Double-click the canvas to type.</div>
+<div id="status"></div>
 <div id="caption" aria-live="polite"></div>
 
 <div id="sel" class="chip" role="toolbar" aria-label="What is selected">
@@ -180,31 +180,18 @@
 
 <div id="help" class="chip" role="dialog" aria-labelledby="help-title">
   <h2 id="help-title">How this works</h2>
-  <p class="lede">Show how you think it works: talk while you draw, as at a whiteboard. It is your picture, not a quiz.</p>
-  <div class="cols">
-    <div><h3>Talk and draw</h3><ul>
-      <li><b>Record</b>, then say what you're drawing as you draw it. <b>Pause</b> any time.</li>
-      <li>Point at things while you say "this one": the pointer is recorded.</li>
-      <li>Rather write it? <b>Double-click</b> the canvas (or press <kbd>T</kbd>) and type. Text you type is kept as a note.</li>
-      <li>Change your mind freely: renames, moves, erases and undos are all kept.</li>
-    </ul></div>
-    <div><h3>Beyond boxes</h3><ul>
-      <li><b>Icons</b> (database, queue, user, phone…): <b>Library</b>, top right.</li>
-      <li><b>Mermaid</b> you already have: the toolbar's <b>⋯ More tools → Mermaid to Excalidraw</b>.</li>
-      <li><b>A picture or SVG</b>: drag it onto the canvas.</li>
-      <li><b>Frames</b> group an area under a name: More tools → Frame, or <kbd>F</kbd>.</li>
-    </ul></div>
-    <div><h3>Select something, then</h3><ul>
-      <li><b>Link to code</b>: the file it is in the repo.</li>
-      <li><b>Today / New / Going</b>: what exists, what you propose, what goes away.</li>
-      <li><b>Open up</b>: a frame beside it to draw what's inside; <b>Back</b> returns.</li>
-    </ul></div>
-    <div><h3>When you're done</h3><ul>
-      <li><b>Finish</b> shows exactly what will be sent; <b>Send</b> hands it to your agent.</li>
-      <li>With <b>Ask me questions</b> on, a model may ask one short question beside the canvas. Answer it out loud, or don't.</li>
-    </ul></div>
-  </div>
-  <div class="end"><span>This card comes back with <b>?</b> in the bar.</span><button id="help-close" type="button">Start sketching</button></div>
+  <ol class="steps">
+    <li><b>Record</b>, then talk while you draw.</li>
+    <li>Point at things as you talk. <b>Double-click</b> the canvas to type.</li>
+    <li><b>Finish</b> to check it, then <b>Send</b>.</li>
+  </ol>
+  <dl class="tips">
+    <dt>Icons</dt><dd><b>Library</b>, top right</dd>
+    <dt>Mermaid</dt><dd><b>⋯ More tools</b> in the toolbar</dd>
+    <dt>A picture</dt><dd>drag it onto the canvas</dd>
+    <dt>Select a box</dt><dd><b>Link to code</b> · <b>Today / New / Going</b> · <b>Open up</b></dd>
+  </dl>
+  <div class="end"><span><b>?</b> brings this back</span><button id="help-close" type="button">Start sketching</button></div>
 </div>
 
 <div id="bar" class="chip">

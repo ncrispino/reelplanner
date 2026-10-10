@@ -214,8 +214,8 @@ try {
   ok(await page.isVisible("#partner") && (await page.textContent("#partner-label")).includes("qwen2.5vl:7b on this machine"),
     `the page names the partner, the local server's vision model — ${await page.textContent("#partner-label")}`);
   const helpText = await page.textContent("#help");
-  ok(await page.isVisible("#help") && ["Double-click", "Library", "Mermaid to Excalidraw", "Link to code", "Today / New / Going", "Open up", "Finish"].every((w) => helpText.includes(w)) && !(await page.$("#note")),
-    "a first visit opens How this works (talking, typing on the canvas, the icons, Mermaid, the selection bar, Finish); there is no note box");
+  ok(await page.isVisible("#help") && ["Record", "Double-click", "Finish", "Library", "Mermaid", "Link to code", "Today / New / Going", "Open up"].every((w) => helpText.includes(w)) && !(await page.$("#note")),
+    "a first visit opens How this works (three steps; the icons, Mermaid, pictures, the selection bar); there is no note box");
 
   await page.click("#rec");
   await page.waitForTimeout(300);
