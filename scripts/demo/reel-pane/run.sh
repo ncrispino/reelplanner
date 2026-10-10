@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Record the /reel pane working in a real Claude Code session, as a captioned mp4 (about a minute).
+# Record the /reel pane working in a real Claude Code session, as a captioned mp4 (the kitty flow: about two and a
+# half minutes).
 #
 #   kitty    the same in a real kitty on a virtual display (Xvfb), its screen grabbed as it is: the sharp picture
-#            (kitty.py, then cut.py for the captions). Needs kitty, Xvfb and xdotool.
+#            (kitty.py; cut.py cuts and speeds its steps, compose.py captions them in HyperFrames). Needs kitty,
+#            Xvfb and xdotool.
 #            The video's render is made first if the checkout has none (about 8 minutes, once; renders/ is
 #            left out of git).
 #   review   the agent opens a plan video with `reelplanner review`, the band offers it, the pane answers its
@@ -58,7 +60,9 @@ if [ "$FLOW" = kitty ]; then
   DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh" "$WORK/demo"
   kill $XVFB 2>/dev/null || true
   (cd "$WORK/demo" && HOME="$WORK/home" node bin/reelplanner.mjs review --stop >/dev/null 2>&1 || true)
-  python3 "$HERE/cut.py" "$WORK/run" "$OUT"
+  # the steps cut and sped (cut.py), then captioned in HyperFrames (compose.py)
+  python3 "$HERE/cut.py" "$WORK/run" "$WORK/footage.mp4" --bare
+  python3 "$HERE/compose.py" "$WORK/footage.mp4" "$OUT"
   echo "✓ $OUT"
   exit 0
 fi
