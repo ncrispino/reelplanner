@@ -38,6 +38,9 @@
 // context only; the other scenes are not in them. A first build covers every scene, and so does `--all`.
 //
 // usage: reelplanner fresh-eyes <video-dir>                        write the briefs (a new round)
+//        reelplanner fresh-eyes <video-dir> --script               the script's brief, before frames: the storyboard and
+//                                                                  script against BRIEF.md's `- Ask:` and the last review
+//                                                                  (--prompt newcomer, --check work on it with --script)
 //        reelplanner fresh-eyes <video-dir> --prompt newcomer|designer    print the prompt that starts one agent
 //        reelplanner fresh-eyes <video-dir> --check                where it stands (what `verify` runs):
 //                                                                  exit 1 on a finding with no answer (D-225),
@@ -46,12 +49,13 @@
 //   --no-shots   write the briefs without pictures (a test; the skill never does)
 //   --width <n>  the review page's width for the pictures (default 1440; height 900)
 import { existsSync, readFileSync, writeFileSync, mkdirSync, renameSync, rmSync, readdirSync, mkdtempSync } from "node:fs";
-import { join, resolve, relative, basename, extname } from "node:path";
+import { join, resolve, relative, basename, extname, dirname } from "node:path";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { createServer } from "node:http";
 import { spawnSync } from "node:child_process";
 import { ROOT, launchOpts } from "./lib/env.mjs";
-import { feDir, readStamp, stampOf, scenesOf, saidSince, freshEyesState, findingsOf, answerProblem, buildOf, buildOfStamp, buildsKept, contextOf, inScope, ROUNDS, rolesFor, factChecked } from "./lib/fresh-eyes.mjs";
+import { feDir, readStamp, stampOf, scenesOf, saidSince, freshEyesState, findingsOf, parseFindings, planOf, answerProblem, buildOf, buildOfStamp, buildsKept, contextOf, inScope, ROUNDS, rolesFor, factChecked } from "./lib/fresh-eyes.mjs";
 import { explainerDirOf, readSources, sourceLine } from "./lib/explainer.mjs";
 import { frontMatter, fmValue, glossaryFor, termsOf, rpDirFor, slugOf, storyboardFrames } from "./lib/terms.mjs";
 import { lostBefore } from "./lib/memory.mjs";
@@ -61,11 +65,100 @@ const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : null; };
 const die = (m) => { console.error(`✗ fresh-eyes: ${m}`); process.exit(1); };
 const target = args.find((a, i) => !a.startsWith("--") && !["--prompt", "--width"].includes(args[i - 1]));
-if (!target) die("usage: fresh-eyes <video-dir> [--prompt newcomer|designer|checker] [--check]");
+if (!target) die("usage: fresh-eyes <video-dir> [--script] [--prompt newcomer|designer|checker] [--check]");
 const dir = resolve(target), fe = feDir(dir);
 for (const f of ["STORYBOARD.md", "SCRIPT.md"]) if (!existsSync(join(dir, f))) die(`${target} has no ${f}`);
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const rel = (p) => relative(process.cwd(), p) || ".";
+
+// ── --script: the storyboard and script read against what the person asked, before any frame ─────────────
+// (plans/2026-10-10-cheaper-videos, step 4). The costliest misses were a video that was not what was asked and a
+// video in build order, not big picture first; read here, a fix is a line of the script, not a frame. One newcomer,
+// from the storyboard, the script and the person's words (BRIEF.md's `- Ask:` lines, and the last review's comments),
+// writes fresh-eyes/script/newcomer.md; its findings are answered like any round's, before frames are drawn.
+if (args.includes("--script")) {
+  const sd = join(fe, "script"), briefP = join(sd, "newcomer-brief.md"), outP = join(sd, "newcomer.md"), stampP = join(sd, "stamp.json");
+  const stampS = (() => { try { return JSON.parse(read(stampP)); } catch { return null; } })();
+  if (args.includes("--check")) {
+    if (!existsSync(outP)) { console.log(`△ fresh eyes on the script: ${existsSync(briefP) ? "no newcomer.md yet (launch the newcomer: --script --prompt newcomer)" : "not run (reelplanner fresh-eyes <video-dir> --script)"}`); process.exit(0); }
+    const open = parseFindings(read(outP)).map((x) => ({ ...x, problem: answerProblem(dir, x, stampS) })).filter((x) => x.problem);
+    if (open.length) { console.log(`✗ fresh eyes on the script: ${open.length} finding${open.length === 1 ? "" : "s"} not answered: ${open.map((x) => `${x.id}${x.scene ? ` (scene ${x.scene})` : ""} ${x.problem}`).join("; ")}`); process.exit(1); }
+    console.log(`✓ fresh eyes on the script: ${parseFindings(read(outP)).length} finding(s) answered`); process.exit(0);
+  }
+  if (args.includes("--prompt")) {
+    if (!existsSync(briefP)) die(`no script brief yet: run \`reelplanner fresh-eyes ${rel(dir)} --script\` first`);
+    console.error(`launch the newcomer as ${freshAgentHow({ writes: sd })}, with exactly the prompt below and nothing else`);
+    console.log(`You are a newcomer reading the script of a short narrated video before it is drawn. You did not write it: judge it
+from what you are given. Everything you get is in one file:
+
+  ${briefP}
+
+Read it in full. Do not open any other file in the repository.
+
+Write your findings to exactly this file, in exactly the shape the brief gives (its first line too):
+
+  ${outP}
+
+It is the only file you write. Then reply with how many findings you wrote and the path.`);
+    process.exit(0);
+  }
+  mkdirSync(sd, { recursive: true });
+  const sbS = read(join(dir, "STORYBOARD.md")), fmS = frontMatter(sbS), titleS = fmValue(fmS, "title") || basename(dir);
+  const said = Object.fromEntries(read(join(dir, "SCRIPT.md")).split(/\n(?=## Line )/).map((b) => [Number((b.match(/^## Line .*\(Frame (\d+)\)/m) || [])[1]), b.split("\n").filter((l) => /^ {4}\S/.test(l)).map((l) => l.trim()).join(" ")]).filter(([n]) => n));
+  const framesS = storyboardFrames(sbS).sort((a, b) => a.index - b.index);
+  const asks = [...read(join(dir, "BRIEF.md")).matchAll(/^- Ask:\s*(.+)$/gm)].map((m) => m[1].trim());
+  const planDir = planOf(dir) ? dirname(planOf(dir)) : null;
+  const lastReview = (() => { if (!planDir) return null; const rd = join(planDir, "reviews"); if (!existsSync(rd)) return null; const md = readdirSync(rd).filter((f) => f.endsWith(".md")).sort().at(-1); return md ? read(join(rd, md)).slice(0, 4000) : null; })();
+  const idS = createHash("sha256").update(JSON.stringify(framesS.map((f) => said[f.index] || f.meta.voiceover || ""))).digest("hex").slice(0, 12);
+  const glossS = glossaryFor(dir), ownS = termsOf(fmS);
+  writeFileSync(stampP, JSON.stringify({ id: idS, at: new Date().toISOString(), ...(planOf(dir) ? { plan: createHash("sha256").update(read(planOf(dir))).digest("hex").slice(0, 12) } : {}) }, null, 2) + "\n");
+  writeFileSync(briefP, `# Fresh eyes: the newcomer's script brief · ${titleS}
+
+You are a newcomer to this project, reading the script of "${titleS}", a narrated video of ${framesS.length} scenes,
+before any picture is drawn: what each scene will show and what it says. You also have what the person who asked for
+the video said, in their words. You have nothing else: not the plan, not the code.
+
+Read it as the person would watch it, and list:
+
+- **What they asked that it does not do.** Their words are first below: a thing they asked to see that the video
+  only names or describes, a question they asked that it does not answer.
+- **Where it loses the big picture.** A video that goes step by step, in the order things are built, before saying
+  what the whole is and why: say where you first needed the whole and did not have it.
+- **Every word or phrase you could not explain from what the script had said by then**, and what you guessed. A word
+  with a meaning below counts as explained.
+- **What the plan itself leaves out**, as far as the script shows it (a step, a case, a cost): mark those \`[plan]\`.
+
+## The shape of newcomer.md (keep it exactly)
+
+\`\`\`
+# Fresh eyes: newcomer · script · stamp ${idS}
+
+- N1 · scene 4 · "the phrase": what you could not follow, and what you guessed; why it matters
+- N2 [plan] · scene 7 · …
+\`\`\`
+
+One finding a line, in scene order. Write "- none" if you have nothing. Do not answer or fix anything yourself.
+
+## What the person asked, in their words
+
+${asks.length ? asks.map((a) => `- ${a}`).join("\n") : "- (BRIEF.md has no \`- Ask:\` line)"}
+${lastReview ? `\n### Their last review\n\n${lastReview}\n` : ""}
+## The words this video gives a meaning
+
+${ownS.length ? ownS.map((t) => `- **${t.term}**${t.meaning ? `: ${t.meaning}` : " (defined in the video itself)"}`).join("\n") : "- none"}
+
+## The glossary
+
+${glossS.length ? glossS.map((g) => `- **${g.display || g.term}**: ${g.said || g.meaning}`).join("\n") : "- none"}
+
+## The video, scene by scene
+
+${framesS.map((f) => `### Scene ${f.index}${f.title ? ` · ${f.title}` : ""}\n\n${f.meta.scene ? `_Shows:_ ${f.meta.scene}\n\n` : ""}_Says:_ ${said[f.index] || String(f.meta.voiceover || "").replace(/^"|"$/g, "")}`).join("\n\n")}
+`);
+  console.log(`✓ fresh eyes on the script: ${rel(briefP)} (${framesS.length} scenes${asks.length ? `, ${asks.length} line${asks.length === 1 ? "" : "s"} of what was asked` : ", no \`- Ask:\` in BRIEF.md: add the person's words"}${lastReview ? ", the last review" : ""})`);
+  console.log(`next: launch one fresh agent, ${freshAgentHow({ writes: sd })}, with the prompt from \`fresh-eyes ${rel(dir)} --script --prompt newcomer\`; answer each finding under it in ${rel(outP)} before drawing frames`);
+  process.exit(0);
+}
 
 // ── --check: what verify reads ─────────────────────────────────────────────────────────────────────────
 if (args.includes("--check")) {
@@ -121,6 +214,15 @@ let scope = all ? null : build.scope;
 if (scope && !scope.length) {
   console.log(`✓ fresh eyes: nothing a viewer sees changed since the last build (plan-diff: ${build.changes?.retimed || 0} scene(s) retimed only), so there is nothing new to look at; its rounds stand. \`--all\` looks at the whole video.`);
   process.exit(0);
+}
+// the script's look comes first: its findings answered before the frames get theirs
+{
+  const sp = join(fe, "script", "newcomer.md");
+  if (existsSync(sp)) {
+    const st = (() => { try { return JSON.parse(read(join(fe, "script", "stamp.json"))); } catch { return null; } })();
+    const open = parseFindings(read(sp)).filter((x) => answerProblem(dir, x, st)).map((x) => x.id);
+    if (open.length) die(`the script's fresh eyes still have findings with no answer (${open.join(", ")}) in ${rel(sp)}: answer each first`);
+  }
 }
 let round = 1, archived = null;
 const moveRound = (from, to) => {   // the round's files: its briefs, findings and stamp

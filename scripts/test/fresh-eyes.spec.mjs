@@ -28,6 +28,8 @@
 //           - the prompt names the exact findings path (absolute) and says it is the only file written; `--check`
 //             fails on this round's findings written anywhere else (not read from there), and on one role's
 //             findings in the other's file
+//   script  - --script: the storyboard and script read against BRIEF.md's - Ask: and the last review, before any
+//             frame; its prompt and --check; a [plan] finding kept fails; a frame round waits for its answers
 //   step 3  - a question asked on the page: reviews/<id>.md lists it (answered, with where from, or to answer in the next
 //             version), and it counts in `reel memory lost`
 //   step 5  - fix-clip-durations restamps a frame shorter than its slot (found by the system video's fresh eyes)
@@ -303,6 +305,36 @@ const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileS
   ok("--all on a rebuild: every scene, none context, and the last set kept in build-2/", r6.status === 0 && /every scene \(--all\)/.test(r6.stdout) && ids.every((_, i) => ab.includes(`number ${i + 1}`)) && !/context only/.test(ab) && stamp().scope === null && stamp().all === true && existsSync(join(FE, "build-2", "round-2", "stamp.json")), r6.stdout + r6.stderr);
   answerAll("newcomer", 1); answerAll("designer", 1);
   ok("…and the build's next round is the whole video too", fe("--no-shots").status === 0 && stamp().round === 2 && stamp().scope === null);
+}
+
+// ── the script, read against the ask before any frame (cheaper-videos step 4) ──
+{
+  const PS = join(RP, "plans", "2026-10-03-script"), S = join(PS, "video");
+  mkdirSync(join(S, "compositions", "frames"), { recursive: true }); mkdirSync(join(PS, "reviews"), { recursive: true });
+  writeFileSync(join(PS, "plan.md"), "# A bakery site\n\n### Step 1 — Pages\n\nfour pages\n");
+  writeFileSync(join(PS, "reviews", "plan-20261010T060220Z.md"), "Changes requested.\n\n- step 5: show me the order form, not a description of it\n");
+  writeFileSync(join(S, "BRIEF.md"), "# Brief\n\n- Ask: \"show me prototypes of each page, not words\"\n- Medium: screen\n");
+  writeFileSync(join(S, "STORYBOARD.md"), `---\ntitle: "Bakery plan"\nplan_dir: .reelplanner/plans/2026-10-03-script\n---\n\n## Frame 1 — Pages\n\n- scene: four page names in a row\n- voiceover: "The site has four pages."\n- src: compositions/frames/01-pages.html\n\n## Frame 2 — Order\n\n- scene: the words "order form"\n- voiceover: "People order through a form."\n- src: compositions/frames/02-order.html\n`);
+  writeFileSync(join(S, "SCRIPT.md"), "# SCRIPT\n\n## Line 1 — Pages (Frame 1)\n\n    The site has four pages.\n\n## Line 2 — Order (Frame 2)\n\n    People order through a form.\n");
+  const sr = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--script", ...a], { cwd: tmp, encoding: "utf8" });
+  const w = sr(), brief = readFileSync(join(S, "fresh-eyes", "script", "newcomer-brief.md"), "utf8");
+  ok("--script: a brief from the storyboard and script alone, no frames needed, before any build", w.status === 0 && /fresh eyes on the script/.test(w.stdout) && /### Scene 2 · Order/.test(brief) && /_Shows:_ the words "order form"/.test(brief) && /_Says:_ People order through a form\./.test(brief), w.stdout + w.stderr + brief.slice(0, 400));
+  ok("…with what the person asked first: BRIEF.md's - Ask: lines and their last review", brief.indexOf("show me prototypes of each page") > 0 && brief.indexOf("show me prototypes") < brief.indexOf("## The video, scene by scene") && /show me the order form, not a description/.test(brief) && /2 scenes, 1 line of what was asked, the last review/.test(w.stdout), w.stdout);
+  ok("…asking what they asked that it only names, where it loses the big picture, unexplained words, and [plan]", /only names or describes/.test(brief) && /big picture/.test(brief) && /could not explain/.test(brief) && /`\[plan\]`/.test(brief));
+  const pr = sr("--prompt", "newcomer");
+  ok("--script --prompt newcomer names the brief and the one findings file", pr.status === 0 && pr.stdout.includes(join(S, "fresh-eyes", "script", "newcomer-brief.md")) && pr.stdout.includes(join(S, "fresh-eyes", "script", "newcomer.md")), pr.stdout);
+  ok("--script --check before the agent is back: a warning, exit 0", sr("--check").status === 0);
+  const id = JSON.parse(readFileSync(join(S, "fresh-eyes", "script", "stamp.json"), "utf8")).id, fp = join(S, "fresh-eyes", "script", "newcomer.md");
+  writeFileSync(fp, `# Fresh eyes: newcomer · script · stamp ${id}\n\n- N1 [plan] · scene 2 · "a form": they asked to see it; the script only names it\n  - Answer: kept: the form is simple\n`);
+  const k = sr("--check");
+  ok("--script --check: a [plan] finding kept fails", k.status === 1 && /N1 \(scene 2\) is about the plan/.test(k.stdout), k.stdout);
+  // a frame round does not start while the script's findings are open
+  writeFileSync(join(S, "index.html"), "<html></html>\n"); writeFileSync(join(S, "plan-map.json"), JSON.stringify({ title: "Bakery plan", frames: [{ index: 1, start: 0, durationSeconds: 3 }, { index: 2, start: 3, durationSeconds: 3 }] }));
+  for (const f of ["01-pages", "02-order"]) writeFileSync(join(S, "compositions", "frames", `${f}.html`), "<div>x</div>\n");
+  const fr = spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" });
+  ok("a frame round is refused while the script's findings have no answer", fr.status !== 0 && /the script's fresh eyes still have findings with no answer \(N1\)/.test(fr.stderr), fr.stderr);
+  writeFileSync(fp, readFileSync(fp, "utf8").replace("  - Answer: kept: the form is simple\n", "  - Answer: ask: should step 5 draw the order form as a prototype?\n"));
+  ok("…answered (ask:), --check passes and the frame round starts", sr("--check").status === 0 && spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" }).status === 0);
 }
 
 // ── step 3: a question asked on the page, in the record ──
