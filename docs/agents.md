@@ -59,6 +59,10 @@ The skill names the other skills it loads the same way: HyperFrames' faceless-ex
   one in a call of its own. The skill never edits your settings: when a command is stopped, it names these two
   rules and waits for you. One auto mode stopped can be run again from `/permissions` → Recently denied (`r`).
   `reelplanner setup` reminds you while it finds `claude` and no such rule.
+- **One question from Claude Code itself.** The first time the skill reads its own guide (`references/style-guide.md`,
+  in `~/.claude/skills`, outside your repo), Claude Code asks once whether reads outside the working directories are
+  allowed, in auto mode too. The first answer, Yes and keep allowing them, is the one that lets the skill go on
+  without asking again ([seen on a fresh machine](../eval/fresh-machine/2026-10-10-bakery-auto-mode.md), Claude Code 2.1.296).
 - **The headless review run** is off until you ask for it: `reel init <repo> --agent claude` (in a repo set up
   already too) writes the command the review server starts on a review sent while no session waits. It runs in
   auto mode inside Claude Code's sandbox (D-082; [project-dir](./project-dir.md): `config.json`).

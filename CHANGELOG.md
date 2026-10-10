@@ -17,6 +17,10 @@
 - **A whole session on a fresh machine.** `scripts/release/ec2-fresh.sh --shell` starts an EC2 machine with the
   package copied over and runs nothing, for a session tried by hand (Claude Code logged in, the README's Install,
   a plan and its review); `--hours` sets when it shuts itself down (2 by default).
+- **Fresh eyes and the guide's check get a browser on an install.** `playwright-core` was a development
+  dependency, so an installed reelplanner had none: fresh eyes' pictures lacked the player's captions and controls,
+  and the guide was not opened in a browser. It is a dependency now, and with no Playwright browser it drives the
+  Chrome headless shell `setup` installs for HyperFrames.
 - **Finish no longer counts an approval as a comment.** With nothing said, the Finish panel said "Your 1 comment
   goes with it": the approval it had picked is kept as an annotation, and the panel counted it.
 
