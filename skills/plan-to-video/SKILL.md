@@ -264,8 +264,11 @@ explainer (`<explainer-dir>/video/`).
    each: `- Medium:`, `- Layouts:`, `- Main transition:` (style guide §5; reelplanner's
    `templates/video/BRIEF.md` is a starting point). A fourth line picks which scenes show the real
    thing, `- Real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures`;
-   it is optional and nothing warns about the scenes it leaves out. With `.reelplanner/`, `$RP reel
-   stage <plan-dir>` writes the shared stage.
+   it is optional and nothing warns about the scenes it leaves out. Put the person's request in their own
+   words first under Customizations, `- Ask: "<what they asked, quoted>"` (on a revise, their review's words are
+   read from `reviews/`): the script's fresh eyes hold the video to it. A video that needs more than 1.5 times its
+   length budget says why, `- Length: <why>`; without it `build` stops before voicing a script that long. With
+   `.reelplanner/`, `$RP reel stage <plan-dir>` writes the shared stage.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`** (Step 3) as the style guide says: a series of parts of
    about a minute, 3–5 minutes in all (the system video 5–8), decisions after their steps, a quick
    check per step. A walkthrough video is the change running instead, in about two minutes, with a quick
@@ -288,6 +291,11 @@ explainer (`<explainer-dir>/video/`).
    reviewer knows: when `$RP reel memory --you` shows they know a word (they watched the video that
    defines it, or looked it up and later answered a quick check on it right), this video drops its
    definition card for that word (the recap line, the defining clause); the word stays in the Terms panel.
+   **Then read it against the ask, before any frame**: `$RP fresh-eyes <video-dir> --script` writes a brief from the
+   storyboard, the script and the person's words; launch one fresh agent with exactly the prompt from `--script
+   --prompt newcomer` (as for fresh eyes, step 5), and answer each finding under it (`--script --check`) before
+   drawing: here a fix is a line of the script. It asks whether the video does what they asked (a thing they wanted
+   to see, only named), whether it says the whole before the steps, and every word not yet explained.
    The tags the player reads:
 
    | Beat | Tags |
@@ -314,8 +322,13 @@ explainer (`<explainer-dir>/video/`).
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
-   voice files. Meanwhile build the frames (Steps 4–5): one worker per frame, animations placed on
-   their words once `audio_meta.json` has the timings. Mark each option card on a decision or
+   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
+   about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
+   `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
+   each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).
+   A worker never reads reelplanner's source: the formats it needs are in
+   [references/frames.md](references/frames.md). Animations go on their words once `audio_meta.json` has the
+   timings (draw first, cue after when narration is not ready). Mark each option card on a decision or
    quick-check frame with its letter, `data-option="a"`, so the reviewer answers by clicking it; mark the
    question's heading `data-question`, and each choice's card on a call, stop or list beat
    `data-call="a3"`. The player answers on the frame by those cards, so nothing sits in a bar under the
@@ -327,7 +340,9 @@ explainer (`<explainer-dir>/video/`).
    file: its map first (each file with one plain line), then the one or two places that carry the idea;
    where the thing is hard to read, a picture that explains it (style guide §5). A camera sits inside a
    view clipped at y 900, and a question's heading and cards sit outside it (or the camera is at rest at
-   scale 1 when the scene ends): `$RP frame-lint` fails either, so run it on frames as they land. Put the
+   scale 1 when the scene ends): `$RP frame-lint` fails either. Check each frame as it lands with `$RP frame-check
+   <video-dir> <frame>`: frame-lint on it, and one picture of it at rest to look at (no screenshot scripts of your
+   own). Put the
    holds for branch beats, assembling beats and the final frame in `.hyperframes/holds.json`. Details
    (style guide §10) start with `$RP detail new <video-dir> <name> --kind <template>` and are built
    alongside the frames. A scene with a detail marks, in its frame, the one thing the page explains:
@@ -373,16 +388,22 @@ explainer (`<explainer-dir>/video/`).
    the only file the agent writes. `--check` fails on this round's findings found anywhere else in the repo (a copy
    in the repo's root, a notes file under `fresh-eyes/`) and never reads them there: move the file to its path, or
    run the agent again. The newcomer lists what it could not follow from what the video had shown by then; the
-   designer what breaks the style guide's seven frame rules (§5, "A frame a newcomer can read"). Answer every
-   finding under it in `fresh-eyes/newcomer.md` or `designer.md`, by its number:
+   designer only what stops a viewer under the style guide's seven frame rules (§5, "A frame a newcomer can
+   read"), its other notes under `## Advisory`, which need no answer. Either marks a finding `[plan]` when it is about
+   the plan, not the video: something the plan leaves out, or a thing the video only describes where the person
+   needs to see it. Answer every finding under it in `fresh-eyes/newcomer.md` or `designer.md`, by its number:
    - `- Answer: fixed: <what changed, and where>`: the line or frame changed;
    - `- Answer: meaning: …`: the phrase kept, with a meaning a viewer can click: a row under the glossary's "Other
      words" when other videos will say it, else the storyboard's `terms: <phrase> = <meaning>`;
    - `- Answer: kept: <the reason>`: the finding is wrong about something the video says plainly, say, two scenes
      later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer.
-   Then `$RP build <video-dir>` again (it stops on a finding with no answer, and says which scenes changed since the
-   agents looked) and run fresh eyes again on what changed: at most three rounds a build. What is left after the
-   third, the findings you kept, is said on the page's "Before you watch" and in the notification: only the new
+   - `- Answer: plan: <what plan.md now says>`: the plan changed to settle it (plan.md must differ from when the
+     agents looked); or `- Answer: ask: <the question for the person>`, shown first on the page's Before you watch.
+     A `[plan]` finding takes only these two: you made the video, and are the wrong one to set aside what it lacks.
+   Then `$RP build <video-dir>` again (it stops on a finding with no answer). **One round a build**: a second only
+   when your answers changed what a scene says (its narration, or the scenes' order), on those scenes alone (`build`
+   asks for it by name); never a third. What is left after the last round, the findings you kept, is said on the
+   page's "Before you watch" and in the notification: only the new
    ones, since a finding an earlier round of the build already kept for the same reason (the same scene and agent,
    the same thing, the reason much the same) folds into one line with its count. Then open it.
    **Rounds belong to a build.** A build is what `plan-diff` compares against, the video as last committed; rebuilding
@@ -394,8 +415,9 @@ explainer (`<explainer-dir>/video/`).
    scene is out of scope: not counted, no answer). Before you watch lists only this build's kept findings. A first
    build covers every scene; `--all` makes a rebuild do so too.
 6. **Open it:** `$RP review <video-dir> --detach` serves the page past this session, sends a
-   notification with what is waiting, and prints the URL (**Running the loop**). Give the person that
-   URL, the contact sheet, and each part's length.
+   notification with what is waiting, and prints the URL (**Running the loop**; `build`'s last line names this
+   command). Give the person that URL, the contact sheet, and each part's length. **Then wait for their review**:
+   no more rounds, redraws or second videos on your own once a video is shown, unless they ask.
 
 ## After a plan review
 
@@ -625,7 +647,10 @@ plan or request.
 One main session runs the loop: the one the person talks to. It never sits on a long job.
 
 - **Hand long jobs to background workers** (a build, parts of a plan that can run at once, the code
-  check, a fix). When one returns, check its work, run the tests and commit.
+  check, a fix). When one returns, check its work, run the tests and commit. Start a video's builder as a **fresh
+  agent with a short brief**, not a fork of this conversation (a fork carries all of it into every call): the plan's
+  folder, BRIEF.md, the decisions in force on the plan's parts, and the person's own words quoted (the request, the
+  review's comments), under about 50k tokens; it reads this skill itself.
 - **Local page.** Start the server with `$RP review <video-dir> --detach`: it runs in its own process,
   outlives this session, and is reused by the next `--detach` (one per repo; `$RP review --stop` stops
   it). Keep `$RP review --wait` running as your own background task. When the reviewer presses Send,

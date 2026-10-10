@@ -57,6 +57,9 @@ counts as work. Check its classification against what you read in the transcript
 also runs fresh eyes; a call that touches nothing telling keeps the phase before it), and say where it was wrong in
 the report; fix the patterns in the script when a mistake repeats.
 
+**Variety:** `reelplanner variety <video-dir>` (its `layouts: n over m scenes` line): a change that makes videos
+cheaper must not make them alike, so record it beside the time.
+
 ## 4. Judge the verifying
 
 Numbers alone do not say whether verification paid. For each episode:
@@ -84,6 +87,6 @@ whose findings were all kept.
   version or commit), the episode table, the phase split, verification's value, the wastes, and proposals ranked by
   expected saving and the risk to what the person sees, each with its evidence. No credentials, account ids, IPs,
   or session links: transcript ids are fine.
-- A row per episode in `eval/pipeline-cost/LEDGER.md` (its columns say what goes in each).
+- A row per episode in `eval/pipeline-cost/LEDGER.md` (its columns say what goes in each, the video's variety too).
 - A proposal that changes the skill or tools is a plan of its own (the plan-to-video skill applies). After it lands,
   audit the next comparable run and add its row: the ledger is how a change is shown to help.

@@ -22,6 +22,8 @@ idea>
 
 ## Customizations
 
+- Ask: "<the person's request, in their own words, quoted: what the video must do for them>"
+- Length: <optional: why this video needs more than 1.5 times its budget; without it, build stops past that>
 - Medium: <screen, code, document or diagram: what this video mostly shows>
 - Layouts: <the few layouts its scenes take: a diff on the slab, a table, a terminal run, a before and after wipe, a wall of screens…>
 - Main transition: <one, e.g. push-slide LEFT for the next scene; cut for a chapter or a quick check; push-slide UP for a question; crossfade for the same place later>
