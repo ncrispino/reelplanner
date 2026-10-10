@@ -100,12 +100,15 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 ## Watch it in Claude Code (`/reel`)
 
 With the plugin, the review happens beside the conversation: the video plays in a pane, stops at each open choice,
-takes your answers and comments, and sends them, without leaving Claude Code.
+takes your answers and comments, and sends them to Claude in the same conversation, without leaving Claude Code:
+with **Changes needed** Claude revises the plan and rebuilds the scenes that change, and the pane plays the new
+version's changes; with **Approve** Claude builds the plan.
 
-<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, gets bigger, takes a comment, stops at a choice, takes an answer with a comment on it and one in the reviewer's own words, sends the review with changes asked for, notices the rebuilt video and plays just the scene that changed." width="100%">
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, seeks, stops at each choice, takes an answer with a comment on it and a comment on a scene, sends the review with Changes needed; Claude, in the conversation, files it, edits that scene and rebuilds the video; the pane plays just the change, then goes full screen and back." width="100%">
 
-<p align="center"><i>/reel in kitty on one of this repo's sample videos: a review sent, the video rebuilt, just the
-change played, then the whole video (2 min 20 s, sped up).</i></p>
+<p align="center"><i>/reel in kitty on one of this repo's sample videos: the review sent with Changes needed, Claude
+filing it, editing the scene and rebuilding the video in the same conversation, the change played, then full screen
+(2 min 50 s; waits sped up, as the cards say).</i></p>
 
 **What it needs:**
 
