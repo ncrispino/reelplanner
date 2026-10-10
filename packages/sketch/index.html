@@ -93,6 +93,25 @@
   #files li.hint { font: 12px var(--sans); color: var(--ink-3); cursor: default; background: none; }
   @media (max-width: 700px) { #sel { bottom: 168px; } #sel .what { max-width: 110px; } }
 
+  #bar .tool { flex: none; border: 1px solid rgba(var(--ink-rgb), .2); border-radius: 9px; padding: 8px 10px; background: transparent; color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+  #bar .tool:disabled { opacity: .5; cursor: progress; }
+  @media (max-width: 900px) { #bar-hint { display: none; } }
+  /* a picture: found on Wikimedia Commons, or made by a model; click one to place it */
+  #pics { position: fixed; left: 50%; bottom: 66px; transform: translateX(-50%); z-index: 7; display: none; width: min(620px, calc(100% - 32px)); box-sizing: border-box; padding: 8px; }
+  #pics.show { display: block; }
+  #pics .row { display: flex; gap: 6px; }
+  #pic-q { flex: 1; min-width: 0; border: 1px solid var(--accent); border-radius: 8px; padding: 7px 9px; background: var(--ground); color: var(--ink); font: 14px var(--sans); outline: none; }
+  #pics .row button { border: 1px solid rgba(var(--ink-rgb), .2); border-radius: 8px; padding: 6px 10px; background: transparent; color: var(--ink-2); font-weight: 600; }
+  #pics .row button[type=submit] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  #pic-note { margin: 6px 2px 0; font-size: 12px; color: var(--ink-3); }
+  #pic-note:empty { display: none; }
+  #pic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; margin-top: 6px; max-height: 280px; overflow: auto; }
+  #pic-grid:empty { display: none; }
+  #pic-grid button { display: flex; flex-direction: column; gap: 3px; padding: 4px; border: 1px solid rgba(var(--ink-rgb), .12); border-radius: 8px; background: #fff; cursor: pointer; min-width: 0; }
+  #pic-grid button:hover, #pic-grid button:focus-visible { border-color: var(--accent); }
+  #pic-grid img { width: 100%; height: 76px; object-fit: contain; }
+  #pic-grid span { font-size: 10px; color: #5C5953; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   /* how this works: open on an empty canvas before recording, and from the ? in the bar */
   #help { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 8; display: none; width: min(440px, calc(100% - 32px)); max-height: calc(100% - 180px);
     overflow: auto; box-sizing: border-box; padding: 18px 20px 14px; }
@@ -178,6 +197,13 @@
   <ul id="file-list" role="listbox" aria-label="Files in the repo"></ul>
 </div>
 
+<div id="pics" class="chip" role="dialog" aria-label="A picture">
+  <form id="pic-form" class="row"><input id="pic-q" placeholder="A picture of… (a Kafka logo, a phone, a declined card)" autocomplete="off" aria-label="What picture">
+    <button type="submit" id="pic-find">Find</button><button type="button" id="pic-make" hidden>Make one</button><button type="button" id="pic-close" aria-label="Close">×</button></form>
+  <p id="pic-note"></p>
+  <div id="pic-grid"></div>
+</div>
+
 <div id="help" class="chip" role="dialog" aria-labelledby="help-title">
   <h2 id="help-title">How this works</h2>
   <ol class="steps">
@@ -188,7 +214,8 @@
   <dl class="tips">
     <dt>Icons</dt><dd><b>Library</b>, top right</dd>
     <dt>Mermaid</dt><dd><b>⋯ More tools</b> in the toolbar</dd>
-    <dt>A picture</dt><dd>drag it onto the canvas</dd>
+    <dt>Draw it for me</dt><dd>say "draw that", or <b>Draw what I said</b></dd>
+    <dt>A picture</dt><dd>drag one in, or <b>Picture</b> to find or make one</dd>
     <dt>Select a box</dt><dd><b>Link to code</b> · <b>Today / New / Going</b> · <b>Open up</b></dd>
   </dl>
   <div class="end"><span><b>?</b> brings this back</span><button id="help-close" type="button">Start sketching</button></div>
@@ -198,6 +225,8 @@
   <button id="rec" type="button" title="Start, pause or resume recording"><span class="dot"></span><span class="label">Record</span></button>
   <span id="clock">0:00</span>
   <span id="bar-hint">Talk as you draw · double-click the canvas to type</span>
+  <button id="draw" class="tool" type="button" hidden title="The model draws what you said since last time as a diagram, for you to check and insert (or say &quot;draw that&quot;)">Draw what I said</button>
+  <button id="pic" class="tool" type="button" hidden title="Find a picture on Wikimedia Commons, or have one made (or say &quot;find a picture of …&quot;)">Picture</button>
   <button id="help-btn" type="button" title="How this works" aria-label="How this works" aria-expanded="false" aria-controls="help">?</button>
   <button id="finish" type="button" disabled>Finish</button>
 </div>

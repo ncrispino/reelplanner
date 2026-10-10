@@ -32,6 +32,10 @@
   dropped pictures by file name with an SVG's own words, and web embeds by address. The partner streams: a line shows
   what it is looking at while it decides, then the question types itself out (`LOOKING:` then `ASK:` or `NONE`;
   `session.json` keeps what it looked at, asked or not).
+  **Draw what I said** (or saying "draw that"): the partner's model turns what was said into a Mermaid flowchart that
+  opens in the Mermaid dialog for them to change and insert; `sketch.md` tells it as drawn by the model from their
+  words. **Picture** (or "find a picture of …"): Wikimedia Commons, or an image model through OpenRouter; each
+  picture's source (licence and author, or model and words) is in `sketch.md`.
   No note box: text typed on the canvas (double-click, or `T`) is the note, timed and told as `(typed) …`. **How this
   works** (the **?** in the bar, open on a first visit) lists talking and pointing, typing, the icons, Mermaid,
   pictures and the selection bar.

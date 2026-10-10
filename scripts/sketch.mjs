@@ -47,7 +47,8 @@ import { TYPES } from "./lib/static-server.mjs";
 import { slugOf, repoTop } from "./lib/explainer.mjs";
 import { excalidrawVendor, buildExcalidrawVendor } from "./vendor-excalidraw.mjs";
 import { sketchMd, sketchTranscriber, transcribeSketch, transcriberName } from "./lib/sketch-transcript.mjs";
-import { resolvePartner, askPartner, partnerLabel, warmPartner } from "./lib/sketch-partner.mjs";
+import { resolvePartner, askPartner, partnerLabel, warmPartner, drawFromSaid } from "./lib/sketch-partner.mjs";
+import { searchCommons, fetchPicture, makePicture, IMAGE_MODEL } from "./lib/sketch-images.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
@@ -158,7 +159,9 @@ function gone(why, hint = "") {
 const server = createServer((req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "");
   if (path === "api/sketch/context") return json(res, 200, { ok: true, question, context, saveTo: relative(process.cwd(), base) || ".",
-    partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX, stale_s: PARTNER_STALE_S } });
+    partner: partner.off ? null : { provider: partner.provider, model: partner.model, where: partner.where, label: partnerLabel(partner), gap_s: PARTNER_GAP_S, max: PARTNER_MAX, stale_s: PARTNER_STALE_S },
+    // pictures: found on Commons always; made by a model only with an OpenRouter key
+    pictures: { make: process.env.OPENROUTER_API_KEY ? (process.env.REELPLANNER_SKETCH_IMAGE_MODEL || IMAGE_MODEL) : null } });
   if (path === "api/sketch/files") {
     // the repo's files, for "Link to code": the best few for what is typed (its last part first, then anywhere)
     const q = (new URL(req.url, "http://x").searchParams.get("q") || "").toLowerCase().replace(/^@/, "").split(/[:#]/)[0];
@@ -176,6 +179,28 @@ const server = createServer((req, res) => {
     }
     return readJsonBody(req).then((b) => askPartner(partner, b)).then((text) => json(res, 200, { ok: true, text }),
       (e) => { console.error(`△ sketch: the partner did not answer (${e.message})`); json(res, 502, { ok: false, error: e.message }); });
+  }
+  // "Draw what I said": the partner's model turns what was said into a Mermaid flowchart for the page's Mermaid dialog
+  if (path === "api/sketch/draw" && req.method === "POST") {
+    if (partner.off) return json(res, 404, { ok: false, error: "no model to draw with (the partner is off)" });
+    return readJsonBody(req).then((b) => drawFromSaid(partner, b)).then((mermaid) => json(res, 200, mermaid ? { ok: true, mermaid } : { ok: false, error: "the model drew nothing from that" }),
+      (e) => { console.error(`△ sketch: drawing what was said failed (${e.message})`); json(res, 502, { ok: false, error: e.message }); });
+  }
+  // pictures: search Commons, fetch one of its files, or make one
+  if (path === "api/sketch/pictures/search") {
+    const q = new URL(req.url, "http://x").searchParams.get("q") || "";
+    return searchCommons(q).then((results) => json(res, 200, { ok: true, results }), (e) => json(res, 502, { ok: false, error: `Wikimedia Commons: ${e.message}` }));
+  }
+  if (path === "api/sketch/pictures/thumb") {   // a search result's picture, through here: the page talks only to this server
+    return fetchPicture(new URL(req.url, "http://x").searchParams.get("url") || "").then((p) => { res.writeHead(200, { "content-type": p.mime, "cache-control": "max-age=3600" }); res.end(Buffer.from(p.dataUrl.split(",")[1], "base64")); },
+      () => { res.writeHead(404); res.end(); });
+  }
+  if (path === "api/sketch/pictures/get") {
+    return fetchPicture(new URL(req.url, "http://x").searchParams.get("url") || "").then((p) => json(res, 200, { ok: true, ...p }), (e) => json(res, 502, { ok: false, error: e.message }));
+  }
+  if (path === "api/sketch/pictures/make" && req.method === "POST") {
+    return readJsonBody(req).then((b) => makePicture(b.prompt)).then((p) => json(res, 200, { ok: true, ...p }),
+      (e) => { console.error(`△ sketch: making a picture failed (${e.message})`); json(res, 502, { ok: false, error: e.message }); });
   }
   if (path === "api/sketch/live") {
     res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-store" });

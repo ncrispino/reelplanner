@@ -60,9 +60,12 @@ export function sketchMd(s, dir) {
   // a trace (three or more things in turn) is kept whole; otherwise what held the pointer for a real share of the
   // time, so the end of the last gesture does not spill into this one
   const pointing = (from, to) => {
-    // the time it was said: the sentences' own span when the transcript has one, else the last 4 s
+    // the time it was said: the sentences' own span when the transcript has one, else the last 4 s; a note typed
+    // on the canvas counts from 4 s before they started typing it (the pointing that led to it), however long the
+    // typing and the picture after it took
     const said0 = Math.min(...(s.transcript?.segments || []).filter((x) => x.t1 > from && x.t1 <= to + 0.5).map((x) => x.t0));
-    const w0 = Math.max(from, Math.min(to - 4, Number.isFinite(said0) ? said0 : Infinity)), spans = [];
+    const typed0 = Math.min(...(s.notes || []).filter((n) => n.t > from && n.t <= to + 0.5).map((n) => (n.t0 ?? n.t) - 4));
+    const w0 = Math.max(from, Math.min(to - 4, Number.isFinite(said0) ? said0 : Infinity, typed0)), spans = [];
     for (const p of s.pointer || []) { const o = Math.min(p.t1, to) - Math.max(p.t0, w0); if (o > 0 && named.has(p.id)) spans.push({ id: p.id, o }); }
     const total = spans.reduce((n, x) => n + x.o, 0), ids = [];
     for (const x of spans) if (ids[ids.length - 1] !== x.id) ids.push(x.id);
@@ -86,7 +89,13 @@ export function sketchMd(s, dir) {
   lines.push(...describeScene(els, { exists: repo ? (f) => existsSync(join(repo, f)) : undefined }));
   // a Mermaid diagram they put in: its source, as they wrote or pasted it (its boxes are in the drawing above, maybe moved)
   const mermaid = (s.events || []).filter((e) => e.type === "mermaid" && e.source);
-  if (mermaid.length) { lines.push(`**Inserted from Mermaid**`, ""); for (const m of mermaid) lines.push(`At ${mmss(m.t)}:`, "", "```mermaid", m.source, "```", ""); }
+  if (mermaid.length) {
+    lines.push(`**Inserted from Mermaid**`, "");
+    for (const m of mermaid) {
+      lines.push(m.from === "said" ? `At ${mmss(m.t)}, drawn by the model from what they said ${mmss(m.said_from)}–${mmss(m.said_to)}${m.model_source ? " (they changed it before inserting; the model's is in session.json)" : ""}:` : `At ${mmss(m.t)}:`,
+        "", "```mermaid", m.source, "```", "");
+    }
+  }
   if ((s.notes || []).length) { lines.push(`## Typed notes`, ""); for (const n of s.notes) lines.push(`- **${mmss(n.t)}** ${n.text}`); lines.push(""); }
   if (s.before_recording) lines.push(`_${s.before_recording} element${s.before_recording === 1 ? " was" : "s were"} drawn before recording started._`, "");
   return lines.join("\n");

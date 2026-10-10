@@ -30,7 +30,8 @@ import { join } from "node:path";
 import { chmodSync } from "node:fs";
 import { createServer } from "node:http";
 import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
-import { resolvePartner, askPartner, readAnswer, RECOMMENDED } from "../lib/sketch-partner.mjs";
+import { resolvePartner, askPartner, readAnswer, RECOMMENDED, drawMessages, mermaidIn } from "../lib/sketch-partner.mjs";
+import { deflateSync, crc32 } from "node:zlib";
 import { describeScene, sceneChanges } from "../lib/sketch-scene.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
 // a note as a person writes one: Excalidraw's text tool, a click on the canvas, type, Escape
@@ -52,6 +53,20 @@ async function typeOnCanvas(pg, x, y, text) {
     "an answer without the two lines is read as before: its last question");
   ok(r("<think>the arrow has no end", false).thinking === "the arrow has no end" && r("<think>hm</think>LOOKING: x\nASK: Is it sync?", true).text === "Is it sync?" && r("", false, "weighing the cache").thinking === "weighing the cache",
     "a model's thinking (<think>, or the reasoning field) is read apart from its answer");
+}
+
+// ---------- drawing what was said, and pictures (no browser): what the model is asked, what sketch.md says ----------
+{
+  const m = drawMessages({ question: "checkout", said: [{ t: 1, text: "the app sends the order" }], elements: [{ kind: "rectangle", label: "Checkout service" }] });
+  ok(/ONLY what they said/.test(m[0].content) && /dotted/.test(m[0].content) && m[1].content.includes('"Checkout service"') && m[1].content.includes("- the app sends the order"),
+    "Draw what I said: the model is told to draw only what was said (unsure as dotted), with the canvas's names and the words");
+  ok(mermaidIn("Sure:\n```mermaid\nflowchart LR\n  A-->B\n```") === "flowchart LR\n  A-->B" && mermaidIn("I can't") === null, "…its answer is the flowchart alone, fences and preamble off; none is none");
+  const pics = describeScene([{ id: "c", kind: "image", x: 0, y: 0, w: 9, h: 9, image: { name: "Kafka.svg", source: "Wikimedia Commons", license: "CC BY-SA 4.0", author: "Someone", page: "https://commons.wikimedia.org/wiki/File:Kafka.svg" } },
+    { id: "g", kind: "image", x: 0, y: 30, w: 9, h: 9, image: { name: "a declined card (made)", source: "made", model: "google/x-image", prompt: "a declined card" } }]).join("\n");
+  ok(pics.includes('- picture "Kafka.svg" (from Wikimedia Commons, CC BY-SA 4.0, by Someone: https://commons.wikimedia.org/wiki/File:Kafka.svg)') && pics.includes('(made by x-image from "a declined card")'),
+    "a picture found on Commons is told with its licence, author and page; a made one with its model and words");
+  const told = sceneChanges({ events: [{ t: 9, type: "mermaid", source: "flowchart LR\n  A-->B", from: "said", said_from: 1, said_to: 8 }] }).map((c) => c.text);
+  ok(/^inserted a diagram the model drew from what they said \(0:01–0:08\)/.test(told[0] || ""), `…and a diagram drawn from what was said, as that — ${told[0]}`);
 }
 
 // ---------- beyond boxes (no browser): an icon is one thing by its label, a picture by its file, a Mermaid insert ----------
@@ -164,11 +179,27 @@ const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^
 // a stand-in for a local model server (Ollama's OpenAI-style API): it lists a text model and a vision one, asks one
 // question, then has none
 const calls = []; let warmups = 0, slowMs = 0;
+const drawCalls = [], imageCalls = []; let commonsQ = null;
+// a picture: a dark square on a wide white page (a made picture comes like that; the page cuts the white off)
+const PNG = (() => { const w = 120, h = 60, raw = Buffer.alloc((w * 4 + 1) * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * (w * 4 + 1) + 1 + x * 4, ink = x >= 50 && x < 70 && y >= 20 && y < 40; raw.fill(ink ? 30 : 255, i, i + 3); raw[i + 3] = 255; }
+  const chunk = (t, d) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const c = Buffer.alloc(4); c.writeUInt32BE(crc32(Buffer.concat([Buffer.from(t), d]))); return Buffer.concat([l, Buffer.from(t), d, c]); };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 6;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]); })();
 const fakeModel = createServer((req, res) => {
   let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
     res.setHeader("content-type", "application/json");
     if (req.url === "/v1/models") return res.end(JSON.stringify({ data: [{ id: "llama3:8b" }, { id: "qwen2.5vl:7b" }] }));
+    // a stand-in Wikimedia Commons: one search, its pictures
+    if (req.url.startsWith("/w/api.php")) { commonsQ = new URL(req.url, "http://x").searchParams.get("gsrsearch");
+      return res.end(JSON.stringify({ query: { pages: { 1: { index: 1, title: "File:Kafka logo.svg", imageinfo: [{ thumburl: `${FAKE_HOST}/img/kafka.png`, url: `${FAKE_HOST}/img/kafka.png`, mime: "image/svg+xml", descriptionurl: "https://commons.wikimedia.org/wiki/File:Kafka_logo.svg",
+        extmetadata: { LicenseShortName: { value: "CC BY-SA 4.0" }, Artist: { value: "<a href='x'>Someone</a>" } } }] } } } })); }
+    if (req.url.startsWith("/img/")) { res.setHeader("content-type", "image/png"); return res.end(PNG); }
     const j = JSON.parse(body || "{}");
+    if (j.modalities?.includes("image")) { imageCalls.push({ auth: req.headers.authorization, model: j.model, text: j.messages[0].content });
+      return res.end(JSON.stringify({ choices: [{ message: { content: "", images: [{ image_url: { url: `data:image/png;base64,${PNG.toString("base64")}` } }] } }] })); }
+    if (/Mermaid flowchart/.test(j.messages?.[0]?.content || "")) { drawCalls.push(j);
+      return res.end(JSON.stringify({ choices: [{ message: { content: "```mermaid\nflowchart LR\n  app[the app] -->|sends the order| co[checkout service]\n  co -.->|maybe it retries| co\n```" } }] })); }
     if (j.messages?.length === 1) { warmups++; return res.end(JSON.stringify({ choices: [{ message: { content: "NONE" } }] })); }   // the warm-up at start
     calls.push({ auth: req.headers.authorization || null, body: j });
     if (slowMs) return setTimeout(() => res.end(JSON.stringify({ choices: [{ message: { content: "A question about a picture long gone?" } }] })), slowMs);
@@ -181,7 +212,7 @@ const fakeModel = createServer((req, res) => {
   });
 });
 await new Promise((r) => fakeModel.listen(0, "127.0.0.1", r));
-const FAKE_BASE = `http://127.0.0.1:${fakeModel.address().port}/v1`;
+const FAKE_HOST = `http://127.0.0.1:${fakeModel.address().port}`, FAKE_BASE = `${FAKE_HOST}/v1`;
 const WITH_WHISPER = { ...clean, REELPLANNER_HYPERFRAMES_BIN: FAKE_HF, HYPERFRAMES_WHISPER_PATH: WHISPER, REELPLANNER_SKETCH_PARTNER: "off" };
 const NO_WHISPER = { ...clean, HOME: tools, PATH: join(tools, "empty-path"), REELPLANNER_SYSTEM_ROOT: join(tools, "no-system"), REELPLANNER_SKETCH_PARTNER: "off" };
 const PARTNER_LOCAL = { ...clean, REELPLANNER_SKETCH_PARTNER: "local", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE, REELPLANNER_SKETCH_PARTNER_GAP_S: "0" };
@@ -439,6 +470,46 @@ try {
   await p5.waitForFunction(() => /questions are off/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
   ok(!(await p5.isChecked("#partner-on")) && !(await p5.isVisible("#ask")), `…after two, the questions stop for this sketch — ${await p5.textContent("#status")}`);
   slow.kill(); await p5.close(); slowMs = 0;
+
+  // Draw what I said (said: "draw that"), a picture found (said: "find a picture of …") and one made: the model's
+  // flowchart opens in the Mermaid dialog for them to insert; a picture is placed by a click, its white margin cut
+  const port7 = testPort(8799, 6);
+  const pics = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "checkout", "--port", String(port7), "--no-open"], { cwd: repo,
+    env: { ...PARTNER_LOCAL, REELPLANNER_SKETCH_PARTNER_GAP_S: "999", REELPLANNER_SKETCH_COMMONS_URL: `${FAKE_HOST}/w/api.php`, OPENROUTER_API_KEY: "k-test" }, stdio: "ignore" });
+  await serverUp(port7, { child: pics, timeout: 60000 });
+  const p7 = await ctx.newPage();
+  await p7.addInitScript(() => { window.SpeechRecognition = class { start() { window.__rec = this; } stop() {} };
+    window.__say = (text) => { const x = [{ transcript: text, confidence: 0.9 }]; x.isFinal = true; window.__rec?.onresult?.({ resultIndex: 0, results: [x] }); }; });
+  await p7.goto(`http://127.0.0.1:${port7}/`); await p7.waitForFunction(() => window.reelSketch?.api); await p7.waitForTimeout(400);
+  ok(await p7.isVisible("#draw") && await p7.isVisible("#pic") && await p7.isVisible("#pic-make") === false, "with a partner: Draw what I said and Picture in the bar");
+  await p7.click("#rec"); await p7.waitForTimeout(300);
+  for (const t of ["The app sends the order to the checkout service.", "Maybe it retries.", "Okay, draw that."]) { await p7.evaluate((x) => window.__say(x), t); await p7.waitForTimeout(250); }
+  await p7.waitForSelector(".ttd-dialog textarea", { timeout: 15000 }).catch(() => {}); await p7.waitForTimeout(600);
+  const src = await p7.inputValue(".ttd-dialog textarea").catch(() => "");
+  ok(src.startsWith("flowchart LR") && src.includes("checkout service") && drawCalls.length === 1 && drawCalls[0].messages[1].content.includes("- The app sends the order") && !drawCalls[0].messages[1].content.includes("draw that"),
+    `"draw that": the model's flowchart of what was said (the command itself left out) opens in the Mermaid dialog, not yet on the canvas — ${JSON.stringify(src.slice(0, 80))}`);
+  await p7.locator(".ttd-dialog button", { hasText: /insert/i }).click(); await p7.waitForTimeout(500);
+  const drew = await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "text").map((e) => e.text));
+  ok(drew.includes("the app") && drew.includes("checkout service"), `…Insert puts it on the canvas, as boxes to change — ${drew.join(", ")}`);
+  await p7.evaluate(() => window.reelSketch.api.updateScene({ appState: { selectedElementIds: {} } }));
+  await p7.evaluate(() => window.__say("Find a picture of the Kafka logo."));
+  await p7.waitForSelector("#pic-grid button", { timeout: 15000 }).catch(() => {});
+  ok(await p7.isVisible("#pics") && commonsQ?.startsWith("the Kafka logo") && (await p7.textContent("#pic-grid")).includes("CC BY-SA 4.0"), `"find a picture of …": Wikimedia Commons is searched for it, each result with its licence — ${commonsQ}`);
+  await p7.locator("#pic-grid button").first().click();
+  await p7.waitForFunction(() => window.reelSketch.api.getSceneElements().some((e) => e.type === "image"), null, { timeout: 10000 }).catch(() => {});
+  const placed = await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "image").map((e) => [Math.round(e.width), Math.round(e.height)]));
+  ok(placed.length === 1 && placed[0][0] < 60 && !(await p7.isVisible("#pics")), `…a click places it, its white margin cut off (the dark square only) — ${JSON.stringify(placed)}`);
+  await p7.click("#pic"); await p7.fill("#pic-q", "a declined card"); await p7.click("#pic-make");
+  await p7.waitForSelector("#pic-grid button", { timeout: 15000 }).catch(() => {}); await p7.locator("#pic-grid button").first().click(); await p7.waitForTimeout(800);
+  ok(imageCalls.length === 1 && imageCalls[0].auth === "Bearer k-test" && imageCalls[0].text.includes("a declined card") && (await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "image").length)) === 2,
+    `Make one: the image model makes it from the words (OpenRouter key), and a click places it — ${JSON.stringify(imageCalls.map((c) => c.model))}`);
+  await p7.click("#finish"); await p7.waitForSelector("#review.open"); await p7.click("#send"); await p7.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  const md7 = readFileSync(join(repo, (await p7.textContent("#sent")).match(/Saved to (\S+?)\. /)[1], "sketch.md"), "utf8");
+  ok(/_changed:_ inserted a diagram the model drew from what they said \(0:0\d–0:0\d\)/.test(md7) && md7.includes("drawn by the model from what they said")
+    && md7.includes('_changed:_ put in a picture from Wikimedia Commons: "Kafka logo.svg"') && md7.includes("(from Wikimedia Commons, CC BY-SA 4.0, by Someone: https://commons.wikimedia.org/wiki/File:Kafka_logo.svg)")
+    && /made by gemini-[\w.-]+-image from "a declined card"/.test(md7),
+    `sketch.md tells the drawn diagram as the model's from their words, and each picture with where it came from — ${md7.split("\n").filter((l) => /_changed:_|picture "/.test(l)).join(" | ")}`);
+  pics.kill(); await p7.close();
 
   // OpenRouter, by default when its key is set: the recommended model, the key sent; a partner named that can't run says why
   const or = await resolvePartner({ dir: repo, env: { OPENROUTER_API_KEY: "k-test", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE } });

@@ -85,7 +85,10 @@ export function describeScene(els = [], opts = {}) {
   if (shapes.length) {
     lines.push("**Boxes and shapes**", "");
     // a picture: its file, and an SVG's own words; a web embed: its address
-    const inner = (e) => e.image?.words ? ` (the words in it: "${one(e.image.words)}")` : e.embed && nameOf(e) !== one(e.embed) ? ` (showing ${e.embed})` : "";
+    // where a picture came from: found on Commons (its licence and author), made by a model (from what words)
+    const came = (im) => im?.source === "made" ? ` (made by ${String(im.model).split("/").pop()} from "${one(im.prompt)}")`
+      : im?.source ? ` (from ${im.source}${im.license ? `, ${im.license}` : ""}${im.author ? `, by ${one(im.author)}` : ""}${im.page ? `: ${im.page}` : ""})` : "";
+    const inner = (e) => (e.image?.words ? ` (the words in it: "${one(e.image.words)}")` : e.embed && nameOf(e) !== one(e.embed) ? ` (showing ${e.embed})` : "") + came(e.image);
     for (const e of shapes) lines.push(`- ${kindOf(e)} ${quoted(e)}${st(e)}${inner(e)}`);
     lines.push("");
   }
@@ -195,7 +198,13 @@ export function sceneChanges(s) {
   for (let ev of s.events || []) {
     if (ev.tagFor || state.get(ev.id)?.tagFor) { state.set(ev.id, { ...state.get(ev.id), ...ev }); continue; }   // a status tag: told as its thing's mark
     // a Mermaid diagram put in: said once (its source is in sketch.md's own section); its boxes come as adds
-    if (ev.type === "mermaid") { entry(ev.t, `mm:${ev.t}`, { text: `inserted a Mermaid diagram (\`${one(ev.source).split(" / ")[0]}\`, ${ev.source.split("\n").length - 1 === 1 ? "1 line" : `${ev.source.split("\n").length - 1} lines`}; its source is under **Inserted from Mermaid**)` }); continue; }
+    if (ev.type === "mermaid") {
+      const n = ev.source.split("\n").length - 1, lines = n === 1 ? "1 line" : `${n} lines`;
+      entry(ev.t, `mm:${ev.t}`, { text: ev.from === "said"
+        ? `inserted a diagram the model drew from what they said (${mmss(ev.said_from)}–${mmss(ev.said_to)}), as Mermaid${ev.model_source ? " they changed before inserting" : ""} (${lines}; under **Inserted from Mermaid**)`
+        : `inserted a Mermaid diagram (\`${one(ev.source).split(" / ")[0]}\`, ${lines}; its source is under **Inserted from Mermaid**)` });
+      continue;
+    }
     // an icon: its label's words are its name (a rename told as the icon's), and one part stands for the rest
     if (ev.icon || iconOf.has(ev.id)) {
       const g = ev.iconGroup || iconOf.get(ev.id), prevPart = state.get(ev.id); iconOf.set(ev.id, g);
@@ -220,6 +229,7 @@ export function sceneChanges(s) {
         labelOf.set(ev.in, ev.text);
       } else if (!(ev.kind === "text" && ev.in)) adds.push({ t: ev.t, id: ev.id, kind: ev.kind });
       if (ev.kind === "frame" && ev.inside) entry(ev.t, `in:${ev.id}`, { text: `opened up ${label(ev.inside)} into a frame to draw what is inside it` });
+      if (ev.kind === "image" && ev.image?.source) entry(ev.t, `pic:${ev.id}`, { text: ev.image.source === "made" ? `put in a picture ${String(ev.image.model).split("/").pop()} made of "${one(ev.image.prompt)}"` : `put in a picture from ${ev.image.source}: "${one(ev.image.name)}"` });
       continue;
     }
     if (ev.type === "delete") {

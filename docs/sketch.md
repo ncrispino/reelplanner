@@ -64,6 +64,17 @@ More than boxes and arrows, all in Excalidraw's own tools, and all read into `sk
   and for an SVG lists the words in it (its text, title and description), so a dropped infra diagram says what it
   shows. A picture is pixels to everything else: the partner sees it in the canvas image, and arrows bind to it as a
   whole. An SVG of more than 2 MB is flagged as likely to slow the page; a PNG of it draws faster.
+- **Draw what I said** (in the bar, or say "draw that"): the partner's model turns what you said since the last
+  time into a Mermaid flowchart, only what you said and in your words, with what you sounded unsure of dotted. It
+  opens in the Mermaid dialog with its preview: change it, then Insert, or close it. It is never put on the canvas
+  for you. `sketch.md` tells it as a diagram the model drew from what you said (from when to when), with its source.
+  About 4–7 s with Sonnet 5.5; there only when a partner is on.
+- **Picture** (in the bar, or say "find a picture of a Kafka logo"): searches Wikimedia Commons, whose files are free
+  to reuse under the licence each names, and shows the best few to click; or **Make one**, an image model through
+  OpenRouter (`google/gemini-3.1-flash-lite-image`, about 3 s and $0.03; `REELPLANNER_SKETCH_IMAGE_MODEL`), when
+  `OPENROUTER_API_KEY` is set. A picture is placed beside the selected thing, else in an empty part of the view, its
+  white margin cut off. `sketch.md` gives each one's source: a Commons file with its licence, author and page, a made
+  one with its model and words. The search and the pictures go through `sketch`, so the page talks only to it.
 - **Web embeds** (More tools → Web Embed): a Figma file, a YouTube video, a GitHub gist on the canvas, told by its
   address.
 - **Frames** and the **laser pointer** are Excalidraw's own; pointing is recorded either way.
@@ -153,7 +164,7 @@ Finish is open, as the recording does).
   "transcript": { "source": "browser-speech" | "whisper" | "api" | "none", "lang": "en-US",
                   "model": "small.en", "api": "groq", "replaced": "browser-speech",   // whisper and api only
                   "segments": [{ "t0": 0.5, "t1": 1.1, "text": "the upload starts in the client", "confidence": 0.9 }] },
-  "notes": [{ "t": 5.6, "text": "not sure where the chunk index is stored", "elementId": "…" }],
+  "notes": [{ "t": 5.6, "t0": 3.9, "text": "not sure where the chunk index is stored", "elementId": "…" }],   // t0: began typing it
   "keyframes": [{ "n": 1, "t": 1.8, "said": "the upload starts in the client", "file": "keyframes/kf-001.png", "elements": 2 }],
   "events": [{ "t": 0.8, "type": "add" | "update" | "delete" | "restore", "id": "…", "kind": "rectangle", "text": "…",
                "x": 120, "y": 220, "w": 200, "h": 90, "in": "<container id>", "from": "<id>", "to": "<id>", "until": 2.1,
@@ -227,4 +238,7 @@ picture matches the code and where it does not. Without a record (`reel init`), 
 - The microphone is used only while recording. The live caption is the browser's own speech recognition: in Chrome
   that sends the audio to Google. The recording itself stays on your machine, and a transcript made from it after Send
   is local whisper's; a hosted transcriber only reads it when you run `sketch-transcribe` with no whisper here, or `--api`.
+- What else leaves the machine, only when you ask: **Draw what I said** sends the words since the last time, and the
+  names on the canvas, to the partner's model (nothing, with a local one); **Picture** sends what you typed to
+  Wikimedia Commons to search, and **Make one** sends it to OpenRouter's image model.
 - Tested in Chromium (live caption and recording both). Firefox records but has no live caption; Safari is untested.

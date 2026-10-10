@@ -53,7 +53,10 @@
       $("partner").title = c.partner.provider === "local" ? "A model on this machine looks at each picture and what you said, and may ask one short question. Nothing leaves this machine."
         : `At each picture, the drawing and what you said so far go to ${c.partner.where} (${c.partner.model}), which may ask one short question.`;
       $("partner-on").checked = partnerOn(); $("partner").hidden = false;
+      $("draw").hidden = false;
     }
+    if (c.pictures) $("pic").hidden = false;
+    if (c.pictures?.make) { $("pic-make").hidden = false; $("pic-make").title = `${c.pictures.make} makes one from your words (OpenRouter, a few cents)`; }
   }).catch(() => {}).finally(() => { if (!server) $("send").hidden = true; });
 
   // ---------- the canvas ----------
@@ -90,7 +93,11 @@
   // a Mermaid diagram (More tools → Mermaid to Excalidraw): its source is kept, the diagram's own words
   function noteMermaid() {
     const src = document.querySelector(".ttd-dialog textarea")?.value?.trim();
-    if (src && t0 != null) { session.events.push({ t: clock(), type: "mermaid", source: src.slice(0, 4000) }); sceneChanged(); }
+    if (!src || t0 == null) return;
+    // drawn by the model from what they said (Draw what I said), as it was when they inserted it: the model's
+    // source and theirs if they changed it in the dialog
+    const d = pendingDraw && { from: "said", said_from: pendingDraw.from, said_to: pendingDraw.to, ...(src !== pendingDraw.source ? { model_source: pendingDraw.source.slice(0, 4000) } : {}) };
+    session.events.push({ t: clock(), type: "mermaid", source: src.slice(0, 4000), ...d }); pendingDraw = null; sceneChanged();
   }
   addEventListener("click", (e) => { const b = e.target.closest?.(".ttd-dialog button"); if (b && /insert/i.test(b.textContent)) noteMermaid(); }, true);
   addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter" && e.target.closest?.(".ttd-dialog")) noteMermaid(); }, true);
@@ -159,7 +166,7 @@
   }
   createRoot($("canvas")).render(React.createElement(Excalidraw, {
     excalidrawAPI: (a) => { api = a; setTimeout(() => a.updateLibrary({ libraryItems: window.reelIcons?.(convertToExcalidrawElements) || [], merge: true }).catch(() => {}), 0); },
-    onChange: (elements, appState) => { onScene(elements); onSelect(appState); onTyping(appState); },
+    onChange: (elements, appState) => { onScene(elements); onSelect(appState); onTyping(appState); if (pendingDraw && appState.openDialog?.name !== "ttd" && !pendingDraw.opening) pendingDraw = null; },
     initialData: { appState: { viewBackgroundColor: "#ffffff", currentItemFontFamily: 5 } },
     UIOptions: { canvasActions: { export: false, saveToActiveFile: false, loadScene: true, toggleTheme: false } },
   }));
@@ -360,7 +367,7 @@
         if (r.isFinal) {
           if (text) {
             session.transcript.segments.push({ t0: segStart, t1: clock(), text, confidence: +(r[0].confidence || 0).toFixed(2) });
-            said.push(text); caption(text, "");
+            said.push(text); caption(text, ""); heard(text);
           }
           segStart = null; hearing = false; schedule(700);
         } else { interim += text + " "; hearing = true; }
@@ -500,23 +507,134 @@
     commit(changed, added); renderSel();
   });
 
+  // ---------- draw what I said, and pictures ----------
+  // Draw what I said (or saying "draw that"): the partner's model turns what was said since the last time into a
+  // Mermaid flowchart, opened in Excalidraw's Mermaid dialog for them to look at, change, and insert, or close.
+  // Picture (or "find a picture of …"): Wikimedia Commons, or a model makes one; they click the one to place.
+  let drawFrom = 0, drawing = false, pendingDraw = null;
+  const DRAW_THAT = /\b(?:ok(?:ay)?,?\s+)?(?:draw|sketch) (?:that|this|it)(?: (?:for me|out|up))?[.!]?$/i;
+  const FIND_PIC = /\b(?:find|show|get|put)(?: me)?(?: in)? (?:a |an )?(?:picture|image|photo|logo|icon|drawing) (?:of |for )?(.+?)[.!?]?$/i;
+  function heard(text) {
+    if (DRAW_THAT.test(text) && partner) drawSaid();
+    else { const m = FIND_PIC.exec(text); if (m && !$("pic").hidden) openPictures(m[1], true); }
+  }
+  async function drawSaid() {
+    if (drawing || !partner || t0 == null) return;
+    const from = drawFrom, words = [...session.transcript.segments.filter((x) => x.t1 > from && !DRAW_THAT.test(x.text)).map((x) => ({ t: x.t0, text: x.text })),
+      ...session.notes.filter((n) => n.t > from).map((n) => ({ t: n.t, text: `(typed) ${n.text}` }))].sort((a, b) => a.t - b.t);
+    if (!words.length) { status("Say what to draw first, then press Draw what I said (or say \u201cdraw that\u201d)."); return; }
+    drawing = true; $("draw").disabled = true; thinking(`Drawing what you said${partner ? ` (${esc(partner.label.split(" ")[0])})` : ""}…`);
+    try {
+      const r = await fetch("api/sketch/draw", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ question: $("question").value.trim(), said: words, elements: drawn() }) });
+      const j = await r.json().catch(() => ({}));
+      if (!j.ok) throw new Error(j.error || r.status);
+      const to = clock(); drawFrom = to; thinking(null);
+      pendingDraw = { from: +from.toFixed(2), to: +to.toFixed(2), source: j.mermaid, opening: true };
+      api.updateScene({ appState: { openDialog: { name: "ttd", tab: "mermaid" } } });
+      await new Promise((ok) => { const t = setInterval(() => { if (document.querySelector(".ttd-dialog textarea")) { clearInterval(t); ok(); } }, 50); setTimeout(() => { clearInterval(t); ok(); }, 3000); });
+      const ta = document.querySelector(".ttd-dialog textarea");
+      if (ta) { Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set.call(ta, j.mermaid); ta.dispatchEvent(new Event("input", { bubbles: true })); }
+      pendingDraw.opening = false;
+      status("Here is what you said as a diagram: change it if you like, then Insert (or close it).");
+    } catch (e) { thinking(null); status(`Could not draw that (${e.message}).`); }
+    finally { drawing = false; $("draw").disabled = false; }
+  }
+  $("draw").addEventListener("click", drawSaid);
+
+  function openPictures(q, go) {
+    $("pics").classList.add("show"); closeLink();
+    const one = selected.length === 1 ? selected[0] : null;
+    $("pic-q").value = q || (one && !["image", "frame"].includes(one.type) ? words(one) : "") || ""; $("pic-q").focus();
+    if (go && $("pic-q").value.trim()) findPictures();
+  }
+  const closePictures = () => { $("pics").classList.remove("show"); $("pic-grid").innerHTML = ""; $("pic-note").textContent = ""; };
+  $("pic").addEventListener("click", () => $("pics").classList.contains("show") ? closePictures() : openPictures());
+  $("pic-close").addEventListener("click", closePictures);
+  $("pic-q").addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Escape") closePictures(); });
+  $("pic-form").addEventListener("submit", (e) => { e.preventDefault(); findPictures(); });
+  $("pic-make").addEventListener("click", makePicture);
+  function tile(src, caption, onPick) {
+    const b = document.createElement("button"); b.type = "button"; b.title = caption;
+    const img = document.createElement("img"); img.src = src; img.alt = ""; const span = document.createElement("span"); span.textContent = caption;
+    b.append(img, span); b.addEventListener("click", onPick); $("pic-grid").append(b);
+  }
+  async function findPictures() {
+    const q = $("pic-q").value.trim(); if (!q) return;
+    $("pic-grid").innerHTML = ""; $("pic-note").textContent = "Searching Wikimedia Commons…";
+    try {
+      const j = await (await fetch(`api/sketch/pictures/search?q=${encodeURIComponent(q)}`)).json();
+      if (!j.ok) throw new Error(j.error);
+      $("pic-note").textContent = j.results.length ? `From Wikimedia Commons, free to use under each one's licence. Click one to place it.${$("pic-make").hidden ? "" : " Or Make one."}` : `Nothing on Wikimedia Commons for "${q}".${$("pic-make").hidden ? "" : " Make one instead?"}`;
+      for (const r of j.results) tile(`api/sketch/pictures/thumb?url=${encodeURIComponent(r.thumb)}`, `${r.license || "licence on its page"} · ${r.name}`, async () => {
+        $("pic-note").textContent = "Placing it…";
+        try { const g = await (await fetch(`api/sketch/pictures/get?url=${encodeURIComponent(r.url)}`)).json(); if (!g.ok) throw new Error(g.error);
+          await placePicture(g.dataUrl, g.mime, { name: r.name, source: "Wikimedia Commons", license: r.license, author: r.author, page: r.page, query: q }); }
+        catch (e) { $("pic-note").textContent = `Could not get that one (${e.message}).`; }
+      });
+    } catch (e) { $("pic-note").textContent = `Could not search (${e.message}).`; }
+  }
+  async function makePicture() {
+    const q = $("pic-q").value.trim(); if (!q) { $("pic-q").focus(); return; }
+    $("pic-make").disabled = true; $("pic-note").textContent = `Making a picture of "${q}" (a few seconds)…`;
+    try {
+      const j = await (await fetch("api/sketch/pictures/make", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ prompt: q }) })).json();
+      if (!j.ok) throw new Error(j.error);
+      $("pic-note").textContent = `Made by ${j.model.split("/").pop()}. Click it to place it, or Make one again.`;
+      tile(j.dataUrl, `made: ${q}`, () => placePicture(j.dataUrl, j.mime, { name: `${q} (made)`, source: "made", model: j.model, prompt: q }));
+    } catch (e) { $("pic-note").textContent = `Could not make one (${e.message}).`; }
+    finally { $("pic-make").disabled = false; }
+  }
+  // where a new thing of this size goes: right of the one thing selected, else the empty place in view nearest its
+  // middle (scene coordinates), so it never lands on top of what is drawn
+  function freeSpot(W, H, near) {
+    const boxes = live().map(boxOf), clear = (x, y) => !boxes.some((b) => b.x < x + W + 24 && b.x + b.w > x - 24 && b.y < y + H + 24 && b.y + b.h > y - 24);
+    if (near) { const x = near.x + near.width + 48, y = near.y + near.height / 2 - H / 2; if (clear(x, y)) return [x, y]; }
+    const s = api.getAppState(), z = s.zoom.value, vx = -s.scrollX, vy = -s.scrollY, vw = s.width / z, vh = s.height / z;
+    const cx = vx + vw / 2 - W / 2, cy = vy + vh / 2 - H / 2, step = 40 / z, spots = [];
+    for (let y = vy + 80 / z; y + H < vy + vh - 150 / z; y += step) for (let x = vx + 220 / z; x + W < vx + vw - 380 / z; x += step) spots.push([x, y]);
+    spots.sort((a, b) => Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy));
+    return spots.find(([x, y]) => clear(x, y)) || [Math.max(...boxes.map((b) => b.x + b.w), cx) + 60, cy];
+  }
+  // the picture, its white margins cut off (a made one comes on a wide white page), at most 260 × 200 on the canvas,
+  // beside the one thing selected or in an empty part of the view; where it came from goes with it into the record
+  async function placePicture(dataUrl, mime, meta) {
+    const img = await new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => fail(new Error("not a picture")); i.src = dataUrl; });
+    const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight; const g = c.getContext("2d"); g.drawImage(img, 0, 0);
+    const px = g.getImageData(0, 0, c.width, c.height).data; let x0 = c.width, y0 = c.height, x1 = -1, y1 = -1;
+    for (let y = 0; y < c.height; y += 2) for (let x = 0; x < c.width; x += 2) { const i = (y * c.width + x) * 4; if (px[i + 3] > 16 && (px[i] < 235 || px[i + 1] < 235 || px[i + 2] < 235)) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
+    let url = dataUrl, w = c.width, h = c.height;
+    if (x1 > x0 && y1 > y0 && (x1 - x0) * (y1 - y0) < 0.8 * w * h) {
+      const pad = 12; x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w, x1 + pad); y1 = Math.min(h, y1 + pad);
+      const t = document.createElement("canvas"); t.width = x1 - x0; t.height = y1 - y0; t.getContext("2d").drawImage(c, x0, y0, t.width, t.height, 0, 0, t.width, t.height);
+      url = t.toDataURL("image/png"); mime = "image/png"; w = t.width; h = t.height;
+    }
+    const k = Math.min(1, 260 / w, 200 / h), W = Math.round(w * k), H = Math.round(h * k);
+    const one = selected.length === 1 ? selected[0] : null, [x, y] = freeSpot(W, H, one);
+    const fileId = `pic-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+    api.addFiles([{ id: fileId, dataURL: url, mimeType: mime, created: Date.now() }]);
+    pendingFiles.push({ ...meta, type: mime, kb: Math.round(url.length * 0.75 / 1024) });
+    const el = { ...convertToExcalidrawElements([{ type: "rectangle", x, y, width: W, height: H }])[0], type: "image", fileId, status: "saved", scale: [1, 1], crop: null, backgroundColor: "transparent", strokeColor: "transparent" };
+    commit(new Map(), [el]);
+    closePictures(); status(meta.source === "made" ? `Placed the picture ${meta.model.split("/").pop()} made.` : `Placed "${meta.name}" from Wikimedia Commons (${meta.license || "licence on its page"}).`);
+  }
+
   // ---------- notes: text typed on the canvas (double-click, or T) ----------
   // A text of their own (not a box's label, an icon's name or a today/new/going tag) is a note: when they finish
   // typing it, it is timed, goes in the words of the next picture as "(typed) …" and to the partner, and sketch.md
   // lists it. Typed again later, the note is kept as last typed (the change itself is told as a rename).
-  let typing = null;
+  let typing = null, typingFrom = null;
   const noted = new Map();   // text element id → its note
   function onTyping(appState) {
     const now = appState.editingTextElement?.id ?? (appState.editingElement?.type === "text" ? appState.editingElement.id : null);
     if (now === typing) return;
-    const done = typing; typing = now;
+    const done = typing, from = typingFrom; typing = now; typingFrom = now && t0 != null ? clock() : null;
     if (!done || t0 == null) return;
     const el = api.getSceneElements().find((e) => e.id === done);
     const text = String(el?.originalText ?? el?.text ?? "").trim();
     if (!el || el.containerId || el.customData?.tagFor || el.customData?.icon || !text) return;
     const n = noted.get(el.id);
     if (n) { n.text = text; return; }
-    const note = { t: clock(), text, elementId: el.id };
+    const note = { t: clock(), ...(from != null ? { t0: from } : {}), text, elementId: el.id };   // t0: when they began typing it
     noted.set(el.id, note); session.notes.push(note);
     said.push(`(typed) ${text}`); schedule(400);
   }
@@ -565,7 +683,7 @@
     }
     $("counts").textContent = `${session.keyframes.length} pictures · ${session.events.length} edits · ${fmt(clock() || 0)}`;
     $("sent").style.display = "none";
-    $("review").classList.add("open"); $("sel").classList.remove("show"); $("files").classList.remove("show");
+    $("review").classList.add("open"); $("sel").classList.remove("show"); $("files").classList.remove("show"); closePictures();
   });
   $("keep").addEventListener("click", () => { $("review").classList.remove("open"); resume(); });
 

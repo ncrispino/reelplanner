@@ -196,3 +196,45 @@ export function warmPartner(p) {
 
 /** How the page and the log name it: "claude-sonnet-5.5 via OpenRouter", "gemma3:4b on this machine". */
 export const partnerLabel = (p) => p.off ? `off (${p.why})` : `${p.model.split("/").pop()} ${p.provider === "openrouter" ? "via OpenRouter" : "on this machine"}`;
+
+// ---------- drawing what they said ----------
+// "Draw what I said" (the page's button, or saying "draw that"): the same model turns what was said since the last
+// time into a Mermaid flowchart, which the page opens in Excalidraw's Mermaid dialog for them to look at, change and
+// insert, or not. Only what they said, in their words: the picture stays theirs, the model only saves the drawing.
+const DRAW = `You turn what someone said aloud, while explaining how part of a software system works, into a Mermaid flowchart, so they need not draw it by hand.
+
+Draw ONLY what they said, in their words: no box, step, arrow or label they did not say, and nothing you know about how such systems usually work. Each arrow is one thing they said, from the thing that does it to the thing it is done to; never the same thing twice. Where they sound unsure ("I think", "maybe", "not sure"), make that edge dotted (-.->) and keep their hedge in its label. When they name something already on their canvas (listed below), use exactly that name.
+
+Answer with the Mermaid source alone: flowchart LR (or TD for a sequence of steps going down), no fences, no comments.`;
+
+/** The request for "Draw what I said". */
+export function drawMessages({ question, said = [], elements = [] }) {
+  const names = [...new Set(elements.map((e) => e.label || e.text).filter(Boolean).map((s) => String(s).replace(/\s+/g, " ").trim()))];
+  const text = [`What they are explaining: ${question || "(not given)"}`, "",
+    `Already on their canvas: ${names.length ? names.map((n) => `"${n}"`).join(", ") : "(nothing yet)"}`, "",
+    "What they said, oldest first:", ...said.map((x) => `- ${x.text}`)].join("\n");
+  return [{ role: "system", content: DRAW }, { role: "user", content: text }];
+}
+
+/** Mermaid in what a model wrote: the flowchart, fences and any preamble off; null when there is none. */
+export function mermaidIn(out) {
+  const s = String(out || "").replace(/<think>[\s\S]*?<\/think>/g, "").replace(/```(?:mermaid)?/g, "").trim();
+  const at = s.search(/^\s*(flowchart|graph)\s+(LR|RL|TD|TB|BT)\b/m);
+  return at < 0 ? null : s.slice(at).trim();
+}
+
+/** Ask the partner's model for a flowchart of what was said. → Mermaid source, or null. */
+export async function drawFromSaid(p, input, { timeoutMs = p.provider === "local" ? 120000 : 45000 } = {}) {
+  const headers = { "content-type": "application/json" };
+  if (p.keyEnv) headers.authorization = `Bearer ${process.env[p.keyEnv]}`;
+  const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${p.base}/chat/completions`, { method: "POST", headers, signal: ctl.signal,
+      body: JSON.stringify({ model: p.model, messages: drawMessages(input), max_tokens: 2048, stream: false }) });
+    const j = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(`${p.where} ${p.model}: ${res.status} ${j?.error?.message || res.statusText}`);
+    const m = j?.choices?.[0]?.message?.content;
+    return mermaidIn(Array.isArray(m) ? m.map((c) => c.text || "").join("") : m);
+  } catch (e) { throw e.name === "AbortError" ? new Error(`${p.model} did not answer in ${timeoutMs / 1000} s`) : e; }
+  finally { clearTimeout(timer); }
+}
