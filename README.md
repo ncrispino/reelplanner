@@ -26,20 +26,15 @@ reelplanner setup                                                      # ffmpeg,
 npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g   # the skill: it asks which agents (add -y for every agent)
 ```
 
-In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
+In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`. The
+plugin also adds `/reel`, which plays the video in a pane beside the conversation ([watch it in Claude
+Code](#watch-it-in-claude-code-reel)):
 
 ```
 /plugin marketplace add ncrispino/reelplanner
 /plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill, plus `/reel`: the video plays in a pane in Claude Code, beside the conversation, with its
-captions under it and its sound, stops at each open choice, takes your answer, plays the branch you picked, and goes
-on; `m` leaves a comment at the moment it is at, and Send files your answers and comments as the player's Send does.
-In kitty or Ghostty the picture is as sharp as in the browser; other terminals open the browser player and keep the
-choices, the comments and Send in the pane; the desktop and mobile apps show a few frames a second. Drawing on the
-video is the browser player's. When the agent opens a
-video for review, a band above the prompt offers it there ([details](./docs/reference.md#the-reel-pane-in-claude-code)).
 The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
 when they are missing, but running them first is quicker).
 
@@ -101,6 +96,42 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
     and it updates the plan.
   - Otherwise, **Send** hands the review to the agent, which updates the plan and keeps the review in a
     `.reelplanner/` folder in the repo (see [three ways](#three-ways-to-use-it)).
+
+## Watch it in Claude Code (`/reel`)
+
+With the plugin, the review happens beside the conversation: the video plays in a pane, stops at each open choice,
+takes your answers and comments, and sends them, without leaving Claude Code.
+
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, gets bigger, takes a comment, stops at a choice, takes an answer with a comment on it and one in the reviewer's own words, sends the review with changes asked for, notices the rebuilt video and plays just the scene that changed." width="100%">
+
+<p align="center"><i>/reel in kitty on one of this repo's sample videos: a review sent, the video rebuilt, just the
+change played, then the whole video (2 min 20 s, sped up).</i></p>
+
+**What it needs:**
+
+- Claude Code with the plugin (tested on 2.1.296), and the `reelplanner` command with `reelplanner setup` done
+  ([install](#install)): the pane plays a render of the video that HyperFrames makes once, with setup's Chrome and
+  ffmpeg, and its sound plays through `ffplay` (setup's ffmpeg has it; `afplay` on macOS).
+- **kitty or Ghostty** for the picture in the pane, as sharp as in the browser. Any other terminal opens the
+  browser player instead, and the pane keeps the choices, the comments and Send. In the Claude desktop and mobile apps
+  the pane shows three frames a second, with no sound.
+
+**Install** (after the `reelplanner` command and its setup, above), in Claude Code:
+
+```
+/plugin marketplace add ncrispino/reelplanner
+/plugin install reelplanner@reelplanner
+```
+
+Then start a new session. `/reel` lists the plans with a video; `/reel <plan>` opens one and `/reel <video-dir>` any
+built video. When the agent opens a video for review, a band above the prompt offers it too.
+
+**Keys:** `p` play or pause · `r` replay · `n` and `b` the next and previous stop · a digit picks an option · `o` your
+own words · `c` a comment on the answer · `m` a comment at this moment · `z` bigger · `v` just the changes or the
+whole video · `w` the browser player, which is also where you draw on the video. The last stop is **Send**:
+**Approve** (Claude builds the plan, with no new plan video) or **Changes needed** (Claude revises it, rebuilds the
+scenes that change, and the pane offers **Watch what changed** when the new version is built).
+[Everything the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
 
 ## Three ways to use it
 
