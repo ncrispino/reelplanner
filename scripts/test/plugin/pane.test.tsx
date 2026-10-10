@@ -43,9 +43,17 @@ const walkMap = {
 }
 
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
-function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean } = {}) {
+function world(
+  on: On,
+  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean } = {},
+) {
+  // a revision: only frame 3's scene changed since the last build
+  const map = opts.revised
+    ? { ...planMap, changes: { changedFrames: [3], changedSeconds: 35, totalSeconds: 90 },
+        frames: planMap.frames.map((f, i) => ({ ...f, durationSeconds: [15, 30, 35, 10][i] })) }
+    : planMap
   const files = new Map<string, string>([
-    [`${PLAN}/video/plan-map.json`, JSON.stringify(planMap)],
+    [`${PLAN}/video/plan-map.json`, JSON.stringify(map)],
     [`${PLAN}/plan.md`, '# A small plan'],
   ])
   if (opts.walkthrough) files.set(`${PLAN}/walkthrough-video/plan-map.json`, JSON.stringify(walkMap))
@@ -80,16 +88,22 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?:
     if (!list.length) throw new Error(`ENOENT ${e.path}`)
     return { value: list }
   })
+  // the video's plan map as last written: a rebuild writes it anew
+  const built = { at: 1 }
   on('fs.stat', ($, e) => {
     if (!files.has(e.path)) throw new Error(`ENOENT ${e.path}`)
-    return { value: { mtimeMs: 1, size: 0, kind: 'file', isLink: false } } as never
+    return { value: { mtimeMs: e.path.endsWith('/video/plan-map.json') ? built.at : 1, size: 0, kind: 'file', isLink: false } } as never
   })
   on('prompt.submit', ($, e) => {
     prompts.push(e.text)
     return { text: e.text }
   })
   on('ui.toast', () => ({ value: undefined }))
-  on('ui.open', () => ({ value: { isPlaced: true } }) as never)
+  const opened: Record<string, unknown>[] = []
+  on('ui.open', ($, e) => {
+    opened.push({ ...e })
+    return { value: { isPlaced: true } } as never
+  })
   on('session.surface', () => ({ value: opts.surface ?? 'terminal' }) as never)
   on('clock.after', () => ({ deny: 'autoplay on open is left to the press in these tests' }))
   // reel-frames beneath: the render is there; a stretch is one frame, then its end
@@ -116,7 +130,8 @@ function world(on: On, opts: { cloud?: boolean; walkthrough?: boolean; surface?:
     ran.push([...e.argv])
     return { value: { exitCode: 0, stdout: '✓ review page: http://127.0.0.1:8787/\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
   })
-  return { files, prompts, spawned, blits, ran }
+  const rebuild = () => (built.at = Date.parse('2026-10-09T13:00:00Z')) // after every Send these tests make
+  return { files, prompts, spawned, blits, ran, opened, rebuild }
 }
 
 const pane = <P extends 'terminal' | 'desktop' | 'mobile'>(surface: P) =>
@@ -299,5 +314,78 @@ test('on the desktop app the frames come as an Svg, a few a second, with no soun
   expect(args).toEqual(expect.arrayContaining(['--as', 'jpeg', '--no-audio']))
   const svg = await ui.find({ type: 'Svg' })
   expect(String((svg?.props as { source?: string } | undefined)?.source)).toContain('data:image/jpeg;base64,/9j/')
+  await ui.press({ key: 'library' })
+})
+
+test("an answer can carry a comment, filed as the decision's note (what reel record keeps as the reviewer's note)", async ($, on) => {
+  const { files } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  expect(await ui.find({ type: 'Text', text: /then c adds a comment/ })).toBeDefined() // said before an answer
+  await ui.press({ key: 'opt-b' })
+  await ui.press({ key: 'prev' }) // back to the choice just answered
+  await ui.press({ key: 'answer-note' })
+  await ui.input({ key: 'note-q1', text: 'but only if the disk is local' })
+  expect(await ui.find({ type: 'Text', text: /Your comment: but only if the disk is local/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Choice 1 → On disk, “but only if the disk is local”/ })).toBeDefined()
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'approve' })
+  const row = JSON.parse(files.get([...files.keys()].filter(f => f.includes('/inbox/')).pop() ?? '') ?? '{}')
+  expect(row.review.decisions[0]).toMatchObject({ id: 'q1', option: 'b', label: 'On disk', note: 'but only if the disk is local' })
+  await ui.press({ key: 'library' })
+})
+
+const stretchOf = (a: string[]) => [a[a.indexOf('--from') + 1], a[a.indexOf('--to') + 1]]
+
+test('a revised video plays just what changed (and any scene with a question still open), or the whole video on v', async ($, on) => {
+  const { spawned } = world(on, { kitty: true, revised: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  expect(await ui.find({ type: 'Text', text: /Revised since the last build: 1 of 4 scenes changed/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Plays just the changes/ })).toBeDefined()
+  await ui.press({ key: 'play' })
+  const plays = () => spawned.filter(a => !a.includes('--render')).map(stretchOf)
+  // to choice 1 (0:20): frame 1 did not change and holds no question, frame 2 holds q1, still open
+  expect(plays()).toEqual([['15', '20']])
+  await ui.press({ key: 'only' })
+  expect(await ui.find({ type: 'Text', text: /Plays the whole video/ })).toBeDefined()
+  await ui.press({ key: 'replay' })
+  expect(plays()[1]).toEqual(['0', '20'])
+  await ui.press({ key: 'library' })
+})
+
+test('Send says what each answer leads to, and after it the pane follows the review to the new version', async ($, on) => {
+  const { rebuild } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  expect(await ui.find({ type: 'Text', text: /folds your answers and comments into it and builds it\. No new plan video/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /rebuilds the scenes that change, and the new version comes back here/ })).toBeDefined()
+  await ui.press({ key: 'changes' })
+  expect(await ui.find({ type: 'Text', text: /Changes asked for · sent/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /the new version replaces this one when it is built/ })).toBeDefined()
+  rebuild() // the agent rebuilt the video in its folder: coming back to it, the pane finds the new version
+  await ui.press({ key: 'library' })
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  expect(await ui.find({ type: 'Text', text: /The new version is ready/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', key: 'watch-new' })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
+test('z makes the video bigger: the pane asks for most of the width and the review folds away', async ($, on) => {
+  const { opened } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  expect(await ui.find({ type: 'Text', text: /your review/i })).toBeDefined()
+  await ui.press({ key: 'big' })
+  expect(opened[opened.length - 1]).toMatchObject({ id: 'reelplanner', columns: expect.any(Number) })
+  expect(await ui.find({ type: 'Text', text: /z shows it again/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // the choice stays
+  await ui.press({ key: 'big' })
+  expect(opened[opened.length - 1]).not.toHaveProperty('columns')
   await ui.press({ key: 'library' })
 })

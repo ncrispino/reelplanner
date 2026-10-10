@@ -353,8 +353,22 @@ comment, and the keys (`p` play or pause, `r` replay, `b` and `n` the previous a
 card for the stop when the video stops there (its options by number, `e` explain more, `o` your own words) and
 otherwise what comes next; and **Your review**, the answers and comments so far in the video's order. `m` leaves a
 comment at the moment the video is at: the video waits while you write and plays on after, and the comment is filed
-as a note at that moment, as the player's are. Drawing on the video (a circle, a box around something) is the
-browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
+as a note at that moment, as the player's are. `c`, once a choice is answered (while its part of the video plays, or
+back on its card), adds a comment to the answer ("Postgres, but only if…"), filed as the decision's `note`, which
+`reel record` keeps in the ledger as the reviewer's note. Drawing on the video (a circle, a box around something) is
+the browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
+`z` makes the video bigger: the docked pane asks for most of the terminal's width (a width you dragged it to wins; the
+dock always leaves the conversation some room, so it is wider, not full screen) and the review folds away.
+
+The Send card says what each answer leads to. For a plan video, **Approve**: Claude folds your answers and comments
+into the plan and builds it, with no new plan video; the walkthrough comes next. **Changes needed**: Claude revises
+the plan, rebuilds the scenes that change, and the new version comes back. For a walkthrough, Approve keeps the build
+(the calls join the ledger) and Changes needed has the flagged calls fixed and their scenes rebuilt. After Send the
+pane stays on the video and says what Claude is doing with the review; the video is rebuilt in its own folder, and
+once its plan map is newer than the Send the pane offers **Watch what changed** (or, after a plan's Approve, the
+walkthrough when it is built). A revised video (some scenes changed since its last build, per `plan-map.json`'s
+`changes`) plays just what changed, as the browser player does: the changed scenes and any scene with a question still
+open; `v` plays the whole video instead. The render the pane plays is made again for the new version, once.
 
 Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and

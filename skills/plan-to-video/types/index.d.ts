@@ -34,7 +34,15 @@ export type ReelplannerPlan = {
 }
 
 /** An answer to a plan video's question, in the player's words (`option` an option id, `own`, `unclear` or `multi`). */
-export type ReelplannerAnswer = { option: string; label: string; options?: string[]; labels?: string[]; at: string }
+export type ReelplannerAnswer = {
+  option: string
+  label: string
+  options?: string[]
+  labels?: string[]
+  /** The reviewer's comment on the answer ("Postgres, but only if…"), filed as the decision's `note`. */
+  note?: string
+  at: string
+}
 
 /** A verdict on a walkthrough video's call. */
 export type ReelplannerVerdict = { verdict: 'accept' | 'flag' | 'own'; own?: string; at: string }
@@ -43,7 +51,7 @@ export type ReelplannerVerdict = { verdict: 'accept' | 'flag' | 'own'; own?: str
 export type ReelplannerComment = { id: string; t: number; text: string; at: string }
 
 /** What became of the last Send for a video. */
-export type ReelplannerSent = { at: string; path: string; how: 'waiter' | 'prompt' }
+export type ReelplannerSent = { at: string; path: string; how: 'waiter' | 'prompt'; verdict: 'approve' | 'changes' }
 
 declare module 'claude-code' {
   interface PluginState {
@@ -70,6 +78,10 @@ declare module 'claude-code' {
       composing: string | null
       /** Keyed like `answers`' videos: the comments left on each video, in the order they were left. */
       comments: Record<string, ReelplannerComment[]>
+      /** The pane widened around the video, the review below it hidden. */
+      theater: boolean
+      /** Keyed like `comments`: false where a revised video plays whole (by default it plays just what changed). */
+      onlyChanges: Record<string, boolean>
     }
   }
 }

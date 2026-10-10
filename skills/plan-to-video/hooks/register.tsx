@@ -40,6 +40,8 @@ const publishing = atom({ plugin: 'reelplanner', key: 'publishing' } as const, n
 const busy = atom({ plugin: 'reelplanner', key: 'busy' } as const, null as string | null)
 const playback = atom({ plugin: 'reelplanner', key: 'playback' } as const, null as ReelplannerPlayback | null)
 const flip = atom({ plugin: 'reelplanner', key: 'flip' } as const, null as string | null)
+const theater = atom({ plugin: 'reelplanner', key: 'theater' } as const, false as boolean)
+const onlyChanges = atom({ plugin: 'reelplanner', key: 'onlyChanges' } as const, {} as Record<string, boolean>)
 const composing = atom({ plugin: 'reelplanner', key: 'composing' } as const, null as string | null)
 const comments = atom({ plugin: 'reelplanner', key: 'comments' } as const, {} as Record<string, ReelplannerComment[]>)
 
@@ -86,6 +88,8 @@ type PlanMap = {
   decisions?: Decision[]
   autonomy?: Call[]
   frames?: Frame[]
+  /** What plan-diff found against the last build (scripts/plan-map.mjs): the frames whose scenes changed. */
+  changes?: { changedFrames?: number[]; changedSeconds?: number; totalSeconds?: number }
 }
 type Caption = { start: number; end: number; text: string }
 
@@ -115,6 +119,39 @@ async function loadMap($: EngineInterface, dir: string) {
   } catch {
     return null
   }
+}
+
+/** When the video's plan map was last written: a rebuild writes it anew. */
+const builtAt = (dir: string) => maps.get(`${dir}/plan-map.json`)?.mtimeMs ?? 0
+
+/** A revision (some scenes changed since the last build, not all): it can play just what changed. */
+const isRevision = (map: PlanMap) => {
+  const n = map.changes?.changedFrames?.length ?? 0
+  return n > 0 && n < (map.frames ?? []).length
+}
+
+/**
+ * Just the changes, as the browser player plays them: the changed scenes, and any scene still holding a
+ * question not answered here (an open question is never skipped because its scene did not change).
+ */
+function changedOnly(map: PlanMap, stretches: { from: number; to: number }[], answered: (id: string) => boolean) {
+  const changed = new Set(map.changes?.changedFrames ?? [])
+  const keep = (map.frames ?? [])
+    .filter(f => changed.has(f.index) || (map.decisions ?? []).some(d => d.frameIndex === f.index && !answered(d.id)))
+    .map(f => ({ from: f.start ?? 0, to: (f.start ?? 0) + (f.durationSeconds ?? 0) }))
+    .sort((x, y) => x.from - y.from)
+  const out: { from: number; to: number }[] = []
+  for (const s of stretches)
+    for (const k of keep) {
+      const from = Math.max(s.from, k.from), to = Math.min(s.to, k.to)
+      if (to - from < 0.05) continue
+      const last = out[out.length - 1]
+      if (last && from - last.to < 0.05) last.to = to
+      else out.push({ from, to })
+    }
+  // nothing changed before the next stop: a moment of it, so the video still lands on the stop
+  const end = stretches[stretches.length - 1]
+  return out.length ? out : end ? [{ from: Math.max(end.from, end.to - 0.5), to: end.to }] : []
 }
 
 async function loadCaptions($: EngineInterface, dir: string) {
@@ -202,7 +239,7 @@ const isCloud = async ($: EngineInterface) => (await $.env.get('CLAUDE_CODE_REMO
 
 /** The screen's size in cells: as wide as the pane lets it, 16:9 (a cell is half as wide as it is tall). */
 const screenSize = (bodyColumns: number) => {
-  const cols = Math.max(24, Math.min(120, bodyColumns - 1))
+  const cols = Math.max(24, Math.min(240, bodyColumns - 1))
   return { cols, rows: Math.max(6, Math.round((cols * 9) / 32)) }
 }
 
@@ -229,7 +266,11 @@ let imageRefused = false
 const pictures = new Map<string, { file: string; format: 'rgb'; width: number; height: number; generation: number }>() // the same for an Image
 let imageSize = { width: 0, height: 0 }
 let paneColumns = 0 // the pane's width as last drawn
-let commentAt: { key: string; t: number; resume: number | null } | null = null // where a comment being written was begun
+// where a comment being written was begun, and what plays when it is saved (null: the video was still)
+let commentAt: { key: string; t: number; resume: { from: number; to: number }[] | null } | null = null
+// the branch clip an answer started: a pause inside it resumes the clip, then the video from where the question resumes
+// (not on through the next option's clip, which lies right after it)
+let branchOf: { key: string; stop: number; end: number } | null = null
 
 async function stopPlayback($: EngineInterface, status: ReelplannerPlayback['status'] = 'paused') {
   current++
@@ -339,7 +380,13 @@ async function playTo($: EngineInterface, v: Video, i: number, size: { cols: num
   const map = await loadMap($, v.dir)
   if (!map) return
   const s = stretch(map, v.which, i)
-  return play($, v, [{ from: from ?? s.from, to: s.to }], size)
+  const list = [{ from: from ?? s.from, to: s.to }]
+  // a revision plays just what changed, unless asked for the whole video
+  if (isRevision(map) && (await read($, onlyChanges))[v.key] !== false) {
+    const given = await read($, answers)
+    return play($, v, changedOnly(map, list, id => Boolean(given[`${v.key}:${id}`])), size)
+  }
+  return play($, v, list, size)
 }
 
 // --- the review row, as the player's Finish → Send builds it (packages/player, reviewRow) ------------
@@ -383,6 +430,7 @@ async function buildRow($: EngineInterface, v: Video, verdict: 'approve' | 'chan
             label: a.label,
             ...(a.option === 'own' ? { own: true } : {}),
             ...(a.options ? { options: a.options, labels: a.labels } : {}),
+            ...(a.note ? { note: a.note } : {}),
             recommended: picked?.recommended ?? false,
             planStep: q.planStep ?? null,
             question: q.question,
@@ -480,7 +528,7 @@ async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes'
     waiting = (await $.fs.list(`${inbox}/.waiters`)).some(w => now - w.mtimeMs < 10_000)
   } catch {}
 
-  const record: ReelplannerSent = { at: row.submittedAt, path, how: waiting ? 'waiter' : 'prompt' }
+  const record: ReelplannerSent = { at: row.submittedAt, path, how: waiting ? 'waiter' : 'prompt', verdict }
   await update($, sent, s => ({ ...s, [v.key]: record }))
   if (waiting) {
     $.ui.toast('Review sent: the waiting session picks it up.')
@@ -765,15 +813,29 @@ export const register: Register = on => {
     const cloud = await isCloud($)
     const pb = await read($, playback)
     const mine = pb?.key === v.key ? pb : null
-    const size = mine ? { cols: mine.cols, rows: mine.rows } : screenSize(width)
+    // the size the picture plays at; a still picture follows the pane's width (bigger, smaller)
+    const size = mine && (mine.status === 'playing' || mine.status === 'rendering') ? { cols: mine.cols, rows: mine.rows } : screenSize(width)
     const using = Boolean(mine) // the video has been played here: moving between stops plays on
+    const revision = isRevision(map)
+    const only = revision && (await read($, onlyChanges))[v.key] !== false
+    const trimmed = (list: { from: number; to: number }[]) => (only ? changedOnly(map, list, id => done(id)) : list)
+    const big = await read($, theater)
     const go = async (to: number, from?: number, branch?: Branch) => {
       const i = Math.max(0, Math.min(stops.length, to))
       await update($, open, o => (o ? { ...o, stop: i } : o))
       if (!using) return
       const s = stretch(map, v.which, i)
-      const list = branch ? [{ from: branch.start, to: branch.end }, { from: from ?? s.from, to: s.to }] : [{ from: from ?? s.from, to: s.to }]
+      // the clip the answer picked always plays; what follows it, just the changes when that mode is on
+      const list = [...(branch ? [{ from: branch.start, to: branch.end }] : []), ...trimmed([{ from: from ?? s.from, to: s.to }])]
+      branchOf = branch ? { key: v.key, stop: i, end: branch.end } : null
       void play($, v, list, size)
+    }
+    /** What plays on from `from`: the rest of an answer's branch clip first, if it is in one. */
+    const onFrom = (from: number) => {
+      const s = stretch(map, v.which, stop)
+      if (branchOf && branchOf.key === v.key && branchOf.stop === stop && from < branchOf.end)
+        return [{ from, to: branchOf.end }, ...trimmed([{ from: s.from, to: s.to }])]
+      return trimmed([{ from: from > s.from && from < s.to - 0.2 ? from : s.from, to: s.to }])
     }
     const done = (id: string) =>
       isPlanVideo(v.which) ? Boolean(allAnswers[`${v.key}:${id}`]) : Boolean(allVerdicts[`${v.key}:${id}`])
@@ -787,9 +849,7 @@ export const register: Register = on => {
     const stopped = !playing && !rendering // the card for this stop shows only while the video is still
     const toggle = () => {
       if (playing) return stopPlayback($)
-      const s = stretch(map, v.which, stop)
-      const resumeAt = mine && mine.t > s.from && mine.t < s.to - 0.2 ? mine.t : s.from
-      return play($, v, [{ from: resumeAt, to: s.to }], size)
+      return play($, v, onFrom(mine ? mine.t : stretch(map, v.which, stop).from), size)
     }
     const mode = mine?.mode ?? (await modeFor($, e.surface))
     // a terminal without kitty graphics watches it in the browser player
@@ -820,6 +880,18 @@ export const register: Register = on => {
         </Box>
       </Box>
     )
+    const mins = (n: number) => (n >= 60 ? `${Math.floor(n / 60)}m ${Math.round(n % 60)}s` : `${Math.round(n)}s`)
+    const revised = revision ? (
+      <Box key="revised" gap={1} flexWrap="wrap">
+        <Text color="suggestion">
+          Revised since the last build: {map.changes?.changedFrames?.length} of {(map.frames ?? []).length} scenes changed (
+          {mins(map.changes?.changedSeconds ?? 0)}). {only ? 'Plays just the changes.' : 'Plays the whole video.'}
+        </Text>
+        <Button key="only" plain hotkey="v" onPress={() => update($, onlyChanges, o => ({ ...o, [v.key]: !only }))}>
+          {only ? 'Whole video' : 'Just the changes'}
+        </Button>
+      </Box>
+    ) : null
 
     // the picture: the video in the pane, or, in a terminal without kitty graphics, where it plays instead
     let picture: RenderElement
@@ -904,12 +976,13 @@ export const register: Register = on => {
                 : 'paused'
 
     // a comment at this moment: the video waits while it is written, and plays on after
-    const commenting = (await read($, composing)) === `${v.key}:comment`
+    const writing = await read($, composing)
+    const commenting = writing === `${v.key}:comment`
     // where the comment is: the moment the pane's video is at, or, while the video plays in the browser (where
     // the pane cannot see), the choice the pane is on
     const commentT = inBrowser ? (stops[stop]?.at ?? total) : t
     const startComment = async () => {
-      commentAt = { key: v.key, t: commentT, resume: playing ? stretch(map, v.which, stop).to : null }
+      commentAt = { key: v.key, t: commentT, resume: playing ? onFrom(t) : null }
       if (playing) await stopPlayback($)
       await update($, composing, () => `${v.key}:comment`)
       await keys($, 'comment-field')
@@ -922,10 +995,62 @@ export const register: Register = on => {
         const c: ReelplannerComment = { id: randomId(), t: at.t, text, at: new Date(await $.clock.now()).toISOString() }
         await update($, comments, all => ({ ...all, [v.key]: [...(all[v.key] ?? []), c] }))
       }
-      if (at.resume !== null) void play($, v, [{ from: at.t, to: at.resume }], size)
+      if (at.resume) void play($, v, at.resume, size)
       await keys($, inBrowser ? 'next' : 'play')
     }
 
+    // a comment on an answer given ("Postgres, but only if…"): from the card, or while its part of the video plays
+    const noteOpen = (id: string) => writing === `${v.key}:note-${id}`
+    const startNote = async (id: string) => {
+      commentAt = { key: v.key, t, resume: playing ? onFrom(t) : null }
+      if (playing) await stopPlayback($)
+      await update($, composing, () => `${v.key}:note-${id}`)
+      await keys($, `note-${id}`)
+    }
+    const saveNote = async (id: string, text: string) => {
+      const at = commentAt?.key === v.key ? commentAt : null
+      commentAt = null
+      await update($, composing, () => null)
+      await update($, answers, all => {
+        const a = all[`${v.key}:${id}`]
+        if (!a) return all
+        const { note: _, ...rest } = a
+        return { ...all, [`${v.key}:${id}`]: text ? { ...rest, note: text } : rest }
+      })
+      if (at?.resume) void play($, v, at.resume, size)
+      await keys($, inBrowser ? 'next' : 'play')
+    }
+    const noteControls = (id: string, a: ReelplannerAnswer | undefined) =>
+      Input && a ? (
+        <Box key={`note-box-${id}`} flexDirection="column">
+          <Button key="answer-note" plain hotkey="c" onPress={() => (noteOpen(id) ? update($, composing, () => null) : startNote(id))}>
+            {a.note ? 'Change your comment on this answer' : 'Add a comment to this answer'}
+          </Button>
+          {noteOpen(id) && (
+            <Input
+              key={`note-${id}`}
+              label={`Comment on ${a.label}`}
+              placeholder="why, or with what condition; Enter (the video waits)"
+              value={a.note ?? ''}
+              autoFocus
+              onSubmit={value => saveNote(id, value.trim())}
+            />
+          )}
+        </Box>
+      ) : null
+
+    // bigger: the docked pane asks for most of the terminal's width (a width the person dragged it to wins), the
+    // review below the picture folds away, and a playing video goes on at the new size
+    const toggleBig = async () => {
+      const next = !big
+      await update($, theater, () => next)
+      const termCols = e.viewport?.columns ?? 200
+      await $.ui.open({ id: PANE, title: 'reelplanner', focus: true, ...(next ? { columns: Math.max(100, termCols - 24) } : {}) })
+      if (playing && mine) {
+        const from = mine.t
+        $.clock.after(300, () => void play($, v, onFrom(from), screenSize(paneColumns || width)))
+      }
+    }
     const transport = inBrowser ? (
       <Box key="transport" gap={2}>
         <Button key="prev" plain hotkey="b" onPress={() => go(stop - 1)}>
@@ -960,6 +1085,11 @@ export const register: Register = on => {
             <Button key="next" plain hotkey="n" onPress={() => go(stop + 1)}>
               {stop >= stops.length - 1 ? 'To Send' : 'Next'}
             </Button>
+            {e.surface === 'terminal' && (
+              <Button key="big" plain hotkey="z" onPress={() => toggleBig()}>
+                {big ? 'Smaller' : 'Bigger'}
+              </Button>
+            )}
           </Box>
           <Text dimColor>
             {clock(t)} / {clock(total)}
@@ -970,7 +1100,6 @@ export const register: Register = on => {
     )
 
     // own words for a choice or a call: a field opened on asking, so the card stays a short list of keys
-    const writing = await read($, composing)
     const ownField = (id: string, label: string, onSubmit: (text: string) => unknown) =>
       Input && writing === `${v.key}:${id}` ? (
         <Input
@@ -1016,6 +1145,7 @@ export const register: Register = on => {
             <Text color="success">◆ </Text>
             <Text dimColor>{clock(s.at)} </Text>
             {isPlanVideo(v.which) ? 'Choice' : 'Call'} {i + 1} <Text dimColor>→</Text> <Text bold>{said}</Text>
+            {a?.note ? <Text>, “{a.note}”</Text> : ''}
           </Text>
         ),
       })
@@ -1077,44 +1207,105 @@ export const register: Register = on => {
       <Box flexDirection="column" gap={1}>
         <Box flexDirection="column">
           {header}
+          {revised}
           {picture}
           {transport}
           {working && !inBrowser && dim(working)}
         </Box>
         {stage}
-        {review}
-        {hints}
+        {big ? dim(`Your review: ${count(log.length, 'item')} · z shows it again`) : review}
+        {big ? null : hints}
       </Box>
     )
 
-    // --- the end: send it ------------------------------------------------------------------------------
+    // --- the end: send it, and after: what Claude is doing with it, and the new version when it is built --------
     if (stop >= stops.length) {
       const left = stops.filter(s => !done(s.id)).length
       const note = (await read($, notes))[v.key] ?? ''
+      const plan = isPlanVideo(v.which)
+      // what each answer leads to, said before it is given
+      const means = plan
+        ? {
+            approve: 'the plan is right. Claude folds your answers and comments into it and builds it. No new plan video: next comes the walkthrough of what was built, here.',
+            changes: 'Claude revises the plan from your answers and comments, rebuilds the scenes that change, and the new version comes back here, playing just what changed.',
+          }
+        : {
+            approve: 'the build stands. Accepted calls join the decision log; any comments are applied, with no new video.',
+            changes: 'Claude fixes the calls you flagged or answered, rebuilds the scenes those fixes touch, and the new version comes back here to check.',
+          }
+      // after Send: the video is rebuilt in place (its folder, its plan map written anew), so a plan map newer than
+      // the Send is the new version
+      const sentAt = lastSent ? Date.parse(lastSent.at) : 0
+      const rebuilt = lastSent ? builtAt(v.dir) > sentAt + 1000 : false
+      const walkDir = v.inPlans ? `${plansDir(root)}/${v.slug}/walkthrough-video` : null
+      const walk = walkDir && plan ? await loadMap($, walkDir) : null
+      const walkReady = Boolean(walk && walkDir && builtAt(walkDir) > sentAt + 1000)
+      const watchNew = async () => {
+        await update($, onlyChanges, o => ({ ...o, [v.key]: true }))
+        await update($, open, o => (o ? { ...o, stop: 0 } : o))
+        void playTo($, v, 0, screenSize(paneColumns || width))
+      }
+      const after = lastSent ? (
+        <Box borderStyle="round" borderColor={rebuilt || walkReady ? 'success' : 'claude'} flexDirection="column" paddingX={1}>
+          <Text color={rebuilt || walkReady ? 'success' : 'claude'} bold>
+            {lastSent.verdict === 'approve' ? 'Approved' : 'Changes asked for'} · sent {lastSent.at.slice(11, 16)}
+          </Text>
+          {lastSent.verdict === 'changes' ? (
+            rebuilt ? (
+              <Box flexDirection="column">
+                <Text>
+                  The new version is ready
+                  {isRevision(map) ? `: ${map.changes?.changedFrames?.length} of ${(map.frames ?? []).length} scenes changed` : ''}.
+                </Text>
+                <Button key="watch-new" plain hotkey="v" onPress={() => watchNew()}>
+                  <Text color="success" bold>Watch what changed</Text>
+                </Button>
+              </Box>
+            ) : (
+              dim(`Claude is revising the plan and rebuilding the scenes that change. This pane stays here; the new version replaces this one when it is built, and opens here to play just what changed.`)
+            )
+          ) : plan ? (
+            walkReady ? (
+              <Button key="watch-walk" plain hotkey="v" onPress={() => openPane($, { slug: v.slug, which: 'walkthrough-video' })}>
+                <Text color="success" bold>The walkthrough is ready: watch it</Text>
+              </Button>
+            ) : (
+              dim('Claude is folding your comments into the plan and building it. The walkthrough video, of what was built and the calls made on the way, opens here when it is ready.')
+            )
+          ) : (
+            dim('Nothing more to watch for this build.')
+          )}
+          {dim(`${lastSent.how === 'waiter' ? 'The waiting session' : 'This session'} has it: ${lastSent.path.replace(`${root}/`, '')}`)}
+        </Box>
+      ) : null
       return layout(
-        <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
-          <Text color="claude" bold>
-            Send your review
-          </Text>
-          <Text>
-            {count(stops.length - left, isPlanVideo(v.which) ? 'choice' : 'call')} answered
-            {notesHere.length ? `, ${count(notesHere.length, 'comment')}` : ''}
-            {left > 0 ? <Text color="warning"> · {left} not answered: {isPlanVideo(v.which) ? 'they stay open questions' : 'they go on as the agent decided'}</Text> : ''}
-          </Text>
-          {note && dim(`Note for the agent: ${note}`)}
-          <Box gap={2} marginTop={1} flexWrap="wrap">
-            <Button key="approve" plain hotkey="a" onPress={() => send($, v, 'approve')}>
-              <Text color="success" bold>
-                Approve and send
-              </Text>
-            </Button>
-            <Button key="changes" plain hotkey="c" onPress={() => send($, v, 'changes')}>
-              Send: changes needed
-            </Button>
-            {ownButton('note', note ? 'Change the note' : 'Add a note for the agent')}
+        <Box flexDirection="column" gap={1}>
+          {after}
+          <Box borderStyle="round" borderColor={lastSent ? undefined : 'claude'} borderDimColor={Boolean(lastSent)} flexDirection="column" paddingX={1}>
+            <Text color={lastSent ? undefined : 'claude'} dimColor={Boolean(lastSent)} bold>
+              {lastSent ? 'Send again' : 'Send your review'}
+            </Text>
+            <Text>
+              {count(stops.length - left, plan ? 'choice' : 'call')} answered
+              {notesHere.length ? `, ${count(notesHere.length, 'comment')}` : ''}
+              {left > 0 ? <Text color="warning"> · {left} not answered: {plan ? 'they stay open questions' : 'they go on as the agent decided'}</Text> : ''}
+            </Text>
+            {note && dim(`Note for the agent: ${note}`)}
+            <Box flexDirection="column" marginTop={1}>
+              <Button key="approve" plain hotkey="a" onPress={() => send($, v, 'approve')}>
+                <Text color="success" bold>
+                  Approve
+                </Text>
+              </Button>
+              <Text dimColor>{'   '}{means.approve}</Text>
+              <Button key="changes" plain hotkey="c" onPress={() => send($, v, 'changes')}>
+                <Text bold>Changes needed</Text>
+              </Button>
+              <Text dimColor>{'   '}{means.changes}</Text>
+            </Box>
+            <Box marginTop={1}>{ownButton('note', note ? 'Change the note' : 'Add a note for the agent')}</Box>
+            {ownField('note', 'A note for the agent', text => update($, notes, n => ({ ...n, [v.key]: text })))}
           </Box>
-          {ownField('note', 'A note for the agent', text => update($, notes, n => ({ ...n, [v.key]: text })))}
-          {lastSent && dim(`Sent ${lastSent.at.slice(11, 16)} → ${lastSent.how === 'waiter' ? 'the waiting session' : 'this session'} (${lastSent.path.replace(`${root}/`, '')})`)}
         </Box>,
       )
     }
@@ -1124,11 +1315,22 @@ export const register: Register = on => {
 
     // while it plays: what comes next, and what was just picked
     const prev = stops[stop - 1]
-    const prevAnswer = prev ? (allAnswers[`${v.key}:${prev.id}`]?.label ?? allVerdicts[`${v.key}:${prev.id}`]?.verdict) : undefined
+    const prevDecision = prev && 'question' in prev ? allAnswers[`${v.key}:${prev.id}`] : undefined
+    const prevAnswer = prev ? (prevDecision?.label ?? allVerdicts[`${v.key}:${prev.id}`]?.verdict) : undefined
+    // just answered: its part of the video plays, and a comment on the answer is a key away
+    // inside the clip of the answer just given (playing or paused there), the stage stays on that answer
+    const inBranch = Boolean(prevAnswer) && t < stretch(map, v.which, stop).from - 0.05
+    const justAnswered = inBranch || (prev ? noteOpen(prev.id) : false)
     const upNext = (
       <Box borderStyle="round" borderDimColor flexDirection="column" paddingX={1}>
-        {prevAnswer && t < stretch(map, v.which, stop).from ? (
-          <Text color="success">◆ {prevAnswer}: its part of the video plays, then on</Text>
+        {justAnswered ? (
+          <Box flexDirection="column">
+            <Text color="success">
+              ◆ {prevAnswer}
+              {prevDecision?.note ? `, “${prevDecision.note}”` : ''}: its part of the video plays, then on
+            </Text>
+            {prev && prevDecision ? noteControls(prev.id, prevDecision) : null}
+          </Box>
         ) : null}
         <Text dimColor>
           Up next · {isPlanVideo(v.which) ? 'choice' : 'call'} {stop + 1} of {stops.length} · at {clock(s.at)}
@@ -1159,7 +1361,7 @@ export const register: Register = on => {
         }))
       }
       const isChosen = (o: Option) => (a?.option === 'multi' ? (a.options ?? []).includes(o.id) : a?.option === o.id)
-      if (!stopped) return layout(upNext)
+      if (!stopped || justAnswered) return layout(upNext)
       return layout(
         <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
           <Text color="claude" bold>
@@ -1194,6 +1396,8 @@ export const register: Register = on => {
           </Box>
           {ownField(q.id, 'Your answer', text => answer({ option: 'own', label: text }))}
           {a?.option === 'own' && <Text color="success">◆ Your answer: {a.label}</Text>}
+          {a?.note && <Text color="success">◆ Your comment: {a.note}</Text>}
+          {a ? noteControls(q.id, a) : dim('Pick one, then c adds a comment to your answer.')}
         </Box>,
       )
     }
@@ -1205,7 +1409,7 @@ export const register: Register = on => {
       await update($, verdicts, all => ({ ...all, [`${v.key}:${c.id}`]: { ...next, at } }))
       await go(stop + 1, c.at)
     }
-    if (!stopped) return layout(upNext)
+    if (!stopped || justAnswered) return layout(upNext)
     return layout(
       <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
         <Text color="claude" bold>
