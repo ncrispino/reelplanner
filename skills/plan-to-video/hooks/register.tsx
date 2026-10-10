@@ -589,11 +589,26 @@ function watchForRebuild($: EngineInterface, v: Video, sentAt: number, verdict: 
 const rowId = (project: string, submittedAt: string) =>
   `${project}-${submittedAt.replace(/[-:]/g, '').replace(/\.\d+/, '')}`.replace(/[^A-Za-z0-9._-]+/g, '-')
 
+/**
+ * Where a review goes, as the review server puts it: the repo's .reelplanner/inbox/ once `reel init` set it up, else
+ * (one quick video) this machine's ~/.reelplanner/inbox/<repo-key>/, so nothing is added to the repo. `inbox --where`
+ * says which; a reelplanner from before it has only the repo's.
+ */
+async function inboxOf($: EngineInterface, root: string) {
+  try {
+    const { argv } = await cli($, root)
+    const ran = await $.process.run([...argv, 'inbox', '--where', '--repo', root], { cwd: root, timeoutMs: 30_000 })
+    const dir = ran.stdout.trim().split('\n').pop() ?? ''
+    if (ran.exitCode === 0 && dir.startsWith('/')) return dir
+  } catch {}
+  return `${root}/.reelplanner/inbox`
+}
+
 async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes') {
   const root = await $.session.root()
   const row = await buildRow($, v, verdict)
   const id = rowId(row.project, row.submittedAt)
-  const inbox = `${root}/.reelplanner/inbox`
+  const inbox = await inboxOf($, root)
   const path = `${inbox}/${id}.json`
   await $.fs.write(path, JSON.stringify(row, null, 2) + '\n')
 

@@ -45,7 +45,7 @@ const walkMap = {
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
 function world(
   on: On,
-  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean; changed?: number[]; stamp?: string } = {},
+  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean; changed?: number[]; stamp?: string; inbox?: string } = {},
 ) {
   // a revision: only frame 3's scene changed since the last build
   const map = opts.revised
@@ -128,7 +128,9 @@ function world(
   const ran: string[][] = []
   on('process.run', ($, e) => {
     ran.push([...e.argv])
-    return { value: { exitCode: 0, stdout: '✓ review page: http://127.0.0.1:8787/\n', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
+    // `reelplanner inbox --where`: the inbox a review goes to (a reelplanner from before it prints no folder)
+    const stdout = e.argv.includes('--where') ? (opts.inbox ? `${opts.inbox}\n` : '') : '✓ review page: http://127.0.0.1:8787/\n'
+    return { value: { exitCode: 0, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
   })
   const rebuild = () => (built.at = Date.parse('2026-10-09T13:00:00Z')) // after every Send these tests make
   return { files, prompts, spawned, blits, ran, opened, rebuild }
@@ -492,5 +494,19 @@ test('a plan map written after Send is not the new version until a build stamps 
   await ui.press({ key: 'next' })
   expect(await ui.find({ type: 'Text', text: /Changes asked for · sent/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /The new version is ready/ }).catch(() => undefined)).toBeUndefined()
+  await ui.press({ key: 'library' })
+})
+
+test("in a repo with no set-up .reelplanner/ (one quick video), Send writes the review to this machine's inbox", async ($, on) => {
+  const box = '/home/me/.reelplanner/inbox/repo-0123abcd'
+  const { files, prompts } = world(on, { kitty: true, inbox: box })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'changes' })
+  expect([...files.keys()].filter(f => f.startsWith(`${box}/`))).toHaveLength(1)
+  expect([...files.keys()].filter(f => f.startsWith(`${ROOT}/.reelplanner/inbox/`))).toHaveLength(0)
+  expect(prompts.pop()).toContain(`${box}/`)
   await ui.press({ key: 'library' })
 })

@@ -11,6 +11,8 @@
 //                                          waiting and does not start a headless run.
 //                                          A question asked on the page (Ask about this) wakes it too:
 //                                          the path it prints is then under inbox/questions/.
+//   reelplanner inbox --where              print the inbox folder (absolute), as the review server and the reel
+//                                          pane write a review into it
 //   reelplanner inbox done <id | path>     move a handled review to inbox/done/
 //   reelplanner inbox answer <id | path> "<answer>" [--from "<where>"]
 //                                          answer a question asked on the page, from the plan, the
@@ -33,6 +35,11 @@ export async function main(args) {
   // review server keeps it (scripts/lib/inbox.mjs)
   const box = setUp ? rp : machineInbox(repo);
   const where = `${shownPath(inboxDir(box)) || "."}/${setUp ? "" : " (this machine's folder: the repo has no set-up .reelplanner/)"}`;
+
+  if (args.includes("--where")) {
+    console.log(resolve(inboxDir(box)));
+    return 0;
+  }
 
   if (args.includes("--wait")) {
     const t = Number(flag("timeout") || 0);

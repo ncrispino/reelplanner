@@ -381,7 +381,9 @@ walkthrough when it is built). A revised video (some scenes changed since its la
 `changes`) plays just what changed, as the browser player does: the changed scenes and any scene with a question still
 open; `v` switches to the whole video and plays on in it (from its start when it is at the end), and back. The render the pane plays is made again for the new version, once.
 
-Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
+Send writes the review row the player's Send writes, into the inbox the review server uses (`reelplanner inbox
+--where` names it): `.reelplanner/inbox/`, or for a quick video in a repo with no set-up `.reelplanner/`, this
+machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and
 act on it. **Watch** opens the player: from a terminal, `reelplanner review --detach` on that video, the page opening in
 your browser; in a cloud session, where that page would be on the container's localhost, it asks Claude to publish the
