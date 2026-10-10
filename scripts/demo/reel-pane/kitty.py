@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""A real kitty, on a virtual display, running Claude Code with the plugin, through all of /reel: the video plays
-in the pane (bigger with z), a comment at a moment (m), a choice answered with a comment on the answer (1, c), one in
-the reviewer's own words (o), the Send card saying what each answer leads to, Send to a waiting session, the
-rebuild (one scene's words edited and plan-diff run, as a revise does), the pane noticing the new version, just
-the changes played, then the whole video (v). The screen is grabbed as it is (ffmpeg x11grab); marks.json says when
-each step began, for cut.py's captions and speeds.
+"""A real kitty, on a virtual display, running Claude Code with the plugin, through a whole review in /reel: the video
+plays in the pane, j and k seek, a choice answered with a comment on the answer, a comment at the moment of the scene
+it is about (m), the Send card saying what each answer leads to, then Changes needed. Nothing stands in for Claude:
+Send hands the review to Claude in this conversation, which files it, edits the scene and rebuilds the video, as the
+plan-to-video skill says; the pane notices the new version and plays just the change. Last, t: full screen, which
+switches Claude Code to its classic layout and back, the session picked up across each restart. The screen is
+grabbed as it is (ffmpeg x11grab); marks.json says when each step began, for cut.py's speeds and compose.py's
+captions.
 
 usage: kitty.py <out-dir> <launcher> <demo-repo>   (DISPLAY names an X display; the launcher starts `claude` there)"""
-import json, os, subprocess, sys, time
+import json, os, re, subprocess, sys, time
 
 OUT, LAUNCH, REPO = sys.argv[1], sys.argv[2], sys.argv[3]
 VIDEO = "videos/l2-upload-resume"
-SCENE = f"{REPO}/{VIDEO}/compositions/frames/09-step-3.html"
 SOCK = f"unix:{OUT}/kitty.sock"
 env = {**os.environ, "LIBGL_ALWAYS_SOFTWARE": "1"}
 
@@ -24,6 +25,16 @@ kitty = subprocess.Popen(
 
 def text():
     return subprocess.run(["kitty", "@", "--to", SOCK, "get-text"], capture_output=True, text=True).stdout
+
+
+def wait_re(pattern, timeout=240):
+    end = time.time() + timeout
+    while time.time() < end:
+        if re.search(pattern, text()):
+            return True
+        time.sleep(0.3)
+    print(f"!! timed out waiting for /{pattern}/", flush=True)
+    return False
 
 
 def wait_for(s, timeout=240):
@@ -75,19 +86,11 @@ key("Return")
 wait_for("playing")
 mark("It plays the video itself: sharp in kitty or Ghostty, with its sound")
 time.sleep(5)
-mark("z: bigger. The pane widens and the review folds away")
-key("z")
-time.sleep(6)
-key("z")
-mark("z again: back")
+mark("k and j: on and back 5 seconds, as the browser player's arrow keys")
+key("k")
 time.sleep(2.5)
-mark("m: a comment at this moment. The video waits, then plays on")
-key("m")
-time.sleep(1.2)
-typed("the billed-twice beat lands well")
-time.sleep(0.6)
-key("Return")
-time.sleep(4)
+key("j")
+time.sleep(3)
 mark("on to the first open choice", speed=6)
 wait_for("stopped at choice 1", 120)
 mark("At each open choice the video stops, and the choice appears under it")
@@ -98,56 +101,70 @@ time.sleep(2.5)
 mark("c: a comment on that answer (filed as the decision's note)")
 key("c")
 time.sleep(1.2)
-typed("if the migration stays one table")
+typed("agreed: one table is enough")
 time.sleep(0.6)
 key("Return")
-time.sleep(4)
-mark("on to the next choice", speed=6)
-wait_for("stopped at choice 2", 180)
-mark("o: an answer in your own words")
 time.sleep(3)
-key("o")
+mark("on to the scene that needs a change", speed=6)
+wait_re(r"1:3[2-9] / 3:36 · playing", 180)
+mark("m: a comment at this moment, on what is on the screen")
+key("m")
 time.sleep(1.2)
-typed("Server id, and log the client key beside it")
+typed("the tag should say what the client does next: part 4 missing, resend it")
 time.sleep(0.8)
 key("Return")
-time.sleep(4)
+time.sleep(3)
+mark("on to the next choice", speed=6)
+wait_for("stopped at choice 2", 180)
+mark("1 takes the recommended option")
+time.sleep(2)
+key("1")
+time.sleep(3)
 mark("on to the last choice", speed=6)
 wait_for("stopped at choice 3", 180)
 mark("1 answers the last choice")
-time.sleep(3)
+time.sleep(2)
 key("1")
-wait_for("Send your review", 30)
+wait_for("Send your review", 60)
 time.sleep(1)
 mark("Send says what each answer leads to: Approve, or Changes needed")
 time.sleep(9)
-# a session waiting on the review, as the skill keeps one: it claims the row Send writes
-waiter = subprocess.Popen(["node", "bin/reelplanner.mjs", "review", "--wait", "--timeout", "600"], cwd=REPO,
-                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(4)
-mark("c: Changes needed. A waiting session claims the review")
+mark("c: Changes needed. The review goes to Claude, in this conversation")
 key("c")
-time.sleep(7)
-# the revise: one scene's words changed, and plan-diff records what changed, as a rebuild does
-mark("Claude revises a scene and rebuilds; the pane notices the new version")
-subprocess.run(["sed", "-i", "s/>part 4 missing</>part 4 missing: resend it</", SCENE])
-subprocess.run(["node", "bin/reelplanner.mjs", "plan-diff", VIDEO], cwd=REPO, stdout=subprocess.DEVNULL)
-wait_for("The new version is ready", 60)
+time.sleep(6)
+# Claude's turn: it claims the review, files it, edits the scene and rebuilds the video. However long it takes,
+# it is played in about 25 seconds
+mark("Claude files the review, edits the scene and rebuilds the video", speed=1)
+working = time.time()
+wait_for("The new version is ready", 3600)
+marks[-1]["speed"] = max(1, round((time.time() - working) / 25))
 time.sleep(4)
-mark("g: watch what changed. First its render for the terminal is made, once", speed=40)
+mark("The pane saw the new version. g: watch what changed (its render for the terminal is made first)", speed=40)
 key("g")
 wait_for("· playing", 900)
-mark("Just the changes: scene 9, the one edited. Answered choices are not stopped at again")
-wait_for("· the end", 120)
+mark("Just the change: the tag Claude edited, from the comment")
+wait_for("· the end", 180)
 time.sleep(1)
-mark("When the changes end, Send again is there: approve, or ask for more")
+mark("When the changes end, Send again: approve now, or ask for more")
 time.sleep(6)
-mark("v: the whole video instead, playing on from where the changes ended")
-key("v")
-time.sleep(9)
+mark("t: full screen. Claude Code switches to its classic layout and picks the conversation up", speed=3)
+key("z")
+time.sleep(1.5)
+key("t")
+wait_for("Switched back to the classic renderer", 120)
+time.sleep(2)
+if "Enter to send · Esc to skip" in text():
+    key("Escape")  # Claude Code asks why you left the fullscreen layout; skipped
+wait_for("· playing", 60)
+mark("The video across the whole terminal, where it was")
+time.sleep(8)
+mark("t again: back beside the conversation", speed=3)
+key("t")
+wait_for("Using flicker-free rendering", 120)
+wait_for("· playing", 60)
+time.sleep(4)
 mark("", stop=True)
 grab.communicate(b"q", timeout=30)
 json.dump(marks, open(f"{OUT}/marks.json", "w"), indent=1)
-waiter.terminate()
 kitty.terminate()
 print("done", flush=True)
