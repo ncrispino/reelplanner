@@ -335,8 +335,10 @@ them word for word, its clock, and its sound on the machine the session runs on 
 stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one
 marked: pick one (its digit), choose **Explain this more**, or answer in your own words (on surfaces with a text field),
 and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
-each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `r` replays the
-stretch, `n` and `b` move between stops. The last stop sums the review up, takes a note for the agent, and sends it,
+each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `j` and `k` go back and on 5
+seconds (the browser player's arrow keys: in a pane the arrows are Claude Code's, scrolling and moving between
+controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch, `n` and `b` move between
+stops. The last stop sums the review up, takes a note for the agent, and sends it,
 approved or with changes asked.
 
 The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
@@ -358,7 +360,11 @@ back on its card), adds a comment to the answer ("Postgres, but only if…"), fi
 `reel record` keeps in the ledger as the reviewer's note. Drawing on the video (a circle, a box around something) is
 the browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
 `z` makes the video bigger: the docked pane asks for most of the terminal's width (a width you dragged it to wins; the
-dock always leaves the conversation some room, so it is wider, not full screen) and the review folds away.
+dock goes to about half the terminal, so it is wider, not full screen) and the review folds away. For the video
+across the whole terminal, start Claude Code in its main-screen layout (`CLAUDE_CODE_NO_FLICKER=0`): the pane opens
+inline above the prompt, the full width and most of the height, the picture as big as its rows allow with the card
+under it, and `z` gives it every row but the prompt's; `z` again brings the review back. The docked pane says so when
+`z` reaches the dock's edge.
 
 The Send card says what each answer leads to. For a plan video, **Approve**: Claude folds your answers and comments
 into the plan and builds it, with no new plan video; the walkthrough comes next. **Changes needed**: Claude revises

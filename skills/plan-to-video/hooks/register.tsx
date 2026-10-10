@@ -238,9 +238,16 @@ const isCloud = async ($: EngineInterface) => (await $.env.get('CLAUDE_CODE_REMO
 // --- the picture --------------------------------------------------------------------------------------
 
 /** The screen's size in cells: as wide as the pane lets it, 16:9 (a cell is half as wide as it is tall). */
-const screenSize = (bodyColumns: number) => {
-  const cols = Math.max(24, Math.min(240, bodyColumns - 1))
-  return { cols, rows: Math.max(6, Math.round((cols * 9) / 32)) }
+/** The picture's box in cells: as wide as the pane, a 16:9 frame (a cell is twice as tall as wide), and no taller
+ * than `room` rows, narrowing to keep the frame when the pane is short (inline above the prompt). */
+const screenSize = (bodyColumns: number, room = Infinity) => {
+  let cols = Math.max(24, Math.min(240, bodyColumns - 1))
+  let rows = Math.max(6, Math.round((cols * 9) / 32))
+  if (rows > room) {
+    rows = Math.max(6, Math.floor(room))
+    cols = Math.max(24, Math.round((rows * 32) / 9))
+  }
+  return { cols, rows }
 }
 
 const toBase64 = (bytes: Uint8Array) => (bytes as unknown as { toBase64(): string }).toBase64()
@@ -266,6 +273,23 @@ let imageRefused = false
 const pictures = new Map<string, { file: string; format: 'rgb'; width: number; height: number; generation: number }>() // the same for an Image
 let imageSize = { width: 0, height: 0 }
 let paneColumns = 0 // the pane's width as last drawn
+let paneRows = 0 // and its rows: a docked pane is floor to ceiling, an inline one what it asked for
+let termRows = 0 // the terminal's rows, as a drawing last saw them
+let inlinePane = false // the pane as last drawn sat inline above the prompt (the main-screen layout), not docked
+
+/** The rows the picture may take: bigger (z), all but the header and the keys; else room left for the card under it. */
+const pictureRoom = (big: boolean) => (paneRows ? Math.max(6, paneRows - (big ? 4 : 14)) : Infinity)
+
+/** How the pane opens. Docked beside the transcript, `columns` widens it (z), as far as the dock goes; inline above
+ * the prompt (the main-screen layout), it spans the terminal and `rows` makes it tall: most of the screen, all of it
+ * but the prompt with z. The dock ignores `rows`, the inline block `columns`. */
+const paneArgs = (big: boolean, focus: boolean, termCols = 0) => ({
+  id: PANE,
+  title: 'reelplanner',
+  ...(focus ? { focus: true as const } : {}),
+  ...(big && termCols ? { columns: Math.max(100, termCols - 24) } : {}),
+  ...(termRows ? { rows: Math.max(12, big ? termRows - 5 : Math.round(termRows * 0.7)) } : {}),
+})
 // where a comment being written was begun, and what plays when it is saved (null: the video was still)
 let commentAt: { key: string; t: number; resume: { from: number; to: number }[] | null } | null = null
 // the branch clip an answer started: a pause inside it resumes the clip, then the video from where the question resumes
@@ -285,9 +309,15 @@ async function stopPlayback($: EngineInterface, status: ReelplannerPlayback['sta
  * straight to the screen (blit, no redraw); the time is written a few times a second, for the clock and the
  * captions.
  */
-async function play($: EngineInterface, v: Video, stretches: { from: number; to: number }[], size: { cols: number; rows: number }): Promise<void> {
+async function play(
+  $: EngineInterface,
+  v: Video,
+  stretches: { from: number; to: number }[],
+  size: { cols: number; rows: number },
+  opts: { still?: boolean } = {},
+): Promise<void> {
   try {
-    await playing($, v, stretches, size)
+    await playing($, v, stretches, size, opts)
   } catch (err) {
     // reel-frames could not start (an installed reelplanner from before it), or the stream broke
     await update($, playback, p =>
@@ -296,7 +326,13 @@ async function play($: EngineInterface, v: Video, stretches: { from: number; to:
   }
 }
 
-async function playing($: EngineInterface, v: Video, stretches: { from: number; to: number }[], size: { cols: number; rows: number }) {
+async function playing(
+  $: EngineInterface,
+  v: Video,
+  stretches: { from: number; to: number }[],
+  size: { cols: number; rows: number },
+  opts: { still?: boolean },
+) {
   await stopPlayback($)
   const id = ++current
   const root = await $.session.root()
@@ -340,6 +376,7 @@ async function playing($: EngineInterface, v: Video, stretches: { from: number; 
     // the frames in a folder of the video's own (renders/ is left out of git), kept after the stretch: a redraw shows the last
     if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)), '--dir', `${v.dir}/renders/frames`)
     if (mode === 'jpeg') args.push('--width', '384', '--fps', '3', '--no-audio')
+    else if (opts.still) args.push('--no-audio')
     await update($, playback, p => (p ? { ...p, status: 'playing' as const, t: from, progress: undefined } : p))
     for await (const line of lines(args)) {
       const [kind, t, rest, gen] = line.split(' ')
@@ -372,7 +409,9 @@ async function playing($: EngineInterface, v: Video, stretches: { from: number; 
     await update($, playback, p => (p ? { ...p, t: to } : p))
   }
   stream = null
-  await update($, playback, p => (p ? { ...p, status: 'ended' as const, t: until } : p))
+  // a still frame (a seek while paused) stays paused where it was put, not at the end of its moment
+  const at = opts.still ? (stretches[0]?.from ?? until) : until
+  await update($, playback, p => (p ? { ...p, status: opts.still ? ('paused' as const) : ('ended' as const), t: at } : p))
 }
 
 /** Play up to stop `i` of the video open in the pane (the summary: to the end). */
@@ -627,7 +666,7 @@ async function keys($: EngineInterface, key: string) {
   try {
     const moved = await $.ui.focus({ requestId: PANE, key })
     if (!moved.deny) return
-    await $.ui.open({ id: PANE, title: 'reelplanner', focus: true })
+    await $.ui.open(paneArgs(await read($, theater), true))
     await $.ui.focus({ requestId: PANE, key })
   } catch {
     // no surface holds keys here (a remote one): nothing to move
@@ -646,7 +685,8 @@ async function openPane($: EngineInterface, target?: Target, asked = true) {
     await update($, open, () => null)
   }
   // asked (the command, a press): the pane takes the keys, so its hotkeys work at once; Esc gives them back
-  const opened = await $.ui.open(asked ? { id: PANE, title: 'reelplanner', focus: true } : { id: PANE, title: 'reelplanner' })
+  const big = await read($, theater)
+  const opened = await $.ui.open(paneArgs(big, asked))
   if (target && asked) {
     const root = await $.session.root()
     const o = await read($, open)
@@ -656,8 +696,14 @@ async function openPane($: EngineInterface, target?: Target, asked = true) {
       // a terminal without kitty graphics: the browser player, where the video is sharp (the pane says how to have it here)
       void openPlayer($, v)
     } else if (v) {
-      // it plays as it opens, sized to the pane once the pane has drawn (its width is known then)
-      $.clock.after(250, () => void playTo($, v, 0, screenSize(paneColumns || 80)))
+      // it plays as it opens, sized to the pane once the pane has drawn (its width is known then). Inline, a pane
+      // opened before any drawing saw the terminal's height took the default third: it opens to its rows first
+      const sized = Boolean(termRows)
+      const start = () => void playTo($, v, 0, screenSize(paneColumns || 80, pictureRoom(big)))
+      $.clock.after(250, () => {
+        if (inlinePane && !sized && termRows) void $.ui.open(paneArgs(big, true)).then(() => $.clock.after(250, start))
+        else start()
+      })
     }
   }
   return opened
@@ -759,6 +805,7 @@ export const register: Register = on => {
   }).catch(($, e, next) => next(e))
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    termRows = e.viewport?.rows ?? termRows
     const offer = await read($, ready)
     if (!offer || e.props.hasSurvey) return next(e)
     const plan = (await read($, library)).find(p => p.slug === offer.slug)
@@ -793,6 +840,9 @@ export const register: Register = on => {
     const Input = 'Input' in els ? els.Input : null
     const width = Math.max(30, e.props.bodyColumns)
     paneColumns = e.props.bodyColumns
+    paneRows = e.props.scroll.bodyRows
+    inlinePane = e.props.placement === 'inline'
+    termRows = e.viewport?.rows ?? termRows
     const root = await $.session.root()
     const shown = await read($, open)
     const working = await read($, busy)
@@ -848,13 +898,13 @@ export const register: Register = on => {
     const cloud = await isCloud($)
     const pb = await read($, playback)
     const mine = pb?.key === v.key ? pb : null
+    const big = await read($, theater)
     // the size the picture plays at; a still picture follows the pane's width (bigger, smaller)
-    const size = mine && (mine.status === 'playing' || mine.status === 'rendering') ? { cols: mine.cols, rows: mine.rows } : screenSize(width)
+    const size = mine && (mine.status === 'playing' || mine.status === 'rendering') ? { cols: mine.cols, rows: mine.rows } : screenSize(width, pictureRoom(big))
     const using = Boolean(mine) // the video has been played here: moving between stops plays on
     const revision = isRevision(map)
     const only = revision && (await read($, onlyChanges))[v.key] !== false
     const trimmed = (list: { from: number; to: number }[]) => (only ? changedOnly(map, list, id => done(id)) : list)
-    const big = await read($, theater)
     const go = async (to: number, from?: number, branch?: Branch) => {
       let i = Math.max(0, Math.min(stops.length, to))
       const start = from ?? stretch(map, v.which, i).from
@@ -899,6 +949,36 @@ export const register: Register = on => {
     // a terminal without kitty graphics watches it in the browser player
     const inBrowser = mode === 'browser'
     const total = map.totalSeconds ?? 0
+    /** j and k: back or on 5 seconds, as the browser player's arrow keys. Playing, it plays on from there (just the
+     * changes still skip what did not change); paused, it shows the frame there and stays paused. */
+    const seek = async (by: number) => {
+      if (inBrowser) return
+      const t0 = mine?.t ?? stretch(map, v.which, stop).from
+      let t1 = Math.max(0, Math.min(total - 0.1, t0 + by))
+      // the stop whose stretch holds the moment. Between a choice and where the video resumes after it are the
+      // answers' own clips: going on lands where it resumes, going back just before the choice
+      let i = stops.length
+      for (let j = 0; j <= stops.length; j++) {
+        const s = stretch(map, v.which, j)
+        if (t1 >= s.to && j < stops.length) continue
+        if (t1 >= s.from) {
+          i = j
+        } else if (by > 0 || j === 0) {
+          i = j
+          t1 = s.from
+        } else {
+          const before = stretch(map, v.which, j - 1)
+          i = j - 1
+          t1 = Math.max(before.from, before.to - 0.5)
+        }
+        break
+      }
+      if (i !== stop) await update($, open, o => (o ? { ...o, stop: i } : o))
+      const s = stretch(map, v.which, i)
+      branchOf = null
+      if (playing || rendering) return void play($, v, trimmed([{ from: t1, to: s.to }]), size)
+      return void play($, v, [{ from: t1, to: Math.min(s.to, t1 + 0.2) }], size, { still: true })
+    }
     /** v: switch between just the changes and the whole video, and play on in the new mode, as the browser
      * player's toggle does: from here, or from the start when the video is at its end. */
     const switchOnly = async () => {
@@ -976,7 +1056,9 @@ export const register: Register = on => {
     } else if (e.surface === 'terminal') {
       const tt = $.ui.resolve(e)
       picture = (
-        <tt.Image key="screen" source={pictures.get(v.key) ?? { rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
+        <Box justifyContent="center">
+          <tt.Image key="screen" source={pictures.get(v.key) ?? { rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
+        </Box>
       )
     } else {
       const svg = mine ? await read($, flip) : null
@@ -1109,11 +1191,10 @@ export const register: Register = on => {
     const toggleBig = async () => {
       const next = !big
       await update($, theater, () => next)
-      const termCols = e.viewport?.columns ?? 200
-      await $.ui.open({ id: PANE, title: 'reelplanner', focus: true, ...(next ? { columns: Math.max(100, termCols - 24) } : {}) })
+      await $.ui.open(paneArgs(next, true, e.viewport?.columns ?? 200))
       if (playing && mine) {
         const from = mine.t
-        $.clock.after(300, () => void play($, v, onFrom(from), screenSize(paneColumns || width)))
+        $.clock.after(300, () => void play($, v, onFrom(from), screenSize(paneColumns || width, pictureRoom(next))))
       }
     }
     const transport = inBrowser ? (
@@ -1143,6 +1224,12 @@ export const register: Register = on => {
             </Button>
             <Button key="replay" plain hotkey="r" onPress={() => playTo($, v, stop, size)}>
               Replay
+            </Button>
+            <Button key="back5" plain hotkey="j" onPress={() => seek(-5)}>
+              −5s
+            </Button>
+            <Button key="on5" plain hotkey="k" onPress={() => seek(5)}>
+              +5s
             </Button>
             <Button key="prev" plain hotkey="b" onPress={() => go(stop - 1)}>
               Back
@@ -1279,6 +1366,9 @@ export const register: Register = on => {
         </Box>
         {stage}
         {big ? dim(`Your review: ${count(log.length, 'item')} · z shows it again`) : review}
+        {big && e.props.placement === 'dock'
+          ? dim('The dock goes no wider than this. For the video across the whole terminal, start Claude Code with CLAUDE_CODE_NO_FLICKER=0: the pane opens above the prompt, and z gives it all but the prompt.')
+          : null}
         {big ? null : hints}
       </Box>
     )
@@ -1312,7 +1402,7 @@ export const register: Register = on => {
         await update($, open, o => (o ? { ...o, stop: i } : o))
         const fresh = await loadMap($, v.dir)
         const list = [{ from: 0, to: stretch(fresh ?? map, v.which, i).to }]
-        void play($, v, isRevision(fresh ?? map) ? changedOnly(fresh ?? map, list, id => done(id)) : list, screenSize(paneColumns || width))
+        void play($, v, isRevision(fresh ?? map) ? changedOnly(fresh ?? map, list, id => done(id)) : list, screenSize(paneColumns || width, pictureRoom(big)))
       }
       const after = lastSent ? (
         <Box borderStyle="round" borderColor={rebuilt || walkReady ? 'success' : 'claude'} flexDirection="column" paddingX={1}>

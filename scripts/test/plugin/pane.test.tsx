@@ -387,6 +387,7 @@ test('z makes the video bigger: the pane asks for most of the width and the revi
   await ui.press({ key: 'big' })
   expect(opened[opened.length - 1]).toMatchObject({ id: 'reelplanner', columns: expect.any(Number) })
   expect(await ui.find({ type: 'Text', text: /z shows it again/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /CLAUDE_CODE_NO_FLICKER=0/ })).toBeDefined() // docked: how to have it wider
   expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // the choice stays
   await ui.press({ key: 'big' })
   expect(opened[opened.length - 1]).not.toHaveProperty('columns')
@@ -429,5 +430,41 @@ test('after just the changes ran past the last choice, v plays the whole video o
   await ui.press({ key: 'only' })
   // on from 0:45, in q2's stretch, not from the last one's start (0:55)
   expect(plays().pop()).toEqual(['45', '50'])
+  await ui.press({ key: 'library' })
+})
+
+test('j and k go back and on 5 seconds: paused, a still frame there; past a choice, where it resumes, and back before it', async ($, on) => {
+  const { spawned } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'play' }) // to choice 1, at 0:20
+  const plays = () => spawned.filter(a => !a.includes('--render'))
+  await ui.press({ key: 'back5' })
+  expect(stretchOf(plays().pop() ?? [])).toEqual(['15', '15.2'])
+  expect(plays().pop()).toEqual(expect.arrayContaining(['--no-audio']))
+  expect(await ui.find({ type: 'Text', text: /0:15 \/ 1:30 · paused/ })).toBeDefined()
+  // 0:20 is choice 1, where its answers' own clips begin: going on, on to where the video resumes, 0:30
+  await ui.press({ key: 'on5' })
+  expect(stretchOf(plays().pop() ?? [])).toEqual(['30', '30.2'])
+  await ui.press({ key: 'back5' }) // 0:25 again, going back: just before choice 1
+  expect(stretchOf(plays().pop() ?? [])).toEqual(['19.5', '19.7'])
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
+test('inline above the prompt (the main-screen layout), the pane asks for most of the rows, and z for all but the prompt', async ($, on) => {
+  const { opened } = world(on, { kitty: true })
+  const ui = await $.ui.mount({
+    ...pane('terminal'),
+    props: { title: 'reelplanner', isFocused: true, bodyColumns: 200, placement: 'inline', scroll: { offset: 0, bodyRows: 42, contentRows: 42 }, view: {} } as never,
+    viewport: { columns: 200, rows: 60, isFullscreen: false },
+  })
+  await ui.press({ key: `open-${SLUG}` })
+  expect(opened[opened.length - 1]).toMatchObject({ id: 'reelplanner', rows: 42 })
+  // the picture keeps its 16:9 frame in the rows it has, room left for the card under it
+  expect(await ui.find({ type: 'Image', key: 'screen' })).toMatchObject({ props: expect.objectContaining({ columns: 100, rows: 28 }) })
+  await ui.press({ key: 'big' })
+  expect(opened[opened.length - 1]).toMatchObject({ rows: 55 })
+  expect(await ui.find({ type: 'Image', key: 'screen' })).toMatchObject({ props: expect.objectContaining({ rows: 38 }) })
   await ui.press({ key: 'library' })
 })
