@@ -44,6 +44,8 @@ The narration needs a voice. Choose one before you run `reelplanner setup`:
   Run `reelplanner setup --hosted-voice` instead: it skips the local voice and prints two lines to put in
   `~/.reelplanner/.env` ([the voice](#the-voice) says more).
 
+In Claude Code, [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
+
 The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or uninstalling: [install details](./docs/reference.md#install).
 Installed it before as reelplanning, its name until October 2026? Run `npm rm -g reelplanning` first: npm will not
 install over its commands ([moving over](./docs/reference.md#install)).

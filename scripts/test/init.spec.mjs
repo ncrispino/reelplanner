@@ -2,8 +2,9 @@
 // Setting a repo up (`reel init`) and its shared stage (`reel stage`), against scratch repos:
 //   reel init --agent   — the headless command config.json gets: Claude Code's sandboxed auto mode (the template's),
 //                         Codex's `codex exec` in its workspace-write sandbox, or none; an unknown agent is refused
-//   reel init (no flag) — picks the agent it runs inside (CLAUDECODE, CODEX_THREAD_ID), else the first of `claude`
-//                         and `codex` on PATH, else none, and prints what it picked and why
+//   reel init (no flag) — none, inside an agent or not: reviews wait in the inbox; it names the --agent that would
+//                         start one headless (the agent it runs inside, else the first of `claude` and `codex` on PATH)
+//   reel init --agent on a repo set up already — changes config.json's agent and nothing else; without --agent, refused
 //   reel init over setup files only — a .reelplanner/ with no decisions.json (.env, config.json, .gitignore, made for
 //                         the hosted voice before any plan) is set up over: .env kept, config.json merged (its keys
 //                         win; its agent unless --agent names one), .gitignore the template's plus its own lines; a
@@ -93,7 +94,7 @@ try {
     const after = (f) => { try { return readFileSync(join(rp, f), "utf8"); } catch { return null; } };
     ok("reel init over setup files only: it proceeds, and says what it kept", si.code === 0 && /✓ set up over the setup files already there \(no decision log yet\): kept \.env/.test(si.out) && /merged your config\.json into the template's \(yours kept: narration, pr\)/.test(si.out), si.out);
     ok("….env kept byte for byte", after(".env") === KEYLINE, after(".env"));
-    ok("…config.json: the template's, with your keys winning (narration added, pr.issue yours, the agent the detected one: none here)",
+    ok("…config.json: the template's, with your keys winning (narration added, pr.issue yours, the agent none, the default)",
       si.config?.narration?.tts === "openrouter" && si.config.pr.issue === "required" && si.config.maintainers && si.config.agent?.command === "" && si.config["//narration"] === template["//narration"], JSON.stringify(si.config));
     ok("….gitignore: the template's (its .env line too), with your own line kept", after(".gitignore")?.startsWith(readFileSync(join(ROOT, "templates/reelplanner/gitignore"), "utf8")) && after(".gitignore").split("\n").includes("my-notes/") && after(".gitignore").split("\n").includes(".env"), after(".gitignore"));
     ok("…and the decision log is there now", !!after("decisions.json") && !!after("spec.md") && !!after("theme/frame.md"));
@@ -122,19 +123,41 @@ try {
     ok("…a config.json that is not JSON: refused, naming it, and nothing written", sb.code === 1 && /config\.json is not valid JSON/.test(sb.out) && readdirSync(join(repo4, ".reelplanner")).join() === "config.json", sb.out);
   }
 
-  // detected: the agent it runs in first, then PATH
+  // no --agent: none, wherever it runs; the line names the --agent to pass (the agent it runs in first, then PATH)
+  const noneSaid = (r, flag) => r.code === 0 && r.config?.agent?.command === "" && new RegExp(`✓ agent: none \\(the default\\): reviews sent while no session waits stay in the inbox for the next session; --agent ${flag} starts one headless`).test(r.out);
   const inClaude = init("in-claude", [], { CLAUDECODE: "1", PATH: onlyCodex });
-  ok("init inside Claude Code (CLAUDECODE): claude, even with only `codex` on PATH", inClaude.config?.agent?.command === template.agent.command && /agent: claude \(running inside Claude Code\)/.test(inClaude.out), inClaude.out);
+  ok("init inside Claude Code (CLAUDECODE): none, naming --agent claude, even with only `codex` on PATH", noneSaid(inClaude, "claude"), inClaude.out);
   const inCodex = init("in-codex", [], { CODEX_THREAD_ID: "t-1", PATH: both });
-  ok("init inside Codex (CODEX_THREAD_ID): codex, even with `claude` on PATH", inCodex.config?.agent?.command === CODEX_COMMAND && /agent: codex \(running inside Codex\)/.test(inCodex.out), inCodex.out);
+  ok("init inside Codex (CODEX_THREAD_ID): none, naming --agent codex, even with `claude` on PATH", noneSaid(inCodex, "codex"), inCodex.out);
   const pathBoth = init("path-both", [], { PATH: both });
-  ok("init outside any agent, both on PATH: claude, the tested one", pathBoth.config?.agent?.command === template.agent.command && /`claude` is on PATH/.test(pathBoth.out), pathBoth.out);
+  ok("init outside any agent, both on PATH: none, naming claude, the tested one", noneSaid(pathBoth, "claude"), pathBoth.out);
   const pathCodex = init("path-codex", [], { PATH: onlyCodex });
-  ok("init outside any agent, only `codex` on PATH: codex", pathCodex.config?.agent?.command === CODEX_COMMAND && /`codex` is on PATH/.test(pathCodex.out), pathCodex.out);
+  ok("init outside any agent, only `codex` on PATH: none, naming codex", noneSaid(pathCodex, "codex"), pathCodex.out);
   const nothing = init("nothing", [], {});
-  ok("init with no agent anywhere: none, and says so", nothing.config?.agent?.command === "" && /agent: none \(neither/.test(nothing.out), nothing.out);
-  const forced = init("forced", ["--agent", "none"], { CLAUDECODE: "1" });
-  ok("init --agent overrides what it detects", forced.config?.agent?.command === "", forced.out);
+  ok("init with no agent anywhere: none, naming both", noneSaid(nothing, "claude\\|codex"), nothing.out);
+  ok("init with no --agent: the note in config.json says how to start one later", /reel init <repo> --agent claude/.test(nothing.config?.agent?.["//"] || ""), nothing.config?.agent?.["//"]);
+  const forced = init("forced", ["--agent", "claude"], { CLAUDECODE: "1" });
+  ok("init --agent claude inside Claude Code: the template's command", forced.config?.agent?.command === template.agent.command && /✓ agent: claude \(--agent\)/.test(forced.out), forced.out);
+
+  // a repo set up already: --agent changes config.json's agent alone (how the headless run is turned on later)
+  {
+    const cfg = join(nothing.repo, ".reelplanner/config.json"), dec = join(nothing.repo, ".reelplanner/decisions.json");
+    const mine = { ...JSON.parse(readFileSync(cfg, "utf8")), narration: { tts: "openrouter" } };
+    writeFileSync(cfg, JSON.stringify(mine, null, 2) + "\n");
+    const decBefore = readFileSync(dec, "utf8"), list = () => readdirSync(join(nothing.repo, ".reelplanner")).sort().join();
+    const filesBefore = list();
+    const on = init("nothing", ["--agent", "claude"]);
+    ok("set up already, --agent claude: the template's command, the rest of config.json kept, nothing else touched",
+      on.code === 0 && on.config?.agent?.command === template.agent.command && on.config.narration?.tts === "openrouter"
+        && readFileSync(dec, "utf8") === decBefore && list() === filesBefore && /only its agent changed/.test(on.out) && /✓ agent: claude \(--agent\): a review sent while no session waits starts `claude`/.test(on.out), on.out);
+    const off = init("nothing", ["--agent", "none"]);
+    ok("…and --agent none turns it off again", off.code === 0 && off.config?.agent?.command === "" && off.config.narration?.tts === "openrouter", off.out);
+    const plain = init("nothing", []);
+    ok("…without --agent: refused, naming --agent", plain.code === 1 && /exists already/.test(plain.out) && /--agent claude\|codex\|none` changes only its headless command/.test(plain.out), plain.out);
+    writeFileSync(cfg, "{ not json");
+    const broken = init("nothing", ["--agent", "claude"]);
+    ok("…a config.json that is not JSON: refused, and left as it was", broken.code === 1 && /not valid JSON/.test(broken.out) && readFileSync(cfg, "utf8") === "{ not json", broken.out);
+  }
   ok("detectAgent: Codex's sandboxed shell (CODEX_SANDBOX_NETWORK_DISABLED) counts as inside Codex", detectAgent({ CODEX_SANDBOX_NETWORK_DISABLED: "1", PATH: empty }).agent === "codex");
 
   // --help prints the usage and runs nothing, in an empty folder that must stay empty

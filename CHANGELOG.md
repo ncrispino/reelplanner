@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+- **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
+  whenever a review was sent with no session waiting; Claude Code's auto mode refused that `reel init` in a
+  person's first session, as an agent setting itself up to start unattended. `reel init` now writes none: the session that ran it is an
+  agent already, and a review sent while none waits stays in the inbox for the next one. `--agent claude|codex`
+  turns the headless run on, and now works in a repo set up already too, changing `config.json`'s agent and nothing
+  else (`--agent none` turns it off); `init` names the one to pass, the agent it runs inside.
+- **Allow reelplanner's commands once, in Claude Code.** The README, docs/agents.md (a Claude Code section) and
+  `setup` (when `claude` is on PATH and no rule names reelplanner) say how: the allow rules `Bash(reelplanner:*)`
+  and `Bash(reel:*)`, in `/permissions` or `~/.claude/settings.json`, which Claude Code checks before auto mode's
+  classifier. The skill runs each command in a call of its own (a chain like `reel new-plan … && reel check …` is
+  judged by its every part), says what a command will write into the repo before running it, and, when one is
+  stopped, names the two rules and `/permissions` → Recently denied, and never edits the settings itself.
+- **A whole session on a fresh machine.** `scripts/release/ec2-fresh.sh --shell` starts an EC2 machine with the
+  package copied over and runs nothing, for a session tried by hand (Claude Code logged in, the README's Install,
+  a plan and its review); `--hours` sets when it shuts itself down (2 by default).
+- **Fresh eyes and the guide's check get a browser on an install.** `playwright-core` was a development
+  dependency, so an installed reelplanner had none: fresh eyes' pictures lacked the player's captions and controls,
+  and the guide was not opened in a browser. It is a dependency now, and with no Playwright browser it drives the
+  Chrome headless shell `setup` installs for HyperFrames.
+- **Finish no longer counts an approval as a comment.** With nothing said, the Finish panel said "Your 1 comment
+  goes with it": the approval it had picked is kept as an annotation, and the panel counted it.
+
 - **A faster first `setup`.** On Linux, whisper.cpp is whisper.cpp's own prebuilt build (v1.9.5, x64 or arm64, its
   checksum checked) instead of compiled from `main`: a second instead of two minutes on two cores, and no compiler
   installed. Where it cannot run (older than Ubuntu 22.04's glibc) it is built from source, pinned to v1.9.5, on every

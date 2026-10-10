@@ -17,8 +17,10 @@ export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..")
 
 /**
  * A Chromium for Playwright to drive, or undefined to let Playwright resolve its own.
- * CHROMIUM_PATH wins; then the usual browser stores, newest build first. Returning undefined is a
- * valid answer, not a failure — with `npx playwright install chromium` the default works.
+ * CHROMIUM_PATH wins; then the usual browser stores, newest build first; then the Chrome headless shell `setup`
+ * installed for HyperFrames (an installed reelplanner has no Playwright browser of its own: without it, fresh eyes and
+ * the guide's check had no browser). Returning undefined is a valid answer, not a failure — with
+ * `npx playwright install chromium` the default works.
  */
 export function chromiumPath() {
   if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH;
@@ -39,6 +41,26 @@ export function chromiumPath() {
     const num = (d) => parseInt(d.replace(/\D+/g, ""), 10) || 0;
     const builds = readdirSync(store).filter((d) => d.startsWith("chromium")).sort((a, b) => num(b) - num(a) || (a < b ? -1 : a > b ? 1 : 0));
     for (const b of builds) for (const rel of inside) { const p = join(store, b, rel); if (existsSync(p)) return p; }
+  }
+  return hyperframesChrome();
+}
+
+/**
+ * The Chrome headless shell HyperFrames uses, as setup finds it (scripts/setup.sh, dry_browser): the two variables
+ * HyperFrames reads, then its cache and Puppeteer's (<cache>/chrome-headless-shell/<platform>-<version>/
+ * chrome-headless-shell-<platform>/chrome-headless-shell), newest version first. Undefined when there is none.
+ */
+export function hyperframesChrome(env = process.env, home = homedir()) {
+  for (const p of [env.HYPERFRAMES_BROWSER_PATH, env.PRODUCER_HEADLESS_SHELL_PATH]) if (p && existsSync(p)) return p;
+  const exe = process.platform === "win32" ? "chrome-headless-shell.exe" : "chrome-headless-shell";
+  const ver = (d) => (d.match(/\d+(\.\d+)*$/)?.[0] || "0").split(".").map(Number);
+  const newer = (a, b) => { const x = ver(a), y = ver(b); for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] || 0) !== (y[i] || 0)) return (y[i] || 0) - (x[i] || 0); return 0; };
+  for (const top of [join(home, ".cache/hyperframes/chrome/chrome-headless-shell"), join(home, ".cache/puppeteer/chrome-headless-shell")]) {
+    let builds = []; try { builds = readdirSync(top).sort(newer); } catch { continue; }
+    for (const b of builds) {
+      let inner = []; try { inner = readdirSync(join(top, b)).filter((d) => d.startsWith("chrome-headless-shell")); } catch { continue; }
+      for (const d of inner) { const p = join(top, b, d, exe); if (existsSync(p)) return p; }
+    }
   }
   return undefined;
 }

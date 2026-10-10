@@ -203,6 +203,16 @@ try {
   const u4 = await runIt(["bash", join(ROOT, "scripts", "setup.sh"), "--hosted-voice", "--local-voice"]);
   ok("setup --hosted-voice --local-voice: a usage error (exit 2), nothing run", u4.code === 2 && /pick one/.test(u4.out), u4.out);
 
+  // ── Claude Code on PATH and no allow rule for reelplanner: setup names the two rules once (and writes none) ──
+  const CLAUDE_BIN = join(tmp, "path-claude"); mkdirSync(CLAUDE_BIN); exe(join(CLAUDE_BIN, "claude"), "#!/bin/sh\nexit 0\n");
+  const ALLOW = /^→ Claude Code: allow reelplanner's commands once, .*\n {2}Bash\(reelplanner:\*\) and Bash\(reel:\*\) in \/permissions, or under permissions\.allow in ~\/\.claude\/settings\.json$/m;
+  const withClaude = { PATH: `${CLAUDE_BIN}:${process.env.PATH}`, HYPERFRAMES_PYTHON: NOPY, HOME: home("home-claude", false) };
+  const a1 = await setup([], withClaude);
+  ok("setup --dry-run with `claude` on PATH and no rule: names Bash(reelplanner:*) and Bash(reel:*), and where they go", ALLOW.test(a1.out) && !existsSync(join(withClaude.HOME, ".claude")), a1.out);
+  mkdirSync(join(withClaude.HOME, ".claude")); writeFileSync(join(withClaude.HOME, ".claude", "settings.json"), JSON.stringify({ permissions: { allow: ["Bash(reelplanner *)", "Bash(reel *)"] } }));
+  const a2 = await setup([], withClaude);
+  ok("…with a rule for it in ~/.claude/settings.json (either form): not said", !/Claude Code: allow/.test(a2.out) && /^✓ Chrome headless /m.test(a2.out), a2.out);
+
   // ── setup --dry-run downloads no Chrome: with none anywhere it says it would; one in HyperFrames' cache is found ──
   // PATH: the system's commands, each linked into a folder of its own, but for a Chrome or Chromium (a CI runner has
   // /usr/bin/google-chrome)

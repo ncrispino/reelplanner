@@ -245,9 +245,12 @@ reelplanner is meant for any coding agent, and most of the loop does not care wh
 Claude Code, has basic support for Codex, and is untested elsewhere: [`agents.md`](./agents.md) has the table, and
 the open work a contributor can pick up for each agent.
 
-**Which command:** `reel init` writes `agent.command` for the agent it runs inside (Claude Code sets `CLAUDECODE`,
-Codex `CODEX_THREAD_ID`), else the first of `claude` and `codex` on PATH, else none, and prints what it picked;
-`--agent claude|codex|none` picks another (`scripts/lib/agents.mjs`, checked by `scripts/test/init.spec.mjs`).
+**Which command:** none unless asked for. `reel init` leaves `agent.command` empty, so a review sent while no session
+waits stays in the inbox for the next one: the session that ran `init` is an agent already, and an unattended run
+started by a press of Send is yours to turn on. `--agent claude|codex` writes that agent's command, in a repo set up
+already too (it then changes `config.json`'s agent and nothing else), and `--agent none` empties it again. `init`
+names the `--agent` to pass: the agent it runs inside (Claude Code sets `CLAUDECODE`, Codex `CODEX_THREAD_ID`), else
+the first of `claude` and `codex` on PATH (`scripts/lib/agents.mjs`, checked by `scripts/test/init.spec.mjs`).
 
 **Works with any agent:** the skill (installed for the agents you pick in `npx skills add`); every `reelplanner` and `reel` command; the local review page and its Finish panel; the inbox and `review --wait`; the review server starting `agent.command` on a review when no session waits (the prompt is appended as the last argument, with no shell, and names no Claude-only tool: `codex exec <prompt>` and `opencode run <prompt>` take it the same way); and the notifications, which the server sends itself when the run ends.
 

@@ -40,6 +40,7 @@ s = await state(p);
 ok(s.open && s.title === "Finish your review", `Finish opens the panel — "${s.title}"`);
 ok(s.pressed.join() === "approve" && s.verdict === "approve" && s.approves === 1, "with nothing said, it offers Approve, and the review says approve");
 ok(!/just saved/.test(s.lede), "and it does not claim a file was downloaded when none was");
+ok(!/comment/.test(s.lede), `and counts no comment: the approval it holds is not one — "${s.lede}"`);
 await p.close();
 
 // 2. a comment first: Finish offers Request changes; switching is one click either way
