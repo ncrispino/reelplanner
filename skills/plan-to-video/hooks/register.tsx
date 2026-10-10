@@ -906,10 +906,16 @@ export const register: Register = on => {
       await update($, onlyChanges, o => ({ ...o, [v.key]: next }))
       if (inBrowser) return
       const atEnd = !mine || mine.t >= total - 0.5
-      const i = atEnd ? (next ? nextOpen(0) : 0) : stop
+      // the stop whose stretch the video is in (after just the changes ran past several, not the one it stopped at)
+      let here = stop
+      for (let j = 0; mine && j <= stops.length; j++) {
+        const s = stretch(map, v.which, j)
+        if (mine.t >= s.from && mine.t < s.to - 0.2) here = j
+      }
+      const i = atEnd ? (next ? nextOpen(0) : 0) : next ? nextOpen(here) : here
       if (i !== stop) await update($, open, o => (o ? { ...o, stop: i } : o))
       const s = stretch(map, v.which, i)
-      const from = atEnd ? (next ? 0 : s.from) : mine.t > s.from && mine.t < s.to - 0.2 ? mine.t : s.from
+      const from = atEnd ? (next ? 0 : s.from) : mine.t >= stretch(map, v.which, here).from && mine.t < s.to - 0.2 ? mine.t : s.from
       const list = [{ from, to: s.to }]
       branchOf = null
       void play($, v, next ? changedOnly(map, list, id => done(id)) : list, size)

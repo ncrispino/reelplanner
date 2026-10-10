@@ -15,6 +15,8 @@
 #
 # usage: scripts/demo/reel-pane/run.sh [kitty|review] [out.mp4]   needs tmux, ffmpeg, python3 with pyte and
 #                                                                Pillow, and a `claude` that is signed in
+#
+# The README's GIF (docs/media/reel-pane.gif) is the kitty mp4 through gif.sh.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 HERE="$ROOT/scripts/demo/reel-pane"

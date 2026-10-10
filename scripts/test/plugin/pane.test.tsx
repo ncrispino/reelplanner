@@ -45,11 +45,11 @@ const walkMap = {
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
 function world(
   on: On,
-  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean } = {},
+  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean; changed?: number[] } = {},
 ) {
   // a revision: only frame 3's scene changed since the last build
   const map = opts.revised
-    ? { ...planMap, changes: { changedFrames: [3], changedSeconds: 35, totalSeconds: 90 },
+    ? { ...planMap, changes: { changedFrames: opts.changed ?? [3], changedSeconds: 35, totalSeconds: 90 },
         frames: planMap.frames.map((f, i) => ({ ...f, durationSeconds: [15, 30, 35, 10][i] })) }
     : planMap
   const files = new Map<string, string>([
@@ -407,5 +407,27 @@ test('just the changes goes past choices already answered, and Back still reache
   const last = spawned.filter(a => !a.includes('--render')).pop() ?? []
   // what plays on to q2 is just the changes: frame 3, which changed and holds q2, from 0:45 to its stop at 0:50
   expect(stretchOf(last)).toEqual(['45', '50'])
+  await ui.press({ key: 'library' })
+})
+
+test('after just the changes ran past the last choice, v plays the whole video on from where they ended', async ($, on) => {
+  // only frame 2 (0:15 to 0:45) changed: watching what changed, with every choice answered, ends at 0:45
+  const { spawned, rebuild } = world(on, { kitty: true, revised: true, changed: [2] })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'opt-b' })
+  await ui.press({ key: 'opt-a' })
+  await ui.press({ key: 'changes' })
+  rebuild()
+  await ui.press({ key: 'library' })
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'watch-new' })
+  const plays = () => spawned.filter(a => !a.includes('--render')).map(stretchOf)
+  expect(plays().pop()).toEqual(['15', '45'])
+  await ui.press({ key: 'only' })
+  // on from 0:45, in q2's stretch, not from the last one's start (0:55)
+  expect(plays().pop()).toEqual(['45', '50'])
   await ui.press({ key: 'library' })
 })
