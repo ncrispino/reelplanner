@@ -341,7 +341,8 @@ explainer (`<explainer-dir>/video/`).
    where the thing is hard to read, a picture that explains it (style guide §5). A camera sits inside a
    view clipped at y 900, and a question's heading and cards sit outside it (or the camera is at rest at
    scale 1 when the scene ends): `$RP frame-lint` fails either. Check each frame as it lands with `$RP frame-check
-   <video-dir> <frame>`: frame-lint on it, and one picture of it at rest to look at (no screenshot scripts of your
+   <video-dir> <frame>`: frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
+   overflowing its box, overlaps, contrast), and one picture of it at rest to look at (no screenshot scripts of your
    own). Put the
    holds for branch beats, assembling beats and the final frame in `.hyperframes/holds.json`. Details
    (style guide §10) start with `$RP detail new <video-dir> <name> --kind <template>` and are built
@@ -376,7 +377,8 @@ explainer (`<explainer-dir>/video/`).
    repeats the brief's `- Real things:` when there is one, and never warns without it). Add `--render` only when someone asks for an MP4; the review page
    plays the HTML.
 5. **Fresh eyes before you open it**: every video you build, plan, walkthrough or system, and every
-   rebuild of an older one (a rebuild is a new build). You know what every phrase means, so you cannot judge
+   rebuild of an older one (a rebuild is a new build). Start them in the background as soon as the build is done,
+   and get the rest ready while they read (the contact sheet, each part's length, what you will say). You know what every phrase means, so you cannot judge
    whether a newcomer follows it; two fresh agents can. `$RP fresh-eyes <video-dir>` writes their briefs, with a
    picture of each scene at rest taken through the review page. Launch two fresh agents with no context of this
    conversation, one with exactly the prompt from `$RP fresh-eyes <video-dir> --prompt newcomer`, one with `--prompt
@@ -451,6 +453,13 @@ For changes requested:
 - Run `$RP reel check <plan-dir>`. Rewrite the touched beats in the storyboard, script and frames,
   keeping each frame's id so `plan-diff` reads them as edits, then `$RP build <video-dir>`. The changed
   frame count `plan-diff` prints should match the beats you touched; if not, find out why.
+- **Gather every fix first, then build once.** A build takes a minute or more whatever it changes; fixing one thing,
+  building, failing and fixing the next is most of a slow revision. List every fix (the review's, fresh eyes')
+  before touching a frame. Patch only the frames they touch, each in its own file (where one script writes the
+  frames, patch it where the change is, never write it whole again), and check each as it lands with `$RP
+  frame-check <video-dir> <frame>` (its layout and lint in seconds, and a picture), never with a build. With several
+  frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: its first stage
+  checks the frames you changed before anything is voiced.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review
   watched is marked "Changed since your review", with the old and new words and the review's own words that asked
   for it (`guide --check` fails one left unmarked). Don't hand-edit `reviews/`: the comparison is read from them.

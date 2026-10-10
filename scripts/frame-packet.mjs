@@ -58,6 +58,9 @@ const brief = read(join(dir, "BRIEF.md"));
 const realThings = (/^- Real things:\s*(.+)$/m.exec(brief) || [])[1] || null;
 const theme = [join(dir, "frame.md"), join(dir, "..", "..", "..", "theme", "frame.md"), join(ROOT, "templates", "reelplanner", "theme", "frame.md")].find(existsSync);
 const motion = [join(dir, "..", "..", "..", "theme", "motion-language.md"), join(ROOT, "templates", "reelplanner", "theme", "motion-language.md")].find(existsSync);
+// fonts by family name, which HyperFrames loads (cheaper-videos step 13: a worker spent a minute searching the disk for one)
+const fontsDir = join(dir, "assets", "fonts");
+const fontFiles = existsSync(fontsDir) ? readdirSync(fontsDir).filter((f) => /\.(woff2?|ttf|otf)$/i.test(f)).sort() : [];
 const framesDir = join(dir, "compositions", "frames");
 const built = existsSync(framesDir) ? readdirSync(framesDir).filter((f) => f.endsWith(".html")) : [];
 const fileOf = (f) => (f.meta.src ? join(dir, f.meta.src) : null);
@@ -84,6 +87,8 @@ source, other frames' files or the timing files: what they hold is below, and th
 - How frames move: \`${motion ? rel(motion) : "theme/motion-language.md"}\`
 ${brief ? `- The brief's choices: ${["Medium", "Layouts", "Main transition"].map((k) => (new RegExp(`^- ${k}:\\s*(.+)$`, "m").exec(brief) || [])[1]).filter(Boolean).map((v, i) => `${["medium", "layouts", "main transition"][i]}: ${v}`).join("; ") || "BRIEF.md"}` : ""}
 ${realThings ? `- Real things (shown as themselves, in a \`data-artifact\` container with their words pinned on, \`data-gloss\`): ${realThings}` : ""}
+- Fonts: by family name in the frame's CSS (\`font: 400 46px/1.1 "EB Garamond"\`; the theme's are "EB Garamond",
+  "Inter" and "JetBrains Mono"); HyperFrames loads them. Don't look for font files${fontFiles.length ? `; this video's are in \`${rel(fontsDir)}\`: ${fontFiles.join(", ")}` : ""}.
 - ${sibling ? `A finished frame to keep consistent with (its type, spacing and colour), not to copy: \`${rel(fileOf(sibling))}\` (frame ${sibling.index})` : "No other frame is drawn yet: yours sets the look the theme describes."}
 
 Design each frame for its own scene: what it shows decides its layout. The video warns when most scenes share one layout.

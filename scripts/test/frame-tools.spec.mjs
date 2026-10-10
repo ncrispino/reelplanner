@@ -5,9 +5,11 @@
 //                 option cards), the theme by path and one finished sibling frame, and how to check a frame;
 //                 "narration not ready" with the line's text before the voice exists; a frame the storyboard lacks
 //                 is refused, naming the ones it has
-//   frame-check   frame-lint on that frame, and one picture of it at rest from the assembled video; a frame-lint
-//                 failure exits 1, the picture is taken all the same; a frame not in index.html yet gets no picture,
-//                 and says how to put it there
+//   frame-check   frame-lint on that frame, HyperFrames' layout check on its slot (step 11: text overflowing its box
+//                 is found in seconds, with HyperFrames' fix), and one picture of it at rest from the assembled
+//                 video; a frame-lint or layout failure exits 1, the picture is taken all the same; a frame not in
+//                 index.html yet gets no picture, and says how to put it there
+//   the packet names fonts by family, which HyperFrames loads, and this video's font files (step 13)
 // usage: node scripts/test/frame-tools.spec.mjs
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync, readdirSync } from "node:fs";
@@ -29,6 +31,7 @@ try {
   ok("…its storyboard block as written, its file and composition id", text.includes("- blueprint: grid-card-assemble") && text.includes("composition id `03-pretrain`") && text.includes(join(V, "compositions", "frames", "05-decision-1.html")));
   ok("…the marks its beat needs: the bottom band always, a decision's heading and its option cards", /data-band="bottom"/.test(text) && /`data-question` \(decision q1\)/.test(text) && /`data-option="a"`, `data-option="b"`/.test(text), text.split("## Frame 5")[1]?.slice(0, 900));
   ok("…the theme by path, one finished sibling to match (not copy), and how to check a frame", /The frame rules and the look: `.*frame\.md`/.test(text) && /keep consistent with .* not to copy: `.*02-tension\.html` \(frame 2\)/.test(text) && /reelplanner frame-check /.test(text) && /references\/frames\.md/.test(text));
+  ok("…fonts by family name, and this video's files: no font to look for", /Fonts: by family name/.test(text) && /Don't look for font files; this video's are in `.*assets\/fonts`: .*Inter-400\.woff2/.test(text), text.slice(0, 1500));
   ok("…and tells the worker not to read reelplanner's source", /Do not read reelplanner's own\s+source/.test(text));
   rmSync(join(V, "audio_meta.json"));
   const r2 = rp("frame-packet", V, "3"), t2 = readFileSync(pk, "utf8");
@@ -38,11 +41,16 @@ try {
 
   // ── frame-check ──
   const c = rp("frame-check", V, "3"), shots = join(V, ".hyperframes", "shots");
-  ok("frame-check: frame-lint on that frame, and one picture of it at rest", c.status === 0 && /03-pretrain\.html/.test(c.stdout) && /✓ picture at [\d.]+s/.test(c.stdout) && existsSync(shots) && readdirSync(shots).some((f) => /^03-03-pretrain\.png$/.test(f)), c.stdout + c.stderr);
-  const f3 = join(V, "compositions", "frames", "03-pretrain.html");
+  ok("frame-check: frame-lint on that frame, its layout on its slot, and one picture of it at rest", c.status === 0 && /03-pretrain\.html/.test(c.stdout) && /✓ layout at [\d.]+, [\d.]+, [\d.]+s/.test(c.stdout) && /✓ picture at [\d.]+s/.test(c.stdout) && existsSync(shots) && readdirSync(shots).some((f) => /^03-03-pretrain\.png$/.test(f)), c.stdout + c.stderr);
+  const f3 = join(V, "compositions", "frames", "03-pretrain.html"), f3was = readFileSync(f3, "utf8");
+  // a title too long for its box: HyperFrames' layout check finds it in this frame, in seconds
+  writeFileSync(f3, f3was.replace(/(<div id="root"[^>]*>)/, '$1<div class="ovf" style="position:absolute;left:300px;top:400px;width:260px;height:60px;border:2px solid #333;font:500 40px/1.2 Inter;white-space:nowrap">This title is far too long for its box</div>'));
+  const t0 = Date.now(), co = rp("frame-check", V, "3", "--no-shot"), took = (Date.now() - t0) / 1000;
+  ok("…text overflowing its box: exit 1, HyperFrames' finding in this frame with its fix, in seconds", co.status === 1 && /✗ layout: .*text_box_overflow, `div\.ovf`, “This title is far too long/.test(co.stdout) && /widen the container/.test(co.stdout) && took < 60, `${took}s\n${co.stdout}${co.stderr}`);
+  writeFileSync(f3, f3was);
   // a detail's mark in the bottom band, where the player's chips go: frame-lint stops it
   writeFileSync(f3, readFileSync(f3, "utf8").replace(/(<div id="root"[^>]*>)/, '$1<div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div>'));
-  const c2 = rp("frame-check", V, "3", "--no-shot");
+  const c2 = rp("frame-check", V, "3", "--no-shot", "--no-layout");
   ok("…a frame-lint failure exits 1", c2.status === 1, c2.stdout + c2.stderr);
   const html = join(V, "index.html");
   writeFileSync(html, readFileSync(html, "utf8").replace('data-composition-src="compositions/frames/04-step-1.html"', 'data-composition-src="compositions/frames/04-elsewhere.html"'));

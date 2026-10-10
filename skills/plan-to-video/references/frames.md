@@ -39,7 +39,9 @@ name without `.html` (`03-pretrain`). One `<template>` holding the frame's `<sty
   computed position (`at + 0.12`, `LIFT[i]`) is reported and left alone. `DUR` (or `D`) is the frame's length,
   which `sync-durations` and `hold-durations` set: keep the last position at `DUR - 0.001`.
 - Only what is the same every time it plays: no `Date.now()`, `Math.random()` or network.
-- Fonts and images from the video's `assets/` (the theme's fonts are there).
+- Fonts by family name in the frame's CSS (`font: 400 46px/1.1 "EB Garamond"`; the theme's are "EB Garamond",
+  "Inter" and "JetBrains Mono"): HyperFrames loads them, so there is no font file to find. Images from the video's
+  `assets/`.
 
 ## The marks the player reads
 
@@ -62,7 +64,11 @@ name without `.html` (`03-pretrain`). One `<template>` holding the frame's `<sty
 
 ## What `frame-check` (and `frame-lint`) stop
 
-A camera or zoom that could reach y 900 outside a view clipped at 900 px; a question's heading or card inside
-something that moves, unless at rest at scale 1 when the scene ends; a `data-detail` mark in the bottom band, under
-120 × 44 px, still moving in the scene's last 3 s, or twice with one name; empty bars where words go; anything within
-40 px above a `data-detail` mark. An image drawn wider than half its pixels is a note (take screenshots at 2×).
+`frame-check` runs HyperFrames' layout and contrast check on the frame's slot of the assembled video, keeping what
+it finds in that frame: text overflowing its box or hidden under another element, overlapping text, contrast under
+WCAG AA. On a rebuild, `build`'s first stage runs the same on every frame changed since the last build, before
+anything is voiced. And `frame-lint` stops: a camera or zoom that could reach y 900 outside a view clipped at 900 px;
+a question's heading or card inside something that moves, unless at rest at scale 1 when the scene ends; a
+`data-detail` mark in the bottom band, under 120 × 44 px, still moving in the scene's last 3 s, or twice with one
+name; empty bars where words go; anything within 40 px above a `data-detail` mark. An image drawn wider than half its
+pixels is a note (take screenshots at 2×).

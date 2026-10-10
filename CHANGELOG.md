@@ -24,6 +24,12 @@
     server is. The video's builder starts fresh with a short brief, not as a fork of the conversation; once a video
     is shown, the agent waits for the review. A headless run's prompt names the skill's path and asks no verify of
     an approval.
+  - **Revisions build once.** `frame-check` also runs HyperFrames' layout check on the frame's slot (text
+    overflowing its box, found in about 10 seconds rather than a minute into a build); `build`'s new first stage,
+    `frames`, runs frame-lint and that check on the frames changed since the last build, before anything is voiced.
+    The skill gathers every fix before touching a frame, patches only the frames they touch (checked with
+    `frame-check`, never a build), and builds once; fresh eyes start in the background. The frame packet names
+    fonts by family, which HyperFrames loads, so no worker searches the disk for one.
 - **pipeline-cost** (`.claude/skills/pipeline-cost/`, for contributors): measures where a run's time and tokens go
   from its transcripts, into `eval/pipeline-cost/`'s ledger.
 

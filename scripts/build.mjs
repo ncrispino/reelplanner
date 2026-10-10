@@ -2,6 +2,9 @@
 // Build a video once its storyboard, script and frames are written: each stage its own command, run in
 // order:
 //
+//   frames              on a rebuild, the frames changed since the last one (newer than index.html): frame-lint and
+//                       HyperFrames' layout check on their slots (lib/frame-layout.mjs), seconds, before anything is
+//                       voiced; a first build has nothing assembled to look at, and leaves it to verify
 //   check-terms         no id said alone, no word used before it is defined (check-terms.mjs; warnings go on)
 //   length              the length the script will run, before the voice: past 1.5× the budget it stops (lib/length.mjs),
 //                       unless BRIEF.md says why it needs more (`- Length:`)
@@ -54,6 +57,7 @@ import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
 import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
+import { changedFrames, layoutCheck, findingLine } from "./lib/frame-layout.mjs";
 
 const argv = process.argv.slice(2);
 const VALUED = ["--speed", "--voice", "--helpers", "--ignore", "--against"];
@@ -114,7 +118,30 @@ function retime() {
 
 // ── the stages ──────────────────────────────────────────────────────────────────────────────────────
 const narrateArgs = ["--speed", "--voice"].flatMap((f) => (flag(f.slice(2)) ? [f, flag(f.slice(2))] : []));
+// the frames changed since the last build, checked before anything else (cheaper-videos step 11): a revision's builds
+// failed in verify a minute in, mostly on text overflowing a frame, which this finds in seconds
+function changedFramesStage() {
+  const changed = changedFrames(dir);
+  if (!changed) return { skip: "a first build: nothing assembled yet to look at" };
+  if (!changed.length) return { skip: "no frame changed since the last build" };
+  const names = changed.map((f) => String(f.index).padStart(2, "0")).join(", ");
+  const lint = run(["node", [join(SCRIPTS, "frame-lint.mjs"), ...changed.map((f) => join(dir, String(f.meta.src).replace(/^\.\//, "")))]]);
+  if (lint.status !== 0) return { status: 1, out: `${lint.out}\n✗ frame-lint on the frames changed (${names}): fix them, \`reelplanner frame-check ${project} <frame>\` each, then build\n` };
+  const l = layoutCheck(dir, changed);
+  if (!l.ran) return { status: 0, warn: true, out: `△ ${changed.length} changed (${names}): frame-lint clean; no layout check (${l.why}): verify checks it\n` };
+  const lines = [], bad = [];
+  for (const f of changed) {
+    const r = l.byFrame.get(f.index); if (!r) continue;
+    for (const x of r.errors) lines.push(`✗ frame ${f.index} (${String(f.meta.src).split("/").pop()}): ${findingLine(x)}`);
+    for (const x of r.warnings) lines.push(`△ frame ${f.index} (${String(f.meta.src).split("/").pop()}): ${findingLine(x)}`);
+    if (r.errors.length) bad.push(f.index);
+  }
+  if (bad.length) return { status: 1, out: `${lines.join("\n")}\n✗ frame${bad.length === 1 ? "" : "s"} ${bad.join(", ")}: fix ${bad.length === 1 ? "it" : "them"}, \`reelplanner frame-check ${project} <frame>\` each, then build\n` };
+  return { status: 0, warn: lines.length > 0, out: `${lines.join("\n")}\n${lines.length ? "△" : "✓"} ${changed.length} changed (${names}): lint and layout${lines.length ? `, ${lines.length} warning(s)` : ""}\n` };
+}
+
 const STAGES = [
+  ["frames", changedFramesStage],
   // the words before the voice: an id said alone, or a word used before it is defined (check-terms.mjs).
   // Its warnings show as a △ line and the build goes on; a bare id fails it on a `terms_check: strict` storyboard.
   ["check-terms", () => { const r = run(["node", [join(SCRIPTS, "check-terms.mjs"), "."]]); if (r.status === 0 && /^△/.test(last(r.out))) r.warn = true; return r; }],
@@ -147,8 +174,8 @@ const STAGES = [
   }],
 ];
 
-// the checks a rebuild of an earlier version goes on past (above): they judge words and pages, and make nothing
-const SOFT_IN_REBUILD = new Set(["check-terms", "check-sources", "guide"]);
+// the checks a rebuild of an earlier version goes on past (above): they judge frames, words and pages, and make nothing
+const SOFT_IN_REBUILD = new Set(["frames", "check-terms", "check-sources", "guide"]);
 
 // Each stage's own output is kept and shown in full only when it fails (or with --verbose); a line
 // that passes shows the last thing it said.

@@ -1,18 +1,21 @@
 #!/usr/bin/env node
-// Check one frame as it lands (plans/2026-10-10-cheaper-videos, step 1): the frame rules a program can see
-// (frame-lint, on this frame's file), and one picture of it at rest, taken from the assembled video near the end of
-// the frame's slot (index.html's data-start and data-duration), at .hyperframes/shots/<frame>.png. Every frame
-// worker used to write its own screenshot harness for this; one set of them filled a disk.
+// Check one frame as it lands (plans/2026-10-10-cheaper-videos, steps 1 and 11): the frame rules a program can see
+// (frame-lint, on this frame's file); HyperFrames' layout and contrast check on its slot of the assembled video
+// (lib/frame-layout.mjs: text overflowing or overlapping, found in seconds rather than a minute into a build); and
+// one picture of it at rest, taken near the end of the frame's slot (index.html's data-start and data-duration), at
+// .hyperframes/shots/<frame>.png. Every frame worker used to write its own screenshot harness for this; one set of
+// them filled a disk.
 //
-// usage: reelplanner frame-check <video-dir> <frame> [--no-shot]
-//   the frame is its number (4, 04) as the storyboard numbers it. Exit 1 when frame-lint fails; the picture is
-//   taken either way, when the frame is in index.html (else it says how to put it there).
+// usage: reelplanner frame-check <video-dir> <frame> [--no-shot] [--no-layout]
+//   the frame is its number (4, 04) as the storyboard numbers it. Exit 1 when frame-lint or the layout check finds
+//   an error; the picture is taken either way, when the frame is in index.html (else it says how to put it there).
 import { existsSync, readFileSync, mkdirSync, mkdtempSync, readdirSync, renameSync, rmSync } from "node:fs";
 import { join, resolve, relative, basename } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib/env.mjs";
 import { storyboardFrames } from "./lib/terms.mjs";
+import { layoutCheck, findingLine } from "./lib/frame-layout.mjs";
 
 const args = process.argv.slice(2);
 const die = (m, code = 1) => { console.error(`✗ frame-check: ${m}`); process.exit(code); };
@@ -30,6 +33,20 @@ const rel = (p) => relative(process.cwd(), p) || p;
 // the rules a program can see, on this frame alone
 const lint = spawnSync(process.execPath, [join(ROOT, "scripts", "frame-lint.mjs"), src], { cwd: dir, encoding: "utf8" });
 process.stdout.write(lint.stdout || ""); process.stderr.write(lint.stderr || "");
+
+// the layout: HyperFrames' check, on this frame's slot, keeping what it finds in this frame's file
+let layoutBad = 0;
+if (!args.includes("--no-layout")) {
+  const l = layoutCheck(dir, [f]);
+  if (!l.ran) console.log(`△ no layout check: ${l.missing.length ? `frame ${f.index} is not in index.html yet (build assembles it)` : l.why}`);
+  else {
+    const { errors, warnings } = l.byFrame.get(f.index);
+    for (const x of errors) console.log(`✗ ${findingLine(x)}`);
+    for (const x of warnings) console.log(`△ ${findingLine(x)}`);
+    if (!errors.length) console.log(`✓ layout at ${l.at.join(", ")}s${warnings.length ? ` (${warnings.length} warning${warnings.length === 1 ? "" : "s"})` : ""}`);
+    layoutBad = errors.length;
+  }
+}
 
 // the picture: near the end of the frame's slot in the assembled video
 let shot = null;
@@ -52,4 +69,4 @@ if (!args.includes("--no-shot")) {
     rmSync(tmp, { recursive: true, force: true });
   }
 }
-process.exit(lint.status === 0 ? 0 : 1);
+process.exit(lint.status === 0 && !layoutBad ? 0 : 1);

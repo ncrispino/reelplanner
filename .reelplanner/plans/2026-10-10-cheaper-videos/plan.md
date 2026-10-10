@@ -25,6 +25,12 @@ is 4–17% of it; making the video and checking it is 80–90%.
 - **Length, rounds after showing, links.** First videos of 15–17 minutes were watched 1–4%; the agent ran unasked
   rounds after a video was shown (184 and 148 minutes); a wrong port, a stale build and an hour with no link.
 
+- **Revisions rebuild the whole video for each fix.** A later audit of two revisions (38 and 31 minutes): every small
+  tweak ran a full build (55–90 s, a one-number fix 71 s); 6 of 13 builds failed about a minute in, mostly on text
+  overflowing a frame, which a check of the changed frame finds in seconds; fixes went one at a time (fix, build,
+  fail, again); one script drawing every frame (33 KB) was written whole each pass (about 1:45); fresh eyes ran while
+  the worker waited; a 61-second search of the disk for a font. Most of the time was the model writing.
+
 The diversity of the frames must not suffer: what is shared is plumbing (timing, checks, screenshots, formats), never
 layouts; each frame is still designed by an agent.
 
@@ -282,6 +288,81 @@ The headless prompt in `scripts/review.mjs` (or where it is written).
 
 "Load the plan-to-video skill: <path>/SKILL.md."
 
+### Step 11 — A changed frame's layout, checked in seconds
+
+`frame-check` also runs HyperFrames' layout and contrast check (`check --at`) on the frame's own slot in the
+assembled video, three times in it, and keeps what is found in that frame's file: text overflowing or overlapping
+stops it, as the build's `verify` would a minute later. `build` gets a first stage, `frames`: on a rebuild (an
+`index.html` there), frame-lint and that check on every frame whose file changed since the last build, before
+anything is voiced; a failure stops the build in seconds, naming the frame.
+
+#### Cases
+
+| Case | Input | What happens | Example |
+|---|---|---|---|
+| A frame's text overflows | an edited frame | frame-check exits 1 with HyperFrames' finding, in that frame | "✗ layout: text overflows its box (`.f04-…-title`), at 31.2s" |
+| Another frame's finding | the check sees the whole video | not this frame's: left to `verify` | |
+| A first build | no `index.html` | the `frames` stage is skipped: there is nothing assembled to look at | "· frames   a first build: nothing assembled yet to look at" |
+| A rebuild, frames edited | files newer than `index.html` | frame-lint and the layout check on those, one browser | "✓ frames   2 changed (04, 07): lint and layout" |
+| A rebuild, no frame edited | | skipped | "· frames   none changed since the last build" |
+
+#### Interface
+
+`scripts/lib/frame-layout.mjs` `layoutCheck(dir, frames)` → per frame, its errors and warnings; used by
+`scripts/frame-check.mjs` and `build`'s `frames` stage.
+
+#### Example
+
+```
+✗ frames    frame 4 (04-step-1.html): text overflows its box (.f04-step-1-title, 31.2s): fix it, frame-check 4, then build
+```
+
+### Step 12 — A revision: gather the fixes, patch the frames, build once
+
+The skill's revision gathers every fix (the review's, fresh eyes') before touching a frame; patches only the frames
+they touch, each in its own file, checked with `frame-check` as it lands (never one script that writes every frame,
+and never a full build to see one change); hands independent frames to workers when there are several; and runs
+`build` once at the end. Fresh eyes start in the background as soon as the build is done, and the builder prepares
+the rest (the contact sheet, the summary, the review command) while they read.
+
+#### Cases
+
+| Case | Input | What happens | Example |
+|---|---|---|---|
+| Six fixes over four frames | a review | four frames patched, each checked, one build | |
+| Frames drawn by a generator script | a video whose frames one script writes | the script patched where the change is, not written whole | |
+| A fix to the words only | SCRIPT.md | one build (narrate voices only that line) | |
+
+#### Interface
+
+`skills/plan-to-video/SKILL.md` (revising after a review, and Step 5's fresh eyes).
+
+#### Example
+
+"Gather every fix first. Patch the frames they touch, `frame-check` each. Then one `build`."
+
+### Step 13 — Fonts by name
+
+The packet and `references/frames.md` say how a frame uses a font: by family name in its CSS (`"EB Garamond"`,
+`"Inter"`, `"JetBrains Mono"`), which HyperFrames loads; the video's own files, when it has them, are listed by
+path. No worker looks for a font on the disk.
+
+#### Cases
+
+| Case | Input | What happens | Example |
+|---|---|---|---|
+| A video with `assets/fonts/` | | the families and their files by path | |
+| A video without | | the theme's families by name | |
+
+#### Interface
+
+`scripts/frame-packet.mjs`, `skills/plan-to-video/references/frames.md`.
+
+#### Example
+
+"Fonts: name them by family in CSS (`font: 400 46px/1.1 "EB Garamond"`); HyperFrames loads them. This video's files:
+…/assets/fonts/EBGaramond-400.woff2, …"
+
 ## Decisions in force
 
 - **D-225** Every finding is answered before you see the video: still so. A note under the designer's `## Advisory` is
@@ -305,7 +386,7 @@ The headless prompt in `scripts/review.mjs` (or where it is written).
 
 - **The plan-to-video skill** (SKILL.md, the style guide, references/frames.md, the fresh-eyes prompts)
 - **finish-project** (the build's stages: fresh eyes' state, check-terms, the length)
-- **The reel CLI** (`frame-packet`, `frame-check`, `fresh-eyes --script`, `build`'s link)
+- **The reel CLI** (`frame-packet`, `frame-check`, `fresh-eyes --script`, `build`'s link and its `frames` stage)
 - **The review server** (the link `build` checks)
 - **The headless run** (its prompt)
 
