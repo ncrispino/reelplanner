@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The demo mp4 (run.sh kitty) as the README's GIF, docs/media/reel-pane.gif: a little faster, 10 frames a second,
-# 1280 wide (the pane's text still reads), one palette for the whole of it. About 6 MB for two and a half minutes.
+# 1280 wide (the pane's text still reads), one palette for the whole of it. About 9 MB for two and a half minutes (the cards move, so more of each frame changes).
 #
 # usage: scripts/demo/reel-pane/gif.sh <demo.mp4> [out.gif]
 set -euo pipefail
