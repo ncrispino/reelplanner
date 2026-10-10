@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Record the /reel pane working in a real Claude Code session, as a captioned mp4 (the kitty flow: about two and a
-# half minutes).
+# Record the /reel pane working in a real Claude Code session, as a captioned mp4 (the kitty flow: about three
+# minutes).
 #
-#   kitty    the same in a real kitty on a virtual display (Xvfb), its screen grabbed as it is: the sharp picture
+#   kitty    a whole review in a real kitty on a virtual display (Xvfb), its screen grabbed as it is: Send hands it
+#            to Claude in the conversation, which revises the video for real, then t takes it full screen
 #            (kitty.py; cut.py cuts and speeds its steps, compose.py captions them in HyperFrames). Needs kitty,
 #            Xvfb and xdotool.
 #            The video's render is made first if the checkout has none (about 8 minutes, once; renders/ is
@@ -52,16 +53,23 @@ if [ "$FLOW" != review ]; then
 fi
 
 if [ "$FLOW" = kitty ]; then
-  printf '#!/bin/sh\ncd %s/demo\nexec env -u CLAUDE_CODE_REMOTE -u CLAUDE_CODE_CHILD_SESSION -u TMUX HOME=%s/home claude\n' "$WORK" "$WORK" > "$WORK/launch.sh"
-  chmod +x "$WORK/launch.sh"
+  # Claude commits its revise in the clone: under a name of the demo's own
+  git -C "$WORK/demo" config user.name "reel demo" && git -C "$WORK/demo" config user.email "reel-demo@example.invalid"
+  for part in "" " --continue"; do
+    printf '#!/bin/sh\ncd %s/demo\nexec env -u CLAUDE_CODE_REMOTE -u CLAUDE_CODE_CHILD_SESSION -u TMUX HOME=%s/home claude%s\n' \
+      "$WORK" "$WORK" "$part" > "$WORK/launch${part:+-continue}.sh"
+  done
+  chmod +x "$WORK/launch.sh" "$WORK/launch-continue.sh"
   Xvfb :97 -screen 0 1920x1080x24 >/dev/null 2>&1 & XVFB=$!
   sleep 2
-  mkdir -p "$WORK/run"
-  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh" "$WORK/demo"
+  mkdir -p "$WORK/run" "$WORK/run-full"
+  # the review, Send and Claude's revise; then, resuming that conversation, t: full screen and back
+  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh" "$WORK/demo" review
+  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run-full" "$WORK/launch-continue.sh" "$WORK/demo" fullscreen
   kill $XVFB 2>/dev/null || true
   (cd "$WORK/demo" && HOME="$WORK/home" node bin/reelplanner.mjs review --stop >/dev/null 2>&1 || true)
   # the steps cut and sped (cut.py), then captioned in HyperFrames (compose.py)
-  python3 "$HERE/cut.py" "$WORK/run" "$WORK/footage.mp4" --bare
+  python3 "$HERE/cut.py" "$WORK/run,$WORK/run-full" "$WORK/footage.mp4" --bare
   python3 "$HERE/compose.py" "$WORK/footage.mp4" "$OUT"
   echo "✓ $OUT"
   exit 0
