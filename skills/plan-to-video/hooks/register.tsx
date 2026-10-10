@@ -509,6 +509,40 @@ async function buildRow($: EngineInterface, v: Video, verdict: 'approve' | 'chan
   }
 }
 
+/**
+ * After Send, look every few seconds for the new version: the video's plan map written after the Send (a rebuild
+ * writes it anew), or, after a plan's approval, its walkthrough's. Found, the pane redraws with it (and says so);
+ * the look stops then, after an hour, or when the module reloads.
+ */
+const watching = new Map<string, { cancel: () => void }>()
+function watchForRebuild($: EngineInterface, v: Video, sentAt: number, verdict: 'approve' | 'changes') {
+  watching.get(v.key)?.cancel()
+  const target = verdict === 'approve' && v.inPlans && v.which === 'video' ? v.dir.replace(/\/video$/, '/walkthrough-video') : v.dir
+  let ticks = 0
+  const timer = $.clock.every(5000, () => {
+    void (async () => {
+      ticks++
+      let built = 0
+      try {
+        built = (await $.fs.stat(`${target}/plan-map.json`)).mtimeMs
+      } catch {}
+      if (built > sentAt + 1000) {
+        timer.cancel()
+        watching.delete(v.key)
+        await update($, sent, s => {
+          const was = s[v.key]
+          return was ? { ...s, [v.key]: { ...was, rebuiltAt: built } } : s
+        })
+        $.ui.toast(target === v.dir ? 'The new version of the video is ready: Watch what changed.' : 'The walkthrough video is ready.')
+      } else if (ticks > 720) {
+        timer.cancel()
+        watching.delete(v.key)
+      }
+    })()
+  })
+  watching.set(v.key, timer)
+}
+
 /** `<project>-<submittedAt>`, as scripts/lib/inbox.mjs names a row. */
 const rowId = (project: string, submittedAt: string) =>
   `${project}-${submittedAt.replace(/[-:]/g, '').replace(/\.\d+/, '')}`.replace(/[^A-Za-z0-9._-]+/g, '-')
@@ -530,6 +564,7 @@ async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes'
 
   const record: ReelplannerSent = { at: row.submittedAt, path, how: waiting ? 'waiter' : 'prompt', verdict }
   await update($, sent, s => ({ ...s, [v.key]: record }))
+  watchForRebuild($, v, Date.parse(row.submittedAt), verdict)
   if (waiting) {
     $.ui.toast('Review sent: the waiting session picks it up.')
     return
@@ -821,12 +856,15 @@ export const register: Register = on => {
     const trimmed = (list: { from: number; to: number }[]) => (only ? changedOnly(map, list, id => done(id)) : list)
     const big = await read($, theater)
     const go = async (to: number, from?: number, branch?: Branch) => {
-      const i = Math.max(0, Math.min(stops.length, to))
+      let i = Math.max(0, Math.min(stops.length, to))
+      const start = from ?? stretch(map, v.which, i).from
+      // just the changes: going on, a choice already answered is not stopped at again (going back to one is)
+      if (only && to > stop) i = nextOpen(i)
       await update($, open, o => (o ? { ...o, stop: i } : o))
       if (!using) return
       const s = stretch(map, v.which, i)
       // the clip the answer picked always plays; what follows it, just the changes when that mode is on
-      const list = [...(branch ? [{ from: branch.start, to: branch.end }] : []), ...trimmed([{ from: from ?? s.from, to: s.to }])]
+      const list = [...(branch ? [{ from: branch.start, to: branch.end }] : []), ...trimmed([{ from: start, to: s.to }])]
       branchOf = branch ? { key: v.key, stop: i, end: branch.end } : null
       void play($, v, list, size)
     }
@@ -839,6 +877,12 @@ export const register: Register = on => {
     }
     const done = (id: string) =>
       isPlanVideo(v.which) ? Boolean(allAnswers[`${v.key}:${id}`]) : Boolean(allVerdicts[`${v.key}:${id}`])
+    /** The first stop from `i` on not answered yet (the end, the Send card, when all are). */
+    const nextOpen = (i: number) => {
+      let j = i
+      while (j < stops.length && stops[j] && done(stops[j]!.id)) j++
+      return j
+    }
     const other: ReelplannerWhich = isPlanVideo(v.which) ? 'walkthrough-video' : 'video'
     const hasOther = v.inPlans && plan ? (isPlanVideo(v.which) ? plan.calls !== null : plan.choices !== null) : false
 
@@ -1240,10 +1284,14 @@ export const register: Register = on => {
       const walkDir = v.inPlans ? `${plansDir(root)}/${v.slug}/walkthrough-video` : null
       const walk = walkDir && plan ? await loadMap($, walkDir) : null
       const walkReady = Boolean(walk && walkDir && builtAt(walkDir) > sentAt + 1000)
+      // the new version from its start, just what changed, stopping only at choices not answered yet
       const watchNew = async () => {
         await update($, onlyChanges, o => ({ ...o, [v.key]: true }))
-        await update($, open, o => (o ? { ...o, stop: 0 } : o))
-        void playTo($, v, 0, screenSize(paneColumns || width))
+        const i = nextOpen(0)
+        await update($, open, o => (o ? { ...o, stop: i } : o))
+        const fresh = await loadMap($, v.dir)
+        const list = [{ from: 0, to: stretch(fresh ?? map, v.which, i).to }]
+        void play($, v, isRevision(fresh ?? map) ? changedOnly(fresh ?? map, list, id => done(id)) : list, screenSize(paneColumns || width))
       }
       const after = lastSent ? (
         <Box borderStyle="round" borderColor={rebuilt || walkReady ? 'success' : 'claude'} flexDirection="column" paddingX={1}>
@@ -1257,7 +1305,7 @@ export const register: Register = on => {
                   The new version is ready
                   {isRevision(map) ? `: ${map.changes?.changedFrames?.length} of ${(map.frames ?? []).length} scenes changed` : ''}.
                 </Text>
-                <Button key="watch-new" plain hotkey="v" onPress={() => watchNew()}>
+                <Button key="watch-new" plain hotkey="g" onPress={() => watchNew()}>
                   <Text color="success" bold>Watch what changed</Text>
                 </Button>
               </Box>
@@ -1266,7 +1314,7 @@ export const register: Register = on => {
             )
           ) : plan ? (
             walkReady ? (
-              <Button key="watch-walk" plain hotkey="v" onPress={() => openPane($, { slug: v.slug, which: 'walkthrough-video' })}>
+              <Button key="watch-walk" plain hotkey="g" onPress={() => openPane($, { slug: v.slug, which: 'walkthrough-video' })}>
                 <Text color="success" bold>The walkthrough is ready: watch it</Text>
               </Button>
             ) : (

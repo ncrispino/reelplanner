@@ -53,7 +53,7 @@ if [ "$FLOW" = kitty ]; then
   Xvfb :97 -screen 0 1920x1080x24 >/dev/null 2>&1 & XVFB=$!
   sleep 2
   mkdir -p "$WORK/run"
-  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh"
+  DISPLAY=:97 python3 "$HERE/kitty.py" "$WORK/run" "$WORK/launch.sh" "$WORK/demo"
   kill $XVFB 2>/dev/null || true
   (cd "$WORK/demo" && HOME="$WORK/home" node bin/reelplanner.mjs review --stop >/dev/null 2>&1 || true)
   python3 "$HERE/cut.py" "$WORK/run" "$OUT"

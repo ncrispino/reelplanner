@@ -389,3 +389,20 @@ test('z makes the video bigger: the pane asks for most of the width and the revi
   expect(opened[opened.length - 1]).not.toHaveProperty('columns')
   await ui.press({ key: 'library' })
 })
+
+test('just the changes goes past choices already answered, and Back still reaches them', async ($, on) => {
+  const { spawned } = world(on, { kitty: true, revised: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'opt-b' }) // q1 answered: on to q2
+  expect(await ui.find({ type: 'Text', text: /Who clears it\?/ })).toBeDefined()
+  await ui.press({ key: 'prev' }) // back to q1: shown, not skipped
+  expect(await ui.find({ type: 'Text', text: /Where does the cache live\?/ })).toBeDefined()
+  await ui.press({ key: 'play' }) // plays to q1 again...
+  await ui.press({ key: 'next' }) // ...and on: q2 is still open, so it is the next stop
+  expect(await ui.find({ type: 'Text', text: /stopped at choice 2|Who clears it\?/ })).toBeDefined()
+  const last = spawned.filter(a => !a.includes('--render')).pop() ?? []
+  // what plays on to q2 is just the changes: frame 3, which changed and holds q2, from 0:45 to its stop at 0:50
+  expect(stretchOf(last)).toEqual(['45', '50'])
+  await ui.press({ key: 'library' })
+})

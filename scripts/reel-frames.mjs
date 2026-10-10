@@ -49,12 +49,14 @@ const mp4 = join(dir, "renders", "terminal.mp4");
 const FPS = Number(flag("fps", 12));
 
 // --- the render ----------------------------------------------------------------------------------------
+// what the picture is made of: the page and its compositions and assets. The plan map, the storyboard and the
+// other records beside them do not change a frame, so rewriting them (plan-map does, every build) renders nothing again.
 function newest(d, depth = 0) {
   let t = 0;
   for (const e of readdirSync(d, { withFileTypes: true })) {
-    if (["renders", "snapshots", "node_modules", ".hyperframes", "fresh-eyes", ".producer", ".debug"].includes(e.name)) continue;
+    if (depth === 0 && !["index.html", "compositions", "assets"].includes(e.name)) continue;
     const p = join(d, e.name);
-    if (e.isDirectory()) { if (depth < 3) t = Math.max(t, newest(p, depth + 1)); }
+    if (e.isDirectory()) { if (depth < 4) t = Math.max(t, newest(p, depth + 1)); }
     else t = Math.max(t, statSync(p).mtimeMs);
   }
   return t;
@@ -74,7 +76,11 @@ if (args.includes("--render")) {
   };
   child.stdout.on("data", read); child.stderr.on("data", read);
   child.on("exit", (code) => {
-    if (code !== 0 || !existsSync(tmp)) fail(`the render failed (exit ${code}): ${tail.replace(/\s+/g, " ").slice(-300)}`);
+    if (code !== 0 || !existsSync(tmp)) {
+      // a fresh clone: the narration is made by the build and left out of git, so there is no sound to mix
+      if (/Source not found for audio element/.test(tail)) fail(`the video's narration is not on this machine (it is made by the build, and git leaves it out): \`reelplanner reel rebuild\` on its plan makes it again, then play`);
+      fail(`the render failed (exit ${code}): ${tail.replace(/\s+/g, " ").slice(-300)}`);
+    }
     spawnSync("mv", [tmp, mp4]);
     say(`R ${mp4}`);
     process.exit(0);

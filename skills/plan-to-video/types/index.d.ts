@@ -51,7 +51,14 @@ export type ReelplannerVerdict = { verdict: 'accept' | 'flag' | 'own'; own?: str
 export type ReelplannerComment = { id: string; t: number; text: string; at: string }
 
 /** What became of the last Send for a video. */
-export type ReelplannerSent = { at: string; path: string; how: 'waiter' | 'prompt'; verdict: 'approve' | 'changes' }
+export type ReelplannerSent = {
+  at: string
+  path: string
+  how: 'waiter' | 'prompt'
+  verdict: 'approve' | 'changes'
+  /** When the video (or, after a plan's approval, its walkthrough) was seen rebuilt after this Send. */
+  rebuiltAt?: number
+}
 
 declare module 'claude-code' {
   interface PluginState {
