@@ -1,0 +1,58 @@
+{
+  "id": "confidence-dashed-legend",
+  "title": "Webhook retries, with a solid/dashed confidence legend",
+  "persona": "A backend engineer on the payments team who owns the API but not the delivery side, sketching how outgoing merchant webhooks get retried before asking the agent to explain it from the code.",
+  "topic": "how merchant webhooks get retried",
+  "realism": "Engineers routinely mark the half of a system they don't own as dashed or with a '?' and add a small legend; changing a box's style mid-sentence when doubt creeps in ('actually I'm not sure that's its own queue') is how confidence shows up on a real whiteboard.",
+  "steps": [
+    { "t": 1.5, "say": "Okay, before I draw anything, a legend." },
+    { "t": 3.0, "add": [
+      { "id": "leg-know", "type": "rectangle", "x": 40, "y": 100, "width": 90, "height": 40, "label": "know" },
+      { "id": "leg-guess", "type": "rectangle", "x": 150, "y": 100, "width": 90, "height": 40, "label": "guess", "strokeStyle": "dashed" }
+    ] },
+    { "t": 5.5, "add": [ { "id": "leg-text", "type": "text", "x": 260, "y": 108, "text": "solid = I know it, dashed = I'm guessing", "fontSize": 16 } ] },
+    { "t": 7.0, "say": "Solid means I know it, dashed means I'm guessing." },
+    { "t": 10.0, "add": [ { "id": "api", "type": "rectangle", "x": 60, "y": 260, "width": 170, "height": 80, "label": "Payments API" } ] },
+    { "t": 12.5, "say": "The payments API is ours, I know this part well." },
+    { "t": 15.0, "add": [ { "id": "outbox", "type": "rectangle", "x": 320, "y": 260, "width": 170, "height": 80, "label": "Outbox table" } ] },
+    { "t": 16.5, "add": [ { "id": "a1", "type": "arrow", "from": "api", "to": "outbox", "label": "insert in same tx" } ] },
+    { "t": 19.0, "say": "When a charge settles we insert the webhook into an outbox table in the same transaction." },
+    { "t": 22.0, "add": [ { "id": "disp", "type": "rectangle", "x": 590, "y": 260, "width": 170, "height": 80, "label": "Dispatcher", "strokeStyle": "dashed" } ] },
+    { "t": 23.5, "add": [ { "id": "a2", "type": "arrow", "from": "outbox", "to": "disp", "label": "poll" } ] },
+    { "t": 26.5, "say": "Then something, I'm calling it the dispatcher, polls the outbox." },
+    { "t": 29.0, "add": [ { "id": "merchant", "type": "ellipse", "x": 320, "y": 450, "width": 180, "height": 80, "label": "Merchant endpoint" } ] },
+    { "t": 30.5, "add": [ { "id": "a3", "type": "arrow", "from": "disp", "to": "merchant", "label": "POST" } ] },
+    { "t": 33.0, "say": "And it posts to the merchant's endpoint." },
+    { "t": 36.0, "add": [ { "id": "retry", "type": "rectangle", "x": 590, "y": 450, "width": 170, "height": 80, "label": "Retry queue" } ] },
+    { "t": 37.5, "add": [ { "id": "a4", "type": "arrow", "from": "disp", "to": "retry", "label": "on 5xx or timeout" } ] },
+    { "t": 40.5, "say": "If the merchant returns a five hundred it goes onto a retry queue." },
+    { "t": 43.5, "say": "Hmm, actually I'm not sure the retry queue is its own thing." },
+    { "t": 45.0, "restyle": { "id": "retry", "strokeStyle": "dashed" } },
+    { "t": 46.0, "restyle": { "id": "a4", "strokeStyle": "dashed" } },
+    { "t": 49.0, "say": "It might just be a next attempt column on the outbox row, so that's dashed now." },
+    { "t": 52.0, "add": [ { "id": "a5", "type": "arrow", "from": "retry", "to": "disp", "label": "after backoff", "strokeStyle": "dashed" } ] },
+    { "t": 55.0, "say": "And after some backoff it comes back to the dispatcher, no idea what the backoff is." },
+    { "t": 57.5, "pause": 4 },
+    { "t": 60.0, "say": "Wait, the dispatcher I do know, I reviewed that PR last month." },
+    { "t": 61.5, "restyle": { "id": "disp", "strokeStyle": "solid" } },
+    { "t": 64.5, "say": "It's a cron worker that takes a lease on a batch of rows, so solid." },
+    { "t": 67.0, "add": [ { "id": "qmark", "type": "text", "x": 600, "y": 550, "text": "max attempts?", "fontSize": 18, "strokeColor": "#e03131" } ] },
+    { "t": 70.0, "say": "What I really don't know is when it gives up." },
+    { "t": 73.0, "note": "guessing: gives up after 24h and marks the webhook failed" },
+    { "t": 77.0, "say": "That's my picture, the dashed bits are what I want checked." }
+  ],
+  "expect": {
+    "final_labels": ["know", "guess", "Payments API", "Outbox table", "Dispatcher", "Merchant endpoint", "Retry queue", "insert in same tx", "poll", "POST", "on 5xx or timeout", "after backoff", "solid = I know it, dashed = I'm guessing", "max attempts?"],
+    "absent_labels": [],
+    "arrows": [["Payments API", "Outbox table", "insert in same tx"], ["Outbox table", "Dispatcher", "poll"], ["Dispatcher", "Merchant endpoint", "POST"], ["Dispatcher", "Retry queue", "on 5xx or timeout"], ["Retry queue", "Dispatcher", "after backoff"]],
+    "story": [
+      "their legend says solid means they know it and dashed means they are guessing",
+      "in the final drawing the dashed elements are the Retry queue, the 'on 5xx or timeout' arrow into it and the 'after backoff' arrow out of it; Payments API, Outbox table, Dispatcher and Merchant endpoint are solid",
+      "Retry queue was first drawn solid and changed to dashed when they doubted it was a separate queue (they suspect a next-attempt column on the outbox row instead)",
+      "Dispatcher was first drawn dashed and changed to solid when they remembered reviewing it (a cron worker that leases a batch of rows)",
+      "'max attempts?' is written in red next to the Retry queue: when delivery gives up is their biggest unknown; their typed guess is 24 hours, then marked failed",
+      "what they want checked against the code is the dashed parts and the give-up rule"
+    ],
+    "partner_should_ask_about": ["whether retries are a separate queue or state on the outbox row", "what the backoff and give-up rule is"]
+  }
+}

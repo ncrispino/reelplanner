@@ -1,0 +1,40 @@
+{
+  "id": "pointing-trace-bottleneck",
+  "title": "Image uploads: a path traced with the pointer, and 'this one' is the slow part",
+  "persona": "A backend engineer at a photo-sharing app explaining where uploads get slow, pointing more than labelling.",
+  "topic": "why image uploads are slow",
+  "realism": "At a whiteboard people trace a request with a finger and say 'this one' instead of naming things.",
+  "steps": [
+    { "t": 1, "add": [ { "type": "rectangle", "id": "app", "x": 60, "y": 160, "width": 150, "height": 80, "label": "Mobile app" } ] },
+    { "t": 3, "say": "So the photo leaves the phone." },
+    { "t": 4, "add": [ { "type": "rectangle", "id": "edge", "x": 270, "y": 160, "width": 150, "height": 80, "label": "Edge" },
+                       { "type": "arrow", "id": "a1", "from": "app", "to": "edge" } ] },
+    { "t": 7, "add": [ { "type": "rectangle", "id": "resize", "x": 480, "y": 160, "width": 150, "height": 80, "label": "Resizer" },
+                       { "type": "arrow", "id": "a2", "from": "edge", "to": "resize" } ] },
+    { "t": 10, "add": [ { "type": "rectangle", "id": "store", "x": 690, "y": 160, "width": 150, "height": 80, "label": "Blob store" },
+                        { "type": "arrow", "id": "a3", "from": "resize", "to": "store" } ] },
+    { "t": 12, "add": [ { "type": "rectangle", "id": "meta", "x": 480, "y": 380, "width": 150, "height": 80, "label": "Metadata DB" },
+                        { "type": "arrow", "id": "a4", "from": "resize", "to": "meta" } ] },
+    { "t": 14, "say": "And the metadata gets written down here too." },
+    { "t": 16, "point": { "ids": ["app", "edge", "resize", "store"], "seconds": 4 } },
+    { "t": 20.5, "say": "So a request goes here, then here, then here, and ends up here." },
+    { "t": 23, "point": { "ids": ["resize"], "seconds": 2.5 } },
+    { "t": 26, "say": "I think this one is the slow part, it does all three sizes before answering." },
+    { "t": 29, "point": { "ids": ["meta"], "seconds": 2 } },
+    { "t": 31.5, "say": "And this one I'm not sure is even in the hot path." },
+    { "t": 34, "note": "slow part = before answering?" },
+    { "t": 37, "restyle": { "id": "meta", "strokeStyle": "dashed" } },
+    { "t": 39, "say": "Dashed because I don't know." }
+  ],
+  "expect": {
+    "final_labels": ["Mobile app", "Edge", "Resizer", "Blob store", "Metadata DB"],
+    "absent_labels": [],
+    "arrows": [["Mobile app", "Edge"], ["Edge", "Resizer"], ["Resizer", "Blob store"], ["Resizer", "Metadata DB"]],
+    "story": [
+      "The path they traced while saying 'here, then here, then here' is Mobile app → Edge → Resizer → Blob store.",
+      "The box they called 'the slow part' ('this one') is the Resizer.",
+      "The box they are not sure is in the hot path ('this one I'm not sure') is the Metadata DB, which they then made dashed."
+    ],
+    "partner_should_ask_about": ["whether the Resizer answers before or after making all sizes", "whether the metadata write is synchronous"]
+  }
+}

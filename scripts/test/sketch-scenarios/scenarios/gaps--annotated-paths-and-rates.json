@@ -1,0 +1,378 @@
+{
+ "id": "annotated-paths-and-rates",
+ "title": "Telemetry ingest with rates, file paths, a boundary line and a schema",
+ "persona": "A platform engineer explaining the telemetry ingest path to an agent before asking where events get dropped under load; they think in rates and know roughly which repo file each box is.",
+ "topic": "where telemetry events get dropped under load",
+ "realism": "Capacity conversations put numbers on arrows ('~50k/s'), file paths beside boxes so people can go look, a line separating the customer's process from our cluster, and the event's fields written out; on a whiteboard all of that is just writing placed next to the thing it describes.",
+ "steps": [
+  {
+   "t": 1.5,
+   "say": "This is the ingest path, and I'll put numbers on it."
+  },
+  {
+   "t": 3.5,
+   "add": [
+    {
+     "id": "sdk",
+     "type": "ellipse",
+     "x": 50,
+     "y": 180,
+     "width": 150,
+     "height": 70,
+     "label": "SDK"
+    }
+   ]
+  },
+  {
+   "t": 6.0,
+   "say": "Events start in the SDK inside the customer's app."
+  },
+  {
+   "t": 8.0,
+   "add": [
+    {
+     "id": "boundary",
+     "type": "line",
+     "x": 250,
+     "y": 110,
+     "points": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       520
+      ]
+     ],
+     "strokeStyle": "dashed",
+     "endArrowhead": null
+    }
+   ]
+  },
+  {
+   "t": 9.5,
+   "add": [
+    {
+     "id": "bl",
+     "type": "text",
+     "x": 120,
+     "y": 110,
+     "text": "their app | our cluster",
+     "fontSize": 16
+    }
+   ]
+  },
+  {
+   "t": 12.0,
+   "say": "Everything right of this line is ours."
+  },
+  {
+   "t": 14.5,
+   "add": [
+    {
+     "id": "coll",
+     "type": "rectangle",
+     "x": 300,
+     "y": 180,
+     "width": 160,
+     "height": 70,
+     "label": "Collector"
+    }
+   ]
+  },
+  {
+   "t": 15.5,
+   "add": [
+    {
+     "id": "a1",
+     "type": "arrow",
+     "from": "sdk",
+     "to": "coll"
+    }
+   ]
+  },
+  {
+   "t": 17.0,
+   "add": [
+    {
+     "id": "rate1",
+     "type": "text",
+     "x": 200,
+     "y": 150,
+     "text": "~50k events/s",
+     "fontSize": 16
+    }
+   ]
+  },
+  {
+   "t": 20.0,
+   "say": "Peak is about fifty thousand events a second coming into the collector."
+  },
+  {
+   "t": 22.0,
+   "add": [
+    {
+     "id": "p-coll",
+     "type": "text",
+     "x": 300,
+     "y": 258,
+     "text": "cmd/collector/server.go",
+     "fontSize": 14
+    }
+   ]
+  },
+  {
+   "t": 25.0,
+   "say": "The collector lives in cmd collector server dot go."
+  },
+  {
+   "t": 27.5,
+   "add": [
+    {
+     "id": "kafka",
+     "type": "rectangle",
+     "x": 540,
+     "y": 180,
+     "width": 160,
+     "height": 70,
+     "label": "events.raw"
+    }
+   ]
+  },
+  {
+   "t": 28.5,
+   "add": [
+    {
+     "id": "a2",
+     "type": "arrow",
+     "from": "coll",
+     "to": "kafka",
+     "label": "batches of 500"
+    }
+   ]
+  },
+  {
+   "t": 31.5,
+   "say": "It batches five hundred at a time into the events raw topic."
+  },
+  {
+   "t": 33.0,
+   "add": [
+    {
+     "id": "part",
+     "type": "text",
+     "x": 545,
+     "y": 258,
+     "text": "x24 partitions",
+     "fontSize": 14
+    }
+   ]
+  },
+  {
+   "t": 36.5,
+   "say": "Twenty four partitions, I'm fairly sure."
+  },
+  {
+   "t": 39.0,
+   "add": [
+    {
+     "id": "enr",
+     "type": "rectangle",
+     "x": 540,
+     "y": 370,
+     "width": 160,
+     "height": 70,
+     "label": "Enricher"
+    }
+   ]
+  },
+  {
+   "t": 40.0,
+   "add": [
+    {
+     "id": "a3",
+     "type": "arrow",
+     "from": "kafka",
+     "to": "enr"
+    }
+   ]
+  },
+  {
+   "t": 41.5,
+   "add": [
+    {
+     "id": "p-enr",
+     "type": "text",
+     "x": 710,
+     "y": 390,
+     "text": "services/enricher/\nmain.py",
+     "fontSize": 14
+    }
+   ]
+  },
+  {
+   "t": 45.0,
+   "say": "The enricher reads it, that's the python service, and this one is the bottleneck."
+  },
+  {
+   "t": 47.0,
+   "add": [
+    {
+     "id": "rate2",
+     "type": "text",
+     "x": 710,
+     "y": 440,
+     "text": "~8k/s/pod, 4 pods?",
+     "fontSize": 14,
+     "strokeColor": "#e03131"
+    }
+   ]
+  },
+  {
+   "t": 50.5,
+   "say": "I think it does maybe eight thousand a second per pod and we run four, which doesn't add up to fifty."
+  },
+  {
+   "t": 53.0,
+   "add": [
+    {
+     "id": "ch",
+     "type": "rectangle",
+     "x": 300,
+     "y": 370,
+     "width": 160,
+     "height": 70,
+     "label": "ClickHouse"
+    }
+   ]
+  },
+  {
+   "t": 54.0,
+   "add": [
+    {
+     "id": "a4",
+     "type": "arrow",
+     "from": "enr",
+     "to": "ch"
+    }
+   ]
+  },
+  {
+   "t": 55.5,
+   "add": [
+    {
+     "id": "lat",
+     "type": "text",
+     "x": 475,
+     "y": 345,
+     "text": "p99 < 2s",
+     "fontSize": 14
+    }
+   ]
+  },
+  {
+   "t": 58.5,
+   "say": "Then it lands in ClickHouse, and end to end we promise under two seconds at p ninety nine."
+  },
+  {
+   "t": 61.0,
+   "say": "And here's what an event looks like."
+  },
+  {
+   "t": 63.0,
+   "add": [
+    {
+     "id": "schema",
+     "type": "text",
+     "x": 40,
+     "y": 300,
+     "text": "Event {\n  ts: int64\n  tenant_id: string\n  name: string\n  props: map<string,any>\n}",
+     "fontSize": 14
+    }
+   ]
+  },
+  {
+   "t": 67.0,
+   "say": "Timestamp, tenant, a name, and a bag of properties."
+  },
+  {
+   "t": 69.5,
+   "add": [
+    {
+     "id": "drop",
+     "type": "text",
+     "x": 300,
+     "y": 470,
+     "text": "dropped here? (lag > retention)",
+     "fontSize": 14,
+     "strokeColor": "#e03131"
+    }
+   ]
+  },
+  {
+   "t": 73.5,
+   "say": "My guess is we drop when the enricher lags past the topic's retention."
+  },
+  {
+   "t": 77.0,
+   "note": "retention on events.raw is 6h I believe"
+  },
+  {
+   "t": 81.0,
+   "say": "So check the numbers, and whether the collector itself sheds load before Kafka."
+  }
+ ],
+ "expect": {
+  "final_labels": [
+   "SDK",
+   "Collector",
+   "events.raw",
+   "Enricher",
+   "ClickHouse",
+   "batches of 500",
+   "~50k events/s",
+   "cmd/collector/server.go",
+   "x24 partitions",
+   "services/enricher/\nmain.py",
+   "~8k/s/pod, 4 pods?",
+   "p99 < 2s",
+   "their app | our cluster",
+   "dropped here? (lag > retention)"
+  ],
+  "absent_labels": [],
+  "arrows": [
+   [
+    "SDK",
+    "Collector"
+   ],
+   [
+    "Collector",
+    "events.raw",
+    "batches of 500"
+   ],
+   [
+    "events.raw",
+    "Enricher"
+   ],
+   [
+    "Enricher",
+    "ClickHouse"
+   ]
+  ],
+  "story": [
+   "the dashed vertical line separates the customer's app (left: SDK) from their own cluster (right: Collector, events.raw, Enricher, ClickHouse)",
+   "'~50k events/s' is the peak rate on the SDK \u2192 Collector arrow",
+   "the Collector is in cmd/collector/server.go and the Enricher in services/enricher/main.py",
+   "events.raw is a Kafka topic with 24 partitions (they are fairly sure), fed in batches of 500",
+   "'~8k/s/pod, 4 pods?' is about the Enricher, and they point out 4 \u00d7 8k/s is well under 50k/s: they think the Enricher is the bottleneck",
+   "'p99 < 2s' is their end-to-end latency promise, near the Enricher \u2192 ClickHouse arrow",
+   "the Event schema has four fields, one per line: ts int64, tenant_id string, name string, props map<string,any>",
+   "their guess is that events are dropped when the Enricher lags past events.raw's retention (they believe 6 h), and they want to know whether the Collector sheds load before Kafka"
+  ],
+  "partner_should_ask_about": [
+   "what the Collector does when Kafka is slow or full",
+   "how many Enricher pods actually run"
+  ]
+ }
+}

@@ -1,0 +1,72 @@
+{
+  "id": "driver-token-refresh-sequence",
+  "title": "Hand-drawn sequence diagram: driver app token refresh with a retry loop",
+  "persona": "Marco, an iOS engineer at a food-delivery company, chasing reports of drivers being logged out mid-shift, sketches the access-token refresh as a sequence diagram before asking an agent to explain what the auth code really does.",
+  "topic": "how the driver app refreshes an expired token mid-shift",
+  "realism": "Auth flows are the textbook case for a sequence diagram on a whiteboard: tall boxes for each party, numbered arrows down the page, dashed replies, and a box drawn around the steps that repeat. He corrects himself twice (where /token lives, who sends the new tokens back), which is how people really discover what they don't know about auth.",
+  "steps": [
+    { "t": 1.5, "say": "This is the token refresh in the driver app, when the access token expires in the middle of a shift." },
+    { "t": 3.0, "add": [ { "id": "app", "type": "rectangle", "x": 60, "y": 110, "width": 110, "height": 470, "label": "Driver app (iOS)" } ] },
+    { "t": 5.0, "add": [ { "id": "gw", "type": "rectangle", "x": 290, "y": 110, "width": 110, "height": 470, "label": "API gateway" } ] },
+    { "t": 7.5, "say": "Time goes down the page. The app on the left, the gateway next to it." },
+    { "t": 10.0, "add": [ { "id": "auth", "type": "rectangle", "x": 700, "y": 110, "width": 110, "height": 470, "label": "Auth0?" } ] },
+    { "t": 13.5, "say": "And the auth thing over here, I keep wanting to call it Auth0 but we moved off that last year." },
+    { "t": 15.0, "relabel": { "id": "auth", "label": "auth-svc" } },
+    { "t": 17.0, "say": "It's auth-svc now, our own service." },
+    { "t": 19.5, "add": [ { "id": "m1", "type": "arrow", "from": "app", "to": "gw", "label": "1 GET /orders" } ] },
+    { "t": 23.0, "say": "One, the app asks for its orders with the access token." },
+    { "t": 25.5, "add": [ { "id": "m2", "type": "arrow", "from": "gw", "x": 290, "y": 230, "points": [[0, 0], [-110, 6]], "label": "2 401 token_expired", "strokeStyle": "dashed" } ] },
+    { "t": 29.0, "say": "Two, the gateway comes back with a 401, token expired. Replies are dashed." },
+    { "t": 31.0, "reroute": { "id": "m2", "to": "app" } },
+    { "t": 33.0, "say": "That one should land on the app, there." },
+    { "t": 35.5, "add": [ { "id": "m3", "type": "arrow", "from": "app", "to": "gw", "label": "3 POST /token/refresh" } ] },
+    { "t": 39.0, "say": "Three, the app posts its refresh token to, um, the gateway?" },
+    { "t": 43.5, "say": "No, I'm pretty sure slash token isn't behind the gateway, the app goes straight to auth-svc for that." },
+    { "t": 45.0, "reroute": { "id": "m3", "to": "auth" } },
+    { "t": 49.0, "move": { "id": "auth", "x": 500, "y": 110 } },
+    { "t": 51.5, "add": [ { "id": "redis", "type": "rectangle", "x": 720, "y": 110, "width": 110, "height": 470, "label": "Redis" } ] },
+    { "t": 55.0, "say": "Squeezing auth over so Redis fits, that's where the refresh tokens live." },
+    { "t": 57.5, "add": [ { "id": "m4", "type": "arrow", "from": "auth", "to": "redis", "label": "4 check + rotate refresh token" } ] },
+    { "t": 62.0, "say": "Four, auth-svc looks the refresh token up and rotates it, so the old one is dead after this." },
+    { "t": 64.5, "add": [ { "id": "m5_wrong", "type": "arrow", "from": "redis", "to": "app", "label": "5 tokens", "strokeStyle": "dashed" } ] },
+    { "t": 67.5, "say": "Five, the new tokens go back to the app." },
+    { "t": 71.0, "say": "Well, not from Redis, that's wrong, Redis never talks to the app." },
+    { "t": 72.5, "delete": ["m5_wrong"] },
+    { "t": 74.5, "add": [ { "id": "m5", "type": "arrow", "from": "auth", "to": "app", "label": "5 new access + refresh", "strokeStyle": "dashed" } ] },
+    { "t": 77.5, "add": [ { "id": "m6", "type": "arrow", "from": "app", "to": "gw", "label": "6 retry GET /orders" } ] },
+    { "t": 81.0, "say": "And six, the app retries the original request with the new access token." },
+    { "t": 84.0, "pen": { "points": [[185, 300], [300, 296], [420, 298], [620, 304], [626, 410], [619, 520], [400, 526], [250, 522], [182, 518], [178, 410], [188, 306]] } },
+    { "t": 87.5, "add": [ { "id": "loop", "type": "text", "x": 190, "y": 595, "text": "loop: refresh retried up to 3x\nbackoff 1s, 2s, 4s, then log out", "fontSize": 16 } ] },
+    { "t": 92.0, "say": "This box is a loop, if the refresh itself fails with a 5xx it tries again, three times I think, and then it logs the driver out." },
+    { "t": 96.0, "note": "not sure what happens to other requests in flight while it refreshes, do they all try to refresh at once?" },
+    { "t": 99.5, "say": "That last part I genuinely don't know, and with rotation it might matter." }
+  ],
+  "expect": {
+    "final_labels": ["Driver app (iOS)", "API gateway", "auth-svc", "Redis", "1 GET /orders", "2 401 token_expired", "3 POST /token/refresh", "4 check + rotate refresh token", "5 new access + refresh", "6 retry GET /orders", "loop: refresh retried up to 3x\nbackoff 1s, 2s, 4s, then log out"],
+    "absent_labels": ["Auth0?", "5 tokens"],
+    "arrows": [
+      ["Driver app (iOS)", "API gateway", "1 GET /orders"],
+      ["API gateway", "Driver app (iOS)", "2 401 token_expired"],
+      ["Driver app (iOS)", "auth-svc", "3 POST /token/refresh"],
+      ["auth-svc", "Redis", "4 check + rotate refresh token"],
+      ["auth-svc", "Driver app (iOS)", "5 new access + refresh"],
+      ["Driver app (iOS)", "API gateway", "6 retry GET /orders"]
+    ],
+    "story": [
+      "the four tall boxes are lifelines (Driver app (iOS), API gateway, auth-svc, Redis) and time runs down the page; the numbers 1-6 on the arrows are the order",
+      "1 the app calls GET /orders, 2 the gateway replies 401 token_expired, 3 the app posts the refresh token, 4 auth-svc checks and rotates it in Redis, 5 auth-svc returns new access + refresh tokens, 6 the app retries GET /orders",
+      "dashed arrows are replies (2 and 5)",
+      "step 3 first went to the API gateway; he changed his mind: /token is not behind the gateway, the app calls auth-svc directly (he is 'pretty sure')",
+      "step 5 was first drawn from Redis to the app and deleted, because Redis never talks to the app; the new tokens come from auth-svc",
+      "auth-svc was labelled 'Auth0?' at first; they moved off Auth0 last year and it is their own service now",
+      "refresh tokens are rotated: after step 4 the old refresh token no longer works",
+      "the hand-drawn box around steps 3-5 is a loop: if the refresh fails with a 5xx it is retried up to 3 times with backoff 1s, 2s, 4s, then the driver is logged out (he thinks three times)",
+      "he does not know what other in-flight requests do while a refresh is happening, and suspects it matters because of rotation"
+    ],
+    "partner_should_ask_about": [
+      "when several requests get a 401 at once, does each one refresh, and what happens to the second refresh once the first has rotated the token?",
+      "is the retry loop only for 5xx, or does a 4xx from the refresh (token already rotated) go straight to logout?",
+      "is he sure /token/refresh bypasses the gateway (he was unsure and switched it)"
+    ]
+  }
+}

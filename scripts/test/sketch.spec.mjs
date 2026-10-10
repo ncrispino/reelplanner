@@ -1,0 +1,528 @@
+#!/usr/bin/env node
+// The sketch page (`reelplanner sketch`, docs/sketch.md), end to end in a headless browser with a fake microphone and
+// a stand-in speech recognizer:
+//   - the page loads its Excalidraw from the machine's vendor build, with the question and the repo's commit shown
+//   - recording composes the canvas with the voice: a webm with a video and an audio stream, seekable (ffmpeg's copy)
+//   - each spoken sentence ends a keyframe, paired with what was said; a typed note is timed, said, and on the canvas
+//   - edits are events on the recording's clock; an element that leaves the scene is a delete
+//   - Finish pauses the clock (and the recording); Keep sketching resumes it
+//   - Send saves the folder: sketch.md (boxes, the arrow between them by label, the note), session.json, the
+//     scene, the pictures; in a repo with a record, under .reelplanner/sketches/, with a .gitignore for the media
+//   - Download gives the same folder as a .zip
+//   - --once (how an agent runs it): with no question the box starts empty, and after Send the command exits 0 with
+//     `sketch: <folder>` as its last line; without it, the command stays up
+//   - no live transcript (no recognizer in the browser): after Send, local whisper (a stand-in for HyperFrames'
+//     `transcribe`) makes one from the recording before that last line; sketch.md pairs its words with the pictures
+//   - `sketch-transcribe <folder>` makes one for a saved sketch (replacing the browser's), and says so when nothing
+//     here can (no whisper.cpp, no API key)
+//   - --once and the page closed without Send: the command exits 1 after a grace a reload stays within, and it
+//     exits 1 when no page opens at all
+//   - the partner (a stand-in OpenAI-style server as the local model): the page names it, sends it the picture, the
+//     boxes and arrows and the words at a picture, shows its question beside the canvas and keeps it; NONE shows
+//     nothing; sketch.md lists the question in its place. OpenRouter: the recommended model and the key, by default;
+//     a partner named that cannot run says why; off shows no switch
+// usage: node scripts/test/sketch.spec.mjs
+import { chromium } from "playwright-core";
+import { spawn, execFileSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { chmodSync } from "node:fs";
+import { createServer } from "node:http";
+import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
+import { resolvePartner, askPartner, readAnswer, RECOMMENDED, drawMessages, mermaidIn } from "../lib/sketch-partner.mjs";
+import { deflateSync, crc32 } from "node:zlib";
+import { describeScene, sceneChanges } from "../lib/sketch-scene.mjs";
+const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
+// a note as a person writes one: Excalidraw's text tool, a click on the canvas, type, Escape
+async function typeOnCanvas(pg, x, y, text) {
+  await pg.evaluate(() => window.reelSketch.api.setActiveTool({ type: "text" })); await pg.waitForTimeout(150); await pg.mouse.click(x, y);
+  await pg.waitForSelector("textarea.excalidraw-wysiwyg");   // the editor open: else the keys are Excalidraw's shortcuts
+  await pg.keyboard.type(text, { delay: 10 }); await pg.keyboard.press("Escape");
+  await pg.evaluate(() => window.reelSketch.api.setActiveTool({ type: "selection" }));
+}
+
+// ---------- the partner's answer as it streams (no browser): LOOKING, then ASK or NONE ----------
+{
+  const r = (c, done, re = "") => readAnswer(c, re, done);
+  ok(r("LOOKING: the retry you were unsure of\nAS", false).text === "" && r("LOOKING: the retry you were unsure of\nAS", false).looking === "the retry you were unsure of"
+    && r("LOOKING: the retry\nASK: Where does the", false).text === "Where does the", "streaming: the looking line as soon as it is there, the question only after ASK:");
+  ok(r("LOOKING: nothing new\nNONE", true).text === null && r("NONE", true).text === null && r("LOOK", false).text === "", "NONE is no question; a half-written LOOKING is not shown as one");
+  ok(r('LOOKING: the loose arrow\nASK: Where does that "retry?" arrow end up?', true).text === 'Where does that "retry?" arrow end up?', "an ASK line is kept whole, a quoted label's ? and all");
+  ok(r("Where does the chunk index live?", true).text === "Where does the chunk index live?" && r("The unsure bit is retries. Where do retries happen?", true).text === "Where do retries happen?",
+    "an answer without the two lines is read as before: its last question");
+  ok(r("<think>the arrow has no end", false).thinking === "the arrow has no end" && r("<think>hm</think>LOOKING: x\nASK: Is it sync?", true).text === "Is it sync?" && r("", false, "weighing the cache").thinking === "weighing the cache",
+    "a model's thinking (<think>, or the reasoning field) is read apart from its answer");
+}
+
+// ---------- drawing what was said, and pictures (no browser): what the model is asked, what sketch.md says ----------
+{
+  const m = drawMessages({ question: "checkout", said: [{ t: 1, text: "the app sends the order" }], elements: [{ kind: "rectangle", label: "Checkout service" }] });
+  ok(/ONLY what they said/.test(m[0].content) && /dotted/.test(m[0].content) && m[1].content.includes('"Checkout service"') && m[1].content.includes("- the app sends the order"),
+    "Draw what I said: the model is told to draw only what was said (unsure as dotted), with the canvas's names and the words");
+  ok(mermaidIn("Sure:\n```mermaid\nflowchart LR\n  A-->B\n```") === "flowchart LR\n  A-->B" && mermaidIn("I can't") === null, "…its answer is the flowchart alone, fences and preamble off; none is none");
+  const pics = describeScene([{ id: "c", kind: "image", x: 0, y: 0, w: 9, h: 9, image: { name: "Kafka.svg", source: "Wikimedia Commons", license: "CC BY-SA 4.0", author: "Someone", page: "https://commons.wikimedia.org/wiki/File:Kafka.svg" } },
+    { id: "g", kind: "image", x: 0, y: 30, w: 9, h: 9, image: { name: "a declined card (made)", source: "made", model: "google/x-image", prompt: "a declined card" } }]).join("\n");
+  ok(pics.includes('- picture "Kafka.svg" (from Wikimedia Commons, CC BY-SA 4.0, by Someone: https://commons.wikimedia.org/wiki/File:Kafka.svg)') && pics.includes('(made by x-image from "a declined card")'),
+    "a picture found on Commons is told with its licence, author and page; a made one with its model and words");
+  const told = sceneChanges({ events: [{ t: 9, type: "mermaid", source: "flowchart LR\n  A-->B", from: "said", said_from: 1, said_to: 8 }] }).map((c) => c.text);
+  ok(/^inserted a diagram the model drew from what they said \(0:01–0:08\)/.test(told[0] || ""), `…and a diagram drawn from what was said, as that — ${told[0]}`);
+}
+
+// ---------- beyond boxes (no browser): an icon is one thing by its label, a picture by its file, a Mermaid insert ----------
+{
+  const part = (id, kind, x, y, more = {}) => ({ id, kind, x, y, w: 70, h: 20, icon: "database", iconGroup: "g1", groups: ["g1"], ...more });
+  const els = [
+    { id: "api", kind: "rectangle", label: "API", x: 0, y: 0, w: 120, h: 60 },
+    part("d1", "ellipse", 300, 0), part("d2", "line", 300, 10, { h: 50, w: 0 }), part("d3", "text", 310, 80, { text: "Orders DB", status: "new" }),
+    { id: "a1", kind: "arrow", from: "api", to: "d3", x: 120, y: 30, w: 180, h: 0 },
+    { id: "im", kind: "image", x: 0, y: 200, w: 200, h: 120, image: { name: "payments-vpc.svg", type: "image/svg+xml", words: "Payments VPC · Ledger" } },
+    { id: "em", kind: "embeddable", x: 300, y: 200, w: 300, h: 200, embed: "https://www.figma.com/file/abc" },
+  ];
+  const md = describeScene(els).join("\n");
+  ok(md.includes('- database "Orders DB"') && !/ellipse|line "|- line/.test(md) && md.includes('- "API" → "Orders DB"') && md.includes('- new: what they propose: "Orders DB"'),
+    `an icon's parts are one thing, named by its label: its arrows end on it, its mark is its own — ${md.split("**Arrows**")[0].slice(0, 160)}`);
+  ok(md.includes('- SVG picture "payments-vpc.svg" (the words in it: "Payments VPC · Ledger")') && md.includes('- web embed "https://www.figma.com/file/abc"'), "a picture by its file and an SVG's words; a web embed by its address");
+  const P = (t, type, id, more = {}) => ({ t, type, id, ...more });
+  const ch = sceneChanges({ events: [
+    P(1, "add", "d1", { kind: "ellipse", x: 300, y: 0, w: 70, h: 20, icon: "database", iconGroup: "g1" }), P(1, "add", "d2", { kind: "line", x: 300, y: 10, icon: "database", iconGroup: "g1" }),
+    P(1, "add", "d3", { kind: "text", text: "Database", x: 310, y: 80, icon: "database", iconGroup: "g1" }),
+    P(2.5, "update", "d3", { kind: "text", text: "Payments", icon: "database", iconGroup: "g1" }),   // naming it as it lands: not a rename
+    P(12, "update", "d3", { kind: "text", text: "Orders DB", icon: "database", iconGroup: "g1" }),
+    P(30, "update", "d1", { kind: "ellipse", x: 500, y: 300, icon: "database", iconGroup: "g1" }), P(30, "update", "d2", { kind: "line", x: 500, y: 310, icon: "database", iconGroup: "g1" }),
+    { t: 40, type: "mermaid", source: "flowchart LR\n  A --> B" },
+    P(60, "delete", "d1"), P(60, "delete", "d2"), P(60, "delete", "d3"),
+  ] }).map((c) => c.text);
+  ok(ch.length === 4 && ch[0] === 'renamed the database "Payments" → "Orders DB"' && /^moved "Orders DB"/.test(ch[1]) && /^inserted a Mermaid diagram \(`flowchart LR`, 1 line/.test(ch[2]) && ch[3] === 'erased the database "Orders DB"',
+    `an icon's changes are told once, as the icon's; a Mermaid insert is told — ${JSON.stringify(ch)}`);
+}
+
+// ---------- the picture and its changes in words (no browser): what sketch.md and the partner are told ----------
+{
+  const R = (id, label, x, y, more = {}) => ({ id, kind: "rectangle", label, x, y, w: 160, h: 80, ...more });
+  const scene = [
+    { id: "f", kind: "frame", name: "Region A", x: 40, y: 80, w: 500, h: 200 },
+    R("q", "Queue", 60, 120, { frame: "f", strokeStyle: "dashed" }), R("w", "Fetcher", 320, 120, { frame: "f" }),
+    R("db", "DB", 60, 400, { strokeColor: "#e03131", backgroundColor: "#ffc9c9", groups: ["g1"] }), { id: "c", kind: "ellipse", label: "Cache", x: 320, y: 400, w: 160, h: 80, groups: ["g1"] },
+    { id: "a", kind: "arrow", from: "q", to: "w", label: "pulls", x: 220, y: 160, w: 100, h: 0 }, { id: "a2", kind: "arrow", from: "w", x: 480, y: 160, w: 120, h: 40 },
+    { id: "t", kind: "text", text: "~50k/s", x: 240, y: 130, w: 60, h: 20 }, { id: "u", kind: "freedraw", x: 60, y: 486, w: 150, h: 8 },
+    { id: "o", kind: "freedraw", x: 300, y: 390, w: 200, h: 100 },
+  ];
+  const md = describeScene(scene).join("\n");
+  ok(md.includes(`frame "Region A": "Queue", "Fetcher"`) && md.includes(`rectangle "Queue" (dashed)`) && md.includes(`rectangle "DB" (red, filled light red)`), "scene: a frame by its name with what is in it; dashed and colours said in words");
+  ok(md.includes(`"Fetcher" → (nothing: a loose end)`) && md.includes(`"~50k/s" (next to the arrow "Queue" → "Fetcher")`) && md.includes(`- "DB", "Cache"`), "scene: a loose arrow end, a note tied to the arrow it sits by, a group");
+  ok(md.includes(`a freehand stroke: under "DB"`) && md.includes(`a freehand stroke: around "Cache"`) && /row 1: "Queue", "~50k\/s", "Fetcher"/.test(md), `scene: an underline and a circle by what they mark; rows left to right — ${md.split("\n").filter((l) => /freehand|row/.test(l)).join(" | ")}`);
+  const steps = describeScene([R("b", "Browser", 40, 100), R("g", "Gateway", 300, 100), R("o", "Orders", 560, 100),
+    { id: "a1", kind: "arrow", from: "b", to: "g", label: "1 POST /checkout", x: 200, y: 140, w: 100, h: 0 }, { id: "a3", kind: "arrow", from: "o", to: "b", label: "3 done", x: 300, y: 200, w: 260, h: 0 },
+    { id: "a2", kind: "arrow", from: "g", to: "o", label: "2. create order", x: 460, y: 140, w: 100, h: 0 }]).join("\n");
+  ok(steps.includes(`- 1: "Browser" → "Gateway" "POST /checkout"\n- 2: "Gateway" → "Orders" "create order"\n- 3: "Orders" → "Browser" "done"`) && steps.includes("Drawn in another order: 1, 3, 2"),
+    "scene: numbered arrows gathered in their numbers' order, and drawn out of order said so");
+  const ev = (t, type, id, more) => ({ t, type, id, ...more });
+  const redo = sceneChanges({ events: [
+    ev(1, "add", "a", { kind: "rectangle", x: 0, y: 0, w: 100, h: 60 }), ev(1, "add", "b", { kind: "rectangle", x: 300, y: 0, w: 100, h: 60 }),
+    ev(1, "add", "al", { kind: "text", in: "a", text: "API" }), ev(1, "add", "bl", { kind: "text", in: "b", text: "DB" }),
+    ev(2, "add", "x", { kind: "arrow", from: "a", to: "b" }), ev(2, "add", "xl", { kind: "text", in: "x", text: "async" }),
+    ev(4, "delete", "x", { kind: "arrow" }), ev(4, "delete", "xl", { kind: "text" }),
+    ev(30, "add", "y", { kind: "arrow", from: "b", to: "a" }), ev(30, "add", "yl", { kind: "text", in: "y", text: "sync" }),
+    ev(60, "delete", "y", { kind: "arrow" }), ev(61, "add", "z", { kind: "arrow", from: "a", to: "b" }), ev(61, "add", "zl", { kind: "text", in: "z", text: "write" }),
+  ] }).map((c) => c.text);
+  ok(redo[0] === `took back the arrow "async" ("API" → "DB"), drawn moments before` && redo[1] === `erased the arrow "sync" ("DB" → "API"), replaced by a new arrow "write" ("API" → "DB")`,
+    `changes: something erased right after it was drawn is taken back; an erase then a new one of its kind is a replacement — ${redo.join(" | ")}`);
+  const changes = sceneChanges({ events: [
+    ev(1, "add", "w", { kind: "rectangle", x: 100, y: 100, w: 160, h: 80 }), ev(1, "add", "wl", { kind: "text", in: "w", text: "Worker" }),
+    ev(1, "add", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(1, "add", "sl", { kind: "text", in: "s", text: "Store" }),
+    ev(1, "add", "a", { kind: "arrow", from: "w", to: "s", x: 260, y: 140, w: 140, h: 0 }),
+    ev(5, "update", "wl", { kind: "text", in: "w", text: "Fetch" }), ev(6, "update", "wl", { kind: "text", in: "w", text: "Fetcher" }),
+    ev(9, "add", "p", { kind: "rectangle", x: 100, y: 400, w: 160, h: 80 }), ev(9, "add", "pl", { kind: "text", in: "p", text: "Parser" }),
+    ev(12, "update", "a", { kind: "arrow", from: "w", to: "p", x: 180, y: 180, w: 0, h: 220 }),
+    ev(14, "update", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80, strokeStyle: "dashed" }),
+    ev(16, "update", "p", { kind: "rectangle", x: 600, y: 400, w: 160, h: 80 }),
+    ev(20, "delete", "s", { kind: "rectangle" }), ev(20, "delete", "sl", { kind: "text" }),
+    ev(22, "restore", "s", { kind: "rectangle", x: 400, y: 100, w: 160, h: 80 }), ev(22, "restore", "sl", { kind: "text", in: "s", text: "Store" }),
+  ] }).map((c) => c.text);
+  ok(changes.join(" | ") === [`renamed the rectangle "Worker" → "Fetcher"`, `rerouted the arrow ("Fetcher" → "Store") → now ("Fetcher" → "Parser")`, `restyled "Store": plain → dashed`,
+    `moved "Parser" (now below "Store")`, `erased the rectangle "Store"`, `brought back "Store" (undo or redo)`].join(" | "),
+    `changes: a rename in bursts told once, first name → last; a reroute; a restyle; a move by its new neighbour; an erase and an undo, each once — ${changes.join(" | ")}`);
+}
+
+// a scratch repo that keeps a record
+const repo = mkdtempSync(join(tmpdir(), "rp-sketch-"));
+execFileSync("git", ["init", "-q"], { cwd: repo });
+writeFileSync(join(repo, "a.txt"), "x\n");
+mkdirSync(join(repo, "src", "api"), { recursive: true }); writeFileSync(join(repo, "src", "api", "upload.ts"), "export {};\n");   // for Link to code
+mkdirSync(join(repo, ".reelplanner")); writeFileSync(join(repo, ".reelplanner", "decisions.json"), "[]\n");
+execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "add", "."], { cwd: repo });
+execFileSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"], { cwd: repo });
+const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repo, encoding: "utf8" }).trim();
+
+// a stand-in for HyperFrames' `transcribe` (local whisper) and a whisper.cpp for it to be found by: two sentences, the
+// second said after the last picture; and an environment with neither, nor any transcription API key
+const tools = mkdtempSync(join(tmpdir(), "rp-sketch-tools-"));
+// never this machine's ~/.reelplanner (its .env may hold a real OPENROUTER_API_KEY): the runner sets a home of its own,
+// and run alone the spec makes one, for itself and every command it starts
+process.env.REELPLANNER_HOME ||= join(tools, "home");
+const FAKE_HF = join(tools, "fake-hyperframes.mjs");
+writeFileSync(FAKE_HF, `import { writeFileSync, mkdirSync, appendFileSync } from "node:fs";
+import { join } from "node:path";
+const [cmd, ...a] = process.argv.slice(2), val = (f) => a[a.indexOf(f) + 1];
+appendFileSync(${JSON.stringify(join(tools, "calls.log"))}, JSON.stringify({ cmd, a }) + "\\n");
+if (cmd !== "transcribe") process.exit(2);
+mkdirSync(val("--dir"), { recursive: true });
+const w = (text, start) => ({ text, start, end: start + 0.08 });
+const silent = process.env.FAKE_SILENCE === "1";   // a voice for 3 s, then words made up in the silence after it
+writeFileSync(join(val("--dir"), "transcript.json"), JSON.stringify(silent
+  ? [w("Jobs", 0.5), w("go", 0.8), w("in", 1.1), w("the", 1.4), w("queue.", 1.7), w("I'm", 5), w("going", 5.5), w("to", 6), w("go", 6.5), w("ahead.", 7)]
+  : [w("The", 0.05), w("worker", 0.15), w("polls.", 0.25), w("Then", 30), w("it", 30.1), w("sleeps.", 30.2)]));
+`);
+const WHISPER = join(tools, "whisper-cli"); writeFileSync(WHISPER, "#!/bin/sh\nexit 0\n"); chmodSync(WHISPER, 0o755);
+const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^HYPERFRAMES_/.test(k) && !/_API_KEY$/.test(k)));
+// a stand-in for a local model server (Ollama's OpenAI-style API): it lists a text model and a vision one, asks one
+// question, then has none
+const calls = []; let warmups = 0, slowMs = 0;
+const drawCalls = [], imageCalls = []; let commonsQ = null;
+// a picture: a dark square on a wide white page (a made picture comes like that; the page cuts the white off)
+const PNG = (() => { const w = 120, h = 60, raw = Buffer.alloc((w * 4 + 1) * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * (w * 4 + 1) + 1 + x * 4, ink = x >= 50 && x < 70 && y >= 20 && y < 40; raw.fill(ink ? 30 : 255, i, i + 3); raw[i + 3] = 255; }
+  const chunk = (t, d) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const c = Buffer.alloc(4); c.writeUInt32BE(crc32(Buffer.concat([Buffer.from(t), d]))); return Buffer.concat([l, Buffer.from(t), d, c]); };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 6;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", ihdr), chunk("IDAT", deflateSync(raw)), chunk("IEND", Buffer.alloc(0))]); })();
+const fakeModel = createServer((req, res) => {
+  let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => {
+    res.setHeader("content-type", "application/json");
+    if (req.url === "/v1/models") return res.end(JSON.stringify({ data: [{ id: "llama3:8b" }, { id: "qwen2.5vl:7b" }] }));
+    // a stand-in Wikimedia Commons: one search, its pictures
+    if (req.url.startsWith("/w/api.php")) { commonsQ = new URL(req.url, "http://x").searchParams.get("gsrsearch");
+      return res.end(JSON.stringify({ query: { pages: { 1: { index: 1, title: "File:Kafka logo.svg", imageinfo: [{ thumburl: `${FAKE_HOST}/img/kafka.png`, url: `${FAKE_HOST}/img/kafka.png`, mime: "image/svg+xml", descriptionurl: "https://commons.wikimedia.org/wiki/File:Kafka_logo.svg",
+        extmetadata: { LicenseShortName: { value: "CC BY-SA 4.0" }, Artist: { value: "<a href='x'>Someone</a>" } } }] } } } })); }
+    if (req.url.startsWith("/img/")) { res.setHeader("content-type", "image/png"); return res.end(PNG); }
+    const j = JSON.parse(body || "{}");
+    if (j.modalities?.includes("image")) { imageCalls.push({ auth: req.headers.authorization, model: j.model, text: j.messages[0].content });
+      return res.end(JSON.stringify({ choices: [{ message: { content: "", images: [{ image_url: { url: `data:image/png;base64,${PNG.toString("base64")}` } }] } }] })); }
+    if (/Mermaid flowchart/.test(j.messages?.[0]?.content || "")) { drawCalls.push(j);
+      return res.end(JSON.stringify({ choices: [{ message: { content: "```mermaid\nflowchart LR\n  app[the app] -->|sends the order| co[checkout service]\n  co -.->|maybe it retries| co\n```" } }] })); }
+    if (j.messages?.length === 1) { warmups++; return res.end(JSON.stringify({ choices: [{ message: { content: "NONE" } }] })); }   // the warm-up at start
+    calls.push({ auth: req.headers.authorization || null, body: j });
+    if (slowMs) return setTimeout(() => res.end(JSON.stringify({ choices: [{ message: { content: "A question about a picture long gone?" } }] })), slowMs);
+    const answer = calls.length === 1 ? "LOOKING: the chunk index you mentioned\nASK: Where does the chunk index live?" : "LOOKING: the upload path again\nNONE";
+    if (!j.stream) return res.end(JSON.stringify({ choices: [{ message: { content: answer } }] }));
+    // streamed as a server does, a few characters at a time
+    res.writeHead(200, { "content-type": "text/event-stream" });
+    const parts = answer.match(/[\s\S]{1,6}/g); let n = 0;
+    const tick = setInterval(() => { if (n < parts.length) return res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: parts[n++] } }] })}\n\n`); clearInterval(tick); res.end("data: [DONE]\n\n"); }, 40);
+  });
+});
+await new Promise((r) => fakeModel.listen(0, "127.0.0.1", r));
+const FAKE_HOST = `http://127.0.0.1:${fakeModel.address().port}`, FAKE_BASE = `${FAKE_HOST}/v1`;
+const WITH_WHISPER = { ...clean, REELPLANNER_HYPERFRAMES_BIN: FAKE_HF, HYPERFRAMES_WHISPER_PATH: WHISPER, REELPLANNER_SKETCH_PARTNER: "off" };
+const NO_WHISPER = { ...clean, HOME: tools, PATH: join(tools, "empty-path"), REELPLANNER_SYSTEM_ROOT: join(tools, "no-system"), REELPLANNER_SKETCH_PARTNER: "off" };
+const PARTNER_LOCAL = { ...clean, REELPLANNER_SKETCH_PARTNER: "local", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE, REELPLANNER_SKETCH_PARTNER_GAP_S: "0" };
+const run = (args, env) => { try { return { code: 0, out: execFileSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), ...args], { cwd: repo, env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
+
+const port = testPort(8793);
+const srv = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "how upload resume works", "--port", String(port), "--no-open"], { cwd: repo, env: PARTNER_LOCAL, stdio: ["ignore", "pipe", "pipe"] });
+let said = ""; srv.stdout.on("data", (c) => (said += c));
+await serverUp(port, { child: srv, timeout: 120000 });
+
+const b = await chromium.launch(launchOpts({ args: [...launchOpts().args, "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] }));
+try {
+  const ctx = await b.newContext({ viewport: { width: 1280, height: 800 }, acceptDownloads: true });
+  const page = await ctx.newPage();
+  const errors = []; page.on("pageerror", (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    // a stand-in recognizer: it hears three sentences in all (across a pause and resume), each first as interim then final
+    const lines = ["the upload starts in the client", "it sends each chunk to the API", "a failed chunk is retried"];
+    window.SpeechRecognition = class { start() { if (this.on) return; this.on = 1; window.__heard ??= 0;
+      const r = (text, fin) => { const x = [{ transcript: text, confidence: 0.9 }]; x.isFinal = fin; return x; };
+      const say = () => { if (!this.on || window.__heard >= lines.length) return; const t = lines[window.__heard++];
+        this.onresult?.({ resultIndex: 0, results: [r(t, false)] });
+        setTimeout(() => { this.onresult?.({ resultIndex: 0, results: [r(t, true)] }); setTimeout(say, 1200); }, 400); };
+      setTimeout(say, 400); } stop() { this.on = 0; } };
+  });
+  await page.goto(`http://127.0.0.1:${port}/`);
+  await page.waitForFunction(() => window.reelSketch?.api, null, { timeout: 60000 });
+  ok(await page.inputValue("#question") === "how upload resume works", "the question from the command line is filled in");
+  ok((await page.textContent("#ctx")).includes(head.slice(0, 7)), `the repo's commit is shown — ${await page.textContent("#ctx")}`);
+  ok(await page.isVisible("#partner") && (await page.textContent("#partner-label")).includes("qwen2.5vl:7b on this machine"),
+    `the page names the partner, the local server's vision model — ${await page.textContent("#partner-label")}`);
+  const helpText = await page.textContent("#help");
+  ok(await page.isVisible("#help") && ["Record", "Double-click", "Finish", "Library", "Mermaid", "Link to code", "Today / New / Going", "Open up"].every((w) => helpText.includes(w)) && !(await page.$("#note")),
+    "a first visit opens How this works (three steps; the icons, Mermaid, pictures, the selection bar); there is no note box");
+
+  await page.click("#rec");
+  await page.waitForTimeout(300);
+  ok(!(await page.isVisible("#help")) && (await page.getAttribute("#help-btn", "aria-expanded")) === "false", "…Record closes it; ? in the bar brings it back");
+  await page.evaluate(() => {
+    const K = window.ExcalidrawKit, api = window.reelSketch.api;
+    api.updateScene({ elements: K.convertToExcalidrawElements([{ type: "rectangle", id: "scratch", x: 40, y: 40, label: { text: "Scratch" } }], { regenerateIds: false }) });
+  });
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    const K = window.ExcalidrawKit, api = window.reelSketch.api;
+    api.updateScene({ elements: K.convertToExcalidrawElements([
+      { type: "rectangle", id: "client", x: 120, y: 220, width: 200, height: 90, label: { text: "Client" } },
+      { type: "rectangle", id: "api", x: 560, y: 220, width: 200, height: 90, label: { text: "Upload API" } },
+      { type: "arrow", x: 320, y: 265, width: 240, height: 0, label: { text: "chunks" }, start: { id: "client" }, end: { id: "api" } },
+      { type: "rectangle", id: "ps", x: 120, y: 440, width: 90, height: 70, label: { text: "PaymentService" } },   // too narrow: Excalidraw wraps it
+    ], { regenerateIds: false }) });
+  });
+  // the partner's answer as it streams in: what it is looking at first, then the question typed out
+  await page.evaluate(() => { const seen = window.__seen = { think: [], ask: [] };
+    new MutationObserver(() => { const t = document.querySelector("#think-text").textContent, q = document.querySelector("#ask-text").textContent;
+      if (t && seen.think.at(-1) !== t) seen.think.push(t); if (q && seen.ask.at(-1) !== q) seen.ask.push(q); }).observe(document.querySelector("#side"), { subtree: true, childList: true, characterData: true }); });
+  await page.waitForTimeout(4200); // the three sentences
+  await page.waitForSelector("#ask[data-done]", { timeout: 15000 }).catch(() => {});
+  ok(await page.isVisible("#ask") && (await page.textContent("#ask-text")) === "Where does the chunk index live?" && (await page.textContent("#ask-about")) === "looking at: the chunk index you mentioned",
+    `the partner's question is shown beside the canvas, with what it looked at — ${await page.textContent("#ask")}`);
+  const seen = await page.evaluate(() => window.__seen);
+  ok(seen.think.some((t) => /is looking at your picture/.test(t)) && seen.think.some((t) => t === "Looking at: the chunk index you mentioned") && seen.ask.length >= 3 && seen.ask.at(-1) === "Where does the chunk index live?",
+    `…streamed: the looking line first, then the question in ${seen.ask.length} steps — ${JSON.stringify(seen).slice(0, 300)}`);
+  const first = calls[0]?.body, userText = first?.messages?.[1]?.content?.[0]?.text || "";
+  ok(first?.model === "qwen2.5vl:7b" && !calls[0].auth && first.messages[1].content.some((c) => c.type === "image_url" && c.image_url.url.startsWith("data:image/png;base64,")),
+    "…asked of the local model, with no key, with the picture");
+  ok(warmups === 1, `…which was loaded once when the command started — ${warmups}`);
+  ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`"Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
+    `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
+  ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes("- Where does the chunk index live?")), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
+  await page.mouse.move(220, 265, { steps: 6 }); await page.waitForTimeout(900);   // pointing at Client, then the API
+  await page.mouse.move(660, 265, { steps: 6 }); await page.waitForTimeout(600);   // (and while the text tool is picked)
+  await typeOnCanvas(page, 300, 620, "not sure where the chunk index lives");
+  await page.waitForTimeout(800);
+
+  await page.click("#finish");
+  await page.waitForSelector("#review.open");
+  const c1 = await page.evaluate(() => window.reelSketch.clock()); await page.waitForTimeout(700);
+  const c2 = await page.evaluate(() => window.reelSketch.clock());
+  ok(c1 === c2, `the clock stops while Finish is open (${c1} then ${c2})`);
+  await page.click("#keep"); await page.waitForTimeout(700);
+  ok(await page.evaluate(() => window.reelSketch.clock()) > c2, "Keep sketching starts the clock again");
+  await page.click("#finish"); await page.waitForSelector("#review.open");
+  ok((await page.locator("#transcript p").count()) === 5 && (await page.locator("#transcript p.asked").count()) === 1, "the panel lists the three sentences, the note and the question asked");
+  ok((await page.locator("#frames .kf img").count()) >= 3, `a picture at each pause — ${await page.locator("#frames .kf").count()}`);
+  await page.fill("#feedback", "guessing on retries");
+  await page.click("#send");
+  await page.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  ok((await page.textContent("#sent")).includes(".reelplanner/sketches/"), `Send says where it went — ${await page.textContent("#sent")}`);
+  ok(!errors.length, `no page errors — ${errors.join(" | ")}`);
+
+  const base = join(repo, ".reelplanner", "sketches"), name = readdirSync(base).find((n) => !n.startsWith("."));
+  const dir = join(base, name || "none");
+  ok(/^\d{4}-\d{2}-\d{2}-upload-resume-works$/.test(name || ""), `the folder is named by the day and the question — ${name}`);
+  for (const f of ["sketch.md", "session.json", "final.excalidraw", "final.png", "recording.webm", "keyframes/kf-001.png"]) ok(existsSync(join(dir, f)), `saved ${f}`);
+  ok(readFileSync(join(base, ".gitignore"), "utf8").includes("*/recording.*"), "the recording and pictures are kept out of git");
+  const s = JSON.parse(readFileSync(join(dir, "session.json"), "utf8"));
+  ok(s.format === "reelplanner-sketch/1" && s.context.commit === head && s.feedback === "guessing on retries", "session.json: format, commit, the note at Send");
+  ok(s.transcript.segments.map((x) => x.text).join("|") === "the upload starts in the client|it sends each chunk to the API|a failed chunk is retried", `the transcript, in order — ${JSON.stringify(s.transcript.segments)}`);
+  ok(s.transcript.segments.every((x, i, a) => x.t1 >= x.t0 && (!i || x.t0 >= a[i - 1].t1)), "each sentence has a start and an end, in order, on one clock");
+  ok(s.keyframes.some((k) => k.said === "the upload starts in the client" && k.file), `a keyframe pairs a picture with what was said — ${JSON.stringify(s.keyframes)}`);
+  ok(s.notes.length === 1 && s.notes[0].text === "not sure where the chunk index lives" && s.notes[0].elementId && s.keyframes.some((k) => k.said.includes("(typed) not sure")),
+    `text typed on the canvas is a note: timed, and in a keyframe (box labels are not notes) — ${JSON.stringify(s.notes)}`);
+  ok(s.events.some((e) => e.type === "delete" && e.id === "scratch"), "an element replaced out of the scene is a delete");
+  ok(s.events.some((e) => e.type === "add" && e.kind === "arrow" && e.from === "client" && e.to === "api"), "the arrow's ends are in its add event");
+  ok(s.final.elements.find((e) => e.id === "ps")?.label === "PaymentService" && !s.events.some((e) => /PaymentServic\n/.test(e.text || "")),
+    `a label wrapped to fit its box is kept as typed — ${JSON.stringify(s.final.elements.find((e) => e.id === "ps")?.label)}`);
+  ok(s.partner?.provider === "local" && s.partner.model === "qwen2.5vl:7b" && s.partner.on === true && s.partner.questions.length === 1
+    && s.partner.questions[0].text === "Where does the chunk index live?" && s.partner.questions[0].looking === "the chunk index you mentioned" && s.partner.questions[0].after_picture >= 1, `session.json keeps the question, after which picture — ${JSON.stringify(s.partner)}`);
+  const md = readFileSync(join(dir, "sketch.md"), "utf8");
+  ok(md.includes(`"Client" → "Upload API" (labeled "chunks")`) && md.includes("> guessing on retries") && md.includes("not sure where the chunk index lives"), "sketch.md: the arrow by its boxes' labels, the note, the typed text");
+  ok(s.pointer.some((p) => p.id === "client") && s.pointer.some((p) => p.id === "api") && /\(typed\) not sure where the chunk index lives _\(pointing at "Client", "Upload API"\)_/.test(md),
+    `the pointer resting on a box is kept, and told with what was said then — ${JSON.stringify(s.pointer)} ${md.split("\n").find((l) => /pointing/.test(l))}`);
+  ok(/\*\*\d:\d\d\*\* _changed:_ took back the rectangle "Scratch", drawn moments before/.test(md) && /\*\*Where things are\*\*/.test(md), `sketch.md: the box drawn and replaced moments later is told as taken back, in its place; and where things are — ${md.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
+  ok(/\*\*Questions while sketching:\*\* 1 from qwen2\.5vl:7b on their machine/.test(md) && /\*\*\d:\d\d\*\* _asked:_ Where does the chunk index live\?/.test(md), "sketch.md: who asked, and the question in its place");
+  try {
+    const probe = execFileSync("ffprobe", ["-v", "error", "-show_entries", "stream=codec_type:format=duration", "-of", "json", join(dir, "recording.webm")], { encoding: "utf8" });
+    const p = JSON.parse(probe), kinds = p.streams.map((x) => x.codec_type).sort().join();
+    ok(kinds === "audio,video" && Number(p.format.duration) > 3, `the recording has the canvas and the voice, with a duration — ${kinds}, ${p.format.duration}`);
+  } catch { console.log("· no ffprobe here: the recording's streams are not checked"); }
+  ok(said.includes("✓ sketch saved") && said.includes("reelplanner explain"), "the command says where it went and what to run next");
+  ok(!said.includes("transcribing"), "with a live transcript, nothing is transcribed after Send");
+
+  // sketch-transcribe: nothing here to do it; then local whisper, in place of the browser's transcript
+  const rel = join(".reelplanner", "sketches", name);
+  const none = run(["sketch-transcribe", rel], NO_WHISPER);
+  ok(none.code === 1 && /nothing here can transcribe it: whisper\.cpp is not installed .*no transcription API key/.test(none.out), `sketch-transcribe with no whisper and no key says so — ${none.out}`);
+  const tx = run(["sketch-transcribe", rel], WITH_WHISPER);
+  const s2 = JSON.parse(readFileSync(join(dir, "session.json"), "utf8")), md2 = readFileSync(join(dir, "sketch.md"), "utf8");
+  ok(tx.code === 0 && /✓ 6 words in 2 sentences \(local whisper small\.en\)/.test(tx.out), `sketch-transcribe runs local whisper — ${tx.out}`);
+  ok(s2.transcript.source === "whisper" && s2.transcript.replaced === "browser-speech" && s2.transcript.lang === "en"
+    && s2.transcript.segments.map((x) => x.text).join("|") === "The worker polls.|Then it sleeps.", `…its sentences replace the browser's — ${JSON.stringify(s2.transcript)}`);
+  ok(s2.keyframes[0].said.startsWith("The worker polls.") && s2.keyframes.some((k) => k.said.includes("(typed) not sure")), `…each picture's words made again, the typed note kept — ${JSON.stringify(s2.keyframes.map((k) => k.said))}`);
+  // whisper makes words up in silence: a sentence wholly in it is dropped, a real one kept whole
+  const quiet = join(repo, "quiet"); mkdirSync(quiet);
+  execFileSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "sine=frequency=300:duration=3", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=mono", "-filter_complex", "[1]atrim=duration=6[s];[0][s]concat=n=2:v=0:a=1", "-c:a", "libopus", join(quiet, "recording.webm")]);
+  writeFileSync(join(quiet, "session.json"), JSON.stringify({ format: "reelplanner-sketch/1", question: "q", recording: { file: "recording.webm", has_audio: true }, transcript: { source: "none", lang: "en-US", segments: [] }, notes: [], keyframes: [{ n: 1, t: 2.5, said: "" }, { n: 2, t: 8.5, said: "" }], events: [], final: { elements: [] } }));
+  const q = run(["sketch-transcribe", "quiet"], { ...WITH_WHISPER, FAKE_SILENCE: "1" }), qs = JSON.parse(readFileSync(join(quiet, "session.json"), "utf8"));
+  ok(q.code === 0 && qs.transcript.segments.map((x) => x.text).join("|") === "Jobs go in the queue." && qs.transcript.dropped_in_silence === 5 && qs.keyframes[0].said === "Jobs go in the queue." && qs.keyframes[1].said === "",
+    `words made up in silence are dropped; the real sentence is kept, with its picture — ${JSON.stringify(qs.transcript)} ${q.out}`);
+  ok(md2.includes("**Transcript:** local whisper small.en, from the recording") && /\*\*0:30\*\* Then it sleeps\. _\(said after the last picture\)_/.test(md2), "…and sketch.md says where its words came from, and what was said after the last picture");
+
+  // what a whiteboard cannot do, from the bar shown when something is selected: Link to code (the note box lists the
+  // repo's files), Today / New / Going (a tag on it), Open up (a frame for its insides; the view goes there; Back)
+  const p6 = await ctx.newPage(); await p6.goto(`http://127.0.0.1:${port}/`); await p6.waitForFunction(() => window.reelSketch?.api);
+  await p6.click("#rec"); await p6.waitForTimeout(300);
+  await p6.evaluate(() => { const K = window.ExcalidrawKit; window.reelSketch.api.updateScene({ elements: K.convertToExcalidrawElements([
+    { type: "rectangle", id: "web", x: 260, y: 220, width: 180, height: 80, label: { text: "Web app" } },
+    { type: "rectangle", id: "up", x: 560, y: 220, width: 180, height: 80, label: { text: "Upload API" } },
+    { type: "rectangle", id: "ftp", x: 560, y: 420, width: 180, height: 80, label: { text: "FTP drop" } }], { regenerateIds: false }) }); });
+  await p6.waitForTimeout(300); await p6.mouse.click(650, 245); await p6.waitForSelector("#sel.show");
+  ok((await p6.textContent("#sel-what")).includes("Upload API"), `selecting a box shows the bar, naming it — ${await p6.textContent("#sel-what")}`);
+  await p6.click("#sel-link"); await p6.keyboard.type("upl"); await p6.waitForSelector("#files li[role=option]");
+  ok((await p6.textContent("#files li[role=option]")) === "src/api/upload.ts", `Link to code: the note box lists the repo's files for what is typed — ${await p6.textContent("#files")}`);
+  await p6.keyboard.press("Enter"); await p6.waitForTimeout(300);
+  ok(await p6.evaluate(() => window.reelSketch.api.getSceneElements().find((e) => e.id === "up").link) === "src/api/upload.ts" && !(await p6.isVisible("#files")), "…Enter links it, and is not a note");
+  await p6.mouse.click(650, 445); await p6.click('[data-status="going"]'); await p6.mouse.click(650, 245); await p6.click('[data-status="new"]'); await p6.waitForTimeout(300);
+  const tags = await p6.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.customData?.tagFor).map((e) => `${e.customData.tagFor}:${e.text}`).sort().join(","));
+  ok(tags === "ftp:− going,up:+ new" && await p6.getAttribute('[data-status="new"]', "aria-pressed") === "true", `Today / New / Going: a tag on each, the button pressed — ${tags}`);
+  await p6.click("#sel-open"); await p6.waitForTimeout(900);
+  // where things are on screen, and whether the page's own cards (the topic and question column, the selection and
+  // note bars) cover any of it
+  const clear = (ids) => p6.evaluate((ids) => {
+    const a = window.reelSketch.api, s = a.getAppState(), z = s.zoom.value, els = a.getSceneElements().filter((e) => !ids || ids.includes(e.id));
+    const r = { x0: Math.min(...els.map((e) => (e.x + s.scrollX) * z)), y0: Math.min(...els.map((e) => (e.y + s.scrollY) * z)),
+      x1: Math.max(...els.map((e) => (e.x + e.width + s.scrollX) * z)), y1: Math.max(...els.map((e) => (e.y + e.height + s.scrollY) * z)) };
+    const hit = ["#side", "#sel", "#bar"].filter((q) => { const b = document.querySelector(q).getBoundingClientRect(); return b.width && b.left < r.x1 && b.right > r.x0 && b.top < r.y1 && b.bottom > r.y0; });
+    return { inView: r.x0 >= 0 && r.y0 >= 0 && r.x1 <= innerWidth && r.y1 <= innerHeight, hit, zoom: +z.toFixed(2), r: Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v)])) };
+  }, ids);
+  const opened = await p6.evaluate(() => { const a = window.reelSketch.api, f = a.getSceneElements().find((e) => e.type === "frame"); return { id: f?.id, name: f?.name, inside: f?.customData?.inside, sel: window.reelSketch.selected() }; });
+  const onFrame = await clear([opened.id]);
+  ok(opened.name === "inside Upload API" && opened.inside === "up" && onFrame.inView && !onFrame.hit.length && onFrame.zoom > 1 && (await p6.textContent("#sel-open")) === "Back",
+    `Open up: a frame "inside Upload API", the view on it (closer, all in view, under none of the page's cards), Back offered — ${JSON.stringify({ ...opened, ...onFrame })}`);
+  await p6.click("#sel-open"); await p6.waitForTimeout(900);
+  const whole = await clear(null);
+  ok(whole.inView && !whole.hit.length, `…Back: the whole picture in view, under none of the page's cards — ${JSON.stringify(whole)}`);
+  await p6.click("#finish"); await p6.waitForSelector("#review.open"); await p6.click("#send"); await p6.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  const d6 = join(repo, (await p6.textContent("#sent")).match(/Saved to (\S+?)\. /)[1]), md6 = readFileSync(join(d6, "sketch.md"), "utf8");
+  ok(md6.includes('_changed:_ linked "Upload API" to `src/api/upload.ts`') && md6.includes('_changed:_ marked "FTP drop" as going away') && md6.includes('_changed:_ opened up "Upload API" into a frame'),
+    `sketch.md tells the link, the marks and the opening up, in their place — ${md6.split("\n").filter((l) => /_changed:_/.test(l)).join(" | ")}`);
+  ok(md6.includes('- new: what they propose: "Upload API"') && md6.includes('- going away: "FTP drop"') && md6.includes('- "Upload API" → `src/api/upload.ts`') && md6.includes('frame "inside Upload API" (what is inside "Upload API", opened up from it)') && !/"\+ new"|"− going"|labeled "inside"/.test(md6),
+    "…and in the final drawing: today vs proposed, linked to code, the frame opened up from its box; the tags are not loose text");
+  await p6.close();
+
+  // Download: the same folder as a .zip, from a fresh page
+  const p2 = await ctx.newPage(); await p2.goto(`http://127.0.0.1:${port}/`); await p2.waitForFunction(() => window.reelSketch?.api);
+  await p2.click("#rec"); await p2.waitForTimeout(400); await p2.click("#finish"); await p2.waitForSelector("#review.open");
+  const dl = p2.waitForEvent("download"); await p2.click("#download");
+  const zip = join(repo, "dl.zip"); await (await dl).saveAs(zip);
+  const bytes = readFileSync(zip);
+  ok(bytes.readUInt32LE(0) === 0x04034b50 && bytes.includes(Buffer.from("/session.json")) && bytes.includes(Buffer.from("/recording.webm")), "Download gives a .zip of the folder");
+  ok(srv.exitCode == null, "without --once the command stays up after Send");
+
+  // --once with no question, in a browser with no recognizer: the box starts empty; after Send local whisper makes the
+  // transcript, then the command exits 0, its last line the folder
+  const port2 = testPort(8794, 1);
+  const once = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "--once", "--port", String(port2), "--no-open"], { cwd: repo, env: WITH_WHISPER, stdio: ["ignore", "pipe", "pipe"] });
+  let out2 = ""; once.stdout.on("data", (c) => (out2 += c));
+  const exited = new Promise((r) => once.on("exit", (code) => r(code)));
+  await serverUp(port2, { child: once, timeout: 60000 });
+  const p3 = await ctx.newPage(); await p3.addInitScript(() => { delete window.SpeechRecognition; delete window.webkitSpeechRecognition; });
+  await p3.goto(`http://127.0.0.1:${port2}/`); await p3.waitForFunction(() => window.reelSketch?.api);
+  ok(await p3.inputValue("#question") === "", "with no question given, the box starts empty");
+  ok(!(await p3.isVisible("#partner")), "partner off: no switch on the page");
+  await p3.click("#rec"); await p3.waitForTimeout(400);
+  await p3.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Worker" } }]) }); });
+  await p3.waitForTimeout(400);
+  await p3.click("#finish"); await p3.waitForSelector("#review.open"); await p3.click("#send");
+  await p3.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  ok((await p3.textContent("#sent")).includes("you can close this tab") && (await p3.textContent("#sent")).includes("transcribed on this machine (local whisper small.en)"),
+    `the page says the agent has it, and that the voice is being transcribed — ${await p3.textContent("#sent")}`);
+  await p3.close();   // gone before the command exits: Send was made, so this is not "closed without Send"
+  const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r("still running"), 30000))]);
+  const last = out2.trim().split("\n").pop();
+  ok(code === 0, `--once exits after Send — ${code}`);
+  ok(/^sketch: \.reelplanner\/sketches\/\d{4}-\d{2}-\d{2}-sketch$/.test(last) && existsSync(join(repo, last.slice("sketch: ".length), "sketch.md")),
+    `its last line names the folder, "sketch" when no question was given — ${last}`);
+  if (once.exitCode == null) once.kill();
+  const s3 = JSON.parse(readFileSync(join(repo, last.slice("sketch: ".length), "session.json"), "utf8"));
+  ok(s3.transcript.source === "whisper" && s3.transcript.segments.length === 2 && !s3.transcript.replaced && s3.keyframes.some((k) => k.said.startsWith("The worker polls.")),
+    `with no live transcript, local whisper made one before that line — ${JSON.stringify(s3.transcript)} ${JSON.stringify(s3.keyframes)}`);
+  ok(out2.indexOf("✓ 6 words") >= 0 && out2.indexOf("✓ 6 words") < out2.lastIndexOf("sketch: "), "…and said so before it");
+
+  // --once, the page reloaded (stays up) and then closed without Send (exits 1, says so); and no page at all
+  const port3 = testPort(8795, 2);
+  const shut = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "x", "--once", "--port", String(port3), "--no-open"], { cwd: repo, env: { ...WITH_WHISPER, REELPLANNER_SKETCH_GRACE_S: "3" }, stdio: ["ignore", "pipe", "pipe"] });
+  let out3 = ""; shut.stdout.on("data", (c) => (out3 += c)); shut.stderr.on("data", (c) => (out3 += c));
+  const shutExit = new Promise((r) => shut.on("exit", (c) => r(c)));
+  await serverUp(port3, { child: shut, timeout: 60000 });
+  const p4 = await ctx.newPage(); await p4.goto(`http://127.0.0.1:${port3}/`); await p4.waitForFunction(() => window.reelSketch?.api);
+  await p4.reload(); await p4.waitForFunction(() => window.reelSketch?.api); await p4.waitForTimeout(3500);
+  ok(shut.exitCode == null, "--once: a reload is not a close");
+  const closedAt = Date.now(); await p4.close();
+  const shutCode = await Promise.race([shutExit, new Promise((r) => setTimeout(() => r("still running"), 15000))]);
+  ok(shutCode === 1 && /✗ sketch: the page was closed without Send; nothing was saved/.test(out3) && !/^sketch: /m.test(out3),
+    `--once: the page closed without Send, it exits 1 and says so (${Math.round((Date.now() - closedAt) / 100) / 10} s) — ${shutCode} ${out3}`);
+  if (shut.exitCode == null) shut.kill();
+  const lone = run(["sketch", "--once", "--port", String(testPort(8796, 3)), "--no-open"], { ...WITH_WHISPER, REELPLANNER_SKETCH_OPEN_WAIT_S: "1" });
+  ok(lone.code === 1 && /✗ sketch: no page opened in 1 s/.test(lone.out), `--once: no page opened, it exits 1 — ${lone.out}`);
+
+  // a partner too slow to keep up (a local model on a busy CPU): an answer later than stale_s is not shown, and after
+  // two the questions stop for this sketch
+  slowMs = 1600;
+  const port5 = testPort(8798, 5);
+  const slow = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "x", "--port", String(port5), "--no-open"], { cwd: repo, env: { ...PARTNER_LOCAL, REELPLANNER_SKETCH_PARTNER_STALE_S: "1" }, stdio: "ignore" });
+  await serverUp(port5, { child: slow, timeout: 60000 });
+  const p5 = await ctx.newPage(); await p5.addInitScript(() => { delete window.SpeechRecognition; delete window.webkitSpeechRecognition; });
+  await p5.goto(`http://127.0.0.1:${port5}/`); await p5.waitForFunction(() => window.reelSketch?.api);
+  await p5.click("#rec"); await p5.waitForTimeout(300);
+  await p5.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Queue" } }]) }); });
+  await typeOnCanvas(p5, 400, 500, "the queue holds jobs");
+  await p5.waitForFunction(() => /not shown/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
+  ok(!(await p5.isVisible("#ask")) && /took \d+ s to ask \(about an earlier picture\): not shown/.test(await p5.textContent("#status")), `a late answer is not shown, and the page says why — ${await p5.textContent("#status")}`);
+  await typeOnCanvas(p5, 400, 600, "workers pull from it");
+  await p5.waitForFunction(() => /questions are off/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
+  ok(!(await p5.isChecked("#partner-on")) && !(await p5.isVisible("#ask")), `…after two, the questions stop for this sketch — ${await p5.textContent("#status")}`);
+  slow.kill(); await p5.close(); slowMs = 0;
+
+  // Draw what I said (said: "draw that"), a picture found (said: "find a picture of …") and one made: the model's
+  // flowchart opens in the Mermaid dialog for them to insert; a picture is placed by a click, its white margin cut
+  const port7 = testPort(8799, 6);
+  const pics = spawn(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "sketch", "checkout", "--port", String(port7), "--no-open"], { cwd: repo,
+    env: { ...PARTNER_LOCAL, REELPLANNER_SKETCH_PARTNER_GAP_S: "999", REELPLANNER_SKETCH_COMMONS_URL: `${FAKE_HOST}/w/api.php`, OPENROUTER_API_KEY: "k-test" }, stdio: "ignore" });
+  await serverUp(port7, { child: pics, timeout: 60000 });
+  const p7 = await ctx.newPage();
+  await p7.addInitScript(() => { window.SpeechRecognition = class { start() { window.__rec = this; } stop() {} };
+    window.__say = (text) => { const x = [{ transcript: text, confidence: 0.9 }]; x.isFinal = true; window.__rec?.onresult?.({ resultIndex: 0, results: [x] }); }; });
+  await p7.goto(`http://127.0.0.1:${port7}/`); await p7.waitForFunction(() => window.reelSketch?.api); await p7.waitForTimeout(400);
+  ok(await p7.isVisible("#draw") && await p7.isVisible("#pic") && await p7.isVisible("#pic-make") === false, "with a partner: Draw what I said and Picture in the bar");
+  await p7.click("#rec"); await p7.waitForTimeout(300);
+  for (const t of ["The app sends the order to the checkout service.", "Maybe it retries.", "Okay, draw that."]) { await p7.evaluate((x) => window.__say(x), t); await p7.waitForTimeout(250); }
+  await p7.waitForSelector(".ttd-dialog textarea", { timeout: 15000 }).catch(() => {}); await p7.waitForTimeout(600);
+  const src = await p7.inputValue(".ttd-dialog textarea").catch(() => "");
+  ok(src.startsWith("flowchart LR") && src.includes("checkout service") && drawCalls.length === 1 && drawCalls[0].messages[1].content.includes("- The app sends the order") && !drawCalls[0].messages[1].content.includes("draw that"),
+    `"draw that": the model's flowchart of what was said (the command itself left out) opens in the Mermaid dialog, not yet on the canvas — ${JSON.stringify(src.slice(0, 80))}`);
+  await p7.locator(".ttd-dialog button", { hasText: /insert/i }).click(); await p7.waitForTimeout(500);
+  const drew = await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "text").map((e) => e.text));
+  ok(drew.includes("the app") && drew.includes("checkout service"), `…Insert puts it on the canvas, as boxes to change — ${drew.join(", ")}`);
+  await p7.evaluate(() => window.reelSketch.api.updateScene({ appState: { selectedElementIds: {} } }));
+  await p7.evaluate(() => window.__say("Find a picture of the Kafka logo."));
+  await p7.waitForSelector("#pic-grid button", { timeout: 15000 }).catch(() => {});
+  ok(await p7.isVisible("#pics") && commonsQ?.startsWith("the Kafka logo") && (await p7.textContent("#pic-grid")).includes("CC BY-SA 4.0"), `"find a picture of …": Wikimedia Commons is searched for it, each result with its licence — ${commonsQ}`);
+  await p7.locator("#pic-grid button").first().click();
+  await p7.waitForFunction(() => window.reelSketch.api.getSceneElements().some((e) => e.type === "image"), null, { timeout: 10000 }).catch(() => {});
+  const placed = await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "image").map((e) => [Math.round(e.width), Math.round(e.height)]));
+  ok(placed.length === 1 && placed[0][0] < 60 && !(await p7.isVisible("#pics")), `…a click places it, its white margin cut off (the dark square only) — ${JSON.stringify(placed)}`);
+  await p7.click("#pic"); await p7.fill("#pic-q", "a declined card"); await p7.click("#pic-make");
+  await p7.waitForSelector("#pic-grid button", { timeout: 15000 }).catch(() => {}); await p7.locator("#pic-grid button").first().click(); await p7.waitForTimeout(800);
+  ok(imageCalls.length === 1 && imageCalls[0].auth === "Bearer k-test" && imageCalls[0].text.includes("a declined card") && (await p7.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.type === "image").length)) === 2,
+    `Make one: the image model makes it from the words (OpenRouter key), and a click places it — ${JSON.stringify(imageCalls.map((c) => c.model))}`);
+  await p7.click("#finish"); await p7.waitForSelector("#review.open"); await p7.click("#send"); await p7.waitForFunction(() => document.querySelector("#sent").style.display === "block", null, { timeout: 60000 });
+  const md7 = readFileSync(join(repo, (await p7.textContent("#sent")).match(/Saved to (\S+?)\. /)[1], "sketch.md"), "utf8");
+  ok(/_changed:_ inserted a diagram the model drew from what they said \(0:0\d–0:0\d\)/.test(md7) && md7.includes("drawn by the model from what they said")
+    && md7.includes('_changed:_ put in a picture from Wikimedia Commons: "Kafka logo.svg"') && md7.includes("(from Wikimedia Commons, CC BY-SA 4.0, by Someone: https://commons.wikimedia.org/wiki/File:Kafka_logo.svg)")
+    && /made by gemini-[\w.-]+-image from "a declined card"/.test(md7),
+    `sketch.md tells the drawn diagram as the model's from their words, and each picture with where it came from — ${md7.split("\n").filter((l) => /_changed:_|picture "/.test(l)).join(" | ")}`);
+  pics.kill(); await p7.close();
+
+  // OpenRouter, by default when its key is set: the recommended model, the key sent; a partner named that can't run says why
+  const or = await resolvePartner({ dir: repo, env: { OPENROUTER_API_KEY: "k-test", REELPLANNER_SKETCH_BASE_URL: FAKE_BASE } });
+  ok(or.provider === "openrouter" && or.model === RECOMMENDED && RECOMMENDED === "anthropic/claude-sonnet-5.5", `auto with OPENROUTER_API_KEY: OpenRouter, ${RECOMMENDED} — ${JSON.stringify(or)}`);
+  process.env.OPENROUTER_API_KEY = "k-test"; calls.length = 1;   // the stand-in's next answer is NONE
+  const none2 = await askPartner(or, { question: "q", elements: [], said: [], asked: [] });
+  ok(none2 === null && calls[1]?.auth === "Bearer k-test" && calls[1].body.model === RECOMMENDED, `…the key goes with the request, and NONE is no question — ${JSON.stringify(calls[1]?.auth)}`);
+  delete process.env.OPENROUTER_API_KEY;
+  const named = run(["sketch", "--partner", "openrouter", "--no-open", "--port", String(testPort(8797, 4))], { ...clean, REELPLANNER_SKETCH_PARTNER: "" });
+  ok(named.code === 1 && /partner openrouter needs OPENROUTER_API_KEY/.test(named.out), `--partner openrouter with no key says so — ${named.out}`);
+} finally {
+  fakeModel.close();
+  await b.close(); srv.kill(); rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true });
+}
+if (fails.length) { console.log(`\n${fails.length} failed`); process.exit(1); }
+console.log("\nall passed");

@@ -2,6 +2,46 @@
 
 ## Unreleased
 
+- **Sketch how you think it works, as input (`reelplanner sketch`).** One full-screen Excalidraw canvas to draw,
+  talk and type on; it records the canvas with your voice and the pointer, keeps a picture each time a thought ends
+  with what you said, and saves it all as one folder (`sketch.md` first, then `session.json` on the recording's
+  clock, the scene, the recording and pictures) under `.reelplanner/sketches/` or `videos/sketches/`. The folder is
+  a source for `explain`, and the skill makes the explainer say where your picture and the code agree and where not.
+  Run it bare (`reelplanner sketch`, the topic typed on the page), or ask your agent ("let me sketch how … works"):
+  the skill runs `sketch "<topic>" --once`, which exits after Send with `sketch: <folder>` as its last line, and exits
+  1 when the page is closed without Send or none opens, so the agent is not left waiting. With no live caption
+  (Firefox, or the browser's recognizer blocked), local whisper transcribes the recording after Send when whisper.cpp
+  is installed; `sketch-transcribe <folder>` does it for any sketch later (local whisper, else a transcription API).
+  A partner model can ask one short question beside the canvas when something in the picture is unclear (never
+  explaining the code): `anthropic/claude-sonnet-5.5` through OpenRouter, recommended (it asked the best questions
+  and held back best of the models tried, in 1.5–6 s for about $0.002 a question), when `OPENROUTER_API_KEY` is set, or a vision model on a local Ollama or LM Studio (`--partner openrouter|local|off`); the page names it, with a
+  switch to turn it off, and its questions are kept in `session.json` and in `sketch.md`'s timeline.
+  `sketch.md` tells the person's changes of mind (renamed, rerouted, erased, moved, restyled, undone, paused) in its
+  timeline, and the final drawing in words: frames and what is in them, dashes and colours, loose arrow ends, what a
+  note sits by, groups, what a freehand mark circles or underlines, rows of where things are, numbered steps in order,
+  and what the pointer rested on while something was said ("this one" → "Resizer"). Labels are kept as typed, not
+  as Excalidraw wrapped them to fit their box. `sketch-scenarios.spec.mjs` (full run) plays 20 sessions written for
+  it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps, alternatives,
+  pointing) through the real page; `sketch-scenarios/judge.mjs` measures whether an agent can tell each one's story.
+  With one thing selected the page offers what a whiteboard cannot: **Link to code** (a file of the repo picked from
+  a search above the bar; `sketch.md` lists the links and flags a path the repo does not have), **Today / New /
+  Going** (a tag, and `sketch.md`'s **Today vs proposed**), and **Open up** (a frame beside the picture for a box's
+  insides, the view going there, **Back** to the whole).
+  Beyond boxes: a library of icons drawn in Excalidraw's own shapes (database, queue, user, phone, service, cloud,
+  cache, auth and more; `sketch.md` says `database "Orders DB"`), Mermaid diagrams (`sketch.md` keeps the source),
+  dropped pictures by file name with an SVG's own words, and web embeds by address. The partner streams: a line shows
+  what it is looking at while it decides, then the question types itself out (`LOOKING:` then `ASK:` or `NONE`;
+  `session.json` keeps what it looked at, asked or not).
+  **Draw what I said** (or saying "draw that"): the partner's model turns what was said into a Mermaid flowchart that
+  opens in the Mermaid dialog for them to change and insert; `sketch.md` tells it as drawn by the model from their
+  words. **Picture** (or "find a picture of …"): Wikimedia Commons, or an image model through OpenRouter; each
+  picture's source (licence and author, or model and words) is in `sketch.md`.
+  No note box: text typed on the canvas (double-click, or `T`) is the note, timed and told as `(typed) …`. **How this
+  works** (the **?** in the bar, open on a first visit) lists talking and pointing, typing, the icons, Mermaid,
+  pictures and the selection bar.
+  Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
+  dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
+  CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
   whenever a review was sent with no session waiting; Claude Code's auto mode refused that `reel init` in a
   person's first session, as an agent setting itself up to start unattended. `reel init` now writes none: the session that ran it is an

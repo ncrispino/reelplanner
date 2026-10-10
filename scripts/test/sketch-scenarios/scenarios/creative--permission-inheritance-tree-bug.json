@@ -1,0 +1,610 @@
+{
+  "id": "permission-inheritance-tree-bug",
+  "title": "Permission inheritance tree with the buggy branch in red",
+  "persona": "A full-stack engineer on a docs product, drawing how they think access is inherited from org to document while triaging a report that a restricted doc is visible to the whole team.",
+  "topic": "how permissions inherit from the org down to a document",
+  "realism": "Hierarchies are drawn top-down with plain lines; parent and child come only from vertical position, people colour the branch where the bug is and collapse the parts that do not matter into '...' rather than drawing them.",
+  "steps": [
+    {
+      "t": 2.5,
+      "say": "Okay, permissions, it's a tree, org at the top and everything inherits down."
+    },
+    {
+      "t": 4.5,
+      "add": [
+        {
+          "id": "org",
+          "type": "rectangle",
+          "x": 360,
+          "y": 110,
+          "width": 180,
+          "height": 50,
+          "label": "Org: acme"
+        }
+      ]
+    },
+    {
+      "t": 6.0,
+      "say": "Org is acme, that's the tenant in the report."
+    },
+    {
+      "t": 7.0,
+      "add": [
+        {
+          "id": "ws_eng",
+          "type": "rectangle",
+          "x": 150,
+          "y": 210,
+          "width": 180,
+          "height": 50,
+          "label": "Workspace: Eng"
+        }
+      ]
+    },
+    {
+      "t": 8.0,
+      "add": [
+        {
+          "id": "e_org_eng",
+          "type": "line",
+          "from": "org",
+          "to": "ws_eng"
+        }
+      ]
+    },
+    {
+      "t": 10.0,
+      "add": [
+        {
+          "id": "ws_sales",
+          "type": "rectangle",
+          "x": 570,
+          "y": 228,
+          "width": 190,
+          "height": 50,
+          "label": "Workspace: Sales"
+        }
+      ]
+    },
+    {
+      "t": 11.0,
+      "add": [
+        {
+          "id": "e_org_sales",
+          "type": "line",
+          "from": "org",
+          "to": "ws_sales"
+        }
+      ]
+    },
+    {
+      "t": 12.5,
+      "say": "Sales over here, same level."
+    },
+    {
+      "t": 14.5,
+      "say": "Two workspaces, Eng and Sales, let me line those up."
+    },
+    {
+      "t": 16.0,
+      "move": {
+        "id": "ws_sales",
+        "x": 570,
+        "y": 210
+      }
+    },
+    {
+      "t": 18.0,
+      "say": "Eng has a bunch of projects, the two that matter are api and web."
+    },
+    {
+      "t": 19.0,
+      "add": [
+        {
+          "id": "p_api",
+          "type": "rectangle",
+          "x": 60,
+          "y": 320,
+          "width": 150,
+          "height": 50,
+          "label": "Project: api"
+        }
+      ]
+    },
+    {
+      "t": 20.0,
+      "add": [
+        {
+          "id": "e_eng_api",
+          "type": "line",
+          "from": "ws_eng",
+          "to": "p_api"
+        }
+      ]
+    },
+    {
+      "t": 22.0,
+      "add": [
+        {
+          "id": "p_web",
+          "type": "rectangle",
+          "x": 280,
+          "y": 320,
+          "width": 150,
+          "height": 50,
+          "label": "Project: web"
+        }
+      ]
+    },
+    {
+      "t": 23.0,
+      "add": [
+        {
+          "id": "e_eng_web",
+          "type": "line",
+          "from": "ws_eng",
+          "to": "p_web"
+        }
+      ]
+    },
+    {
+      "t": 24.5,
+      "say": "And Sales has, uh, a crm project I think."
+    },
+    {
+      "t": 25.5,
+      "add": [
+        {
+          "id": "p_crm",
+          "type": "rectangle",
+          "x": 590,
+          "y": 320,
+          "width": 150,
+          "height": 50,
+          "label": "Project: crm"
+        }
+      ]
+    },
+    {
+      "t": 26.5,
+      "add": [
+        {
+          "id": "e_sales_crm",
+          "type": "line",
+          "from": "ws_sales",
+          "to": "p_crm"
+        }
+      ]
+    },
+    {
+      "t": 31.0,
+      "say": "Actually Sales doesn't matter here, it's the same shape as Eng, I'll just collapse that."
+    },
+    {
+      "t": 32.5,
+      "delete": [
+        "p_crm",
+        "e_sales_crm"
+      ]
+    },
+    {
+      "t": 34.0,
+      "add": [
+        {
+          "id": "sales_l1",
+          "type": "line",
+          "x": 640,
+          "y": 262,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              -40,
+              50
+            ]
+          ]
+        },
+        {
+          "id": "sales_l2",
+          "type": "line",
+          "x": 690,
+          "y": 262,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              40,
+              50
+            ]
+          ]
+        },
+        {
+          "id": "sales_more",
+          "type": "text",
+          "x": 630,
+          "y": 318,
+          "text": "...",
+          "fontSize": 36
+        }
+      ]
+    },
+    {
+      "t": 39.0,
+      "say": "Under the api project there's a secrets folder, and under web the design folder, which is fine."
+    },
+    {
+      "t": 41.0,
+      "add": [
+        {
+          "id": "f_secrets",
+          "type": "rectangle",
+          "x": 40,
+          "y": 430,
+          "width": 180,
+          "height": 50,
+          "label": "Folder: secrets"
+        }
+      ]
+    },
+    {
+      "t": 42.0,
+      "add": [
+        {
+          "id": "e_api_secrets",
+          "type": "line",
+          "from": "p_api",
+          "to": "f_secrets"
+        }
+      ]
+    },
+    {
+      "t": 44.0,
+      "add": [
+        {
+          "id": "f_design",
+          "type": "rectangle",
+          "x": 300,
+          "y": 430,
+          "width": 170,
+          "height": 50,
+          "label": "Folder: design"
+        }
+      ]
+    },
+    {
+      "t": 45.0,
+      "add": [
+        {
+          "id": "e_web_design",
+          "type": "line",
+          "from": "p_web",
+          "to": "f_design"
+        }
+      ]
+    },
+    {
+      "t": 46.5,
+      "say": "And the doc with the prod database creds lives in secrets."
+    },
+    {
+      "t": 47.5,
+      "add": [
+        {
+          "id": "doc",
+          "type": "rectangle",
+          "x": 50,
+          "y": 540,
+          "width": 200,
+          "height": 50,
+          "label": "Doc: prod-db creds"
+        }
+      ]
+    },
+    {
+      "t": 48.5,
+      "add": [
+        {
+          "id": "e_secrets_doc",
+          "type": "line",
+          "from": "f_secrets",
+          "to": "doc"
+        }
+      ]
+    },
+    {
+      "t": 53.5,
+      "say": "The secrets folder is restricted, it overrides, so only the security team should get in, at least that's the idea."
+    },
+    {
+      "t": 55.0,
+      "relabel": {
+        "id": "f_secrets",
+        "label": "Folder: secrets (restricted)"
+      }
+    },
+    {
+      "t": 56.0,
+      "resize": {
+        "id": "f_secrets",
+        "width": 240,
+        "height": 50
+      }
+    },
+    {
+      "t": 60.5,
+      "say": "And red is where the bug is: somebody in Eng who isn't on security can open the prod creds doc."
+    },
+    {
+      "t": 62.0,
+      "restyle": {
+        "id": "e_eng_api",
+        "strokeColor": "#e03131"
+      }
+    },
+    {
+      "t": 63.0,
+      "restyle": {
+        "id": "e_api_secrets",
+        "strokeColor": "#e03131"
+      }
+    },
+    {
+      "t": 64.0,
+      "restyle": {
+        "id": "f_secrets",
+        "strokeColor": "#e03131",
+        "backgroundColor": "#ffc9c9"
+      }
+    },
+    {
+      "t": 65.0,
+      "restyle": {
+        "id": "e_secrets_doc",
+        "strokeColor": "#e03131"
+      }
+    },
+    {
+      "t": 66.0,
+      "restyle": {
+        "id": "doc",
+        "strokeColor": "#e03131",
+        "backgroundColor": "#ffc9c9"
+      }
+    },
+    {
+      "t": 67.5,
+      "say": "That whole branch."
+    },
+    {
+      "t": 68.5,
+      "pen": {
+        "points": [
+          [
+            258,
+            553
+          ],
+          [
+            266,
+            566
+          ],
+          [
+            264,
+            579
+          ],
+          [
+            247,
+            591
+          ],
+          [
+            220,
+            600
+          ],
+          [
+            188,
+            604
+          ],
+          [
+            155,
+            605
+          ],
+          [
+            123,
+            604
+          ],
+          [
+            91,
+            599
+          ],
+          [
+            65,
+            590
+          ],
+          [
+            51,
+            577
+          ],
+          [
+            50,
+            564
+          ],
+          [
+            60,
+            551
+          ],
+          [
+            76,
+            540
+          ],
+          [
+            98,
+            530
+          ],
+          [
+            128,
+            523
+          ],
+          [
+            163,
+            521
+          ],
+          [
+            196,
+            525
+          ],
+          [
+            224,
+            533
+          ],
+          [
+            245,
+            543
+          ],
+          [
+            259,
+            554
+          ],
+          [
+            267,
+            567
+          ]
+        ]
+      }
+    },
+    {
+      "t": 74.0,
+      "say": "My guess is the doc checks the workspace role directly and never looks at the folder, but it could also be that restricted just adds people instead of replacing."
+    },
+    {
+      "t": 76.0,
+      "add": [
+        {
+          "id": "ann",
+          "type": "text",
+          "x": 300,
+          "y": 530,
+          "text": "restricted = replace roles?\nor add to inherited?",
+          "fontSize": 16,
+          "strokeColor": "#e03131"
+        }
+      ]
+    },
+    {
+      "t": 78.5,
+      "pen": {
+        "points": [
+          [
+            150,
+            488
+          ],
+          [
+            170,
+            490
+          ],
+          [
+            190,
+            487
+          ],
+          [
+            210,
+            486
+          ],
+          [
+            230,
+            489
+          ],
+          [
+            250,
+            490
+          ],
+          [
+            270,
+            487
+          ]
+        ]
+      }
+    },
+    {
+      "t": 81.0,
+      "pause": 4
+    },
+    {
+      "t": 85.5,
+      "note": "bug report: Eng members not on sec-team can open 'Doc: prod-db creds'"
+    },
+    {
+      "t": 90.0,
+      "say": "And the design folder, I'm fairly sure nobody's touched that, it just inherits plain."
+    },
+    {
+      "t": 92.5,
+      "say": "That's it, that's the tree."
+    }
+  ],
+  "expect": {
+    "final_labels": [
+      "Org: acme",
+      "Workspace: Eng",
+      "Workspace: Sales",
+      "Project: api",
+      "Project: web",
+      "...",
+      "Folder: secrets (restricted)",
+      "Folder: design",
+      "Doc: prod-db creds",
+      "restricted = replace roles?\nor add to inherited?"
+    ],
+    "absent_labels": [
+      "Project: crm",
+      "Folder: secrets"
+    ],
+    "arrows": [
+      [
+        "Org: acme",
+        "Workspace: Eng"
+      ],
+      [
+        "Org: acme",
+        "Workspace: Sales"
+      ],
+      [
+        "Workspace: Eng",
+        "Project: api"
+      ],
+      [
+        "Workspace: Eng",
+        "Project: web"
+      ],
+      [
+        "Project: api",
+        "Folder: secrets (restricted)"
+      ],
+      [
+        "Project: web",
+        "Folder: design"
+      ],
+      [
+        "Folder: secrets (restricted)",
+        "Doc: prod-db creds"
+      ]
+    ],
+    "story": [
+      "it is a top-down tree: a box is the parent of the boxes below it that a line joins it to, and access is inherited downward (said aloud); the lines have no arrowheads, so direction comes only from top and bottom",
+      "Org: acme has two workspaces, Eng and Sales; Eng has Project: api and Project: web; api has Folder: secrets (restricted), which holds Doc: prod-db creds; web has Folder: design",
+      "they moved Workspace: Sales up to line up with Workspace: Eng: same level of the tree",
+      "the '...' under Workspace: Sales (two loose lines fanning down to it) is a collapsed subtree: they first drew Project: crm there, then erased it because Sales is the same shape as Eng and not relevant",
+      "red is where the bug is (said aloud, no legend): the branch Workspace: Eng → Project: api → Folder: secrets (restricted) → Doc: prod-db creds",
+      "the bug: an Eng member who is not on the security team can open Doc: prod-db creds",
+      "the circle is around the doc itself, the thing that leaks; the underline is under '(restricted)'",
+      "the red note beside the doc is their open question: does 'restricted' replace inherited roles or add to them; their other guess is that the doc checks the workspace role directly and skips the folder"
+    ],
+    "partner_should_ask_about": [
+      "does a restricted folder replace inherited roles or add to them",
+      "does the doc check its folder at all, or only the workspace role",
+      "is there an org-level role (admin) that bypasses folder restrictions"
+    ]
+  }
+}
