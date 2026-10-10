@@ -202,10 +202,10 @@ if (chapters.length) console.log("chapters: " + chapters.map((c) => `${c.id} fra
 { const { missing } = addAccess(out, { dir, sb });
   for (const v of missing) console.warn(`before: "${v}" names no video in this project record (system, a plan's folder, <plan>--walkthrough, or <explainer>--explainer)`);
   if (out.prerequisites.length) console.log(`before you watch: ${out.prerequisites.map((p) => `${p.video}${p.part ? `#part ${p.part}` : ""}`).join(", ")} · ${out.terms.length} term(s) of its own · ${Object.keys(out.ids).length} id(s) glossed`); }
-// what fresh eyes left as it is after three rounds (videos-that-make-sense step 2): the page's "Before you watch"
+// what fresh eyes left as it is after its rounds (videos-that-make-sense step 2), and what it asks of you: the page's "Before you watch"
 // and the notification say it, each with the author's reason; only the new ones, a finding kept again for the
 // reason an earlier round of the build gave is in `again`, one line with its count (D-245)
-{ const fe = leftAfter(dir); if (fe?.left.length || fe?.again?.length) { out.freshEyes = fe; console.log(`fresh eyes: ${fe.left.length} finding(s) left as they are after ${fe.rounds} rounds${fe.again.length ? `, ${fe.again.length} more kept again for the reason an earlier round gave` : ""}`); } }
+{ const fe = leftAfter(dir); if (fe?.left.length || fe?.again?.length || fe?.asks?.length) { out.freshEyes = fe; console.log(`fresh eyes: ${fe.left.length} finding(s) left as they are after ${fe.rounds} rounds${fe.again.length ? `, ${fe.again.length} more kept again for the reason an earlier round gave` : ""}`); } }
 writeFileSync(join(dir, "plan-map.json"), JSON.stringify(out, null, 2) + "\n");
 if (hasLevels) console.log("knowledge levels (seconds): " + JSON.stringify(levels));
 if (quizzes.length || autonomy.length || autonomyGroups.length) console.log(`${quizzes.length} quiz beat(s), ${autonomy.length} autonomy beat(s)${[[autonomyGroups.filter((g) => g.stop), "stop"], [autonomyGroups.filter((g) => g.list), "list"], [autonomyGroups.filter((g) => !g.stop && !g.list), "grouped"]].filter(([gs]) => gs.length).map(([gs, k]) => `, ${gs.length} ${k} beat(s) of ${gs.reduce((a, g) => a + g.ids.length, 0)} call(s)`).join("")}`);

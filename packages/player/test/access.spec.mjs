@@ -185,7 +185,7 @@ try {
   ok(await R(p, () => document.querySelector("#rp").level) === "familiar", "every video on the card watched: it starts at “familiar”, without the scenes for newcomers (videos-you-can-follow step 2)");
   ok(await R(p, () => { const w = document.querySelector("#rp").exportPayload().watched; return w.length === 2 && w.every((x) => x.seen && x.video) && w.map((x) => x.video).join() === "2026-09-24-memory--walkthrough,system"; }), "the review carries what this browser has watched: watched: [{ video, seen }] (D-128)");
   await shot(p, "2-before-you-watch-watched");
-  // what fresh eyes left as it is after three rounds (videos-that-make-sense step 2): said on the card, each with the
+  // what fresh eyes left as it is after its rounds (videos-that-make-sense step 2): said on the card, each with the
   // author's reason, even with every video before it watched
   const fl = await R(p, () => { const el = document.querySelector("#rp"); el.planMap.freshEyes = { rounds: 3, left: [{ id: "N1", role: "newcomer", scene: 4, what: 'scene 4 · "the list": which list?', why: "scene 5 says what the list is" }] }; el.renderBefore();
     const c = el.shadowRoot.querySelector(".before"); return { one: c.classList.contains("one"), text: c.querySelector(".fleft")?.textContent || "", rows: c.querySelectorAll(".fleft li").length }; });
@@ -204,6 +204,15 @@ try {
   ok(ag.one.top === 1 && /new in this build/.test(ag.one.lead) && ag.one.sum === "and 2 more the author had already kept, for the same reason, in an earlier round" && ag.one.rows.length === 2 && /Kept in round 1 · N4: said in scene 3/.test(ag.one.rows[0]),
     "…only the new ones are listed; the ones kept before are one line, “and 2 more the author had already kept…”, each saying the round", JSON.stringify(ag.one));
   ok(!ag.none.hidden && /Nothing new was kept/.test(ag.none.lead || "") && ag.none.sum === "2 the author had already kept, for the same reason, in an earlier round", "…and with nothing new, the card is still there and holds them", JSON.stringify(ag.none));
+  // cheaper-videos step 3: a finding about the plan the author put to you as a question is first on the card, alone too
+  const ask = await R(p, () => { const el = document.querySelector("#rp"), q = [{ id: "N3", role: "newcomer", scene: 6, what: "no step buys the domain", ask: "Should the plan buy the bakery's web address?" }];
+    el.planMap.freshEyes = { rounds: 1, left: [{ id: "N1", role: "newcomer", scene: 4, what: 'scene 4 · "the list": which list?', why: "scene 5 says what the list is" }], again: [], asks: q }; el.renderBefore();
+    const c = el.shadowRoot.querySelector(".before"), kids = [...c.querySelectorAll(".fask, .fleft")].map((x) => x.className), both = { order: kids, text: c.querySelector(".fask")?.textContent || "" };
+    el.planMap.freshEyes = { rounds: 1, left: [], again: [], asks: q }; el.renderBefore();
+    const c2 = el.shadowRoot.querySelector(".before"), alone = { hidden: c2.hidden, ask: !!c2.querySelector(".fask"), left: !!c2.querySelector(".fleft") };
+    el.planMap.freshEyes = null; el.renderBefore(); return { both, alone }; });
+  ok(ask.both.order.join() === "fask,fleft" && /Asked of you/.test(ask.both.text) && /Scene 6 · Should the plan buy the bakery's web address\?/.test(ask.both.text) && !ask.alone.hidden && ask.alone.ask && !ask.alone.left,
+    "a question fresh eyes left for you about the plan comes first on the card, and shows with nothing else kept", JSON.stringify(ask));
   await p.close();
 
   // 2. terms

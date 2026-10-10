@@ -35,7 +35,7 @@ export function waitingLine(map = {}) {
   if (listed) parts.push(plural(listed, "more on a list to flag if you'd change it", "more on a list to flag if you'd change them"));
   if (n("quizzes")) parts.push(plural(n("quizzes"), "quick check", "quick checks"));
   if (!parts.length) parts.push("nothing to decide");
-  // what fresh eyes left as it is after its three rounds (videos-that-make-sense step 2), said before you open it
+  // what fresh eyes left as it is after its rounds (videos-that-make-sense step 2), said before you open it
   const left = Array.isArray(map.freshEyes?.left) ? map.freshEyes.left.length : 0;
   if (left) parts.push(`${plural(left, "thing", "things")} fresh eyes left as ${left === 1 ? "it is" : "they are"} (Before you watch says why)`);
   const secs = Number(map.watchedSeconds ?? map.totalSeconds) || 0;
