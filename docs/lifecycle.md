@@ -7,7 +7,8 @@
 ## The full loop, in short
 
 The README's three ways to use reelplanner are levels in the skill: **one video** (a plan video or an explainer,
-nothing in the repo but `videos/<name>/`), **plus a walkthrough**, and **the whole pipeline**. What the whole
+nothing in the repo but `videos/<name>/`; its review reaches the agent by **Send** as at the other levels, through
+`~/.reelplanner/inbox/` on your machine), **plus a walkthrough**, and **the whole pipeline**. What the whole
 pipeline adds:
 
 - **A plan video and its guide.** One-minute chapters: the problem, the parts it touches, each step on one

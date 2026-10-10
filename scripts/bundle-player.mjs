@@ -114,8 +114,9 @@ function repoIdOf(dir) {
 }
 const REPO_ID = repoIdOf(RP ? dirname(RP) : repoRoot(projects[0]));
 // Whether that repo keeps a decision log (.reelplanner/decisions.json), found as the review server finds it (review.mjs
-// findRp): without one a review has no record to go into and downloads, and the page tells the player so (`record="none"`),
-// whose Finish then asks for the download and tells the reviewer to hand the file to their agent, with no `reel record`.
+// findRp): without one a review has no record to go into (the server keeps it in the machine's inbox), and the page tells
+// the player so (`record="none"`), whose Finish then names no `reel record` or plan directory: Send where a review server
+// takes it, else the download, and a line telling the reviewer to hand the file to their agent.
 const RECORD = rpInitialized(RP || rpDirOf(repoRoot(projects[0])));
 // (a guide page names it too: its notes and answers are kept where the review page's player keeps them)
 const withRepo = (html) => html.replace(/<head>/i, () => `<head>\n<meta name="reelplanning-repo" content="${REPO_ID}">`);
@@ -665,7 +666,7 @@ page = page
            'rp.setAttribute("runtime-src", "vendor/hyperframe.runtime.iife.js"); // bundled; offline-safe')
   // the videos on this page: a "Before you watch" row for one that is not here says so rather than link to it; and the
   // repo they belong to, which the player keeps this page's state under (set before the plan map and the video)
-  .replace('rp.setAttribute("plan-map", map ? `../../${map}` : `../../${project}/plan-map.json`);', 'rp.setAttribute("videos", BUNDLED.join(" "));\n  rp.setAttribute("repo", REPO);\n' + (RECORD ? "" : '  rp.setAttribute("record", "none"); // no decision log in this repo: Finish downloads the review\n') + '  rp.setAttribute("plan-map", `${project}/plan-map.json`);')
+  .replace('rp.setAttribute("plan-map", map ? `../../${map}` : `../../${project}/plan-map.json`);', 'rp.setAttribute("videos", BUNDLED.join(" "));\n  rp.setAttribute("repo", REPO);\n' + (RECORD ? "" : '  rp.setAttribute("record", "none"); // no decision log in this repo: Finish names no reel record\n') + '  rp.setAttribute("plan-map", `${project}/plan-map.json`);')
   .replace('rp.setAttribute("src", `../../${project}/index.html`);', 'rp.setAttribute("src", `${project}/index.html`);')
   .replace('const project = new URLSearchParams(location.search).get("project") || "videos/l1-upload-resume";',
            `const BUNDLED = ${JSON.stringify(slugs)};\n  const REPO = ${JSON.stringify(REPO_ID)};\n  const FIRST = ${JSON.stringify(FIRST)};\n  const project = BUNDLED.includes(new URLSearchParams(location.search).get("project")) ? new URLSearchParams(location.search).get("project") : (FIRST || BUNDLED[0]);`)

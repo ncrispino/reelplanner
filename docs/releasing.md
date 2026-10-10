@@ -53,9 +53,18 @@ The public repo is `ncrispino/reelplanning`, lowercase, and its `main` is one co
 
    `.github/workflows/fresh-install.yml` does this in a bare `ubuntu:24.04` container, as a user with sudo: the
    README's Install as written, with Node 22 from nvm, and with Ubuntu's own older Node, which the CLI must refuse
-   (`scripts/release/fresh-install.sh`; Actions → fresh-install → Run workflow, for any branch or tag). It also
-   runs on each version tag, each week, and on a pull request that changes the install's path. A Mac has no such
-   container: there, a new user account is the nearest to a fresh machine.
+   (`scripts/release/fresh-install.sh`; Actions → fresh-install → Run workflow, for any branch or tag), and on
+   GitHub's macOS runner as its user (`--here`: Homebrew's way, though not a fresh Mac). Each step's seconds are on
+   the run's page. It also runs on each version tag, each week, and on a pull request that changes the install's
+   path. A real VM, timed, or arm64: `bash scripts/release/ec2-fresh.sh --times` starts one EC2 instance with your
+   AWS credentials (`--profile`, `--region`; `--container ubuntu:24.04` runs the check in the workflow's bare image
+   there), installs this checkout packed (or `--from github:<owner>/<repo>#<ref>`), copies the log back and deletes
+   the instance, its security group and its key pair: a few cents. A whole session there, as a new user meets it
+   (Claude Code, the README's Install, a plan, its review): `--shell --type c7i.4xlarge --hours 6` starts one with
+   the package copied over and runs nothing, and prints how to reach and delete it. You log Claude Code in over
+   `ssh -t … tmux attach`; reach the review page with `ssh -L 18787:127.0.0.1:18787 …` to a `reelplanner review
+   --port 18787` there (the server takes only its own host and port, so the tunnel keeps the port number).
+   [One such run](../eval/fresh-machine/2026-10-10-bakery-auto-mode.md), the bakery example through the whole pipeline.
 
 After that first commit, all work happens on the public repo, with an ordinary history (D-310): branches, pull requests and release tags there, no later exports. The private repo stays as the internal archive of the development history.
 

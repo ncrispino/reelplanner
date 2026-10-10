@@ -4,9 +4,10 @@
 // package makes every install larger for nothing. The publish workflow runs this in the full suite.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join, posix } from "node:path";
-import { ROOT } from "../lib/env.mjs";
+import { tmpdir } from "node:os";
+import { ROOT, hyperframesChrome } from "../lib/env.mjs";
 
 let failed = 0;
 const test = (name, fn) => { try { fn(); console.log(`✓ ${name}`); } catch (e) { failed++; console.error(`✗ ${name}\n  ${e.message}`); } };
@@ -60,6 +61,35 @@ test("every package path a shipped script names in quotes is shipped", () => {
 test("the player's typefaces and their licences are shipped", () => {
   const faces = JSON.parse(readFileSync(join(ROOT, "packages/player/fonts/faces.json"), "utf8")).faces;
   for (const x of faces) for (const f of [x.file, x.licence]) assert.ok(shipped.has(`packages/player/fonts/${f}`), f);
+});
+
+// A package a shipped script imports by name is a dependency, not a dev one: npm installs no devDependencies for a
+// user. playwright-core was one (fresh eyes' pictures and the guide's check went without a browser on an install).
+test("every package a shipped script imports by name is a dependency", () => {
+  const deps = new Set(Object.keys(pkg.dependencies || {})), missing = [];
+  for (const f of code.filter((x) => /\.m?js$/.test(x))) {
+    const src = readFileSync(join(ROOT, f), "utf8");
+    const names = [...src.matchAll(/^\s*import\b[^;"'`]*?\bfrom\s*["']([^."'/][^"']*)["']/gm), ...src.matchAll(/\bimport\(\s*["']([^."'/][^"']*)["']\s*\)/g)].map((m) => m[1]);
+    for (const n of names) {
+      if (n.startsWith("node:")) continue;
+      const name = n.startsWith("@") ? n.split("/").slice(0, 2).join("/") : n.split("/")[0];
+      if (!deps.has(name)) missing.push(`${f} imports ${name}`);
+    }
+  }
+  assert.deepEqual([...new Set(missing)], []);
+});
+// An installed reelplanner has no Playwright browser of its own: it drives the Chrome headless shell setup installed
+// for HyperFrames, the newest there, unless HyperFrames is pointed at one.
+test("hyperframesChrome: setup's Chrome headless shell, newest first; HYPERFRAMES_BROWSER_PATH wins", () => {
+  const home = mkdtempSync(join(tmpdir(), "rp-hfchrome-")), exe = process.platform === "win32" ? "chrome-headless-shell.exe" : "chrome-headless-shell";
+  try {
+    assert.equal(hyperframesChrome({}, home), undefined);
+    const put = (v) => { const d = join(home, ".cache/hyperframes/chrome/chrome-headless-shell", `linux-${v}`, "chrome-headless-shell-linux64"); mkdirSync(d, { recursive: true }); writeFileSync(join(d, exe), ""); return join(d, exe); };
+    put("140.0.7339.82"); const newest = put("152.0.7977.30"); put("99.0.1");
+    assert.equal(hyperframesChrome({}, home), newest);
+    const mine = join(home, "my-chrome"); writeFileSync(mine, "");
+    assert.equal(hyperframesChrome({ HYPERFRAMES_BROWSER_PATH: mine }, home), mine);
+  } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
 if (failed) process.exit(1);

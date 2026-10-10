@@ -22,10 +22,13 @@ npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y
 - `setup` needs the network and may need sudo for ffmpeg; on Codex, ask the person to run it outside the sandbox.
 - Load the skill: `/plan-to-video <plan.md>` in Claude Code, `$plan-to-video <plan.md>` in Codex, or read
   `~/.agents/skills/plan-to-video/SKILL.md`. It also applies when someone asks you for an implementation plan.
+- In Claude Code, the person can allow the commands once, `Bash(reelplanner:*)` and `Bash(reel:*)`, so they run
+  without a prompt each ([README](README.md#install)). Never add the rules yourself; run each command on its own.
 - The skill writes commands as `$RP`: the installed `reelplanner` (until reelplanner is on npm, it is installed
   from GitHub, as above).
 - The first plan in a repo runs `reel init <repo> --name <name> --kind brownfield|greenfield`
-  (`--agent claude|codex|none` picks the headless command for reviews that arrive with no session open).
+  (no headless command unless you ask: `--agent claude|codex` starts that agent on a review that arrives with no
+  session open, and works on a repo set up already too).
 - `reelplanner --help` lists every command; `--help` after any command says what it takes.
 
 More: [README](README.md) · [install details](docs/reference.md#install) · [lifecycle](docs/lifecycle.md) ·

@@ -16,17 +16,44 @@
 // claims it and wakes; with none, the review server claims it and starts the repo's headless agent
 // command from .reelplanner/config.json; with nothing running at all it waits here for the next
 // session to start.
+//
+// A repo with no set-up .reelplanner/ (one video, the skill's level 1) has the same inbox in this machine's folder
+// instead, so nothing is added to the repo: ~/.reelplanner/inbox/<repo-key>/ (REELPLANNER_HOME moves it), laid out
+// as .reelplanner/inbox/ is, and passed to the functions here in the .reelplanner/ folder's place (machineInbox). It
+// has no agent command, so a review there waits for a session's `review --wait`. Once `reel init` sets the repo up,
+// its own inbox is used and the machine's is left as it is: nothing is moved, so nothing is handled twice, and
+// `inbox` there names a review still waiting in it.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, readdirSync, statSync, openSync, closeSync, writeSync, unlinkSync, rmSync } from "node:fs";
-import { join, relative, dirname } from "node:path";
-import { hostname } from "node:os";
+import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "node:path";
+import { hostname, homedir } from "node:os";
+import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
+import { machineDir, realPath } from "./env.mjs";
 import { splitCommand } from "./notify.mjs";
 import { sandboxProblem, withoutSandbox } from "./sandbox.mjs";
 
 export const HEARTBEAT_MS = 2000;
 export const STALE_MS = 10000;
 
-export const inboxDir = (rp) => join(rp, "inbox");
+/** A repo's name in the machine's inbox: its folder's name and a short hash of where it really is, so two clones never
+ *  share one, and the review server and `review --wait` agree however each spells the path. */
+export function repoKey(repo) {
+  const real = realPath(repo);
+  const name = basename(real).toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^[.-]+|-+$/g, "").slice(0, 60) || "repo";
+  return `${name}-${createHash("sha256").update(real).digest("hex").slice(0, 8)}`;
+}
+/** The inbox of a repo with no set-up .reelplanner/, in this machine's folder: ~/.reelplanner/inbox/<repo-key>/. */
+export const machineInbox = (repo) => join(machineDir(), "inbox", repoKey(repo));
+export const isMachineInbox = (box) => dirname(resolve(box)) === join(machineDir(), "inbox");
+/** The inbox folder: a repo's .reelplanner/inbox/, or a machine inbox as it is. */
+export const inboxDir = (rp) => isMachineInbox(rp) ? resolve(rp) : join(rp, "inbox");
+/** A path as a line shows it: from the working directory when it is under it, else from ~ (a machine inbox). */
+export function shownPath(p, from = process.cwd()) {
+  const rel = relative(from, p);
+  if (rel && !rel.startsWith("..") && !isAbsolute(rel)) return rel.split("\\").join("/");
+  const h = homedir();
+  return p.startsWith(h + sep) ? `~${p.slice(h.length)}` : p;
+}
 const ensure = (d) => { mkdirSync(d, { recursive: true }); return d; };
 // written whole or not at all: a waiter never reads half a file
 const writeAtomic = (path, text) => { const tmp = `${path}.${process.pid}.tmp`; writeFileSync(tmp, text); renameSync(tmp, path); };
@@ -41,6 +68,7 @@ function claimFile(path, by, extra = {}) {
 
 /** .reelplanner/config.json, or {} when there is none (or it does not parse — said once, on stderr). */
 export function readConfig(rp) {
+  if (isMachineInbox(rp)) return {};   // a machine inbox: no record, no agent command
   const f = join(rp, "config.json");
   if (!existsSync(f)) return {};
   try { return JSON.parse(readFileSync(f, "utf8")); }

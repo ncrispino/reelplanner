@@ -12,6 +12,10 @@
 //   - no session is waiting: the server claims it and starts the repo's headless agent command
 //     (`agent.command` in .reelplanner/config.json: `claude -p`, `codex exec`, `opencode run`) on it;
 //   - no command either: it waits in the inbox for the next session to pick up.
+// In a repo with no set-up .reelplanner/ (one video, the skill's level 1) Send works the same, but the inbox is
+// this machine's ~/.reelplanner/inbox/<repo-key>/ (scripts/lib/inbox.mjs), so nothing is added to the repo; with
+// no agent command there, a review no session is waiting for waits for the next one's `review --wait`. The
+// download is only for a page with no server behind it.
 // When a headless run it started exits, the server tells the reviewer: it rebuilds its page and sends
 // "ready" if the run finished the review (`inbox done`), or says the run stopped short. The run cannot
 // do that itself: in Claude Code's sandbox (D-082) its shell has its own network and process
@@ -33,7 +37,9 @@
 // closed, the session ended) is the case a headless run is for, and a server started as one of the
 // session's own background tasks dies with it. `--detach` starts it in its own process group, logging
 // to .reelplanner/inbox/server.log, records it in .reelplanner/inbox/.server.json ({ pid, port, url,
-// … }), prints the URL and returns. A second `--detach` reuses the running server: it bundles the
+// … }), prints the URL and returns (with no set-up .reelplanner/, both are in the machine's inbox for the repo:
+// the page then outlives the session, so a Send after it ended still lands, for the next session).
+// A second `--detach` reuses the running server: it bundles the
 // videos asked for into that server's folder (it serves from disk, so a rebuilt video is current) and
 // prints the URL; there is one server per repo. `--stop` stops it.
 //
@@ -57,7 +63,8 @@
 // POST /api/review   a review row as JSON → { ok, id, path, duplicate, handledBy: session|agent|inbox, message }
 // POST /api/ask      a question asked on the page (Ask about this) → { ok, id, handledBy: session|review, message }
 // GET  /api/ask?id=  { ok, answered, answer?, from? }: the waiting session's answer, once it has written it
-// GET  /api/review   { sessionWaiting, agentCommand, unsandboxed, inbox, known }: what Send will do, shown when Finish opens the panel;
+// GET  /api/review   { sessionWaiting, agentCommand, unsandboxed, inbox, where, known }: what Send will do, shown when Finish opens the panel;
+//                    `where`, "repo" (.reelplanner/inbox/) or "machine" (no set-up .reelplanner/: ~/.reelplanner/inbox/<repo-key>/);
 //                    `known`, what ~/.reelplanner/you.jsonl says you know ({ looked: [word keys], watched: [videos] }, D-218)
 // GET  /api/review/status?id=   { ok, id, state: waiting|working|done|stopped, by: session|agent|null, step?, since, build, log? }:
 //                    where one sent review is, for the page's strip after Send. Read from the inbox and claim files (and, for
@@ -73,7 +80,7 @@ import { fileURLToPath } from "node:url";
 import { ROOT, repoRoot, rpInitialized, hasRp, realPath, rpDirOf } from "./lib/env.mjs";
 import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs";
 import { sandboxProblem, unsandboxedNote } from "./lib/sandbox.mjs";
-import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion } from "./lib/inbox.mjs";
+import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath } from "./lib/inbox.mjs";
 import { readYou, youKnows, pendingPath, repoName } from "./lib/memory.mjs";
 import { keepVersion, keepLines } from "./lib/versions.mjs";
 
@@ -88,9 +95,10 @@ const projects = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i
 
 // ---------- the detached server: .reelplanner/inbox/.server.json ----------
 // a repo's .reelplanner/ once `reel init` set it up (its decisions.json): a folder of setup files only (the hosted
-// voice's .env and config.json) has no record to file a review in, so the review downloads instead
+// voice's .env and config.json) has no record to file a review in, so the review goes to the machine's inbox instead
 const findRp = (from) => { const r = rpDirOf(repoRoot(from)); return rpInitialized(r) ? r : null; };
-const serverFile = (r) => join(r, "inbox", ".server.json");
+// what the inbox functions are given: the set-up .reelplanner/, or the repo's inbox in this machine's folder
+const serverFile = (box) => join(inboxDir(box), ".server.json");
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
 // the recorded server, when its process is alive and its endpoint answers. Its first answer can wait on the
 // sandbox probe (up to 10 s, scripts/lib/sandbox.mjs), so it gets 15 s: given less, a busy machine made a second
@@ -102,17 +110,21 @@ async function runningServer(r) {
   return null;
 }
 if (args.includes("--stop")) {
-  const r = findRp(projects[0] || process.cwd());
-  if (!r) { console.error("✗ no .reelplanner/ here or above"); process.exit(1); }
-  // only a process that answers as this repo's review server is stopped: a recorded pid may since
-  // have gone to something else
-  const s = await runningServer(r);
-  if (!s) { try { unlinkSync(serverFile(r)); } catch {} console.log("· no review server running"); process.exit(0); }
-  try { process.kill(s.pid, "SIGTERM"); } catch {}
-  for (let i = 0; i < 50 && alive(s.pid); i++) await new Promise((ok) => setTimeout(ok, 100));
-  if (alive(s.pid)) try { process.kill(s.pid, "SIGKILL"); } catch {}
-  try { unlinkSync(serverFile(r)); } catch {}
-  console.log(`✓ stopped the review server (pid ${s.pid}, ${s.base})`);
+  // the repo's server, and one started before `reel init` set it up (recorded in the machine's inbox for the repo)
+  const from = projects[0] || process.cwd();
+  let stopped = 0;
+  for (const r of [findRp(from), machineInbox(repoRoot(from))].filter(Boolean)) {
+    // only a process that answers as this repo's review server is stopped: a recorded pid may since
+    // have gone to something else
+    const s = await runningServer(r);
+    if (!s) { try { unlinkSync(serverFile(r)); } catch {} continue; }
+    try { process.kill(s.pid, "SIGTERM"); } catch {}
+    for (let i = 0; i < 50 && alive(s.pid); i++) await new Promise((ok) => setTimeout(ok, 100));
+    if (alive(s.pid)) try { process.kill(s.pid, "SIGKILL"); } catch {}
+    try { unlinkSync(serverFile(r)); } catch {}
+    console.log(`✓ stopped the review server (pid ${s.pid}, ${s.base})`); stopped++;
+  }
+  if (!stopped) console.log("· no review server running");
   process.exit(0);
 }
 let rp = null;
@@ -138,8 +150,14 @@ for (const p of projects) if (!existsSync(join(p, "index.html"))) { console.erro
 const packedDir = projects.length === 1 && existsSync(join(projects[0], "library.json")) && (existsSync(join(projects[0], "reelplanner-player.js")) || existsSync(join(projects[0], "reelplanning-player.js"))) ? projects[0] : null;   // (reelplanning-player.js: packed before the rename)
 if (!packedDir && projects.some((p) => existsSync(join(p, "library.json")) && (existsSync(join(p, "reelplanner-player.js")) || existsSync(join(p, "reelplanning-player.js"))))) { console.error("✗ a packed folder is served on its own: pass it alone"); process.exit(1); }
 
-// where a review submitted on this page lands: the repo the videos belong to
+// where a review submitted on this page lands: the repo the videos belong to, in its set-up .reelplanner/inbox/, or
+// with none (one video, the skill's level 1) in this machine's ~/.reelplanner/inbox/<repo-key>/: nothing is added to
+// the repo. BOX is what the inbox functions are given (scripts/lib/inbox.mjs), INBOX the folder itself.
 const RP = rp || findRp(packedDir ? process.cwd() : projects[0]);
+const REPO = RP ? dirname(RP) : repoRoot(packedDir ? process.cwd() : projects[0]);
+const BOX = RP || machineInbox(REPO), INBOX = inboxDir(BOX);
+// a path in a response or a line: from the repo for its own inbox, from ~ for the machine's
+const shown = (p) => RP ? relative(REPO, p).split("\\").join("/") : shownPath(p);
 if (packedDir) {
   // each video's plan map against the checkout's: the same, or built from another version of the plan
   // (a video carried only for "Before you watch", one the packed videos build on, is not checked: it is not this PR's)
@@ -187,8 +205,8 @@ if (args.includes("--detach")) {
     console.log("· started by the review server on a review: when this run exits, that server rebuilds its page and tells the reviewer");
     process.exit(0);
   }
-  if (!RP) { console.error(`✗ --detach needs the videos to be in a repo set up with \`reel init\` (.reelplanner/decisions.json; it records the server there); run \`reelplanner review\` without it`); process.exit(1); }
-  const running = await runningServer(RP);
+  // (with no set-up .reelplanner/, it is recorded in the machine's inbox for the repo: nothing is added to the repo)
+  const running = await runningServer(BOX);
   if (running && packedDir) { console.error(`✗ the review server already running (pid ${running.pid}) serves its own folder; a packed folder needs a server of its own: \`reelplanner review --stop\`, then this again (or run it without --detach)`); process.exit(1); }
   if (running) {
     // one server per repo: put these videos in the folder it serves, and point at them
@@ -201,20 +219,20 @@ if (args.includes("--detach")) {
     process.exit(0);
   }
   // start it on its own: its own process group, no terminal, its output in the inbox
-  mkdirSync(join(RP, "inbox"), { recursive: true });
-  try { unlinkSync(serverFile(RP)); } catch {}
-  const log = join(RP, "inbox", "server.log"), fd = openSync(log, "a");
+  mkdirSync(INBOX, { recursive: true });
+  try { unlinkSync(serverFile(BOX)); } catch {}
+  const log = join(INBOX, "server.log"), fd = openSync(log, "a");
   const child = spawn(process.execPath, [fileURLToPath(import.meta.url), ...args.filter((a) => a !== "--detach")], { cwd: process.cwd(), detached: true, stdio: ["ignore", fd, fd], env: { ...process.env, REELPLANNER_REVIEW_DETACHED: "1" } });
   child.unref(); closeSync(fd);
   let s = null;
   for (let i = 0; i < 1200 && !s; i++) {
     await new Promise((ok) => setTimeout(ok, 100));
-    try { const j = JSON.parse(readFileSync(serverFile(RP), "utf8")); if (j.pid === child.pid) s = j; } catch {}
+    try { const j = JSON.parse(readFileSync(serverFile(BOX), "utf8")); if (j.pid === child.pid) s = j; } catch {}
     if (!s && !alive(child.pid)) break;
   }
-  if (!s) { console.error(`✗ the review server did not start; its output is in ${relative(process.cwd(), log)}`); process.exit(1); }
+  if (!s) { console.error(`✗ the review server did not start; its output is in ${shownPath(log)}`); process.exit(1); }
   console.log(`✓ review page: ${s.url}`);
-  console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${relative(process.cwd(), log)}; \`reelplanner review --stop\` stops it)`);
+  console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${shownPath(log)}; \`reelplanner review --stop\` stops it)`);
   if (s.unsandboxed) console.log(s.unsandboxed);
   process.exit(0);
 }
@@ -228,7 +246,7 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", "
 // ---------- the review coming back ----------
 const RECHECK_MS = Number(process.env.REELPLANNER_RECHECK_MS) || 15000;
 const json = (res, code, body) => res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store" }).end(JSON.stringify(body));
-const agentCommand = () => { const c = readConfig(RP)?.agent?.command; return c ? [].concat(c).join(" ") : null; };
+const agentCommand = () => { const c = RP && readConfig(RP)?.agent?.command; return c ? [].concat(c).join(" ") : null; };
 // Unattended runs go ahead without the sandbox on this machine when agent.command turns on Claude
 // Code's sandbox and the sandbox cannot run here (scripts/lib/sandbox.mjs; probed once per server).
 // Another agent's command (codex exec, opencode run) is never probed. → null, or the problem
@@ -240,8 +258,8 @@ const unsandboxedLine = (p) => `△ unattended runs here go ahead without Claude
 // (the review is in done/): rebuild the page from disk and say it is ready. Otherwise say it stopped.
 const afterRun = (id) => ({ code, signal, done }) => {
   let row = {};
-  try { row = JSON.parse(readFileSync(join(RP, "inbox", ...(done ? ["done"] : []), `${id}.json`), "utf8")); } catch { /* moved or gone */ }
-  const rel = (p) => relative(dirname(RP), p).split("\\").join("/");
+  try { row = JSON.parse(readFileSync(join(INBOX, ...(done ? ["done"] : []), `${id}.json`), "utf8")); } catch { /* moved or gone */ }
+  const rel = (p) => relative(REPO, p).split("\\").join("/");
   const video = projects.find((p) => row.planDir && (rel(p) === row.planDir || rel(p).startsWith(`${row.planDir}/`))) || projects[0];
   const map = readPlanMap(video);
   const title = row.title || map?.title || basename(video);
@@ -269,22 +287,22 @@ function buildFor(row) {
   const slug = e ? `${e[1]}--explainer` : m?.[3] ? "system" : m ? (m[2] === "video" ? m[1] : `${m[1]}--walkthrough`) : basename(path);
   const read = (f) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return null; } };
   const own = projects.find((p) => basename(p) === proj);
-  return sigOf(read(join(out, slug, "plan-map.json")) || read(join(dirname(RP), path, "plan-map.json")) || (own && read(join(own, "plan-map.json"))));
+  return sigOf(read(join(out, slug, "plan-map.json")) || read(join(REPO, path, "plan-map.json")) || (own && read(join(own, "plan-map.json"))));
 }
 function reviewStatus(id) {
-  const dir = join(RP, "inbox"), read = (f) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return null; } };
+  const dir = INBOX, read = (f) => { try { return JSON.parse(readFileSync(f, "utf8")); } catch { return null; } };
   const when = (f) => { try { return statSync(f).mtime.toISOString(); } catch { return null; } };
   const doneRow = read(join(dir, "done", `${id}.json`)), row = doneRow || read(join(dir, `${id}.json`));
   if (!row) return null;
   // `inbox done` moves the claim beside the review; one moved by hand may have left it behind
-  const c = (doneRow && read(join(dir, "done", `${id}.claim`))) || claimOf(RP, id) || {}, run = ran.get(id);
+  const c = (doneRow && read(join(dir, "done", `${id}.claim`))) || claimOf(BOX, id) || {}, run = ran.get(id);
   const by = run || c.by === "agent" ? "agent" : c.by ? "session" : null;
-  const log = by === "agent" ? (c.log || relative(dirname(RP), join(dir, "runs", `${id}.log`))).split("\\").join("/") : null;
+  const log = by === "agent" ? (c.log || relative(REPO, join(dir, "runs", `${id}.log`))).split("\\").join("/") : null;
   let state, step = null, since;
   if (by === "agent" && (run ? !run.ended : c.runPid ? c.host !== hostname() || alive(Number(c.runPid)) : !doneRow)) {
     state = "working"; since = c.at || null; if (doneRow) step = "finishing up";
   } else if (doneRow) { state = "done"; since = run?.at || when(join(dir, "done", `${id}.json`)); }
-  else if (by === "agent") { state = "stopped"; since = run?.at || when(join(dirname(RP), log)); }
+  else if (by === "agent") { state = "stopped"; since = run?.at || when(join(REPO, log)); }
   else if (by) { state = "working"; since = c.at || null; }
   else { state = "waiting"; since = row.submittedAt || when(join(dir, `${id}.json`)); }
   return { id, state, by, ...(step ? { step } : {}), since, build: buildFor(row), ...(log ? { log } : {}) };
@@ -302,25 +320,29 @@ async function startRun(id) {
     const line = `running without Claude Code's sandbox: ${unsandboxedNote(r.unsandboxed)}`;
     console.log(`△ ${id}: ${line}`);
     if (!args.includes("--no-notify")) {
-      let row = {}; try { row = JSON.parse(readFileSync(join(RP, "inbox", `${id}.json`), "utf8")); } catch { /* gone */ }
+      let row = {}; try { row = JSON.parse(readFileSync(join(INBOX, `${id}.json`), "utf8")); } catch { /* gone */ }
       notify({ title: row.title || "Review started", line, url }).then((n) => { if (!n.shown) console.log(`  (no desktop notification: ${n.error || n.via})`); });
     }
   }
   return r;
 }
 
-// Who takes this review: the waiting session, else a headless run, else the next session.
+// Who takes this review: the waiting session, else a headless run, else the next session. With no set-up
+// .reelplanner/ there is no agent command to start: it waits in the machine's inbox for a session.
+const NO_SESSION = "no agent session is waiting: it's saved on this machine, not in the repo; tell your agent it's sent, and it picks it up";
 async function deliver(id) {
-  if (liveWaiters(RP).length) {
+  if (liveWaiters(BOX).length) {
     // the waiter claims it within half a second; if it died between our look and its next poll,
     // don't strand the review — look again, and start a run if it is still nobody's
     setTimeout(async () => {
-      if (claimOf(RP, id) || liveWaiters(RP).length) return;
+      if (claimOf(BOX, id) || liveWaiters(BOX).length) return;
+      if (!RP) { console.log(`  ↳ ${id}: the waiting session went away — it waits in ${shown(INBOX)}/`); return; }
       const r = await startRun(id);
       console.log(r.started ? `  ↳ ${id}: the waiting session went away; started ${agentCommand()} (pid ${r.pid})` : `  ↳ ${id}: the waiting session went away; ${r.reason} — it waits in the inbox`);
     }, RECHECK_MS);
     return { handledBy: "session", message: "your open session has it" };
   }
+  if (!RP) return { handledBy: "inbox", message: NO_SESSION };
   const r = await startRun(id);
   if (r.started) return { handledBy: "agent", message: `no session was open: started \`${agentCommand()}\` on it${r.unsandboxed ? ", without Claude Code's sandbox (it can't run on this machine)" : ""}`, pid: r.pid };
   if (r.claim) return { handledBy: r.claim.by === "agent" ? "agent" : "session", message: "already being handled" };
@@ -332,7 +354,7 @@ async function deliver(id) {
 function knownHere() {
   try {
     // your file, and this repo's summaries still waiting to reach it
-    const repo = repoName(dirname(RP)), k = youKnows([...readYou(), ...(RP ? readYou(pendingPath(RP)) : [])]);
+    const repo = repoName(REPO), k = youKnows([...readYou(), ...(RP ? readYou(pendingPath(RP)) : [])]);
     return { looked: [...k.looked.keys()].sort(), watched: [...new Set(k.watched.filter((w) => !repo || !w.repo || w.repo === repo).map((w) => w.video))].sort() };
   } catch { return { looked: [], watched: [] }; }
 }
@@ -353,7 +375,6 @@ async function handleApi(req, res, path) {
   const hosts = [`127.0.0.1:${port}`, `localhost:${port}`];
   if (!hosts.includes(String(req.headers.host))) return json(res, 403, { ok: false, error: "wrong host" });
   if (req.headers.origin && !hosts.some((h) => req.headers.origin === `http://${h}`)) return json(res, 403, { ok: false, error: "cross-origin" });
-  if (!RP) return json(res, 409, { ok: false, error: "these videos are not in a repo set up with reel init (.reelplanner/decisions.json) — download the review instead" });
   if (path === "api/ask") return handleAsk(req, res);
   if (path === "api/review/status") {
     if (req.method !== "GET") return json(res, 405, { ok: false, error: "GET it, with ?id=" });
@@ -364,18 +385,20 @@ async function handleApi(req, res, path) {
   }
   // where the command's sandbox cannot run, the run still starts, without it: the Finish panel says so
   // in the same quiet line (`unsandboxed`: why, or null)
-  if (req.method === "GET") { const off = await unsandboxed(); return json(res, 200, { ok: true, sessionWaiting: liveWaiters(RP).length > 0,
-    agentCommand: agentCommand(), unsandboxed: off ? "Claude Code's sandbox can't run on this machine" : null, inbox: listInbox(RP).filter((r) => !r.claim).length, known: knownHere() }); }
+  // (`where`: "machine" with no set-up .reelplanner/, so the panel says the review is kept on this machine, not in the repo)
+  if (req.method === "GET") { const off = await unsandboxed(); return json(res, 200, { ok: true, sessionWaiting: liveWaiters(BOX).length > 0,
+    agentCommand: agentCommand(), unsandboxed: off ? "Claude Code's sandbox can't run on this machine" : null, inbox: listInbox(BOX).filter((r) => !r.claim).length,
+    where: RP ? "repo" : "machine", known: knownHere() }); }
   if (req.method !== "POST") return json(res, 405, { ok: false, error: "POST a review row" });
   if (!/^application\/json\b/i.test(String(req.headers["content-type"] || ""))) return json(res, 415, { ok: false, error: "content-type must be application/json" });
   let row;
   try { row = JSON.parse(await readBody(req)); } catch (e) { return json(res, e.status || 400, { ok: false, error: e.status ? "review too large" : "body is not JSON" }); }
   const problem = rowProblem(row);
   if (problem) return json(res, 400, { ok: false, error: problem });
-  const w = writeReview(RP, row);
-  const rel = relative(dirname(RP), w.path).split("\\").join("/");
+  const w = writeReview(BOX, row);
+  const rel = shown(w.path);
   let d;
-  if (w.duplicate) { const c = claimOf(RP, w.id); d = { handledBy: c ? (c.by === "agent" ? "agent" : "session") : liveWaiters(RP).length ? "session" : "inbox", message: "already received" }; }
+  if (w.duplicate) { const c = claimOf(BOX, w.id); d = { handledBy: c ? (c.by === "agent" ? "agent" : "session") : liveWaiters(BOX).length ? "session" : "inbox", message: "already received" }; }
   else d = await deliver(w.id);
   console.log(`📥 review ${w.id}${w.duplicate ? " (again)" : ""} → ${rel}: ${d.message}`);
   return json(res, 200, { ok: true, id: w.id, path: rel, duplicate: w.duplicate, ...d });
@@ -387,7 +410,7 @@ async function handleApi(req, res, path) {
 // question in the review, to be answered in the next version. Nothing here starts a headless run.
 async function handleAsk(req, res) {
   if (req.method === "GET") {
-    const id = new URL(req.url, "http://x").searchParams.get("id"); const q = id ? readQuestion(RP, id) : null;
+    const id = new URL(req.url, "http://x").searchParams.get("id"); const q = id ? readQuestion(BOX, id) : null;
     if (!q) return json(res, 404, { ok: false, error: "no such question" });
     return json(res, 200, { ok: true, id: q.id, answered: !!q.answer, ...(q.answer ? { answer: q.answer, from: q.from || null, answeredAt: q.answeredAt || null } : {}) });
   }
@@ -396,12 +419,12 @@ async function handleAsk(req, res) {
   let q; try { q = JSON.parse(await readBody(req, 64e3)); } catch (e) { return json(res, e.status || 400, { ok: false, error: e.status ? "question too large" : "body is not JSON" }); }
   const text = typeof q?.question === "string" ? q.question.trim() : "";
   if (!text || text.length > 2000) return json(res, 400, { ok: false, error: "a question is 1 to 2000 characters" });
-  if (!liveWaiters(RP).length) return json(res, 200, { ok: true, handledBy: "review", message: "no agent session is waiting on this page: the question goes with your review" });
+  if (!liveWaiters(BOX).length) return json(res, 200, { ok: true, handledBy: "review", message: "no agent session is waiting on this page: the question goes with your review" });
   const str = (v, n) => (typeof v === "string" ? v.slice(0, n) : null);
-  const w = writeQuestion(RP, { id: str(q.id, 80), video: str(q.video, 200), planDir: str(q.planDir, 300), title: str(q.title, 300), question: text, t: Number(q.t) || 0,
+  const w = writeQuestion(BOX, { id: str(q.id, 80), video: str(q.video, 200), planDir: str(q.planDir, 300), title: str(q.title, 300), question: text, t: Number(q.t) || 0,
     frame: q.frame && typeof q.frame === "object" ? { index: Number(q.frame.index) || null, title: str(q.frame.title, 200) } : null, planStep: Number.isFinite(Number(q.planStep)) && q.planStep != null ? Number(q.planStep) : null,
     narration: str(q.narration, 4000), quote: str(q.quote, 400) });
-  console.log(`❓ question ${w.id}${w.duplicate ? " (again)" : ""} → ${relative(dirname(RP), w.path)}: the waiting session has it`);
+  console.log(`❓ question ${w.id}${w.duplicate ? " (again)" : ""} → ${shown(w.path)}: the waiting session has it`);
   return json(res, 200, { ok: true, id: w.id, handledBy: "session", message: "the agent session waiting on this page has it" });
 }
 
@@ -428,14 +451,14 @@ const listen = (port, tries = 20) => new Promise((ok, fail) => {
 const port = await listen(Number(flag("port", 8787)));
 const base = `http://127.0.0.1:${port}/`, url = pageUrl(base, out);
 console.log(`✓ review page: ${url}`);
-console.log(`  (serving until stopped; Finish, then Send, files the review in ${RP ? `${relative(process.cwd(), join(RP, "inbox")) || "."}/ — POST /api/review` : "a download"})`);
+console.log(`  (serving until stopped; Finish, then Send, files the review in ${shownPath(INBOX) || "."}/${RP ? "" : " (this machine's folder: the repo has no set-up .reelplanner/, and nothing is added to it)"} — POST /api/review)`);
 // say it once, at the start, where the reviewer (or the session that started this) reads it
 const off = await unsandboxed();
 if (off) console.log(unsandboxedLine(off));
 // started by --detach: say where this server is, so the next --detach reuses it and --stop finds it
-if (process.env.REELPLANNER_REVIEW_DETACHED === "1" && RP) {
-  const file = serverFile(RP);
-  writeFileSync(file, JSON.stringify({ pid: process.pid, port, url, base, out, projects: projects.map((p) => relative(dirname(RP), p)), startedAt: new Date().toISOString(), ...(off ? { unsandboxed: unsandboxedLine(off) } : {}) }, null, 2) + "\n");
+if (process.env.REELPLANNER_REVIEW_DETACHED === "1") {
+  const file = serverFile(BOX);
+  writeFileSync(file, JSON.stringify({ pid: process.pid, port, url, base, out, projects: projects.map((p) => relative(REPO, p)), startedAt: new Date().toISOString(), ...(off ? { unsandboxed: unsandboxedLine(off) } : {}) }, null, 2) + "\n");
   const forget = () => { try { if (JSON.parse(readFileSync(file, "utf8")).pid === process.pid) unlinkSync(file); } catch {} };
   process.on("exit", forget);
   for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => process.exit(0));
