@@ -671,7 +671,8 @@ async function resumeHandoff($: EngineInterface) {
   const h = (await $.store.get('handoff')) as Handoff | undefined
   if (!h) return
   await $.store.delete('handoff')
-  if ((await $.clock.now()) - h.at > 120_000) return
+  // Claude Code may first ask why the fullscreen layout is being left (a survey; Esc skips it): ten minutes
+  if ((await $.clock.now()) - h.at > 600_000) return
   await update($, answers, a => ({ ...h.answers, ...a }))
   await update($, verdicts, a => ({ ...h.verdicts, ...a }))
   await update($, notes, a => ({ ...h.notes, ...a }))
@@ -1444,7 +1445,8 @@ export const register: Register = on => {
               e.props.placement === 'dock'
                 ? 'The pane beside the conversation goes no wider than this. t: full screen, which switches Claude ' +
                     'Code to its classic layout (/tui default): it restarts, picks up this conversation, and the ' +
-                    'video comes back across the whole terminal, where it was.'
+                    'video comes back across the whole terminal, where it was. If Claude Code asks why you are ' +
+                    'leaving its fullscreen layout, Esc skips the question.'
                 : 't: back beside the conversation, Claude Code\'s fullscreen layout again (/tui fullscreen).',
             )
           : null}

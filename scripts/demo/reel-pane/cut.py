@@ -6,12 +6,14 @@ With --bare, the footage alone and, beside it, <out>.captions.json: each step's 
 the cut and its speed, for compose.py, which lays the captions over the footage in HyperFrames. Without it, the
 captions are drawn on a plain bar over the transcript side (ffmpeg drawtext): a quick look, no HyperFrames.
 
-usage: cut.py <run-dir> <out.mp4> [--bare]"""
+Several run dirs, comma-separated, are cut one after another into one video (kitty.py's review part, then its
+fullscreen part).
+
+usage: cut.py <run-dir>[,<run-dir>…] <out.mp4> [--bare]"""
 import json, os, subprocess, sys, tempfile
 
-RUN, OUT = sys.argv[1], sys.argv[2]
+RUNS, OUT = sys.argv[1].split(","), sys.argv[2]
 BARE = "--bare" in sys.argv[3:]
-marks = json.load(open(f"{RUN}/marks.json"))
 
 
 def duration(path):
@@ -19,7 +21,6 @@ def duration(path):
                                 capture_output=True, text=True).stdout)
 
 
-end = duration(f"{RUN}/screen.mp4")
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 BAR = 1105  # the caption bar covers the transcript side, short of the pane
 
@@ -41,10 +42,15 @@ def wrap(s):
 work = tempfile.mkdtemp(prefix="reel-cut-")
 os.makedirs(os.path.dirname(os.path.abspath(OUT)), exist_ok=True)
 pieces, captions, at = [], [], 0.0
-for i, m in enumerate(marks):
-    if m.get("stop"):
-        break  # the video ends here; the rest is the recorder winding down
-    a, b = m["t"], (marks[i + 1]["t"] if i + 1 < len(marks) else end)
+steps = []
+for RUN in RUNS:
+    marks = json.load(open(f"{RUN}/marks.json"))
+    end = duration(f"{RUN}/screen.mp4")
+    for i, m in enumerate(marks):
+        if m.get("stop"):
+            break  # the video ends here; the rest is the recorder winding down
+        steps.append((RUN, m, m["t"], marks[i + 1]["t"] if i + 1 < len(marks) else end))
+for i, (RUN, m, a, b) in enumerate(steps):
     if b - a < 0.2 or m.get("skip"):
         continue  # a skip mark cuts its stretch: a wait with nothing on the screen changing
     sp = m.get("speed", 1)
