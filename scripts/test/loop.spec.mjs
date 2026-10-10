@@ -20,7 +20,8 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
 import { waitingLine, osCommand, splitCommand } from "../lib/notify.mjs";
-import { liveWaiters, claim, writeReview, repoKey } from "../lib/inbox.mjs";
+import { liveWaiters, claim, writeReview, repoKey, agentPrompt, SKILL_PATH } from "../lib/inbox.mjs";
+import { existsSync as hasFile } from "node:fs";
 import { sandboxOf, sandboxProblem, withoutSandbox, fencesFileTools } from "../lib/sandbox.mjs";
 // the runner hands this spec a free port and the four above it (RP_TEST_PORT); run alone, a random one below the
 // ports the system hands out for outgoing connections (32768 and up)
@@ -244,7 +245,8 @@ try {
     && /reelplanner verify <video-dir>/.test(prompt) && /reelplanner inbox done video-20260103T093000Z/.test(prompt) && /review server that started it/.test(prompt), prompt);
   ok("server: the command runs in the repo", !!run?.cwd && samePlace(run.cwd, tmp), run?.cwd);
   // any agent reads it (codex exec, opencode run): no Claude Code tool names in it
-  ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt), prompt);
+  // (the skill's own path is left out: a checkout can sit under a folder named .claude)
+  ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt.replace(SKILL_PATH, "<the skill>")), prompt);
   ok("server: where the sandbox can run, it says nothing about running without it", !/without Claude Code's sandbox/.test(log), log);
   let runSet = {}; try { runSet = JSON.parse(run.args[run.args.indexOf("--settings") + 1]); } catch { /* not there */ }
   ok("sandbox: where the probe passes, the command runs as configured, the sandbox on", JSON.stringify(runSet) === SANDBOX && !/without Claude Code's sandbox/.test(r2.body.message), JSON.stringify(runSet));
@@ -399,6 +401,12 @@ try {
 } finally {
   for (const p of procs) try { p.kill(); } catch { /* gone */ }
   rmSync(tmp, { recursive: true, force: true });
+}
+// the headless run's prompt (cheaper-videos step 10): the skill's own path, and no verify on an approval
+{
+  const pr = agentPrompt(".reelplanner/inbox/r1.json", "r1");
+  ok("headless prompt: names the skill's SKILL.md, a path that is there", pr.includes(SKILL_PATH) && hasFile(SKILL_PATH), pr);
+  ok("…asks for verify only after a rebuild; an approval rebuilds nothing and needs none", /If you rebuilt a video, once it passes `reelplanner verify <video-dir>` commit; an approval rebuilds nothing and needs no verify/.test(pr) && /`reelplanner inbox done r1`/.test(pr), pr);
 }
 console.log(failed ? `\n✗ ${failed} failed` : "\n✓ loop: all passed");
 process.exit(failed ? 1 : 0);

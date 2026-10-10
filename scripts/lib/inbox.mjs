@@ -28,7 +28,7 @@ import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "nod
 import { hostname, homedir } from "node:os";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { machineDir, realPath, repoRoot, rpDirOf, rpInitialized } from "./env.mjs";
+import { ROOT, machineDir, realPath, repoRoot, rpDirOf, rpInitialized } from "./env.mjs";
 import { splitCommand } from "./notify.mjs";
 import { sandboxProblem, withoutSandbox } from "./sandbox.mjs";
 
@@ -224,10 +224,15 @@ export function answerQuestion(rp, id, answer, from = null) {
 }
 
 // ---------- no session waiting: a fresh headless run ----------
+// The skill's own path is named (cheaper-videos step 10: headless runs spent their first seconds, some all of them,
+// looking for it), and an approval, which rebuilds nothing, asks for no verify (one failed in the sandbox and cost
+// 2.5 minutes).
+export const SKILL_PATH = join(ROOT, "skills", "plan-to-video", "SKILL.md");
 export const agentPrompt = (relPath, id) =>
-  `Record and act on the review at ${relPath}, per the plan-to-video skill ("Running the loop"): ` +
+  `Record and act on the review at ${relPath}, per the plan-to-video skill (${SKILL_PATH}, its "Running the loop"): ` +
   `hand it to \`reelplanner reel-intake ${relPath}\` and do what the main session would have done with it. ` +
-  `Once the rebuilt video passes \`reelplanner verify <video-dir>\`, commit, run \`reelplanner inbox done ${id}\`, and stop. ` +
+  `If you rebuilt a video, once it passes \`reelplanner verify <video-dir>\` commit; an approval rebuilds nothing and needs no verify: fold its comments into plan.md and commit. ` +
+  `Then run \`reelplanner inbox done ${id}\`, and stop. ` +
   `Commit with \`git commit -m "…"\` as a shell call of its own (more \`-m\` for more paragraphs; no \`cd\`, \`&&\`, \`$(…)\` or heredoc): ` +
   `only that form runs outside the sandbox, where a signed commit works. ` +
   `Nobody is watching this run: when it exits, the review server that started it rebuilds its page and tells the reviewer ` +
