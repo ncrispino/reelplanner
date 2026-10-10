@@ -14,6 +14,11 @@
   classifier. The skill runs each command in a call of its own (a chain like `reel new-plan … && reel check …` is
   judged by its every part), says what a command will write into the repo before running it, and, when one is
   stopped, names the two rules and `/permissions` → Recently denied, and never edits the settings itself.
+- **A whole session on a fresh machine.** `scripts/release/ec2-fresh.sh --shell` starts an EC2 machine with the
+  package copied over and runs nothing, for a session tried by hand (Claude Code logged in, the README's Install,
+  a plan and its review); `--hours` sets when it shuts itself down (2 by default).
+- **Finish no longer counts an approval as a comment.** With nothing said, the Finish panel said "Your 1 comment
+  goes with it": the approval it had picked is kept as an annotation, and the panel counted it.
 
 - **A faster first `setup`.** On Linux, whisper.cpp is whisper.cpp's own prebuilt build (v1.9.5, x64 or arm64, its
   checksum checked) instead of compiled from `main`: a second instead of two minutes on two cores, and no compiler

@@ -18,13 +18,16 @@
 #   --container <img>  run the check in a container of that image on the instance (ubuntu:24.04: the bare image the
 #                      GitHub workflow uses, which lacks what a server image has), instead of on the VM itself
 #   --keep             leave the instance up afterwards (prints how to reach it and how to delete it)
+#   --shell            a fresh machine to try reelplanner on by hand (a session in Claude Code, say): started, with
+#                      the package and the check copied to /opt/rp, and nothing run; kept, as --keep
+#   --hours <n>        it shuts itself down and is terminated after n hours (default 2)
 #
 # It costs a few cents (t3.medium is about $0.04 an hour; the check takes 10 to 20 minutes). The instance shuts
-# itself down and is terminated after 2 hours whatever happens to this script. Everything it makes is tagged
+# itself down and is terminated after --hours whatever happens to this script. Everything it makes is tagged
 # reelplanner=fresh-install.
 set -uo pipefail
 
-PROFILE="${AWS_PROFILE:-}"; REGION=""; TYPE=""; ARCH=x86_64; FROM=local; NODE=22; TIMES=""; KEEP=0; IMAGE=""
+PROFILE="${AWS_PROFILE:-}"; REGION=""; TYPE=""; ARCH=x86_64; FROM=local; NODE=22; TIMES=""; KEEP=0; IMAGE=""; SHELL_ONLY=0; HOURS=2
 while [ $# -gt 0 ]; do case "$1" in
   --profile) PROFILE="$2"; shift 2 ;;
   --region) REGION="$2"; shift 2 ;;
@@ -35,11 +38,14 @@ while [ $# -gt 0 ]; do case "$1" in
   --times) TIMES="--times"; shift ;;
   --keep) KEEP=1; shift ;;
   --container) IMAGE="$2"; shift 2 ;;
-  -h|--help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  --shell) SHELL_ONLY=1; KEEP=1; shift ;;
+  --hours) HOURS="$2"; shift 2 ;;
+  -h|--help) awk 'NR > 1 && !/^#/ {exit} NR > 1' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   *) echo "✗ unknown option: $1 (--help lists them)" >&2; exit 2 ;;
 esac; done
 case "$ARCH" in x86_64) AMI_ARCH=amd64; TYPE=${TYPE:-t3.medium} ;; arm64) AMI_ARCH=arm64; TYPE=${TYPE:-t4g.medium} ;;
   *) echo "✗ --arch is x86_64 or arm64, not $ARCH" >&2; exit 2 ;; esac
+[[ "$HOURS" =~ ^[1-9][0-9]?$ ]] || { echo "✗ --hours is a whole number of hours, 1 to 99, not $HOURS" >&2; exit 2; }
 command -v aws >/dev/null || { echo "✗ the AWS CLI (aws) is not on PATH" >&2; exit 2; }
 
 HERE="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -91,8 +97,8 @@ SG="$(aws_ ec2 create-security-group --group-name "$TAG" --description "reelplan
 MYIP="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
 aws_ ec2 authorize-security-group-ingress --group-id "$SG" --protocol tcp --port 22 --cidr "$MYIP/32" >/dev/null || exit 1
 
-# it shuts itself down (and so is terminated) after 2 hours, whatever happens here
-printf '#!/bin/bash\nshutdown -h +120\n' > "$WORK/user-data"
+# it shuts itself down (and so is terminated) after --hours, whatever happens here
+printf '#!/bin/bash\nshutdown -h +%d\n' "$((HOURS * 60))" > "$WORK/user-data"
 ID="$(aws_ ec2 run-instances --image-id "$AMI" --instance-type "$TYPE" --key-name "$KEY" --security-group-ids "$SG" \
   --instance-initiated-shutdown-behavior terminate --user-data "file://$WORK/user-data" \
   --block-device-mappings 'DeviceName=/dev/sda1,Ebs={VolumeSize=30,VolumeType=gp3,DeleteOnTermination=true}' \
@@ -114,6 +120,10 @@ NOX=(); tar --no-xattrs -cf /dev/null "$0" 2>/dev/null && NOX=(--no-xattrs)
 [ "$FROM" = local ] && scp -q -i "$WORK/key" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR "$WORK/$TGZ" "ubuntu@$IP:/opt/rp/"
 "${SSH[@]}" 'chmod -R a+rX /opt/rp' </dev/null
 
+if [ "$SHELL_ONLY" = 1 ]; then
+  say "✓ $ID is yours to try things on (shuts itself down in $HOURS h): /opt/rp holds ${TGZ:-the check}${TGZ:+ (npm i -g $SPEC)}"
+  exit 0
+fi
 if [ -n "$IMAGE" ]; then
   say "▶ docker, for the check in $IMAGE"
   "${SSH[@]}" 'sudo apt-get update -q >/dev/null 2>&1; sudo apt-get install -y -q docker.io >/dev/null 2>&1 && sudo docker version --format "{{.Server.Version}}" >/dev/null' </dev/null || { say "✗ docker did not install"; exit 1; }

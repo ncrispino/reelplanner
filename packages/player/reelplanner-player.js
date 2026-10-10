@@ -6930,7 +6930,8 @@ ${clip(gloss || "(none)", 9000)}`;
     const plural = (k, w) => `${k} ${w}${k === 1 ? "" : "s"}`;
     const bits = [
       [Object.values(this.decisions).filter((m) => !this.isUnclear(m)).length, "decision"], [Object.values(this.decisions).filter((m) => this.isUnclear(m)).length, "unclear question"], [Object.keys(this.autonomy).length, "verdict"],
-      [Object.keys(this.quizzes).length, "quick check"], [this.annotations.length, "comment"],
+      // the verdict is an annotation too ({ kind: "approve" }, added when Approve is picked), not a comment
+      [Object.keys(this.quizzes).length, "quick check"], [this.annotations.filter((a) => a.kind !== "approve").length, "comment"],
     ].filter(([k]) => k).map(([k, w]) => plural(k, w));
     const carried = bits.length
       ? `${bits.length > 1 ? `${bits.slice(0, -1).join(", ")} and ${bits.at(-1)}` : bits[0]} ${bits.length > 1 || !/^1 /.test(bits[0]) ? "are" : "is"}`
