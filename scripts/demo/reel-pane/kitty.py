@@ -2,9 +2,9 @@
 """A real kitty, on a virtual display, running Claude Code with the plugin, through all of /reel: the video plays
 in the pane (bigger with z), a comment at a moment (m), a choice answered with a comment on the answer (1, c), one in
 the reviewer's own words (o), the Send card saying what each answer leads to, Send to a waiting session, the
-rebuild (one scene's words edited and plan-diff run, as a revise does), the pane noticing the new version, and
-just the changes played. The screen is grabbed as it is (ffmpeg x11grab); marks.json says when each step began,
-for cut.py's captions and speeds.
+rebuild (one scene's words edited and plan-diff run, as a revise does), the pane noticing the new version, just
+the changes played, then the whole video (v). The screen is grabbed as it is (ffmpeg x11grab); marks.json says when
+each step began, for cut.py's captions and speeds.
 
 usage: kitty.py <out-dir> <launcher> <demo-repo>   (DISPLAY names an X display; the launcher starts `claude` there)"""
 import json, os, subprocess, sys, time
@@ -138,11 +138,13 @@ mark("g: watch what changed. First its render for the terminal is made, once", s
 key("g")
 wait_for("· playing", 900)
 mark("Just the changes: scene 9, the one edited. Answered choices are not stopped at again")
-wait_for("Send your review", 120)
-time.sleep(3)
-mark("v plays the whole video instead")
+wait_for("· the end", 120)
+time.sleep(1)
+mark("When the changes end, Send again is there: approve, or ask for more")
+time.sleep(6)
+mark("v: the whole video instead, playing from its start")
 key("v")
-time.sleep(5)
+time.sleep(9)
 mark("", stop=True)
 grab.communicate(b"q", timeout=30)
 json.dump(marks, open(f"{OUT}/marks.json", "w"), indent=1)

@@ -10,7 +10,21 @@ marks = json.load(open(f"{RUN}/marks.json"))
 end = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f"{RUN}/screen.mp4"],
                            capture_output=True, text=True).stdout)
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-esc = lambda s: s.replace("\\", "\\\\").replace(":", "\\:").replace("'", "’").replace("%", "\\%")
+BAR = 1105  # the caption bar covers the transcript side, short of the pane
+from PIL import ImageFont
+face = ImageFont.truetype(FONT, 34)
+
+
+def wrap(s):
+    """The caption in lines that fit the bar."""
+    out = [""]
+    for word in s.split():
+        line = f"{out[-1]} {word}".strip()
+        if face.getlength(line) > BAR - 72 and out[-1]:
+            out.append(word)
+        else:
+            out[-1] = line
+    return out
 import os, tempfile
 work = tempfile.mkdtemp(prefix="reel-cut-")
 pieces = []
@@ -18,13 +32,18 @@ for i, m in enumerate(marks):
     if m.get("stop"):
         break  # the video ends here; the rest is the recorder winding down
     a, b = m["t"], (marks[i + 1]["t"] if i + 1 < len(marks) else end)
-    if b - a < 0.2:
-        continue
+    if b - a < 0.2 or m.get("skip"):
+        continue  # a skip mark cuts its stretch: a wait with nothing on the screen changing
     sp = m.get("speed", 1)
     cap = m["caption"] + (f"  ({sp}\u00d7)" if sp > 1 else "")
+    lines = wrap(cap)
+    capfile = os.path.join(work, f"{i:02d}.txt")
+    open(capfile, "w").write("\n".join(lines))
+    tall = 46 * len(lines) + 64
     vf = (f"setpts=PTS/{sp},fps=15,"
-          f"drawbox=x=0:y=ih-150:w=1105:h=110:color=black@0.82:t=fill,"
-          f"drawtext=fontfile={FONT}:text='{esc(cap)}':x=36:y=h-118:fontsize=34:fontcolor=white,format=yuv420p")
+          f"drawbox=x=0:y=ih-{tall + 40}:w={BAR}:h={tall}:color=black@0.82:t=fill,"
+          f"drawtext=fontfile={FONT}:textfile='{capfile}':x=36:y=h-{tall + 8}:fontsize=34:line_spacing=12:fontcolor=white,"
+          f"format=yuv420p")
     piece = os.path.join(work, f"{i:02d}.mp4")
     # one step at a time: seek, cut, speed, caption (a single graph over every step holds them all in memory)
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-ss", str(a), "-t", str(b - a), "-i", f"{RUN}/screen.mp4",

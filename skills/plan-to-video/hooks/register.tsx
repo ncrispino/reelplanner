@@ -899,6 +899,21 @@ export const register: Register = on => {
     // a terminal without kitty graphics watches it in the browser player
     const inBrowser = mode === 'browser'
     const total = map.totalSeconds ?? 0
+    /** v: switch between just the changes and the whole video, and play on in the new mode, as the browser
+     * player's toggle does: from here, or from the start when the video is at its end. */
+    const switchOnly = async () => {
+      const next = !only
+      await update($, onlyChanges, o => ({ ...o, [v.key]: next }))
+      if (inBrowser) return
+      const atEnd = !mine || mine.t >= total - 0.5
+      const i = atEnd ? (next ? nextOpen(0) : 0) : stop
+      if (i !== stop) await update($, open, o => (o ? { ...o, stop: i } : o))
+      const s = stretch(map, v.which, i)
+      const from = atEnd ? (next ? 0 : s.from) : mine.t > s.from && mine.t < s.to - 0.2 ? mine.t : s.from
+      const list = [{ from, to: s.to }]
+      branchOf = null
+      void play($, v, next ? changedOnly(map, list, id => done(id)) : list, size)
+    }
     const t = mine?.t ?? stretch(map, v.which, stop).from
     const dim = (s: string) => <Text dimColor>{s}</Text>
     const heading = (s: string) => (
@@ -931,7 +946,7 @@ export const register: Register = on => {
           Revised since the last build: {map.changes?.changedFrames?.length} of {(map.frames ?? []).length} scenes changed (
           {mins(map.changes?.changedSeconds ?? 0)}). {only ? 'Plays just the changes.' : 'Plays the whole video.'}
         </Text>
-        <Button key="only" plain hotkey="v" onPress={() => update($, onlyChanges, o => ({ ...o, [v.key]: !only }))}>
+        <Button key="only" plain hotkey="v" onPress={() => switchOnly()}>
           {only ? 'Whole video' : 'Just the changes'}
         </Button>
       </Box>

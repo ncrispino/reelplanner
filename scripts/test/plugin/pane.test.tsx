@@ -348,10 +348,13 @@ test('a revised video plays just what changed (and any scene with a question sti
   const plays = () => spawned.filter(a => !a.includes('--render')).map(stretchOf)
   // to choice 1 (0:20): frame 1 did not change and holds no question, frame 2 holds q1, still open
   expect(plays()).toEqual([['15', '20']])
+  // v plays in the new mode at once, as the browser player's toggle does
   await ui.press({ key: 'only' })
   expect(await ui.find({ type: 'Text', text: /Plays the whole video/ })).toBeDefined()
-  await ui.press({ key: 'replay' })
   expect(plays()[1]).toEqual(['0', '20'])
+  await ui.press({ key: 'only' })
+  expect(await ui.find({ type: 'Text', text: /Plays just the changes/ })).toBeDefined()
+  expect(plays()[2]).toEqual(['15', '20'])
   await ui.press({ key: 'library' })
 })
 

@@ -368,7 +368,7 @@ pane stays on the video and says what Claude is doing with the review; the video
 once its plan map is newer than the Send the pane offers **Watch what changed** (or, after a plan's Approve, the
 walkthrough when it is built). A revised video (some scenes changed since its last build, per `plan-map.json`'s
 `changes`) plays just what changed, as the browser player does: the changed scenes and any scene with a question still
-open; `v` plays the whole video instead. The render the pane plays is made again for the new version, once.
+open; `v` switches to the whole video and plays on in it (from its start when it is at the end), and back. The render the pane plays is made again for the new version, once.
 
 Send writes the review row the player's Send writes into `.reelplanner/inbox/`. A session waiting on
 `review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and
