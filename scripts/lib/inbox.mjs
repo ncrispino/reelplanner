@@ -28,7 +28,7 @@ import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "nod
 import { hostname, homedir } from "node:os";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { machineDir, realPath } from "./env.mjs";
+import { machineDir, realPath, repoRoot, rpDirOf, rpInitialized } from "./env.mjs";
 import { splitCommand } from "./notify.mjs";
 import { sandboxProblem, withoutSandbox } from "./sandbox.mjs";
 
@@ -276,4 +276,19 @@ export async function startAgent(rp, id, { config = readConfig(rp), onExit } = {
       ok({ started: true, pid: child.pid, argv, log, ...(unsandboxed ? { unsandboxed } : {}) });
     });
   });
+}
+
+/**
+ * The build's last line (cheaper-videos step 9): the command that puts this video on the review page and prints its
+ * link, and where the page is when a server is running for the repo (its .server.json, its process alive). A running
+ * server shows a rebuilt video only once `review --detach` bundles it again, so the command is named either way.
+ */
+export function reviewWayLine(dir, from = process.cwd()) {
+  const repo = repoRoot(dir), rp = rpDirOf(repo), boxes = [rpInitialized(rp) ? rp : null, machineInbox(repo)].filter(Boolean);
+  const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
+  const read = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+  const srv = boxes.map((b) => read(join(inboxDir(b), ".server.json"))).find((x) => x?.pid && alive(x.pid));
+  const cmd = `reelplanner review ${relative(from, dir) || "."} --detach`;
+  return srv ? `the page is up at ${srv.base || srv.url} (pid ${srv.pid}): \`${cmd}\` puts this build on it and prints its link; give the person that link`
+    : `\`${cmd}\` starts the page and prints its link; give the person that link`;
 }

@@ -238,28 +238,28 @@ as the steps they decide allow.
 
 "The video is ready: <link>. I'll wait for your review."
 
-### Step 9 — The build ends with the link, checked
+### Step 9 — The build ends with the way to the page
 
-`build`'s last line is the review page's link for this video, checked: when a review server runs for the repo it
-asks it for this project and says "serving the build just made" or what is wrong (another project, an older build);
-when none runs, the command that starts one.
+`build`'s last line is the command that puts this build on the review page and prints its link (`review <dir>
+--detach`: a running server shows a rebuilt video only once that bundles it again), and, when a server is running for
+the repo, where it is. `build` itself starts and changes no server: a headless run cannot reach one.
 
 #### Cases
 
 | Case | Input | What happens | Example |
 |---|---|---|---|
-| Server running, this build | | ✓ with the link | "✓ review: http://127.0.0.1:8787/?project=x" |
-| Server running, older bundle | | △: restart it | "the server has the build from 14:02: run review --detach again" |
-| No server | | the command | "review: reelplanner review <dir> --detach" |
+| A server running for the repo | its `.server.json`, its process alive | where it is, and the command | "the page is up at http://127.0.0.1:8787/ (pid 4120): `reelplanner review … --detach` puts this build on it" |
+| No server | | the command | "`reelplanner review … --detach` starts the page and prints its link" |
+| A recorded server, its process gone | | as no server | |
 
 #### Interface
 
-`scripts/build.mjs`'s last stage.
+`lib/inbox.mjs` `reviewWayLine(dir)`, printed last by `scripts/build.mjs`.
 
 #### Example
 
 ```
-✓ review: http://127.0.0.1:8787/?project=2026-10-10-bakery-site (this build)
+· review   the page is up at http://127.0.0.1:8787/ (pid 4120): `reelplanner review .reelplanner/plans/x/video --detach` puts this build on it and prints its link; give the person that link
 ```
 
 ### Step 10 — The headless run finds the skill, and an approval verifies nothing

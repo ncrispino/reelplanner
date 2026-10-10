@@ -3,6 +3,8 @@
 // order:
 //
 //   check-terms         no id said alone, no word used before it is defined (check-terms.mjs; warnings go on)
+//   length              the length the script will run, before the voice: past 1.5× the budget it stops (lib/length.mjs),
+//                       unless BRIEF.md says why it needs more (`- Length:`)
 //   check-sources       an explainer's quoted lines word for word in their pinned sources, no secret or home path in
 //                       its text, no decision beat (check-sources.mjs; skipped for a video that names no source)
 //   narrate             only the lines whose text, voice, speed or model changed (narrate.mjs)
@@ -17,9 +19,11 @@
 //   guide               the video's guide built again with the new pictures, and checked (guide.mjs --check); a
 //                       scene whose picture is missing is a △ (skipped for a video with no plan or sources beside it)
 //
-// Then the video's watched length against its budget (lib/length.mjs): a △ past it, never a stop; and
-// whether its scenes vary (lib/variety.mjs): a △ when over 70% share one layout or one transition, or
-// when BRIEF.md does not say the video's medium, layouts and main transition.
+// Then the video's watched length against its budget (lib/length.mjs): a △ past it, never a stop (the stop is the
+// `length` stage's, on the script, before anything is voiced); whether its scenes vary (lib/variety.mjs): a △ when
+// over 70% share one layout or one transition, or when BRIEF.md does not say the video's medium, layouts and main
+// transition; and, last, the way to the review page: the command that puts this build on it, and where the server
+// running for the repo is, if one is.
 //
 // One line per stage, with its time; the first stage that fails stops the build and prints what it
 // said. Every command above still runs on its own.
@@ -45,9 +49,10 @@ import { join, resolve, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib/env.mjs";
+import { reviewWayLine } from "./lib/inbox.mjs";
 import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
-import { videoLength, lengthLine } from "./lib/length.mjs";
+import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
 
 const argv = process.argv.slice(2);
@@ -116,6 +121,9 @@ const STAGES = [
   // facts from their sources (explain-first step 5): an explainer's quoted lines against its pinned sources, a secret
   // or a home path in its text, a `- decision:` in it. A video that is no explainer and names no source skips it.
   ["check-sources", () => { const r = run(["node", [join(SCRIPTS, "check-sources.mjs"), "."]]); if (r.status === 0 && /^·/.test(last(r.out))) return { skip: last(r.out).replace(/^·\s*check-sources:\s*/, "") }; if (r.status === 0 && /^△/.test(last(r.out))) r.warn = true; return r; }],
+  // the length the script will run, before anything is voiced (cheaper-videos step 7): past 1.5× the budget it stops,
+  // naming the longest parts, unless BRIEF.md says why the video needs more (`- Length:`)
+  ["length", () => { const l = scriptLength(dir); if (!l) return { skip: "no storyboard" }; return { status: l.stop ? 1 : 0, out: `${l.stop ? "✗" : "✓"} ${scriptLengthLine(l)}\n`, ...(l.seconds > l.budget.aim[1] * 60 && !l.stop ? { warn: true } : {}) }; }],
   ["narrate", () => run(["node", [join(SCRIPTS, "narrate.mjs"), ".", ...narrateArgs]])],
   ["fetch-sfx", () => run(["node", [join(S, "audio.mjs"), "fetch-sfx", "--storyboard", "./STORYBOARD.md", "--hyperframes", "."]])],
   ["transcribe-missing", () => run(["node", [join(SCRIPTS, "transcribe-missing.mjs"), "."]])],
@@ -181,3 +189,8 @@ const len = videoLength(dir);
 if (len) console.log(`${len.verdict === "ok" ? "✓" : "△"} length  ${lengthLine(len)}`);
 // one layout or one transition on over 70% of scenes, and a brief that does not say how the video varies: said, never a failure
 for (const l of varietyLines(videoVariety(dir))) console.log(`${l.warn ? "△" : "✓"} variety  ${l.text}`);
+// the way to the review page, last (cheaper-videos step 9): wrong ports, a stale build and an hour with no link cost
+// more than any stage. A running server shows a rebuilt video only once `review --detach` bundles it again, so the
+// line names that command either way, and whether a server is running for this repo and where; build itself starts
+// and changes no server (a headless run cannot reach one).
+console.log(`· review   ${reviewWayLine(dir)}`);
