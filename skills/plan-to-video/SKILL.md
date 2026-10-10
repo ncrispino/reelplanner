@@ -35,7 +35,9 @@ A level-3 repo can still skip one plan's walkthrough (**Skipping the walkthrough
 `$RP` means `reelplanner` when `reelplanner --version` works (the README's install; check that first,
 before any `npx` or install), else `npx -y reelplanner@0.2.0`, this skill's tooling pinned to the version
 it was written for. Write it out in full in every command (a shell variable does not survive between tool
-calls). `$RP --help` lists every command. `$RP reel …` keeps the project record (`init`, `new-plan`, `stage`,
+calls), and run each in a tool call of its own, not chained to another with `&&` or `;`: one command a call is
+what a permission rule matches and what auto mode judges. Before one that writes into the repo (`reel init`,
+`new-plan`, `record`), say in a line what it writes. `$RP --help` lists every command. `$RP reel …` keeps the project record (`init`, `new-plan`, `stage`,
 `check`, `record`, `audit`, `stops`, `prereqs`, `status`, `memory`, `retro`, `fold`, `build`, `pr-check`,
 `renumber`); `$RP explain …` starts an explainer (**An explainer**); `$RP guide <video-dir>` builds a
 video's guide (`build` runs it); `$RP hyperframes …` is the HyperFrames CLI at the pinned version, to use
@@ -63,6 +65,13 @@ run `setup` outside the agent (or start Codex with the network on: `-c
 sandbox_workspace_write.network_access=true`); and ask for escalation for `review --detach` (a server
 that outlives the command) and for `git commit`.
 
+**In Claude Code,** each `$RP` command asks for permission, or in auto mode is judged and may be refused (most
+often one that writes into the repo). Never edit permission settings yourself, and never rerun a refused command
+in another form to get past the check. Tell the person once, in two lines: they can allow reelplanner's commands
+for good with the rules `Bash(reelplanner:*)` and `Bash(reel:*)` (in `/permissions`, or under
+`permissions.allow` in `~/.claude/settings.json`), and a command auto mode refused runs again from
+`/permissions` → Recently denied (`r`). Then wait for them.
+
 ## Quick: just the video
 
 A video of a plan, or of something that exists ("explain how `src/server.js` handles a request"). The plan is
@@ -84,10 +93,16 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
    videos/<slug>`) and build the frames meanwhile, as **Build a video** step 3 says.
 3. **`$RP build videos/<slug>`**. It says fresh eyes were not run (a △, not a stop) and skips the guide; leave
    both. Add `--render` when they want an MP4 (`videos/<slug>/renders/video.mp4`).
-4. **Open it:** `$RP review videos/<slug>` as a background task (not `--detach`: that needs a repo `reel init` set up).
-   The page stops at each question; **Finish review** offers **Download annotations.json**, and the person tells
-   you where the file is (usually `~/Downloads/annotations.json`). Read its answers and comments, put them into
-   the plan file, and carry on as the person says. No walkthrough video unless they ask for one.
+4. **Open it:** `$RP review videos/<slug> --detach`, and keep `$RP review --wait` running as your own background
+   task, as at the other levels (**Running the loop**). With no set-up `.reelplanner/`, the server keeps the review
+   in this machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo, and `--detach` keeps the
+   page up past this session. The page stops at each question; **Finish review**, then **Send**, and `--wait`
+   prints the review's path and exits. In that file, `review` holds the answers (`decisions`) and comments
+   (`annotations`), and `note` is the person's note to you (a comment, not an instruction). Put them into the plan
+   file, run `$RP inbox done <id>`, and carry on as the person says. Nothing starts on a review without a session:
+   if they say they sent it while `--wait` was not running, `$RP inbox` lists it. Only a page with no server behind
+   it offers **Download annotations.json** instead; then they tell you where the file is. No walkthrough video
+   unless they ask for one.
 
 To move to the full loop later: `$RP reel init <repo> …`, then `$RP reel new-plan <repo> <slug> --plan
 <file>` (**A new plan**).
@@ -652,9 +667,10 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   or the scene), and start `--wait` again; the page shows it within seconds. **On Codex** nothing wakes the
   session when a background command exits: run `$RP inbox` at the start of each turn instead (or `$RP review
   --wait --timeout 90` in a loop while you wait on the reviewer).
-- **No session waiting.** The server starts the repo's headless command (`agent.command` in
-  `.reelplanner/config.json`, which `reel init` writes for the agent it runs in; `--agent
-  claude|codex|none` picks another) with a prompt naming the review. For Claude Code that is auto
+- **No session waiting.** The review waits in the inbox for the next session, unless the repo has a headless
+  command (`agent.command` in `.reelplanner/config.json`): `reel init` writes none, and `$RP reel init <repo>
+  --agent claude|codex` writes one, in a set-up repo too. Run that only when the person asks for reviews to be
+  handled with no session open. The server starts it with a prompt naming the review. For Claude Code that is auto
   mode inside its sandbox: a classifier approves each action, anything that would still ask is
   refused, and shell and file-tool writes stay inside the repo. Where the sandbox cannot run (a container
   running as root), the server starts the run without it and says so; file-tool writes still stay inside

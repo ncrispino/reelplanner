@@ -9,7 +9,7 @@ a contributor can pick it up.
 
 | Agent | Status | What it needs from you |
 |---|---|---|
-| Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | Nothing beyond [Install](./reference.md#install). |
+| Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
 | Codex CLI (0.160.0) | **Basic.** The flags and commands below are checked; no full run yet. | A global install of the package, `setup` run outside the agent, and escalation for `review --detach` and `git commit` ([Codex](#codex)). |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
@@ -42,6 +42,31 @@ the plan-to-video skill:
 The skill names the other skills it loads the same way: HyperFrames' faceless-explainer skill is
 `/faceless-explainer` in Claude Code and `$faceless-explainer` in Codex.
 
+## Claude Code
+
+- **Allow its commands once.** Every step of the skill is a `reelplanner` or `reel` command. Claude Code asks
+  before each one; in auto mode its classifier judges each instead, and may stop one that writes into your repo
+  (`reel init`, `reel new-plan`, `reel record`). Allow both commands once, for every repo, and they run without
+  either: in `/permissions`, add the allow rules `Bash(reelplanner:*)` and `Bash(reel:*)`, or put them in
+  `~/.claude/settings.json` yourself (`.claude/settings.local.json` in a repo, for that repo only):
+
+  ```json
+  { "permissions": { "allow": ["Bash(reelplanner:*)", "Bash(reel:*)"] } }
+  ```
+
+  An allow rule is checked before auto mode's classifier, so the commands it names are not judged again. A
+  command that chains another onto them (`reel check … && git add …`) still is, which is why the skill runs each
+  one in a call of its own. The skill never edits your settings: when a command is stopped, it names these two
+  rules and waits for you. One auto mode stopped can be run again from `/permissions` → Recently denied (`r`).
+  `reelplanner setup` reminds you while it finds `claude` and no such rule.
+- **One question from Claude Code itself.** The first time the skill reads its own guide (`references/style-guide.md`,
+  in `~/.claude/skills`, outside your repo), Claude Code asks once whether reads outside the working directories are
+  allowed, in auto mode too. The first answer, Yes and keep allowing them, is the one that lets the skill go on
+  without asking again ([seen on a fresh machine](../eval/fresh-machine/2026-10-10-bakery-auto-mode.md), Claude Code 2.1.296).
+- **The headless review run** is off until you ask for it: `reel init <repo> --agent claude` (in a repo set up
+  already too) writes the command the review server starts on a review sent while no session waits. It runs in
+  auto mode inside Claude Code's sandbox (D-082; [project-dir](./project-dir.md): `config.json`).
+
 ## Codex
 
 What is checked, against codex-cli 0.160.0's own `--help` and a run of its sandbox with no model:
@@ -49,8 +74,9 @@ What is checked, against codex-cli 0.160.0's own `--help` and a run of its sandb
 - **Instructions.** Codex reads `AGENTS.md` (from the git root down), not `CLAUDE.md`. This repo keeps its
   instructions in `AGENTS.md`, and `CLAUDE.md` imports it.
 - **Skills.** Codex reads `~/.agents/skills`, where `npx skills add` puts the skill, and a skill is called with `$name`.
-- **The headless review run.** `reel init` inside Codex (it sets `CODEX_THREAD_ID`), or `reel init --agent codex`,
-  writes `codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never` into
+- **The headless review run.** `reel init --agent codex` (in a repo set up already too; `reel init` alone writes
+  none, and inside Codex, which sets `CODEX_THREAD_ID`, names this flag) writes
+  `codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never` into
   `.reelplanner/config.json`; the review server appends the prompt last. `exec` never asks for approval; `-a` and
   `--full-auto` are rejected by this version. The network is on for what the run fetches or pushes; reelplanner itself is installed and needs none.
 - **Fresh eyes and the code check.** A second agent must start with no context of the conversation. Codex's

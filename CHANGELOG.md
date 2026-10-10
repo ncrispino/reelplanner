@@ -42,6 +42,57 @@
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
   CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.
+- **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
+  whenever a review was sent with no session waiting; Claude Code's auto mode refused that `reel init` in a
+  person's first session, as an agent setting itself up to start unattended. `reel init` now writes none: the session that ran it is an
+  agent already, and a review sent while none waits stays in the inbox for the next one. `--agent claude|codex`
+  turns the headless run on, and now works in a repo set up already too, changing `config.json`'s agent and nothing
+  else (`--agent none` turns it off); `init` names the one to pass, the agent it runs inside.
+- **Allow reelplanner's commands once, in Claude Code.** The README, docs/agents.md (a Claude Code section) and
+  `setup` (when `claude` is on PATH and no rule names reelplanner) say how: the allow rules `Bash(reelplanner:*)`
+  and `Bash(reel:*)`, in `/permissions` or `~/.claude/settings.json`, which Claude Code checks before auto mode's
+  classifier. The skill runs each command in a call of its own (a chain like `reel new-plan … && reel check …` is
+  judged by its every part), says what a command will write into the repo before running it, and, when one is
+  stopped, names the two rules and `/permissions` → Recently denied, and never edits the settings itself.
+- **A whole session on a fresh machine.** `scripts/release/ec2-fresh.sh --shell` starts an EC2 machine with the
+  package copied over and runs nothing, for a session tried by hand (Claude Code logged in, the README's Install,
+  a plan and its review); `--hours` sets when it shuts itself down (2 by default).
+- **Fresh eyes and the guide's check get a browser on an install.** `playwright-core` was a development
+  dependency, so an installed reelplanner had none: fresh eyes' pictures lacked the player's captions and controls,
+  and the guide was not opened in a browser. It is a dependency now, and with no Playwright browser it drives the
+  Chrome headless shell `setup` installs for HyperFrames.
+- **Finish no longer counts an approval as a comment.** With nothing said, the Finish panel said "Your 1 comment
+  goes with it": the approval it had picked is kept as an annotation, and the panel counted it.
+
+- **A faster first `setup`.** On Linux, whisper.cpp is whisper.cpp's own prebuilt build (v1.9.5, x64 or arm64, its
+  checksum checked) instead of compiled from `main`: a second instead of two minutes on two cores, and no compiler
+  installed. Where it cannot run (older than Ubuntu 22.04's glibc) it is built from source, pinned to v1.9.5, on every
+  core. The local voice's 840 MB of models download in the background from the moment setup knows they are needed,
+  beside pip, whisper.cpp and the skills, instead of after them; and `python3-pip` comes without its recommended
+  compiler. On a 2-vCPU EC2 machine, a first setup went from 282 s to 124 s (the README's whole Install, 315 s to 139 s).
+- **Chrome starts, or setup says why.** On a bare Debian or Ubuntu (a container), Chrome's download lacked shared
+  libraries (`libnss3`, `libnspr4`) and video builds could not start it, while setup said ✓. Setup now loads a page
+  with it, and installs what `ldd` says is missing, by each release's package name. It no longer runs `hyperframes
+  doctor` at the end, whose ✗ lines were for what reelplanner never uses (Docker, a music model) and whose Docker probe
+  printed `docker: not found`.
+- **The skill installs with no question.** The README's `npx skills add … -g -y` installs it for every agent found;
+  without `-y` it asked which agents, and with no terminal it cancelled.
+- **Fresh machines on demand, timed.** `scripts/release/ec2-fresh.sh` runs the fresh-install check on a new EC2
+  machine with your AWS credentials (`--profile`, `--region`, `--arch arm64`, `--container ubuntu:24.04`), on this
+  checkout packed or a pushed ref, copies the log back and deletes all it made. The check times each step (`--times`
+  for every line), loads a page with the Chrome setup found, runs a README line's command without its comment (the
+  comment swallowed its `</dev/null`), and keeps a `github:owner/repo#ref` source's `#ref`; the workflow puts the times
+  on the run's page and adds a macOS job (`--here`: as the runner's user).
+- **Send works for a quick video too.** With no set-up `.reelplanner/` (the skill's first level, one video), the
+  Finish panel offered only **Download annotations.json**, and the person then told the agent where the file was.
+  Now the review server keeps that repo's inbox in this machine's folder, `~/.reelplanner/inbox/<repo-key>/` (the
+  repo folder's name and a short hash of its path; `REELPLANNER_HOME` moves it), so **Send** hands the review to
+  the session waiting on it (`review --wait`) with nothing added to the repo. There is no agent command at that
+  level, so with no session waiting the panel says plainly it is saved on this machine until you tell your agent;
+  `inbox` lists it. `review --detach` and `--stop` work there too (its `.server.json` and log go in the same
+  folder). The download is left for a page no server takes the review for (none behind it, or a Send that
+  failed). A repo set up later uses its own `.reelplanner/inbox/`; a review left in the machine's is named by
+  `inbox` and finished by `inbox done`, never picked up twice.
 - **The system video says reelplanner,** in its narration and on its frames, and its install is shot again from the
   public repo on a fresh Ubuntu machine (`npm i -g github:ncrispino/reelplanner`, a first `setup`, the skill, `reel
   init`); the README's GIF is its opening, made again. The voice says the name as "reel planner": Kokoro read

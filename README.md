@@ -23,7 +23,7 @@ You answer on the video, and the agent updates the plan.
 ```bash
 npm i -g github:ncrispino/reelplanner                                  # the `reelplanner` command
 reelplanner setup                                                      # ffmpeg, Chrome, a local voice (--dry-run to preview)
-npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g   # the skill: it asks which agents (add -y for every agent)
+npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
 ```
 
 In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
@@ -43,6 +43,8 @@ The narration needs a voice. Choose one before you run `reelplanner setup`:
 - **Hosted:** nothing to download, 1–3 seconds a line, about $0.03 a minute of narration with your own OpenRouter key.
   Run `reelplanner setup --hosted-voice` instead: it skips the local voice and prints two lines to put in
   `~/.reelplanner/.env` ([the voice](#the-voice) says more).
+
+In Claude Code, [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
 
 The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or uninstalling: [install details](./docs/reference.md#install).
 Installed it before as reelplanning, its name until October 2026? Run `npm rm -g reelplanning` first: npm will not
@@ -91,11 +93,12 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
 - Along the way it asks a few [quick checks](#explain-it-yourself-first): what will the plan do in a case the
   video did not show? A wrong guess marks a place where you expected something else.
-- Comment on any moment, then press **Finish review**:
-  - For a quick video, it downloads `annotations.json` to your downloads folder. Give the agent that path,
-    and it updates the plan.
-  - Otherwise, **Send** hands the review to the agent, which updates the plan and keeps the review in a
-    `.reelplanner/` folder in the repo (see [three ways](#three-ways-to-use-it)).
+- Comment on any moment, then press **Finish review** and **Send**: the review goes to the agent, which updates
+  the plan.
+  - For a quick video, nothing is added to the repo: the review waits on your machine, in `~/.reelplanner/inbox/`,
+    until the agent picks it up. If no agent session is waiting, tell it the review is sent.
+  - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
+    [three ways](#three-ways-to-use-it)).
 
 ## Three ways to use it
 

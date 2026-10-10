@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // reel — manage a project's .reelplanner/ directory (docs/project-dir.md).
 //   init <repo> --name <n> --kind greenfield|brownfield     create .reelplanner/ from templates/reelplanner
-//        [--agent claude|codex|none]                       config.json's headless command (default: the agent this runs in; lib/agents.mjs)
+//        [--agent claude|codex|none]                       config.json's headless command (default: none; lib/agents.mjs);
+//                                                            on a repo set up already, --agent changes that alone
 //                                                            a .reelplanner/ with no decisions.json (only .env, config.json:
 //                                                            setup files) is set up over: .env kept, config.json merged, yours winning
 //   new-plan <repo> <slug> --plan <plan.md>                  create plans/<date>-<slug>/ with the plan
@@ -140,14 +141,36 @@ function init() {
   const usage = "usage: reel init <repo> [--name <n>] [--kind greenfield|brownfield] [--agent claude|codex|none]";
   const repo = resolve(argv[1] || die(usage));
   const name = flag("name", basename(repo)), kind = flag("kind", "brownfield");
-  // the headless command a review starts when no session waits (lib/agents.mjs): --agent, else the agent this runs in
+  // the headless command a review starts when no session waits (lib/agents.mjs): none unless --agent names one. The
+  // session that runs init is an agent already, and picks its reviews up itself; an unattended run that starts on a
+  // press of Send is the owner's to turn on
   const asked = flag("agent");
   if (asked && !AGENTS.includes(asked)) die(`--agent ${asked}: one of ${AGENTS.join(", ")}\n${usage}`);
-  const { agent, why } = asked ? { agent: asked, why: "--agent" } : detectAgent();
+  const agent = asked || "none";
   const dir = rpDirOf(repo);
+  // the agent line init ends on: what a review sent with no session waiting does now, and how to change it
+  const sayAgent = (command, said) => {
+    if (command) return console.log(`✓ agent: ${said}: a review sent while no session waits starts \`${splitCommand(command)[0]}\`; --agent claude|codex|none picks another`);
+    // none: the agent on hand is the one to name (lib/agents.mjs: the one this runs inside, else on PATH)
+    const near = detectAgent().agent;
+    console.log(`✓ agent: ${said}: reviews sent while no session waits stay in the inbox for the next session; --agent ${near === "none" ? "claude|codex" : near} starts one headless for them instead`);
+  };
   // set up means a decision log: a folder holding only setup files (the hosted voice's .env and config.json, made
-  // before any plan) is set up over, keeping them; a real one is left alone
-  if (rpInitialized(dir)) die(`${dir} exists already: \`reel status ${argv[1]}\` says where its plans stand`);
+  // before any plan) is set up over, keeping them; a real one is left alone, but for --agent, which changes its
+  // config.json's agent and nothing else (how a set-up repo turns the headless run on or off)
+  if (rpInitialized(dir)) {
+    if (!asked) die(`${dir} exists already: \`reel status ${argv[1]}\` says where its plans stand (\`reel init ${argv[1]} --agent claude|codex|none\` changes only its headless command)`);
+    const f = join(dir, "config.json");
+    let config = {};
+    if (existsSync(f)) {
+      try { config = JSON.parse(read(f)); } catch (e) { die(`${f} is not valid JSON (${e.message}): fix it, then run reel init --agent again`); }
+      if (!config || typeof config !== "object" || Array.isArray(config)) die(`${f} is not a JSON object: fix it, then run reel init --agent again`);
+    }
+    config.agent = agentBlock(asked, JSON.parse(read(join(TPL, "config.json"))).agent);
+    writeFileSync(f, JSON.stringify(config, null, 2) + "\n");
+    console.log(`✓ ${f}: set up already, so only its agent changed`);
+    return sayAgent(config.agent.command, `${asked} (--agent)`);
+  }
   const before = existsSync(dir) ? readdirSync(dir) : null;
   let theirs = null;
   if (before?.includes("config.json")) {
@@ -185,9 +208,7 @@ function init() {
       kept.length && `kept ${kept.join(", ")}`].filter(Boolean);
     console.log(`✓ set up over the setup files already there (no decision log yet): ${what.join("; ") || "nothing in it to keep"}`);
   }
-  const command = config.agent?.command;
-  const said = agentKept ? `kept from your config.json` : `${agent} (${why})`;
-  console.log(`✓ agent: ${said}${!command ? ": reviews sent while no session waits stay in the inbox" : `: a review sent while no session waits starts \`${splitCommand(command)[0]}\``}; --agent claude|codex|none picks another`);
+  sayAgent(config.agent?.command, agentKept ? "kept from your config.json" : asked ? `${agent} (--agent)` : "none (the default)");
 }
 
 function newPlan() {
