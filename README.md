@@ -127,7 +127,7 @@ Then start a new session. `/reel` lists the plans with a video; `/reel <plan>` o
 built video. When the agent opens a video for review, a band above the prompt offers it too.
 
 **Keys:** `p` play or pause · `j` and `k` back and on 5 seconds · `r` replay · `n` and `b` the next and previous stop · a digit picks an option · `o` your
-own words · `c` a comment on the answer · `m` a comment at this moment · `z` bigger (full screen in the main-screen layout, `CLAUDE_CODE_NO_FLICKER=0`; docked, about half the terminal) · `v` just the changes or the
+own words · `c` a comment on the answer · `m` a comment at this moment · `z` bigger · `t` full screen (Claude Code switches to its classic layout, `/tui default`, and picks up the conversation; `t` again comes back) · `v` just the changes or the
 whole video · `w` the browser player, which is also where you draw on the video. The last stop is **Send**:
 **Approve** (Claude builds the plan, with no new plan video) or **Changes needed** (Claude revises it, rebuilds the
 scenes that change, and the pane offers **Watch what changed** when the new version is built).

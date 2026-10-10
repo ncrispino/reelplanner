@@ -360,11 +360,13 @@ back on its card), adds a comment to the answer ("Postgres, but only if…"), fi
 `reel record` keeps in the ledger as the reviewer's note. Drawing on the video (a circle, a box around something) is
 the browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
 `z` makes the video bigger: the docked pane asks for most of the terminal's width (a width you dragged it to wins; the
-dock goes to about half the terminal, so it is wider, not full screen) and the review folds away. For the video
-across the whole terminal, start Claude Code in its main-screen layout (`CLAUDE_CODE_NO_FLICKER=0`): the pane opens
-inline above the prompt, the full width and most of the height, the picture as big as its rows allow with the card
-under it, and `z` gives it every row but the prompt's; `z` again brings the review back. The docked pane says so when
-`z` reaches the dock's edge.
+dock goes to about half the terminal, so it is wider, not full screen) and the review folds away. `t` is full screen:
+the dock is Claude Code's fullscreen layout, and `t` switches it to its classic one (`/tui default`), where the pane
+opens above the prompt across the whole terminal, as tall as the picture wants with the card under it, and `z` gives
+it every row but the prompt's. The switch restarts Claude Code, which picks up the conversation; the pane hands
+itself across (`$.store`: the video, the moment, the answers, comments and notes) and comes back where it was,
+playing. `t` there switches back (`/tui fullscreen`). Starting Claude Code with `CLAUDE_CODE_NO_FLICKER=0` gives the
+classic layout too. Coming from the fullscreen layout Claude Code may ask why you switched back; Esc skips it.
 
 The Send card says what each answer leads to. For a plan video, **Approve**: Claude folds your answers and comments
 into the plan and builds it, with no new plan video; the walkthrough comes next. **Changes needed**: Claude revises

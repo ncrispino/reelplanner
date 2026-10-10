@@ -8,7 +8,7 @@
   desktop and mobile apps, the browser player in any other terminal; its sound), stops at each choice, plays the
   branch picked and goes on (or stops at each call of a walkthrough), comments are left at their moment (`m`) or on
   an answer (`c`, the decision's note), `j` and `k` go back and on 5 seconds, a revised video plays just what changed (`v` the whole of it), `z` widens the
-  pane around the video (inline above the prompt, in the main-screen layout, it takes the whole terminal), the Send card says what Approve and Changes needed lead to, the answers and comments are sent
+  pane around the video (and `t` is full screen: Claude Code's classic layout, `/tui default`, the review handed across its restart), the Send card says what Approve and Changes needed lead to, the answers and comments are sent
   as the player's Send sends them (a row in `.reelplanner/inbox/`, claimed by a waiting session or filed by this one
   with `reel-intake`), and **Watch** opens the player: the local page from a terminal, an Artifact in a cloud session,
   where localhost is out of reach. When the agent opens a video for review, a band above the prompt offers it. The

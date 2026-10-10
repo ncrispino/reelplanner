@@ -620,6 +620,70 @@ async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes'
   $.ui.toast('Review sent to Claude.')
 }
 
+// --- full screen: Claude Code's other layout ------------------------------------------------------
+
+/** What the pane hands itself across `/tui`, which restarts Claude Code: $.state is the process's, $.store stays. */
+type Handoff = {
+  at: number
+  open: NonNullable<ReelplannerOpen>
+  t?: number
+  big: boolean
+  answers: Record<string, ReelplannerAnswer>
+  verdicts: Record<string, ReelplannerVerdict>
+  notes: Record<string, string>
+  comments: Record<string, ReelplannerComment[]>
+  sent: Record<string, ReelplannerSent>
+  onlyChanges: Record<string, boolean>
+}
+
+/**
+ * t: the video full screen, or back. The docked pane goes no wider than about half the terminal; the classic layout
+ * (`/tui default`) seats the pane above the prompt across the whole terminal, and z there gives it every row but the
+ * prompt's. Switching restarts Claude Code, which resumes the conversation; the pane comes back where it was, the
+ * review so far with it.
+ */
+async function switchLayout($: EngineInterface, toDock: boolean) {
+  const o = await read($, open)
+  if (!o) return
+  const pb = await read($, playback)
+  await stopPlayback($)
+  const handoff: Handoff = {
+    at: await $.clock.now(),
+    open: o,
+    ...(pb ? { t: pb.t } : {}),
+    big: !toDock,
+    answers: await read($, answers),
+    verdicts: await read($, verdicts),
+    notes: await read($, notes),
+    comments: await read($, comments),
+    sent: await read($, sent),
+    onlyChanges: await read($, onlyChanges),
+  }
+  await $.store.set('handoff', handoff)
+  await $.command.run({ command: 'tui', args: toDock ? 'fullscreen' : 'default' })
+}
+
+/** After `/tui` restarted Claude Code: the review and the pane as they were, if the switch was just now. */
+async function resumeHandoff($: EngineInterface) {
+  const h = (await $.store.get('handoff')) as Handoff | undefined
+  if (!h) return
+  await $.store.delete('handoff')
+  if ((await $.clock.now()) - h.at > 120_000) return
+  await update($, answers, a => ({ ...h.answers, ...a }))
+  await update($, verdicts, a => ({ ...h.verdicts, ...a }))
+  await update($, notes, a => ({ ...h.notes, ...a }))
+  await update($, comments, a => ({ ...h.comments, ...a }))
+  await update($, sent, a => ({ ...h.sent, ...a }))
+  await update($, onlyChanges, a => ({ ...h.onlyChanges, ...a }))
+  await update($, theater, () => h.big)
+  const root = await $.session.root()
+  const map = await loadMap($, videoOf(root, h.open).dir)
+  // back on the stop it was at, from the moment it was at (a still at a choice plays its stretch again)
+  const s = map ? stretch(map, h.open.which, h.open.stop) : null
+  const from = s && h.t !== undefined && h.t > s.from && h.t < s.to - 0.2 ? h.t : undefined
+  $.clock.after(1500, () => void openPane($, { slug: h.open.slug, which: h.open.which, dir: h.open.dir, stop: h.open.stop, from }))
+}
+
 // --- the full player ------------------------------------------------------------------------------
 
 async function openPlayer($: EngineInterface, v: Video) {
@@ -655,7 +719,7 @@ async function openPlayer($: EngineInterface, v: Video) {
   }
 }
 
-type Target = { slug: string; which?: ReelplannerWhich; dir?: string }
+type Target = { slug: string; which?: ReelplannerWhich; dir?: string; stop?: number; from?: number }
 
 /**
  * The keys to the pane, on `key`: a field just opened gets what is typed next, and after one closes the next key
@@ -680,7 +744,7 @@ async function openPane($: EngineInterface, target?: Target, asked = true) {
   if (target) {
     const plan = plans.find(p => p.slug === target.slug)
     const which = target.which ?? (plan ? defaultWhich(plan) : 'video')
-    await update($, open, () => ({ slug: target.slug, which, stop: 0, ...(target.dir ? { dir: target.dir } : {}) }))
+    await update($, open, () => ({ slug: target.slug, which, stop: target.stop ?? 0, ...(target.dir ? { dir: target.dir } : {}) }))
   } else {
     await update($, open, () => null)
   }
@@ -699,7 +763,7 @@ async function openPane($: EngineInterface, target?: Target, asked = true) {
       // it plays as it opens, sized to the pane once the pane has drawn (its width is known then). Inline, a pane
       // opened before any drawing saw the terminal's height took the default third: it opens to its rows first
       const sized = Boolean(termRows)
-      const start = () => void playTo($, v, 0, screenSize(paneColumns || 80, pictureRoom(big)))
+      const start = () => void playTo($, v, target.stop ?? 0, screenSize(paneColumns || 80, pictureRoom(big)), target.from)
       $.clock.after(250, () => {
         if (inlinePane && !sized && termRows) void $.ui.open(paneArgs(big, true)).then(() => $.clock.after(250, start))
         else start()
@@ -726,6 +790,7 @@ export const register: Register = on => {
       description: 'Watch a reelplanner video and answer its open choices in a pane',
       argumentHint: '[plan | video-dir]',
     })
+    void resumeHandoff($).catch(() => undefined)
     return next(e)
   })
 
@@ -1242,6 +1307,11 @@ export const register: Register = on => {
                 {big ? 'Smaller' : 'Bigger'}
               </Button>
             )}
+            {e.surface === 'terminal' && (
+              <Button key="layout" plain hotkey="t" onPress={() => switchLayout($, e.props.placement === 'inline')}>
+                {e.props.placement === 'dock' ? 'Full screen' : 'Beside the chat'}
+              </Button>
+            )}
           </Box>
           <Text dimColor>
             {clock(t)} / {clock(total)}
@@ -1366,8 +1436,14 @@ export const register: Register = on => {
         </Box>
         {stage}
         {big ? dim(`Your review: ${count(log.length, 'item')} · z shows it again`) : review}
-        {big && e.props.placement === 'dock'
-          ? dim('The dock goes no wider than this. For the video across the whole terminal, start Claude Code with CLAUDE_CODE_NO_FLICKER=0: the pane opens above the prompt, and z gives it all but the prompt.')
+        {big && terminal
+          ? dim(
+              e.props.placement === 'dock'
+                ? 'The pane beside the conversation goes no wider than this. t: full screen, which switches Claude ' +
+                    'Code to its classic layout (/tui default): it restarts, picks up this conversation, and the ' +
+                    'video comes back across the whole terminal, where it was.'
+                : 't: back beside the conversation, Claude Code\'s fullscreen layout again (/tui fullscreen).',
+            )
           : null}
         {big ? null : hints}
       </Box>

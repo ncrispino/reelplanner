@@ -381,13 +381,21 @@ test('Send says what each answer leads to, and after it the pane follows the rev
 
 test('z makes the video bigger: the pane asks for most of the width and the review folds away', async ($, on) => {
   const { opened } = world(on, { kitty: true })
+  const stored: Record<string, unknown> = {}
+  const ran = { tui: [] as string[] }
+  on('store.set', ($, e) => ((stored[e.key] = e.value), { value: undefined }))
+  on('command.run', { command: 'tui' }, ($, e) => (ran.tui.push(e.args), { text: '' }))
   const ui = await $.ui.mount(pane('terminal'))
   await ui.press({ key: `open-${SLUG}` })
   expect(await ui.find({ type: 'Text', text: /your review/i })).toBeDefined()
   await ui.press({ key: 'big' })
   expect(opened[opened.length - 1]).toMatchObject({ id: 'reelplanner', columns: expect.any(Number) })
   expect(await ui.find({ type: 'Text', text: /z shows it again/ })).toBeDefined()
-  expect(await ui.find({ type: 'Text', text: /CLAUDE_CODE_NO_FLICKER=0/ })).toBeDefined() // docked: how to have it wider
+  // docked, it goes no wider: t switches Claude Code's layout, the review handed across the restart
+  expect(await ui.find({ type: 'Text', text: /t: full screen, which switches Claude Code to its classic layout/ })).toBeDefined()
+  await ui.press({ key: 'layout' })
+  expect(ran.tui).toEqual(['default'])
+  expect(stored.handoff).toMatchObject({ open: { slug: SLUG, which: 'video' }, big: true })
   expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // the choice stays
   await ui.press({ key: 'big' })
   expect(opened[opened.length - 1]).not.toHaveProperty('columns')
