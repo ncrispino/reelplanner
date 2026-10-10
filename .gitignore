@@ -69,3 +69,4 @@ videos/*/fresh-eyes/shots/
 # committed so `reel rebuild` can build it again (scripts/lib/versions.mjs); never a voice file or a video
 !.reelplanner/media/**
 !.reelplanner/**/versions/**
+__pycache__/
