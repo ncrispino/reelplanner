@@ -45,11 +45,11 @@ const walkMap = {
 /** A plan folder in memory, beneath the plugin: fs, the session's root, the env and the prompt. */
 function world(
   on: On,
-  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean; changed?: number[] } = {},
+  opts: { cloud?: boolean; walkthrough?: boolean; surface?: 'terminal' | 'desktop'; kitty?: boolean; revised?: boolean; changed?: number[]; stamp?: string } = {},
 ) {
   // a revision: only frame 3's scene changed since the last build
   const map = opts.revised
-    ? { ...planMap, changes: { changedFrames: opts.changed ?? [3], changedSeconds: 35, totalSeconds: 90 },
+    ? { ...planMap, changes: { ...(opts.stamp ? { at: opts.stamp } : {}), changedFrames: opts.changed ?? [3], changedSeconds: 35, totalSeconds: 90 },
         frames: planMap.frames.map((f, i) => ({ ...f, durationSeconds: [15, 30, 35, 10][i] })) }
     : planMap
   const files = new Map<string, string>([
@@ -474,5 +474,23 @@ test('inline above the prompt (the main-screen layout), the pane asks for most o
   await ui.press({ key: 'big' })
   expect(opened[opened.length - 1]).toMatchObject({ rows: 55 })
   expect(await ui.find({ type: 'Image', key: 'screen' })).toMatchObject({ props: expect.objectContaining({ rows: 38 }) })
+  await ui.press({ key: 'library' })
+})
+
+test('a plan map written after Send is not the new version until a build stamps its plan diff', async ($, on) => {
+  // the diff was stamped before this Send: a later write of the plan map (the review filed, say) is no rebuild
+  const { rebuild } = world(on, { kitty: true, revised: true, stamp: '2026-10-01T00:00:00Z' })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'changes' })
+  rebuild()
+  await ui.press({ key: 'library' })
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  expect(await ui.find({ type: 'Text', text: /Changes asked for · sent/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /The new version is ready/ }).catch(() => undefined)).toBeUndefined()
   await ui.press({ key: 'library' })
 })

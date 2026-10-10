@@ -89,7 +89,7 @@ type PlanMap = {
   autonomy?: Call[]
   frames?: Frame[]
   /** What plan-diff found against the last build (scripts/plan-map.mjs): the frames whose scenes changed. */
-  changes?: { changedFrames?: number[]; changedSeconds?: number; totalSeconds?: number }
+  changes?: { at?: string; changedFrames?: number[]; changedSeconds?: number; totalSeconds?: number }
 }
 type Caption = { start: number; end: number; text: string }
 
@@ -121,8 +121,13 @@ async function loadMap($: EngineInterface, dir: string) {
   }
 }
 
-/** When the video's plan map was last written: a rebuild writes it anew. */
-const builtAt = (dir: string) => maps.get(`${dir}/plan-map.json`)?.mtimeMs ?? 0
+/** When the video was last built: its plan diff's stamp (plan-diff runs in the build's finish-project, once the scenes,
+ * captions and index are written), else the plan map's own time. Any other write to the plan map is not a build. */
+const builtAt = (dir: string) => {
+  const cached = maps.get(`${dir}/plan-map.json`)
+  const at = cached?.map.changes?.at ? Date.parse(cached.map.changes.at) : NaN
+  return Number.isFinite(at) ? at : (cached?.mtimeMs ?? 0)
+}
 
 /** A revision (some scenes changed since the last build, not all): it can play just what changed. */
 const isRevision = (map: PlanMap) => {
@@ -561,10 +566,8 @@ function watchForRebuild($: EngineInterface, v: Video, sentAt: number, verdict: 
   const timer = $.clock.every(5000, () => {
     void (async () => {
       ticks++
-      let built = 0
-      try {
-        built = (await $.fs.stat(`${target}/plan-map.json`)).mtimeMs
-      } catch {}
+      await loadMap($, target).catch(() => null)
+      const built = builtAt(target)
       if (built > sentAt + 1000) {
         timer.cancel()
         watching.delete(v.key)
