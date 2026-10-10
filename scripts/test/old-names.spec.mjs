@@ -108,8 +108,12 @@ try {
   const st = node([join(ROOT, "scripts/reel.mjs"), "status", repo], { REELPLANNER_HOME: join(tmp, "rp-home") }, repo);
   const said = (st.err.match(/the project folder's old name/g) || []).length;
   ok("a repo whose record is .reelplanning/: `reel status` reads it, and says once that `git mv .reelplanning .reelplanner` renames it", st.code === 0 && said === 1 && /\.reelplanning: the project folder's old name; it is still read, and `git mv \.reelplanning \.reelplanner` in /.test(st.err) && !/no \.reelplanner\//.test(st.out + st.err), JSON.stringify(st));
-  const again = node([join(ROOT, "scripts/reel.mjs"), "init", repo, "--agent", "none"], { REELPLANNER_HOME: join(tmp, "rp-home") });
+  const again = node([join(ROOT, "scripts/reel.mjs"), "init", repo], { REELPLANNER_HOME: join(tmp, "rp-home") });
   ok("…`reel init` there finds it set up, and makes no second folder", again.code !== 0 && /exists already/.test(again.err) && !existsSync(join(repo, ".reelplanner")), JSON.stringify(again));
+  const agentOn = node([join(ROOT, "scripts/reel.mjs"), "init", repo, "--agent", "claude"], { REELPLANNER_HOME: join(tmp, "rp-home") });
+  ok("…and `reel init --agent` there changes .reelplanning/config.json's agent, with no second folder", agentOn.code === 0
+    && /claude/.test(JSON.parse(readFileSync(join(repo, ".reelplanning", "config.json"), "utf8")).agent?.command || "") && !existsSync(join(repo, ".reelplanner")), JSON.stringify(agentOn));
+  git(repo, "checkout", "-q", "--", ".reelplanning/config.json");
   writeFileSync(join(tmp, "plan.md"), "# Rename the flag\n\n## Context\n\nThe flag is called --out.\n\n## Steps\n\n### Step 1 — Rename it\n\nCall it --to.\n");
   const np = node([join(ROOT, "scripts/reel.mjs"), "new-plan", repo, "rename-flag", "--plan", join(tmp, "plan.md")], { REELPLANNER_HOME: join(tmp, "rp-home") }, repo);
   const planDir = (np.out.match(/✓ (\S+)/) || [])[1] || "";

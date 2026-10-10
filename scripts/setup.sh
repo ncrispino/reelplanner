@@ -25,6 +25,7 @@
 #        whisper.cpp (brew, or built into HyperFrames' own cache, no root) · HyperFrames' skills
 #        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanner/.env for this machine,
 #        or the repo's .reelplanner/), and, when it is local, whether it is fast enough here (one sentence, timed)
+#        · with Claude Code on PATH, the two allow rules for reelplanner's commands, said (never written)
 set -uo pipefail
 # a setting under its old name (REELPLANNING_X, before the rename) is read as REELPLANNER_X when that is unset,
 # as the node commands read it (scripts/lib/old-names.mjs)
@@ -43,7 +44,7 @@ for a in "$@"; do case "$a" in
   --hosted-voice|--local-voice)
     [ -n "$VOICE" ] && [ "$VOICE" != "$a" ] && { echo "✗ --hosted-voice and --local-voice: pick one" >&2; exit 2; }
     VOICE="$a" ;;
-  -h|--help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  -h|--help) sed -n '2,28p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   *) echo "✗ unknown option: $a (try --dry-run, --hosted-voice or --local-voice)" >&2; exit 2 ;;
 esac; done
 
@@ -297,6 +298,15 @@ if [ "$NEED_KOKORO" != 1 ] && [ "$NEED_WHISPER" != 1 ]; then :
 elif [ "$DRY" = 1 ]; then node "$ROOT/scripts/lib/local-speed.mjs" --dry-run "$PWD"
 else node "$ROOT/scripts/lib/local-speed.mjs" "$PWD"; fi
 
+# Claude Code asks before each of the skill's commands, and auto mode may stop one that writes into the repo, until the
+# person allows them once (docs/agents.md, "Claude Code"): said when `claude` is on PATH and neither its user settings
+# nor this repo's name a rule for them. Setup never writes the rule: allowing commands is the person's to do.
+CLAUDE_SETTINGS="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json"
+if have claude && ! grep -qs 'Bash(reelplanner[: ]' "$CLAUDE_SETTINGS" "$PWD/.claude/settings.json" "$PWD/.claude/settings.local.json"; then
+  case "$CLAUDE_SETTINGS" in "$HOME"/*) CLAUDE_SETTINGS="~/${CLAUDE_SETTINGS#"$HOME"/}" ;; esac
+  echo "→ Claude Code: allow reelplanner's commands once, so the skill's steps run without a prompt each: add"
+  echo "  Bash(reelplanner:*) and Bash(reel:*) in /permissions, or under permissions.allow in $CLAUDE_SETTINGS"
+fi
 echo
 if [ "${#MISSING[@]}" -gt 0 ]; then
   if [ "$DRY" = 1 ]; then echo "✗ after setup, still missing:"; else echo "✗ setup incomplete — still missing:"; fi

@@ -6,9 +6,11 @@
 //            workspace-write sandbox, network on for what the run fetches or pushes
 //   none     no command: a review sent while no session waits stays in .reelplanner/inbox/ for the next one
 //
-// Without --agent, init picks one: the agent it is running inside (Claude Code sets CLAUDECODE; Codex sets
-// CODEX_THREAD_ID, and CODEX_SANDBOX or CODEX_SANDBOX_NETWORK_DISABLED in its sandboxed shells), else the
-// first of `claude` and `codex` found on PATH, else none.
+// Without --agent, init writes none: the session that runs it is an agent already and picks its reviews up itself,
+// and a run nobody watches, started by a press of Send, is the owner's to turn on. detectAgent names the one to
+// suggest: the agent init is running inside (Claude Code sets CLAUDECODE; Codex sets CODEX_THREAD_ID, and
+// CODEX_SANDBOX or CODEX_SANDBOX_NETWORK_DISABLED in its sandboxed shells), else the first of `claude` and `codex`
+// found on PATH, else none.
 import { existsSync, statSync } from "node:fs";
 import { join, delimiter } from "node:path";
 import { RP_INSTALL } from "./env.mjs";
@@ -21,7 +23,7 @@ export const AGENTS = ["claude", "codex", "none"];
 export const CODEX_COMMAND = "codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never";
 
 const CODEX_NOTE = "Started headless when a review is sent from the local page and no session is waiting, with the prompt appended last. Codex (basic support, docs/agents.md): `codex exec` in its workspace-write sandbox, which writes only inside the repo and the temp folder, never asks (a command that needs more is refused), and here has the network on, for what the run fetches or pushes; reelplanner itself is installed (`" + RP_INSTALL + "`) and needs none: drop `-c sandbox_workspace_write.network_access=true` to run with the network off (the run then cannot push). Not yet tried end to end: the sandbox keeps .git read-only, so the run's `git commit` may be refused (check `git status` after a run). reelplanner adds no fence of its own to it (no file-tools hook). Empty: reviews wait in .reelplanner/inbox/ for the next session.";
-const NONE_NOTE = "No headless run: a review sent from the local page while no session is waiting stays in .reelplanner/inbox/ until the next session runs `reelplanner inbox`. Set `command` to start one (docs/agents.md: `reel init --agent claude` or `--agent codex` writes it).";
+const NONE_NOTE = "No headless run: a review sent from the local page while no session is waiting stays in .reelplanner/inbox/ until the next session runs `reelplanner inbox`. Set `command` to start one: `reel init <repo> --agent claude` (or `--agent codex`) writes it, in a repo set up already too (docs/agents.md).";
 
 /** Is `name` an executable on PATH? (`which`, without a shell; on Windows, its .cmd and .exe too) */
 export function onPath(name, env = process.env) {

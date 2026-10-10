@@ -19,7 +19,9 @@ Every project we plan for gets one directory, committed in that project's repo. 
   folds/<part>.md    a part's rules drafted as a section of spec.md by `reel fold`, for the owner's approval
   .cache/            the blame `reel check --base` and `reel status` place accepted calls with (not committed)
   config.json        the agent's headless command: what the review server runs on a submitted review when no session
-                     is waiting, with the prompt appended (keep `-p` last). Nobody answers a prompt, so (D-082) it is
+                     is waiting, with the prompt appended (keep `-p` last). Empty unless asked for (`reel init
+                     --agent claude|codex`, in a repo set up already too): reviews then wait in the inbox for the
+                     next session. Nobody answers a prompt, so (D-082) Claude Code's is
                      `claude --permission-mode auto --permission-prompts none --settings '{"sandbox":{"enabled":true,
                      "failIfUnavailable":true,"allowUnsandboxedCommands":false,"excludedCommands":["git commit *"]},
                      "hooks":{"PreToolUse":[…a node -e hook on Write|Edit|MultiEdit|NotebookEdit…]}}' -p`:
