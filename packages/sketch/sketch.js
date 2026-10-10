@@ -159,7 +159,7 @@
   }
   createRoot($("canvas")).render(React.createElement(Excalidraw, {
     excalidrawAPI: (a) => { api = a; setTimeout(() => a.updateLibrary({ libraryItems: window.reelIcons?.(convertToExcalidrawElements) || [], merge: true }).catch(() => {}), 0); },
-    onChange: (elements, appState) => { onScene(elements); onSelect(appState); },
+    onChange: (elements, appState) => { onScene(elements); onSelect(appState); onTyping(appState); },
     initialData: { appState: { viewBackgroundColor: "#ffffff", currentItemFontFamily: 5 } },
     UIOptions: { canvasActions: { export: false, saveToActiveFile: false, loadScene: true, toggleTheme: false } },
   }));
@@ -186,11 +186,15 @@
   }
   // a rest of 0.4 s or more is a gesture; one much longer is a gesture and then a mouse left lying there: its first
   // 8 s are kept (the pointing), not the rest of the time it lay there
+  let typedAt = null;
   function restEnd(t) { if (resting && t - resting.t0 >= 0.4 && session.pointer.length < 3000) session.pointer.push({ t0: resting.t0, t1: +Math.min(t, resting.t0 + 8).toFixed(2), id: resting.id }); resting = null; }
   setInterval(() => {
     if (t0 == null || pausedAt != null) return restEnd(clock() ?? 0);
-    // not while drawing (the pointer is on what it draws) or typing a note (the mouse just lies there)
-    const id = pointer.down || document.activeElement?.id === "note" ? null : under(), t = clock();
+    // not while drawing (the pointer is on what it draws) or typing (the mouse just lies where they clicked to type,
+    // until they move it again)
+    if (typing) typedAt = { x: pointer.x, y: pointer.y };
+    else if (typedAt && Math.hypot(pointer.x - typedAt.x, pointer.y - typedAt.y) > 12) typedAt = null;
+    const id = pointer.down || typing || typedAt || document.activeElement?.id === "link-q" ? null : under(), t = clock();
     if (resting?.id === id) return;
     restEnd(t); if (id) resting = { id, t0: t };
   }, 100);
@@ -414,35 +418,35 @@
     const st = new Set(selected.map((e) => e.customData?.status || ""));
     for (const b of bar.querySelectorAll("[data-status]")) b.setAttribute("aria-pressed", String(st.size === 1 && st.has(b.dataset.status)));
   }
-  // link: the note box becomes a file picker until Enter (link it) or Escape
-  $("sel-link").addEventListener("click", () => { linkFor = selected[0]?.id; const n = $("note"); n.value = "@"; n.focus(); suggest(); });
+  // link: a search over the repo's files, above the bar, until Enter (link it) or Escape
+  $("sel-link").addEventListener("click", () => { linkFor = selected[0]?.id; const q = $("link-q"); q.value = ""; $("files").classList.add("show"); q.focus(); suggest(); });
   async function suggest() {
-    const n = $("note"), box = $("files");
-    if (!linkFor || !n.value.startsWith("@")) { box.classList.remove("show"); return; }
-    const q = n.value.slice(1);
+    const q = $("link-q").value.trim().replace(/^@/, ""), list = $("file-list");
+    if (!linkFor) return;
     try { const r = await fetch(`api/sketch/files?q=${encodeURIComponent(q)}`); fileList = (await r.json()).files || []; } catch { fileList = []; }
-    fileOn = 0; box.innerHTML = "";
+    fileOn = 0; list.innerHTML = "";
     const hint = document.createElement("li"); hint.className = "hint";
-    hint.textContent = `Link "${words(kin().find((e) => e.id === linkFor) || {})}" to a file: type part of its path; :line or #name after it to point inside. Enter links, Esc leaves.`;
-    box.append(hint);
-    fileList.forEach((f, i) => { const li = document.createElement("li"); li.textContent = f; li.setAttribute("role", "option"); if (!i) li.className = "on"; li.onmousedown = (e) => { e.preventDefault(); link(f + (q.match(/[:#].*$/)?.[0] || "")); }; box.append(li); });
-    box.classList.add("show");
+    hint.textContent = `Link "${words(kin().find((e) => e.id === linkFor) || {})}" to a file. Enter links${fileList.length ? " the one marked" : " what you typed"}, Esc leaves.`;
+    list.append(hint);
+    fileList.forEach((f, i) => { const li = document.createElement("li"); li.textContent = f; li.setAttribute("role", "option"); if (!i) li.className = "on"; li.onmousedown = (e) => { e.preventDefault(); link(f + (q.match(/[:#].*$/)?.[0] || "")); }; list.append(li); });
   }
+  function closeLink() { linkFor = null; $("files").classList.remove("show"); $("link-q").value = ""; $("link-q").blur(); }
   function link(target) {
-    const el = kin().find((e) => e.id === linkFor && !e.isDeleted); linkFor = null; $("files").classList.remove("show"); $("note").value = "";
+    const el = kin().find((e) => e.id === linkFor && !e.isDeleted); closeLink();
     if (!el || !target) return;
     commit(new Map([[el.id, bumped(el, { link: target })]]));
     status(`Linked "${words(el)}" to ${target}.`);
   }
-  $("note").addEventListener("input", () => { if (linkFor) suggest(); });
-  $("note").addEventListener("keydown", (e) => {
-    if (!linkFor) return;
-    const items = [...$("files").querySelectorAll("li[role=option]")];
+  $("link-q").addEventListener("input", suggest);
+  $("link-q").addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== $("link-q")) closeLink(); }, 150));
+  $("link-q").addEventListener("keydown", (e) => {
+    e.stopPropagation();   // keys here are a search, not Excalidraw's shortcuts
+    const items = [...$("file-list").querySelectorAll("li[role=option]")];
     if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); fileOn = (fileOn + (e.key === "ArrowDown" ? 1 : -1) + items.length) % Math.max(1, items.length); items.forEach((li, i) => li.classList.toggle("on", i === fileOn)); return; }
-    if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); linkFor = null; $("files").classList.remove("show"); $("note").value = ""; return; }
+    if (e.key === "Escape") { e.preventDefault(); closeLink(); return; }
     if (e.key === "Enter") {
-      e.preventDefault(); e.stopImmediatePropagation();   // not a note
-      const typed = $("note").value.slice(1).trim(), at = typed.match(/[:#].*$/)?.[0] || "";
+      e.preventDefault();
+      const typed = $("link-q").value.trim().replace(/^@/, ""), at = typed.match(/[:#].*$/)?.[0] || "";
       link(fileList[fileOn] ? fileList[fileOn] + at : typed);
     }
   });
@@ -496,30 +500,39 @@
     commit(changed, added); renderSel();
   });
 
-  // ---------- notes: typed, timestamped, and put on the canvas where you're looking ----------
-  $("note").addEventListener("keydown", (e) => {
-    if (e.key !== "Enter" || !e.target.value.trim()) return;
-    e.preventDefault();
-    const text = e.target.value.trim(); e.target.value = "";
-    const note = { t: clock(), text, elementId: null };
-    if (api) {
-      // under what is already drawn, so a note never lands on top of a box; on an empty canvas, near the middle
-      const s = api.getAppState(), z = s.zoom?.value || 1, els = live();
-      let x = -s.scrollX + (s.width / 2 - 160) / z, y = -s.scrollY + (s.height / 3) / z;
-      if (els.length) { x = Math.min(...els.map((e) => e.x + Math.min(e.width, 0))); y = Math.max(...els.map((e) => e.y + Math.max(e.height, 0))) + 40; }
-      const [el] = convertToExcalidrawElements([{ type: "text", x, y, text, fontSize: 20, strokeColor: "#9C4524" }]);
-      api.updateScene({ elements: [...api.getSceneElementsIncludingDeleted(), el], captureUpdate: CaptureUpdateAction?.IMMEDIATELY });
-      note.elementId = el.id;
-    }
-    session.notes.push(note);
-    if (t0 != null) { said.push(`(typed) ${text}`); schedule(400); }
-  });
+  // ---------- notes: text typed on the canvas (double-click, or T) ----------
+  // A text of their own (not a box's label, an icon's name or a today/new/going tag) is a note: when they finish
+  // typing it, it is timed, goes in the words of the next picture as "(typed) …" and to the partner, and sketch.md
+  // lists it. Typed again later, the note is kept as last typed (the change itself is told as a rename).
+  let typing = null;
+  const noted = new Map();   // text element id → its note
+  function onTyping(appState) {
+    const now = appState.editingTextElement?.id ?? (appState.editingElement?.type === "text" ? appState.editingElement.id : null);
+    if (now === typing) return;
+    const done = typing; typing = now;
+    if (!done || t0 == null) return;
+    const el = api.getSceneElements().find((e) => e.id === done);
+    const text = String(el?.originalText ?? el?.text ?? "").trim();
+    if (!el || el.containerId || el.customData?.tagFor || el.customData?.icon || !text) return;
+    const n = noted.get(el.id);
+    if (n) { n.text = text; return; }
+    const note = { t: clock(), text, elementId: el.id };
+    noted.set(el.id, note); session.notes.push(note);
+    said.push(`(typed) ${text}`); schedule(400);
+  }
 
   // ---------- the bar ----------
   const recBtn = $("rec"), finBtn = $("finish");
+  // how this works: open by itself the first time in this browser, before recording; the ? brings it back
+  function help(open) { $("help").classList.toggle("show", open); $("help-btn").setAttribute("aria-expanded", String(open)); try { localStorage.setItem("reelplanner.sketch.help", "seen"); } catch {} }
+  $("help-btn").addEventListener("click", () => help(!$("help").classList.contains("show")));
+  $("help-close").addEventListener("click", () => help(false));
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && $("help").classList.contains("show")) help(false); });
+  try { if (localStorage.getItem("reelplanner.sketch.help") !== "seen") help(true); } catch { help(true); }
   setInterval(() => { const s = clock(); if (s != null) $("clock").textContent = fmt(s); }, 250);
   recBtn.addEventListener("click", async () => {
     if (t0 == null) {
+      help(false);
       recBtn.disabled = true; await startRecording(); recBtn.disabled = false;
       recBtn.classList.add("on"); recBtn.querySelector(".label").textContent = "Pause";
       finBtn.disabled = false; if (!$("status").textContent.startsWith("No")) status("");

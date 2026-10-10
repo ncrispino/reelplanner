@@ -150,6 +150,14 @@ const OPS = () => {
       return fresh.length;
     },
     ids() { return all().map((e) => e.id); },
+    // a place on screen with nothing drawn under a line of text: below the drawing where it fits, else beside it
+    emptySpot() {
+      const s = api().getAppState(), z = s.zoom.value, scr = (x, y) => [(x + s.scrollX) * z, (y + s.scrollY) * z];
+      const boxes = all().filter((e) => !e.isDeleted).map((e) => { const [x0, y0] = scr(e.x, e.y), [x1, y1] = scr(e.x + Math.abs(e.width), e.y + Math.abs(e.height)); return { x0, y0, x1, y1 }; });
+      for (let y = 140; y <= 660; y += 30) for (let x = 230; x <= 560; x += 30)
+        if (!boxes.some((b) => b.x0 < x + 340 && b.x1 > x - 10 && b.y0 < y + 40 && b.y1 > y - 15)) return [x, y];
+      return [240, 660];
+    },
     realId: (id) => real(id),
     tool(type) { api().setActiveTool({ type }); },
     select(ids) { api().updateScene({ appState: { selectedElementIds: Object.fromEntries(ids.map((i) => [real(i), true])) } }); },
@@ -203,7 +211,13 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
       const [act] = Object.keys(st).filter((k) => k !== "t"), arg = st[act];
       try {
         if (act === "say") continue;
-        if (act === "note") { await page.fill("#note", arg); await page.press("#note", "Enter"); await page.evaluate(() => document.activeElement?.blur()); }
+        if (act === "note") {
+          // as a person writes on the board: the text tool, a click on an empty spot in view, type, Escape
+          const [x, y] = await page.evaluate(() => window.__ops.emptySpot());
+          await page.evaluate(() => window.__ops.tool("text")); await page.waitForTimeout(150); await page.mouse.click(x, y);
+          await page.waitForSelector("textarea.excalidraw-wysiwyg");   // the editor open: else the keys are Excalidraw's shortcuts
+          await page.keyboard.type(arg, { delay: 15 }); await page.keyboard.press("Escape"); await page.evaluate(() => window.__ops.tool("selection"));
+        }
         else if (act === "pen") {
           await page.evaluate(() => document.activeElement?.blur()); await page.evaluate(() => window.__ops.tool("freedraw"));
           // as a person does: start the stroke beside Excalidraw's style panel (it opens down the left edge, about
@@ -246,7 +260,7 @@ export async function play(file, { R = ROOT, out: outDir, port, partner = "off",
         } else if (act === "mermaid") {
           // More tools → Mermaid to Excalidraw, the source typed in, Insert; its boxes are "@<label>" to later steps
           const before = await page.evaluate(() => window.__ops.ids());
-          await page.click('[title="More tools"]'); await page.getByText("Mermaid to Excalidraw").click();
+          await page.click('[title="More tools"]'); await page.locator(".dropdown-menu").getByText("Mermaid to Excalidraw").click();   // (the help card names it too)
           await page.fill(".ttd-dialog textarea", arg.source); await page.waitForTimeout(900);
           await page.locator(".ttd-dialog button", { hasText: /insert/i }).click(); await page.waitForTimeout(400);
           await page.evaluate((a) => window.__ops.placeNew(a), { before, x: arg.x, y: arg.y });

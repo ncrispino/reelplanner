@@ -24,14 +24,17 @@
   it (classic diagrams, heavy editing, timelines, swimlanes, grids, trees, code with numbered steps, alternatives,
   pointing) through the real page; `sketch-scenarios/judge.mjs` measures whether an agent can tell each one's story.
   With one thing selected the page offers what a whiteboard cannot: **Link to code** (a file of the repo picked from
-  the note box; `sketch.md` lists the links and flags a path the repo does not have), **Today / New / Going** (a tag,
-  and `sketch.md`'s **Today vs proposed**), and **Open up** (a frame beside the picture for a box's insides, the view
-  going there, **Back** to the whole).
+  a search above the bar; `sketch.md` lists the links and flags a path the repo does not have), **Today / New /
+  Going** (a tag, and `sketch.md`'s **Today vs proposed**), and **Open up** (a frame beside the picture for a box's
+  insides, the view going there, **Back** to the whole).
   Beyond boxes: a library of icons drawn in Excalidraw's own shapes (database, queue, user, phone, service, cloud,
   cache, auth and more; `sketch.md` says `database "Orders DB"`), Mermaid diagrams (`sketch.md` keeps the source),
   dropped pictures by file name with an SVG's own words, and web embeds by address. The partner streams: a line shows
   what it is looking at while it decides, then the question types itself out (`LOOKING:` then `ASK:` or `NONE`;
   `session.json` keeps what it looked at, asked or not).
+  No note box: text typed on the canvas (double-click, or `T`) is the note, timed and told as `(typed) …`. **How this
+  works** (the **?** in the bar, open on a first visit) lists talking and pointing, typing, the icons, Mermaid,
+  pictures and the selection bar.
   Excalidraw and React are built once per machine into `~/.reelplanner/vendor/` (`vendor-excalidraw`, optional
   dependencies), the bundle carrying Excalidraw's MIT licence and each font's beside it (NOTICE); nothing comes from a
   CDN. [docs/sketch.md](docs/sketch.md); `sketch.spec` drives it end to end.

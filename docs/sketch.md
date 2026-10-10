@@ -27,7 +27,12 @@ a bar at the bottom:
 - **Record / Pause / Resume.** Records the canvas (not the toolbar) with your voice. The pointer is drawn in as an
   orange dot, so "this goes here" shows where.
 - **The live caption** above the bar shows what the browser heard. The recording keeps the audio whatever it hears.
-- **The note box.** Type, press Enter: the note is timed and also put on the canvas, under what is drawn.
+- **Typing.** There is no separate note box: double-click the canvas (or press `T`) and type, as on a whiteboard.
+  Text of your own (not a box's label or an icon's name) is a note: when you finish it, it is timed, goes in the
+  words of the next picture as `(typed) …` and to the partner, and `sketch.md` lists it under **Typed notes**.
+- **How this works** (the **?** in the bar) lists the page's moves: talking and pointing, typing, the icons, Mermaid,
+  pictures, what the selection bar does, and Finish. It opens by itself the first time in a browser, and closes
+  when you press Record.
 - **Finish** pauses and shows exactly what will be sent: the recording to play back, the transcript (click a line
   to jump there), a picture at each pause, and a box for anything to flag. **Keep sketching** goes back and resumes;
   **Send to the repo** saves the folder; **Download instead** gives a `.zip` of it (also what a page opened without
@@ -35,10 +40,10 @@ a bar at the bottom:
 
 The question at the top right ("what are you explaining?") names the folder and heads `sketch.md`.
 
-Select one thing and a small bar above the note box offers what a whiteboard cannot do:
+Select one thing and a small bar above the bottom bar offers what a whiteboard cannot do:
 
-- **Link to code.** The note box becomes a search over the repo's files (`git ls-files`): type part of a path, pick
-  one, Enter. The box now *is* that file in `sketch.md` (**Linked to code**), and a path that is not in the repo at
+- **Link to code.** A search over the repo's files (`git ls-files`) opens above the bar: type part of a path, pick
+  one, Enter (`:line` or `#name` after it points inside). The box now *is* that file in `sketch.md` (**Linked to code**), and a path that is not in the repo at
   that commit is flagged, so a box linked to a file that was renamed or never existed shows up as the difference it is.
 - **Today / New / Going.** Tags it (grouped with it, so it moves with it) and records it: `sketch.md`'s **Today vs
   proposed** lists what exists, what they propose and what goes away. Pressing it again takes the mark off.

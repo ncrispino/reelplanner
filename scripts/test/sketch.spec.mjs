@@ -33,6 +33,13 @@ import { launchOpts, testPort, serverUp, ROOT } from "../lib/env.mjs";
 import { resolvePartner, askPartner, readAnswer, RECOMMENDED } from "../lib/sketch-partner.mjs";
 import { describeScene, sceneChanges } from "../lib/sketch-scene.mjs";
 const fails = []; const ok = (c, m) => { console.log(`${c ? "✓" : "✗"} ${m}`); if (!c) fails.push(m); };
+// a note as a person writes one: Excalidraw's text tool, a click on the canvas, type, Escape
+async function typeOnCanvas(pg, x, y, text) {
+  await pg.evaluate(() => window.reelSketch.api.setActiveTool({ type: "text" })); await pg.waitForTimeout(150); await pg.mouse.click(x, y);
+  await pg.waitForSelector("textarea.excalidraw-wysiwyg");   // the editor open: else the keys are Excalidraw's shortcuts
+  await pg.keyboard.type(text, { delay: 10 }); await pg.keyboard.press("Escape");
+  await pg.evaluate(() => window.reelSketch.api.setActiveTool({ type: "selection" }));
+}
 
 // ---------- the partner's answer as it streams (no browser): LOOKING, then ASK or NONE ----------
 {
@@ -206,9 +213,13 @@ try {
   ok((await page.textContent("#ctx")).includes(head.slice(0, 7)), `the repo's commit is shown — ${await page.textContent("#ctx")}`);
   ok(await page.isVisible("#partner") && (await page.textContent("#partner-label")).includes("qwen2.5vl:7b on this machine"),
     `the page names the partner, the local server's vision model — ${await page.textContent("#partner-label")}`);
+  const helpText = await page.textContent("#help");
+  ok(await page.isVisible("#help") && ["Double-click", "Library", "Mermaid to Excalidraw", "Link to code", "Today / New / Going", "Open up", "Finish"].every((w) => helpText.includes(w)) && !(await page.$("#note")),
+    "a first visit opens How this works (talking, typing on the canvas, the icons, Mermaid, the selection bar, Finish); there is no note box");
 
   await page.click("#rec");
   await page.waitForTimeout(300);
+  ok(!(await page.isVisible("#help")) && (await page.getAttribute("#help-btn", "aria-expanded")) === "false", "…Record closes it; ? in the bar brings it back");
   await page.evaluate(() => {
     const K = window.ExcalidrawKit, api = window.reelSketch.api;
     api.updateScene({ elements: K.convertToExcalidrawElements([{ type: "rectangle", id: "scratch", x: 40, y: 40, label: { text: "Scratch" } }], { regenerateIds: false }) });
@@ -241,10 +252,9 @@ try {
   ok(calls.some((c) => { const t = c.body.messages[1].content[0].text; return t.includes(`"Client" → "Upload API" (labeled "chunks")`) && t.includes("the upload starts in the client") && t.includes("how upload resume works"); }),
     `…and the boxes and arrows as typed, the words, the topic — ${userText.slice(0, 400)}`);
   ok(calls.length >= 2 && calls.slice(1).some((c) => c.body.messages[1].content[0].text.includes("- Where does the chunk index live?")), `…a later picture is asked again, told what it already asked (${calls.length} calls)`);
-  await page.mouse.move(220, 265, { steps: 6 }); await page.waitForTimeout(700);   // pointing at Client, then the API
-  await page.mouse.move(660, 265, { steps: 6 }); await page.waitForTimeout(700);
-  await page.fill("#note", "not sure where the chunk index lives");
-  await page.press("#note", "Enter");
+  await page.mouse.move(220, 265, { steps: 6 }); await page.waitForTimeout(900);   // pointing at Client, then the API
+  await page.mouse.move(660, 265, { steps: 6 }); await page.waitForTimeout(600);   // (and while the text tool is picked)
+  await typeOnCanvas(page, 300, 620, "not sure where the chunk index lives");
   await page.waitForTimeout(800);
 
   await page.click("#finish");
@@ -273,7 +283,8 @@ try {
   ok(s.transcript.segments.map((x) => x.text).join("|") === "the upload starts in the client|it sends each chunk to the API|a failed chunk is retried", `the transcript, in order — ${JSON.stringify(s.transcript.segments)}`);
   ok(s.transcript.segments.every((x, i, a) => x.t1 >= x.t0 && (!i || x.t0 >= a[i - 1].t1)), "each sentence has a start and an end, in order, on one clock");
   ok(s.keyframes.some((k) => k.said === "the upload starts in the client" && k.file), `a keyframe pairs a picture with what was said — ${JSON.stringify(s.keyframes)}`);
-  ok(s.notes.length === 1 && s.notes[0].elementId && s.keyframes.some((k) => k.said.includes("(typed) not sure")), "the typed note is timed, on the canvas, and in a keyframe");
+  ok(s.notes.length === 1 && s.notes[0].text === "not sure where the chunk index lives" && s.notes[0].elementId && s.keyframes.some((k) => k.said.includes("(typed) not sure")),
+    `text typed on the canvas is a note: timed, and in a keyframe (box labels are not notes) — ${JSON.stringify(s.notes)}`);
   ok(s.events.some((e) => e.type === "delete" && e.id === "scratch"), "an element replaced out of the scene is a delete");
   ok(s.events.some((e) => e.type === "add" && e.kind === "arrow" && e.from === "client" && e.to === "api"), "the arrow's ends are in its add event");
   ok(s.final.elements.find((e) => e.id === "ps")?.label === "PaymentService" && !s.events.some((e) => /PaymentServic\n/.test(e.text || "")),
@@ -326,7 +337,7 @@ try {
   await p6.click("#sel-link"); await p6.keyboard.type("upl"); await p6.waitForSelector("#files li[role=option]");
   ok((await p6.textContent("#files li[role=option]")) === "src/api/upload.ts", `Link to code: the note box lists the repo's files for what is typed — ${await p6.textContent("#files")}`);
   await p6.keyboard.press("Enter"); await p6.waitForTimeout(300);
-  ok(await p6.evaluate(() => window.reelSketch.api.getSceneElements().find((e) => e.id === "up").link) === "src/api/upload.ts" && await p6.inputValue("#note") === "", "…Enter links it, and is not a note");
+  ok(await p6.evaluate(() => window.reelSketch.api.getSceneElements().find((e) => e.id === "up").link) === "src/api/upload.ts" && !(await p6.isVisible("#files")), "…Enter links it, and is not a note");
   await p6.mouse.click(650, 445); await p6.click('[data-status="going"]'); await p6.mouse.click(650, 245); await p6.click('[data-status="new"]'); await p6.waitForTimeout(300);
   const tags = await p6.evaluate(() => window.reelSketch.api.getSceneElements().filter((e) => e.customData?.tagFor).map((e) => `${e.customData.tagFor}:${e.text}`).sort().join(","));
   ok(tags === "ftp:− going,up:+ new" && await p6.getAttribute('[data-status="new"]', "aria-pressed") === "true", `Today / New / Going: a tag on each, the button pressed — ${tags}`);
@@ -421,10 +432,10 @@ try {
   await p5.goto(`http://127.0.0.1:${port5}/`); await p5.waitForFunction(() => window.reelSketch?.api);
   await p5.click("#rec"); await p5.waitForTimeout(300);
   await p5.evaluate(() => { window.reelSketch.api.updateScene({ elements: window.ExcalidrawKit.convertToExcalidrawElements([{ type: "rectangle", x: 50, y: 50, label: { text: "Queue" } }]) }); });
-  await p5.fill("#note", "the queue holds jobs"); await p5.press("#note", "Enter");
+  await typeOnCanvas(p5, 400, 500, "the queue holds jobs");
   await p5.waitForFunction(() => /not shown/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
   ok(!(await p5.isVisible("#ask")) && /took \d+ s to ask \(about an earlier picture\): not shown/.test(await p5.textContent("#status")), `a late answer is not shown, and the page says why — ${await p5.textContent("#status")}`);
-  await p5.fill("#note", "workers pull from it"); await p5.press("#note", "Enter");
+  await typeOnCanvas(p5, 400, 600, "workers pull from it");
   await p5.waitForFunction(() => /questions are off/.test(document.querySelector("#status").textContent), null, { timeout: 20000 });
   ok(!(await p5.isChecked("#partner-on")) && !(await p5.isVisible("#ask")), `…after two, the questions stop for this sketch — ${await p5.textContent("#status")}`);
   slow.kill(); await p5.close(); slowMs = 0;

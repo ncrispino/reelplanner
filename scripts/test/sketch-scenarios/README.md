@@ -83,11 +83,11 @@ Every step has `"t"` (seconds) and exactly one action. Keep a scenario between 4
 | `group` | `"group": {"ids": ["api", "cache"]}` | groups elements |
 | `frame` | `"frame": {"id": "f1", "name": "Region us-east", "children": ["api", "cache"]}` | puts existing elements in a named frame (also `add` can create one) |
 | `pen` | `"pen": {"points": [[x, y], ...]}` (Excalidraw's style panel covers about x 14–190, y 66–400 while the pen is picked: the player starts a stroke at its first point clear of it) | a freehand stroke with the mouse (circling something, crossing out, a squiggle, an underline); 6–40 points |
-| `note` | `"note": "typed text"` | types a note in the bar; it lands on the canvas |
+| `note` | `"note": "typed text"` | types it on the canvas with the text tool, on an empty spot in view (what a note is now) |
 | `undo` / `redo` | `"undo": 1` | Ctrl+Z / Ctrl+Shift+Z that many times |
 | `pause` | `"pause": 4` | presses Pause, waits that many seconds, presses Resume (the recording's clock stops) |
 | `point` | `"point": {"ids": ["app", "edge"], "seconds": 3}` | the pointer rests on each element in turn (the time shared between them), as a person points while talking |
-| `link` | `"link": {"id": "api", "type": "routes/upl"}` | selects it, presses Link to code, types into the note box and picks the first file listed (Enter) |
+| `link` | `"link": {"id": "api", "type": "routes/upl"}` | selects it, presses Link to code, types into its search and picks the first file listed (Enter) |
 | `mark` | `"mark": {"ids": ["ftp", "imp"], "as": "going"}` | selects each and presses Today, New or Going (`today`, `new`, `going`) |
 | `openup` | `"openup": {"id": "wrk", "as": "inside"}` | selects it and presses Open up: a frame beside everything, the view on it; `as` names the frame for later steps |
 | `back` | `"back": {"from": "inside"}` | selects that frame and presses Back: the whole picture again |
