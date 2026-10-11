@@ -56,7 +56,9 @@ or audio parity. In the current hands-on trial, Ghostty 1.3.1 opened the player 
 0.13.4. A reported rewind/pause/resume audio fault also occurred in ordinary browsers: the local server
 had not supplied seekable media responses. The server now supplies file lengths and byte ranges;
 the regression and live Ghostty timing checks pass, and the owner confirmed the audio sounds normal
-after the fix. The remaining review controls are still being checked.
+after the fix. A separate synthetic plan trial then exercised a choice, comment, sourced Ask answer,
+Finish and direct Send through the Ghostty pane. The saved review was adopted, recorded and used
+to revise the scratch plan. Walkthrough Accept/Flag and changed-scenes are still being checked.
 
 After updating reelplanner, restart an older review server with `review --stop`, then open it again.
 Refresh an existing page so its audio loads from the updated server. That matters because an already

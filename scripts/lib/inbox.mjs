@@ -187,13 +187,18 @@ function trackedFingerprint(repo) {
   }
   return Object.fromEntries(Object.entries(result).sort(([a], [b]) => a.localeCompare(b)));
 }
-function completionBaseline(rp, repo, id) {
+function completionContext(rp, repo) {
   if (isMachineInbox(rp)) return { completionMode: "quick-review", completionReason: "no project record" };
   try { gitBytes(repo, ["rev-parse", "--show-toplevel"]); }
   catch (e) {
     if (!existsSync(join(repo, ".git")) && /not a git repository/i.test(String(e.stderr || ""))) return { completionMode: "quick-review", completionReason: "no Git repository" };
     throw new Error("Cannot inspect Git for completion ownership; the review remains pending");
   }
+  return { completionMode: "git" };
+}
+function completionBaseline(rp, repo, id) {
+  const context = completionContext(rp, repo);
+  if (context.completionMode === "quick-review") return context;
   const startHead = headOf(repo);
   if (!startHead) {
     // An unborn repository has no baseline commit, but still needs its first successful commit.
@@ -267,7 +272,8 @@ function checkedEvidence(rp, id, progress) {
   } finally { rmSync(temp, { recursive: true, force: true }); }
 }
 function commitEvidenceMatches(progress, { completed = false, rp } = {}) {
-  if (progress?.completionMode !== "git") return true; // pre-instrumentation claims and quick reviews
+  if (progress?.completionMode !== "git") return progress?.completionMode === "quick-review"
+    || completionContext(rp, dirname(rp)).completionMode === "quick-review";
   const head = headOf(progress.repo);
   if (!progress.checkedTree || !("checkedHead" in progress) || !head || head === progress.checkedHead || head === progress.startHead || (progress.startHead && !descendsFrom(progress.repo, progress.startHead, head)) || (progress.checkedHead && !descendsFrom(progress.repo, progress.checkedHead, head))) return false;
   if (completed && (progress.phase !== "committed" || progress.committedHead !== head)) return false;
@@ -314,9 +320,13 @@ export function markDone(rp, id, { owner = process.env.REELPLANNER_OWNER || acti
   if (!existsSync(from)) return false;
   const moved = withClaimLock(claimPath(rp, id), () => {
     const c = claimOf(rp, id), progress = progressOf(rp, id);
-    if (progress?.completionMode === "git" && !c) throw new Error(`no owner claim for ${id}; recover it before completion`);
-    if (progress?.completionMode === "git" && owner && c?.owner !== owner) throw new Error(`${id} belongs to another session`);
-    if (c && !commitEvidenceMatches(progress, { completed: true, rp })) throw new Error("Stopped before commit: completion requires a recorded successful commit containing the checked review work and unchanged original owner edits, with no new pending tracked edits or untracked files; record checked before committing, keep the edits and retry after correcting the cause");
+    // A newly saved Git review has no progress yet. Absence is never proof of a quick
+    // review or permission to complete a legacy Git claim without recorded evidence.
+    const gitCompletion = progress?.completionMode === "git" || (progress?.completionMode !== "quick-review" && completionContext(rp, dirname(rp)).completionMode === "git");
+    if (gitCompletion && !c) throw new Error(`no owner claim for ${id}; recover it before completion`);
+    if (gitCompletion && owner && c?.owner !== owner) throw new Error(`${id} belongs to another session`);
+    if (gitCompletion && progress?.completionMode !== "git") throw new Error("Stopped before commit: no recorded Git baseline or checked work; reconcile the legacy review and recover ownership before checking new work and committing");
+    if ((gitCompletion || c) && !commitEvidenceMatches(progress, { completed: true, rp })) throw new Error("Stopped before commit: completion requires a recorded successful commit containing the checked review work and unchanged original owner edits, with no new pending tracked edits or untracked files; record checked before committing, keep the edits and retry after correcting the cause");
     if (!existsSync(from)) return false;
     renameSync(from, join(done, `${id}.json`));
     if (existsSync(claimPath(rp, id))) renameSync(claimPath(rp, id), join(done, `${id}.claim`));

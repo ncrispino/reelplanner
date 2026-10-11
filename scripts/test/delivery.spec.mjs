@@ -232,6 +232,33 @@ try {
   }
   console.log("✓ next live session atomically recovers every expired handler phase without headless configuration or losing baseline/check/commit evidence; live leases and runs remain protected");
 
+  const unclaimedGit = writeReview(rp, { ...row(9), project: "unclaimed-git" });
+  assert.equal(claimOf(rp, unclaimedGit.id), null); assert.equal(progressOf(rp, unclaimedGit.id), null);
+  assert.throws(() => finish(unclaimedGit.id), /no owner claim/);
+  assert(existsSync(unclaimedGit.path)); assert(!existsSync(join(box, "done", `${unclaimedGit.id}.json`)));
+  claim(rp, unclaimedGit.id, "session", { owner: "fake:new-git" });
+  writeFileSync(join(repo, "reviewed.txt"), "new claimed and checked Git review\n");
+  renewClaim(rp, unclaimedGit.id, { owner: "fake:new-git", phase: "checked" });
+  git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "complete properly instrumented review");
+  renewClaim(rp, unclaimedGit.id, { owner: "fake:new-git", phase: "committed" });
+  assert(finish(unclaimedGit.id));
+
+  const legacyGit = writeReview(rp, { ...row(9), project: "legacy-git" });
+  writeFileSync(join(box, `${legacyGit.id}.claim`), JSON.stringify({ by: "session", owner: "fake:legacy", pid: process.pid, host: hostname(), leaseUntil: 1 }));
+  assert.throws(() => finish(legacyGit.id), /no recorded Git baseline or checked work/);
+  assert.throws(() => renewClaim(rp, legacyGit.id, { owner: "fake:legacy", phase: "committed" }), /recorded checked work/);
+  assert(existsSync(legacyGit.path)); assert.equal(progressOf(rp, legacyGit.id), null);
+  writeFileSync(join(box, `${legacyGit.id}.claim`), JSON.stringify({ ...claimOf(rp, legacyGit.id), leaseUntil: 1 }));
+  assert.equal(await waitForReview(rp, { owner: "fake:legacy-recovered", timeoutMs: 50 }), legacyGit.path);
+  assert.equal(progressOf(rp, legacyGit.id).completionMode, "git");
+  assert.equal(progressOf(rp, legacyGit.id).startHead, git("rev-parse", "HEAD"));
+  writeFileSync(join(repo, "reviewed.txt"), "new checked work after legacy reconciliation\n");
+  renewClaim(rp, legacyGit.id, { owner: "fake:legacy-recovered", phase: "checked" });
+  git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "complete reconciled legacy review with new evidence");
+  renewClaim(rp, legacyGit.id, { owner: "fake:legacy-recovered", phase: "committed" });
+  assert(finish(legacyGit.id));
+  console.log("✓ unclaimed Git reviews and legacy Git claims cannot bypass ownership/check/commit evidence; proper adoption, new checked work and commitment complete them");
+
   const unreadable = writeReview(rp, row(8)), configPath = join(repo, ".git/config"), goodConfig = readFileSync(configPath);
   writeFileSync(configPath, Buffer.concat([goodConfig, Buffer.from("\n[broken\n")]));
   assert.throws(() => claim(rp, unreadable.id, "session", { owner: "fake:probe-failure" }), /Cannot inspect Git/);

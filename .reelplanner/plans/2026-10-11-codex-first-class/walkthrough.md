@@ -4,7 +4,7 @@
 
 **Started from:** `652894a6ddb8cf7303bd0cf709afa27f27b6b399` (plan approval recorded).
 
-**Commits:** `0d051e7` — native Codex integration and shared terminal review checkpoint. Final validation and acceptance are pending.
+**Commits:** `0d051e7` — native integration and terminal review; `0fef69b` — checked-work completion, expired-handler recovery and portable identity. Final lifecycle validation and acceptance are pending.
 
 The approved scope is local support plus portable remote copies (D-313). Focused runtime trials and the fast suite have passed; complete Codex CLI/app lifecycle proof and final walkthrough review remain open. This is implementation text for the Built side, not a declaration of acceptance.
 
@@ -314,7 +314,9 @@ A launcher success does not prove review parity. Local Send is direct; D-313's d
 
 **Portable trial:** the actual disconnected bundle downloaded a review and checkout `reel record` preserved its answers and comments. Explicit host-capability fixtures proved provided owner/non-owner identity survives; a genuine unauthenticated browser retained the Git fallback. These tests prove preservation, not authentication or a hosted bridge. Full handoff passed 60 checks. Runs: `runs/portable-review.txt`.
 
-**Not done:** walkthrough judgments/changed-scenes and real occupied-port proof.
+**Occupied port:** the real scratch CLI requested 8964, skipped the running servers on 8964/8965, reported 8966, and that URL returned its intended library. Only the newly created scratch server was stopped. Runs: `runs/occupied-port.txt`.
+
+**Not done:** walkthrough judgments and changed-scenes.
 
 ### Step 6 — Prove the whole lifecycle and state support accurately
 
@@ -398,7 +400,7 @@ All 47 IDs cited in the approved plan remain accounted for below. “Unchanged�
 | D-106 | Agent-neutral personal memory file; D-312 supplies current name. | `scripts/lib/memory.mjs` (`youPath`), `scripts/lib/old-names.mjs`; unchanged. |
 | D-107 | Retro suggested after five plans or three repeated signals. | `scripts/lib/memory.mjs` (`RETRO_PLANS=5`, `RETRO_REPEAT=3`); unchanged. |
 | D-109 | An untagged miss stops no call directly. | `scripts/lib/autonomy.mjs` (`missFor`); unchanged. |
-| D-110 | Stop before a step's fifth call and ask its biggest open choice. A1–A9 have at most three per step. | Autonomy table; `scripts/lib/autonomy.mjs` (`STEP_CALLS=5`), skill implementation step 1. |
+| D-110 | Stop before a step's fifth call and ask its biggest open choice. A1–A11 have at most three per step. | Autonomy table; `scripts/lib/autonomy.mjs` (`STEP_CALLS=5`), skill implementation step 1. |
 | D-129 | Wrong quick checks do not block Approve; results remain recorded. | `packages/player/reelplanner-player.js`, `scripts/lib/memory.mjs`; unchanged. |
 | D-168 | Historical comparison arms run through finished sites and fixes; no new three-arm experiment claimed here. | `scripts/case-study.mjs` (`STAGES`, `ARMS`); unchanged. |
 | D-169 | Owner reviews the reelplanner arm first, one day between comparison arms; not a Codex trial ordering rule. | `eval/case-studies/REPLICATE.md`, historical case-study plan; unchanged. |
@@ -437,13 +439,13 @@ All 47 IDs cited in the approved plan remain accounted for below. “Unchanged�
 | D-310 | Public tree export is one initial commit, then ordinary work; D-312 updates its name. No new export/publication claimed. | `scripts/release/make-public.mjs`, `.reelplanner/README.md`, D-312 ledger note; unchanged. |
 | D-311 | Full suite on every PR push, separate PR checks, maintainer merge check and required review. No PR CI success claimed here. | `.github/workflows/ci.yml`, `.github/workflows/pr.yml`, PR template; unchanged. |
 | D-312 | Lowercase reelplanner and new project/env names; preserve old saved marks/legacy reads and historical wording. | `plugin.json`, `scripts/lib/old-names.mjs`, `scripts/lib/env.mjs`, player storage keys (steps 1–6). |
-| D-313 | Local loop plus portable remote exports; hosted automatic handoff excluded. Selected export/runtime proof still pending. | Approved `plan.md`, `docs/agents.md`, `scripts/bundle-player.mjs` (step 5). |
+| D-313 | Local loop plus portable remote exports; hosted automatic handoff excluded. Disconnected export/intake preserves answers, comments and provided identity; genuine unauthenticated intake uses the Git fallback. | Approved `plan.md`, `docs/agents.md`, `scripts/bundle-player.mjs` (step 5). |
 
 ## Tests run
 
-`runs/npm-test-audio.txt` saves the checkpoint's complete stdout: all 59 fast specs passed in 219.8 seconds. Its actual command and observed exit 0 wrap the captured full output. A final run must cover the recovery fixes added after the checkpoint.
+`runs/npm-test-audio.txt` saves the checkpoint's complete stdout: all 59 fast specs passed in 219.8 seconds. Its actual command and observed exit 0 wrap the captured full output. The final completion-guard run passed all 59 in 247.2 seconds; `runs/npm-test-final-guard.txt` retains its exact command, complete output and exit 0, including 13 delivery checks.
 
-The real headless proof and Ghostty position run retain command/output/exit. `headless-summary.json` gives runtime/version, scratch commit IDs, limits, 244565 ms total model duration and 92453 reported tokens. `ghostty-trial.json` reports the full checks listed under steps 5/6; final raw full-run evidence remains to be saved.
+The real headless proof and Ghostty position run retain command/output/exit. Terminal and portable traces retain every output line with trailing whitespace normalized for Git; their byte-exact originals remain in the named private scratch evidence folders. `headless-summary.json` gives runtime/version, scratch commit IDs, limits, 244565 ms total model duration and 92453 reported tokens. `ghostty-trial.json` reports the full checks listed under steps 5/6; final raw full-run evidence remains to be saved.
 
 **Ran in a scratch repo:** `runs/headless-real.txt`, `runs/ghostty-audio-position.txt` — the former used a synthetic Git wording-only plan and injected/restored signing failure; the latter inspected the scratch upload-resume reference player's live Ghostty pane. `runs/npm-test-audio.txt` ran the repo suite, whose specs use scratch copies; it was not the acceptance project's narrated lifecycle.
 
@@ -451,7 +453,7 @@ The real headless proof and Ghostty position run retain command/output/exit. `he
 
 The fresh independent checker reviewed the checkpoint diff and wrote `code-check/findings.md`: two steps passed, four had findings; all 47 cited decisions held, and one implementation choice needed an autonomy row. Each finding is answered here; unfinished evidence remains explicit.
 
-- **Step 2:** Fixed the unrelated-commit acceptance bug. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
+- **Step 2:** Fixed the unrelated-commit acceptance bug and the second check's unclaimed-review bypass. Git completion now requires a claim and instrumented baseline/check/commit evidence even when no progress was present. Legacy missing evidence fails closed; a new baseline plus newly checked work is explicit recovery. Full delivery/loop passed 13 + 96 checks. Runs: `runs/unclaimed-completion.txt`. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
 - **Step 3:** Fixed stranded expired handlers. A new session atomically adopts expired ownership at every saved phase, preserving baseline and progress; live leases and headless processes stay protected. Full delivery regressions cover default no-headless recovery and concurrent adoption. Runs: `runs/completion-recovery.txt`.
 - **Step 5:** The real Ghostty Ask, answer display, choice, comment and Send now have saved proof. The disconnected download/intake trial now also passes with answers, comments and any provided identity preserved. Walkthrough controls and changed-scenes are still being exercised, so this finding remains open.
 - **Step 6:** System spec/map/glossary have been updated. The real scratch lifecycle has reached approved plan revision; complete implementation, walkthrough/fix and app evidence are still pending, so this finding remains open.
@@ -462,13 +464,13 @@ A fresh final check must review the corrected committed diff and remaining runti
 ## Not done
 
 - **Complete local acceptance:** the real small project has not yet demonstrated native skill invocation, narrated plan/revision, fresh checks, implementation, independent code check, accepted and flagged walkthrough choices, fix and final commit.
-- **Live clients:** real shared-player Send/Ask adoption, answer display and progress need separate Codex CLI and Codex app trials. The owned App Server queue trial is not those trials.
-- **Presentation and remote scope:** finish Ghostty controls/submission/changed-scenes, occupied-port demonstration and portable export/intake identity/comment proof. Hosted automatic service remains outside D-313's scope.
-- **Evidence closure:** save exact native install and real private-export command outcomes without transcript text; capture required full touched-spec runs and final fast output in the required wrapper.
+- **Live clients:** the owner-confirmed Codex CLI in iTerm2 adopted and answered a saved question through its verified active thread; it deliberately polled, so automatic wake is not claimed. Scratch Ghostty plan Send was adopted and recorded. A separate Codex app handoff remains unverified.
+- **Presentation and remote scope:** Ghostty plan choices, comments, Ask and Send, occupied-port recovery, and disconnected export/intake are proved. Finish walkthrough Accept/Flag and changed-scenes. Hosted automatic service remains outside D-313's scope.
+- **Evidence closure:** save exact native install and private-export command outcomes without transcript text. Full touched-spec and final fast output are saved; the last guard change additionally passed full delivery/loop (13 + 96 checks).
 - **Final check and walkthrough:** fresh code-check findings, their answers, `reel check --base`, `reel audit`, stops, guide validation, fresh script/frame/video checks, walkthrough build and owner review are pending. Checkpoint commit `0d051e7` is an implementation checkpoint, not acceptance.
 - **System record:** spec/map/glossary now describe the implementation; affected system video scenes await post-acceptance refresh.
 - **Other surfaces:** Linux, Windows, WSL and cloud are unverified. Public plugin submission, deployment and owner-repo unattended enablement remain separate explicit actions.
 
 ## The walkthrough video
 
-Pending. Build from the real installation, stopped-commit/retry, durable live question, private source export and corrected seek behavior. Keep the story about two minutes; group pauses by the A1–A10 table and actual `reel stops` report, and show one saved real result for each claimed change. End with the tests, unfinished gates and the list. The final accepted/flagged review is part of acceptance, not assumed from this checkpoint.
+Pending. Build from the real installation, stopped-commit/retry, durable live question, private source export and corrected seek behavior. Keep the story about two minutes; group pauses by the A1–A11 table and actual `reel stops` report, and show one saved real result for each claimed change. End with the tests, unfinished gates and the list. The final accepted/flagged review is part of acceptance, not assumed from this checkpoint.

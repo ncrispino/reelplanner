@@ -132,10 +132,9 @@ As of this implementation pass:
 - Read-only paginated export of a real scratch Codex conversation matched its ID and project; transcript
   contents stayed outside Git.
 - The shared terminal player opened in Ghostty 1.3.1 with terminal-browser 0.13.4. Rewind/pause/resume
-  regressions and live timing checks passed, and the owner confirmed normal audio. Full pane review
-  submission and changed-scenes checks remain open ([terminal review](./terminal-review.md)).
+  regressions and live timing checks passed, and the owner confirmed normal audio. Scratch plan choices, comments, Ask and direct Send passed; walkthrough judgments and changed-scenes remain open ([terminal review](./terminal-review.md)).
 - Disconnected download/intake preserved answers and comments. Provided viewer fixtures survived export; unauthenticated browser intake kept the Git identity fallback. This proves preservation, not hosted authentication.
-- The corrected fast suite passed all 59 specs; full runs of all 21 touched specs passed, including 60 handoff checks.
+- The final completion-guard fast suite passed all 59 specs in 247.2 seconds; full runs of all 21 touched specs passed, including 60 handoff checks. The last guard change additionally passed full delivery/loop (13 + 96 checks).
 - These focused proofs do not establish the entire plan/video/walkthrough lifecycle, the Codex app,
   cloud, Linux, Windows or WSL. Remaining trials are recorded in the walkthrough.
 

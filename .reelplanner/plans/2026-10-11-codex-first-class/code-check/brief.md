@@ -34,9 +34,10 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..HEAD)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b)
 
 ```
+0fef69b Tie review completion to checked work and preserve portable identity
 0d051e7 Add native Codex integration and shared terminal review
 ```
 
@@ -138,66 +139,82 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 | A7 | 3 | Bind a connection to a verified running endpoint, with explicit `--session-endpoint` when needed [visible] | Treating saved identity plus a successful bare queue command as live delivery | A real closed-thread queue returned success without acting. Read-only endpoint verification must confirm that exact project thread is loaded; delivery then targets that endpoint. | `scripts/lib/codex-session.mjs`, `scripts/lib/agents.mjs`, `scripts/lib/inbox.mjs`, `scripts/review.mjs`; actual App Server turn and endpoint regressions. |
 | A8 | 4 | Declare `ws` as a direct dependency for the documented Unix WebSocket transport [close] | Hand-writing WebSocket framing or relying on an undeclared transitive dependency | The daemon socket speaks WebSocket, while the CLI proxy copies raw bytes. A real read-only probe exposed the difference; Node's native WebSocket cannot connect to a Unix socket. | `package.json`, `package-lock.json`, `scripts/lib/codex-session.mjs`; real Unix transport regression and daemon verification. |
 | A9 | 5 | Serve single byte ranges and return the complete file for unsupported multipart ranges [close] | Implementing multipart responses for the local review server | Browser media seeking uses single ranges. The shared response helper supplies exact lengths and partial responses without adding a multipart encoder; unsupported requests still get a valid complete representation. | `scripts/lib/http-file.mjs`, `scripts/lib/static-server.mjs`, `scripts/review.mjs`; `scripts/test/media-seek.spec.mjs`. |
+| A10 | 4 | Bound a history export to 64 MiB, 1,000 pages and 30 seconds, with an external-copy fallback [close] | Reading an unbounded conversation through the running service | History can contain large tool output. The limits bound memory, pagination and service waits; an oversized or unavailable history fails explicitly and can use a verified owner copy outside Git. The independent code check identified that these existing implementation limits needed to be recorded. | `scripts/lib/codex-session.mjs`; `scripts/test/session-export.spec.mjs`; `explain --session-source` verifies the exact session and project. |
+| A11 | 5 | Preserve a provided viewer in downloaded reviews, with the same bounded 1.5-second identity wait as hosted Send [visible] | Keeping a known identity only on hosted submissions | The portable path must retain the provided reviewer together with answers and comments. A delayed identity may resolve before download, while an absent or hanging capability still permits export with the existing Git fallback at intake. No new anonymous identity is invented. | `packages/player/reelplanner-player.js`; `packages/player/test/handoff.spec.mjs`; disconnected download/intake trial. |
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..HEAD` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (from the repository root). The files it touches:
 
 ```
-.agents/plugins/marketplace.json                   |  20 ++
+.agents/plugins/marketplace.json                   |  20 +
+ .reelplanner/glossary.md                           |   2 +
+ .../code-check/brief.md                            | 203 ++++++
+ .../code-check/findings.md                         |  61 ++
+ .../runs/completion-recovery.txt                   |   8 +
+ .../runs/corrected-contracts.txt                   |   9 +
+ .../runs/full-handoff.txt                          |   7 +
+ .../runs/full-touched.txt                          |  27 +
  .../runs/ghostty-audio-position.txt                |   3 +
- .../runs/headless-real.txt                         |  27 ++
- .../runs/npm-test-audio.txt                        |  67 ++++
- .../2026-10-11-codex-first-class/walkthrough.md    |  73 +++++
+ .../runs/headless-real.txt                         |  27 +
+ .../runs/npm-test-audio.txt                        |  69 ++
+ .../runs/npm-test-post-review.txt                  |  69 ++
+ .../runs/portable-review.txt                       |  31 +
+ .../runs/terminal-lifecycle.txt                    | 792 +++++++++++++++++++++
+ .../2026-10-11-codex-first-class/walkthrough.md    | 474 ++++++++++++
+ .reelplanner/spec.md                               |  12 +-
+ .reelplanner/system.json                           |   8 +-
  AGENTS.md                                          |   8 +-
  README.md                                          |  34 +-
- docs/agents.md                                     | 126 ++++----
- docs/reference.md                                  |  46 ++-
- docs/terminal-review.md                            |  80 +++++
- eval/agents/codex-2026-10-11/ghostty-trial.json    |  27 ++
- .../agents/codex-2026-10-11/headless-commands.json | 360 +++++++++++++++++++++
- eval/agents/codex-2026-10-11/headless-summary.json |  98 ++++++
- .../codex-2026-10-11/queue-active-summary.json     |  22 ++
+ docs/agents.md                                     | 129 ++--
+ docs/reference.md                                  |  46 +-
+ docs/terminal-review.md                            |  80 +++
+ .../agents/codex-2026-10-11/cli-live-question.json |  24 +
+ eval/agents/codex-2026-10-11/ghostty-trial.json    |  27 +
+ .../agents/codex-2026-10-11/headless-commands.json | 360 ++++++++++
+ eval/agents/codex-2026-10-11/headless-summary.json |  98 +++
+ .../codex-2026-10-11/queue-active-summary.json     |  22 +
  package-lock.json                                  |   3 +-
  package.json                                       |   8 +-
  packages/player/guide-review.js                    |  28 +-
- packages/player/reelplanner-player.js              |  43 ++-
+ packages/player/reelplanner-player.js              |  53 +-
  packages/player/test/ask.spec.mjs                  |   9 +-
- packages/player/test/guide-notes.spec.mjs          |  21 ++
+ packages/player/test/guide-notes.spec.mjs          |  21 +
+ packages/player/test/handoff.spec.mjs              |  50 ++
  packages/player/test/working.spec.mjs              |   6 +
- plugin.json                                        |  24 ++
+ plugin.json                                        |  24 +
  scripts/explain.mjs                                |  11 +-
  scripts/inbox.mjs                                  |  26 +-
- scripts/lib/agents.mjs                             | 142 +++++++-
- scripts/lib/codex-session.mjs                      | 273 ++++++++++++++++
- scripts/lib/env.mjs                                |  36 ++-
+ scripts/lib/agents.mjs                             | 142 +++-
+ scripts/lib/codex-session.mjs                      | 273 +++++++
+ scripts/lib/env.mjs                                |  36 +-
  scripts/lib/explainer.mjs                          |  19 +-
- scripts/lib/http-file.mjs                          |  45 +++
- scripts/lib/inbox.mjs                              | 301 ++++++++++++++---
- scripts/lib/presentation.mjs                       |  56 ++++
- scripts/lib/review-projects.mjs                    |  29 ++
- scripts/lib/setup-check.mjs                        |  38 +++
+ scripts/lib/http-file.mjs                          |  45 ++
+ scripts/lib/inbox.mjs                              | 378 +++++++++-
+ scripts/lib/presentation.mjs                       |  56 ++
+ scripts/lib/review-projects.mjs                    |  29 +
+ scripts/lib/setup-check.mjs                        |  38 +
  scripts/lib/static-server.mjs                      |  11 +-
  scripts/release/sync-version.mjs                   |   8 +-
- scripts/review.mjs                                 | 147 ++++++---
- scripts/session.mjs                                |  31 ++
+ scripts/review.mjs                                 | 147 ++--
+ scripts/session.mjs                                |  31 +
  scripts/setup.sh                                   |   5 +
- scripts/test/codex-install.spec.mjs                | 105 ++++++
- scripts/test/delivery.spec.mjs                     | 151 +++++++++
+ scripts/test/codex-install.spec.mjs                | 105 +++
+ scripts/test/delivery.spec.mjs                     | 241 +++++++
  scripts/test/explainer.spec.mjs                    |  15 +-
- scripts/test/harnesses.spec.mjs                    | 106 ++++++
+ scripts/test/harnesses.spec.mjs                    | 106 +++
  scripts/test/init.spec.mjs                         |  12 +-
  scripts/test/loop.spec.mjs                         |   5 +-
- scripts/test/media-seek.spec.mjs                   | 129 ++++++++
+ scripts/test/media-seek.spec.mjs                   | 129 ++++
  scripts/test/memory.spec.mjs                       |   4 +-
  scripts/test/package.spec.mjs                      |  19 +-
- scripts/test/presentation.spec.mjs                 |  50 +++
- scripts/test/review-projects.spec.mjs              |  32 ++
- scripts/test/review-status.spec.mjs                |  36 ++-
+ scripts/test/presentation.spec.mjs                 |  50 ++
+ scripts/test/review-projects.spec.mjs              |  32 +
+ scripts/test/review-status.spec.mjs                |  36 +-
  scripts/test/run.mjs                               |   2 +-
- scripts/test/session-export.spec.mjs               | 144 +++++++++
+ scripts/test/session-export.spec.mjs               | 144 ++++
  scripts/test/version.spec.mjs                      |  23 +-
- skills/plan-to-video/SKILL.md                      |  42 +--
- skills/plan-to-video/references/harnesses.md       | 131 ++++++++
- 55 files changed, 3054 insertions(+), 263 deletions(-)
+ skills/plan-to-video/SKILL.md                      |  42 +-
+ skills/plan-to-video/references/harnesses.md       | 140 ++++
+ 69 files changed, 4934 insertions(+), 278 deletions(-)
 ```
