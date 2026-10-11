@@ -1,0 +1,61 @@
+## Watch it in Claude Code (`/reel`)
+
+With the reelplanner plugin, `/reel` plays the video in a pane beside the conversation. Answer and comment
+there, then **Send**: with **Changes needed** Claude revises the plan and the pane plays what changed; with
+**Approve** Claude builds the plan.
+
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, stops at a choice, takes an answer and comments, and sends the review with Changes needed; Claude rebuilds the video and the pane plays just the change." width="100%">
+
+<p align="center"><i>/reel in kitty: a review sent with Changes needed, then just the change played (75 s, sped up).</i></p>
+
+- **Needs:** the reelplanner plugin (`claude plugin install reelplanner@reelplanner`, as in [Install](#install)) and
+  `reelplanner setup`, then a new session. The picture shows in
+  [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
+  player, and the pane keeps the choices, comments and Send.
+- **Open it:** `/reel` lists the plans with a video; `/reel <plan>` opens one. When the agent opens a video for
+  review, a band above the prompt offers it too.
+- **Keys:** `p` play or pause · `n` and `b` next and previous stop · a digit picks an option · `m` comment ·
+  `w` the browser player, to draw on the video. [Every key and what the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
+
+
+### The reel pane in Claude Code
+
+`/reel` opens a pane listing the plans with a built video, newest first, each with its open choices or calls and
+whether it has been reviewed; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
+`/reel <video-dir>` any built video. The video plays at once, at the top of the pane: its own frames, its captions under
+them word for word, its clock, and its sound on the machine the session runs on (`ffplay`, or `afplay` on macOS). It
+stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one
+marked: pick one (its digit), choose **Explain this more**, or answer in your own words (on surfaces with a text field),
+and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
+each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `j` and `k` go back and on 5
+seconds (the browser player's arrow keys: in a pane the arrows are Claude Code's, scrolling and moving between
+controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch, `n` and `b` move between
+stops. The last stop sums the review up, takes a note for the agent, and sends it,
+approved or with changes asked.
+
+The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
+`renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes; the first play says
+how far the render has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
+(kitty, Ghostty) the picture is the render itself, as sharp as in the browser. Any other terminal opens the browser
+player instead (`reelplanner review --detach`), and the pane says so, with the link, and keeps the choices, the
+comments and Send: drawn in a terminal's character cells, a frame is a few dozen blocks across, and nothing in it can
+be read. In the desktop and mobile apps the pane shows three frames a second, with the captions under them and no
+sound there (`w` opens the full player).
+
+The pane, top to bottom: the picture; the timeline, with a mark at each stop (filled once answered) and at each
+comment, and the keys (`p` play or pause, `r` replay, `b` and `n` the previous and next stop); the stage, which is the
+card for the stop when the video stops there (its options by number, `e` explain more, `o` your own words) and
+otherwise what comes next; and **Your review**, the answers and comments so far in the video's order. `m` leaves a
+comment at the moment the video is at: the video waits while you write and plays on after, and the comment is filed
+as a note at that moment, as the player's are. `c`, once a choice is answered (while its part of the video plays, or
+back on its card), adds a comment to the answer ("Postgres, but only if…"), filed as the decision's `note`, which
+`reel record` keeps in the ledger as the reviewer's note. Drawing on the video (a circle, a box around something) is
+the browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
+`z` makes the video bigger: the docked pane asks for most of the terminal's width (a width you dragged it to wins; the
+dock goes to about half the terminal, so it is wider, not full screen) and the review folds away. `t` is full screen:
+the dock is Claude Code's fullscreen layout, and `t` switches it to its classic one (`/tui default`), where the pane
+opens above the prompt across the whole terminal, as tall as the picture wants with the card under it, and `z` gives
+it every row but the prompt's. The switch restarts Claude Code, which picks up the conversation; the pane hands
+itself across (`$.store`: the video, the moment, the answers, comments and notes) and comes back where it was,
+playing. `t` there switches back (`/tui fullscreen`). Starting Claude Code with `CLAUDE_CODE_NO_FLICKER=0` gives the
+classic layout too. Coming from the fullscreen layout Claude Code may ask why you switched back; Esc skips it.

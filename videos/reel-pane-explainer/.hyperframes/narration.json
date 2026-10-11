@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "voice": "aura-2-apollo-en",
+  "speed": 1.25,
+  "model": "openrouter deepgram/aura-2 + openrouter openai/whisper-1",
+  "lines": {
+    "01": {
+      "key": "af25577fed70f713ab88",
+      "text": "A reelplanner video doesn't have to send you to a browser. With the plugin installed, /reel plays it in a pane right beside your conversation with Claude.",
+      "said": "A reel planner video doesn't have to send you to a browser. With the plugin installed, slash reel plays it in a pane right beside your conversation with Claude.",
+      "sha256": "aeaa80b7337427c88ae6eabc1b6b290178326d55b8a962bf58243857f2763182",
+      "duration_s": 9.168
+    },
+    "02": {
+      "key": "1aea25890ed9105cd447",
+      "text": "Type /reel to list the plans that have a video, newest first, with their open choices. Pick one, or name it, and it starts playing at once.",
+      "said": "Type slash reel to list the plans that have a video, newest first, with their open choices. Pick one, or name it, and it starts playing at once.",
+      "sha256": "d1eff9599ac38973010ed66413c872d9347d083b1d9f07cd8ebe5ba03a0d72c1",
+      "duration_s": 10.224
+    },
+    "03": {
+      "key": "72b1fd5e33a56a17d35d",
+      "text": "At each open choice the video stops. The question and its options sit under the picture, with the recommended one marked. Press a number to answer, m to leave a comment at that moment, and n or b to jump between stops.",
+      "sha256": "cd69554794ec5e41ee54dad653fe157483870a28a15c6c8d6f446dd8c2a459bd",
+      "duration_s": 12.288
+    },
+    "04": {
+      "key": "ae1e2e7deecfc25ddb4a",
+      "text": "The last stop sums up your review. Send it. Approve, and Claude builds the plan. Ask for changes, and Claude revises it, and the pane plays just what changed.",
+      "sha256": "b66c462ec6aad9c6c700752915e85d8cf713adbb48f26cba476fcd7bd52becb3",
+      "duration_s": 8.664
+    },
+    "05": {
+      "key": "520a26956094d2a77c7e",
+      "text": "In kitty or Ghostty the picture plays right in the terminal. Anywhere else, the pane opens the browser player and keeps the choices, comments and Send.",
+      "sha256": "26ea8da92908935d4f2d19d24a63b47ced2aa7bf524b558a00651ca9d13f2cbd",
+      "duration_s": 9.024
+    }
+  }
+}

@@ -1,0 +1,165 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 700; font-style: normal; src: url("assets/fonts/Inter-700.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-style: normal; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 400; font-style: normal; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f03-stop-bg { position: absolute; inset: 0; background: var(--rp-paper); }
+  .f03-stop-stage { position: absolute; inset: 0; }
+
+  /* place label */
+  .f03-stop-place { position: absolute; left: 140px; top: 48px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.06em; color: rgba(var(--rp-ink-rgb), 0.62); white-space: nowrap; }
+
+  /* the picture (the paused video) */
+  .f03-stop-pic { position: absolute; left: 140px; top: 100px; width: 960px; height: 330px; box-sizing: border-box; border-radius: 8px; background: var(--rp-tile); border: 1px solid rgba(var(--rp-ink-rgb), 0.12); overflow: hidden; }
+  .f03-stop-pic-head { position: absolute; left: 48px; top: 52px; font: 400 60px/1.06 "EB Garamond"; letter-spacing: -0.018em; color: var(--rp-ink); white-space: nowrap; }
+  .f03-stop-chip { position: absolute; top: 170px; padding: 18px 24px; border-radius: 8px; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.2); font: 400 28px/1 "JetBrains Mono"; color: var(--rp-ink); white-space: nowrap; }
+  .f03-stop-dim { position: absolute; inset: 0; background: rgba(var(--rp-shadow-rgb), 0.16); opacity: 0; }
+  .f03-stop-pause { position: absolute; left: 760px; top: 105px; width: 120px; height: 120px; border-radius: 9999px; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.2); }
+  .f03-stop-pause i { position: absolute; top: 34px; width: 14px; height: 52px; border-radius: 3px; background: var(--rp-ink); }
+
+  /* the timeline */
+  .f03-stop-tl { position: absolute; left: 140px; top: 456px; width: 960px; height: 64px; }
+  .f03-stop-track { position: absolute; left: 0; top: 14px; width: 960px; height: 4px; border-radius: 9999px; background: rgba(var(--rp-ink-rgb), 0.16); }
+  .f03-stop-played { position: absolute; left: 0; top: 0; width: 960px; height: 4px; border-radius: 9999px; background: var(--rp-ink); transform-origin: 0 50%; }
+  .f03-stop-mark { position: absolute; top: 5px; width: 22px; height: 22px; margin-left: -11px; box-sizing: border-box; border-radius: 9999px; background: var(--rp-paper); border: 3px solid var(--rp-ink); }
+  .f03-stop-mark-fill { position: absolute; inset: 3px; border-radius: 9999px; background: var(--rp-ink); }
+  .f03-stop-head { position: absolute; left: 20px; top: -6px; width: 4px; height: 44px; margin-left: -2px; border-radius: 2px; background: var(--rp-ink); }
+  .f03-stop-arcs { position: absolute; left: 0; top: 24px; width: 960px; height: 40px; overflow: visible; }
+  .f03-stop-arcs path { fill: none; stroke: var(--rp-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* the comment bubble on the timeline */
+  .f03-stop-bubble { position: absolute; left: 372px; top: 378px; padding: 10px 18px; border-radius: 8px; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.2); box-shadow: 0 1px 3px rgba(var(--rp-shadow-rgb), 0.08), 0 4px 16px rgba(var(--rp-shadow-rgb), 0.04); font: 400 26px/1 "Inter"; color: var(--rp-ink); white-space: nowrap; }
+  .f03-stop-bubble::after { content: ""; position: absolute; left: 22px; bottom: -9px; width: 14px; height: 14px; background: var(--rp-paper); border-right: 1px solid rgba(var(--rp-ink-rgb), 0.2); border-bottom: 1px solid rgba(var(--rp-ink-rgb), 0.2); transform: rotate(45deg); }
+
+  /* the stop card */
+  .f03-stop-card { position: absolute; left: 140px; top: 528px; width: 960px; height: 352px; box-sizing: border-box; border-radius: 12px; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.12); box-shadow: 0 1px 3px rgba(var(--rp-shadow-rgb), 0.08), 0 4px 16px rgba(var(--rp-shadow-rgb), 0.04); }
+  .f03-stop-q { position: absolute; left: 32px; top: 30px; font: 500 38px/1.2 "Inter"; letter-spacing: -0.005em; color: var(--rp-ink); white-space: nowrap; }
+  .f03-stop-opt { position: absolute; left: 32px; width: 896px; height: 68px; box-sizing: border-box; border-radius: 8px; background: var(--rp-tile); border: 1px solid rgba(var(--rp-ink-rgb), 0.12); }
+  .f03-stop-opt-fill { position: absolute; inset: -1px; border-radius: 8px; background: var(--rp-ink); opacity: 0; }
+  .f03-stop-opt .k { position: absolute; left: 14px; top: 10px; width: 46px; height: 46px; box-sizing: border-box; border-radius: 6px; background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.28); border-bottom-width: 3px; font: 500 26px/42px "JetBrains Mono"; text-align: center; color: var(--rp-ink); }
+  .f03-stop-opt .t { position: absolute; left: 82px; top: 18px; font: 400 30px/1.1 "Inter"; color: var(--rp-ink); white-space: nowrap; }
+  .f03-stop-opt .t2 { position: absolute; left: 82px; top: 18px; font: 400 30px/1.1 "Inter"; color: var(--rp-on-ink); white-space: nowrap; opacity: 0; }
+  .f03-stop-tag { position: absolute; right: 16px; top: 15px; padding: 9px 16px; border-radius: 9999px; background: var(--rp-coral); font: 500 26px/1 "Inter"; color: var(--rp-on-ink); white-space: nowrap; }
+
+  /* the keys */
+  .f03-stop-keys { position: absolute; left: 1240px; top: 140px; width: 560px; height: 740px; }
+  .f03-stop-row { position: absolute; left: 0; width: 560px; }
+  .f03-stop-cap { position: absolute; top: 0; width: 104px; height: 104px; box-sizing: border-box; border-radius: 12px; background: var(--rp-tile); border: 1px solid rgba(var(--rp-ink-rgb), 0.28); border-bottom-width: 6px; font: 500 52px/96px "JetBrains Mono"; text-align: center; color: var(--rp-ink); }
+  .f03-stop-row .lab { position: absolute; top: 34px; font: 400 34px/1.1 "Inter"; color: var(--rp-ink); white-space: nowrap; }
+</style>
+
+<div id="root" data-composition-id="03-stop" data-band="bottom" data-duration="12.788" data-width="1920" data-height="1080">
+  <div class="clip f03-stop-bg" data-start="0" data-duration="12.788" data-track-index="0"></div>
+
+  <div class="clip f03-stop-stage" data-start="0" data-duration="12.788" data-track-index="1">
+
+    <div class="f03-stop-place" id="f03-stop-place">reel pane · stop 2 of 4</div>
+
+    <div class="f03-stop-pic" id="f03-stop-pic">
+      <div class="f03-stop-pic-head">Where the manifest lives</div>
+      <div class="f03-stop-chip" style="left:48px">.reelplanner/</div>
+      <div class="f03-stop-chip" style="left:340px">videos/</div>
+      <div class="f03-stop-dim" id="f03-stop-dim"></div>
+      <div class="f03-stop-pause" id="f03-stop-pause"><i style="left:40px"></i><i style="left:66px"></i></div>
+    </div>
+
+    <div class="f03-stop-tl" id="f03-stop-tl">
+      <div class="f03-stop-track"><div class="f03-stop-played" id="f03-stop-played"></div></div>
+      <div class="f03-stop-mark" style="left:150px"><div class="f03-stop-mark-fill"></div></div>
+      <div class="f03-stop-mark" style="left:400px"><div class="f03-stop-mark-fill" id="f03-stop-mark2-fill" style="opacity:0"></div></div>
+      <div class="f03-stop-mark" style="left:650px"></div>
+      <div class="f03-stop-mark" style="left:860px"></div>
+      <div class="f03-stop-head" id="f03-stop-head"></div>
+      <svg class="f03-stop-arcs" viewBox="0 0 960 40" width="960" height="40">
+        <path id="f03-stop-arc-n" d="M 412 6 Q 525 44 638 6 M 626 4 L 638 6 L 634 18" />
+        <path id="f03-stop-arc-b" d="M 388 6 Q 275 44 162 6 M 174 4 L 162 6 L 166 18" />
+      </svg>
+    </div>
+
+    <div class="f03-stop-bubble" id="f03-stop-bubble">comment</div>
+
+    <div class="f03-stop-card" id="f03-stop-card">
+      <div class="f03-stop-q" id="f03-stop-q">Where does the manifest live?</div>
+      <div class="f03-stop-opt" style="top:100px"><div class="k">1</div><div class="t">repo root</div></div>
+      <div class="f03-stop-opt" style="top:180px"><div class="f03-stop-opt-fill" id="f03-stop-opt2-fill"></div><div class="k" id="f03-stop-opt2-k">2</div><div class="t" id="f03-stop-opt2-t">.reelplanner/</div><div class="t2" id="f03-stop-opt2-t2">.reelplanner/</div><div class="f03-stop-tag" id="f03-stop-tag">recommended</div></div>
+      <div class="f03-stop-opt" style="top:260px"><div class="k">3</div><div class="t">each video's folder</div></div>
+    </div>
+
+    <div class="f03-stop-keys">
+      <div class="f03-stop-row" id="f03-stop-row-2" style="top:120px"><div class="f03-stop-cap" id="f03-stop-cap-2" style="left:0">2</div><div class="lab" style="left:140px">answer</div></div>
+      <div class="f03-stop-row" id="f03-stop-row-m" style="top:320px"><div class="f03-stop-cap" id="f03-stop-cap-m" style="left:0">m</div><div class="lab" style="left:140px">comment here</div></div>
+      <div class="f03-stop-row" id="f03-stop-row-nb" style="top:520px"><div class="f03-stop-cap" id="f03-stop-cap-n" style="left:0">n</div><div class="f03-stop-cap" id="f03-stop-cap-b" style="left:124px">b</div><div class="lab" style="left:264px">next · back</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var P = "f03-stop";
+  var $ = function (id) { return document.getElementById(P + "-" + id); };
+  var EASE = "power3.out";
+  var tl = gsap.timeline({ paused: true });
+
+  // the arcs draw on: stroke length set once, deterministically
+  var arcN = $("arc-n"), arcB = $("arc-b");
+  [arcN, arcB].forEach(function (p) { p.style.strokeDasharray = "320"; });
+
+  // 0.00 "At each open choice" — the pane is up: picture, timeline, playhead running.
+  tl.fromTo([$("place"), $("pic"), $("tl")], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE, stagger: 0.06 }, 0);
+  tl.fromTo($("played"), { scaleX: 20 / 960 }, { scaleX: 400 / 960, duration: 1.5, ease: "power2.inOut" }, 0.08);
+  tl.fromTo($("head"), { x: 0 }, { x: 380, duration: 1.5, ease: "power2.inOut" }, 0.08);
+
+  // 1.58 "stops." — the playhead lands on mark 2; the picture dims, the pause glyph shows.
+  tl.fromTo($("pause"), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.35, ease: EASE }, 1.58);
+  tl.fromTo($("dim"), { opacity: 0 }, { opacity: 1, duration: 0.5, ease: EASE }, 1.6);
+
+  // 2.06 "The question" — the card rises under the picture; its question settles at 2.54.
+  tl.fromTo($("card"), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: EASE }, 2.06);
+  tl.fromTo($("q"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE }, 2.5);
+
+  // 3.32 "options" — the three numbered options, one by one.
+  tl.fromTo(document.querySelectorAll("#" + P + "-card .f03-stop-opt"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: EASE, stagger: 0.18 }, 3.32);
+
+  // 5.24 "recommended" — option 2's tag, the frame's one coral.
+  tl.set($("tag"), { opacity: 0 }, 0);
+  tl.set($("tag"), { opacity: 1 }, 5.24);
+  tl.fromTo($("tag"), { scale: 0.92 }, { scale: 1, duration: 0.35, ease: EASE, immediateRender: false }, 5.24);
+
+  // 6.38 "Press a number" — the 2 key arrives, presses on "number" (7.02); option 2 fills, mark 2 fills.
+  tl.fromTo($("row-2"), { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.4, ease: EASE }, 6.38);
+  tl.fromTo($("cap-2"), { y: 0 }, { y: 5, duration: 0.1, ease: "power1.in" }, 7.0);
+  tl.fromTo($("cap-2"), { y: 5 }, { y: 0, duration: 0.18, ease: EASE, immediateRender: false }, 7.12);
+  tl.fromTo($("opt2-fill"), { opacity: 0 }, { opacity: 1, duration: 0.3, ease: EASE }, 7.08);
+  tl.fromTo($("opt2-t2"), { opacity: 0 }, { opacity: 1, duration: 0.3, ease: EASE }, 7.08);
+  tl.set($("opt2-t"), { opacity: 0 }, 7.08);
+  tl.fromTo($("mark2-fill"), { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: EASE }, 7.2);
+
+  // 7.82 "m" — the m key presses; a comment bubble pins on the timeline at the playhead.
+  tl.fromTo($("row-m"), { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.35, ease: EASE }, 7.6);
+  tl.fromTo($("cap-m"), { y: 0 }, { y: 5, duration: 0.1, ease: "power1.in" }, 7.82);
+  tl.fromTo($("cap-m"), { y: 5 }, { y: 0, duration: 0.18, ease: EASE, immediateRender: false }, 7.94);
+  tl.fromTo($("bubble"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: EASE }, 7.92);
+
+  // 9.74 "and n or b" — n and b; arrows to the next and the previous mark.
+  tl.fromTo($("row-nb"), { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.35, ease: EASE }, 9.6);
+  tl.fromTo($("cap-n"), { y: 0 }, { y: 5, duration: 0.08, ease: "power1.in" }, 9.74);
+  tl.fromTo($("cap-n"), { y: 5 }, { y: 0, duration: 0.14, ease: EASE, immediateRender: false }, 9.82);
+  tl.fromTo(arcN, { strokeDashoffset: 320 }, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 9.74);
+  tl.fromTo($("cap-b"), { y: 0 }, { y: 5, duration: 0.08, ease: "power1.in" }, 9.9);
+  tl.fromTo($("cap-b"), { y: 5 }, { y: 0, duration: 0.14, ease: EASE, immediateRender: false }, 9.98);
+  tl.fromTo(arcB, { strokeDashoffset: 320 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 9.9);
+
+  // 10.20 → 12.288 — held read: the stop answered, the keys laid out.
+  tl.set({}, {}, 12.288);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["03-stop"] = tl;
+})();
+</script>
+</template>

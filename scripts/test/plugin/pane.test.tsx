@@ -247,6 +247,37 @@ test('when the agent opens a video for review, the band above the prompt offers 
   expect(await ui.find({ type: 'Link' })).toMatchObject({ props: expect.objectContaining({ href: 'http://127.0.0.1:8787/' }) })
 })
 
+test('where the pane shows the picture, a review the agent starts opens it there, and the browser stays shut', async ($, on) => {
+  const { opened } = world(on, { kitty: true })
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text key="engine">nothing waiting</Text>
+  })
+  const commands: string[] = []
+  on('tool.call', ($, e) => {
+    commands.push((e as { command: string }).command)
+    return { result: { stdout: '✓ review page: http://127.0.0.1:8787/', stderr: '', interrupted: false } } as never
+  })
+  await $.tool.call({ tool: 'Bash', command: `node bin/reelplanner.mjs review .reelplanner/plans/${SLUG}/video --detach` } as never)
+  expect(commands).toEqual([`node bin/reelplanner.mjs review --no-open .reelplanner/plans/${SLUG}/video --detach`])
+  expect(opened).toHaveLength(1)
+  const band = await $.ui.mount({ plugin: 'reelplanner', surface: 'terminal', component: 'AbovePrompt', props: { hasSurvey: false } as never })
+  expect(await band.find({ type: 'Button', key: 'review' })).toBeUndefined()
+  await band.unmount()
+  const ui = await $.ui.mount(pane('terminal'))
+  expect(await ui.find({ type: 'Text', text: /Where does the cache live\?/ })).toBeDefined()
+})
+
+test('/reel alone lists the videos, with how to make a new one', async ($, on) => {
+  world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  expect(await ui.find({ type: 'Text', text: /1 plan with a video/ })).toBeDefined()
+  expect(await ui.find({ type: 'Button', text: /A small plan/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /to review/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /Make a new video/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /opens here when it is ready/ })).toBeDefined()
+})
+
 test('in a terminal without kitty graphics, the browser player opens, and the pane keeps the choices and says how to watch here', async ($, on) => {
   const { ran } = world(on)
   const ui = await $.ui.mount(pane('terminal'))
@@ -304,6 +335,25 @@ test('the video plays in the pane, stops at the choice, and after the answer pla
   expect(plays().slice(1).map(stretch)).toEqual([['25', '30'], ['30', '50']])
   expect(await ui.find({ type: 'Text', text: /stopped at choice 2/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /Who clears it\?/ })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
+test('s plays faster: 1.25×, 1.5×, 2×, then 1× again', async ($, on) => {
+  const { spawned } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  const plays = () => spawned.filter(a => !a.includes('--render'))
+  await ui.press({ key: 'play' })
+  expect(plays()[0]).not.toContain('--speed')
+  await ui.press({ key: 'speed' })
+  expect(await ui.find({ type: 'Button', key: 'speed', text: /1\.25×/ })).toBeDefined()
+  await ui.press({ key: 'replay' })
+  const last = plays()[plays().length - 1] ?? []
+  expect(last[last.indexOf('--speed') + 1]).toBe('1.25')
+  for (const want of ['1.5×', '2×', '1×']) {
+    await ui.press({ key: 'speed' })
+    expect(await ui.find({ type: 'Button', key: 'speed', text: want })).toBeDefined()
+  }
   await ui.press({ key: 'library' })
 })
 

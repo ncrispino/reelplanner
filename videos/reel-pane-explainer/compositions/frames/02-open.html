@@ -1,0 +1,130 @@
+<template>
+<style>
+  @font-face { font-family: "Inter"; font-weight: 400; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-style: normal; src: url("assets/fonts/Inter-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+
+  #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; container-type: size; }
+  .f02-open-bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: var(--rp-paper); }
+
+  /* the pane, close up: a hairline card on the paper */
+  .f02-open-pane { position: absolute; left: 300px; top: 70px; width: 1320px; height: 800px; border-radius: 12px;
+    background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.2);
+    box-shadow: 0 1px 3px rgba(var(--rp-shadow-rgb), 0.08), 0 4px 16px rgba(var(--rp-shadow-rgb), 0.04); overflow: hidden; }
+  .f02-open-head { position: absolute; left: 0; top: 0; width: 1320px; height: 104px; background: var(--rp-tile);
+    border-bottom: 1px solid rgba(var(--rp-ink-rgb), 0.12); }
+  .f02-open-place { position: absolute; right: 40px; top: 39px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.06em; color: rgba(var(--rp-ink-rgb), 0.62); }
+
+  /* the prompt: what is typed, as typed */
+  .f02-open-chip { position: absolute; left: 32px; top: 22px; height: 60px; padding: 0 22px; border-radius: 6px;
+    background: var(--rp-paper); border: 1px solid rgba(var(--rp-ink-rgb), 0.2); box-sizing: border-box;
+    font: 500 34px/58px "JetBrains Mono"; color: var(--rp-ink); white-space: pre; }
+  .f02-open-chip .f02-open-ch { display: inline-block; }
+
+  .f02-open-colhead { position: absolute; left: 72px; top: 136px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.06em; color: rgba(var(--rp-ink-rgb), 0.62); }
+
+  /* the plan list: the frame's foreground subject */
+  .f02-open-row { position: absolute; left: 40px; width: 1240px; height: 112px; border-radius: 8px; box-sizing: border-box;
+    background: var(--rp-tile); border: 1px solid rgba(var(--rp-ink-rgb), 0.12); }
+  .f02-open-name { position: absolute; left: 40px; top: 30px; font: 500 46px/1.1 "Inter"; letter-spacing: -0.005em; color: var(--rp-ink); }
+  .f02-open-state { position: absolute; right: 40px; top: 38px; font: 500 32px/1 "JetBrains Mono"; letter-spacing: 0.02em; color: var(--rp-ink); }
+  .f02-open-state.f02-open-done { color: rgba(var(--rp-ink-rgb), 0.62); }
+  .f02-open-ul { position: absolute; left: 0; right: 0; top: 42px; height: 2px; background: rgba(var(--rp-ink-rgb), 0.7); transform-origin: 0 50%; }
+
+  /* the frame's ONE coral: the row that is picked */
+  .f02-open-pick { position: absolute; left: 40px; top: 200px; width: 1240px; height: 112px; border-radius: 8px; box-sizing: border-box;
+    border: 3px solid var(--rp-coral); }
+  .f02-open-pickbar { position: absolute; left: 0; top: 0; width: 12px; height: 106px; border-radius: 5px 0 0 5px; background: var(--rp-coral); }
+
+  /* the video it starts: a bare rect grown out of the picked row, then its timeline */
+  .f02-open-vid { position: absolute; left: 40px; top: 332px; width: 1240px; height: 360px; border-radius: 8px; background: var(--rp-data); transform-origin: 50% 0; }
+  .f02-open-play { position: absolute; left: 610px; top: 456px; width: 0; height: 0;
+    border-top: 56px solid transparent; border-bottom: 56px solid transparent; border-left: 96px solid rgba(var(--rp-on-ink-rgb), 0.85); }
+  .f02-open-vidlbl { position: absolute; left: 72px; top: 362px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.06em; color: rgba(var(--rp-on-ink-rgb), 0.7); }
+  .f02-open-track { position: absolute; left: 40px; top: 728px; width: 1240px; height: 8px; border-radius: 4px; background: rgba(var(--rp-ink-rgb), 0.14); }
+  .f02-open-fill { position: absolute; left: 0; top: 0; width: 1240px; height: 8px; border-radius: 4px; background: rgba(var(--rp-ink-rgb), 0.7); transform-origin: 0 50%; }
+  .f02-open-tick { position: absolute; top: -8px; width: 2px; height: 24px; background: rgba(var(--rp-ink-rgb), 0.4); }
+  .f02-open-time { position: absolute; left: 40px; top: 756px; font: 500 26px/1 "JetBrains Mono"; letter-spacing: 0.02em; color: rgba(var(--rp-ink-rgb), 0.62); }
+</style>
+
+<div id="root" data-composition-id="02-open" data-duration="10.724" data-width="1920" data-height="1080" data-band="bottom">
+  <div class="f02-open-bg clip" data-start="0" data-duration="10.724" data-track-index="0"></div>
+
+  <div class="f02-open-pane" id="f02-open-pane" data-artifact="the /reel pane's plan list">
+    <div class="f02-open-head">
+      <div class="f02-open-chip" id="f02-open-chip"><span class="f02-open-ch f02-open-c1">/reel</span><span class="f02-open-ch f02-open-c2"> dark-mode</span></div>
+      <div class="f02-open-place">reel</div>
+    </div>
+
+    <div class="f02-open-colhead" id="f02-open-colhead">plans · newest first</div>
+
+    <div class="f02-open-row" id="f02-open-row1" style="top:200px">
+      <div class="f02-open-name">dark-mode</div>
+      <div class="f02-open-state">3 choices<div class="f02-open-ul" id="f02-open-ul1"></div></div>
+    </div>
+    <div class="f02-open-row" id="f02-open-row2" style="top:332px">
+      <div class="f02-open-name">upload-resume</div>
+      <div class="f02-open-state">2 choices<div class="f02-open-ul" id="f02-open-ul2"></div></div>
+    </div>
+    <div class="f02-open-row" id="f02-open-row3" style="top:464px">
+      <div class="f02-open-name">review-page</div>
+      <div class="f02-open-state f02-open-done">reviewed</div>
+    </div>
+
+    <div class="f02-open-pick" id="f02-open-pick"><div class="f02-open-pickbar"></div></div>
+
+    <div class="f02-open-vid" id="f02-open-vid"></div>
+    <div class="f02-open-play" id="f02-open-play"></div>
+    <div class="f02-open-vidlbl" id="f02-open-vidlbl">dark-mode</div>
+    <div class="f02-open-track" id="f02-open-track">
+      <div class="f02-open-fill" id="f02-open-fill"></div>
+      <div class="f02-open-tick" style="left:400px"></div>
+      <div class="f02-open-tick" style="left:760px"></div>
+      <div class="f02-open-tick" style="left:1010px"></div>
+    </div>
+    <div class="f02-open-time" id="f02-open-time">playing</div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script>
+(function () {
+  var tl = gsap.timeline({ paused: true });
+  var E = "power3.out";
+
+  // Scene 1 — the pane is there; "/reel" types on "Type slash reel" (0–1.34)
+  tl.fromTo("#f02-open-pane", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 0);
+  tl.fromTo(".f02-open-c1", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "none" }, 0.5);
+  // rows arrive top to bottom on "list the plans" (1.8–2.66)
+  tl.fromTo("#f02-open-row1", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 1.8);
+  tl.fromTo("#f02-open-row2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 2.18);
+  tl.fromTo("#f02-open-row3", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, 2.66);
+  // "newest first" (3.78)
+  tl.fromTo("#f02-open-colhead", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.4, ease: E }, 3.78);
+  // "open choices" (5.56): the counts are underlined
+  tl.fromTo("#f02-open-ul1", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: E }, 5.56);
+  tl.fromTo("#f02-open-ul2", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: E }, 5.7);
+
+  // Scene 2 — "Pick one" (6.84): the first row takes the accent
+  tl.fromTo("#f02-open-pick", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: E }, 6.84);
+  // "name it" (7.7): the chip reads /reel dark-mode
+  tl.fromTo(".f02-open-c2", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 7.6);
+  tl.fromTo("#f02-open-chip", { scale: 1 }, { scale: 1.04, duration: 0.12, ease: E, transformOrigin: "0% 50%" }, 7.7);
+  tl.to("#f02-open-chip", { scale: 1, duration: 0.2, ease: E }, 7.82);
+
+  // Scene 3 — "starts playing": the row opens into a video with its timeline, then holds (last 2 s still)
+  tl.to(["#f02-open-row2", "#f02-open-row3"], { opacity: 0, duration: 0.25, ease: E }, 7.6);
+  tl.fromTo("#f02-open-vid", { scaleY: 0.05, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.42, ease: E }, 7.7);
+  tl.fromTo("#f02-open-play", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.25, ease: E }, 7.9);
+  tl.fromTo("#f02-open-vidlbl", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: E }, 7.9);
+  tl.fromTo("#f02-open-track", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: E }, 7.9);
+  tl.fromTo("#f02-open-fill", { scaleX: 0 }, { scaleX: 0.04, duration: 0.25, ease: "none" }, 7.95);
+  tl.fromTo("#f02-open-time", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: E }, 7.95);
+  tl.set({}, {}, 10.224);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["02-open"] = tl;
+})();
+</script>
+</template>

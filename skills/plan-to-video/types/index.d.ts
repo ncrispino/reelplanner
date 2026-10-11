@@ -89,6 +89,8 @@ declare module 'claude-code' {
       theater: boolean
       /** Keyed like `comments`: false where a revised video plays whole (by default it plays just what changed). */
       onlyChanges: Record<string, boolean>
+      /** How fast the pane plays (s): 1, 1.25, 1.5 or 2. */
+      speed: number
     }
   }
 }

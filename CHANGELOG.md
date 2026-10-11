@@ -13,7 +13,10 @@
   lead to, the answers and comments are sent as the player's Send sends them (a row in the inbox `inbox --where` names,
   claimed by a waiting session or filed by this one with `reel-intake`), and **Watch** opens the player: the local
   page from a terminal, an Artifact in a cloud session, where localhost is out of reach. When the agent opens a
-  video for review, a band above the prompt offers it. The marketplace entry names the pane's state contract
+  video for review, the pane opens and plays it where it can show the picture (kitty, Ghostty; the browser then
+  stays shut, `--no-open`), and elsewhere a band above the prompt offers it. `/reel` alone lists the repo's videos,
+  with how to make a new one. `s` plays faster (`reel-frames --speed`), the picture follows the pane's size as it
+  plays, and late frames are passed over so the picture keeps up with the sound. The marketplace entry names the pane's state contract
   (`types`); `plugin.spec` validates the plugin as installed and runs its tests (`scripts/test/plugin/`) when
   `claude` is on PATH.
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,

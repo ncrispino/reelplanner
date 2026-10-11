@@ -331,8 +331,9 @@ Then the tooling and `setup`, as in [Install](#install). This keeps the skill up
 
 ### The reel pane in Claude Code
 
-`/reel` opens a pane listing the plans with a built video, newest first, each with its open choices or calls and
-whether it has been reviewed; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
+A review the agent starts opens the pane by itself where it can show the picture (below), so `/reel` alone is for
+finding a video: it lists the plans with a built video, newest first, each with its date, its open choices or calls and
+whether it has been reviewed, and says how to ask for a new one; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
 `/reel <video-dir>` any built video. The video plays at once, at the top of the pane: its own frames, its captions under
 them word for word, its clock, and its sound on the machine the session runs on (`ffplay`, or `afplay` on macOS). It
 stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one
@@ -340,8 +341,10 @@ marked: pick one (its digit), choose **Explain this more**, or answer in your ow
 and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
 each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `j` and `k` go back and on 5
 seconds (the browser player's arrow keys: in a pane the arrows are Claude Code's, scrolling and moving between
-controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch, `n` and `b` move between
-stops. The last stop sums the review up, takes a note for the agent, and sends it,
+controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch, `s` plays faster (1.25×, 1.5×, 2×, then 1× again; the sound keeps its pitch), `n`
+and `b` move between stops. The picture follows the pane: dragged wider, `z`, or the terminal resized, it plays on from
+where it was at the new size; a frame that comes after its moment is passed over, so the picture keeps up with the
+sound. The last stop sums the review up, takes a note for the agent, and sends it,
 approved or with changes asked.
 
 The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
@@ -388,8 +391,9 @@ machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo. A
 act on it. **Watch** opens the player: from a terminal, `reelplanner review --detach` on that video, the page opening in
 your browser; in a cloud session, where that page would be on the container's localhost, it asks Claude to publish the
 player as an Artifact (see [hosted-review.md](./hosted-review.md)) and keeps the link in the pane once published.
-When the agent runs `reelplanner review` on a video, a band above the prompt offers it in the pane, and a cloud session
-opens the pane by itself. The pane comes with the Claude Code plugin; `npx skills add` installs the skill alone.
+When the agent runs `reelplanner review` on a video in kitty or Ghostty, the pane opens and plays it, and the browser
+stays shut (the hook adds `--no-open` to the command); in any other terminal the browser opens as before and a band
+above the prompt offers the pane; a cloud session opens the pane by itself. The pane comes with the Claude Code plugin; `npx skills add` installs the skill alone.
 
 ## Voice and timing
 

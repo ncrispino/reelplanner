@@ -42,6 +42,8 @@ const playback = atom({ plugin: 'reelplanner', key: 'playback' } as const, null 
 const flip = atom({ plugin: 'reelplanner', key: 'flip' } as const, null as string | null)
 const theater = atom({ plugin: 'reelplanner', key: 'theater' } as const, false as boolean)
 const onlyChanges = atom({ plugin: 'reelplanner', key: 'onlyChanges' } as const, {} as Record<string, boolean>)
+const pace = atom({ plugin: 'reelplanner', key: 'speed' } as const, 1 as number)
+const PACES = [1, 1.25, 1.5, 2]
 const composing = atom({ plugin: 'reelplanner', key: 'composing' } as const, null as string | null)
 const comments = atom({ plugin: 'reelplanner', key: 'comments' } as const, {} as Record<string, ReelplannerComment[]>)
 
@@ -281,6 +283,7 @@ let paneColumns = 0 // the pane's width as last drawn
 let paneRows = 0 // and its rows: a docked pane is floor to ceiling, an inline one what it asked for
 let termRows = 0 // the terminal's rows, as a drawing last saw them
 let inlinePane = false // the pane as last drawn sat inline above the prompt (the main-screen layout), not docked
+let resizing = false // a play at the pane's new size is waiting for the size to settle
 
 /** The rows the picture may take: bigger (z), all but the header and the keys; else room left for the card under it. */
 const pictureRoom = (big: boolean) => (paneRows ? Math.max(6, paneRows - (big ? 4 : 14)) : Infinity)
@@ -376,8 +379,14 @@ async function playing(
   if (!rendered) return failed('the render did not finish')
 
   let wrote = 0
+  const rate = opts.still ? 1 : await read($, pace)
   for (const { from, to } of stretches) {
     const args = ['--from', String(from), '--to', String(to), '--as', mode]
+    if (rate !== 1) args.push('--speed', String(rate))
+    // the sound keeps its own clock: a frame that comes after its moment (the pane drew slower than the frames
+    // came) is passed over, so the picture catches up with the sound instead of falling further behind it
+    let clockFrom = 0
+    let videoFrom = from
     // the frames in a folder of the video's own (renders/ is left out of git), kept after the stretch: a redraw shows the last
     if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)), '--dir', `${v.dir}/renders/frames`)
     if (mode === 'jpeg') args.push('--width', '384', '--fps', '3', '--no-audio')
@@ -389,7 +398,15 @@ async function playing(
       else if (kind === 'A') await update($, playback, p => (p ? { ...p, audio: line.slice(2) } : p))
       else if (kind === 'X') return failed(line.slice(2))
       else if (kind === 'F' || kind === 'I') {
-        if (kind === 'F' && mode === 'jpeg' && rest) {
+        const wall = await $.clock.now()
+        if (!clockFrom) {
+          clockFrom = wall
+          videoFrom = Number(t)
+        }
+        const late = videoFrom + ((wall - clockFrom) / 1000) * rate - Number(t) > 0.25
+        if (late) {
+          // passed over: only the clock moves
+        } else if (kind === 'F' && mode === 'jpeg' && rest) {
           await update($, flip, () => jpegSvg(rest, 384, 216))
         } else if (kind === 'I' && rest) {
           const source = { file: rest, format: 'rgb' as const, width: imageSize.width, height: imageSize.height, generation: Number(gen) }
@@ -806,7 +823,7 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'reel',
-      description: 'Watch a reelplanner video and answer its open choices in a pane',
+      description: "Browse this repo's reelplanner videos, or open one in a pane",
       argumentHint: '[plan | video-dir]',
     })
     void resumeHandoff($).catch(() => undefined)
@@ -843,10 +860,17 @@ export const register: Register = on => {
     }
   })
 
-  // The agent opened a video for review: offer it here, and in a cloud session open the pane, since the
-  // localhost page the command started is out of the reviewer's reach.
+  // The agent opened a video for review. Where the pane shows the picture (kitty, Ghostty) it opens and plays the
+  // video, and the browser stays shut (`--no-open`); in any other terminal the browser opens as before and the band
+  // above the prompt offers the pane; in a cloud session the pane opens, since the localhost page the command
+  // started is out of the reviewer's reach.
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
-    const ran = await next(e)
+    let here = false
+    try {
+      here = REVIEW_COMMAND.test(e.command) && !(await isCloud($)) && (await modeFor($, await $.session.surface())) === 'image'
+    } catch {}
+    const command = here && !/--no-open\b/.test(e.command) ? e.command.replace(REVIEW_COMMAND, m => `${m} --no-open`) : e.command
+    const ran = await next(command === e.command ? e : { ...e, command })
     try {
       if (REVIEW_COMMAND.test(e.command)) {
         const found = videoIn(e.command)
@@ -855,10 +879,12 @@ export const register: Register = on => {
         const plan = found ? plans.find(p => p.slug === found.slug) : plans[0]
         if (plan) {
           const which = found?.which ?? defaultWhich(plan)
-          await update($, ready, () => ({ slug: plan.slug, which }))
+          const cloud = await isCloud($)
           const url = JSON.stringify(ran).match(/review page:\s*(http[^\s"\\]+)/)?.[1]
-          if (url && !(await isCloud($))) await update($, links, l => ({ ...l, [`${plan.slug}:${which}`]: url }))
-          if (await isCloud($)) await openPane($, { slug: plan.slug, which }, false)
+          if (url && !cloud) await update($, links, l => ({ ...l, [`${plan.slug}:${which}`]: url }))
+          if (here) await openPane($, { slug: plan.slug, which })
+          else await update($, ready, () => ({ slug: plan.slug, which }))
+          if (cloud) await openPane($, { slug: plan.slug, which }, false)
         }
       }
     } catch {}
@@ -934,30 +960,65 @@ export const register: Register = on => {
 
     const plans = await scanLibrary($)
     if (!shown) {
+      // the library: what /reel alone opens, to find an older video or one not reviewed yet. A review the agent
+      // starts opens its video by itself, so this is not the usual way in
+      const opensHere = (await modeFor($, e.surface)) === 'image' || (await isCloud($)) // as the Bash hook decides
+      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      const dated = (slug: string) => {
+        const m = slug.match(/^\d{4}-(\d{2})-(\d{2})-/)
+        return m ? `${MONTHS[Number(m[1]) - 1]} ${Number(m[2])}` : null
+      }
+      const part = (key: string, what: string, reviewed: boolean) => (
+        <Text key={key}>
+          <Text dimColor>{what} </Text>
+          {reviewed ? <Text color="success">✓</Text> : <Text color="suggestion">to review</Text>}
+        </Text>
+      )
       return (
         <Box flexDirection="column" gap={1}>
-          <Text bold>Plans with a video</Text>
-          {plans.length === 0 && (
-            <Text dimColor>No plan here has a built video yet (.reelplanner/plans/*/video). /reel &lt;video-dir&gt; opens any built video.</Text>
-          )}
-          {plans.slice(0, 30).map((p, i) => (
-            <Box key={`plan-${p.slug}`} flexDirection="column">
-              <Button
-                key={`open-${p.slug}`}
-                plain
-                hotkey={i < 9 ? String(i + 1) : undefined}
-                onPress={() => openPane($, { slug: p.slug, which: defaultWhich(p) })}
-              >
-                {p.title}
-              </Button>
-              <Text dimColor>
-                {'  '}
-                {p.slug}
-                {p.choices !== null && ` · plan video: ${count(p.choices, 'choice')}${p.planReviewed ? ', reviewed' : ', to review'}`}
-                {p.calls !== null && ` · walkthrough: ${count(p.calls, 'call')}${p.walkthroughReviewed ? ', reviewed' : ', to review'}`}
-              </Text>
+          <Text>
+            <Text bold color="claude">
+              reelplanner
+            </Text>
+            <Text dimColor> · {plans.length ? `${count(plans.length, 'plan')} with a video` : 'no videos here yet'}</Text>
+          </Text>
+          {plans.length > 0 && (
+            <Box flexDirection="column">
+              {plans.slice(0, 30).map((p, i) => (
+                <Box key={`plan-${p.slug}`} flexDirection="column">
+                  <Button
+                    key={`open-${p.slug}`}
+                    plain
+                    hotkey={i < 9 ? String(i + 1) : undefined}
+                    onPress={() => openPane($, { slug: p.slug, which: defaultWhich(p) })}
+                  >
+                    {p.title}
+                  </Button>
+                  <Box gap={2} paddingLeft={4} flexWrap="wrap">
+                    {dated(p.slug) && <Text dimColor>{dated(p.slug)}</Text>}
+                    {p.choices !== null && part('plan', `plan video · ${count(p.choices, 'choice')}`, p.planReviewed)}
+                    {p.calls !== null && part('walk', `walkthrough · ${count(p.calls, 'call')}`, p.walkthroughReviewed)}
+                  </Box>
+                </Box>
+              ))}
+              {plans.length > 30 && <Text dimColor>and {plans.length - 30} older (/reel &lt;plan&gt; opens one by name)</Text>}
             </Box>
-          ))}
+          )}
+          <Box key="new" flexDirection="column" borderStyle="round" borderDimColor paddingX={1}>
+            <Text bold>Make a new video</Text>
+            <Text>
+              Ask Claude: <Text color="suggestion">"Use reelplanner to plan …"</Text>
+            </Text>
+            <Text>
+              or <Text color="suggestion">"Make a quick video explaining …"</Text>
+            </Text>
+            <Text dimColor>
+              {opensHere
+                ? 'It opens here when it is ready.'
+                : 'It opens in your browser when it is ready; in kitty or Ghostty it plays here.'}
+            </Text>
+          </Box>
+          <Text dimColor>/reel &lt;video-dir&gt; opens a video built anywhere else.</Text>
         </Box>
       )
     }
@@ -1008,6 +1069,21 @@ export const register: Register = on => {
       if (branchOf && branchOf.key === v.key && branchOf.stop === stop && from < branchOf.end)
         return [{ from, to: branchOf.end }, ...trimmed([{ from: s.from, to: s.to }])]
       return trimmed([{ from: from > s.from && from < s.to - 0.2 ? from : s.from, to: s.to }])
+    }
+    // the pane changed size while the video plays (dragged, z, the terminal resized): once the size settles, the
+    // video plays on from where it is at the new size
+    if (mine?.status === 'playing' && screenSize(width, pictureRoom(big)).cols !== mine.cols && !resizing) {
+      resizing = true
+      try {
+        $.clock.after(400, async () => {
+          resizing = false
+          const p = await read($, playback)
+          const want = screenSize(paneColumns || width, pictureRoom(await read($, theater)))
+          if (p?.key === v.key && p.status === 'playing' && want.cols !== p.cols) void play($, v, onFrom(p.t), want)
+        })
+      } catch {
+        resizing = false
+      }
     }
     const done = (id: string) =>
       isPlanVideo(v.which) ? Boolean(allAnswers[`${v.key}:${id}`]) : Boolean(allVerdicts[`${v.key}:${id}`])
@@ -1275,11 +1351,14 @@ export const register: Register = on => {
     const toggleBig = async () => {
       const next = !big
       await update($, theater, () => next)
+      // the picture follows the new size by itself (above)
       await $.ui.open(paneArgs(next, true, e.viewport?.columns ?? 200))
-      if (playing && mine) {
-        const from = mine.t
-        $.clock.after(300, () => void play($, v, onFrom(from), screenSize(paneColumns || width, pictureRoom(next))))
-      }
+    }
+    const rate = await read($, pace)
+    const faster = async () => {
+      const next = PACES[(PACES.indexOf(rate) + 1) % PACES.length] ?? 1
+      await update($, pace, () => next)
+      if (playing && mine) void play($, v, onFrom(mine.t), size)
     }
     const transport = inBrowser ? (
       <Box key="transport" gap={2}>
@@ -1314,6 +1393,9 @@ export const register: Register = on => {
             </Button>
             <Button key="on5" plain hotkey="k" onPress={() => seek(5)}>
               +5s
+            </Button>
+            <Button key="speed" plain hotkey="s" onPress={() => faster()}>
+              {`${rate}×`}
             </Button>
             <Button key="prev" plain hotkey="b" onPress={() => go(stop - 1)}>
               Back

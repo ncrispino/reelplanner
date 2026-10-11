@@ -12,7 +12,8 @@
 //   jpeg     the frame as a small JPEG, for an Svg on a surface with no terminal (the desktop and mobile apps)
 // A terminal without kitty graphics gets neither: drawn in its character cells the video is unreadable, so the
 // pane opens the browser player there instead.
-// and the sound plays alongside, on this machine (ffplay, or afplay on macOS), unless --no-audio.
+// and the sound plays alongside, on this machine (ffplay, or afplay on macOS), unless --no-audio. --speed plays the
+// stretch faster or slower (0.5 to 3; the sound keeps its pitch), and each frame's <t> is still the video's own time.
 //
 // One line per event:
 //   V <seconds> <cols> <rows>          the video's length and the frame size (pixels for image and jpeg)
@@ -26,7 +27,7 @@
 //
 // usage: reelplanner reel-frames <video-dir> --render
 //        reelplanner reel-frames <video-dir> [--from <s>] [--to <s>] [--as image|jpeg] [--width <px>] [--dir <ring-dir>]
-//                                [--fps <n>] [--no-audio]
+//                                [--fps <n>] [--speed <x>] [--no-audio]
 import { existsSync, statSync, readdirSync, mkdirSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
@@ -35,10 +36,10 @@ import { hyperframesBin } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
 const flag = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
-const VALUED = new Set(["--from", "--to", "--as", "--width", "--dir", "--fps"]);
+const VALUED = new Set(["--from", "--to", "--as", "--width", "--dir", "--fps", "--speed"]);
 const dirArg = args.find((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1]));
 if (!dirArg || args.includes("--help")) {
-  console.log("usage: reelplanner reel-frames <video-dir> --render | [--from s] [--to s] [--as image|jpeg] [--width px] [--dir d] [--fps n] [--no-audio]");
+  console.log("usage: reelplanner reel-frames <video-dir> --render | [--from s] [--to s] [--as image|jpeg] [--width px] [--dir d] [--fps n] [--speed x] [--no-audio]");
   process.exit(dirArg ? 0 : 1);
 }
 const say = (line) => process.stdout.write(line + "\n");
@@ -103,6 +104,7 @@ function play() {
   const from = Math.max(0, Number(flag("from", 0)));
   const to = Math.min(total, Number(flag("to", total)) || total);
   if (to <= from) { say(`E ${from}`); process.exit(0); }
+  const speed = Math.min(3, Math.max(0.5, Number(flag("speed", 1)) || 1));
   const W = Number(flag("width", as === "jpeg" ? 384 : 640)) & ~1, H = Math.round((W * 9) / 16) & ~1;
   say(`V ${total.toFixed(3)} ${W} ${H}`);
 
@@ -116,11 +118,11 @@ function play() {
     const len = (to - from).toFixed(3);
     let cmd = null;
     if (spawnSync("sh", ["-c", "command -v ffplay"]).status === 0) {
-      cmd = `ffplay -nodisp -autoexit -loglevel quiet -vn -ss ${from} -t ${len} '${mp4}'`;
+      cmd = `ffplay -nodisp -autoexit -loglevel quiet -vn -ss ${from} -t ${len}${speed !== 1 ? ` -af atempo=${speed}` : ""} '${mp4}'`;
     } else if (spawnSync("sh", ["-c", "command -v afplay"]).status === 0) {
       const cut = join(mkdtempSync(join(tmpdir(), "reel-audio-")), "a.m4a");
       spawnSync("ffmpeg", ["-loglevel", "error", "-y", "-ss", String(from), "-t", len, "-i", mp4, "-vn", "-c:a", "aac", cut]);
-      cmd = `afplay '${cut}'; rm -rf '${join(cut, "..")}'`;
+      cmd = `afplay${speed !== 1 ? ` -r ${speed} -q 1` : ""} '${cut}'; rm -rf '${join(cut, "..")}'`;
     }
     if (cmd) {
       const watch = `(${cmd}) & p=$!; while kill -0 ${process.pid} 2>/dev/null && kill -0 $p 2>/dev/null; do sleep 0.3; done; kill $p 2>/dev/null`;
@@ -129,16 +131,18 @@ function play() {
     } else say("A none no audio player (ffplay or afplay) on this machine");
   }
 
-  const vf = `fps=${FPS},scale=${W}:${H}:flags=area`;
+  // at a speed off 1× the frames come faster or slower, still FPS of them a second (-readrate is ffmpeg 5's; at 1× -re,
+  // which every ffmpeg has)
+  const vf = `${speed !== 1 ? `setpts=PTS/${speed},` : ""}fps=${FPS},scale=${W}:${H}:flags=area`;
   const out = as === "jpeg" ? ["-f", "image2pipe", "-c:v", "mjpeg", "-q:v", "7", "pipe:1"] : ["-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"];
-  const ff = spawn("ffmpeg", ["-loglevel", "error", "-re", "-ss", String(from), "-i", mp4, "-t", String(to - from), "-an", "-vf", vf, ...out], { stdio: ["ignore", "pipe", "inherit"] });
+  const ff = spawn("ffmpeg", ["-loglevel", "error", ...(speed === 1 ? ["-re"] : ["-readrate", String(speed)]), "-ss", String(from), "-t", String(to - from), "-i", mp4, "-an", "-vf", vf, ...out], { stdio: ["ignore", "pipe", "inherit"] });
   children.push(ff);
 
   const frameBytes = W * H * 3;
   const ring = as === "image" ? resolve(flag("dir", mkdtempSync(join(tmpdir(), "reel-frames-")))) : null;
   if (ring) mkdirSync(ring, { recursive: true });
   let buf = Buffer.alloc(0), n = 0;
-  const at = () => (from + n / FPS).toFixed(3);
+  const at = () => (from + (n * speed) / FPS).toFixed(3);
   ff.stdout.on("data", (chunk) => {
     buf = Buffer.concat([buf, chunk]);
     if (as === "jpeg") {

@@ -139,9 +139,9 @@ there, then **Send**: with **Changes needed** Claude revises the plan and the pa
   `reelplanner setup`, then a new session. The picture shows in
   [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
   player, and the pane keeps the choices, comments and Send.
-- **Open it:** `/reel` lists the plans with a video; `/reel <plan>` opens one. When the agent opens a video for
-  review, a band above the prompt offers it too.
-- **Keys:** `p` play or pause · `n` and `b` next and previous stop · a digit picks an option · `m` comment ·
+- **Opening:** in kitty or Ghostty the pane opens by itself when the agent has a video for you; elsewhere a band
+  above the prompt offers it. `/reel` alone lists the repo's videos, to open an older one.
+- **Keys:** `p` play or pause · `s` faster · `n` and `b` next and previous stop · a digit picks an option · `m` comment ·
   `w` the browser player, to draw on the video. [Every key and what the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
 
 ## Case studies
