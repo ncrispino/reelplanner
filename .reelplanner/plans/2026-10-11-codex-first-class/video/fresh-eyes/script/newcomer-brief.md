@@ -1,6 +1,6 @@
 # Fresh eyes: the newcomer's script brief · video
 
-You are a newcomer to this project, reading the script of "video", a narrated video of 19 scenes,
+You are a newcomer to this project, reading the script of "video", a narrated video of 18 scenes,
 before any picture is drawn: what each scene will show and what it says. You also have what the person who asked for
 the video said, in their words. You have nothing else: not the plan, not the code.
 
@@ -17,7 +17,7 @@ Read it as the person would watch it, and list:
 ## The shape of newcomer.md (keep it exactly)
 
 ```
-# Fresh eyes: newcomer · script · stamp 06e6cbe52d51
+# Fresh eyes: newcomer · script · stamp e8979f180a56
 
 - N1 · scene 4 · "the phrase": what you could not follow, and what you guessed; why it matters
 - N2 [plan] · scene 7 · …
@@ -27,10 +27,69 @@ One finding a line, in scene order. Write "- none" if you have nothing. Do not a
 
 ## What the person asked, in their words
 
+- "oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal".
 - "Pls create a branch. Our goal is to get codex fully working, fully featured on reelplanner as an alternative so it is first-class like claude code"; "oh i am not sure about the claude artifact euqivalent i ahven used in codex. do look into that and codex if it has something similar to claude plugisn and mods though too".
+- "wait i have to download annotations it wont just tell codex its ready??"
+- "also i mean we should just be clear that we need the coding to be good. there should be clear about the interface so we dont create a whole bunch of unnecessary repetitive code, make it really easy to add if there are special harness support needed."
+- "this is also a gneeral thing, i think we need to just be sure the language i clear, like claude seems to have provided clearer language that makes sense, there is a bit too much domain specific technical langugae"
+
+### Their last review
+
+# Plan review · 2026-10-11 18:27 UTC · changes requested
+
+**Changes requested:** revise the steps below, rebuild the beats they touch, and show the plan video again.
+
+What to act on, from [plan-20261011T182741Z.json](plan-20261011T182741Z.json): 1 decision, 3 quick checks, 3 marks; watched 100%.
+
+## Decisions
+
+- **Q1** (step 5) How far should remote reviews go?: **Local loop + portable exports** (the recommendation) → D-313
+
+## Steps to revise
+
+- **Step 2**
+  - quick check missed: "Edit applied; signing fails. Review status?" — answered "Done because the edit exists", the answer is "Pending with stopped-run evidence". Explain this step so that answer is obvious.
+- **Step 5**
+  - comment at 4:34 (Step 5 · Match terminal review and choose remote path): "this is also a gneeral thing, i think we need to just be sure the language i clear, like claude seems to have provided clearer language that makes sense, there is a bit too much domain specific technical langugae"
+- **Not on a step**
+  - comment at 1:20 (A · Transfer the review file): "wait i have to download annotations it wont just tell codex its ready??"
+  - comment at 1:53 (Rules this proposal keeps): "also i mean we should just be clear that we need the coding to be good. there should be clear about the interface so we dont create a whole bunch of unnecessary repetitive code, make it really easy to add if there are special harness support needed."
+
 
 ## The words this video gives a meaning
 
+- **adapter**: a small module containing only what one coding agent does differently
+- **Claude /reel · ccr-7d2997e8-elkd7p · d09b72d**: the native Claude reel pane source inspected on branch ccr-7d2997e8-elkd7p at commit d09b72d. This is source inspection, not a passed Codex runtime trial
+- **--session codex:<id>**: proposed connection to the active runtime thread. Validate its repo and identity first. Failed or stale delivery retains the saved inbox work
+- **parity**: the same usable supported review outcomes. native visual appearance need not be identical
+- **authenticated hosted spike**: a working scratch investigation of signed-in storage, automatic submission and question handoff. service design and deployment are reviewed separately
+- **first acceptance bar**: the evidence required before calling the proposed local Codex workflow tested. automatic hosted parity depends on the selected remote scope
+- **codex intake**: the agent records the reviewer-exported annotations.json locally after the reviewer transfers it
+- **no automatic remote answering**: remote Ask about this questions require a manual transfer to a live agent and a manually returned reply in export-only option A
+- **Codex handoff**: the proposed service delivers durable saved review work to an identified Codex session
+- **Separate service review**: the owner reviews the working scratch results and a concrete implementation, hosting and cost proposal before service deployment
+- **isolated Codex settings folder**: a temporary CODEX_HOME used for clean installation tests. it does not change the owner’s normal configuration
+- **public plugin directory**: the public catalog of plugin packages. bundled hooks currently require separate manual installation and trust
+- **--approve-for-me**: the supported Codex automatic reviewer flag. requests still need an eligible approval policy and may be denied
+- **waiting session**: a session already running the review --wait command and waiting for an inbox item
+- **connected session**: the exact Codex session explicitly linked to the review server through its current thread identity
+- **CODEX_THREAD_ID**: the active session identity supplied by supported Codex runtimes. use the verified current thread when connecting
+- **CODEX_HOME**: the Codex settings and history root. a person may choose a custom location, and scratch installation tests use a temporary one
+- **sources.json**: the explainer’s source record inside its project folder, containing the external source path, hash and size instead of private transcript contents
+- **local-review-url**: the localhost browser address printed by reelplanner review for a served HTML player. a bundle is a separate portable export
+- **exported identity**: reviewer metadata carried with a manually exported review. this does not prove authenticated service identity
+- **main conversation**: the primary implementation session, excluding independent checker and subagent sessions
+- **checker conversation**: a separate independent review session, not the active primary source
+- **audited branch**: ccr-7d2997e8-elkd7p, inspected at commit d09b72d. this source comparison was not merged and is not Codex runtime evidence
+- **ccr-7d2997e8-elkd7p**: the inspected source branch containing Claude’s native /reel Mods pane
+- **d09b72d**: the inspected commit on that branch, where the source includes picture and sound synchronization
+- **Mods**: Claude’s native API for panes and widgets
+- **owning-repo**: the project repository a review belongs to
+- **multi**: a question allowing multiple answers
+- **ancestor**: an earlier plan in the project library
+- **bundle**: a portable package of player files
+- **mock**: a simulated test substitute
+- **terminal-browser**: a standalone browser pane for a terminal workspace
 - **plugin**: a package of agent extensions
 - **skill**: instructions an agent follows
 - **hook**: a trusted command at a lifecycle event
@@ -65,6 +124,28 @@ One finding a line, in scene order. Write "- none" if you have nothing. Do not a
 - **Codex**: OpenAI’s coding agent
 - **ChatGPT Sites**: hosted apps and stored data in supported ChatGPT accounts
 - **Visualization**: an interactive visual supported in ChatGPT chats
+- **deploy**: publish and run a service for people to reach
+- **checkout**: a local working copy of the repository
+- **render**: produce the visible image or video
+- **marketplace**: a catalog of installable plugins
+- **pane**: a separate view inside a terminal workspace
+- **cmux**: a terminal workspace that can put a real browser beside an agent
+- **binding decisions**: earlier answers that later plans must keep
+- **case study**: a comparison that tests a complete workflow
+- **deep dive**: an expanded view of the evidence
+- **review**: the person’s approval, answers and comments
+- **agent**: the coding assistant
+- **step**: one implementation task
+- **headless run**: an agent run without an existing open session
+- **walkthrough video**: a video showing the built change running
+- **explainer**: a video explaining evidence or existing behavior
+- **guide**: the full plan text beside the video
+- **quick check**: a prediction question testing the explained rule
+- **code check**: an independent agent review of the implemented changes
+- **ask about this**: the player’s button for asking a question about a scene
+- **memory**: saved learning from earlier reviews
+- **complete-lifecycle**: the entire process from installation through reviewed changes
+- **API**: the supported interface for software extensions
 
 ## The glossary
 
@@ -161,112 +242,106 @@ One finding a line, in scene order. Write "- none" if you have nothing. Do not a
 
 _Shows:_ A complete alternative
 
-_Says:_ You should be able to choose Codex and finish the same review loop you use with Claude Code. Today, checked command flags do not prove that. This proposal changes four things: installation, review follow-up, finding the right conversation, and a real installation-to-walkthrough proof. Nothing shown here has landed yet.
+_Says:_ You should be able to finish the same review loop with Codex or Claude Code. This proposal changes installation, review follow-up, conversation discovery and lifecycle proof. The branch is feat/codex-first-class; integration behavior remains proposed.
 
-### Scene 2 · What Codex actually offers
+### Scene 2 · The same review with either agent
 
-_Shows:_ What Codex actually offers
+_Shows:_ The same review with either agent
 
-_Says:_ A plugin packages extensions. A skill gives the agent instructions. A hook runs at a trusted lifecycle event. MCP connects tools, and compatible hosts can show their interfaces. These are different from a hosted Artifact: today’s Claude page depends on a database, reviewer identity and model answers. Codex CLI has no inline Visualization renderer. ChatGPT Sites offers hosting and stored data, but no proven drop-in handoff to this repo. No official extension called mods was identified; execution modes are permission settings.
+_Says:_ The goal is the same review experience with either agent: watch with sound, answer choices, leave comments, press Send and see the revised video. Codex can install the instructions as a plugin. The existing browser player handles review. We will test a browser beside Codex in the terminal. A hosted Claude page has extra services; we have not found a proven Codex replacement.
 
-### Scene 3 · How far should remote review go?
+### Scene 3 · Your chosen scope: A
 
-_Shows:_ How far should remote review go?
+_Shows:_ Your chosen scope: A
 
-_Says:_ Here is the scope choice for step five, before the installation details. Option A completes the local Codex loop and validates browser exports: a remote reviewer downloads answers and transfers the file. Option B also proves an authenticated hosted bridge on scratch content: Send reaches Codex automatically. I recommend A because the local gaps are concrete. Choose B if automatic remote handoff must be part of this first acceptance bar.
+_Says:_ You chose A: finish the local Codex workflow and check portable reviews. That scope is settled. Local Send goes directly to the project and notifies Codex. Automatic delivery from a hosted page elsewhere stays outside this change.
 
-### Scene 4 · A · Transfer the review file
+### Scene 4 · Local Send needs no download
 
-_Shows:_ A · Transfer the review file
+_Shows:_ Local Send needs no download
 
-_Says:_ If you choose A, the browser player remains portable. The remote reviewer exports annotations.json. Codex records those answers locally. Manual transfer and the absence of automatic remote answering stay visible limitations.
+_Says:_ On this machine, press Send. The project saves your answers and comments, then the waiting Codex session receives the review. That is how your first review reached us: you did not download anything. A file transfer is needed only for a disconnected portable copy reviewed elsewhere.
 
-### Scene 5 · B · Prove the hosted bridge
+### Scene 6 · One workflow, small agent differences
 
-_Shows:_ B · Prove the hosted bridge
+_Shows:_ One workflow, small agent differences
 
-_Says:_ If you choose B, a working scratch spike must prove identity, durable storage, submission and question handoff. A public page or manifest is insufficient. Hosting cost and service design get a separate review; exposing this repo’s private plans or deploying requires final approval.
-
-### Scene 6 · Rules this proposal keeps
-
-_Shows:_ Rules this proposal keeps
-
-_Says:_ Earlier reviews established the rules we keep. Contributions retain binding decisions. Case studies test the full outcome. Walkthroughs show changes running. Fresh findings get answers before showing. Explainers pin sources without copying private text. Off-plan choices stop for review. Headless work respects permissions. The guide comes from the plan. Memory reuses earlier answers. Deep dives show real evidence. Quick checks never block approval. Details open on the thing they explain.
+_Says:_ Good code means one shared review workflow: save, notify, review and fix, then commit. Small agent adapters contain only the differences: check available features, launch with the right permissions, notify the right session, and find its saved conversation. Adding another agent should mean adding those small functions. Keep one player, one server and one inbox, the saved pending reviews. Earlier answers still bind the plan; independent checks and real walkthroughs still apply. The guide holds the exact function contract.
 
 ### Scene 7 · Step 1 · Native installation
 
 _Shows:_ Step 1 · Native installation
 
-_Says:_ Step one stands alone: package reelplanner for Codex’s own plugin system while preserving Claude’s lightweight skill install. These are proposed commands to validate in a clean temporary Codex home, not commands already run here. Register the checkout as a marketplace, then add reelplanner at reelplanner. The installed skill provides instructions; the CLI and video dependencies still need setup. Optional hooks need local trust and manual installation; they cannot be a mandatory dependency or a public-directory promise.
+_Says:_ Step one stands alone. Package reelplanner natively for Codex; preserve Claude’s skill install. Validate these proposed commands in an isolated Codex settings folder. The marketplace is the plugin catalog. The skill supplies instructions; CLI and video tools still need setup. Diagnostics name missing tools. Optional hooks need manual local trust; the public plugin directory excludes bundled hooks.
 
-### Scene 8 · Step 2 · A commit must really succeed
+### Scene 8 · Step 2 · Edited files can still be unfinished
 
-_Shows:_ Step 2 · A commit must really succeed
+_Shows:_ Step 2 · Edited files can still be unfinished
 
-_Says:_ Step two depends on those capability checks. Configure future headless reviews only when asked. Headless means no session is open. Codex keeps workspace-write and uses automatic approval review for eligible escalation requests. Its supported command flag has passed a parser check; a real commit has not. Git writes that the sandbox blocks need escalation. Denial or signing failure keeps the review unfinished with its log. A server never commits on the agent’s behalf.
+_Says:_ Step two uses the feature checks from step one. Starting Codex with no session open is enabled only when you ask. It must follow the allowed permissions and preserve commit signing. Here is the failure case: the files were edited, but the signing key is unavailable. The commit fails. The work is still unfinished. Show Stopped before commit and keep the edits and log. Fix signing, then retry from that work. Only a successful commit allows the review to be marked done.
 
 ### Scene 9 · Quick check · Installation
 
 _Shows:_ Quick check · Installation
 
-_Says:_ A teammate installs the proposed plugin on a machine without video dependencies. What should happen when they try the first plan? Predict the result from the separation between installed instructions and working tools.
+_Says:_ A teammate installs the plugin without video tools. Does installation prove the lifecycle, or should diagnostics name missing tools?
 
-### Scene 10 · Step 3 · Save before delivery
+### Scene 10 · Step 3 · Save, then notify Codex
 
-_Shows:_ Step 3 · Save before delivery
+_Shows:_ Step 3 · Save, then notify Codex
 
-_Says:_ Step three needs installation checks and safe headless follow-up. First save the review to the inbox, the durable pending-work record. A waiting session wins, then an explicitly connected live session, then configured headless follow-up, then the inbox. The proposed session connection sends only the saved path through Codex’s queue. A claim means one worker owns that review. A failed connection releases the claim and falls back. Ask about this reaches a live session only; it never starts a headless run.
+_Says:_ Step three uses installation and the safe follow-up from step two. First save the review. Then notify the session already waiting, or the verified connected Codex session. If neither is available, use an explicitly configured new run; otherwise keep the review for the next session. Only one agent handles the saved item. Notification means the message arrived, not that the work finished. Ask about this saves a question for a live session; a disconnected question waits rather than starting a new run.
 
-### Scene 11 · Quick check · Commit failure
+### Scene 11 · Quick check · Stopped before commit
 
-_Shows:_ Quick check · Commit failure
+_Shows:_ Quick check · Stopped before commit
 
-_Says:_ An approval has been applied, but the scratch repository’s signing key is unavailable. The code change exists. What status should the review have now? Consider whether finishing the edit also proves that the required commit happened.
+_Says:_ A different change passes its checks, but commit signing fails. The files are edited. Is the review finished, still unfinished with its edits saved, or should the server commit for Codex?
 
 ### Scene 12 · Step 4 · This conversation means this one
 
 _Shows:_ Step 4 · This conversation means this one
 
-_Says:_ Step four stands alone. A transcript is the saved conversation. Find the active Codex thread by its identity and matching repo, even if another session is newer. Support the storage actually present, including current paginated history, rather than assuming old rollout files cover it. If the identified session is missing, ask for an explicit transcript path. Pin only path, hash and size; the private conversation stays outside Git.
+_Says:_ Step four stands alone. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. Support current paginated history as well as observed old storage. A missing active source requires an explicit transcript path. Pin path, hash and size only; the private text stays outside Git.
 
 ### Scene 13 · Quick check · A question after disconnection
 
 _Shows:_ Quick check · A question after disconnection
 
-_Says:_ The reviewer asks a question after the connected session closes. Headless follow-up was configured yesterday. Does the question launch that agent, disappear, or remain available? Apply the different delivery rules for a question and a review.
+_Says:_ The connected session closes, then a question arrives. Yesterday’s headless setting exists. Does the question launch work, vanish, or stay saved?
 
-### Scene 14 · Step 5 · Make the boundary testable
+### Scene 14 · Step 5 · Send here; transfer only elsewhere
 
-_Shows:_ Step 5 · Make the boundary testable
+_Shows:_ Step 5 · Send here; transfer only elsewhere
 
-_Says:_ Step five follows your remote scope choice. For A, open the portable player without Claude’s runtime, answer a decision, export the review and record it. Prove reviewer identity and the chosen answer survive. Ask about this must explain its manual fallback. For B, the scratch bridge must also demonstrate authenticated storage, automatic submission and question handoff. A rendered interface cannot stand in for that evidence.
+_Says:_ Step five tests the same player in the ordinary browser and beside Codex in a terminal workspace. Watch with sound, answer choices, leave comments, and press Send. Codex receives the saved review; you see which scenes changed after revision. Check the printed address opens this plan, even when another server occupies the first port. Then test a separate portable copy elsewhere: only that disconnected copy needs a file returned to the agent. Your chosen scope A stays the same.
 
 ### Scene 15 · Quick check · Missing active source
 
 _Shows:_ Quick check · Missing active source
 
-_Says:_ The active thread belongs to this repo, but its saved conversation cannot be read. A newer main conversation from this same repo is readable. Which source should the explainer use? The active identity is still known.
+_Says:_ The identified active conversation is unreadable, but a newer main conversation from this repo is readable. Which source should the explainer use?
 
 ### Scene 16 · Step 6 · Evidence earns the support claim
 
 _Shows:_ Step 6 · Evidence earns the support claim
 
-_Says:_ Step six depends on all five earlier steps. A real scratch project must install the plugin, build and revise a narrated plan, submit a review, implement the change, pass an independent code check, show a walkthrough, fix a flagged choice, and commit. Exercise live questions, headless changes, failures and the session explainer. Record commands, versions, durations and results. Run the fast suite, full touched specs and Claude regressions. Only passing real outcomes justify the support table; blocked platforms remain unverified.
+_Says:_ Step six needs all five steps. A real scratch project installs, builds a narrated plan, reviews and revises, implements, passes independent code check, shows a walkthrough, fixes a flagged choice and commits. Exercise questions, headless changes, failure recovery and session discovery. Record commands, versions, durations and results. Fast and full touched specs plus Claude regressions protect existing behavior. Untested live paths and platforms remain unverified.
 
-### Scene 17 · Quick check · A hosted page
+### Scene 17 · Quick check · A disconnected copy
 
-_Shows:_ Quick check · A hosted page
+_Shows:_ Quick check · A disconnected copy
 
-_Says:_ A candidate hosted app renders the video and its option cards. Its Send button loses answers on refresh, and nobody has reached the repo. What does that establish? Judge the outcome rather than whether the interface looks like an Artifact.
+_Says:_ A teammate opens a portable copy with no connection to your project. They finish reviewing. Does Codex receive it automatically, or must they return the review file?
 
 ### Scene 18 · Quick check · Honest support
 
 _Shows:_ Quick check · Honest support
 
-_Says:_ Every automated specification passes, including mocked queue delivery. A real Codex session has never received and answered a page question. Can the docs call the complete lifecycle tested? Decide what the current evidence actually covers.
+_Says:_ Mocked queue specs pass, but no real Codex session has answered a page question. Can the complete lifecycle be called tested?
 
-### Scene 19 · Approve a scope, then prove it
+### Scene 19 · Review the clearer local plan
 
-_Shows:_ Approve a scope, then prove it
+_Shows:_ Review the clearer local plan
 
-_Says:_ The proposal is a complete local Codex alternative with native installation, recoverable reviews, the correct conversation and real lifecycle proof. The open choice is portable remote exports or an authenticated hosted spike. Your answer sets that boundary. Approval starts implementation; this video has presented the proposed behavior, not a finished integration.
+_Says:_ The revised plan keeps your chosen local scope. Send here needs no download. One shared workflow and small agent adapters keep the code easy to extend. Failed commits remain unfinished. The guide holds the full examples and interfaces. Approve this clearer plan or ask for changes; implementation follows approval.

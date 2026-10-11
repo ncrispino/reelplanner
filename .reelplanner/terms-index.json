@@ -37,6 +37,16 @@
         "chapterTitle": "What was built, and the words for it"
       }
     ],
+    "adapter": [
+      {
+        "video": "2026-10-11-codex-first-class",
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
+        "chapter": 2,
+        "chapterTitle": "Your chosen local scope"
+      }
+    ],
     "agent": [
       {
         "video": "system",
@@ -57,7 +67,7 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 2,
-        "title": "What Codex actually offers",
+        "title": "The same review with either agent",
         "start": 15.639,
         "chapter": 1,
         "chapterTitle": "The goal and the boundary"
@@ -108,9 +118,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 19,
-        "title": "Approve a scope, then prove it",
-        "start": 325.266,
+        "frame": 18,
+        "title": "Review the clearer local plan",
+        "start": 339.561,
         "chapter": 6,
         "chapterTitle": "Evidence earns the support claim"
       }
@@ -143,16 +153,6 @@
         "chapterTitle": "One prompt, three ways"
       }
     ],
-    "artifact": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
-      }
-    ],
     "ask about this": [
       {
         "video": "system",
@@ -164,9 +164,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 10,
-        "title": "Step 3 · Save before delivery",
-        "start": 181.303,
+        "frame": 9,
+        "title": "Step 3 · Save, then notify Codex",
+        "start": 179.681,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
       }
@@ -230,17 +230,17 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 14,
-        "title": "Step 5 · Match terminal review and choose remote path",
-        "start": 241.447,
+        "frame": 13,
+        "title": "Step 5 · Send here; transfer only elsewhere",
+        "start": 258.834,
         "chapter": 5,
         "chapterTitle": "Prove the result before claiming support"
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 19,
-        "title": "Approve a scope, then prove it",
-        "start": 325.266,
+        "frame": 18,
+        "title": "Review the clearer local plan",
+        "start": 339.561,
         "chapter": 6,
         "chapterTitle": "Evidence earns the support claim"
       }
@@ -317,7 +317,7 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 2,
-        "title": "What Codex actually offers",
+        "title": "The same review with either agent",
         "start": 15.639,
         "chapter": 1,
         "chapterTitle": "The goal and the boundary"
@@ -325,10 +325,10 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 3,
-        "title": "How far should remote review go?",
-        "start": 50.606,
+        "title": "Your chosen scope: A",
+        "start": 47.406,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "camera": [
@@ -406,21 +406,11 @@
     "claim": [
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 10,
-        "title": "Step 3 · Save before delivery",
-        "start": 181.303,
+        "frame": 9,
+        "title": "Step 3 · Save, then notify Codex",
+        "start": 179.681,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
-      }
-    ],
-    "cli": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
       }
     ],
     "code check": [
@@ -474,9 +464,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 16,
+        "frame": 15,
         "title": "Step 6 · Evidence earns the support claim",
-        "start": 282.601,
+        "start": 295.808,
         "chapter": 6,
         "chapterTitle": "Evidence earns the support claim"
       }
@@ -507,16 +497,6 @@
         "start": 0,
         "chapter": 1,
         "chapterTitle": "What was built, and step 1"
-      }
-    ],
-    "database": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
       }
     ],
     "decision log": [
@@ -581,10 +561,10 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 3,
-        "title": "How far should remote review go?",
-        "start": 50.606,
+        "title": "Your chosen scope: A",
+        "start": 47.406,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "details check": [
@@ -650,9 +630,9 @@
     "escalation": [
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 8,
-        "title": "Step 2 · A commit must really succeed",
-        "start": 150.879,
+        "frame": 7,
+        "title": "Step 2 · Edited files can still be unfinished",
+        "start": 139.614,
         "chapter": 3,
         "chapterTitle": "Install and finish safely"
       }
@@ -684,11 +664,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 6,
-        "title": "Rules this proposal keeps",
-        "start": 98.823,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "fact check": [
@@ -709,6 +689,16 @@
         "start": 41,
         "chapter": 2,
         "chapterTitle": "Step 1: the kit"
+      }
+    ],
+    "fingerprint": [
+      {
+        "video": "2026-10-11-codex-first-class",
+        "frame": 11,
+        "title": "Step 4 · This conversation means this one",
+        "start": 221.412,
+        "chapter": 4,
+        "chapterTitle": "Deliver and find the right session"
       }
     ],
     "finish": [
@@ -840,11 +830,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 6,
-        "title": "Rules this proposal keeps",
-        "start": 98.823,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "hash": [
@@ -858,9 +848,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 12,
+        "frame": 11,
         "title": "Step 4 · This conversation means this one",
-        "start": 213.263,
+        "start": 221.412,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
       }
@@ -868,9 +858,9 @@
     "headless": [
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 8,
-        "title": "Step 2 · A commit must really succeed",
-        "start": 150.879,
+        "frame": 7,
+        "title": "Step 2 · Edited files can still be unfinished",
+        "start": 139.614,
         "chapter": 3,
         "chapterTitle": "Install and finish safely"
       }
@@ -886,21 +876,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 8,
-        "title": "Step 2 · A commit must really succeed",
-        "start": 150.879,
+        "frame": 7,
+        "title": "Step 2 · Edited files can still be unfinished",
+        "start": 139.614,
         "chapter": 3,
         "chapterTitle": "Install and finish safely"
-      }
-    ],
-    "hook": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
       }
     ],
     "hosted page": [
@@ -944,9 +924,17 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 10,
-        "title": "Step 3 · Save before delivery",
-        "start": 181.303,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
+        "chapter": 2,
+        "chapterTitle": "Your chosen local scope"
+      },
+      {
+        "video": "2026-10-11-codex-first-class",
+        "frame": 9,
+        "title": "Step 3 · Save, then notify Codex",
+        "start": 179.681,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
       }
@@ -989,16 +977,6 @@
         "chapterTitle": "Honest and private"
       }
     ],
-    "mcp": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
-      }
-    ],
     "memory": [
       {
         "video": "system",
@@ -1018,11 +996,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 6,
-        "title": "Rules this proposal keeps",
-        "start": 98.823,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "miss": [
@@ -1049,16 +1027,6 @@
         "start": 20.267,
         "chapter": 1,
         "chapterTitle": "Why you got lost"
-      }
-    ],
-    "mods": [
-      {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
       }
     ],
     "motion language": [
@@ -1099,6 +1067,14 @@
         "start": 206.101,
         "chapter": 3,
         "chapterTitle": "The plan and its video"
+      },
+      {
+        "video": "2026-10-11-codex-first-class",
+        "frame": 9,
+        "title": "Step 3 · Save, then notify Codex",
+        "start": 179.681,
+        "chapter": 4,
+        "chapterTitle": "Deliver and find the right session"
       }
     ],
     "open chip": [
@@ -1125,7 +1101,7 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 2,
-        "title": "What Codex actually offers",
+        "title": "The same review with either agent",
         "start": 15.639,
         "chapter": 1,
         "chapterTitle": "The goal and the boundary"
@@ -1247,7 +1223,7 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 2,
-        "title": "What Codex actually offers",
+        "title": "The same review with either agent",
         "start": 15.639,
         "chapter": 1,
         "chapterTitle": "The goal and the boundary"
@@ -1286,9 +1262,9 @@
     "queue": [
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 10,
-        "title": "Step 3 · Save before delivery",
-        "start": 181.303,
+        "frame": 9,
+        "title": "Step 3 · Save, then notify Codex",
+        "start": 179.681,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
       }
@@ -1328,11 +1304,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 6,
-        "title": "Rules this proposal keeps",
-        "start": 98.823,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "real thing": [
@@ -1486,9 +1462,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 8,
-        "title": "Step 2 · A commit must really succeed",
-        "start": 150.879,
+        "frame": 7,
+        "title": "Step 2 · Edited files can still be unfinished",
+        "start": 139.614,
         "chapter": 3,
         "chapterTitle": "Install and finish safely"
       }
@@ -1539,11 +1515,21 @@
         "chapterTitle": "Step 3: the page over the frame"
       }
     ],
+    "signing": [
+      {
+        "video": "2026-10-11-codex-first-class",
+        "frame": 7,
+        "title": "Step 2 · Edited files can still be unfinished",
+        "start": 139.614,
+        "chapter": 3,
+        "chapterTitle": "Install and finish safely"
+      }
+    ],
     "skill": [
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 2,
-        "title": "What Codex actually offers",
+        "title": "The same review with either agent",
         "start": 15.639,
         "chapter": 1,
         "chapterTitle": "The goal and the boundary"
@@ -1615,10 +1601,10 @@
       {
         "video": "2026-10-11-codex-first-class",
         "frame": 3,
-        "title": "How far should remote review go?",
-        "start": 50.606,
+        "title": "Your chosen scope: A",
+        "start": 47.406,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "storyboard": [
@@ -1740,9 +1726,9 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 12,
+        "frame": 11,
         "title": "Step 4 · This conversation means this one",
-        "start": 213.263,
+        "start": 221.412,
         "chapter": 4,
         "chapterTitle": "Deliver and find the right session"
       }
@@ -1786,11 +1772,11 @@
       },
       {
         "video": "2026-10-11-codex-first-class",
-        "frame": 6,
-        "title": "Rules this proposal keeps",
-        "start": 98.823,
+        "frame": 5,
+        "title": "One workflow, small agent differences",
+        "start": 78.022,
         "chapter": 2,
-        "chapterTitle": "Choose the remote boundary"
+        "chapterTitle": "Your chosen local scope"
       }
     ],
     "zoom": [

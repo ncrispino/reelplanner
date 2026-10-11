@@ -5,65 +5,58 @@
   "model": "kokoro-v1.0 + whisper small.en",
   "lines": {
     "10": {
-      "key": "d1652f3323fb046f99d2",
-      "text": "Step three needs installation and safe headless follow-up. Save the review in the inbox first. Delivery prefers a waiting session, connected session, configured headless run, then inbox fallback. These proposed commands queue only the saved path. One worker claims ownership; failure releases that claim. Ask about this is the question button. Questions stay saved for live-session handling after disconnection; they never start headless work.",
-      "sha256": "fbde0c29221d05c109bac14913297b9cee0d494ea50d09858b010081fbef24a7",
-      "duration_s": 24.043
+      "key": "6f2c5336effcf3d088cf",
+      "text": "A different change passes its checks, but Git refuses permission to create the commit. The files are edited. Is the review finished, still unfinished with its edits saved, or should the server commit for Codex?",
+      "sha256": "a20d2e808ca13362a4e51c53153799e5b4ae014d8b91f6556c8b31b6621fab9f",
+      "duration_s": 11.627
     },
     "11": {
-      "key": "a68c7e69be25bc739a08",
-      "text": "An approved edit exists, but its signing key is unavailable. Is the review done, pending with evidence, or committed by the server?",
-      "sha256": "1e8fb75b9939a37ec5f17d47afda6b3817d1a34afd1c99754117627c3e887cdb",
-      "duration_s": 7.317
+      "key": "39f1afb088e656da3345",
+      "text": "Step four. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. If this file is unreadable, Codex first tries its supported read-only conversation export. If that fails, it asks you for a readable copy or path for this specific conversation and checks that it belongs to this session and project. If none is readable, stop and name the missing conversation. Record the conversation’s path, fingerprint and size in the explainer’s source list. The private text stays outside Git.",
+      "sha256": "d00d7eda58e7b9718eb799ac60212b68df303e6e5b3dcb6d8d07d4843c7597f8",
+      "duration_s": 28.843
     },
     "12": {
-      "key": "47fdbb08ff23bb209a1f",
-      "text": "Step four stands alone. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. Support current paginated history as well as observed old storage. A missing active source requires an explicit transcript path. Pin path, hash and size only; the private text stays outside Git.",
-      "sha256": "52e025886ea2c741d0c637ec4a48f69293917295632ab3d29d1cec5a4339c875",
-      "duration_s": 19.605
-    },
-    "13": {
       "key": "fe267ea1f602998e39bf",
       "text": "The connected session closes, then a question arrives. Yesterday’s headless setting exists. Does the question launch work, vanish, or stay saved?",
       "sha256": "e4451583abd1cb998d275b1e543d709bee20d02f2a1c666bfd49f8d9eb0ed446",
       "duration_s": 7.979
     },
+    "13": {
+      "key": "55c96f44a67ad5e91844",
+      "text": "Step five tests the same player in the ordinary browser and beside Codex in a terminal workspace. Watch with sound, answer choices, leave comments, and press Send. Codex receives the saved review; you see which scenes changed after revision. Check the printed address opens this plan, even when another server occupies the first port. Then test a separate portable copy elsewhere: only that disconnected copy needs a file returned to the agent. Your chosen scope A stays the same.",
+      "sha256": "00fbd8aae52a6d50a0c708e446deb7ef2f9d118a3cfaf9818545f64e693733fb",
+      "duration_s": 26.731
+    },
     "14": {
-      "key": "c7986035fa78ed4365fb",
-      "text": "Step five matches the audited /reel pane and follows your remote choice. Trial the existing player beside Codex using terminal-browser or cmux. Prove sound and playback controls, library and owning-repo routing, answers and notes, comments and review verdicts, delivery exactly once, and rebuilt changed scenes. Installing a pane alone proves nothing. For A, exported identity and answers survive local intake with manual transfer. B also proves authenticated automatic submission and question handoff. Without durable intake, hosted parity fails.",
-      "said": "Step five matches the audited slash reel pane and follows your remote choice. Trial the existing player beside Codex using terminal-browser or cmux. Prove sound and playback controls, library and owning-repo routing, answers and notes, comments and review verdicts, delivery exactly once, and rebuilt changed scenes. Installing a pane alone proves nothing. For A, exported identity and answers survive local intake with manual transfer. B also proves authenticated automatic submission and question handoff. Without durable intake, hosted parity fails.",
-      "sha256": "6afb3420b3744b3855e3faefe3a452de58b2b3b5ca59820420ab83d5d31294bd",
-      "duration_s": 32.213
+      "key": "6ae58b7e9832dff5fab2",
+      "text": "The active conversation is unreadable and its supported export fails, but a newer main conversation from this project is readable. Which source should the explainer use?",
+      "sha256": "db7fcc7cc740a349530a0d5f4a07fff46112a27951cfb30222cd5025739b4e55",
+      "duration_s": 9.643
     },
     "15": {
-      "key": "4988401671968f0ea0e8",
-      "text": "The identified active conversation is unreadable, but a newer main conversation from this repo is readable. Which source should the explainer use?",
-      "sha256": "abd8627bb0887bcd0f365ab1fda6de0b40a3975941b4a874d33159b702d82109",
-      "duration_s": 8.341
-    },
-    "16": {
       "key": "d1bc2e2f442318891f94",
       "text": "Step six needs all five steps. A real scratch project installs, builds a narrated plan, reviews and revises, implements, passes independent code check, shows a walkthrough, fixes a flagged choice and commits. Exercise questions, headless changes, failure recovery and session discovery. Record commands, versions, durations and results. Fast and full touched specs plus Claude regressions protect existing behavior. Untested live paths and platforms remain unverified.",
       "sha256": "1f91267dd18c70e6f8fc88993b45f4a4d49b7edd45b7ec5e69daad00c25c2ba6",
       "duration_s": 26.256
     },
-    "17": {
-      "key": "25581075f4a7d1025126",
-      "text": "A hosted candidate shows the video and cards, but Send loses answers on refresh. Nothing reaches Codex. Does that establish hosted parity?",
-      "sha256": "df4f95e9e1a07e395f016c0cb923d9f94922153934d7cf4fc713e5c1712e6165",
-      "duration_s": 8.341
+    "16": {
+      "key": "a5944c6100330534c660",
+      "text": "A teammate opens a portable copy with no connection to your project. They finish reviewing. Does Codex receive it automatically, or must they return the review file?",
+      "sha256": "e2c84a432aa5338df2be881bed9b72c5556d0ec005baa81dc3705eebf8b673d6",
+      "duration_s": 9.429
     },
-    "18": {
+    "17": {
       "key": "9669d02d35f48b9a074b",
       "text": "Mocked queue specs pass, but no real Codex session has answered a page question. Can the complete lifecycle be called tested?",
       "sha256": "bea39904d7c2dd214928264d59c67476aaaf55b0f4e7f8e5aa80cee65c096354",
       "duration_s": 7.168
     },
-    "19": {
-      "key": "d69b7ef28ad49e9faae4",
-      "text": "Approve the proposed local alternative, then prove it. Choose portable remote exports or the authenticated hosted spike. The plan guide holds full cases and interfaces. This review presents proposed behavior; implementation comes after approval.",
-      "sha256": "0ab99442a1b9a9e89c5576f38894958220a98f98d046f28e6a959cf4f34bbd46",
-      "duration_s": 15.168
+    "18": {
+      "key": "f1c6481512a31e671260",
+      "text": "The revised plan keeps your chosen local scope. Send here needs no download. One shared workflow and small agent adapters keep the code easy to extend. Failed commits remain unfinished. The guide holds the full examples and interfaces. Approve this clearer plan or ask for changes; implementation follows approval.",
+      "sha256": "acee73e7939913edee66599479b288cd8b7cccdcafa57a974051247b76624451",
+      "duration_s": 19.029
     },
     "01": {
       "key": "cbb1574434294b516cda",
@@ -72,55 +65,53 @@
       "duration_s": 15.339
     },
     "02": {
-      "key": "ac57a1294682e162720b",
-      "text": "Claude Mods draw native panes. The audited branch’s /reel pane includes video and sound, choices and notes, Send and rebuild. Codex parity must match that. Plugins package skills, the agent’s instructions. Trusted hooks run at lifecycle events. MCP connects tools and compatible interfaces. None supplies the hosted Artifact’s stored reviews, identity and model answers. ChatGPT Sites offers hosting, with no proven repo bridge. Codex CLI has no inline Visualization renderer or documented native pane API. Standalone browser panes are candidates to test.",
-      "said": "Claude Mods draw native panes. The audited branch’s slash reel pane includes video and sound, choices and notes, Send and rebuild. Codex parity must match that. Plugins package skills, the agent’s instructions. Trusted hooks run at lifecycle events. MCP connects tools and compatible interfaces. None supplies the hosted Artifact’s stored reviews, identity and model answers. ChatGPT Sites offers hosting, with no proven repo bridge. Codex CLI has no inline Visualization renderer or documented native pane API. Standalone browser panes are candidates to test.",
-      "sha256": "bf04b961cd7c0de96246955bfe87b0133cdfb50019669548e3e5cd8a28d9cfc6",
-      "duration_s": 34.667
+      "key": "19063bf70d42b27d86ef",
+      "text": "The goal is the same review experience with either agent: watch with sound, answer choices, leave comments, press Send and see the revised video. Codex plugins install instructions. Trusted hooks trigger commands; tool connections expose services. These are extension options, not a complete hosted review system. The existing browser player handles review. We will test a browser beside Codex in the terminal. A hosted Claude page also saves reviews, checks reviewer identity and answers questions. We have not found a proven Codex replacement for those services.",
+      "sha256": "ede8b99f544e3ac16abb72094f465dcb082954d3630d9437d179ba3e03cd9d08",
+      "duration_s": 31.467
     },
     "03": {
-      "key": "d1254af4c8c2a8e4a189",
-      "text": "Here is step five’s scope question, before the installation details. A completes the local loop and validates portable exports: the reviewer downloads answers and transfers the file. B also proves authenticated automatic Send on scratch content. I recommend A; choose B if automatic remote handoff belongs in this first acceptance bar.",
-      "sha256": "5b07eda7fcedb33a12e762e6f5b1c711e3a0bbaf62ec7189dbe4187a0c00039e",
-      "duration_s": 19.925
+      "key": "30bd9da33f2be61a5d07",
+      "text": "You chose A: finish the local Codex workflow and check portable reviews. That scope is settled. Local Send goes directly to the project and notifies Codex. Automatic delivery from a hosted page elsewhere stays outside this change.",
+      "sha256": "6112b85f1ace5aa5a02f6905803b6ac659daf9df718460b632b944e7a6117dfe",
+      "duration_s": 14.144
     },
     "04": {
-      "key": "2c4316228a94a91e687b",
-      "text": "With A, the browser player exports annotations.json. Codex records the answers locally. Manual transfer and no automatic remote answering remain explicit limitations.",
-      "said": "With A, the browser player exports annotations dot json. Codex records the answers locally. Manual transfer and no automatic remote answering remain explicit limitations.",
-      "sha256": "26cb6e4fbcdc27fcf8ea00066a10dbb2e7ea4fc5a6708d134fe5d67a9fd2184d",
-      "duration_s": 11.136
+      "key": "5b2f374d8fff333a0ed5",
+      "text": "On this machine, press Send. The project saves your answers and comments, then the waiting Codex session receives the review. That is how your first review reached us: you did not download anything. A file transfer is needed only for a disconnected portable copy reviewed elsewhere.",
+      "sha256": "03f141f0e765582dcf5fc44638d21cac10cd7d072bd5aac91c04eb5a972ac78c",
+      "duration_s": 15.872
     },
     "05": {
-      "key": "85612f135af172fdf9ed",
-      "text": "With B, allow about two engineering days to investigate identity, durable storage and Codex handoff. Hosting, storage, sign-in and transport need service review. Paid hosting, public deployment and private-plan exposure require approval of a concrete result.",
-      "sha256": "d365c459cf5566ff8124fca2ff1ce7cd4dc345a4961082d8e548309f62b4ae3d",
-      "duration_s": 16.256
+      "key": "c3cc778af49ae9005421",
+      "text": "Good code means one shared review workflow: save, notify, review and fix, then commit. Small agent adapters contain only the differences: check available features, launch with the right permissions, notify the right session, and find its saved conversation. Each function receives this project and the relevant review or session, then reports what happened. Shared code owns retries and decides when work is finished. Adding another agent should mean adding those small functions. Keep one player, one server and one inbox, the saved pending reviews. Earlier answers still bind the plan; independent checks and real walkthroughs still apply. The guide holds the exact function contract.",
+      "sha256": "ba036e31e4f92bf11bd4b28ae53501b6e1f2143b679cf52ec3a761ec425d6620",
+      "duration_s": 37.269
     },
     "06": {
-      "key": "3137f268a0e3a94a407f",
-      "text": "Earlier reviews established rules we keep. Contributions retain binding answers. Comparisons test complete outcomes. Walkthrough videos show changes running. Fresh findings get answers. Explainers keep private sources outside Git. Off-plan choices stop. Unattended work respects permissions. The guide comes from the plan. Saved learning reuses answers. Expanded evidence shows real results. Prediction questions never block approval. Extra information opens on the thing it explains.",
-      "sha256": "67190a5517fb369e023b6b1b4bf358275524478198d3fedcf353e10d762f22e1",
-      "duration_s": 27.733
-    },
-    "07": {
       "key": "7a9ed343cfe7cb1a671a",
       "text": "Step one stands alone. Package reelplanner natively for Codex; preserve Claude’s skill install. Validate these proposed commands in an isolated Codex settings folder. The marketplace is the plugin catalog. The skill supplies instructions; CLI and video tools still need setup. Diagnostics name missing tools. Optional hooks need manual local trust; the public plugin directory excludes bundled hooks.",
       "said": "Step one stands alone. Package reel planner natively for Codex; preserve Claude’s skill install. Validate these proposed commands in an isolated Codex settings folder. The marketplace is the plugin catalog. The skill supplies instructions; CLI and video tools still need setup. Diagnostics name missing tools. Optional hooks need manual local trust; the public plugin directory excludes bundled hooks.",
       "sha256": "9892cd26d123b34d3bb2367f34027d7b3606ebd5289ddc91f4ac273c7d7009d6",
       "duration_s": 23.723
     },
-    "08": {
-      "key": "0ab0ceb7742463d0ce64",
-      "text": "Step two needs those capability checks. Configure headless follow-up only when asked: no session is already open. Workspace-write remains the sandbox boundary. An approval policy allowing escalation requests lets automatic review judge Git writes outside it. The command flag is checked; real commits remain unproved. Denial or signing failure leaves pending stopped-run evidence.",
-      "sha256": "dcf86fa14ab49ba4c8f0efd3be21784d2c37394e1cd827765b5988ff57527104",
-      "duration_s": 21.952
+    "07": {
+      "key": "3a5e6ee621aafd26209e",
+      "text": "Step two uses the feature checks from step one. Starting Codex with no session open is enabled only when you ask. It must follow the allowed permissions and preserve commit signing. Here is the failure case: the files were edited, but the signing key is unavailable. The commit fails. The work is still unfinished. The review page shows Stopped before commit and the log. Keep the edits. You restore the signing key or settings; Codex then uses the guarded retry command, checking for any live worker and any work already finished. Only a successful commit allows the review to be marked done.",
+      "sha256": "bcd33b0f34f2dcb72be73456effe4d20f31bd56bb9d1a833e770edeb80707591",
+      "duration_s": 31.595
     },
-    "09": {
+    "08": {
       "key": "319c6564781550573898",
       "text": "A teammate installs the plugin without video tools. Does installation prove the lifecycle, or should diagnostics name missing tools?",
       "sha256": "3daa278a602b68af2430540d1f9b4a31a506e5842d7039b5074efce5a9fdb268",
       "duration_s": 7.872
+    },
+    "09": {
+      "key": "092731bd6bc010514382",
+      "text": "Step three uses installation and the safe follow-up from step two. First save the review. Then notify the session already waiting, or the verified connected Codex session. If neither is available, use an explicitly configured new run; otherwise keep the review for the next session. Only one agent handles the saved item. Notification means the message arrived, not that the work finished. Ask about this saves a question for a live session. Its reply appears on this page. A disconnected question waits rather than starting a new run.",
+      "sha256": "c33cc33c39a8cddea04b59c5c99c07319da35187a43804adb628704a325582fe",
+      "duration_s": 29.504
     }
   }
 }

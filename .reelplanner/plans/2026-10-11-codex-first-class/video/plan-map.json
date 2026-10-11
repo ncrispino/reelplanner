@@ -2,7 +2,7 @@
   "project": "video",
   "title": "video",
   "planDir": ".reelplanner/plans/2026-10-11-codex-first-class",
-  "totalSeconds": 340.734,
+  "totalSeconds": 358.89,
   "chapters": [
     {
       "id": "ch1",
@@ -10,78 +10,72 @@
       "fromFrame": 1,
       "toFrame": 2,
       "start": 0,
-      "end": 50.606,
-      "linearSeconds": 50.606,
-      "watchedSeconds": 50.606,
+      "end": 47.406,
+      "linearSeconds": 47.406,
+      "watchedSeconds": 47.406,
       "decisions": []
     },
     {
       "id": "ch2",
-      "title": "Choose the remote boundary",
+      "title": "Your chosen local scope",
       "fromFrame": 3,
-      "toFrame": 6,
-      "start": 50.606,
-      "end": 126.856,
-      "linearSeconds": 76.25,
-      "watchedSeconds": 59.694,
-      "decisions": [
-        "q1"
-      ]
+      "toFrame": 5,
+      "start": 47.406,
+      "end": 115.591,
+      "linearSeconds": 68.185,
+      "watchedSeconds": 68.185,
+      "decisions": []
     },
     {
       "id": "ch3",
       "title": "Install and finish safely",
-      "fromFrame": 7,
-      "toFrame": 9,
-      "start": 126.856,
-      "end": 181.303,
-      "linearSeconds": 54.447,
-      "watchedSeconds": 54.447,
+      "fromFrame": 6,
+      "toFrame": 8,
+      "start": 115.591,
+      "end": 179.681,
+      "linearSeconds": 64.09,
+      "watchedSeconds": 64.09,
       "decisions": []
     },
     {
       "id": "ch4",
       "title": "Deliver and find the right session",
-      "fromFrame": 10,
-      "toFrame": 13,
-      "start": 181.303,
-      "end": 241.447,
-      "linearSeconds": 60.144,
-      "watchedSeconds": 60.144,
+      "fromFrame": 9,
+      "toFrame": 12,
+      "start": 179.681,
+      "end": 258.834,
+      "linearSeconds": 79.153,
+      "watchedSeconds": 79.153,
       "decisions": []
     },
     {
       "id": "ch5",
       "title": "Prove the result before claiming support",
-      "fromFrame": 14,
-      "toFrame": 15,
-      "start": 241.447,
-      "end": 282.601,
-      "linearSeconds": 41.154,
-      "watchedSeconds": 41.154,
+      "fromFrame": 13,
+      "toFrame": 14,
+      "start": 258.834,
+      "end": 295.808,
+      "linearSeconds": 36.974,
+      "watchedSeconds": 36.974,
       "decisions": []
     },
     {
       "id": "ch6",
       "title": "Evidence earns the support claim",
-      "fromFrame": 16,
-      "toFrame": 19,
-      "start": 282.601,
-      "end": 340.734,
-      "linearSeconds": 58.133,
-      "watchedSeconds": 58.133,
+      "fromFrame": 15,
+      "toFrame": 18,
+      "start": 295.808,
+      "end": 358.89,
+      "linearSeconds": 63.082,
+      "watchedSeconds": 63.082,
       "decisions": []
     }
   ],
-  "levels": {
-    "new": 340.734,
-    "familiar": 312.701,
-    "owner": 312.701
-  },
+  "levels": null,
   "quizzes": [
     {
       "id": "k1",
-      "frameIndex": 9,
+      "frameIndex": 8,
       "planStep": 1,
       "question": "Plugin installed; video tools absent. What next?",
       "options": [
@@ -103,16 +97,16 @@
       ],
       "answer": "a",
       "explain": "A plugin supplies the skill; diagnostics must report missing CLI and video dependencies.",
-      "at": 181.253,
-      "explainedAt": 126.856,
-      "explainedFrame": 7,
+      "at": 179.631,
+      "explainedAt": 115.591,
+      "explainedFrame": 6,
       "walkMeThrough": "The teammate has the agent instructions, but the tools needed to build a video are absent. Diagnostics name those missing dependencies and how to install them. The plugin install alone is not a completed lifecycle."
     },
     {
       "id": "k2",
-      "frameIndex": 11,
+      "frameIndex": 10,
       "planStep": 2,
-      "question": "Edit applied; signing fails. Review status?",
+      "question": "Files edited; commit fails. Finished?",
       "options": [
         {
           "id": "a",
@@ -121,8 +115,8 @@
         },
         {
           "id": "b",
-          "label": "Pending with stopped-run evidence",
-          "why": "A failed required commit leaves the review unfinished and recoverable."
+          "label": "Unfinished; keep edits and show the log",
+          "why": "Keep the unfinished work until the required commit succeeds."
         },
         {
           "id": "c",
@@ -131,15 +125,15 @@
         }
       ],
       "answer": "b",
-      "explain": "A failed required commit leaves the review unfinished and recoverable.",
-      "at": 213.213,
-      "explainedAt": 150.879,
-      "explainedFrame": 8,
-      "walkMeThrough": "The scratch edit is ready but its signed commit failed. The agent keeps the review pending and saves the failure log. Correcting the signing prerequisite allows the required commit to be retried."
+      "explain": "Finished means the required checks and commit succeeded. Edited files alone are unfinished work.",
+      "at": 221.362,
+      "explainedAt": 139.614,
+      "explainedFrame": 7,
+      "walkMeThrough": "The files are edited and checks passed, but the required commit did not succeed. Keep the edits and show Stopped before commit with the failure log. Resolve the permission problem and retry from that work; only then mark the review done."
     },
     {
       "id": "k3",
-      "frameIndex": 13,
+      "frameIndex": 12,
       "planStep": 3,
       "question": "Connected session closes; Ask arrives. What happens?",
       "options": [
@@ -155,22 +149,22 @@
         },
         {
           "id": "c",
-          "label": "Saved for live-session handling",
+          "label": "Saved for a live session",
           "why": "Questions remain available for a live session and do not launch headless work."
         }
       ],
       "answer": "c",
       "explain": "Questions remain available for a live session and do not launch headless work.",
-      "at": 241.397,
-      "explainedAt": 181.303,
-      "explainedFrame": 10,
+      "at": 258.784,
+      "explainedAt": 179.681,
+      "explainedFrame": 9,
       "walkMeThrough": "The question is saved, but its connected live session is gone. The headless setting applies to reviews, not questions. The question remains recoverable for a live session rather than being consumed silently."
     },
     {
       "id": "k4",
-      "frameIndex": 15,
+      "frameIndex": 14,
       "planStep": 4,
-      "question": "Known active thread is unreadable. Which source?",
+      "question": "Active source and export fail. Which source?",
       "options": [
         {
           "id": "a",
@@ -179,7 +173,7 @@
         },
         {
           "id": "b",
-          "label": "Explicit transcript path required",
+          "label": "Copy or path of this exact conversation",
           "why": "A known active session must not silently be replaced by another session."
         },
         {
@@ -190,43 +184,43 @@
       ],
       "answer": "b",
       "explain": "A known active session must not silently be replaced by another session.",
-      "at": 282.551,
-      "explainedAt": 213.263,
-      "explainedFrame": 12,
-      "walkMeThrough": "The active identity is known, so the unreadable source is an explicit failure. The newer main conversation is different evidence. The user supplies a readable transcript path instead of receiving an explainer of the wrong conversation."
+      "at": 295.758,
+      "explainedAt": 221.412,
+      "explainedFrame": 11,
+      "walkMeThrough": "The active conversation and its supported export are unreadable. The newer main conversation is different evidence. Ask the owner for a readable copy or path of the identified conversation and check its session and project, rather than explain a different one."
     },
     {
       "id": "k5",
-      "frameIndex": 17,
+      "frameIndex": 16,
       "planStep": 5,
-      "question": "Hosted UI works; answers vanish. Is it parity?",
+      "question": "Disconnected copy reviewed elsewhere. What next?",
       "options": [
         {
           "id": "a",
-          "label": "Yes, the video renders",
-          "why": "This skips a required part of the supported outcome."
+          "label": "Codex receives it automatically",
+          "why": "This copy has no connection to notify Codex."
         },
         {
           "id": "b",
-          "label": "No, durable intake fails",
-          "why": "Hosted parity requires durable authenticated review storage and a working handoff."
+          "label": "Return the saved review file",
+          "why": "The saved review file carries the answers back to the project."
         },
         {
           "id": "c",
-          "label": "Yes, if a plugin manifest exists",
-          "why": "This would claim a result that has not been proved."
+          "label": "The review cannot be kept",
+          "why": "The file preserves the answers even without a server connection."
         }
       ],
       "answer": "b",
-      "explain": "Hosted parity requires durable authenticated review storage and a working handoff.",
-      "at": 317.748,
-      "explainedAt": 241.447,
-      "explainedFrame": 14,
-      "walkMeThrough": "The candidate shows an interface, but the submitted choice does not survive refresh. No saved review reaches Codex either. It fails the hosted evidence bar even though the video and cards render."
+      "explain": "Direct Send requires a connection to the project. A disconnected portable copy needs its review file returned.",
+      "at": 332.043,
+      "explainedAt": 258.834,
+      "explainedFrame": 13,
+      "walkMeThrough": "The teammate is viewing a copy elsewhere with no project server connection. Their answers can be exported as a review file. Return that file to the agent to record it; the ordinary local page uses direct Send instead."
     },
     {
       "id": "k6",
-      "frameIndex": 18,
+      "frameIndex": 17,
       "planStep": 6,
       "question": "Specs pass; no real live answer. Claim fully tested?",
       "options": [
@@ -248,14 +242,14 @@
       ],
       "answer": "b",
       "explain": "Automated contracts and accepted flags do not replace a real model-driven lifecycle.",
-      "at": 325.216,
-      "explainedAt": 282.601,
-      "explainedFrame": 16,
+      "at": 339.511,
+      "explainedAt": 295.808,
+      "explainedFrame": 15,
       "walkMeThrough": "The specs prove the simulated contract, but the live question path has not been exercised. The docs keep that path unverified until a real supported session answers on the page. A passing parser check cannot supply that missing evidence."
     }
   ],
   "autonomy": [],
-  "watchedSeconds": 324.178,
+  "watchedSeconds": 358.89,
   "frames": [
     {
       "index": 1,
@@ -296,14 +290,21 @@
       "defines": [
         "review",
         "finish"
-      ]
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
     },
     {
       "index": 2,
-      "title": "What Codex actually offers",
+      "title": "The same review with either agent",
       "compositionId": "02-surfaces",
       "type": "product_intro",
-      "durationSeconds": 34.967,
+      "durationSeconds": 31.767,
       "planStep": null,
       "planQuestions": [],
       "specSection": null,
@@ -324,61 +325,49 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Claude Mods draw native panes. The audited branch’s /reel pane includes video and sound, choices and notes, Send and rebuild. Codex parity must match that. Plugins package skills, the agent’s instructions. Trusted hooks run at lifecycle events. MCP connects tools and compatible interfaces. None supplies the hosted Artifact’s stored reviews, identity and model answers. ChatGPT Sites offers hosting, with no proven repo bridge. Codex CLI has no inline Visualization renderer or documented native pane API. Standalone browser panes are candidates to test.",
+      "narration": "The goal is the same review experience with either agent: watch with sound, answer choices, leave comments, press Send and see the revised video. Codex plugins install instructions. Trusted hooks trigger commands; tool connections expose services. These are extension options, not a complete hosted review system. The existing browser player handles review. We will test a browser beside Codex in the terminal. A hosted Claude page also saves reviews, checks reviewer identity and answers questions. We have not found a proven Codex replacement for those services.",
       "start": 15.639,
-      "thumb": "snapshots/frame-01-at-33.37s.png",
+      "thumb": "snapshots/frame-01-at-31.77s.png",
       "terms": [
         "plugin",
         "skill",
-        "hook",
-        "mcp",
-        "artifact",
-        "cli",
-        "database",
         "agent",
-        "mods",
         "pane",
         "call",
         "review",
-        "repo",
-        "branch",
-        "parity",
-        "audited branch",
-        "lifecycle",
-        "bridge",
-        "codex",
-        "chatgpt sites",
-        "visualization",
-        "api"
+        "terminal",
+        "hook",
+        "codex"
       ],
       "defines": [
         "plugin",
         "skill",
-        "hook",
-        "mcp",
-        "artifact",
-        "cli",
-        "database",
         "agent",
-        "mods",
         "pane",
         "call"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 2
+      }
     },
     {
       "index": 3,
-      "title": "How far should remote review go?",
+      "title": "Your chosen scope: A",
       "compositionId": "03-remote-choice",
       "type": "cta",
-      "durationSeconds": 20.225,
+      "durationSeconds": 14.444,
       "planStep": 5,
       "planQuestions": [],
       "specSection": null,
       "components": [],
-      "decision": "q1",
+      "decision": null,
       "branch": null,
-      "question": "How far should remote reviews go?",
-      "chapterStart": "Choose the remote boundary",
+      "question": null,
+      "chapterStart": "Your chosen local scope",
       "knowledge": null,
       "quiz": null,
       "answer": null,
@@ -390,113 +379,38 @@
       "check": null,
       "kind": null,
       "summary": null,
-      "options": [
-        {
-          "id": "a",
-          "label": "Local loop + portable exports",
-          "why": "Concrete local gaps; no drop-in Artifact runtime proved",
-          "recommended": true
-        },
-        {
-          "id": "b",
-          "label": "Add authenticated hosted spike",
-          "why": "Proves automatic remote handoff before service design",
-          "recommended": false
-        }
-      ],
-      "narration": "Here is step five’s scope question, before the installation details. A completes the local loop and validates portable exports: the reviewer downloads answers and transfers the file. B also proves authenticated automatic Send on scratch content. I recommend A; choose B if automatic remote handoff belongs in this first acceptance bar.",
-      "start": 50.606,
-      "thumb": "snapshots/frame-02-at-60.97s.png",
+      "options": [],
+      "narration": "You chose A: finish the local Codex workflow and check portable reviews. That scope is settled. Local Send goes directly to the project and notifies Codex. Automatic delivery from a hosted page elsewhere stays outside this change.",
+      "start": 47.406,
+      "thumb": "snapshots/frame-02-at-54.88s.png",
       "terms": [
         "step",
         "call",
         "detail",
         "review",
-        "first acceptance bar",
-        "authenticated"
+        "finish",
+        "hosted page",
+        "codex"
       ],
       "defines": [
         "step",
         "call",
         "detail"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 3
+      }
     },
     {
       "index": 4,
-      "title": "A · Transfer the review file",
+      "title": "Local Send needs no download",
       "compositionId": "04-remote-a",
       "type": "benefit_highlight",
-      "durationSeconds": 11.436,
-      "planStep": null,
-      "planQuestions": [],
-      "specSection": null,
-      "components": [],
-      "decision": null,
-      "branch": "q1=a",
-      "question": null,
-      "chapterStart": null,
-      "knowledge": null,
-      "quiz": null,
-      "answer": null,
-      "explain": null,
-      "autonomy": null,
-      "chose": null,
-      "insteadOf": null,
-      "why": null,
-      "check": null,
-      "kind": null,
-      "summary": null,
-      "options": [],
-      "narration": "With A, the browser player exports annotations.json. Codex records the answers locally. Manual transfer and no automatic remote answering remain explicit limitations.",
-      "start": 70.831,
-      "thumb": "snapshots/frame-03-at-76.8s.png",
-      "terms": [
-        "json",
-        "no automatic remote answering",
-        "codex"
-      ]
-    },
-    {
-      "index": 5,
-      "title": "B · Prove the hosted bridge",
-      "compositionId": "05-remote-b",
-      "type": "benefit_highlight",
-      "durationSeconds": 16.556,
-      "planStep": null,
-      "planQuestions": [],
-      "specSection": null,
-      "components": [],
-      "decision": null,
-      "branch": "q1=b",
-      "question": null,
-      "chapterStart": null,
-      "knowledge": null,
-      "quiz": null,
-      "answer": null,
-      "explain": null,
-      "autonomy": null,
-      "chose": null,
-      "insteadOf": null,
-      "why": null,
-      "check": null,
-      "kind": null,
-      "summary": null,
-      "options": [],
-      "narration": "With B, allow about two engineering days to investigate identity, durable storage and Codex handoff. Hosting, storage, sign-in and transport need service review. Paid hosting, public deployment and private-plan exposure require approval of a concrete result.",
-      "start": 82.267,
-      "thumb": "snapshots/frame-04-at-90.8s.png",
-      "terms": [
-        "review",
-        "codex handoff",
-        "codex"
-      ]
-    },
-    {
-      "index": 6,
-      "title": "Rules this proposal keeps",
-      "compositionId": "06-recap",
-      "type": "product_intro",
-      "durationSeconds": 28.033,
+      "durationSeconds": 16.172,
       "planStep": null,
       "planQuestions": [],
       "specSection": null,
@@ -505,9 +419,7 @@
       "branch": null,
       "question": null,
       "chapterStart": null,
-      "knowledge": [
-        "new"
-      ],
+      "knowledge": null,
       "quiz": null,
       "answer": null,
       "explain": null,
@@ -519,29 +431,83 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Earlier reviews established rules we keep. Contributions retain binding answers. Comparisons test complete outcomes. Walkthrough videos show changes running. Fresh findings get answers. Explainers keep private sources outside Git. Off-plan choices stop. Unattended work respects permissions. The guide comes from the plan. Saved learning reuses answers. Expanded evidence shows real results. Prediction questions never block approval. Extra information opens on the thing it explains.",
-      "start": 98.823,
-      "thumb": "snapshots/frame-05-at-112.84s.png",
+      "narration": "On this machine, press Send. The project saves your answers and comments, then the waiting Codex session receives the review. That is how your first review reached us: you did not download anything. A file transfer is needed only for a disconnected portable copy reviewed elsewhere.",
+      "start": 61.85,
+      "thumb": "snapshots/frame-03-at-70.19s.png",
       "terms": [
+        "review",
+        "codex"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 4
+      }
+    },
+    {
+      "index": 5,
+      "title": "One workflow, small agent differences",
+      "compositionId": "06-recap",
+      "type": "product_intro",
+      "durationSeconds": 37.569,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-1#interface",
+      "options": [],
+      "narration": "Good code means one shared review workflow: save, notify, review and fix, then commit. Small agent adapters contain only the differences: check available features, launch with the right permissions, notify the right session, and find its saved conversation. Each function receives this project and the relevant review or session, then reports what happened. Shared code owns retries and decides when work is finished. Adding another agent should mean adding those small functions. Keep one player, one server and one inbox, the saved pending reviews. Earlier answers still bind the plan; independent checks and real walkthroughs still apply. The guide holds the exact function contract.",
+      "start": 78.022,
+      "thumb": "snapshots/frame-04-at-96.81s.png",
+      "detail": "step-1",
+      "terms": [
+        "adapter",
+        "inbox",
         "walkthrough video",
         "explainer",
         "guide",
         "memory",
         "quick check",
         "review",
-        "call",
-        "git"
+        "agent",
+        "commit"
       ],
       "defines": [
+        "adapter",
+        "inbox",
         "walkthrough video",
         "explainer",
         "guide",
         "memory",
         "quick check"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 6
+      }
     },
     {
-      "index": 7,
+      "index": 6,
       "title": "Step 1 · Native installation",
       "compositionId": "07-install",
       "type": "feature_showcase",
@@ -568,8 +534,8 @@
       "guide": "step-1#interface",
       "options": [],
       "narration": "Step one stands alone. Package reelplanner natively for Codex; preserve Claude’s skill install. Validate these proposed commands in an isolated Codex settings folder. The marketplace is the plugin catalog. The skill supplies instructions; CLI and video tools still need setup. Diagnostics name missing tools. Optional hooks need manual local trust; the public plugin directory excludes bundled hooks.",
-      "start": 126.856,
-      "thumb": "snapshots/frame-06-at-139.12s.png",
+      "start": 115.591,
+      "thumb": "snapshots/frame-05-at-127.85s.png",
       "detail": "step-1",
       "terms": [
         "step",
@@ -581,14 +547,21 @@
         "hook",
         "codex",
         "marketplace"
-      ]
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      }
     },
     {
-      "index": 8,
-      "title": "Step 2 · A commit must really succeed",
+      "index": 7,
+      "title": "Step 2 · Edited files can still be unfinished",
       "compositionId": "08-permissions",
       "type": "feature_showcase",
-      "durationSeconds": 22.252,
+      "durationSeconds": 31.895,
       "planStep": 2,
       "planQuestions": [],
       "specSection": null,
@@ -610,31 +583,38 @@
       "summary": null,
       "guide": "step-2#cases",
       "options": [],
-      "narration": "Step two needs those capability checks. Configure headless follow-up only when asked: no session is already open. Workspace-write remains the sandbox boundary. An approval policy allowing escalation requests lets automatic review judge Git writes outside it. The command flag is checked; real commits remain unproved. Denial or signing failure leaves pending stopped-run evidence.",
-      "start": 150.879,
-      "thumb": "snapshots/frame-07-at-162s.png",
+      "narration": "Step two uses the feature checks from step one. Starting Codex with no session open is enabled only when you ask. It must follow the allowed permissions and preserve commit signing. Here is the failure case: the files were edited, but the signing key is unavailable. The commit fails. The work is still unfinished. The review page shows Stopped before commit and the log. Keep the edits. You restore the signing key or settings; Codex then uses the guarded retry command, checking for any live worker and any work already finished. Only a successful commit allows the review to be marked done.",
+      "start": 139.614,
+      "thumb": "snapshots/frame-06-at-155.56s.png",
       "detail": "step-2",
       "terms": [
         "headless",
         "headless run",
         "sandbox",
         "escalation",
+        "signing",
         "review",
         "step",
         "commit",
-        "flag",
-        "git",
-        "signing"
+        "codex"
       ],
       "defines": [
         "headless",
         "headless run",
         "sandbox",
-        "escalation"
-      ]
+        "escalation",
+        "signing"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 8
+      }
     },
     {
-      "index": 9,
+      "index": 8,
       "title": "Quick check · Installation",
       "compositionId": "09-check-install",
       "type": "social_proof",
@@ -679,21 +659,28 @@
         }
       ],
       "narration": "A teammate installs the plugin without video tools. Does installation prove the lifecycle, or should diagnostics name missing tools?",
-      "start": 173.131,
-      "thumb": "snapshots/frame-08-at-177.22s.png",
+      "start": 171.509,
+      "thumb": "snapshots/frame-07-at-175.6s.png",
       "terms": [
         "cli",
         "plugin",
         "skill",
         "lifecycle"
-      ]
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 9
+      }
     },
     {
-      "index": 10,
-      "title": "Step 3 · Save before delivery",
+      "index": 9,
+      "title": "Step 3 · Save, then notify Codex",
       "compositionId": "10-delivery",
       "type": "feature_showcase",
-      "durationSeconds": 24.343,
+      "durationSeconds": 29.804,
       "planStep": 3,
       "planQuestions": [],
       "specSection": null,
@@ -715,47 +702,54 @@
       "summary": null,
       "guide": "step-3#interface",
       "options": [],
-      "narration": "Step three needs installation and safe headless follow-up. Save the review in the inbox first. Delivery prefers a waiting session, connected session, configured headless run, then inbox fallback. These proposed commands queue only the saved path. One worker claims ownership; failure releases that claim. Ask about this is the question button. Questions stay saved for live-session handling after disconnection; they never start headless work.",
-      "start": 181.303,
-      "thumb": "snapshots/frame-09-at-193.47s.png",
+      "narration": "Step three uses installation and the safe follow-up from step two. First save the review. Then notify the session already waiting, or the verified connected Codex session. If neither is available, use an explicitly configured new run; otherwise keep the review for the next session. Only one agent handles the saved item. Notification means the message arrived, not that the work finished. Ask about this saves a question for a live session. Its reply appears on this page. A disconnected question waits rather than starting a new run.",
+      "start": 179.681,
+      "thumb": "snapshots/frame-08-at-194.58s.png",
       "detail": "step-3",
       "terms": [
         "inbox",
         "queue",
         "claim",
         "ask about this",
-        "headless run",
+        "notification",
         "review",
         "step",
-        "waiting session",
-        "connected session",
-        "headless"
+        "agent",
+        "codex"
       ],
       "defines": [
         "inbox",
         "queue",
         "claim",
-        "ask about this"
-      ]
+        "ask about this",
+        "notification"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 10
+      }
     },
     {
-      "index": 11,
-      "title": "Quick check · Commit failure",
+      "index": 10,
+      "title": "Quick check · Stopped before commit",
       "compositionId": "11-check-commit",
       "type": "social_proof",
-      "durationSeconds": 7.617,
+      "durationSeconds": 11.927,
       "planStep": 2,
       "planQuestions": [],
       "specSection": null,
       "components": [],
       "decision": null,
       "branch": null,
-      "question": "Edit applied; signing fails. Review status?",
+      "question": "Files edited; commit fails. Finished?",
       "chapterStart": null,
       "knowledge": null,
       "quiz": "k2",
       "answer": "b",
-      "explain": "A failed required commit leaves the review unfinished and recoverable.",
+      "explain": "Finished means the required checks and commit succeeded. Edited files alone are unfinished work.",
       "autonomy": null,
       "chose": null,
       "insteadOf": null,
@@ -772,7 +766,7 @@
         },
         {
           "id": "b",
-          "label": "Pending with stopped-run evidence",
+          "label": "Unfinished; keep edits and show the log",
           "why": "",
           "recommended": false
         },
@@ -783,21 +777,29 @@
           "recommended": false
         }
       ],
-      "narration": "An approved edit exists, but its signing key is unavailable. Is the review done, pending with evidence, or committed by the server?",
-      "start": 205.646,
-      "thumb": "snapshots/frame-10-at-209.7s.png",
+      "narration": "A different change passes its checks, but Git refuses permission to create the commit. The files are edited. Is the review finished, still unfinished with its edits saved, or should the server commit for Codex?",
+      "start": 209.485,
+      "thumb": "snapshots/frame-09-at-215.7s.png",
       "terms": [
         "review",
         "commit",
-        "signing"
-      ]
+        "git",
+        "codex"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 11
+      }
     },
     {
-      "index": 12,
+      "index": 11,
       "title": "Step 4 · This conversation means this one",
       "compositionId": "12-session",
       "type": "feature_showcase",
-      "durationSeconds": 19.905,
+      "durationSeconds": 29.143,
       "planStep": 4,
       "planQuestions": [],
       "specSection": null,
@@ -819,26 +821,35 @@
       "summary": null,
       "guide": "step-4#cases",
       "options": [],
-      "narration": "Step four stands alone. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. Support current paginated history as well as observed old storage. A missing active source requires an explicit transcript path. Pin path, hash and size only; the private text stays outside Git.",
-      "start": 213.263,
-      "thumb": "snapshots/frame-11-at-223.22s.png",
+      "narration": "Step four. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. If this file is unreadable, Codex first tries its supported read-only conversation export. If that fails, it asks you for a readable copy or path for this specific conversation and checks that it belongs to this session and project. If none is readable, stop and name the missing conversation. Record the conversation’s path, fingerprint and size in the explainer’s source list. The private text stays outside Git.",
+      "start": 221.412,
+      "thumb": "snapshots/frame-10-at-235.98s.png",
       "detail": "step-4",
       "terms": [
         "transcript",
         "hash",
+        "fingerprint",
         "step",
+        "explainer",
         "repo",
         "git",
-        "paginated history",
         "codex"
       ],
       "defines": [
         "transcript",
-        "hash"
-      ]
+        "hash",
+        "fingerprint"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": false,
+        "retimed": true,
+        "wasIndex": 12
+      }
     },
     {
-      "index": 13,
+      "index": 12,
       "title": "Quick check · A question after disconnection",
       "compositionId": "13-check-delivery",
       "type": "social_proof",
@@ -877,25 +888,32 @@
         },
         {
           "id": "c",
-          "label": "Saved for live-session handling",
+          "label": "Saved for a live session",
           "why": "",
           "recommended": false
         }
       ],
       "narration": "The connected session closes, then a question arrives. Yesterday’s headless setting exists. Does the question launch work, vanish, or stay saved?",
-      "start": 233.168,
-      "thumb": "snapshots/frame-12-at-237.31s.png",
+      "start": 250.555,
+      "thumb": "snapshots/frame-11-at-254.69s.png",
       "terms": [
         "connected session",
         "headless"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": false,
+        "shown": true,
+        "retimed": false,
+        "wasIndex": 13
+      }
     },
     {
-      "index": 14,
-      "title": "Step 5 · Match terminal review and choose remote path",
+      "index": 13,
+      "title": "Step 5 · Send here; transfer only elsewhere",
       "compositionId": "14-remote-proof",
       "type": "feature_showcase",
-      "durationSeconds": 32.513,
+      "durationSeconds": 27.031,
       "planStep": 5,
       "planQuestions": [],
       "specSection": null,
@@ -917,42 +935,43 @@
       "summary": null,
       "guide": "step-5#example",
       "options": [],
-      "narration": "Step five matches the audited /reel pane and follows your remote choice. Trial the existing player beside Codex using terminal-browser or cmux. Prove sound and playback controls, library and owning-repo routing, answers and notes, comments and review verdicts, delivery exactly once, and rebuilt changed scenes. Installing a pane alone proves nothing. For A, exported identity and answers survive local intake with manual transfer. B also proves authenticated automatic submission and question handoff. Without durable intake, hosted parity fails.",
-      "start": 241.447,
-      "thumb": "snapshots/frame-13-at-257.7s.png",
+      "narration": "Step five tests the same player in the ordinary browser and beside Codex in a terminal workspace. Watch with sound, answer choices, leave comments, and press Send. Codex receives the saved review; you see which scenes changed after revision. Check the printed address opens this plan, even when another server occupies the first port. Then test a separate portable copy elsewhere: only that disconnected copy needs a file returned to the agent. Your chosen scope A stays the same.",
+      "start": 258.834,
+      "thumb": "snapshots/frame-12-at-272.35s.png",
       "detail": "step-5",
       "terms": [
         "beat",
         "review",
         "call",
         "step",
-        "parity",
-        "exported identity",
-        "owning-repo",
-        "terminal-browser",
-        "authenticated",
-        "intake",
-        "codex",
-        "pane",
-        "cmux"
+        "agent",
+        "terminal",
+        "codex"
       ],
       "defines": [
         "beat"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 14
+      }
     },
     {
-      "index": 15,
+      "index": 14,
       "title": "Quick check · Missing active source",
       "compositionId": "15-check-session",
       "type": "social_proof",
-      "durationSeconds": 8.641,
+      "durationSeconds": 9.943,
       "planStep": 4,
       "planQuestions": [],
       "specSection": null,
       "components": [],
       "decision": null,
       "branch": null,
-      "question": "Known active thread is unreadable. Which source?",
+      "question": "Active source and export fail. Which source?",
       "chapterStart": null,
       "knowledge": null,
       "quiz": "k4",
@@ -974,7 +993,7 @@
         },
         {
           "id": "b",
-          "label": "Explicit transcript path required",
+          "label": "Copy or path of this exact conversation",
           "why": "",
           "recommended": false
         },
@@ -985,17 +1004,23 @@
           "recommended": false
         }
       ],
-      "narration": "The identified active conversation is unreadable, but a newer main conversation from this repo is readable. Which source should the explainer use?",
-      "start": 273.96,
-      "thumb": "snapshots/frame-14-at-278.53s.png",
+      "narration": "The active conversation is unreadable and its supported export fails, but a newer main conversation from this project is readable. Which source should the explainer use?",
+      "start": 285.865,
+      "thumb": "snapshots/frame-13-at-291.09s.png",
       "terms": [
         "explainer",
-        "repo",
         "main conversation"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 15
+      }
     },
     {
-      "index": 16,
+      "index": 15,
       "title": "Step 6 · Evidence earns the support claim",
       "compositionId": "16-proof",
       "type": "feature_showcase",
@@ -1022,8 +1047,8 @@
       "guide": "step-6#example",
       "options": [],
       "narration": "Step six needs all five steps. A real scratch project installs, builds a narrated plan, reviews and revises, implements, passes independent code check, shows a walkthrough, fixes a flagged choice and commits. Exercise questions, headless changes, failure recovery and session discovery. Record commands, versions, durations and results. Fast and full touched specs plus Claude regressions protect existing behavior. Untested live paths and platforms remain unverified.",
-      "start": 282.601,
-      "thumb": "snapshots/frame-15-at-295.88s.png",
+      "start": 295.808,
+      "thumb": "snapshots/frame-14-at-309.09s.png",
       "detail": "step-6",
       "terms": [
         "code check",
@@ -1039,26 +1064,33 @@
       ],
       "defines": [
         "code check"
-      ]
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 16
+      }
     },
     {
-      "index": 17,
-      "title": "Quick check · A hosted page",
+      "index": 16,
+      "title": "Quick check · A disconnected copy",
       "compositionId": "17-check-remote",
       "type": "social_proof",
-      "durationSeconds": 8.641,
+      "durationSeconds": 9.729,
       "planStep": 5,
       "planQuestions": [],
       "specSection": null,
       "components": [],
       "decision": null,
       "branch": null,
-      "question": "Hosted UI works; answers vanish. Is it parity?",
+      "question": "Disconnected copy reviewed elsewhere. What next?",
       "chapterStart": null,
       "knowledge": null,
       "quiz": "k5",
       "answer": "b",
-      "explain": "Hosted parity requires durable authenticated review storage and a working handoff.",
+      "explain": "Direct Send requires a connection to the project. A disconnected portable copy needs its review file returned.",
       "autonomy": null,
       "chose": null,
       "insteadOf": null,
@@ -1069,36 +1101,41 @@
       "options": [
         {
           "id": "a",
-          "label": "Yes, the video renders",
+          "label": "Codex receives it automatically",
           "why": "",
           "recommended": true
         },
         {
           "id": "b",
-          "label": "No, durable intake fails",
+          "label": "Return the saved review file",
           "why": "",
           "recommended": false
         },
         {
           "id": "c",
-          "label": "Yes, if a plugin manifest exists",
+          "label": "The review cannot be kept",
           "why": "",
           "recommended": false
         }
       ],
-      "narration": "A hosted candidate shows the video and cards, but Send loses answers on refresh. Nothing reaches Codex. Does that establish hosted parity?",
-      "start": 309.157,
-      "thumb": "snapshots/frame-16-at-313.48s.png",
+      "narration": "A teammate opens a portable copy with no connection to your project. They finish reviewing. Does Codex receive it automatically, or must they return the review file?",
+      "start": 322.364,
+      "thumb": "snapshots/frame-15-at-327.23s.png",
       "terms": [
         "review",
-        "parity",
-        "authenticated",
-        "ui",
+        "finish",
         "codex"
-      ]
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 17
+      }
     },
     {
-      "index": 18,
+      "index": 17,
       "title": "Quick check · Honest support",
       "compositionId": "18-check-proof",
       "type": "social_proof",
@@ -1143,8 +1180,8 @@
         }
       ],
       "narration": "Mocked queue specs pass, but no real Codex session has answered a page question. Can the complete lifecycle be called tested?",
-      "start": 317.798,
-      "thumb": "snapshots/frame-17-at-321.78s.png",
+      "start": 332.093,
+      "thumb": "snapshots/frame-16-at-336.08s.png",
       "terms": [
         "spec",
         "flag",
@@ -1154,18 +1191,23 @@
         "mocked",
         "specs",
         "codex"
-      ]
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 18
+      }
     },
     {
-      "index": 19,
-      "title": "Approve a scope, then prove it",
+      "index": 18,
+      "title": "Review the clearer local plan",
       "compositionId": "19-ending",
       "type": "cta",
-      "durationSeconds": 15.468,
+      "durationSeconds": 19.329,
       "planStep": null,
-      "planQuestions": [
-        1
-      ],
+      "planQuestions": [],
       "specSection": null,
       "components": [],
       "decision": null,
@@ -1184,64 +1226,31 @@
       "kind": null,
       "summary": null,
       "options": [],
-      "narration": "Approve the proposed local alternative, then prove it. Choose portable remote exports or the authenticated hosted spike. The plan guide holds full cases and interfaces. This review presents proposed behavior; implementation comes after approval.",
-      "start": 325.266,
-      "thumb": "snapshots/frame-18-at-333s.png",
+      "narration": "The revised plan keeps your chosen local scope. Send here needs no download. One shared workflow and small agent adapters keep the code easy to extend. Failed commits remain unfinished. The guide holds the full examples and interfaces. Approve this clearer plan or ask for changes; implementation follows approval.",
+      "start": 339.561,
+      "thumb": "snapshots/frame-17-at-349.23s.png",
       "terms": [
         "approve",
         "beat",
-        "review",
+        "agent",
         "guide",
-        "authenticated hosted spike",
-        "authenticated"
+        "commit",
+        "adapter"
       ],
       "defines": [
         "approve",
         "beat"
-      ]
-    }
-  ],
-  "decisions": [
-    {
-      "id": "q1",
-      "kind": "one",
-      "frameIndex": 3,
-      "compositionId": "03-remote-choice",
-      "planStep": 5,
-      "question": "How far should remote reviews go?",
-      "at": 70.781,
-      "resumeAt": 98.823,
-      "options": [
-        {
-          "id": "a",
-          "label": "Local loop + portable exports",
-          "why": "Concrete local gaps; no drop-in Artifact runtime proved",
-          "recommended": true,
-          "more": "Download annotations.json and transfer it to Codex.",
-          "branch": {
-            "frameIndex": 4,
-            "compositionId": "04-remote-a",
-            "start": 70.831,
-            "end": 82.267
-          }
-        },
-        {
-          "id": "b",
-          "label": "Add authenticated hosted spike",
-          "why": "Proves automatic remote handoff before service design",
-          "recommended": false,
-          "more": "Scratch-content Send reaches Codex; service and deployment reviewed separately.",
-          "branch": {
-            "frameIndex": 5,
-            "compositionId": "05-remote-b",
-            "start": 82.267,
-            "end": 98.823
-          }
-        }
       ],
-      "summary": null
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 19
+      }
     }
   ],
+  "decisions": [],
   "details": [
     {
       "name": "step-1",
@@ -1250,11 +1259,25 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 7,
+      "frameIndex": 5,
+      "compositionId": "06-recap",
+      "planStep": 1,
+      "start": 78.022,
+      "end": 115.591,
+      "autonomy": null
+    },
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html#step-1-interface",
+      "title": "Step 1 · Install through Codex's own plugin system",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 6,
       "compositionId": "07-install",
       "planStep": 1,
-      "start": 126.856,
-      "end": 150.879,
+      "start": 115.591,
+      "end": 139.614,
       "autonomy": null
     },
     {
@@ -1264,11 +1287,11 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 8,
+      "frameIndex": 7,
       "compositionId": "08-permissions",
       "planStep": 2,
-      "start": 150.879,
-      "end": 173.131,
+      "start": 139.614,
+      "end": 171.509,
       "autonomy": null
     },
     {
@@ -1278,11 +1301,11 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 10,
+      "frameIndex": 9,
       "compositionId": "10-delivery",
       "planStep": 3,
-      "start": 181.303,
-      "end": 205.646,
+      "start": 179.681,
+      "end": 209.485,
       "autonomy": null
     },
     {
@@ -1292,11 +1315,11 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 12,
+      "frameIndex": 11,
       "compositionId": "12-session",
       "planStep": 4,
-      "start": 213.263,
-      "end": 233.168,
+      "start": 221.412,
+      "end": 250.555,
       "autonomy": null
     },
     {
@@ -1306,11 +1329,11 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 14,
+      "frameIndex": 13,
       "compositionId": "14-remote-proof",
       "planStep": 5,
-      "start": 241.447,
-      "end": 273.96,
+      "start": 258.834,
+      "end": 285.865,
       "autonomy": null
     },
     {
@@ -1320,11 +1343,11 @@
       "kind": "guide",
       "guide": true,
       "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
-      "frameIndex": 16,
+      "frameIndex": 15,
       "compositionId": "16-proof",
       "planStep": 6,
-      "start": 282.601,
-      "end": 309.157,
+      "start": 295.808,
+      "end": 322.364,
       "autonomy": null
     }
   ],
@@ -1383,17 +1406,17 @@
   },
   "plan": {
     "title": "Codex as a first-class reelplanner agent",
-    "problem": "The owner asked: \"Pls create a branch. Our goal is to get codex fully working, fully featured on reelplanner as an alternative so it is first-class like claude code\". They added: \"oh i am not sure about the claude artifact euqivalent i ahven used in codex. do look into that and codex if it has something similar to claude plugisn and mods though too\".\n\nThe branch `feat/codex-first-class` has been created. The Codex implementation below is proposed. Preparing its review exposed one guide-heading bug, fixed and tracked separately in `preparation.md`; the native plugin and lifecycle changes have not landed yet. Current Codex support checks flags, without a complete model-driven run. A headless review gets Claude-specific commit instructions, its default sandbox cannot write Git metadata, and `this-session` finds only Claude transcripts. The skill's polling advice predates Codex's current queue and hooks. The repo offers a Claude plugin marketplace, but no Codex package.\n\nThe owner also supplied `ccr-7d2997e8-elkd7p`, inspected at `d09b72d`, as the Claude Mods implementation. It has a real `/reel` pane with video and sound, branching questions, comments, walkthrough judgments, Send into the session and changed-scenes playback. It is a separate branch, not merged into this one. That pane's user-visible behavior is part of the comparison below; its Claude-specific runtime is not assumed portable.\n\nFour changes make the local experience first-class: a native install; reliable review delivery and headless follow-up; explainers of the right Codex session; and a real installation-to-walkthrough proof. Remote hosting needs its own explicit choice. OpenAI supports plugins, skills, MCP tools and trusted hooks, but does not preserve Claude live Artifacts or their database. ChatGPT Sites and MCP Apps UI are candidates, not evidence that Codex CLI has an Artifact runtime. The current browser player already works across agents. Research and exact sources live in `research.md` beside this plan.\n\n| reelplanner capability | Claude Code today | Codex today | Acceptance in this plan |\n|---|---|---|---|\n| Install and invoke the skill | Native marketplace and skill install | Skill install; no native package | Native plugin and existing skill route both work |\n| Narration, frames, player, guide and media tools | Shared pipeline exercised | Same commands, no full model run | Real narrated plan and walkthrough builds, with guide and real tool setup |\n| Decisions, records, memory, revise/fix and system updates | Shared CLI exercised | Same CLI, unproven complete workflow | Real reviews preserve decisions, comments and memory; fixes and system record agree |\n| Fresh eyes and independent code check | Fresh agents used | Instructions exist, execution not proven | Fresh Codex reviewers write and satisfy the actual finding contracts |\n| Local Send, questions and status | Waiter/headless routes exercised | Generic routes, no proven Codex handoff | Active-session questions, reviews, status and failure recovery tested |\n| Unattended review and commit | Claude command and commit exception | Wrong shared commit advice; strict sandbox | Supported automatic review, real commits and recoverable denials |\n| Explain this session | Claude transcript discovery | Claude-only lookup | Correct Codex main thread, including supported current history |\n| Review within a terminal workspace | Supplied branch has a full native `/reel` pane | No documented native pane API found | Delivered optional terminal-browser/workspace integration must preserve the pane's review outcomes |\n| Remote automatic Send and model answers | Claude Artifact database/identity/model runtime | No direct equivalent established | Option A remains manual export; option B proves a hosted bridge before service implementation |\n\nOption A therefore makes the core local workflow first-class; it does not claim complete automatic hosted parity. Neither Claude nor Codex has a model-driven GitHub workflow in this checkout. Cloud execution and other operating systems require their own evidence before support claims expand.\n\n### Step 1 — Install through Codex's own plugin system\n\n**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```\n\n### Step 2 — Finish headless reviews with Codex's permission model\n\n**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation | Run stops with evidence; review remains actionable | agent requests: commit; refused: escalation; kept: inbox item; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```\n\n### Step 3 — Deliver reviews to a live Codex session\n\n**It lets you:** press Send or Ask about this and have your active Codex session handle it.\n\nDepends on steps 1 and 2. Add an explicit connection between the review server and a Codex session, using the CLI's queue capability where available. Verify delivery in the installed app/CLI daemon; an accepted queue command alone is not proof the session acted. A trusted optional session hook may advertise its session identity; provide a documented explicit connection for installations without hooks. Do not make the core plugin depend on trust changes.\n\nKeep the current inbox as the durable record and preserve delivery priority: a waiting session, then the connected live session, then an explicitly configured headless run, then the inbox. Use claims to prevent two agents processing a review. A failed queue releases its delivery claim and uses the documented fallback. Questions still go to a live session only, without starting headless runs. Save an accepted question before attempting delivery. A failed or stale connection leaves it unanswered and available to the next session and in the submitted review, with a clear waiting indication; a queue acknowledgement is not an answer and does not consume it. Disconnection and stale session identity must not silently consume a review. The exact connection command is proposed below; its behavior is tested before it is advertised.\n\n“Exactly once” here means one stored/intaken review and at most one live handler, with explicit crash recovery; it is not a guarantee that an arbitrary edit can never need reconciliation. Associate ownership with the session/run and a renewable lease instead of treating an exited waiter process as proof that the agent died. A worker that dies after editing leaves its phase record and files intact; a retry checks them before proceeding. Connection obtains the current `CODEX_THREAD_ID` when invoked from that session, or a user-selected ID from Codex's session listing; verify both repository and active-session identity before registering, and reject a mismatched recipient.\n\nOn reconnect or at session start, the skill runs `inbox` and claims the oldest unanswered question through the bounded waiter, reads its plan/scene context and runs `inbox answer <id> \"<answer>\" --from \"<source>\"`. The page's existing question-status polling displays the answer and its source. A pending question is retained until answered, even when it is also included in a submitted review; deduplicate by its ID.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Live session connected | Send review | Queue only its inbox path to that session | you send: review; saved: inbox; queued: path; agent reads: file |\n| Waiting CLI task | `review --wait` already running | Existing waiter wins; no duplicate queued work | you send: review; claimed: waiter; handled: once |\n| Page question | Ask about this | Live session answers from plan/scene; no headless job | you ask: question; queued: path; agent answers: evidence; you see: answer |\n| Session gone | Queue fails or connection is stale | Retain inbox entry and fall back safely | you send: review; failed: delivery; kept: inbox; you see: waiting or headless status |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach --session codex:<id>  # proposed explicit connection\ncodex queue --thread <id> --message <inbox-path message>     # notify, without embedding review prose\nreelplanner review --wait --timeout 90                      # fallback bounded waiter\nreelplanner inbox                                          # durable pending items\n```\n\n#### Example\n\nConnect a scratch review server to a real Codex session. Submit one review and one question. Verify each is handled once and the page shows the answer. Stop the session, submit again, and verify the review stays available rather than disappearing into an unreachable session.\n\n```diagram\nflow: Review delivery\nSend -> inbox file: save first\ninbox file -> waiting session: first choice\ninbox file --> connected Codex session: notify\nconnected Codex session --> headless run: delivery unavailable\nheadless run --> next session inbox: not configured\n```\n\n### Step 4 — Explain the correct Codex session\n\n**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```\n\n### Step 5 — Match terminal review and choose the remote path\n\n**It lets you:** review beside Codex in a terminal workspace and choose how a remote reviewer reaches the project.\n\nDepends on the hosting choice below. Document the actual equivalents: native plugins package skills and tools; trusted hooks automate lifecycle events; MCP Apps can supply UI in compatible hosts; ChatGPT Sites can host an app with persistent data. None of these automatically supplies the `window.claude` database, reviewer identity or model answering used by today's hosted page. Codex CLI has no inline Visualization renderer.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows an explicitly labelled proposed adjacent-pane layout and the watch → answer → Send → changed-scene sequence, alongside the supplied branch's actual pane behavior. A prototype communicates the intended workflow; it is not runtime proof. The implementation walkthrough must show that same sequence for real. `review <video-dir> --detach` starts the local server and prints the URL used by a terminal browser; a bundle is static files and does not itself provide a server or automatic handoff.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nFor option A, validate the portable bundle/download/intake route, including reviewer identity, decision preservation and useful Ask about this fallback. Clearly label its manual transfer and absence of automatic remote answers. It establishes local Codex parity while remote automation remains open. For option B, this plan first produces a working authenticated hosted review spike, including durable submission and question-answer handoff to a scratch Codex repo, before committing to a separately reviewed service implementation. Budget the initial investigation to two working days, an engineering estimate rather than a delivery promise; if it cannot establish the route in that time, report the evidence and next choice instead of silently expanding into a service build. The spike requires a host, durable store, reviewer authentication and a transport into the repo. Use scratch content and existing local/free development facilities initially; authorizing B does not authorize a paid subscription, billable hosted deployment or public exposure. Any such expense or deployment gets its own concrete final approval. A UI-only mockup, public page or manifest does not count as hosted parity. The spike must identify hosting costs, identity, storage, transport and account/surface limits; deployment or exposure of this repo's private plans requires an explicit final approval.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| Hosted spike chosen | Remote review of scratch content | Prove authenticated storage, intake and response | you send: review; stored: durable row; delivered: Codex; you see: status |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner bundle-player <out> <video-dir>    # portable browser player\nannotations.json                              # exported review, current record format\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nOpen a scratch bundle with no `window.claude`, answer a decision, export the review and record it through the CLI. Confirm the chosen answer and reviewer identity survive. If hosted automation is selected, prove the same outcome through an authenticated remote spike rather than calling a rendered HTML page complete.\n\n```diagram\ncompare: Remote review\nbefore: Claude Artifact -> Claude database: store\nafter: portable browser player -> review file -> Codex intake: transfer\n```\n\n### Step 6 — Prove the whole lifecycle and publish honest support claims\n\n**It lets you:** choose Codex with evidence that the complete supported workflow works.\n\nDepends on steps 1–5. Run a small real scratch project with Codex: native plugin install and discovery, new plan, narrated video, fresh script and frame checks, local review submission, revision, implementation, independent code check, walkthrough with one accepted and one flagged choice, fix and final commit. Exercise headless approval and requested changes, a live-session question, failure recovery, a session explainer, and the terminal-pane checklist from the supplied Claude branch. Test Codex CLI and the app browser separately; a CLI result is not proof of the app handoff. Save commands, versions, durations and results in `eval/agents/`, without credentials or copied private transcripts. The walkthrough shows real commands and outcomes. A blocked account feature or platform remains explicitly unverified; do not change the support table to fully tested from mocked commands.\n\nUpdate `docs/agents.md`, README, AGENTS.md, relevant reference docs, and the system spec/map to match what landed. Run `npm test` and full versions of each touched spec, with a fresh independent code check before the walkthrough. Test Claude regressions to protect existing behavior. Public plugin directory submission, real remote deployment and enabling headless automation in this owner's repo are separate explicit actions.\n\nThe initial acceptance environment is the installed Codex CLI 0.162.1 and Codex app on this macOS machine, using a scratch Git repo and a real supported graphics/browser pane for the terminal workflow. Verify capability checks against this version; document the actual minimum supported version after testing. Both CLI and app must complete their required live handoffs. If account policy, sandboxing, signing, session delivery or terminal support blocks a required path, finish unaffected work and report the missing evidence; the support claim and goal remain incomplete until that blocker is resolved. Linux/Windows/cloud claims remain separate and unverified unless independently exercised.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Full scratch run | Installed supported Codex | Complete all advertised lifecycle outcomes | installed: plugin; built: plan; reviewed: choices; built: code; checked: diff; reviewed: walkthrough |\n| Real denial | Blocked operation or signing failure | Pending review remains recoverable with log | run: stopped; saved: evidence; corrected: prerequisite; retried: once |\n| Automated regression suite | Mocked edge and race cases | Proves contracts, separately from model evidence | run: specs; checked: cases; you see: actual counts |\n| Platform unavailable | Cloud or another OS not exercised | Support docs say unverified | inspected: availability; absent: evidence; you see: limit |\n\n#### Interface\n\n```text\neval/agents/<date>-codex-lifecycle.md          # real runtime evidence, commands and versions\nnpm test                                      # required fast suite\nnode scripts/test/run.mjs --full <names>        # exhaustive touched specs\nreelplanner code-check <plan-dir> --base <ref>  # independent implementation review\nreelplanner reel audit <plan-dir>              # walkthrough coverage and answered findings\n```\n\n#### Example\n\nThe scratch task adds a visible setting to a tiny app. The reviewer changes its default in the plan video, flags one implementation choice in the walkthrough, and sees the corrected app. The repo records both reviews and the final commits. Only after that evidence passes does the support table say the local lifecycle is tested.\n\n```diagram\nflow: Proof before support claim\nnative install -> plan video: build\nplan video -> review -> implementation: decide\nimplementation -> independent code check -> walkthrough: verify\nwalkthrough -> flagged choice fix -> evidence: finish\nevidence -> support table: state what passed\n```",
+    "problem": "The owner asked: \"Pls create a branch. Our goal is to get codex fully working, fully featured on reelplanner as an alternative so it is first-class like claude code\". They added: \"oh i am not sure about the claude artifact euqivalent i ahven used in codex. do look into that and codex if it has something similar to claude plugisn and mods though too\".\n\nThe branch `feat/codex-first-class` has been created. The Codex implementation below is proposed. Preparing its review exposed one guide-heading bug, fixed and tracked separately in `preparation.md`; the native plugin and lifecycle changes have not landed yet. Current Codex support checks flags, without a complete model-driven run. A headless review gets Claude-specific commit instructions, its default sandbox cannot write Git metadata, and `this-session` finds only Claude transcripts. The skill's polling advice predates Codex's current queue and hooks. The repo offers a Claude plugin marketplace, but no Codex package.\n\nThe owner also supplied `ccr-7d2997e8-elkd7p`, inspected at `d09b72d`, as the Claude Mods implementation. It has a real `/reel` pane with video and sound, branching questions, comments, walkthrough judgments, Send into the session and changed-scenes playback. It is a separate branch, not merged into this one. That pane's user-visible behavior is part of the comparison below; its Claude-specific runtime is not assumed portable.\n\nFour changes make the local experience first-class: a native install; reliable review delivery and headless follow-up; explainers of the right Codex session; and a real installation-to-walkthrough proof. Remote hosting needs its own explicit choice. OpenAI supports plugins, skills, MCP tools and trusted hooks, but does not preserve Claude live Artifacts or their database. ChatGPT Sites and MCP Apps UI are candidates, not evidence that Codex CLI has an Artifact runtime. The current browser player already works across agents. Research and exact sources live in `research.md` beside this plan.\n\n| reelplanner capability | Claude Code today | Codex today | Acceptance in this plan |\n|---|---|---|---|\n| Install and invoke the skill | Native marketplace and skill install | Skill install; no native package | Native plugin and existing skill route both work |\n| Narration, frames, player, guide and media tools | Shared pipeline exercised | Same commands, no full model run | Real narrated plan and walkthrough builds, with guide and real tool setup |\n| Decisions, records, memory, revise/fix and system updates | Shared CLI exercised | Same CLI, unproven complete workflow | Real reviews preserve decisions, comments and memory; fixes and system record agree |\n| Fresh eyes and independent code check | Fresh agents used | Instructions exist, execution not proven | Fresh Codex reviewers write and satisfy the actual finding contracts |\n| Local Send, questions and status | Waiter/headless routes exercised | Generic routes, no proven Codex handoff | Active-session questions, reviews, status and failure recovery tested |\n| Unattended review and commit | Claude command and commit exception | Wrong shared commit advice; strict sandbox | Supported automatic review, real commits and recoverable denials |\n| Explain this session | Claude transcript discovery | Claude-only lookup | Correct Codex main thread, including supported current history |\n| Review within a terminal workspace | Supplied branch has a full native `/reel` pane | No documented native pane API found | Delivered optional terminal-browser/workspace integration must preserve the pane's review outcomes |\n| Remote automatic Send and model answers | Claude Artifact database/identity/model runtime | No direct equivalent established | Option A remains manual export; option B proves a hosted bridge before service implementation |\n\nOption A therefore makes the core local workflow first-class; it does not claim complete automatic hosted parity. Neither Claude nor Codex has a model-driven GitHub workflow in this checkout. Cloud execution and other operating systems require their own evidence before support claims expand.\n\n### What your review changed\n\nYou chose **A** in the review, recorded as **D-313**. On this machine, **Send delivers the review to the project; you do not download a file**. That is how this review reached the waiting Codex session. Step 3 makes the direct notification work with a connected Codex session too. A download is needed only when someone reviews a portable copy elsewhere, with no connection to the project. That separate remote case is the limit of A, not the normal local workflow.\n\nYou also asked for clear interfaces, less repeated code and simpler language. The shared workflow will own reviews, saved answers, ownership, retries and status. Small agent-specific modules will handle only what Codex or Claude must do differently. The video explains what you do and what you see; exact flags and storage details stay in the guide and research. An unfinished Git commit is shown plainly as unfinished work, even if the edited files already exist.\n\n### Step 1 — Install through Codex's own plugin system\n\n**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n**Keep the coding-agent interface small.** Extend the existing agent-selection code instead of building a second review system for Codex. A shared caller selects a Claude, Codex or generic-command adapter once. Agent differences belong behind the contract below: checking available features; producing the launch command and permission/commit instructions; notifying a verified session; and finding that session's saved conversation. These operations receive an explicit repo and environment rather than reading unrelated global state. Use ordinary functions and small modules; no registration framework, dependency injection container or repeated copies of the lifecycle scripts.\n\nThe shared code owns input validation, saving reviews and questions, claims and their renewal, retries, recording decisions, progress/status, builds and completion. An adapter cannot mark a review done, modify its answers, or claim that a queued message was acted on. A presentation adapter opens a URL in a browser or terminal workspace; it does not implement a second player or review format. Existing custom agent commands keep a generic path, with unsupported features stated explicitly. Add another coding agent by implementing its small adapter and contract checks, not by copying the review server, inbox or player. The independent code check must look for agent-name branches escaping this boundary and for duplicate workflow code.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\nThe proposed internal contract, with exact names settled during implementation, is:\n\n```text\ngetHarness(id) -> supported agent or generic command  # choose the agent-specific functions once\nprobe({ repo, env, executable }) -> capabilities     # check the installed version and usable features\nheadless({ repo, env, reviewPath }) -> launchSpec    # command arguments, environment and commit advice\ndeliver({ repo, session, inboxPath }) -> result      # delivered, unavailable or failed; never finished\nsessionSource({ repo, env, session }) -> source      # verified conversation source or an explicit limit\nopenReview({ url, workspace }) -> opened | unavailable | error  # separate presentation adapter\n```\n\nDelivery means the message reached the agent's supported interface; it does not mean the work finished. The shared workflow decides the fallback and eventual status. Contract checks exercise the same result shapes for both agents, and require useful unsupported results for generic commands. A tiny fake adapter proves shared delivery/retry logic can be used without adding another agent-name branch. Test behavior and recovery, not merely that an object has these method names.\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```\n\n### Step 2 — Finish headless reviews with Codex's permission model\n\n**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n**What “finished” means:** the required edits are checked, the Git commit succeeds, and only then is the review marked done. If the files were edited but the signing key is unavailable, the work is **still unfinished**. Keep those edits and show “Stopped before commit” with the log; fix the signing setup and retry from the saved work. The server must not commit on the agent's behalf or report “ready” merely because the files changed. The video shows this concrete example before the prediction question, using the same plain words.\n\nFor that signing failure, the review page shows the stopped state and log. The owner restores their signing key or corrects its configuration; reelplanner preserves that configuration. The agent then runs the guarded `inbox retry` operation, which checks for a live worker and already-completed work before resuming. Do not suggest that the person must repeat the edits or turn off signing to finish.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation, or the signing key is unavailable | Keep edits and show “Stopped before commit”; retry after the cause is fixed | agent edits: files; commit fails: reason logged; kept: unfinished review; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```\n\n### Step 3 — Deliver reviews to a live Codex session\n\n**It lets you:** press Send or Ask about this and have your active Codex session handle it.\n\nDepends on steps 1 and 2. Add an explicit connection between the review server and a Codex session, using the CLI's queue capability where available. Verify delivery in the installed app/CLI daemon; an accepted queue command alone is not proof the session acted. A trusted optional session hook may advertise its session identity; provide a documented explicit connection for installations without hooks. Do not make the core plugin depend on trust changes.\n\nKeep the current inbox as the durable record and preserve delivery priority: a waiting session, then the connected live session, then an explicitly configured headless run, then the inbox. Use claims to prevent two agents processing a review. A failed queue releases its delivery claim and uses the documented fallback. Questions still go to a live session only, without starting headless runs. Save an accepted question before attempting delivery. A failed or stale connection leaves it unanswered and available to the next session and in the submitted review, with a clear waiting indication; a queue acknowledgement is not an answer and does not consume it. Disconnection and stale session identity must not silently consume a review. The exact connection command is proposed below; its behavior is tested before it is advertised.\n\n“Exactly once” here means one stored/intaken review and at most one live handler, with explicit crash recovery; it is not a guarantee that an arbitrary edit can never need reconciliation. Associate ownership with the session/run and a renewable lease instead of treating an exited waiter process as proof that the agent died. A worker that dies after editing leaves its phase record and files intact; a retry checks them before proceeding. Connection obtains the current `CODEX_THREAD_ID` when invoked from that session, or a user-selected ID from Codex's session listing; verify both repository and active-session identity before registering, and reject a mismatched recipient.\n\nOn reconnect or at session start, the skill runs `inbox` and claims the oldest unanswered question through the bounded waiter, reads its plan/scene context and runs `inbox answer <id> \"<answer>\" --from \"<source>\"`. The page's existing question-status polling displays the answer and its source. A pending question is retained until answered, even when it is also included in a submitted review; deduplicate by its ID.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Live session connected | Send review | Queue only its inbox path to that session | you send: review; saved: inbox; queued: path; agent reads: file |\n| Waiting CLI task | `review --wait` already running | Existing waiter wins; no duplicate queued work | you send: review; claimed: waiter; handled: once |\n| Page question | Ask about this | Live session answers from plan/scene; no headless job | you ask: question; queued: path; agent answers: evidence; you see: answer |\n| Session gone | Queue fails or connection is stale | Retain inbox entry and fall back safely | you send: review; failed: delivery; kept: inbox; you see: waiting or headless status |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach --session codex:<id>  # proposed explicit connection\ncodex queue --thread <id> --message <inbox-path message>     # notify, without embedding review prose\nreelplanner review --wait --timeout 90                      # fallback bounded waiter\nreelplanner inbox                                          # durable pending items\n```\n\n#### Example\n\nConnect a scratch review server to a real Codex session. Submit one review and one question. Verify each is handled once and the page shows the answer. Stop the session, submit again, and verify the review stays available rather than disappearing into an unreachable session.\n\n```diagram\nflow: Review delivery\nSend -> inbox file: save first\ninbox file -> waiting session: first choice\ninbox file --> connected Codex session: notify\nconnected Codex session --> headless run: delivery unavailable\nheadless run --> next session inbox: not configured\n```\n\n### Step 4 — Explain the correct Codex session\n\n**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\nIf the active thread is verified but no file is readable, first try that supported read-only export. If it cannot recover the source, explain which conversation could not be read and ask the owner for an export or file path for that conversation. Verify its session and project before using it. Neither the agent nor the owner should have to guess which newer conversation happens to contain the right work.\n\nIf the active source, supported export and owner-provided copy are all unavailable or unreadable, stop the explainer with a clear missing-source error naming the requested conversation. It remains unfinished until its source can be read; never substitute another conversation or fabricate an account of this one.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```\n\n### Step 5 — Match terminal review and choose the remote path\n\n**It lets you:** watch the plan beside Codex, send a local review directly, and share a portable copy when someone is elsewhere.\n\nYour review selected **A (D-313)**. The usual local workflow is watch → answer → Send → Codex handles the saved review. **No download is needed locally.** The portable-copy workflow is for a reviewer elsewhere with no connection to the project: watch → answer → download → transfer the file to the agent. It has no automatic remote answers. Keep those two cases visibly separate in the video, docs and player messages; never describe all browser reviews as manual exports. A hosted service that connects remote Send to the project is a later, separately reviewed change.\n\nDocument the extension choices using concrete outcomes. Codex plugins install agent instructions and tools. Trusted hooks run small commands at chosen moments. Compatible MCP interfaces can show an app, and ChatGPT Sites can host one. These do not automatically provide the stored reviews, signed-in reviewer or model answers that today's Claude-hosted page uses. The research keeps the exact technical names and limits. The main explanation should say what each choice lets the reviewer do.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows a proposed layout with Codex on one side and the player on the other: watch, answer, Send, then see the updated video. It is labelled as a proposal. The implementation walkthrough must show that sequence working, including sound, the right project's library and one agent receiving each review. `review <video-dir> --detach` starts the local server and prints the browser address. A portable bundle is a copy of the player files; opening that copy elsewhere does not connect it to the project. The printed address must name the server's actual listening port, including when the first port is occupied; verify the served plan and active-session status before presenting the link. The first review here exposed that wrong-port failure, which was worked around using a free port.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nValidate the selected portable route: the transferred file must retain the reviewer's identity, answers and comments when recorded through the existing CLI. Explain how to return a question to the agent when the copy is remote. Test the ordinary local Send separately: it needs no file transfer and must show whether Codex has started, stopped or finished. Remote automatic delivery remains a named follow-up under D-313. The unselected hosted investigation is kept in the original scope question and research; it is not included in this implementation.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Normal local review | Open the server address on this machine and press Send | Save the review and notify the waiting/connected Codex session; no download | you open: local page; answer: questions; send: review; Codex receives: saved review |\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| First port occupied | Start the local review while another server uses the default port | Print the actual free port and serve the correct plan there | you open: printed address; checked: correct title and session status; Send reaches: this project's inbox |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach        # normal local page: Send goes directly to the project\nreelplanner bundle-player <out> <video-dir>    # portable copy for a reviewer elsewhere\nannotations.json                              # transfer only for a disconnected portable copy\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nFirst open the local server address in a scratch project, answer a choice and press Send. Codex must receive it without a downloaded file. Then open a separate portable copy with no server connection, export its answers and record the file through the CLI. Confirm the chosen answer and reviewer identity survive both routes. Start another server on the first port and repeat the local test using the printed free port.\n\n```diagram\ncompare: Two ways to review\nbefore: local player -> project inbox -> Codex: Send directly\nafter: portable copy elsewhere -> review file -> Codex: transfer manually\n```\n\n### Step 6 — Prove the whole lifecycle and publish honest support claims\n\n**It lets you:** choose Codex with evidence that the complete supported workflow works.\n\nDepends on steps 1–5. Run a small real scratch project with Codex: native plugin install and discovery, new plan, narrated video, fresh script and frame checks, local review submission, revision, implementation, independent code check, walkthrough with one accepted and one flagged choice, fix and final commit. Exercise headless approval and requested changes, a live-session question, failure recovery, a session explainer, and the terminal-pane checklist from the supplied Claude branch. Test Codex CLI and the app browser separately; a CLI result is not proof of the app handoff. Save commands, versions, durations and results in `eval/agents/`, without credentials or copied private transcripts. The walkthrough shows real commands and outcomes. A blocked account feature or platform remains explicitly unverified; do not change the support table to fully tested from mocked commands.\n\nUpdate `docs/agents.md`, README, AGENTS.md, relevant reference docs, and the system spec/map to match what landed. Run `npm test` and full versions of each touched spec, with a fresh independent code check before the walkthrough. Test Claude regressions to protect existing behavior. Public plugin directory submission, real remote deployment and enabling headless automation in this owner's repo are separate explicit actions.\n\nThe initial acceptance environment is the installed Codex CLI 0.162.1 and Codex app on this macOS machine, using a scratch Git repo and a real supported graphics/browser pane for the terminal workflow. Verify capability checks against this version; document the actual minimum supported version after testing. Both CLI and app must complete their required live handoffs. If account policy, sandboxing, signing, session delivery or terminal support blocks a required path, finish unaffected work and report the missing evidence; the support claim and goal remain incomplete until that blocker is resolved. Linux/Windows/cloud claims remain separate and unverified unless independently exercised.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Full scratch run | Installed supported Codex | Complete all advertised lifecycle outcomes | installed: plugin; built: plan; reviewed: choices; built: code; checked: diff; reviewed: walkthrough |\n| Real denial | Blocked operation or signing failure | Pending review remains recoverable with log | run: stopped; saved: evidence; corrected: prerequisite; retried: once |\n| Automated regression suite | Mocked edge and race cases | Proves contracts, separately from model evidence | run: specs; checked: cases; you see: actual counts |\n| Platform unavailable | Cloud or another OS not exercised | Support docs say unverified | inspected: availability; absent: evidence; you see: limit |\n\n#### Interface\n\n```text\neval/agents/<date>-codex-lifecycle.md          # real runtime evidence, commands and versions\nnpm test                                      # required fast suite\nnode scripts/test/run.mjs --full <names>        # exhaustive touched specs\nreelplanner code-check <plan-dir> --base <ref>  # independent implementation review\nreelplanner reel audit <plan-dir>              # walkthrough coverage and answered findings\n```\n\n#### Example\n\nThe scratch task adds a visible setting to a tiny app. The reviewer changes its default in the plan video, flags one implementation choice in the walkthrough, and sees the corrected app. The repo records both reviews and the final commits. Only after that evidence passes does the support table say the local lifecycle is tested.\n\n```diagram\nflow: Proof before support claim\nnative install -> plan video: build\nplan video -> review -> implementation: decide\nimplementation -> independent code check -> walkthrough: verify\nwalkthrough -> flagged choice fix -> evidence: finish\nevidence -> support table: state what passed\n```",
     "steps": [
       {
         "n": 1,
         "title": "Install through Codex's own plugin system",
-        "text": "**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```"
+        "text": "**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n**Keep the coding-agent interface small.** Extend the existing agent-selection code instead of building a second review system for Codex. A shared caller selects a Claude, Codex or generic-command adapter once. Agent differences belong behind the contract below: checking available features; producing the launch command and permission/commit instructions; notifying a verified session; and finding that session's saved conversation. These operations receive an explicit repo and environment rather than reading unrelated global state. Use ordinary functions and small modules; no registration framework, dependency injection container or repeated copies of the lifecycle scripts.\n\nThe shared code owns input validation, saving reviews and questions, claims and their renewal, retries, recording decisions, progress/status, builds and completion. An adapter cannot mark a review done, modify its answers, or claim that a queued message was acted on. A presentation adapter opens a URL in a browser or terminal workspace; it does not implement a second player or review format. Existing custom agent commands keep a generic path, with unsupported features stated explicitly. Add another coding agent by implementing its small adapter and contract checks, not by copying the review server, inbox or player. The independent code check must look for agent-name branches escaping this boundary and for duplicate workflow code.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\nThe proposed internal contract, with exact names settled during implementation, is:\n\n```text\ngetHarness(id) -> supported agent or generic command  # choose the agent-specific functions once\nprobe({ repo, env, executable }) -> capabilities     # check the installed version and usable features\nheadless({ repo, env, reviewPath }) -> launchSpec    # command arguments, environment and commit advice\ndeliver({ repo, session, inboxPath }) -> result      # delivered, unavailable or failed; never finished\nsessionSource({ repo, env, session }) -> source      # verified conversation source or an explicit limit\nopenReview({ url, workspace }) -> opened | unavailable | error  # separate presentation adapter\n```\n\nDelivery means the message reached the agent's supported interface; it does not mean the work finished. The shared workflow decides the fallback and eventual status. Contract checks exercise the same result shapes for both agents, and require useful unsupported results for generic commands. A tiny fake adapter proves shared delivery/retry logic can be used without adding another agent-name branch. Test behavior and recovery, not merely that an object has these method names.\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```"
       },
       {
         "n": 2,
         "title": "Finish headless reviews with Codex's permission model",
-        "text": "**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation | Run stops with evidence; review remains actionable | agent requests: commit; refused: escalation; kept: inbox item; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```"
+        "text": "**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n**What “finished” means:** the required edits are checked, the Git commit succeeds, and only then is the review marked done. If the files were edited but the signing key is unavailable, the work is **still unfinished**. Keep those edits and show “Stopped before commit” with the log; fix the signing setup and retry from the saved work. The server must not commit on the agent's behalf or report “ready” merely because the files changed. The video shows this concrete example before the prediction question, using the same plain words.\n\nFor that signing failure, the review page shows the stopped state and log. The owner restores their signing key or corrects its configuration; reelplanner preserves that configuration. The agent then runs the guarded `inbox retry` operation, which checks for a live worker and already-completed work before resuming. Do not suggest that the person must repeat the edits or turn off signing to finish.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation, or the signing key is unavailable | Keep edits and show “Stopped before commit”; retry after the cause is fixed | agent edits: files; commit fails: reason logged; kept: unfinished review; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```"
       },
       {
         "n": 3,
@@ -1403,12 +1426,12 @@
       {
         "n": 4,
         "title": "Explain the correct Codex session",
-        "text": "**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```"
+        "text": "**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\nIf the active thread is verified but no file is readable, first try that supported read-only export. If it cannot recover the source, explain which conversation could not be read and ask the owner for an export or file path for that conversation. Verify its session and project before using it. Neither the agent nor the owner should have to guess which newer conversation happens to contain the right work.\n\nIf the active source, supported export and owner-provided copy are all unavailable or unreadable, stop the explainer with a clear missing-source error naming the requested conversation. It remains unfinished until its source can be read; never substitute another conversation or fabricate an account of this one.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```"
       },
       {
         "n": 5,
         "title": "Match terminal review and choose the remote path",
-        "text": "**It lets you:** review beside Codex in a terminal workspace and choose how a remote reviewer reaches the project.\n\nDepends on the hosting choice below. Document the actual equivalents: native plugins package skills and tools; trusted hooks automate lifecycle events; MCP Apps can supply UI in compatible hosts; ChatGPT Sites can host an app with persistent data. None of these automatically supplies the `window.claude` database, reviewer identity or model answering used by today's hosted page. Codex CLI has no inline Visualization renderer.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows an explicitly labelled proposed adjacent-pane layout and the watch → answer → Send → changed-scene sequence, alongside the supplied branch's actual pane behavior. A prototype communicates the intended workflow; it is not runtime proof. The implementation walkthrough must show that same sequence for real. `review <video-dir> --detach` starts the local server and prints the URL used by a terminal browser; a bundle is static files and does not itself provide a server or automatic handoff.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nFor option A, validate the portable bundle/download/intake route, including reviewer identity, decision preservation and useful Ask about this fallback. Clearly label its manual transfer and absence of automatic remote answers. It establishes local Codex parity while remote automation remains open. For option B, this plan first produces a working authenticated hosted review spike, including durable submission and question-answer handoff to a scratch Codex repo, before committing to a separately reviewed service implementation. Budget the initial investigation to two working days, an engineering estimate rather than a delivery promise; if it cannot establish the route in that time, report the evidence and next choice instead of silently expanding into a service build. The spike requires a host, durable store, reviewer authentication and a transport into the repo. Use scratch content and existing local/free development facilities initially; authorizing B does not authorize a paid subscription, billable hosted deployment or public exposure. Any such expense or deployment gets its own concrete final approval. A UI-only mockup, public page or manifest does not count as hosted parity. The spike must identify hosting costs, identity, storage, transport and account/surface limits; deployment or exposure of this repo's private plans requires an explicit final approval.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| Hosted spike chosen | Remote review of scratch content | Prove authenticated storage, intake and response | you send: review; stored: durable row; delivered: Codex; you see: status |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner bundle-player <out> <video-dir>    # portable browser player\nannotations.json                              # exported review, current record format\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nOpen a scratch bundle with no `window.claude`, answer a decision, export the review and record it through the CLI. Confirm the chosen answer and reviewer identity survive. If hosted automation is selected, prove the same outcome through an authenticated remote spike rather than calling a rendered HTML page complete.\n\n```diagram\ncompare: Remote review\nbefore: Claude Artifact -> Claude database: store\nafter: portable browser player -> review file -> Codex intake: transfer\n```"
+        "text": "**It lets you:** watch the plan beside Codex, send a local review directly, and share a portable copy when someone is elsewhere.\n\nYour review selected **A (D-313)**. The usual local workflow is watch → answer → Send → Codex handles the saved review. **No download is needed locally.** The portable-copy workflow is for a reviewer elsewhere with no connection to the project: watch → answer → download → transfer the file to the agent. It has no automatic remote answers. Keep those two cases visibly separate in the video, docs and player messages; never describe all browser reviews as manual exports. A hosted service that connects remote Send to the project is a later, separately reviewed change.\n\nDocument the extension choices using concrete outcomes. Codex plugins install agent instructions and tools. Trusted hooks run small commands at chosen moments. Compatible MCP interfaces can show an app, and ChatGPT Sites can host one. These do not automatically provide the stored reviews, signed-in reviewer or model answers that today's Claude-hosted page uses. The research keeps the exact technical names and limits. The main explanation should say what each choice lets the reviewer do.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows a proposed layout with Codex on one side and the player on the other: watch, answer, Send, then see the updated video. It is labelled as a proposal. The implementation walkthrough must show that sequence working, including sound, the right project's library and one agent receiving each review. `review <video-dir> --detach` starts the local server and prints the browser address. A portable bundle is a copy of the player files; opening that copy elsewhere does not connect it to the project. The printed address must name the server's actual listening port, including when the first port is occupied; verify the served plan and active-session status before presenting the link. The first review here exposed that wrong-port failure, which was worked around using a free port.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nValidate the selected portable route: the transferred file must retain the reviewer's identity, answers and comments when recorded through the existing CLI. Explain how to return a question to the agent when the copy is remote. Test the ordinary local Send separately: it needs no file transfer and must show whether Codex has started, stopped or finished. Remote automatic delivery remains a named follow-up under D-313. The unselected hosted investigation is kept in the original scope question and research; it is not included in this implementation.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Normal local review | Open the server address on this machine and press Send | Save the review and notify the waiting/connected Codex session; no download | you open: local page; answer: questions; send: review; Codex receives: saved review |\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| First port occupied | Start the local review while another server uses the default port | Print the actual free port and serve the correct plan there | you open: printed address; checked: correct title and session status; Send reaches: this project's inbox |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach        # normal local page: Send goes directly to the project\nreelplanner bundle-player <out> <video-dir>    # portable copy for a reviewer elsewhere\nannotations.json                              # transfer only for a disconnected portable copy\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nFirst open the local server address in a scratch project, answer a choice and press Send. Codex must receive it without a downloaded file. Then open a separate portable copy with no server connection, export its answers and record the file through the CLI. Confirm the chosen answer and reviewer identity survive both routes. Start another server on the first port and repeat the local test using the printed free port.\n\n```diagram\ncompare: Two ways to review\nbefore: local player -> project inbox -> Codex: Send directly\nafter: portable copy elsewhere -> review file -> Codex: transfer manually\n```"
       },
       {
         "n": 6,
@@ -1518,6 +1541,7 @@
     }
   ],
   "terms": [
+    "adapter",
     "Claude /reel · ccr-7d2997e8-elkd7p · d09b72d",
     "--session codex:<id>",
     "parity",
@@ -1607,6 +1631,7 @@
     "API"
   ],
   "termMeanings": {
+    "adapter": "a small module containing only what one coding agent does differently",
     "claude /reel · ccr-7d2997e8-elkd7p · d09b72d": "the native Claude reel pane source inspected on branch ccr-7d2997e8-elkd7p at commit d09b72d. This is source inspection, not a passed Codex runtime trial",
     "--session codex:<id>": "proposed connection to the active runtime thread. Validate its repo and identity first. Failed or stale delivery retains the saved inbox work",
     "parity": "the same usable supported review outcomes. native visual appearance need not be identical",
@@ -2866,15 +2891,7 @@
         "cli"
       ],
       "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
-      "other": true,
-      "definedIn": {
-        "video": "2026-10-11-codex-first-class",
-        "frame": 2,
-        "title": "What Codex actually offers",
-        "start": 15.639,
-        "chapter": 1,
-        "chapterTitle": "The goal and the boundary"
-      }
+      "other": true
     },
     {
       "term": "HTML",
@@ -3046,7 +3063,7 @@
     "k2": {
       "kind": "quick check",
       "n": 2,
-      "gloss": "Edit applied; signing fails. Review status?"
+      "gloss": "Files edited; commit fails. Finished?"
     },
     "k3": {
       "kind": "quick check",
@@ -3056,29 +3073,53 @@
     "k4": {
       "kind": "quick check",
       "n": 4,
-      "gloss": "Known active thread is unreadable. Which source?"
+      "gloss": "Active source and export fail. Which source?"
     },
     "k5": {
       "kind": "quick check",
       "n": 5,
-      "gloss": "Hosted UI works; answers vanish. Is it parity?"
+      "gloss": "Disconnected copy reviewed elsewhere. What next?"
     },
     "k6": {
       "kind": "quick check",
       "n": 6,
       "gloss": "Specs pass; no real live answer. Claim fully tested?"
-    },
-    "q1": {
-      "kind": "question",
-      "n": 1,
-      "gloss": "How far should remote reviews go?"
     }
   },
   "termsCheck": "strict",
   "changes": {
     "against": "HEAD",
-    "baseline": false,
-    "build": "first",
-    "note": "no previous build to compare against"
+    "baseline": true,
+    "at": "2026-10-11T18:53:40.576Z",
+    "build": "5eef57c2c1f0",
+    "added": 0,
+    "edited": 13,
+    "restyled": 0,
+    "retimed": 0,
+    "same": 5,
+    "removed": [
+      {
+        "index": 5,
+        "title": "B · Prove the hosted bridge"
+      }
+    ],
+    "changedFrames": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18
+    ],
+    "restyledFrames": [],
+    "changedSeconds": 277.02,
+    "totalSeconds": 358.89
   }
 }
