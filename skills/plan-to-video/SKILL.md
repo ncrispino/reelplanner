@@ -671,6 +671,10 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   still needs adoption, and background callbacks vary by client. Follow
   [references/harnesses.md#local-review](references/harnesses.md#local-review) for connection, polling,
   ownership renewal and saved questions.
+  If `--wait` prints an `owner handle:` on stderr because no stable session ID is available, keep it
+  and append `--owner <handle>` to `inbox answer`, `renew`, `progress` and `done`. Stdout is still the
+  saved file's path. Reuse that handle rather than setting an environment prefix; a later adopter's
+  handle belongs to that adopter. A later `--wait --owner <handle>` can reuse your ownership.
 - **No session waiting.** The review waits in the inbox for the next session, unless the repo has a headless
   command (`agent.command` in `.reelplanner/config.json`): `reel init` writes none, and `$RP reel init <repo>
   --agent claude|codex` writes one, in a set-up repo too. Run that only when the person asks for reviews to be

@@ -81,10 +81,10 @@ try {
   let s = (await status(w.id)).body;
   ok("in the inbox, nobody's: waiting, since it was sent", s.ok && s.state === "waiting" && s.by === null && s.since === "2026-01-02T10:00:00Z" && !("step" in s), JSON.stringify(s));
   ok("build: the served video's build signature (its plan map's changes.at)", s.build === "2026-01-01T00:00:00.000Z", JSON.stringify(s));
-  claim(rp, w.id, "session");
+  claim(rp, w.id, "session", { owner: "session:review-status" });
   s = (await status(w.id)).body;
   ok("claimed by a waiting session: working, by the session, since the claim", s.state === "working" && s.by === "session" && /^\d{4}-/.test(s.since || "") && !s.log, JSON.stringify(s));
-  markDone(rp, w.id);
+  markDone(rp, w.id, { owner: "session:review-status" });
   s = (await status(w.id)).body;
   ok("in inbox/done/: done, by the session; the build as served", s.state === "done" && s.by === "session" && s.build === "2026-01-01T00:00:00.000Z", JSON.stringify(s));
 
@@ -158,7 +158,7 @@ try {
 
   // ---- one video (level 1): no .reelplanner/ at all, so Send lands in this machine's inbox and nothing in the repo ----
   // (its own folder, outside the set-up repo above, whose .reelplanner/ it would otherwise be found under; a git repo)
-  const env2 = { ...process.env, REELPLANNER_HOME: home };
+  const env2 = { ...process.env, REELPLANNER_OWNER: "session:review-status-cli", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: home };
   const plain = join(mkdtempSync(join(tmpdir(), "reel-status-plain-")), "plain"), pv = join(plain, "videos", "demo");
   mkdirSync(join(pv, "compositions"), { recursive: true }); execFileSync("git", ["-C", plain, "init", "-q"]);
   writeFileSync(join(pv, "index.html"), "<!doctype html><title>demo</title>\n");

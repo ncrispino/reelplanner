@@ -360,6 +360,68 @@ try {
   assert(finish(legacyGit.id));
   console.log("✓ unclaimed Git reviews and legacy Git claims cannot bypass ownership/check/commit evidence; proper adoption, new checked work and commitment complete them");
 
+  for (const mode of ["claudecode-only", "anonymous"]) {
+    const anonymousRepo = mkdtempSync(join(tmpdir(), "reel-owner-handle-")), anonymousRp = join(anonymousRepo, ".reelplanner");
+    mkdirSync(anonymousRp); writeFileSync(join(anonymousRp, "decisions.json"), '{"decisions":[]}'); writeFileSync(join(anonymousRp, "config.json"), "{}");
+    const anonymousEnv = { ...process.env };
+    for (const key of ["REELPLANNER_OWNER", "CODEX_THREAD_ID", "CODEX_SESSION_ID", "CLAUDE_SESSION_ID", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"]) delete anonymousEnv[key];
+    if (mode === "claudecode-only") anonymousEnv.CLAUDECODE = "1";
+    const anonGit = (...argv) => execFileSync("git", ["-C", anonymousRepo, ...argv], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+    // Each call retains the ordinary executable prefix; the handle is a command argument.
+    const cli = (...argv) => spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), ...argv, "--repo", anonymousRepo], { cwd: anonymousRepo, env: anonymousEnv, encoding: "utf8" });
+    const handleOf = (result, path) => {
+      assert.equal(result.status, 0, result.stderr); assert.equal(result.stdout.trim(), path);
+      const handle = result.stderr.match(/owner handle: (session:[0-9a-f-]+)/)?.[1]; assert(handle, result.stderr); return handle;
+    };
+    try {
+      anonGit("init", "-q"); anonGit("config", "user.email", "scratch@example.test"); anonGit("config", "user.name", "Scratch");
+      writeFileSync(join(anonymousRepo, ".gitignore"), ".reelplanner/inbox/\n"); writeFileSync(join(anonymousRepo, "source.txt"), "before\n");
+      anonGit("add", "."); anonGit("-c", "commit.gpgsign=false", "commit", "-qm", "anonymous fixture");
+      const question = writeQuestion(anonymousRp, { id: `handle-${mode}`, question: "Why this choice?" });
+      const cp = join(anonymousRp, "inbox/questions", `${question.id}.claim`);
+      const firstHandle = handleOf(cli("review", "--wait", "--questions", "--timeout", "1"), question.path);
+      assert.equal(JSON.parse(readFileSync(cp)).owner, firstHandle);
+      const savedQuestion = readFileSync(question.path, "utf8"), savedClaim = readFileSync(cp, "utf8");
+      for (const options of [[], ["--owner", "session:foreign"]]) {
+        assert.equal(cli("inbox", "answer", question.id, "unauthorized answer", ...options).status, 1);
+        assert.equal(cli("inbox", "renew", question.id, ...options).status, 1);
+        assert.equal(readFileSync(question.path, "utf8"), savedQuestion); assert.equal(readFileSync(cp, "utf8"), savedClaim);
+      }
+      assert.equal(cli("inbox", "renew", question.id, "--owner", firstHandle).status, 0);
+      writeFileSync(cp, JSON.stringify({ ...JSON.parse(readFileSync(cp)), leaseUntil: 1 }));
+      const secondHandle = handleOf(cli("inbox", "--wait", "--questions", "--timeout", "1"), question.path);
+      assert.notEqual(secondHandle, firstHandle);
+      const adoptedQuestion = readFileSync(question.path, "utf8"), adoptedClaim = readFileSync(cp, "utf8");
+      const staleAnswer = cli("inbox", "answer", question.id, "stale answer", "--owner", firstHandle);
+      assert.equal(staleAnswer.status, 1); assert.match(staleAnswer.stderr, /another session/);
+      assert.equal(cli("inbox", "renew", question.id, "--owner", firstHandle).status, 1);
+      assert.equal(readFileSync(question.path, "utf8"), adoptedQuestion); assert.equal(readFileSync(cp, "utf8"), adoptedClaim);
+      assert.equal(cli("inbox", "answer", question.id, "Owned sourced answer.", "--from", "the plan", "--owner", secondHandle).status, 0);
+      assert.equal(readQuestion(anonymousRp, question.id).answer, "Owned sourced answer."); assert(!existsSync(cp));
+
+      const review = writeReview(anonymousRp, { ...row(9), project: `handle-review-${mode}` });
+      const reviewHandle = handleOf(cli("review", "--wait", "--timeout", "1"), review.path);
+      const reviewCp = join(anonymousRp, "inbox", `${review.id}.claim`), reviewPp = join(anonymousRp, "inbox/.progress", `${review.id}.json`);
+      const retainedReview = readFileSync(review.path, "utf8"), retainedClaim = readFileSync(reviewCp, "utf8"), retainedProgress = readFileSync(reviewPp, "utf8");
+      for (const options of [[], ["--owner", firstHandle]]) {
+        for (const command of [["renew", review.id], ["progress", review.id, "editing"], ["done", review.id]]) assert.equal(cli("inbox", ...command, ...options).status, 1);
+        assert.equal(readFileSync(review.path, "utf8"), retainedReview); assert.equal(readFileSync(reviewCp, "utf8"), retainedClaim); assert.equal(readFileSync(reviewPp, "utf8"), retainedProgress);
+      }
+      assert.equal(cli("inbox", "renew", review.id, "--owner", reviewHandle).status, 0);
+      assert.equal(cli("inbox", "progress", review.id, "editing", "--owner", reviewHandle).status, 0);
+      writeFileSync(join(anonymousRepo, "source.txt"), "checked anonymous review change\n");
+      assert.equal(cli("inbox", "progress", review.id, "checked", "--owner", reviewHandle).status, 0);
+      anonGit("add", "source.txt"); anonGit("-c", "commit.gpgsign=false", "commit", "-qm", "checked review commitment");
+      assert.equal(anonGit("rev-parse", "HEAD^{tree}"), progressOf(anonymousRp, review.id).checkedTree);
+      assert.equal(cli("inbox", "progress", review.id, "committed", "--owner", reviewHandle).status, 0);
+      assert.equal(cli("inbox", "done", review.id).status, 1);
+      assert.equal(cli("inbox", "done", review.id, "--owner", firstHandle).status, 1);
+      assert.equal(cli("inbox", "done", review.id, "--owner", reviewHandle).status, 0);
+      assert(existsSync(join(anonymousRp, "inbox/done", `${review.id}.json`)));
+    } finally { rmSync(anonymousRepo, { recursive: true, force: true }); }
+    console.log(`✓ ${mode}: separate CLI wait prints reusable own handle; answer/renew/progress/done require it, reject unknown/wrong/stale callers and retain command prefixes`);
+  }
+
   const unreadable = writeReview(rp, row(8)), configPath = join(repo, ".git/config"), goodConfig = readFileSync(configPath);
   writeFileSync(configPath, Buffer.concat([goodConfig, Buffer.from("\n[broken\n")]));
   assert.throws(() => claim(rp, unreadable.id, "session", { owner: "fake:probe-failure" }), /Cannot inspect Git/);

@@ -19,14 +19,21 @@
 //
 //   --timeout <s>   (--wait) give up after s seconds, exit 2
 //   --repo <dir>    the repo (default: the one you are in)
+//   --owner <handle>  reuse the owner handle printed on stderr by an anonymous --wait;
+//                     pass it to answer, renew, progress, done or a later --wait
 // `reelplanner review --wait` is the same as `inbox --wait`.
 import { fileURLToPath } from "node:url";
 import { resolve, basename } from "node:path";
+import { randomUUID } from "node:crypto";
+import { activeSession } from "./lib/agents.mjs";
 import { repoRoot, rpInitialized, rpDirOf } from "./lib/env.mjs";
 import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
 
 export async function main(args) {
   const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
+  const explicitOwner = flag("owner");
+  if (args.includes("--owner") && (!explicitOwner || !/^[a-z][a-z0-9-]*:[A-Za-z0-9._-]+$/.test(explicitOwner))) { console.error("✗ --owner requires the handle printed by --wait"); return 1; }
+  const callerOwner = explicitOwner || process.env.REELPLANNER_OWNER || activeSession(process.env)?.key || null;
   const repo = resolve(flag("repo") || repoRoot(process.cwd()));
   const rp = rpDirOf(repo), setUp = rpInitialized(rp);
   // the repo's inbox once `reel init` set it up; before that (one video) the one in this machine's folder, as the
@@ -37,9 +44,11 @@ export async function main(args) {
   if (args.includes("--wait")) {
     const t = Number(flag("timeout") || 0);
     console.error(`… waiting for a review in ${where} (Ctrl-C to stop)`);
-    let p; try { p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0, questionsOnly: args.includes("--questions"), repo }); }
+    const waitOwner = callerOwner || `session:${randomUUID()}`;
+    let p; try { p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0, questionsOnly: args.includes("--questions"), repo, owner: waitOwner }); }
     catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!p) { console.error(`△ no review in ${t}s`); return 2; }
+    if (!callerOwner) console.error(`owner handle: ${waitOwner}\nPass --owner ${waitOwner} to inbox answer, renew, progress and done; keep it for this claimed item.`);
     console.log(p);
     return 0;
   }
@@ -53,16 +62,16 @@ export async function main(args) {
         const r = await retryAgent(box, id);
         if (!r.started) { console.error(`△ ${id}: ${r.reason}`); return 1; }
         console.log(`✓ resumed ${id} (pid ${r.pid}); log: ${shownPath(r.log)}`);
-      } else { renewClaim(box, id, { ...(command === "progress" ? { phase: args[i + 2] } : {}) }); console.log(`✓ ${id}: ${command === "progress" ? args[i + 2] : "lease renewed"}`); }
+      } else { renewClaim(box, id, { owner: callerOwner, ...(command === "progress" ? { phase: args[i + 2] } : {}) }); console.log(`✓ ${id}: ${command === "progress" ? args[i + 2] : "lease renewed"}`); }
     } catch (e) { console.error(`✗ ${e.message}`); return 1; }
     return 0;
   }
 
   const ai = args.indexOf("answer");
   if (ai >= 0) {
-    const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => a !== "--from" && all[i - 1] !== "--from" && a !== "--repo" && all[i - 1] !== "--repo").join(" ").trim();
+    const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => !["--from", "--repo", "--owner"].includes(a) && !["--from", "--repo", "--owner"].includes(all[i - 1])).join(" ").trim();
     if (!id || !words) { console.error('usage: reelplanner inbox answer <id | path> "<answer>" [--from "<where>"]'); return 1; }
-    let q; try { q = answerQuestion(box, id, words, flag("from") || null); }
+    let q; try { q = answerQuestion(box, id, words, flag("from") || null, { owner: callerOwner }); }
     catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!q) { console.error(`✗ no question ${id} in the inbox`); return 1; }
     console.log(`✓ answered ${id}: the page shows it within a few seconds${q.from ? ` (from: ${q.from})` : ""}`);
@@ -75,7 +84,7 @@ export async function main(args) {
   if (di >= 0) {
     const id = basename(String(args[di + 1] || "")).replace(/\.json$/, "");
     if (!id) { console.error("usage: reelplanner inbox done <id | path>"); return 1; }
-    try { if (!markDone(box, id) && !(before && markDone(before, id))) { console.error(`✗ no review ${id} in the inbox`); return 1; } }
+    try { if (!markDone(box, id, { owner: callerOwner }) && !(before && markDone(before, id, { owner: callerOwner }))) { console.error(`✗ no review ${id} in the inbox`); return 1; } }
     catch (e) { console.error(`✗ ${e.message}`); return 1; }
     console.log(`✓ ${id} → inbox/done/`);
     return 0;

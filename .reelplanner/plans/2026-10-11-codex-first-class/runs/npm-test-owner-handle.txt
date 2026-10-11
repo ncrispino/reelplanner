@@ -1,0 +1,69 @@
+$ PATH=/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin:$PATH npm test > /private/tmp/reelplanner-codex-final-owner-handle-npm.txt 2>&1
+
+> reelplanner@0.2.0 test
+> node scripts/test/run.mjs
+
+fast run: 59 specs, 4 at a time (npm run test:full for everything)
+
+✓ scripts/test/rebuild.spec.mjs                     3.9 s  38 checks
+✓ packages/player/test/band.spec.mjs               17.4 s  43 checks
+✓ packages/player/test/answer-on-frame.spec.mjs    27.6 s  107 checks
+✓ packages/player/test/size.spec.mjs               31.3 s  55 checks
+✓ packages/player/test/stall.spec.mjs              47.4 s  10 checks
+✓ packages/player/test/guide-notes.spec.mjs        39.4 s  51 checks
+✓ packages/player/test/quiz.spec.mjs               31.9 s  31 checks
+✓ packages/player/test/controls.spec.mjs            6.5 s  39 checks
+✓ packages/player/test/decisions.spec.mjs           5.9 s  7 checks
+✓ scripts/test/details.spec.mjs                    26.2 s  51 checks
+✓ packages/player/test/player.spec.mjs              1.7 s  10 checks
+✓ scripts/test/loop.spec.mjs                       12.5 s  96 checks
+✓ packages/player/test/ask.spec.mjs                 7.8 s  21 checks
+✓ packages/player/test/access.spec.mjs             67.7 s  91 checks
+✓ scripts/test/version.spec.mjs                     0.3 s  10 checks
+✓ scripts/test/package.spec.mjs                     0.7 s  9 checks
+✓ scripts/test/case-study.spec.mjs                  7.7 s  70 checks
+✓ scripts/test/numerals.spec.mjs                    0.0 s  1 check
+✓ scripts/test/hyperframes-skills.spec.mjs          0.1 s  5 checks
+✓ packages/player/test/record-reach.spec.mjs       23.3 s  54 checks
+✓ scripts/test/system-review.spec.mjs               1.4 s  28 checks
+✓ scripts/test/lifecycle.spec.mjs                   6.1 s  64 checks
+✓ scripts/test/narrate.spec.mjs                     7.3 s  49 checks
+✓ scripts/test/narration-check.spec.mjs             3.2 s  35 checks
+✓ packages/player/test/frame-room.spec.mjs         45.1 s  16 checks
+✓ scripts/test/retime.spec.mjs                      0.3 s  9 checks
+✓ scripts/test/build.spec.mjs                       6.5 s  35 checks
+✓ scripts/test/terms.spec.mjs                       2.4 s  66 checks
+✓ scripts/test/names.spec.mjs                       0.5 s  40 checks
+✓ scripts/test/narrate-api.spec.mjs                18.4 s  59 checks
+✓ scripts/test/review-data.spec.mjs                 1.0 s  19 checks
+✓ scripts/test/reviews.spec.mjs                     4.8 s  58 checks
+✓ scripts/test/local-speed.spec.mjs                16.9 s  40 checks
+✓ scripts/test/stage-presence.spec.mjs              0.1 s  11 checks
+✓ scripts/test/bundle-shared.spec.mjs               2.2 s  21 checks
+✓ scripts/test/visuals.spec.mjs                     1.4 s  47 checks
+✓ packages/player/test/guide-under.spec.mjs        62.3 s  46 checks
+✓ scripts/test/fresh-eyes.spec.mjs                  5.9 s  89 checks
+✓ scripts/test/thumbs.spec.mjs                      0.8 s  15 checks
+✓ scripts/test/memory.spec.mjs                     14.5 s  81 checks
+✓ scripts/test/explainer.spec.mjs                   5.7 s  64 checks
+✓ scripts/test/contributing.spec.mjs               17.9 s  65 checks
+✓ scripts/test/static-server.spec.mjs               0.3 s  7 checks
+✓ scripts/test/supersedes.spec.mjs                  0.5 s  14 checks
+✓ scripts/test/ledger.spec.mjs                      4.0 s  32 checks
+✓ scripts/test/init.spec.mjs                        1.7 s  46 checks
+✓ scripts/test/frame-tools.spec.mjs                26.0 s  14 checks
+✓ scripts/test/guide-revised.spec.mjs              16.9 s  27 checks
+✓ scripts/test/make-public.spec.mjs                 3.0 s  20 checks
+✓ scripts/test/codex-install.spec.mjs               0.5 s  5 checks
+✓ scripts/test/old-names.spec.mjs                   1.8 s  27 checks
+✓ scripts/test/review-status.spec.mjs               9.0 s  49 checks
+✓ scripts/test/session-export.spec.mjs              2.0 s  35 checks
+✓ scripts/test/harnesses.spec.mjs                   0.7 s  11 checks
+✓ scripts/test/presentation.spec.mjs                0.6 s  14 checks
+✓ scripts/test/review-projects.spec.mjs             3.8 s  8 checks
+✓ scripts/test/media-seek.spec.mjs                  5.0 s  27 checks
+✓ scripts/test/delivery.spec.mjs                   13.9 s  18 checks
+✓ scripts/test/guide.spec.mjs                      72.5 s  111 checks
+
+✓ all 59 passed in 216.7 s (the slowest, scripts/test/guide.spec.mjs, 72.5 s)
+exit 0

@@ -39,6 +39,14 @@ reelplanner review <video-dir> --detach
 task claims it and prints the path. Codex clients do not all wake the conversation when a background
 process exits: check `reelplanner inbox` at the start of each turn and poll the waiting task.
 
+When neither `REELPLANNER_OWNER`, `CODEX_THREAD_ID` nor `CLAUDE_SESSION_ID` identifies the caller
+(including a Claude Code client with only `CLAUDECODE`), `--wait` prints an `owner handle:` line on
+stderr; stdout stays the saved item's path. Keep that handle and append `--owner <handle>` to
+`inbox answer`, `renew`, `progress` and `done`, or a later `--wait` that reuses the same ownership.
+Use the handle your waiter returned. A new adopter gets a different handle, so the old one cannot
+change its claim or answer. These remain ordinary CLI commands, with no environment prefix or
+permission-setting change. An unclaimed question can still be answered directly.
+
 For a supported connected Codex session, use `review <video-dir> --detach --session codex:<id>`.
 Use the current `CODEX_THREAD_ID` or a deliberately selected session ID. Connection verifies the
 running endpoint's project, main thread and loaded status; a saved conversation ID alone is insufficient.

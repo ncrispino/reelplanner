@@ -301,7 +301,8 @@ export function renewClaim(rp, id, { phase, owner = process.env.REELPLANNER_OWNE
   const path = existsSync(qClaimPath(rp, id)) ? qClaimPath(rp, id) : claimPath(rp, id);
   const updated = withClaimLock(path, () => {
     let c; try { c = JSON.parse(readFileSync(path, "utf8")); } catch { throw new Error(`no claim for ${id}`); }
-    if (owner && c.owner !== owner) throw new Error(`${id} belongs to another session`);
+    if (!owner || !c.owner) throw new Error(`${id} has no verified caller owner; reuse the owner handle from --wait with --owner, or adopt the legacy claim first`);
+    if (c.owner !== owner) throw new Error(`${id} belongs to another session`);
     if (phase && !["handling", "intake", "editing", "checked", "committed"].includes(phase)) throw new Error("phase must be handling, intake, editing, checked or committed");
     const next = { ...c, leaseUntil: Date.now() + LEASE_MS };
     writeAtomic(path, JSON.stringify(next) + "\n");
@@ -339,7 +340,8 @@ export function markDone(rp, id, { owner = process.env.REELPLANNER_OWNER || acti
     // review or permission to complete a legacy Git claim without recorded evidence.
     const gitCompletion = progress?.completionMode === "git" || (progress?.completionMode !== "quick-review" && completionContext(rp, dirname(rp)).completionMode === "git");
     if (gitCompletion && !c) throw new Error(`no owner claim for ${id}; recover it before completion`);
-    if (gitCompletion && owner && c?.owner !== owner) throw new Error(`${id} belongs to another session`);
+    if (c && (!owner || !c.owner)) throw new Error(`${id} has no verified caller owner; reuse the owner handle from --wait with --owner, or adopt the legacy claim first`);
+    if (c && c.owner !== owner) throw new Error(`${id} belongs to another session`);
     if (gitCompletion && progress?.completionMode !== "git") throw new Error("Stopped before commit: no recorded Git baseline or checked work; reconcile the legacy review and recover ownership before checking new work and committing");
     if ((gitCompletion || c) && !commitEvidenceMatches(progress, { completed: true, rp })) throw new Error("Stopped before commit: completion requires a recorded successful commit containing the checked review work and unchanged original owner edits, with no new pending tracked edits or untracked files; record checked before committing, keep the edits and retry after correcting the cause");
     if (!existsSync(from)) return false;

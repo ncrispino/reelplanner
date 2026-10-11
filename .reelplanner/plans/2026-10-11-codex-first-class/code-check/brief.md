@@ -34,9 +34,10 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760844cde5bd1f198c5f2ad3b84caca6a)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2)
 
 ```
+76859a2 Enforce question ownership before answering recovered work
 1796951 Recover stopped legacy sessions and record completed CLI lifecycle
 7c89555 Isolate review bundles and finish source-only Codex rebuilds
 8ef559a Scope Codex support to CLI and record exact session evidence
@@ -148,16 +149,18 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760844cde5bd1f198c5f2ad3b84caca6a` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (from the repository root). The files it touches:
 
 ```
 .agents/plugins/marketplace.json                   |   20 +
  .reelplanner/glossary.md                           |    2 +
- .../code-check/brief.md                            |  228 ++
+ .../code-check/brief.md                            |  256 ++
  .../code-check/checkpoint-0d051e7/brief.md         |  203 ++
  .../code-check/checkpoint-0d051e7/findings.md      |   61 +
  .../code-check/checkpoint-0fef69b/brief.md         |  220 ++
  .../code-check/checkpoint-0fef69b/findings.md      |   61 +
+ .../code-check/checkpoint-1796951/brief.md         |  256 ++
+ .../code-check/checkpoint-1796951/findings.md      |   61 +
  .../code-check/checkpoint-e481b8c/brief.md         |  228 ++
  .../code-check/checkpoint-e481b8c/findings.md      |   61 +
  .../code-check/findings.md                         |   61 +
@@ -172,15 +175,19 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760
  .../runs/full-generated-removals.txt               |    6 +
  .../runs/full-handoff.txt                          |    7 +
  .../runs/full-legacy-recovery.txt                  |   24 +
+ .../runs/full-question-ownership.txt               |   25 +
  .../runs/full-touched.txt                          |   27 +
  .../runs/ghostty-audio-position.txt                |    3 +
  .../runs/headless-real.txt                         |   27 +
  .../runs/headless-video-served.txt                 |  177 ++
+ .../runs/legacy-owner-recovery.txt                 |    5 +
  .../runs/native-plugin-install.txt                 |   58 +
  .../runs/native-plugin-source-only.txt             |   58 +
  .../runs/npm-test-audio.txt                        |   69 +
+ .../runs/npm-test-final-cli.txt                    |   69 +
  .../runs/npm-test-final-guard.txt                  |   69 +
  .../runs/npm-test-post-review.txt                  |   69 +
+ .../runs/npm-test-question-ownership.txt           |   69 +
  .../runs/npm-test-source-doc-and-isolation.txt     |   69 +
  .../runs/occupied-port.txt                         |    7 +
  .../runs/plan-check-final.txt                      |    3 +
@@ -189,7 +196,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760
  .../runs/stops-checkpoint.txt                      |   22 +
  .../runs/terminal-lifecycle.txt                    | 2577 ++++++++++++++++++++
  .../runs/unclaimed-completion.txt                  |    8 +
- .../2026-10-11-codex-first-class/walkthrough.md    |  480 ++++
+ .../2026-10-11-codex-first-class/walkthrough.md    |  484 ++++
  .reelplanner/spec.md                               |   12 +-
  .reelplanner/system.json                           |    8 +-
  AGENTS.md                                          |    8 +-
@@ -218,14 +225,14 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760
  packages/player/test/working.spec.mjs              |    6 +
  plugin.json                                        |   24 +
  scripts/explain.mjs                                |   11 +-
- scripts/inbox.mjs                                  |   26 +-
+ scripts/inbox.mjs                                  |   29 +-
  scripts/lib/agents.mjs                             |  142 +-
  scripts/lib/codex-session.mjs                      |  273 +++
  scripts/lib/env.mjs                                |   36 +-
  scripts/lib/explainer.mjs                          |   19 +-
  scripts/lib/fresh-eyes.mjs                         |   14 +-
  scripts/lib/http-file.mjs                          |   45 +
- scripts/lib/inbox.mjs                              |  404 ++-
+ scripts/lib/inbox.mjs                              |  432 +++-
  scripts/lib/presentation.mjs                       |   56 +
  scripts/lib/review-projects.mjs                    |   29 +
  scripts/lib/setup-check.mjs                        |   38 +
@@ -235,12 +242,12 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760
  scripts/session.mjs                                |   31 +
  scripts/setup.sh                                   |    5 +
  scripts/test/codex-install.spec.mjs                |  105 +
- scripts/test/delivery.spec.mjs                     |  333 +++
+ scripts/test/delivery.spec.mjs                     |  369 +++
  scripts/test/explainer.spec.mjs                    |   15 +-
  scripts/test/fresh-eyes.spec.mjs                   |   37 +
  scripts/test/harnesses.spec.mjs                    |  106 +
  scripts/test/init.spec.mjs                         |   12 +-
- scripts/test/loop.spec.mjs                         |    5 +-
+ scripts/test/loop.spec.mjs                         |    9 +-
  scripts/test/media-seek.spec.mjs                   |  129 +
  scripts/test/memory.spec.mjs                       |    4 +-
  scripts/test/package.spec.mjs                      |   19 +-
@@ -252,5 +259,5 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760
  scripts/test/version.spec.mjs                      |   23 +-
  skills/plan-to-video/SKILL.md                      |   46 +-
  skills/plan-to-video/references/harnesses.md       |  140 ++
- 101 files changed, 9585 insertions(+), 298 deletions(-)
+ 107 files changed, 10165 insertions(+), 306 deletions(-)
 ```
