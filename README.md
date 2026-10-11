@@ -100,44 +100,15 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
   - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
     [three ways](#three-ways-to-use-it)).
 
-## Watch it in Claude Code (`/reel`)
+## How it works
 
-With the plugin, the review happens beside the conversation: the video plays in a pane, stops at each open choice,
-takes your answers and comments, and sends them to Claude in the same conversation, without leaving Claude Code:
-with **Changes needed** Claude revises the plan and rebuilds the scenes that change, and the pane plays the new
-version's changes; with **Approve** Claude builds the plan.
+reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
+`.reelplanner/` record). Each scene is a web page
+rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
 
-<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, seeks, stops at each choice, takes an answer with a comment on it and a comment on a scene, sends the review with Changes needed; Claude, in the conversation, files it, edits that scene and rebuilds the video; the pane plays just the change." width="100%">
-
-<p align="center"><i>/reel in kitty on one of this repo's sample videos: the review sent with Changes needed, Claude
-filing it, editing the scene and rebuilding the video in the same conversation, then just the change played (75 s,
-the highlights of one real session; waits sped up, as the captions say).</i></p>
-
-**What it needs:**
-
-- Claude Code with the plugin (tested on 2.1.296), and the `reelplanner` command with `reelplanner setup` done
-  ([install](#install)): the pane plays a render of the video that HyperFrames makes once, with setup's Chrome and
-  ffmpeg, and its sound plays through `ffplay` (setup's ffmpeg has it; `afplay` on macOS).
-- **kitty or Ghostty** for the picture in the pane, as sharp as in the browser. Any other terminal opens the
-  browser player instead, and the pane keeps the choices, the comments and Send. In the Claude desktop and mobile apps
-  the pane shows three frames a second, with no sound.
-
-**Install** (after the `reelplanner` command and its setup, above), in Claude Code:
-
-```
-/plugin marketplace add ncrispino/reelplanner
-/plugin install reelplanner@reelplanner
-```
-
-Then start a new session. `/reel` lists the plans with a video; `/reel <plan>` opens one and `/reel <video-dir>` any
-built video. When the agent opens a video for review, a band above the prompt offers it too.
-
-**Keys:** `p` play or pause · `j` and `k` back and on 5 seconds · `r` replay · `n` and `b` the next and previous stop · a digit picks an option · `o` your
-own words · `c` a comment on the answer · `m` a comment at this moment · `z` bigger · `t` full screen (Claude Code switches to its classic layout, `/tui default`, and picks up the conversation; `t` again comes back) · `v` just the changes or the
-whole video · `w` the browser player, which is also where you draw on the video. The last stop is **Send**:
-**Approve** (Claude builds the plan, with no new plan video) or **Changes needed** (Claude revises it, rebuilds the
-scenes that change, and the pane offers **Watch what changed** when the new version is built).
-[Everything the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
+This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
+More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
+[every command](./docs/reference.md) · [what works today](./docs/status.md).
 
 ## Three ways to use it
 
@@ -150,6 +121,24 @@ scenes that change, and the pane offers **Watch what changed** when the new vers
 
 Ways 2 and 3 add a `.reelplanner/` folder to the repo (commit it). The first time in a repo, the agent asks
 which way you want, unless you said "quick". To move to a fuller way later, ask the agent. [How it fits together](./docs/lifecycle.md).
+
+## Watch it in Claude Code (`/reel`)
+
+With the plugin ([install](#install)), `/reel` plays the video in a pane beside the conversation. Answer and comment
+there, then **Send**: with **Changes needed** Claude revises the plan and the pane plays what changed; with
+**Approve** Claude builds the plan.
+
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, stops at a choice, takes an answer and comments, and sends the review with Changes needed; Claude rebuilds the video and the pane plays just the change." width="100%">
+
+<p align="center"><i>/reel in kitty: a review sent with Changes needed, then just the change played (75 s, sped up).</i></p>
+
+- **Needs:** the plugin and `reelplanner setup`, then a new session. The picture shows in
+  [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
+  player, and the pane keeps the choices, comments and Send.
+- **Open it:** `/reel` lists the plans with a video; `/reel <plan>` opens one. When the agent opens a video for
+  review, a band above the prompt offers it too.
+- **Keys:** `p` play or pause · `n` and `b` next and previous stop · a digit picks an option · `m` comment ·
+  `w` the browser player, to draw on the video. [Every key and what the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
 
 ## Case studies
 
@@ -177,16 +166,6 @@ Agents write plans faster than people can read them. A long plan gets skimmed, a
 
 Spec Kit is far more widely used, and for a one-line fix or a plan you can read in a minute, text is faster.
 More tools, with sources: [docs/comparison.md](./docs/comparison.md).
-
-## How it works
-
-reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
-`.reelplanner/` record). Each scene is a web page
-rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
-
-This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
-More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
-[every command](./docs/reference.md) · [what works today](./docs/status.md).
 
 ## The voice
 
