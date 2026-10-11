@@ -197,6 +197,45 @@ try {
   rmSync(join(repo, "owner-untracked.txt"));
   console.log("✓ checked evidence includes untracked intake without writing original untracked owner bytes to Git objects or changing their files/index; residual new files block completion");
 
+  const generatedPaths = ["generated/.hyperframes/shots/02-02-setting.png", "generated/compositions/captions.html"];
+  for (const path of generatedPaths) { mkdirSync(join(repo, path, ".."), { recursive: true }); writeFileSync(join(repo, path), `generated local artifact ${path}\n`); }
+  writeFileSync(join(repo, "owner-removed.txt"), "original owner artifact retained locally\n");
+  git("add", ...generatedPaths, "owner-removed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "previously tracked generated fixture");
+  const previousIgnore = readFileSync(join(repo, ".gitignore"), "utf8");
+  writeFileSync(join(repo, ".gitignore"), previousIgnore + "owner-removed.txt\n");
+  git("add", ".gitignore"); git("-c", "commit.gpgsign=false", "commit", "-qm", "original owner ignore rule");
+  git("rm", "--cached", "owner-removed.txt");
+  writeFileSync(join(repo, "owner-private.txt"), "original staged owner edit\n"); git("add", "owner-private.txt");
+  writeFileSync(join(repo, "owner-existing.txt"), "original unstaged owner edit\n");
+  writeFileSync(join(repo, "owner-generated-untracked.txt"), "original untracked owner edit\n");
+  const originalOwnerStage = git("diff", "--cached", "--binary", "--", "owner-private.txt", "owner-removed.txt");
+  const originalOwnerUnstaged = git("diff", "--", "owner-existing.txt");
+  const generatedReview = writeReview(rp, { ...row(9), project: "generated-removals" });
+  claim(rp, generatedReview.id, "session", { owner: "fake:generated" });
+  writeFileSync(join(repo, ".gitignore"), previousIgnore + "owner-removed.txt\n" + generatedPaths.join("\n") + "\n");
+  git("rm", "--cached", ...generatedPaths); // retain the ignored local files for the player
+  writeFileSync(join(repo, "reviewed.txt"), "review video source correction\n"); git("add", ".gitignore", "reviewed.txt");
+  const generatedOwnerIndex = git("ls-files", "--stage");
+  renewClaim(rp, generatedReview.id, { owner: "fake:generated", phase: "checked" });
+  assert.equal(git("ls-files", "--stage"), generatedOwnerIndex);
+  // Temporarily separate the original owner's staged work to commit only the review.
+  git("restore", "--staged", "owner-private.txt", "owner-removed.txt");
+  git("-c", "commit.gpgsign=false", "commit", "-qm", "source-only review removes tracked generated artifacts");
+  execFileSync("git", ["-C", repo, "apply", "--cached", "-"], { input: originalOwnerStage + "\n", stdio: ["pipe", "pipe", "pipe"] });
+  assert.equal(git("rev-parse", "HEAD^{tree}"), progressOf(rp, generatedReview.id).checkedTree);
+  renewClaim(rp, generatedReview.id, { owner: "fake:generated", phase: "committed" }); assert(finish(generatedReview.id));
+  assert.equal(git("diff", "--cached", "--binary", "--", "owner-private.txt", "owner-removed.txt"), originalOwnerStage);
+  assert.equal(git("diff", "--", "owner-existing.txt"), originalOwnerUnstaged);
+  assert.equal(readFileSync(join(repo, "owner-generated-untracked.txt"), "utf8"), "original untracked owner edit\n");
+  for (const path of generatedPaths) {
+    assert.equal(git("ls-files", "--", path), ""); assert.equal(git("check-ignore", "--", path), path);
+    assert.equal(readFileSync(join(repo, path), "utf8"), `generated local artifact ${path}\n`);
+  }
+  assert(existsSync(join(repo, "owner-removed.txt")));
+  git("restore", "--staged", "owner-private.txt", "owner-removed.txt"); git("restore", "owner-private.txt", "owner-existing.txt");
+  rmSync(join(repo, "owner-generated-untracked.txt"));
+  console.log("✓ checked source-only commit honors staged deletion of generated files retained ignored locally, while preserving owner staged deletions/edits, unstaged and untracked work");
+
   for (const situation of ["handling", "intake", "editing", "checked", "committed", "checked-after-commit"]) {
     const phase = situation === "checked-after-commit" ? "checked" : situation;
     const alreadyCommitted = ["committed", "checked-after-commit"].includes(situation);

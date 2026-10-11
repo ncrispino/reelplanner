@@ -337,6 +337,43 @@ const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileS
   ok("…answered (ask:), --check passes and the frame round starts", sr("--check").status === 0 && spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" }).status === 0);
 }
 
+// An explainer answers source-scope findings in explain.md, with the same change
+// requirement as a plan. An unrelated sibling plan must never satisfy the finding.
+{
+  const EP = join(RP, "explainers", "2026-10-11-source-check"), E = join(EP, "video");
+  mkdirSync(join(E, "compositions", "frames"), { recursive: true });
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nPRIVATE-EXPLAINER-SCOPE\n");
+  writeFileSync(join(E, "BRIEF.md"), '# Brief\n\n- Ask: "Explain the source boundary"\n');
+  writeFileSync(join(E, "STORYBOARD.md"), '---\ntitle: Source boundary\nkind: explainer\n---\n\n## Frame 1 — Scope\n\n- scene: a source boundary\n- voiceover: "This source describes the setting."\n- src: compositions/frames/01-scope.html\n- duration: 3s\n');
+  writeFileSync(join(E, "SCRIPT.md"), '# SCRIPT\n\n## Line 1 — Scope (Frame 1)\n\n    This source describes the setting.\n');
+  writeFileSync(join(E, "index.html"), "<html></html>\n");
+  writeFileSync(join(E, "compositions", "frames", "01-scope.html"), "<div>Source scope</div>\n");
+  writeFileSync(join(E, "plan-map.json"), JSON.stringify({ title: "Source boundary", frames: [{ index: 1, start: 0, durationSeconds: 3 }] }));
+  const sr = (...a) => run(E, "--script", ...a);
+  ok("explainer script: source scope is stamped without exposing explain.md to the reviewer", sr().status === 0
+    && JSON.parse(readFileSync(join(E, "fresh-eyes", "script", "stamp.json"), "utf8")).plan
+    && !readFileSync(join(E, "fresh-eyes", "script", "newcomer-brief.md"), "utf8").includes("PRIVATE-EXPLAINER-SCOPE"));
+  const sid = JSON.parse(readFileSync(join(E, "fresh-eyes", "script", "stamp.json"), "utf8")).id;
+  writeFileSync(join(E, "fresh-eyes", "script", "newcomer.md"), `# Fresh eyes: newcomer · script · stamp ${sid}\n\n- N1 [plan] · scene 1 · "the source": the source boundary is missing\n  - Answer: plan: explain.md now defines the source boundary\n`);
+  const unchanged = sr("--check");
+  ok("explainer script: an unchanged source document still fails a plan-tagged answer", unchanged.status === 1 && /explain\.md is unchanged/.test(unchanged.stdout), unchanged.stdout);
+  writeFileSync(join(EP, "plan.md"), "# Unrelated plan\n\nA changed sibling is not the explainer source.\n");
+  ok("explainer script: adding an unrelated plan.md cannot satisfy the finding", sr("--check").status === 1);
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nOnly the selected setting is depicted.\n");
+  ok("explainer script: a clarified explain.md satisfies the source finding", sr("--check").status === 0);
+  ok("explainer frame review starts after the resolved script finding", run(E, "--no-shots").status === 0);
+  const stamp = JSON.parse(readFileSync(join(E, "fresh-eyes", "stamp.json"), "utf8"));
+  writeFileSync(join(E, "fresh-eyes", "newcomer.md"), `# Fresh eyes: newcomer · round 1 · stamp ${stamp.id}\n\n- N1 [plan] · scene 1 · "the setting": source scope needs its exclusion\n  - Answer: plan: explain.md now excludes unrelated screens\n`);
+  writeFileSync(join(E, "fresh-eyes", "designer.md"), `# Fresh eyes: designer · round 1 · stamp ${stamp.id}\n\n- none\n`);
+  const frameUnchanged = run(E, "--check");
+  ok("explainer frames: unchanged explain.md remains unresolved", frameUnchanged.status === 1 && /explain\.md is unchanged/.test(frameUnchanged.stdout), frameUnchanged.stdout);
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nOnly the selected setting is depicted; unrelated screens are excluded.\n");
+  ok("explainer frames: clarified source document resolves the finding", run(E, "--check").status === 0);
+  rmSync(join(EP, "explain.md"));
+  const missing = run(E, "--check");
+  ok("explainer frames: a missing explain.md fails closed despite the sibling plan.md", missing.status === 1 && /no explain\.md/.test(missing.stdout), missing.stdout);
+}
+
 // ── step 3: a question asked on the page, in the record ──
 {
   const review = { exportedAt: "2026-10-01T10:00:00Z", verdict: "approve", annotations: [], quizzes: [],

@@ -1,0 +1,19 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' 'bin/reelplanner.mjs' 'setup' '--dry-run'
+reelplanner setup --dry-run: nothing is changed
+✓ node v22.20.0
+✓ reelplanner npm dependencies
+✓ ffmpeg (/opt/homebrew/bin/ffmpeg)
+✓ WebP (cwebp)
+✓ Chrome headless (/Users/ncrispin/.cache/puppeteer/chrome-headless-shell/mac_arm-149.0.7827.22/chrome-headless-shell-mac-arm64/chrome-headless-shell)
+✓ Kokoro TTS (kokoro-onnx in python3)
+✓ whisper.cpp (/opt/homebrew/bin/whisper-cli)
+✓ HyperFrames skills already at v0.8.52 in ~/.agents/skills and loading — nothing to install
+· would then re-apply the TTS speed patch (reelplanner patch-tts-speed)
+✓ narration: HyperFrames' engine, local Kokoro + whisper small.en, one line at a time (the default: no narration.tts in .reelplanner/config.json, no REELPLANNER_TTS). A hosted engine is much faster on a small machine: put REELPLANNER_TTS=openrouter and OPENROUTER_API_KEY=… in ~/.reelplanning/.env (this machine, every repo), then run reelplanner narration-check (docs/reference.md, "Narration engines")
+· would time one sentence through local Kokoro + whisper small.en (at most 30 s) and say whether local narration is fast enough here
+→ coding agent: codex (running inside Codex)
+✓ codex 0.162.1: headless runs, automatic approval review, session queue, plugins, MCP, session export
+→ setup checks CLI features; model-driven plan, review and walkthrough runs are not checked here.
+
+✓ dry run done: the steps marked · would run
+exit 0

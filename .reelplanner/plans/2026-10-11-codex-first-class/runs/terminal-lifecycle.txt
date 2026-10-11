@@ -789,3 +789,1081 @@ exit 0
 $ terminal-browser 'action' '--browser' '50952-1' '--tab' '2' '--' 'eval' '(async()=>{await new Promise(x=>setTimeout(x,600));const r=document.querySelector("#rp");return JSON.stringify({posted:r._posted,clicks:window.__testClicks,display:r.shadowRoot.querySelector(".handoff")?.innerText?.slice(-1000)});})()'
 "{\"posted\":{\"state\":\"sent\",\"verdict\":\"approve\",\"what\":\"[[{\\\"id\\\":\\\"amv4bqx2oyrak\\\",\\\"kind\\\":\\\"approve\\\",\\\"t\\\":36.33,\\\"frame\\\":{\\\"index\\\":5,\\\"compositionId\\\":\\\"05-large\\\",\\\"title\\\":\\\"Start large\\\"},\\\"plan\\\":{\\\"step\\\":1,\\\"questions\\\":[],\\\"component\\\":null},\\\"comment\\\":\\\"\\\"}],[{\\\"id\\\":\\\"q1\\\",\\\"option\\\":\\\"b\\\",\\\"label\\\":\\\"Large: easier reading\\\",\\\"recommended\\\":false,\\\"planStep\\\":1,\\\"question\\\":\\\"Which size should the story start with?\\\",\\\"t\\\":29.476,\\\"decidedAt\\\":\\\"2026-10-11T21:17:38.760Z\\\",\\\"note\\\":\\\"Synthetic trial: Keep the setting keyboard accessible and verify at 375px.\\\"}],[],[],\\\"approve\\\"]\",\"where\":\"repo\",\"id\":\"video-20261011T212129Z\",\"path\":\".reelplanner/inbox/video-20261011T212129Z.json\",\"message\":\"saved; your waiting session will pick it up\"},\"clicks\":[{\"tag\":\"BUTTON\",\"act\":\"finish\",\"text\":\"Finish review\"},{\"tag\":\"BUTTON\",\"act\":\"send-local\",\"text\":\"Send your approval\"}],\"display\":\"Finish your review\\nBack to the record\\nApprove\\nThe plan goes ahead as it stands, with your choices.\\nRequest changes\\nLeave a comment on what to change first — the agent rewrites the steps your comments land on.\\n\\nYour 1 decision goes with it.\\n\\nSent to the repo. Saved; your waiting session will pick it up.\\n\\n.reelplanner/inbox/video-20261011T212129Z.json\\nDo it yourself instead\"}"
 exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '2' '--' 'open' 'http://127.0.0.1:8964/2026-10-11-codex-first-class/guide/index.html#step-1'
+{
+  "url": "http://127.0.0.1:8964/2026-10-11-codex-first-class/guide/index.html#step-1",
+  "title": "",
+  "loading": true,
+  "canGoBack": false,
+  "canGoForward": false,
+  "findMatches": null,
+  "zoom": 1,
+  "favicon": null,
+  "tabs": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:8965/?project=l2-upload-resume",
+      "title": "Resumable uploads for the media service · review",
+      "active": false,
+      "targetId": "1D69C104FEF8AE40F978FB1B3AA78CDC",
+      "timeOrigin": 1791751682210.6,
+      "agentControlled": false
+    },
+    {
+      "id": 2,
+      "url": "http://127.0.0.1:8787/?project=2026-10-11-reading-size",
+      "title": "Comfortable reading · review",
+      "active": false,
+      "targetId": "532CFD99FC4CA784560A21E0BAF62EF9",
+      "timeOrigin": 1791753303527.7,
+      "agentControlled": true
+    },
+    {
+      "id": 3,
+      "url": "http://127.0.0.1:8964/2026-10-11-codex-first-class/guide/index.html#step-1",
+      "title": "",
+      "active": true,
+      "targetId": null,
+      "timeOrigin": null,
+      "agentControlled": false
+    }
+  ],
+  "viewport": {
+    "width": 1296,
+    "height": 1802
+  },
+  "pid": 50952,
+  "key": "50952-1",
+  "tty": "/dev/ttys046",
+  "splitDir": "right",
+  "parentTty": "/dev/ttys006",
+  "socket": "/Users/ncrispin/.local/state/terminal-browser-58a67c5b/instances/50952-1.sock",
+  "cdpPort": 54283,
+  "startedAt": 1791750017870,
+  "openedTab": 3
+}
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '2' '--' 'open' 'http://127.0.0.1:8788/?project=2026-10-11-reading-size--walkthrough'
+{
+  "url": "http://127.0.0.1:8788/?project=2026-10-11-reading-size--walkthrough",
+  "title": "",
+  "loading": true,
+  "canGoBack": false,
+  "canGoForward": false,
+  "findMatches": null,
+  "zoom": 1,
+  "favicon": null,
+  "tabs": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:8965/?project=l2-upload-resume",
+      "title": "Resumable uploads for the media service · review",
+      "active": false,
+      "targetId": "1D69C104FEF8AE40F978FB1B3AA78CDC",
+      "timeOrigin": 1791751682210.6,
+      "agentControlled": false
+    },
+    {
+      "id": 2,
+      "url": "http://127.0.0.1:8787/?project=2026-10-11-reading-size",
+      "title": "Comfortable reading · review",
+      "active": false,
+      "targetId": "532CFD99FC4CA784560A21E0BAF62EF9",
+      "timeOrigin": 1791753303527.7,
+      "agentControlled": true
+    },
+    {
+      "id": 3,
+      "url": "http://127.0.0.1:8964/2026-10-11-codex-first-class/guide/index.html#step-1",
+      "title": "Guide · Codex as a first-class reelplanner agent",
+      "active": false,
+      "targetId": "7121328E3D809469B36C3C7B3C71D2D5",
+      "timeOrigin": 1791756680538.1,
+      "agentControlled": false
+    },
+    {
+      "id": 4,
+      "url": "http://127.0.0.1:8788/?project=2026-10-11-reading-size--walkthrough",
+      "title": "",
+      "active": true,
+      "targetId": null,
+      "timeOrigin": null,
+      "agentControlled": false
+    }
+  ],
+  "viewport": {
+    "width": 1296,
+    "height": 1802
+  },
+  "pid": 50952,
+  "key": "50952-1",
+  "tty": "/dev/ttys046",
+  "splitDir": "right",
+  "parentTty": "/dev/ttys006",
+  "socket": "/Users/ncrispin/.local/state/terminal-browser-58a67c5b/instances/50952-1.sock",
+  "cdpPort": 54283,
+  "startedAt": 1791750017870,
+  "openedTab": 4
+}
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Large is ready to read" [level=1, ref=e367]
+  - button "Play (space)" [ref=e313]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 0/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 0 of 2" [level=4, ref=e310]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e313'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({project:p.getAttribute('\''project'\''),time:p._t,playing:p._playing,phase:p.phase,calls:p.calls,posted:p._posted});})()'
+"{\"project\":null}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Large is ready to read" [level=1, ref=e367]
+  - button "Pause (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 0/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 0 of 2" [level=4, ref=e310]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');const h=p.shadowRoot.querySelector('\''hyperframes-player'\'');return JSON.stringify({time:h?.currentTime,duration:h?.duration,paused:h?.paused,keys:Object.keys(p).filter(k=>!k.includes('\''annot'\'')).slice(0,24)});})()'
+"{\"time\":30.833333333333332,\"duration\":71.573,\"paused\":true,\"keys\":[\"DRAWN\",\"tool\",\"planMap\",\"_drawing\",\"_lastT\",\"_maxT\",\"_firstPlayAt\",\"decisions\",\"_pendingDecision\",\"_skipUntil\",\"quizzes\",\"autonomy\",\"level\",\"_notice\",\"detailsOpened\",\"moments\",\"$\",\"$$\",\"player\",\"_muted\",\"canvas\",\"ctx\",\"stage\",\"_capHide\"]}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic "HyperFrames Composition Play (space) 0:30 / 1:11 Waiting at 0:30 for your answer on what the agent chose Mute (M) Playback speed Video size: Fit (- smaller, = larger) Terms (G) Ask about this (Q) Plan text (L) The guide, under the video Dark theme (T) Mark D Jump in anytime with / — Esc returns to the player Finish review Record · 1 step · 0/2 judged · 0 comments Steps 1 Large is ready to read Two choices I made Normal, then reload? The real browser run What would you change? Timeline: Quick check The agent's choice Stop at quick checks The plan, as written Decisions None yet. 1 comes up on the video. Decided during implementation · 0 of 2 None yet. 2 come up on the video." [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Two choices I made" [level=1, ref=e371]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 0/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 0 of 2" [level=4, ref=e310]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+  - region "The video, small: it goes on while you read the guide" [ref=e368]
+    - button "Play" [ref=e369]
+    - button "A question is waiting: back to the video to answer it" [ref=e370]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e370'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic "HyperFrames Composition Decision Play (space) 0:30 / 1:11 Waiting at 0:30 for your answer on what the agent chose Mute (M) Playback speed Video size: Fit (- smaller, = larger) Terms (G) Ask about this (Q) Plan text (L) The guide, under the video Dark theme (T) Mark D Jump in anytime with / — Esc returns to the player Finish review Record · 1 step · 0/2 judged · 0 comments Steps 1 Large is ready to read Two choices I made Normal, then reload? The real browser run What would you change? Timeline: Quick check The agent's choice Stop at quick checks The plan, as written Decisions None yet. 1 comes up on the video. Decided during implementation · 0 of 2 None yet. 2 come up on the video." [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Two choices I made" [level=1, ref=e371]
+  - button "Show the frame" [ref=e372]
+  - button "Accept A" [ref=e373]
+  - button "Flag B" [ref=e374]
+  - button "Own words O" [ref=e375]
+  - button "Accept" [ref=e376]
+  - button "Flag" [ref=e377]
+  - button "Own words" [ref=e378]
+  - button "Read it in full" [ref=e379]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 0/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 0 of 2" [level=4, ref=e310]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({pending:p._pendingDecision,buttons:Array.from(p.shadowRoot.querySelectorAll('\''button'\'')).filter(e=>/^(Accept|Flag)/.test(e.innerText)).map(e=>({label:e.innerText,data:{...e.dataset},rect:e.getBoundingClientRect().toJSON()}))});})()'
+"{\"pending\":{\"kind\":\"group\",\"g\":{\"id\":\"stop-2\",\"stop\":true,\"frameIndex\":2,\"planStep\":1,\"ids\":[\"a1\",\"a2\"],\"calls\":[{\"id\":\"a1\",\"planStep\":1,\"chose\":\"Native two-option selector with explained disabled no-script fallback\",\"insteadOf\":\"Segmented buttons\",\"why\":\"Native keyboard typeahead, an explicit linked label and explained disabled no-script fallback satisfy the review comment with familiar controls\",\"check\":\"index.html select#reading-size; runs/app-check.txt\"},{\"id\":\"a2\",\"planStep\":1,\"chose\":\"Outlined white panel around the setting\",\"insteadOf\":\"Unboxed inline setting\",\"why\":\"Visually separates the setting from the story; a reviewer could prefer less decoration\",\"check\":\"index.html .reading-controls; runs/large.png\"}],\"at\":30.862}},\"buttons\":[{\"label\":\"AcceptA\",\"data\":{\"sverdict\":\"a1:accept\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}},{\"label\":\"FlagB\",\"data\":{\"sverdict\":\"a1:flag\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}},{\"label\":\"AcceptA\",\"data\":{\"sverdict\":\"a2:accept\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}},{\"label\":\"FlagB\",\"data\":{\"sverdict\":\"a2:flag\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}},{\"label\":\"Accept A\",\"data\":{\"dverdict\":\"accept\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}},{\"label\":\"Flag B\",\"data\":{\"dverdict\":\"flag\"},\"rect\":{\"x\":0,\"y\":0,\"width\":0,\"height\":0,\"top\":0,\"right\":0,\"bottom\":0,\"left\":0}}]}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'screenshot' '/private/tmp/reelplanner-terminal-proof-20261011/walk-choices.png'
+✓ Screenshot saved to /private/tmp/reelplanner-terminal-proof-20261011/walk-choices.png
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify(Array.from(p.player.shadowRoot.querySelector('\''iframe'\'').contentDocument.querySelectorAll('\''button,[data-call]'\'')).map(e=>({label:e.textContent.trim().slice(0,160),data:{...e.dataset},rect:e.getBoundingClientRect().toJSON()})).slice(0,12));})()'
+"[{\"label\":\"Native selectorInstead of separate buttonsTab → L → Enter\",\"data\":{\"call\":\"a1\"},\"rect\":{\"x\":920,\"y\":212.8984375,\"width\":780,\"height\":236,\"top\":212.8984375,\"right\":1700,\"bottom\":448.8984375,\"left\":920}},{\"label\":\"Outlined white panelInstead of an unboxed settingSeparates setting and story\",\"data\":{\"call\":\"a2\"},\"rect\":{\"x\":920,\"y\":502.8984375,\"width\":780,\"height\":236,\"top\":502.8984375,\"right\":1700,\"bottom\":738.8984375,\"left\":920}}]"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' 'window.scrollTo({top:0,left:0,behavior:'\''instant'\''}); JSON.stringify({scrollY:window.scrollY,time:document.querySelector('\''reelplanner-player'\'').player.currentTime})'
+"{\"scrollY\":0,\"time\":30.833333333333332}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic "HyperFrames Composition Decision Play (space) 0:30 / 1:11 Waiting at 0:30 for your answer on what the agent chose Mute (M) Playback speed Video size: Fit (- smaller, = larger) Terms (G) Ask about this (Q) Plan text (L) The guide, under the video Dark theme (T) Mark D Jump in anytime with / — Esc returns to the player Finish review Record · 1 step · 0/2 judged · 0 comments Steps 1 Large is ready to read Two choices I made Normal, then reload? The real browser run What would you change? Timeline: Quick check The agent's choice Stop at quick checks The plan, as written Decisions None yet. 1 comes up on the video. Decided during implementation · 0 of 2 None yet. 2 come up on the video." [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Two choices I made" [level=1, ref=e371]
+  - button "Show the frame" [ref=e372]
+  - button "Accept A" [ref=e373]
+  - button "Flag B" [ref=e374]
+  - button "Own words O" [ref=e375]
+  - button "Accept" [ref=e376]
+  - button "Flag" [ref=e377]
+  - button "Own words" [ref=e378]
+  - button "Read it in full" [ref=e379]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 0/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 0 of 2" [level=4, ref=e310]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({scrollY,stage:p.stage.getBoundingClientRect().toJSON(),visibleButtons:Array.from(p.shadowRoot.querySelectorAll('\''button'\'')).filter(e=>/^(Accept|Flag|Show the frame)/.test(e.innerText)&&e.getBoundingClientRect().width).map(e=>({label:e.innerText,data:{...e.dataset},rect:e.getBoundingClientRect().toJSON()}))});})()'
+"{\"scrollY\":0,\"stage\":{\"x\":24,\"y\":64,\"width\":576,\"height\":324,\"top\":64,\"right\":600,\"bottom\":388,\"left\":24},\"visibleButtons\":[{\"label\":\"Show the frame\",\"data\":{\"act\":\"fold\"},\"rect\":{\"x\":465.6796875,\"y\":253.25,\"width\":119.921875,\"height\":26,\"top\":253.25,\"right\":585.6015625,\"bottom\":279.25,\"left\":465.6796875}},{\"label\":\"Accept\\nA\",\"data\":{\"sverdict\":\"a1:accept\"},\"rect\":{\"x\":102.8984375,\"y\":312,\"width\":94.21875,\"height\":28,\"top\":312,\"right\":197.1171875,\"bottom\":340,\"left\":102.8984375}},{\"label\":\"Flag\\nB\",\"data\":{\"sverdict\":\"a1:flag\"},\"rect\":{\"x\":203.1171875,\"y\":312,\"width\":76.375,\"height\":28,\"top\":312,\"right\":279.4921875,\"bottom\":340,\"left\":203.1171875}},{\"label\":\"Accept\",\"data\":{\"sverdict\":\"a2:accept\"},\"rect\":{\"x\":102.8984375,\"y\":351,\"width\":66.21875,\"height\":28,\"top\":351,\"right\":169.1171875,\"bottom\":379,\"left\":102.8984375}},{\"label\":\"Flag\",\"data\":{\"sverdict\":\"a2:flag\"},\"rect\":{\"x\":175.1171875,\"y\":351,\"width\":48.375,\"height\":28,\"top\":351,\"right\":223.4921875,\"bottom\":379,\"left\":175.1171875}}]}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e373'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Two choices I made" [level=1, ref=e371]
+  - button "Show the frame" [ref=e372]
+  - button "Accepted" [ref=e383]
+  - button "Flag" [ref=e384]
+  - button "Own words" [ref=e385]
+  - button "Accept A" [ref=e386]
+  - button "Flag B" [ref=e387]
+  - button "Own words O" [ref=e388]
+  - button "Read it in full" [ref=e379]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 1/2 judged · 0 comments" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 1 of 2" [level=4, ref=e310]
+  - button "0:30" [ref=e380]
+  - button "Native" [ref=e389]
+  - button "selector" [ref=e390]
+  - button "flag instead" [ref=e381]
+  - button "Copy this choice" [ref=e382]
+  - heading "Comments Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e387'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic "HyperFrames Composition Pause (space) 0:32 / 1:11 Playing at 0:32 Mute (M) Playback speed Video size: Fit (- smaller, = larger) Terms (G) Ask about this (Q) Plan text (L) The guide, under the video Dark theme (T) Mark D Marks on the video: on (V) Jump in anytime with / — Esc returns to the player Finish review Record · 1 step · 2/2 judged · 1 comment Steps 1 Large is ready to read Two choices I made Normal, then reload? The real browser run What would you change? Timeline: Quick check The agent's choice Stop at quick checks The plan, as written Decisions None yet. 1 comes up on the video. Decided during implementation · 2 of 2" [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "After Normal and reload, which size returns?" [level=1, ref=e404]
+  - button "Pause (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - switch "Marks on the video: on (V)" [checked=true, ref=e391]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 2/2 judged · 1 comment" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 2 of 2" [level=4, ref=e310]
+  - button "0:30" [ref=e392]
+  - button "Native" [ref=e402]
+  - button "selector" [ref=e403]
+  - button "flag instead" [ref=e393]
+  - button "Copy this choice" [ref=e394]
+  - button "0:30" [ref=e395]
+  - button "accept instead" [ref=e396]
+  - button "Copy this choice" [ref=e397]
+  - heading "Comments · 1 Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+  - button "0:30" [ref=e398]
+  - button "Copy this comment" [ref=e399]
+  - button "remove" [ref=e400]
+  - textbox "Your comment — edit it here: Enter keeps the edit, Esc puts it back" [ref=e401]: Flagged: Outlined white panel around the setting
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'fill' '@e401' 'Remove the box; keep the label and selector. Synthetic acceptance fixture only.'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'press' 'Enter'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({time:p.player.currentTime,paused:p.player.paused,autonomy:p.autonomy,comments:p.annotations?.map(x=>({comment:x.comment,kind:x.kind}))});})()'
+"{\"time\":37,\"paused\":true,\"autonomy\":{\"a1\":{\"verdict\":\"accept\",\"t\":30.862,\"planStep\":1,\"chose\":\"Native two-option selector with explained disabled no-script fallback\",\"shownAt\":\"2026-10-11T22:13:58.482Z\",\"judgedAt\":\"2026-10-11T22:16:10.921Z\"},\"a2\":{\"verdict\":\"flag\",\"t\":30.862,\"planStep\":1,\"chose\":\"Outlined white panel around the setting\",\"shownAt\":\"2026-10-11T22:13:58.482Z\",\"judgedAt\":\"2026-10-11T22:16:19.327Z\"}},\"comments\":[{\"comment\":\"Remove the box; keep the label and selector. Synthetic acceptance fixture only.\",\"kind\":\"flag\"}]}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic "HyperFrames Composition The options on the frame Decision Play (space) 0:37 / 1:11 Waiting at 0:37 for the quick check Mute (M) Playback speed Video size: Fit (- smaller, = larger) Terms (G) Ask about this (Q) Plan text (L) The guide, under the video Dark theme (T) Mark D Marks on the video: on (V) Jump in anytime with / — Esc returns to the player Finish review Record · 1 step · 2/2 judged · 1 comment Steps 1 Large is ready to read Two choices I made Normal, then reload? The real browser run What would you change? Timeline: Quick check The agent's choice Stop at quick checks The plan, as written Decisions None yet. 1 comes up on the video. Decided during implementation · 2 of 2" [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "After Normal and reload, which size returns?" [level=1, ref=e404]
+  - button "A: Large" [ref=e407]
+  - button "B: Normal" [ref=e408]
+  - button "Show the frame" [ref=e372]
+  - button "Answer in my own words O" [ref=e406]
+  - button "Back to where this was explained" [ref=e405]
+  - button "Play (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - switch "Marks on the video: on (V)" [checked=true, ref=e391]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 2/2 judged · 1 comment" [expanded=false, ref=e298]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - heading "Decided during implementation · 2 of 2" [level=4, ref=e310]
+  - button "0:30" [ref=e392]
+  - button "Native" [ref=e402]
+  - button "selector" [ref=e403]
+  - button "flag instead" [ref=e393]
+  - button "Copy this choice" [ref=e394]
+  - button "0:30" [ref=e395]
+  - button "accept instead" [ref=e396]
+  - button "Copy this choice" [ref=e397]
+  - heading "Comments · 1 Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+  - button "0:30" [ref=e398]
+  - button "Copy this comment" [ref=e399]
+  - button "remove" [ref=e400]
+  - textbox "Your comment — edit it here: Enter keeps the edit, Esc puts it back" [ref=e401]: Remove the box; keep the label and selector. Synthetic acceptance fixture only.
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e407'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({time:p.player.currentTime,paused:p.player.paused,quiz:p.quizzes,autonomy:p.autonomy,comments:p.annotations?.map(x=>({comment:x.comment,kind:x.kind}))});})()'
+"{\"time\":47.46666666666667,\"paused\":false,\"quiz\":{\"k1\":{\"answer\":\"a\",\"correct\":true,\"t\":37.027,\"answeredAt\":\"2026-10-11T22:16:58.878Z\"}},\"autonomy\":{\"a1\":{\"verdict\":\"accept\",\"t\":30.862,\"planStep\":1,\"chose\":\"Native two-option selector with explained disabled no-script fallback\",\"shownAt\":\"2026-10-11T22:13:58.482Z\",\"judgedAt\":\"2026-10-11T22:16:10.921Z\"},\"a2\":{\"verdict\":\"flag\",\"t\":30.862,\"planStep\":1,\"chose\":\"Outlined white panel around the setting\",\"shownAt\":\"2026-10-11T22:13:58.482Z\",\"judgedAt\":\"2026-10-11T22:16:19.327Z\"}},\"comments\":[{\"comment\":\"Remove the box; keep the label and selector. Synthetic acceptance fixture only.\",\"kind\":\"flag\"}]}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e297'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'snapshot' '-i'
+- heading "Reading size in use" [level=1, ref=e285]
+- button "Videos · 2 need you" [expanded=false, ref=e286]
+- generic [ref=e284] focusable [tabindex]
+  - Iframe "HyperFrames Composition" [ref=e317]
+    - heading "Native selector or outlined panel: anything to change?" [level=1, ref=e429]
+  - button "Pause (space)" [ref=e288]
+  - button "Mute (M)" [ref=e289]
+  - button "Playback speed" [expanded=false, ref=e300]
+  - button "Video size: Fit (- smaller, = larger)" [expanded=false, ref=e301]
+  - button "Terms (G)" [ref=e290]
+  - button "Ask about this (Q)" [ref=e291]
+  - button "Plan text (L)" [ref=e292]
+  - button "The guide, under the video" [ref=e293]
+  - button "Dark theme (T)" [ref=e294]
+  - button "Mark D" [ref=e295]
+  - switch "Marks on the video: on (V)" [checked=true, ref=e391]
+  - textbox "Jump in anytime with / — Esc returns to the player" [ref=e296]
+  - button "Finish review" [ref=e297]
+  - button "Record · 1 step · 2/2 judged · 1 comment Hide" [expanded=true, ref=e298]
+  - region "Finish your review" [ref=e409]
+    - heading "Finish your review" [level=5, ref=e410]
+      - button "Finish your review" [expanded=true, ref=e423]
+    - button "Back to the record" [ref=e411]
+    - textbox "Seeing it run, anything you would change?" [ref=e412]
+    - button "Approve The agent fixes what your 1 comment asks. No new video." [ref=e424]
+      - button "agent" [ref=e426]
+    - button "Request changes The agent fixes what your 1 comment asks, and you rewatch just those scenes ." [ref=e425]
+      - button "agent" [ref=e427]
+      - button "scenes" [ref=e428]
+    - textbox "A note for your agent (optional)" [ref=e413]
+    - button "Send your changes" [ref=e414]
+  - heading "Steps" [level=4, ref=e302]
+  - button "1 Large is ready to read" [ref=e303]
+  - button "Two choices I made" [ref=e304]
+  - button "Normal, then reload?" [ref=e305]
+  - button "The real browser run" [ref=e306]
+  - button "What would you change?" [ref=e307]
+  - checkbox "Stop at quick checks" [checked=true, ref=e314]
+  - button "Plan text · step 1" [expanded=false, ref=e308]
+  - heading "Decisions" [level=4, ref=e309]
+  - button "0:37" [ref=e415]
+  - button "back to where this was explained" [ref=e416]
+  - button "Copy this answer" [ref=e417]
+  - textbox "How you expected this to work, if not as the quick check says" [ref=e418]
+  - heading "Decided during implementation · 2 of 2" [level=4, ref=e310]
+  - button "0:30" [ref=e392]
+  - button "Native" [ref=e402]
+  - button "selector" [ref=e403]
+  - button "flag instead" [ref=e393]
+  - button "Copy this choice" [ref=e394]
+  - button "0:30" [ref=e395]
+  - button "accept instead" [ref=e396]
+  - button "Copy this choice" [ref=e397]
+  - heading "Comments · 1 Copy Export" [level=4, ref=e311]
+    - button "Copy" [ref=e315]
+    - button "Export" [ref=e316]
+  - button "0:30" [ref=e419]
+  - button "Copy this comment" [ref=e420]
+  - button "remove" [ref=e421]
+  - textbox "Your comment — edit it here: Enter keeps the edit, Esc puts it back" [ref=e422]: Remove the box; keep the label and selector. Synthetic acceptance fixture only.
+- region "Reading size in use" [ref=e287]
+  - heading "Reading size in use" [level=2, ref=e312]
+  - Iframe "The guide to this video" [ref=e299]
+    - heading "Choose how roomy the story looks" [level=1, ref=e318]
+    - link "the walkthrough video" [ref=e331]
+    - navigation "In short, and on this page" [ref=e319]
+      - link "What you can do now" [ref=e346]
+      - link "step 1" [ref=e366]
+      - link "See it work" [ref=e347]
+      - link "what it printed" [ref=e348]
+      - link "Worth your look" [ref=e349]
+      - link "Two of the agent's choices" [ref=e350]
+      - link "Needs you" [ref=e351]
+      - link "Not done" [ref=e352]
+      - link "The code" [ref=e353]
+    - button "Open everything" [ref=e320]
+    - heading "What you can do now" [level=2, ref=e321]
+    - heading "Add a reading-size setting" [level=3, ref=e332]
+    - link "The walkthrough video, scene 1: Large is ready to read. Open it full size" [ref=e335]
+    - link "▶ Watch this moment 0:00 Large is ready to read" [ref=e354]
+    - button "The stage before" [disabled, ref=e358]
+    - button "Step throughthree stages" [ref=e359]
+    - button "The next stage" [ref=e360]
+    - button "Show it all" [disabled, ref=e355]
+    - button "The stage before" [disabled, ref=e361]
+    - button "Step throughfour stages" [ref=e362]
+    - button "The next stage" [ref=e363]
+    - button "Show it all" [disabled, ref=e356]
+    - link "index.html" [ref=e364]
+    - button "Show what it really printed" [ref=e357]
+    - heading "Try it yourself" [level=2, ref=e322]
+    - heading "What the agent decided on its own" [level=2, ref=e323]
+    - link "▶ Watch its scene · 0:18" [ref=e336]
+    - link "index.html" [ref=e337]
+    - button "A1" [expanded=false, ref=e365]
+    - link "▶ Watch its scene · 0:18" [ref=e338]
+    - link "index.html" [ref=e339]
+    - heading "What needs you" [level=2, ref=e324]
+    - link "Native two-option selector with explained disabled no-script fallback" [ref=e340]
+    - link "Outlined white panel around the setting" [ref=e341]
+    - link "▶ Watch its scene 0:18 Two choices I made" [ref=e342]
+    - link "▶ Watch its scene 0:30 Normal, then reload?" [ref=e343]
+    - link "▶ Watch its scene 0:59 What would you change?" [ref=e344]
+    - heading "What isn't done, and what could go wrong" [level=2, ref=e325]
+    - heading "Where the code is" [level=2, ref=e326]
+    - heading "Reading size" [level=3, ref=e333]
+    - heading "The walkthrough video and the plan's record" [level=3, ref=e334]
+    - link "walkthrough.md" [ref=e345]
+    - button "Copy the command" [ref=e327]
+    - heading "The decisions it was built on" [level=2, ref=e328]
+    - heading "The plan, in its own words" [level=2, ref=e329]
+    - heading "How this page was made" [level=2, ref=e330]
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e425'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'fill' '@e413' 'Synthetic acceptance fixture only: retain A1 native selector, fix flagged A2 by removing the box while keeping the label and selector, then rebuild the affected scenes.'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'click' '@e414'
+✓ Done
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' '(()=>{const p=document.querySelector('\''reelplanner-player'\'');return JSON.stringify({posted:p._posted,receipt:p.shadowRoot.querySelector('\''.handoff'\'')?.innerText?.slice(0,900)});})()'
+"{\"posted\":{\"state\":\"sent\",\"verdict\":\"changes\",\"what\":\"[[{\\\"id\\\":\\\"amv4dudfjjob4\\\",\\\"kind\\\":\\\"flag\\\",\\\"comment\\\":\\\"Remove the box; keep the label and selector. Synthetic acceptance fixture only.\\\",\\\"t\\\":30.86,\\\"frame\\\":{\\\"index\\\":2,\\\"compositionId\\\":\\\"02-choices\\\",\\\"title\\\":\\\"Two choices I made\\\"},\\\"plan\\\":{\\\"step\\\":1,\\\"questions\\\":[],\\\"component\\\":null}}],[],[{\\\"id\\\":\\\"k1\\\",\\\"answer\\\":\\\"a\\\",\\\"correct\\\":true,\\\"t\\\":37.027,\\\"answeredAt\\\":\\\"2026-10-11T22:16:58.878Z\\\"}],[{\\\"id\\\":\\\"a1\\\",\\\"verdict\\\":\\\"accept\\\",\\\"t\\\":30.862,\\\"planStep\\\":1,\\\"chose\\\":\\\"Native two-option selector with explained disabled no-script fallback\\\",\\\"shownAt\\\":\\\"2026-10-11T22:13:58.482Z\\\",\\\"judgedAt\\\":\\\"2026-10-11T22:16:10.921Z\\\"},{\\\"id\\\":\\\"a2\\\",\\\"verdict\\\":\\\"flag\\\",\\\"t\\\":30.862,\\\"planStep\\\":1,\\\"chose\\\":\\\"Outlined white panel around the setting\\\",\\\"shownAt\\\":\\\"2026-10-11T22:13:58.482Z\\\",\\\"judgedAt\\\":\\\"2026-10-11T22:16:19.327Z\\\"}],\\\"changes\\\"]\",\"where\":\"repo\",\"id\":\"walkthrough-video-20261011T221900Z\",\"path\":\".reelplanner/inbox/walkthrough-video-20261011T221900Z.json\",\"message\":\"saved; your waiting session will pick it up\"},\"receipt\":\"Finish your review\\nBack to the record\\nSeeing it run, anything you would change?\\n\\nNothing to change? Leave it empty.\\n\\nApprove\\nThe agent fixes what your 1 comment asks. No new video.\\nRequest changes\\nThe agent fixes what your 1 comment asks, and you rewatch just those scenes.\\n\\nYour 2 verdicts, 1 quick check and 1 comment go with it.\\n\\nSent to the repo. Saved; your waiting session will pick it up.\\n\\n.reelplanner/inbox/walkthrough-video-20261011T221900Z.json\\nDo it yourself instead\"}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'eval' 'window.scrollTo({top:0,behavior:'\''instant'\''}); JSON.stringify({time:document.querySelector('\''reelplanner-player'\'').player.currentTime,sent:document.querySelector('\''reelplanner-player'\'')._posted?.id})'
+"{\"time\":71.56666666666666,\"sent\":\"walkthrough-video-20261011T221900Z\"}"
+exit 0
+
+$ terminal-browser 'action' '--browser' '50952-1' '--tab' '4' '--' 'screenshot' '/private/tmp/reelplanner-terminal-proof-20261011/walk-sent.png'
+✓ Screenshot saved to /private/tmp/reelplanner-terminal-proof-20261011/walk-sent.png
+exit 0

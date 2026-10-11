@@ -54,7 +54,7 @@
 //                 packed again, and Send lands in the inbox of the repo you run it in. Each of its
 //                 videos' plan map is compared with the checkout's, and a difference is said: the
 //                 video was built from another version of the plan.
-//   --out         where to put the bundle (default: <tmp>/reelplanner-review/<first project>)
+//   --out         where to put the bundle (default: <tmp>/reelplanner-review/<owning repo key>)
 //   --port        first port to try (default 8787; the next free one is used)
 //   --no-open     print the URL, don't launch a browser
 //   --workspace   browser (default), terminal-browser, or cmux; optional panes open the same URL
@@ -88,7 +88,7 @@ import { harnessForCommand } from "./lib/agents.mjs";
 import { openReview, REVIEW_WORKSPACES } from "./lib/presentation.mjs";
 import { discoverReviewProjects } from "./lib/review-projects.mjs";
 import { sendFile } from "./lib/http-file.mjs";
-import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, claimLive, progressOf } from "./lib/inbox.mjs";
+import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, claimLive, progressOf, repoKey } from "./lib/inbox.mjs";
 import { readYou, youKnows, pendingPath, repoName } from "./lib/memory.mjs";
 import { keepVersion, keepLines } from "./lib/versions.mjs";
 
@@ -277,7 +277,9 @@ if (args.includes("--detach")) {
   process.exit(0);
 }
 
-const out = packedDir || resolve(flag("out", join(tmpdir(), "reelplanner-review", rp ? basename(dirname(rp)) : basename(projects[0]))));
+// The owning repo, not a video's usual basename (`video`), isolates each live server's files.
+// repoKey canonicalizes symlink spellings and distinguishes clones with the same folder name.
+const out = packedDir || resolve(flag("out", join(tmpdir(), "reelplanner-review", repoKey(REPO))));
 bundle(out);
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json",

@@ -74,7 +74,7 @@ CLI 0.162.1 is the tested target; a lower minimum is not established. Native ins
 
 `plugin.json`, `.agents/plugins/marketplace.json`, `scripts/lib/agents.mjs`, `scripts/lib/setup-check.mjs`, `scripts/lib/env.mjs`, `scripts/setup.sh`; `codex plugin marketplace add <package-or-checkout>`, `codex plugin add reelplanner@reelplanner`, `node bin/reelplanner.mjs setup --dry-run`.
 
-**Not done:** installation-to-model lifecycle proof and its real install scene remain open.
+**Native proof:** `runs/native-plugin-install.txt` records actual marketplace/add/list outcomes, and `runs/native-plugin-source-only.txt` repeats byte verification for the corrected shared skill. Both use isolated empty Codex homes, with no copied credentials. A separate real scratch model discovered the installed skill and followed its lifecycle. The final owner-facing install scene is being authored from these outcomes.
 
 ### Step 2 — Finish headless reviews with Codex's permission model
 
@@ -138,7 +138,7 @@ The real trial was a wording-only approval fixture. It exercised no server/playe
 
 `scripts/lib/agents.mjs`, `scripts/lib/inbox.mjs`, `scripts/inbox.mjs`, `scripts/review.mjs`, `packages/player/reelplanner-player.js`; `reel init --agent codex`, `inbox progress`, `inbox retry`, `inbox done`.
 
-**Not done:** a real requested-changes headless video rebuild and the complete lifecycle remain open.
+**Headless narrated changes:** two genuine Codex processes now revised and rebuilt a narrated synthetic plan through actual player Request changes/Send. The source-only run regenerated line 2, kept six voices, changed only scene 2 and reached matching checked-tree completion. Its initial guard rejection and normal reconciliation are retained in `eval/agents/codex-2026-10-11/headless-video.md`; the staged-removal guard is now corrected and its full regressions passed 14 delivery + 96 loop checks (`runs/full-generated-removals.txt`). Complete scratch walkthrough acceptance is still pending.
 
 ### Step 3 — Deliver reviews to a live Codex session
 
@@ -256,7 +256,7 @@ History reads are bounded to 64 MiB, 1,000 pages and a 30-second RPC timeout. A 
 
 `scripts/lib/codex-session.mjs`, `scripts/lib/explainer.mjs`, `scripts/explain.mjs`, `scripts/session.mjs`, `package.json`; `node bin/reelplanner.mjs session export codex:<id> --out <external.jsonl>`, `explain "What happened in this session?" this-session --session-source <external.jsonl>`.
 
-**Not done:** saved real export command evidence and a real Codex session explainer build/review.
+**Session proof:** `runs/current-cli-export.txt` records the supported exact main-thread export, with metadata in `eval/agents/codex-2026-10-11/current-cli-export.json`. A separate synthetic scratch checker conversation produced a real three-scene, 41-second narrated explainer with private source pins and answered fresh checks. Its initial source-document validation failure exposed the generic explain.md checker bug; the corrected full fresh-eyes suite passes 89 checks and the same real explainer now builds successfully. Final safe lifecycle evidence remains to be copied after the walkthrough trial.
 
 ### Step 5 — Match terminal review and the selected remote path
 
@@ -315,7 +315,7 @@ A launcher success does not prove review parity. Local Send is direct; D-313's d
 
 **Occupied port:** the real scratch CLI requested 8964, skipped the running servers on 8964/8965, reported 8966, and that URL returned its intended library. Only the newly created scratch server was stopped. Runs: `runs/occupied-port.txt`.
 
-**Not done:** walkthrough judgments and changed-scenes.
+**Walkthrough trial:** the real Ghostty UI accepted A1, flagged A2 with a concrete synthetic comment, answered its reload check and sent `walkthrough-video-20261011T221900Z` as Request changes. The scratch worker adopted/recorded it and is fixing/rebuilding affected scenes. Changed-scenes and final approval are pending.
 
 ### Step 6 — Prove the whole lifecycle and state support accurately
 
@@ -452,11 +452,14 @@ The real headless proof and Ghostty position run retain command/output/exit. Ter
 
 The fresh independent checker reviewed the checkpoint diff and wrote `code-check/findings.md`: two steps passed, four had findings; all 47 cited decisions held, and one implementation choice needed an autonomy row. Each finding is answered here; unfinished evidence remains explicit.
 
-- **Step 2:** Fixed the unrelated-commit acceptance bug and the second check's unclaimed-review bypass. Git completion now requires a claim and instrumented baseline/check/commit evidence even when no progress was present. Legacy missing evidence fails closed; a new baseline plus newly checked work is explicit recovery. Full delivery/loop passed 13 + 96 checks. Runs: `runs/unclaimed-completion.txt`. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
+- **Step 2:** Fixed the unrelated-commit acceptance bug and the second check's unclaimed-review bypass. Git completion now requires a claim and instrumented baseline/check/commit evidence even when no progress was present. Legacy missing evidence fails closed; a new baseline plus newly checked work is explicit recovery. Full delivery/loop passed 13 + 96 checks for the legacy/unclaimed fix; the later generated-removal regression passes 14 + 96. Runs: `runs/unclaimed-completion.txt`. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
 - **Step 3:** Fixed stranded expired handlers. A new session atomically adopts expired ownership at every saved phase, preserving baseline and progress; live leases and headless processes stay protected. Full delivery regressions cover default no-headless recovery and concurrent adoption. Runs: `runs/completion-recovery.txt`.
 - **Step 5:** The real Ghostty Ask, answer display, choice, comment and Send now have saved proof. The disconnected download/intake trial now also passes with answers, comments and any provided identity preserved. Walkthrough controls and changed-scenes are still being exercised, so this finding remains open.
 - **Step 6:** System spec/map/glossary have been updated. The real scratch lifecycle has reached approved plan revision; complete walkthrough/fix evidence is still pending; the owner excluded desktop-app support from this change, so this finding remains open.
 - **`scripts/lib/codex-session.mjs`:** A10 records the existing export ceilings and verified external-copy fallback. No private source text is added to Git.
+- **Step 4 source validation:** the real session explainer failed when plan-tagged findings could only reference plan.md. `scripts/lib/fresh-eyes.mjs` now stamps/checks explain.md for explainers while retaining change/missing-source guards. Full script/frame regressions passed 89 checks (`runs/full-fresh-eyes-source-doc.txt`); the unchanged-tag real explainer subsequently built.
+- **Step 5 bundle isolation:** the real concurrent trials overwrote a shared default temp folder. `scripts/review.mjs` now keys it by canonical owning repo; full live-server regressions pass 8 checks alongside 46 review-status and 27 media-seek checks (`runs/full-bundle-isolation.txt`). Explicit output, reuse and same-name clones remain covered. A6 already records keeping owners separate.
+- **D-305:** the first real headless rebuild force-added an ignored generated WAV under conflicting skill wording. The shared skill and headless prompt now keep generated voice/render/bundle files ignored. The second real run committed source/metadata only and preserved its original untracked archives; its staged-removal guard mismatch and reconciliation remain explicit, and the source guard correction now passes full 14 delivery + 96 loop checks (`runs/full-generated-removals.txt`).
 - **D-304:** The latest checker found the README had omitted the owner's historical “real planning” explanation even before this branch. README now explains the former reelplanning name under “Why, and how it compares”, while retaining the current reelplanner name required by D-312. No owner ledger entry changed.
 
 A fresh final check must review the corrected committed diff and remaining runtime evidence before acceptance.

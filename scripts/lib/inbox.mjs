@@ -252,11 +252,17 @@ function checkedEvidence(rp, id, progress) {
   });
   try {
     git(head ? ["read-tree", head] : ["read-tree", "--empty"]);
+    const indexPaths = gitPaths(gitBytes(repo, ["ls-files", "-z"])), indexSet = new Set(indexPaths);
+    const removedPaths = head ? gitPaths(gitBytes(repo, ["ls-tree", "-r", "--name-only", "-z", head])).filter((path) => !indexSet.has(path)) : [];
+    // A staged deletion may intentionally keep an ignored generated file on disk.
+    // Honor the real index's deletion before adding worktree bytes; original owner
+    // deletions are restored later by reversing their saved staged patch.
+    if (removedPaths.length) git(["update-index", "--force-remove", "-z", "--stdin"], Buffer.from(removedPaths.join("\0") + "\0"));
+    const removedSet = new Set(removedPaths);
     const paths = [...new Set([
-      ...gitPaths(gitBytes(repo, ["ls-files", "-z"])),
-      ...(head ? gitPaths(gitBytes(repo, ["ls-tree", "-r", "--name-only", "-z", head])) : []),
+      ...indexPaths,
       ...untrackedPaths(repo, rp),
-    ])].filter((path) => outsideInbox(repo, rp, path) && !(hash(path) in progress.baselineUntracked));
+    ])].filter((path) => !removedSet.has(path) && outsideInbox(repo, rp, path) && !(hash(path) in progress.baselineUntracked));
     if (paths.length) git(["--literal-pathspecs", "add", "--all", "--force", "--pathspec-from-file=-", "--pathspec-file-nul"], Buffer.from(paths.join("\0") + "\0"));
     for (const stage of ["unstaged", "staged"]) {
       const patch = readFileSync(ownerPatchPath(rp, id, stage));
@@ -448,6 +454,7 @@ export const agentPrompt = (relPath, id, harness = getHarness("command"), { reco
   `Use this package's CLI: wherever these instructions say \`reelplanner\`, run \`${RP_LOCAL_COMMAND}\`. ` +
   `hand it to \`reelplanner reel-intake ${relPath}\` and do what the main session would have done with it. ` +
   `If you rebuilt a video, once it passes \`reelplanner verify <video-dir>\` commit; an approval rebuilds nothing and needs no verify: fold its comments into plan.md and commit. ` +
+  `Commit video source and narration metadata, leaving generated voice files, renders and player bundles ignored; never force-add those generated artifacts. ` +
   `Keep the claim alive with \`reelplanner inbox renew ${id}\` at least every two minutes; record intake, editing, checked and committed phases with \`reelplanner inbox progress ${id} <phase>\`. ` +
   `Preserve tracked and untracked owner edits that already existed when this review was claimed, including whether they were staged. Inspect git status and diff before editing; commit only this review's work and never stage all files blindly. Record checked after the required checks and BEFORE committing: it freezes the intended review tree, including new intake files, while excluding original owner edits. Completion requires that exact tree and rejects new residual tracked or untracked changes. A review with no saved checked evidence cannot be completed merely because HEAD advanced. If an overlapping edit cannot be separated safely, stop with the review unfinished. ` +
   `Only after the required checks and a successful Git commit run \`reelplanner inbox done ${id}\`, and stop. A denied operation or signing failure leaves the review unfinished: keep edits, progress and the log; never disable signing to finish. ` +

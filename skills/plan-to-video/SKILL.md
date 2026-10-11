@@ -320,8 +320,8 @@ explainer (`<explainer-dir>/video/`).
 3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step.
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
-   `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
-   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
+   `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json`;
+   leave generated voice files, renders and player bundles ignored. Never force-add them. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
    about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
    `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
    each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).
