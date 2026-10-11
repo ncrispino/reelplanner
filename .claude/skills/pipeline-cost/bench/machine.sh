@@ -19,7 +19,7 @@ B="$(cd "$(dirname "$0")" && pwd)"
 OUT="$HOME/bench-out"
 PROMPT='Use reelplanner to plan a small website for a neighborhood bakery.
 
-There is no one to ask in this session: wherever the skill would ask the person something, take the default it gives and go on, and never end your turn to ask. Once you have given the link to the plan video, wait for the review in the foreground (run `reelplanner review --wait`, again until a review comes), act on it as the skill says, give the link to the revised video, and stop there: do not implement the plan.'
+There is no one to ask in this session. What the person answers: the level is the whole pipeline (reel init, the plan in .reelplanner/, fresh eyes); anywhere else the skill would ask the person something, take the default it gives and go on. Never end your turn to ask. Once you have given the link to the plan video, wait for the review in the foreground (run `reelplanner review --wait`, again until a review comes), act on it as the skill says, give the link to the revised video, and stop there: do not implement the plan.'
 
 nvm_() { export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; }
 

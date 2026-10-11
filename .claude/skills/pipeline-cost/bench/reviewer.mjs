@@ -13,7 +13,8 @@
 // Each step is a line in its log, with the time, so the report can tell the reviewer's moments from the agent's.
 //
 // usage: node reviewer.mjs <repo> <timing.jsonl> <log.jsonl> <done-file>
-import { readFileSync, existsSync, appendFileSync, writeFileSync } from "node:fs";
+import { readFileSync, existsSync, appendFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { homedir } from "node:os";
 import { join, resolve, isAbsolute } from "node:path";
 
 const [repo, timing, log, done] = process.argv.slice(2);
@@ -60,19 +61,28 @@ function reviewRow(videoDir) {
   };
 }
 
+// the running review server's record: the repo's inbox, or (a repo with no .reelplanner/) the machine folder's inbox for it
+function serverOf() {
+  const home = join(homedir(), ".reelplanner", "inbox");
+  const dirs = [join(repo, ".reelplanner", "inbox"), ...(existsSync(home) ? readdirSync(home).map((d) => join(home, d)) : [])];
+  const found = dirs.map((d) => join(d, ".server.json")).filter(existsSync).sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
+  for (const f of found) { const s = JSON.parse(read(f) || "null"); if (s?.port || s?.base) return { ...s, file: f }; }
+  return null;
+}
+
 say("watching", { repo, timing });
-let sent = 0;
+let sent = 0, told = false;
 for (;;) {
   const s = showings();
   if (!sent && s.length >= 1) {
     const { dir, at } = s[0];
     say("shown", { n: 1, dir, shownAt: at });
-    const server = JSON.parse(read(join(repo, ".reelplanner", "inbox", ".server.json")) || "null");
-    if (!server?.port && !server?.base) { say("no-server", { dir }); await sleep(2000); continue; }
+    const server = serverOf();
+    if (!server) { if (!told) say("no-server", { dir }); told = true; await sleep(2000); continue; }
     const base = server.base || `http://127.0.0.1:${server.port}/`;
     const row = reviewRow(dir);
     const r = await fetch(new URL("api/review", base), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(row) }).then(async (x) => ({ status: x.status, body: await x.json().catch(() => null) })).catch((e) => ({ status: 0, body: String(e) }));
-    say("review-sent", { status: r.status, response: r.body, decisions: row.decisions.length });
+    say("review-sent", { status: r.status, response: r.body, decisions: row.decisions.length, server: server.file });
     if (r.status === 200) sent = Date.now(); else { await sleep(5000); continue; }
   }
   const after = sent ? s.filter((x) => x.at > sent) : [];
