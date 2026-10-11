@@ -14,17 +14,18 @@ Episodes (wall time is what a person waits):
 Phases, from reelplanner's own commands (no guessing from what a tool call looks like):
   plan      before the episode's first video command (anything but `reel init/new-plan/check/stage/…` and `setup`)
   build     from there on, except:
-  verify    from a fresh-eyes round's start (`fresh-eyes <dir>` or `--script`, not `--check`/`--prompt`) to the next
-            `build` started after it: the agents reading, and the answers to what they found
-  rework    every `build` after the episode's first fresh-eyes round, and what comes between them: building again
-            because of what fresh eyes found
+  verify    from a fresh-eyes round's start (`fresh-eyes <dir>` or `--script`, not `--check`/`--prompt`): a round on the
+            built video to the next `build` started after it (the agents reading, the answers, the fixes); a read of
+            the script (`--script`, before frames exist) to the first command that works on frames
+  rework    every `build` after a fresh-eyes round on the built video, and what comes between them: building again
+            because of what fresh eyes found (after a script read, the frames are drawn for the first time: build)
 Agent minutes: each model request and tool call (its duration, ending at its timestamp), put in the phase its middle
 falls in, summed over every session (parallel agents add up). An Agent tool call is left out: its subagent's own
 requests are counted. Tokens and cost are summed the same way.
 
 Checks it makes (and prints): every request ran on one model at one effort (the bench sets Opus 5.5 at medium);
-every transcript session sent telemetry; output tokens by telemetry against the
-transcripts' text/4 estimate; nothing measured after the run ended.
+every transcript session sent telemetry; nothing measured after the run ended; and a
+note of output tokens by telemetry against the transcripts' text/4 (which leaves out thinking).
 
 usage: python3 report.py <run.tgz or extracted dir> [--json out.json]
 """
@@ -63,13 +64,22 @@ def sub(c):
     if c["cmd"] == "reel": return (a[0] if a else "", True)
     if a[:1] == ["reel"]: return (a[1] if len(a) > 1 else "", True)
     return (a[0] if a else "", False)
+# the commands that make or check the video: the plan phase ends at the first of them (setup and environment checks,
+# `reel init/new-plan/check`, reading the inbox are not)
+VIDEO = {"build", "narrate", "patch-tts-speed", "frame-packet", "frame-check", "frame-lint", "detail", "snapshot", "hyperframes",
+         "check-terms", "check-sources", "verify", "finish-project", "plan-map", "plan-diff", "fresh-eyes", "review", "retime-frames",
+         "hold-durations", "transcribe-missing", "guide", "explainer", "storyboard", "contact-sheet"}
 def is_video(c):
     name, reel = sub(c)
     if reel: return name == "build"
-    return name not in {"setup", "--version", "-v", "--help", "memory", "inbox", "doctor", "spec-diff"}
+    return name in VIDEO and not (name == "review" and "--wait" in c["args"])
 def is_round(c):
     name, reel = sub(c)
     return not reel and name == "fresh-eyes" and not any(a in ("--check", "--prompt") for a in c["args"])
+FRAME_WORK = {"frame-packet", "frame-check", "frame-lint", "build", "narrate", "snapshot", "finish-project"}
+def is_frame_work(c):
+    name, reel = sub(c)
+    return (reel and name == "build") or (not reel and name in FRAME_WORK)
 def is_build(c):
     name, reel = sub(c)
     return name == "build"
@@ -83,8 +93,12 @@ def phases(a, b):
     for i, c in enumerate(cs):
         if is_round(c):
             first_round = first_round or c["start"]
-            nb = next((x["start"] for x in cs[i + 1:] if is_build(x)), b)
-            marks += [(c["start"], "verify"), (nb, "rework")]
+            # a frames round (on a built video) runs to the next build: the answers and the fixes they cause; a read
+            # of the script (`--script`, before frames exist) to the first command that works on frames
+            ends = is_frame_work if "--script" in c["args"] else is_build
+            nb = next((x["start"] for x in cs[i + 1:] if ends(x)), b)
+            # after a frames round, building again is rework; after a script read, the frames are drawn for the first time
+            marks += [(c["start"], "verify"), (nb, "build" if "--script" in c["args"] else "rework")]
     marks.sort(key=lambda m: m[0])
     out = []
     for i, (t, p) in enumerate(marks):
@@ -162,7 +176,8 @@ for p in tr + glob.glob(os.path.join(src, ".claude", "projects", "*", "*", "suba
                 if isinstance(c, dict): est += len(c.get("text") or c.get("thinking") or json.dumps(c.get("input") or "")) / 4
 tot_out = sum(q["out"] for q in reqs)
 ratio = (tot_out / est) if est else None
-checks.append(("output tokens: telemetry against the transcripts' text/4", ratio is not None and 0.5 <= ratio <= 2.0, f"{tot_out:,} by telemetry, ~{int(est):,} estimated" + (f" ({ratio:.2f}×)" if ratio else "")))
+# a note, not a check: telemetry counts the model's thinking, which transcripts do not keep, so text/4 runs low
+notes = [f"output tokens: {tot_out:,} by telemetry, ~{int(est):,} in the transcripts' text/4" + (f" ({ratio:.2f}×: thinking is not in transcripts)" if ratio else "")]
 late = [q for q in reqs if TEND and q["end"] > TEND + 60000]
 checks.append(("nothing measured after the run ended", not late, f"{len(late)} requests after the end" if late else "none"))
 checks.append(("both showings and the review were seen", bool(S1 and R and S2), f"shown {S1 is not None}, review sent {R is not None}, shown again {S2 is not None}"))
@@ -173,7 +188,7 @@ report["checks"] = [dict(name=n, ok=o, detail=d) for n, o, d in checks]
 
 print(f"# {report['run']} · reelplanner {report['reelplanner']} · ended: {report['ended']}\n")
 for e in report["episodes"]:
-    print(f"## {e['episode']}: {e['wall_min']} min wall · {e['builds']['n']} builds ({e['builds']['failed']} failed, {e['builds']['minutes']} min) · {e['fresh_eyes_rounds']} fresh-eyes round(s) · {e['sessions']} session(s)\n")
+    print(f"## {e['episode']}: {e['wall_min']} min wall · {e['builds']['n']} builds ({e['builds']['failed']} failed, {e['builds']['minutes']} min) · {e['fresh_eyes_rounds']} fresh-eyes run(s) · {e['sessions']} session(s)\n")
     print("| Phase | Wall min | Agent min | Requests | Tool calls | In tok (with cache) | Out tok | Cost $ |\n|---|---:|---:|---:|---:|---:|---:|---:|")
     for p in ("plan", "build", "verify", "rework", "other"):
         k = e["phases"].get(p)
@@ -181,4 +196,6 @@ for e in report["episodes"]:
     print()
 print("## Checks\n")
 for c in report["checks"]: print(f"- {'✓' if c['ok'] else '✗'} {c['name']}: {c['detail']}")
+for n in notes: print(f"- · {n}")
+report["notes"] = notes
 if out_json: json.dump(report, open(out_json, "w"), indent=2)
