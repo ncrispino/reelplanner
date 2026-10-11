@@ -4,7 +4,9 @@
 //
 // The render is the video's own, made once by HyperFrames at 12 fps (draft quality) and kept in
 // <video-dir>/renders/terminal.mp4, which git leaves out.
-// `--render` makes it when it is missing or older than the video's sources, printing its progress.
+// `--render` makes it when it is missing or older than the video's sources, printing its progress. A build in Claude Code
+// starts one in the background as it finishes (build.mjs), so it is usually there when the pane opens; while one is
+// running (renders/terminal.lock) another waits for it rather than rendering the same video again.
 //
 // Without --render, the stretch [--from, --to) plays: ffmpeg decodes it in real time and each frame is printed
 // in the form the pane draws (--as):
@@ -28,7 +30,7 @@
 // usage: reelplanner reel-frames <video-dir> --render
 //        reelplanner reel-frames <video-dir> [--from <s>] [--to <s>] [--as image|jpeg] [--width <px>] [--dir <ring-dir>]
 //                                [--fps <n>] [--speed <x>] [--no-audio]
-import { existsSync, statSync, readdirSync, mkdirSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, statSync, readdirSync, mkdirSync, writeFileSync, readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn, spawnSync } from "node:child_process";
@@ -64,9 +66,29 @@ function newest(d, depth = 0) {
 }
 const fresh = () => existsSync(mp4) && statSync(mp4).mtimeMs >= newest(dir);
 
+const lock = join(dir, "renders", "terminal.lock");
+const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+const rendering = () => { try { return alive(Number(readFileSync(lock, "utf8"))); } catch { return false; } };
+
 if (args.includes("--render")) {
   if (fresh()) { say(`R ${mp4}`); process.exit(0); }
+  if (rendering()) {
+    // another render of this video is under way (the build's, in the background): wait for it, then render only if it
+    // did not leave a fresh one
+    say("P 0");
+    const wait = setInterval(() => {
+      if (rendering()) return;
+      clearInterval(wait);
+      if (fresh()) { say(`R ${mp4}`); process.exit(0); }
+      render();
+    }, 500);
+  } else render();
+}
+
+function render() {
   mkdirSync(join(dir, "renders"), { recursive: true });
+  writeFileSync(lock, String(process.pid));
+  process.on("exit", () => { try { if (readFileSync(lock, "utf8") === String(process.pid)) rmSync(lock); } catch { /* gone */ } });
   const tmp = join(dir, "renders", "terminal.part.mp4");
   const child = spawn(process.execPath, [hyperframesBin(), "render", dir, "--fps", String(FPS), "--quality", "draft", "-o", tmp], { stdio: ["ignore", "pipe", "pipe"] });
   let last = -1, tail = "";
@@ -86,9 +108,8 @@ if (args.includes("--render")) {
     say(`R ${mp4}`);
     process.exit(0);
   });
-} else {
-  play();
 }
+if (!args.includes("--render")) play();
 
 // --- playing a stretch ---------------------------------------------------------------------------------
 function duration(file) {

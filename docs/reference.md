@@ -354,8 +354,9 @@ sound. The last stop sums the review up, takes a note for the agent, and sends i
 approved or with changes asked.
 
 The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
-`renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes; the first play says
-how far the render has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
+`renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes. A build run in
+Claude Code starts it in the background as it finishes, so it is usually ready when the pane opens; otherwise the first
+play makes it and says how far it has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
 (kitty, Ghostty) the picture is the render itself, as sharp as in the browser. Any other terminal opens the browser
 player instead (`reelplanner review --detach`), and the pane says so, with the link, and keeps the choices, the
 comments and Send: drawn in a terminal's character cells, a frame is a few dozen blocks across, and nothing in it can

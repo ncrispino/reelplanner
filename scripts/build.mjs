@@ -52,7 +52,7 @@
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdirSync, mkdtempSync } from "node:fs";
 import { join, resolve, relative } from "node:path";
 import { tmpdir } from "node:os";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { ROOT } from "./lib/env.mjs";
 import { reviewWayLine } from "./lib/inbox.mjs";
 import { skillsDir } from "./hyperframes-skills.mjs";
@@ -228,3 +228,9 @@ for (const l of varietyLines(videoVariety(dir))) console.log(`${l.warn ? "△" :
 // line names that command either way, and whether a server is running for this repo and where; build itself starts
 // and changes no server (a headless run cannot reach one).
 console.log(`· review   ${reviewWayLine(dir)}`);
+// in Claude Code, the /reel pane's own render of the video (reel-frames --render), started now in the background so it
+// is usually done when the pane opens, not made then while the person waits. It outlives this command; a pane that
+// opens first waits for it (renders/terminal.lock). Not under the test runner, whose builds nobody watches.
+if (process.env.CLAUDECODE === "1" && !process.env.RP_TEST_PORT) {
+  spawn(process.execPath, [join(ROOT, "scripts", "reel-frames.mjs"), dir, "--render"], { detached: true, stdio: "ignore" }).unref();
+}
