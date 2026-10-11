@@ -124,7 +124,7 @@ which way you want, unless you said "quick". To move to a fuller way later, ask 
 
 ## Watch it in Claude Code (`/reel`)
 
-With the plugin ([install](#install)), `/reel` plays the video in a pane beside the conversation. Answer and comment
+With the reelplanner plugin, `/reel` plays the video in a pane beside the conversation. Answer and comment
 there, then **Send**: with **Changes needed** Claude revises the plan and the pane plays what changed; with
 **Approve** Claude builds the plan.
 
@@ -132,7 +132,8 @@ there, then **Send**: with **Changes needed** Claude revises the plan and the pa
 
 <p align="center"><i>/reel in kitty: a review sent with Changes needed, then just the change played (75 s, sped up).</i></p>
 
-- **Needs:** the plugin and `reelplanner setup`, then a new session. The picture shows in
+- **Needs:** the reelplanner plugin (`/plugin install reelplanner@reelplanner`, as in [Install](#install)) and
+  `reelplanner setup`, then a new session. The picture shows in
   [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
   player, and the pane keeps the choices, comments and Send.
 - **Open it:** `/reel` lists the plans with a video; `/reel <plan>` opens one. When the agent opens a video for
