@@ -26,6 +26,7 @@
 //   I <t> <path> <generation>          a frame written for an Image
 //   E <t>                              the stretch ended
 //   X <message>                        it failed
+//   H                                  nothing to say yet, at least every 100 ms (the pane ignores it)
 //
 // usage: reelplanner reel-frames <video-dir> --render
 //        reelplanner reel-frames <video-dir> [--from <s>] [--to <s>] [--as image|jpeg] [--width <px>] [--dir <ring-dir>]
@@ -45,6 +46,9 @@ if (!dirArg || args.includes("--help")) {
   process.exit(dirArg ? 0 : 1);
 }
 const say = (line) => process.stdout.write(line + "\n");
+// a line at least every 100 ms, so the pane's stop lands at once: Claude Code kills the child at its next line, and
+// this one is otherwise quiet while it waits for the sound, for ffmpeg's first frame or for another render
+setInterval(() => say("H"), 100).unref();
 const fail = (m) => { say(`X ${m}`); process.exit(1); };
 const dir = resolve(dirArg);
 if (!existsSync(join(dir, "index.html"))) fail(`no built video at ${dir} (index.html is missing)`);
@@ -136,76 +140,104 @@ function play() {
   for (const s of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(s, () => { stop(); process.exit(0); });
   process.stdout.on("error", () => { stop(); process.exit(0); }); // the pane stopped reading
 
-  // the sound: a child that also watches this process, so it never plays on after the pane stopped it. ffplay takes
-  // about a quarter of a second to start sounding, so the picture waits for its clock to move (-stats, on stderr), or
-  // 1.5 s at most; afplay says nothing, and the picture starts with it
+  // the sound: a child that also watches this process, so it never plays on after the pane stopped it. ffplay seeks
+  // only to the render's keyframes (about 20 s apart), so its sound is cut at the moment itself (atrim), and it takes
+  // a moment to start sounding: the picture's clock starts when ffplay's does (-stats, on stderr), or after 1.5 s at
+  // most. afplay plays a cut made first, and says nothing: the picture's clock starts with it
   let heard = null;
   if (!args.includes("--no-audio")) {
-    const len = (to - from).toFixed(3);
     let cmd = null;
     if (spawnSync("sh", ["-c", "command -v ffplay"]).status === 0) {
-      cmd = `ffplay -nodisp -autoexit -loglevel error -stats -vn -ss ${from} -t ${len}${speed !== 1 ? ` -af atempo=${speed}` : ""} '${mp4}'`;
+      const af = [`atrim=start=${from}:end=${to}`, ...(speed !== 1 ? [`atempo=${speed}`] : [])].join(",");
+      cmd = `ffplay -nodisp -autoexit -loglevel error -stats -vn -ss ${from} -af ${af} '${mp4}'`;
     } else if (spawnSync("sh", ["-c", "command -v afplay"]).status === 0) {
       const cut = join(mkdtempSync(join(tmpdir(), "reel-audio-")), "a.m4a");
-      spawnSync("ffmpeg", ["-loglevel", "error", "-y", "-ss", String(from), "-t", len, "-i", mp4, "-vn", "-c:a", "aac", cut]);
-      cmd = `afplay${speed !== 1 ? ` -r ${speed} -q 1` : ""} '${cut}'; rm -rf '${join(cut, "..")}'`;
+      spawnSync("ffmpeg", ["-loglevel", "error", "-y", "-ss", String(from), "-t", (to - from).toFixed(3), "-i", mp4, "-vn", "-c:a", "aac", cut]);
+      cmd = `trap "rm -rf '${join(cut, "..")}'" EXIT; afplay${speed !== 1 ? ` -r ${speed} -q 1` : ""} '${cut}'`;
     }
     if (cmd) {
-      const watch = `(${cmd}) & p=$!; while kill -0 ${process.pid} 2>/dev/null && kill -0 $p 2>/dev/null; do sleep 0.3; done; kill $p 2>/dev/null`;
+      // the watcher leads the group (detached): at the end it kills the whole group, the player and any subshell
+      const watch = `(${cmd}) & p=$!; while kill -0 ${process.pid} 2>/dev/null && kill -0 $p 2>/dev/null; do sleep 0.3; done; kill 0`;
       const sound = spawn("sh", ["-c", watch], { detached: true, stdio: ["ignore", "ignore", cmd.startsWith("ffplay") ? "pipe" : "ignore"] });
       children.push(sound);
       if (sound.stderr) {
         heard = new Promise((go) => {
-          setTimeout(go, 1500);
-          sound.stderr.on("data", (d) => { if (/(^|\r)\s*-?\d+\.\d+\s/.test(d.toString())) go(); });
-          sound.on("exit", go);
+          const fallback = setTimeout(go, 1500);
+          // each -stats reading starts with ffplay's clock: "nan" or below zero until the sound starts
+          sound.stderr.on("data", (d) => {
+            for (const r of d.toString().split("\r")) {
+              const c = Number(r.trim().split(/\s+/)[0]);
+              if (Number.isFinite(c) && c >= 0) { clearTimeout(fallback); go(); }
+            }
+          });
+          sound.on("exit", () => { clearTimeout(fallback); go(); });
         });
       }
-      say(`A ${cmd.split(" ")[0]}`);
+      say(`A ${cmd.match(/(ffplay|afplay)/)?.[1] ?? "sound"}`);
     } else say("A none no audio player (ffplay or afplay) on this machine");
   }
 
-  const picture = () => {
-    // at a speed off 1× the frames come faster or slower, still FPS of them a second (-readrate is ffmpeg 5's; at 1× -re,
-    // which every ffmpeg has)
-    const vf = `${speed !== 1 ? `setpts=PTS/${speed},` : ""}fps=${FPS},scale=${W}:${H}:flags=area`;
-    const out = as === "jpeg" ? ["-f", "image2pipe", "-c:v", "mjpeg", "-q:v", "7", "pipe:1"] : ["-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"];
-    const ff = spawn("ffmpeg", ["-loglevel", "error", ...(speed === 1 ? ["-re"] : ["-readrate", String(speed)]), "-ss", String(from), "-t", String(to - from), "-i", mp4, "-an", "-vf", vf, ...out], { stdio: ["ignore", "pipe", "inherit"] });
-    children.push(ff);
+  // the picture: ffmpeg decodes from the start, ahead (its decoder holds the first frame back about 0.7 s), and each
+  // frame is said when it is due on the sound's clock, FPS a second at 1× (faster or slower with --speed). A frame
+  // that comes over a quarter of a second after its moment is passed over, so the picture keeps up with the sound
+  const vf = `${speed !== 1 ? `setpts=PTS/${speed},` : ""}fps=${FPS},scale=${W}:${H}:flags=area`;
+  const out = as === "jpeg" ? ["-f", "image2pipe", "-c:v", "mjpeg", "-q:v", "7", "pipe:1"] : ["-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"];
+  const ff = spawn("ffmpeg", ["-loglevel", "error", "-ss", String(from), "-t", String(to - from), "-i", mp4, "-an", "-vf", vf, ...out], { stdio: ["ignore", "pipe", "ignore"] });
+  children.push(ff);
 
-    const frameBytes = W * H * 3;
-    const ring = as === "image" ? resolve(flag("dir", mkdtempSync(join(tmpdir(), "reel-frames-")))) : null;
-    if (ring) mkdirSync(ring, { recursive: true });
-    let buf = Buffer.alloc(0), n = 0;
-    const at = () => (from + (n * speed) / FPS).toFixed(3);
-    ff.stdout.on("data", (chunk) => {
-      buf = Buffer.concat([buf, chunk]);
-      if (as === "jpeg") {
-        // split the MJPEG stream at each image's end marker
-        let end;
-        while ((end = buf.indexOf(Buffer.from([0xff, 0xd9]))) >= 0) {
-          const jpg = buf.subarray(0, end + 2);
-          buf = buf.subarray(end + 2);
-          say(`F ${at()} ${jpg.toString("base64")}`);
-          n++;
-        }
-        return;
-      }
-      while (buf.length >= frameBytes) {
-        const px = buf.subarray(0, frameBytes);
-        buf = buf.subarray(frameBytes);
-        const path = join(ring, `frame-${n % 8}.rgb`);
-        writeFileSync(path, px);
-        say(`I ${at()} ${path} ${n}`);
-        n++;
-      }
-    });
-    ff.on("exit", () => {
-      say(`E ${to.toFixed(3)}`);
-      if (ring && !flag("dir")) rmSync(ring, { recursive: true, force: true });
-      process.exit(0);
-    });
+  const frameBytes = W * H * 3;
+  const ring = as === "image" ? resolve(flag("dir", mkdtempSync(join(tmpdir(), "reel-frames-")))) : null;
+  if (ring) mkdirSync(ring, { recursive: true });
+  let buf = Buffer.alloc(0), n = 0, done = false, start = null, timer = null;
+  const queue = [];
+  const at = (k) => (from + (k * speed) / FPS).toFixed(3);
+  const emit = (k, frame) => {
+    if (as === "jpeg") return say(`F ${at(k)} ${frame.toString("base64")}`);
+    const path = join(ring, `frame-${k % 8}.rgb`);
+    writeFileSync(path, frame);
+    say(`I ${at(k)} ${path} ${k}`);
   };
-  if (heard) heard.then(picture); else picture();
+  const finish = () => {
+    stop();
+    say(`E ${to.toFixed(3)}`);
+    if (ring && !flag("dir")) rmSync(ring, { recursive: true, force: true });
+    process.exit(0);
+  };
+  const pump = () => {
+    timer = null;
+    if (start === null) return;
+    while (queue.length) {
+      const wait = start + (n * 1000) / FPS - Date.now();
+      if (wait > 0) { timer = setTimeout(pump, wait); break; }
+      const frame = queue.shift();
+      if (-wait <= 250 || (!queue.length && done)) emit(n, frame);
+      n++;
+    }
+    if (queue.length < 12) ff.stdout.resume();
+    if (done && !queue.length) finish();
+  };
+  const take = (frame) => {
+    queue.push(frame);
+    if (queue.length >= 24) ff.stdout.pause();
+    if (!timer) pump();
+  };
+  ff.stdout.on("data", (chunk) => {
+    buf = Buffer.concat([buf, chunk]);
+    if (as === "jpeg") {
+      // split the MJPEG stream at each image's end marker
+      let end;
+      while ((end = buf.indexOf(Buffer.from([0xff, 0xd9]))) >= 0) {
+        take(buf.subarray(0, end + 2));
+        buf = buf.subarray(end + 2);
+      }
+      return;
+    }
+    while (buf.length >= frameBytes) {
+      take(Buffer.from(buf.subarray(0, frameBytes)));
+      buf = buf.subarray(frameBytes);
+    }
+  });
+  ff.on("exit", () => { done = true; if (!timer) pump(); });
+  const go = () => { start = Date.now(); pump(); };
+  if (heard) heard.then(go); else go();
 }
-

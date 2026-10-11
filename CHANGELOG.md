@@ -53,7 +53,10 @@
   render in the background as it finishes, so the pane rarely waits for it. A pause, a seek or a rewind stops the
   sound with the picture (it played on under the next play), a line says the video is starting until its first frame,
   and a card shows where the video asks for it: a choice once the video reaches it, Send at the end or when asked for
-  with `n`. The marketplace entry names the pane's state contract
+  with `n`. The sound starts at the moment asked for (ffplay seeks only to the render's keyframes, about 20 s apart,
+  so a resume or a rewind replayed the sound from there; it is now cut with `atrim`), the picture is paced against the
+  sound in `reel-frames` rather than by ffmpeg (whose decoder held the first frame back about 0.7 s), a line every
+  100 ms lets a stop land at once, and of two quick presses the later one wins. The marketplace entry names the pane's state contract
   (`types`); `plugin.spec` validates the plugin as installed and runs its tests (`scripts/test/plugin/`) when
   `claude` is on PATH.
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,

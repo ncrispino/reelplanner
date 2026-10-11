@@ -369,6 +369,18 @@ test("a choice's card shows once the video has reached it, not before", async ($
   await ui.press({ key: 'library' })
 })
 
+test('the render is asked about once per build, not before every play', async ($, on) => {
+  const { spawned } = world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'play' })
+  await ui.press({ key: 'replay' })
+  await ui.press({ key: 'back5' })
+  expect(spawned.filter(a => a.includes('--render'))).toHaveLength(1)
+  expect(spawned.filter(a => !a.includes('--render')).length).toBeGreaterThanOrEqual(3)
+  await ui.press({ key: 'library' })
+})
+
 test('s plays faster: 1.25×, 1.5×, 2×, then 1× again', async ($, on) => {
   const { spawned } = world(on, { kitty: true })
   const ui = await $.ui.mount(pane('terminal'))

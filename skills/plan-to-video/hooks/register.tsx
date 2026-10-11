@@ -344,6 +344,9 @@ let paneRows = 0 // and its rows: a docked pane is floor to ceiling, an inline o
 let termRows = 0 // the terminal's rows, as a drawing last saw them
 let inlinePane = false // the pane as last drawn sat inline above the prompt (the main-screen layout), not docked
 let resizing = false // a play at the pane's new size is waiting for the size to settle
+let lastT: number | null = null // the moment of the last frame shown: the playback state's t lags it by up to 0.25 s
+let frameNo = 0 // each frame drawn a new generation, across plays, so a frame never repeats the last one's
+const renderedAt = new Set<string>() // `<dir>@<built>`: renders known to be current, so a play skips the render pass
 const askedSend = new Set<string>() // the videos whose Send card was asked for (n to it), before the video got there
 
 /** The rows the picture may take: bigger (z), all but the header and the keys; else room left for the card under it. */
@@ -369,8 +372,15 @@ async function stopPlayback($: EngineInterface, status: ReelplannerPlayback['sta
   current++
   const s = stream
   stream = null
-  if (s) await s.return(undefined).catch(() => undefined)
-  await update($, playback, p => (p && (p.status === 'playing' || p.status === 'rendering') ? { ...p, status } : p))
+  // the engine kills the child once its stream is returned, which waits for the child's next line (reel-frames sends
+  // one at least every 100 ms): not awaited, so a pause or a seek is not held up by it
+  if (s) void s.return(undefined).catch(() => undefined)
+  const at = lastT
+  await update($, playback, p =>
+    p && (p.status === 'playing' || p.status === 'rendering')
+      ? { ...p, status, ...(p.status === 'playing' && !p.still && at !== null ? { t: at } : {}) }
+      : p,
+  )
 }
 
 /**
@@ -402,18 +412,25 @@ async function playing(
   size: { cols: number; rows: number },
   opts: { still?: boolean },
 ) {
-  await stopPlayback($)
+  // this play's id first, before any await: of two plays begun close together (k, k), the later one wins
   const id = ++current
+  const old = stream
+  stream = null
+  if (old) void old.return(undefined).catch(() => undefined)
+  lastT = null
   const root = await $.session.root()
   const { argv } = await cli($, root)
   const mode = await modeFor($, await $.session.surface())
   if (mode === 'browser') return openPlayer($, v)
   const until = stretches[stretches.length - 1]?.to ?? 0
-  const base: ReelplannerPlayback = { key: v.key, status: 'rendering', t: stretches[0]?.from ?? 0, until, mode, ...size }
+  const base: ReelplannerPlayback = { key: v.key, status: 'rendering', t: stretches[0]?.from ?? 0, until, mode, ...size, ...(opts.still ? { still: true } : {}) }
+  if (id !== current) return
   await update($, playback, () => base)
 
   const lines = async function* (args: string[]) {
+    if (id !== current) return
     const s = $.process.spawn({ argv: [...argv, 'reel-frames', v.dir, ...args], cwd: root })
+    if (id !== current) return void s.return(undefined).catch(() => undefined)
     stream = s
     let buf = ''
     for await (const chunk of s) {
@@ -429,15 +446,19 @@ async function playing(
   }
   const failed = (message: string) => update($, playback, p => (p ? { ...p, status: 'failed' as const, message } : p))
 
-  // the render, once: its progress on the screen
-  let rendered = false
-  for await (const line of lines(['--render'])) {
-    if (line.startsWith('P ')) await update($, playback, p => (p ? { ...p, progress: Number(line.slice(2)) } : p))
-    else if (line.startsWith('R ')) rendered = true
-    else if (line.startsWith('X ')) return failed(line.slice(2))
+  // the render, once: its progress on the screen. A render already known current (this build) is not asked about again
+  const built = `${v.dir}@${builtAt(v.dir)}`
+  if (!renderedAt.has(built)) {
+    let rendered = false
+    for await (const line of lines(['--render'])) {
+      if (line.startsWith('P ')) await update($, playback, p => (p ? { ...p, progress: Number(line.slice(2)) } : p))
+      else if (line.startsWith('R ')) rendered = true
+      else if (line.startsWith('X ')) return failed(line.slice(2))
+    }
+    if (id !== current) return
+    if (!rendered) return failed('the render did not finish')
+    renderedAt.add(built)
   }
-  if (id !== current) return
-  if (!rendered) return failed('the render did not finish')
 
   let wrote = 0
   const rate = opts.still ? 1 : await read($, pace)
@@ -449,9 +470,10 @@ async function playing(
     let clockFrom = 0
     let videoFrom = from
     // the frames in a folder of the video's own (renders/ is left out of git), kept after the stretch: a redraw shows the last
-    if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)), '--dir', `${v.dir}/renders/frames`)
+    if (mode === 'image') args.push('--width', String(Math.min(1280, size.cols * 10)), '--dir', `${v.dir}/renders/frames/${id % 2}`)
     if (mode === 'jpeg') args.push('--width', '384', '--fps', '3', '--no-audio')
     else if (opts.still) args.push('--no-audio')
+    if (id !== current) return
     await update($, playback, p => (p ? { ...p, status: 'playing' as const, t: from, progress: undefined } : p))
     for await (const line of lines(args)) {
       const [kind, t, rest, gen] = line.split(' ')
@@ -470,7 +492,7 @@ async function playing(
         } else if (kind === 'F' && mode === 'jpeg' && rest) {
           await update($, flip, () => jpegSvg(rest, 384, 216))
         } else if (kind === 'I' && rest) {
-          const source = { file: rest, format: 'rgb' as const, width: imageSize.width, height: imageSize.height, generation: Number(gen) }
+          const source = { file: rest, format: 'rgb' as const, width: imageSize.width, height: imageSize.height, generation: ++frameNo }
           pictures.set(v.key, source)
           const res = await $.ui.blit({ requestId: PANE, key: 'screen', source })
           if (res.deny && /alt/.test(res.deny)) {
@@ -482,6 +504,7 @@ async function playing(
           }
         }
         const now = Number(t)
+        if (!late) lastT = now
         if (now - wrote >= 0.25) {
           wrote = now
           await update($, playback, p => (p ? { ...p, t: now } : p))
@@ -491,6 +514,7 @@ async function playing(
     if (id !== current) return
     await update($, playback, p => (p ? { ...p, t: to } : p))
   }
+  if (id !== current) return
   stream = null
   // a still frame (a seek while paused) stays paused where it was put, not at the end of its moment
   const at = opts.still ? (stretches[0]?.from ?? until) : until
@@ -1080,18 +1104,20 @@ export const register: Register = on => {
       const s = stretch(map, v.which, stop)
       if (branchOf && branchOf.key === v.key && branchOf.stop === stop && from < branchOf.end)
         return [{ from, to: branchOf.end }, ...trimmed([{ from: s.from, to: s.to }])]
-      return trimmed([{ from: from > s.from && from < s.to - 0.2 ? from : s.from, to: s.to }])
+      // in just the changes the list can begin before this stop's stretch (a scene before it still holds a change), so
+      // a pause there resumes where it was, not at this stretch
+      return trimmed([{ from: from < s.to - 0.2 && (from > s.from || only) ? from : s.from, to: s.to }])
     }
     // the pane changed size while the video plays (dragged, z, the terminal resized): once the size settles, the
     // video plays on from where it is at the new size
-    if (mine?.status === 'playing' && screenSize(width, pictureRoom(big)).cols !== mine.cols && !resizing) {
+    if (mine?.status === 'playing' && !mine.still && screenSize(width, pictureRoom(big)).cols !== mine.cols && !resizing) {
       resizing = true
       try {
         $.clock.after(400, async () => {
           resizing = false
           const p = await read($, playback)
           const want = screenSize(paneColumns || width, pictureRoom(await read($, theater)))
-          if (p?.key === v.key && p.status === 'playing' && want.cols !== p.cols) void play($, v, onFrom(p.t), want)
+          if (p?.key === v.key && p.status === 'playing' && !p.still && want.cols !== p.cols) void play($, v, onFrom(lastT ?? p.t), want)
         })
       } catch {
         resizing = false
@@ -1110,11 +1136,12 @@ export const register: Register = on => {
 
     // --- the pane, top to bottom: the picture; the transport (timeline, keys, time); the stage (the choice the
     // video stopped at, or what comes next); the review so far (answers and comments, by time); hints -----------
-    const playing = mine?.status === 'playing'
-    const rendering = mine?.status === 'rendering'
+    // a still (j or k while paused) is not a play: it neither shows as one nor makes the next key play
+    const playing = mine?.status === 'playing' && !mine.still
+    const rendering = mine?.status === 'rendering' && !mine.still
     const stopped = !playing && !rendering // the card for this stop shows only while the video is still
     const toggle = () => {
-      if (playing) return stopPlayback($)
+      if (playing || rendering) return stopPlayback($)
       return play($, v, onFrom(mine ? mine.t : stretch(map, v.which, stop).from), size)
     }
     const mode = mine?.mode ?? (await modeFor($, e.surface))
@@ -1124,8 +1151,13 @@ export const register: Register = on => {
     /** j and k: back or on 5 seconds, as the browser player's arrow keys. Playing, it plays on from there (just the
      * changes still skip what did not change); paused, it shows the frame there and stays paused. */
     const seek = async (by: number) => {
-      if (inBrowser) return
-      const t0 = mine?.t ?? stretch(map, v.which, stop).from
+      if (inBrowser || rendering) return // a key during the first render would throw it away and start it over
+      // read now, not as of the last drawing: two quick presses go 10 seconds, from the moment the last frame showed
+      const pb = await read($, playback)
+      const nowMine = pb?.key === v.key ? pb : null
+      const stop = (await read($, open))?.stop ?? 0
+      const playing = nowMine?.status === 'playing' && !nowMine.still
+      const t0 = (playing ? lastT : null) ?? nowMine?.t ?? stretch(map, v.which, stop).from
       let t1 = Math.max(0, Math.min(total - 0.1, t0 + by))
       // the stop whose stretch holds the moment. Between a choice and where the video resumes after it are the
       // answers' own clips: going on lands where it resumes, going back just before the choice
@@ -1383,9 +1415,10 @@ export const register: Register = on => {
     }
     const rate = await read($, pace)
     const faster = async () => {
+      if (rendering) return
       const next = PACES[(PACES.indexOf(rate) + 1) % PACES.length] ?? 1
       await update($, pace, () => next)
-      if (playing && mine) void play($, v, onFrom(mine.t), size)
+      if (playing && mine) void play($, v, onFrom(lastT ?? mine.t), size)
     }
     const transport = inBrowser ? (
       <Box key="transport" gap={2}>

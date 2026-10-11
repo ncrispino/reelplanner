@@ -17,6 +17,8 @@ export type ReelplannerPlayback = {
   cols: number
   rows: number
   progress?: number
+  /** A single frame shown for a seek while paused (j, k): not a play. */
+  still?: boolean
   audio?: string
   message?: string
 }
