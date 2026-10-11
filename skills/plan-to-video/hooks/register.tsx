@@ -344,6 +344,7 @@ let paneRows = 0 // and its rows: a docked pane is floor to ceiling, an inline o
 let termRows = 0 // the terminal's rows, as a drawing last saw them
 let inlinePane = false // the pane as last drawn sat inline above the prompt (the main-screen layout), not docked
 let resizing = false // a play at the pane's new size is waiting for the size to settle
+const askedSend = new Set<string>() // the videos whose Send card was asked for (n to it), before the video got there
 
 /** The rows the picture may take: bigger (z), all but the header and the keys; else room left for the card under it. */
 const pictureRoom = (big: boolean) => (paneRows ? Math.max(6, paneRows - (big ? 4 : 14)) : Infinity)
@@ -1062,6 +1063,7 @@ export const register: Register = on => {
     const trimmed = (list: { from: number; to: number }[]) => (only ? changedOnly(map, list, id => done(id)) : list)
     const go = async (to: number, from?: number, branch?: Branch) => {
       let i = Math.max(0, Math.min(stops.length, to))
+      if (i >= stops.length) askedSend.add(v.key)
       const start = from ?? stretch(map, v.which, i).from
       // just the changes: going on, a choice already answered is not stopped at again (going back to one is)
       if (only && to > stop) i = nextOpen(i)
@@ -1225,8 +1227,23 @@ export const register: Register = on => {
       )
     } else if (e.surface === 'terminal') {
       const tt = $.ui.resolve(e)
+      // before its first frame (the render being made, or the first frames on their way) the picture is blank, and
+      // Pause in Play's place is easy to miss: a line over it says the video is on its way and plays by itself. The
+      // Image stays, since each frame is drawn onto it by its key
+      const starting = rendering || (playing && !pictures.has(v.key))
       picture = (
-        <Box justifyContent="center">
+        <Box flexDirection="column" alignItems="center">
+          {starting && (
+            <Text>
+              <Text bold color="claude">
+                ▶ Starting the video{' '}
+              </Text>
+              <Text dimColor>
+                {rendering ? `· getting it ready for this terminal, once per version · ${mine?.progress ?? 0}% ` : '· the first frames are on their way '}
+                · it plays by itself, with its sound (p pauses)
+              </Text>
+            </Text>
+          )}
           <tt.Image key="screen" source={pictures.get(v.key) ?? { rgba: 'AAAA/w==', width: 1, height: 1 }} columns={size.cols} rows={size.rows} alt={map.title ?? 'the video'} />
         </Box>
       )
@@ -1419,9 +1436,12 @@ export const register: Register = on => {
               </Button>
             )}
           </Box>
-          <Text dimColor>
-            {clock(t)} / {clock(total)}
-            {where ? ` · ${where}` : ''}
+          <Text>
+            <Text dimColor>
+              {clock(t)} / {clock(total)}
+              {where ? ' · ' : ''}
+            </Text>
+            {playing || rendering ? <Text color="success">▶ {where}</Text> : <Text dimColor>{where}</Text>}
           </Text>
         </Box>
       </Box>
@@ -1554,7 +1574,22 @@ export const register: Register = on => {
       </Box>
     )
 
+    // a card shows where the video asks for it, as in the browser player: a choice once the video has reached it, Send
+    // at the end (or once asked for, n). Before then the stage says what comes next. Where the pane cannot see the
+    // video (it plays in the browser) or it has not played here yet, the card shows at once
+    const reached = (at: number) => inBrowser || !mine || t >= at - 0.5
+    const upTo = (what: string, at: number) => (
+      <Box borderStyle="round" borderDimColor flexDirection="column" paddingX={1}>
+        <Text dimColor>
+          Up next · {what} · at {clock(at)} · n goes there now
+        </Text>
+      </Box>
+    )
+
     // --- the end: send it, and after: what Claude is doing with it, and the new version when it is built --------
+    if (stop >= stops.length && !(lastSent || askedSend.has(v.key) || (reached(total) && mine?.status !== 'playing'))) {
+      return layout(upTo('Send your review, at the end of the video', total))
+    }
     if (stop >= stops.length) {
       const left = stops.filter(s => !done(s.id)).length
       const note = (await read($, notes))[v.key] ?? ''
@@ -1701,7 +1736,7 @@ export const register: Register = on => {
         }))
       }
       const isChosen = (o: Option) => (a?.option === 'multi' ? (a.options ?? []).includes(o.id) : a?.option === o.id)
-      if (!stopped || justAnswered) return layout(upNext)
+      if (!stopped || !reached(s.at) || justAnswered) return layout(upNext)
       return layout(
         <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
           <Text color="claude" bold>
@@ -1749,7 +1784,7 @@ export const register: Register = on => {
       await update($, verdicts, all => ({ ...all, [`${v.key}:${c.id}`]: { ...next, at } }))
       await go(stop + 1, c.at)
     }
-    if (!stopped || justAnswered) return layout(upNext)
+    if (!stopped || !reached(s.at) || justAnswered) return layout(upNext)
     return layout(
       <Box borderStyle="round" borderColor="claude" flexDirection="column" paddingX={1}>
         <Text color="claude" bold>

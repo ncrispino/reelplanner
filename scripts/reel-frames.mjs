@@ -130,7 +130,9 @@ function play() {
   say(`V ${total.toFixed(3)} ${W} ${H}`);
 
   const children = [];
-  const stop = () => { for (const c of children) { try { c.kill("SIGTERM"); } catch { /* gone */ } } };
+  // the sound runs in a process group of its own (its shell, the player, afplay's subshell): stopping kills the whole
+  // group, or the player would play on after a pause, under the sound of the next play
+  const stop = () => { for (const c of children) { try { if (c.spawnargs[0] === "sh") process.kill(-c.pid, "SIGTERM"); else c.kill("SIGTERM"); } catch { /* gone */ } } };
   for (const s of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(s, () => { stop(); process.exit(0); });
   process.stdout.on("error", () => { stop(); process.exit(0); }); // the pane stopped reading
 
@@ -150,7 +152,7 @@ function play() {
     }
     if (cmd) {
       const watch = `(${cmd}) & p=$!; while kill -0 ${process.pid} 2>/dev/null && kill -0 $p 2>/dev/null; do sleep 0.3; done; kill $p 2>/dev/null`;
-      const sound = spawn("sh", ["-c", watch], { stdio: ["ignore", "ignore", cmd.startsWith("ffplay") ? "pipe" : "ignore"] });
+      const sound = spawn("sh", ["-c", watch], { detached: true, stdio: ["ignore", "ignore", cmd.startsWith("ffplay") ? "pipe" : "ignore"] });
       children.push(sound);
       if (sound.stderr) {
         heard = new Promise((go) => {

@@ -349,7 +349,8 @@ marked: pick one (its digit), choose **Explain this more**, or answer in your ow
 and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
 each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `j` and `k` go back and on 5
 seconds (the browser player's arrow keys: in a pane the arrows are Claude Code's, scrolling and moving between
-controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch, `s` plays faster (1.25×, 1.5×, 2×, then 1× again; the sound keeps its pitch), `n`
+controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch (until the first frame, a line over the picture says the video is starting and plays by
+itself; the clock line says ▶ playing), `s` plays faster (1.25×, 1.5×, 2×, then 1× again; the sound keeps its pitch), `n`
 and `b` move between stops. The picture follows the pane: dragged wider, `z`, or the terminal resized, it plays on from
 where it was at the new size; a frame that comes after its moment is passed over, so the picture keeps up with the
 sound. The last stop sums the review up, takes a note for the agent, and sends it,

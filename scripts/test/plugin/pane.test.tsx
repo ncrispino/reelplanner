@@ -353,6 +353,22 @@ test('the video plays in the pane, stops at the choice, and after the answer pla
   await ui.press({ key: 'library' })
 })
 
+test("a choice's card shows once the video has reached it, not before", async ($, on) => {
+  world(on, { kitty: true })
+  const ui = await $.ui.mount(pane('terminal'))
+  await ui.press({ key: `open-${SLUG}` })
+  await ui.press({ key: 'play' })
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ })).toBeDefined() // stopped at 0:20, where it asks
+  await ui.press({ key: 'back5' }) // 0:15, before the question
+  expect(await ui.find({ type: 'Text', text: /Choice 1 of 2/ }).catch(() => undefined)).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: /Up next · choice 1 of 2/ })).toBeDefined()
+  // Send waits for the end too, unless asked for: n to it shows it at once
+  await ui.press({ key: 'next' })
+  await ui.press({ key: 'next' })
+  expect(await ui.find({ type: 'Text', text: /Send your review/ })).toBeDefined()
+  await ui.press({ key: 'library' })
+})
+
 test('s plays faster: 1.25×, 1.5×, 2×, then 1× again', async ($, on) => {
   const { spawned } = world(on, { kitty: true })
   const ui = await $.ui.mount(pane('terminal'))
