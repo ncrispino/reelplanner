@@ -63,7 +63,7 @@ run() {
   node "$B/reviewer.mjs" "$HOME/bakery-site" "$BENCH_TIMING" "$OUT/reviewer.jsonl" "$OUT/done.json" > "$OUT/reviewer.log" 2>&1 & local rev=$!
   sleep 1
   printf '{"ev":"run-start","at":%s,"label":"%s","reelplanner":"%s"}\n' "$(date +%s%3N)" "$label" "$version" >> "$OUT/run.jsonl"
-  ( cd "$HOME/bakery-site" && claude -p "$PROMPT" --dangerously-skip-permissions --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
+  ( cd "$HOME/bakery-site" && claude -p "$PROMPT" --permission-mode auto --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
   local deadline=$((SECONDS + minutes * 60)) why="the agent ended"
   while kill -0 "$agent" 2>/dev/null; do
     if [ -f "$OUT/done.json" ]; then why="the revised video was shown"; sleep 20; break; fi
