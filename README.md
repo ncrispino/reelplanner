@@ -28,12 +28,15 @@ npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the 
 
 In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`. The
 plugin also adds `/reel`, which plays the video in a pane beside the conversation ([watch it in Claude
-Code](#watch-it-in-claude-code-reel)):
+Code](#watch-it-in-claude-code-reel)). From a terminal:
 
+```bash
+claude plugin marketplace add ncrispino/reelplanner
+claude plugin install reelplanner@reelplanner      # for you, in every repo
 ```
-/plugin marketplace add ncrispino/reelplanner
-/plugin install reelplanner@reelplanner
-```
+
+Or inside Claude Code, the same as `/plugin marketplace add …` and `/plugin install …`; when it asks where, pick
+user scope (for you, in every repo).
 
 The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
 when they are missing, but running them first is quicker).
@@ -132,7 +135,7 @@ there, then **Send**: with **Changes needed** Claude revises the plan and the pa
 
 <p align="center"><i>/reel in kitty: a review sent with Changes needed, then just the change played (75 s, sped up).</i></p>
 
-- **Needs:** the reelplanner plugin (`/plugin install reelplanner@reelplanner`, as in [Install](#install)) and
+- **Needs:** the reelplanner plugin (`claude plugin install reelplanner@reelplanner`, as in [Install](#install)) and
   `reelplanner setup`, then a new session. The picture shows in
   [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
   player, and the pane keeps the choices, comments and Send.
