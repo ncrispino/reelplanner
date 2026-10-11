@@ -338,8 +338,10 @@ Then the tooling and `setup`, as in [Install](#install). This keeps the skill up
 ### The reel pane in Claude Code
 
 A review the agent starts opens the pane by itself where it can show the picture (below), so `/reel` alone is for
-finding a video: it lists the plans with a built video, newest first, each with its date, its open choices or calls and
-whether it has been reviewed, and says how to ask for a new one; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
+finding a video. It goes by folder, as Claude Code finds CLAUDE.md: the session's folder first, then each folder above
+it, each with its plans' videos (`.reelplanner/plans/`) and its quick videos (`videos/<name>/`), newest first, a line
+each with its date and whether it is still to review. The newest in the session's folder is `1`; a video from another
+folder opens from there, and its review goes to that folder's repo. Under the list it says how to ask for a new one; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
 `/reel <video-dir>` any built video. The video plays at once, at the top of the pane: its own frames, its captions under
 them word for word, its clock, and its sound on the machine the session runs on (`ffplay`, or `afplay` on macOS). It
 stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one

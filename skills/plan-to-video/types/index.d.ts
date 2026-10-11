@@ -2,8 +2,8 @@
 export type ReelplannerWhich = 'video' | 'walkthrough-video'
 
 /** The video the pane shows, and which of its stops; null shows the library. `dir` names a built video outside
- * `.reelplanner/plans/` (`/reel <video-dir>`). */
-export type ReelplannerOpen = { slug: string; which: ReelplannerWhich; stop: number; dir?: string } | null
+ * `.reelplanner/plans/` (`/reel <video-dir>`), and `repo` the repo it belongs to when that is not the session's. */
+export type ReelplannerOpen = { slug: string; which: ReelplannerWhich; stop: number; dir?: string; repo?: string } | null
 
 /** The video playing in the pane: its render being made, playing, paused, or stopped at a choice. */
 export type ReelplannerPlayback = {

@@ -47,8 +47,8 @@
   claimed by a waiting session or filed by this one with `reel-intake`), and **Watch** opens the player: the local
   page from a terminal, an Artifact in a cloud session, where localhost is out of reach. When the agent opens a
   video for review, the pane opens and plays it where it can show the picture (kitty, Ghostty; the browser then
-  stays shut, `--no-open`), and elsewhere a band above the prompt offers it. `/reel` alone lists the repo's videos,
-  with how to make a new one. `s` plays faster (`reel-frames --speed`), the picture follows the pane's size as it
+  stays shut, `--no-open`), and elsewhere a band above the prompt offers it. `/reel` alone lists the videos by folder,
+  this one first and then each above it (plans and quick videos, newest first), with how to make a new one. `s` plays faster (`reel-frames --speed`), the picture follows the pane's size as it
   plays, and late frames are passed over so the picture keeps up with the sound. A build in Claude Code starts the pane's
   render in the background as it finishes, so the pane rarely waits for it. The marketplace entry names the pane's state contract
   (`types`); `plugin.spec` validates the plugin as installed and runs its tests (`scripts/test/plugin/`) when

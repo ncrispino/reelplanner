@@ -96,7 +96,8 @@ type PlanMap = {
 type Caption = { start: number; end: number; text: string }
 
 /** One video the pane can show: a plan's (under .reelplanner/plans/) or any built video's folder. */
-type Video = { slug: string; which: ReelplannerWhich; dir: string; key: string; inPlans: boolean }
+/** `repo`: the folder of the repo a video outside this session's repo belongs to, where its review goes. */
+type Video = { slug: string; which: ReelplannerWhich; dir: string; key: string; inPlans: boolean; repo?: string }
 
 const maps = new Map<string, { mtimeMs: number; map: PlanMap }>()
 const captionsOf = new Map<string, Caption[]>()
@@ -104,9 +105,9 @@ const captionsOf = new Map<string, Caption[]>()
 const plansDir = (root: string) => `${root}/.reelplanner/plans`
 const videoDir = (root: string, slug: string, which: ReelplannerWhich) => `${plansDir(root)}/${slug}/${which}`
 const isPlanVideo = (which: ReelplannerWhich) => which === 'video'
-const videoOf = (root: string, o: { slug: string; which: ReelplannerWhich; dir?: string }): Video =>
+const videoOf = (root: string, o: { slug: string; which: ReelplannerWhich; dir?: string; repo?: string }): Video =>
   o.dir
-    ? { slug: o.slug, which: o.which, dir: o.dir, key: o.dir, inPlans: false }
+    ? { slug: o.slug, which: o.which, dir: o.dir, key: o.dir, inPlans: false, ...(o.repo ? { repo: o.repo } : {}) }
     : { slug: o.slug, which: o.which, dir: videoDir(root, o.slug, o.which), key: `${o.slug}:${o.which}`, inPlans: true }
 
 async function loadMap($: EngineInterface, dir: string) {
@@ -221,6 +222,65 @@ async function scanLibrary($: EngineInterface): Promise<ReelplannerPlan[]> {
     })
   }
   return plans
+}
+
+/** A video in the library /reel alone shows: a plan's (its plan video or walkthrough) or a quick video's. */
+type Shelf = { title: string; at: number; target: Target; plan?: ReelplannerPlan }
+
+/**
+ * The library by folder, the way Claude Code finds CLAUDE.md: the session's folder first, then each folder above it,
+ * each with its plans (.reelplanner/plans/) and quick videos (videos/<name>/), newest first. Folders with none are left out.
+ */
+async function scanShelves($: EngineInterface): Promise<{ dir: string; videos: Shelf[] }[]> {
+  const root = await $.session.root()
+  const mtime = async (path: string) => {
+    try {
+      return (await $.fs.stat(path)).mtimeMs
+    } catch {
+      return 0
+    }
+  }
+  const list = async (path: string) => {
+    try {
+      return (await $.fs.list(path)).filter(x => x.kind === 'dir').map(x => x.name)
+    } catch {
+      return [] as string[]
+    }
+  }
+  const shelves: { dir: string; videos: Shelf[] }[] = []
+  let dir = ((await $.session.cwd().catch(() => root)) || root).replace(/\/+$/, '') || '/'
+  for (let depth = 0; depth < 12; depth++) {
+    const videos: Shelf[] = []
+    for (const slug of await list(plansDir(dir))) {
+      const plan = await loadMap($, videoDir(dir, slug, 'video'))
+      const walk = await loadMap($, videoDir(dir, slug, 'walkthrough-video'))
+      if (!plan && !walk) continue
+      const reviews = (await $.fs.list(`${plansDir(dir)}/${slug}/reviews`).catch(() => [])).map(x => x.name)
+      const entry: ReelplannerPlan = {
+        slug,
+        title: plan?.title ?? walk?.title ?? slug,
+        choices: plan ? (plan.decisions ?? []).length : null,
+        calls: walk ? (walk.autonomy ?? []).length : null,
+        planReviewed: reviews.some(n => n.startsWith('plan-') && n.endsWith('.json')),
+        walkthroughReviewed: reviews.some(n => n.startsWith('walkthrough-') && n.endsWith('.json')),
+      }
+      const which = defaultWhich(entry)
+      const at = Math.max(await mtime(`${videoDir(dir, slug, 'video')}/plan-map.json`), await mtime(`${videoDir(dir, slug, 'walkthrough-video')}/plan-map.json`))
+      // this session's repo opens a plan by its slug, as everywhere else; another repo's by its folder
+      const target: Target = dir === root ? { slug, which } : { slug, which, dir: videoDir(dir, slug, which), repo: dir }
+      videos.push({ title: entry.title, at, target, plan: entry })
+    }
+    for (const name of await list(`${dir}/videos`)) {
+      const map = await loadMap($, `${dir}/videos/${name}`)
+      if (!map) continue
+      const which: ReelplannerWhich = map.project === 'walkthrough-video' ? 'walkthrough-video' : 'video'
+      videos.push({ title: map.title ?? name, at: await mtime(`${dir}/videos/${name}/plan-map.json`), target: { slug: name, which, dir: `${dir}/videos/${name}`, repo: dir } })
+    }
+    if (videos.length) shelves.push({ dir, videos: videos.sort((a, b) => b.at - a.at) })
+    if (dir === '/') break
+    dir = dir.slice(0, dir.lastIndexOf('/')) || '/'
+  }
+  return shelves
 }
 
 /** The video a plan opens on: its walkthrough while that waits on a review, else its plan video. */
@@ -622,7 +682,7 @@ async function inboxOf($: EngineInterface, root: string) {
 }
 
 async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes') {
-  const root = await $.session.root()
+  const root = v.repo ?? (await $.session.root())
   const row = await buildRow($, v, verdict)
   const id = rowId(row.project, row.submittedAt)
   const inbox = await inboxOf($, root)
@@ -690,7 +750,7 @@ async function openPlayer($: EngineInterface, v: Video) {
   }
 }
 
-type Target = { slug: string; which?: ReelplannerWhich; dir?: string; stop?: number; from?: number }
+type Target = { slug: string; which?: ReelplannerWhich; dir?: string; repo?: string; stop?: number; from?: number }
 
 /**
  * The keys to the pane, on `key`: a field just opened gets what is typed next, and after one closes the next key
@@ -715,7 +775,7 @@ async function openPane($: EngineInterface, target?: Target, asked = true) {
   if (target) {
     const plan = plans.find(p => p.slug === target.slug)
     const which = target.which ?? (plan ? defaultWhich(plan) : 'video')
-    await update($, open, () => ({ slug: target.slug, which, stop: target.stop ?? 0, ...(target.dir ? { dir: target.dir } : {}) }))
+    await update($, open, () => ({ slug: target.slug, which, stop: target.stop ?? 0, ...(target.dir ? { dir: target.dir } : {}), ...(target.repo ? { repo: target.repo } : {}) }))
   } else {
     await update($, open, () => null)
   }
@@ -895,49 +955,65 @@ export const register: Register = on => {
     const plans = await scanLibrary($)
     if (!shown) {
       // the library: what /reel alone opens, to find an older video or one not reviewed yet. A review the agent
-      // starts opens its video by itself, so this is not the usual way in
+      // starts opens its video by itself, so this is not the usual way in. By folder, as Claude Code finds CLAUDE.md:
+      // this one first, its newest video a key away, then each folder above it
       const opensHere = (await modeFor($, e.surface)) === 'image' || (await isCloud($)) // as the Bash hook decides
-      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      const dated = (slug: string) => {
-        const m = slug.match(/^\d{4}-(\d{2})-(\d{2})-/)
-        return m ? `${MONTHS[Number(m[1]) - 1]} ${Number(m[2])}` : null
+      const shelves = await scanShelves($)
+      const home = ((await $.env.get('HOME')) ?? '').replace(/\/+$/, '')
+      const here = ((await $.session.cwd().catch(() => root)) || root).replace(/\/+$/, '')
+      const named = (dir: string) => (home && (dir === home || dir.startsWith(`${home}/`)) ? `~${dir.slice(home.length)}` : dir)
+      const away = (dir: string) => {
+        const up = here.split('/').length - dir.split('/').length
+        return up <= 0 ? 'here' : up === 1 ? 'one folder up' : `${up} folders up`
       }
-      const part = (key: string, what: string, reviewed: boolean) => (
-        <Text key={key}>
-          <Text dimColor>{what} </Text>
-          {reviewed ? <Text color="success">✓</Text> : <Text color="suggestion">to review</Text>}
-        </Text>
-      )
+      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      const day = (ms: number) => (ms ? `${MONTHS[new Date(ms).getMonth()]} ${new Date(ms).getDate()}` : '')
+      const status = (x: Shelf) => {
+        if (!x.plan) return <Text dimColor>quick video</Text>
+        const open = (x.plan.choices !== null && !x.plan.planReviewed) || (x.plan.calls !== null && !x.plan.walkthroughReviewed)
+        return open ? <Text color="suggestion">to review</Text> : <Text color="success">✓ reviewed</Text>
+      }
+      const PER = 6
+      const total = shelves.reduce((n, sh) => n + sh.videos.length, 0)
+      let n = 0
+      const row = (x: Shelf, first: boolean) => {
+        const k = ++n
+        const key = x.target.repo ? `open-${x.target.dir}` : `open-${x.target.slug}`
+        return (
+          <Box key={`row-${key}`} gap={2}>
+            <Button key={key} plain hotkey={k <= 9 ? String(k) : undefined} onPress={() => openPane($, x.target)}>
+              {x.title}
+            </Button>
+            <Text wrap="truncate-end">
+              <Text dimColor>{day(x.at)} · </Text>
+              {status(x)}
+              {first && <Text dimColor> · the newest here</Text>}
+            </Text>
+          </Box>
+        )
+      }
       return (
         <Box flexDirection="column" gap={1}>
           <Text>
             <Text bold color="claude">
               reelplanner
             </Text>
-            <Text dimColor> · {plans.length ? `${count(plans.length, 'plan')} with a video` : 'no videos here yet'}</Text>
+            <Text dimColor> · {total ? count(total, 'video') : 'no videos here yet'}</Text>
           </Text>
-          {plans.length > 0 && (
-            <Box flexDirection="column">
-              {plans.slice(0, 30).map((p, i) => (
-                <Box key={`plan-${p.slug}`} flexDirection="column">
-                  <Button
-                    key={`open-${p.slug}`}
-                    plain
-                    hotkey={i < 9 ? String(i + 1) : undefined}
-                    onPress={() => openPane($, { slug: p.slug, which: defaultWhich(p) })}
-                  >
-                    {p.title}
-                  </Button>
-                  <Box gap={2} paddingLeft={4} flexWrap="wrap">
-                    {dated(p.slug) && <Text dimColor>{dated(p.slug)}</Text>}
-                    {p.choices !== null && part('plan', `plan video · ${count(p.choices, 'choice')}`, p.planReviewed)}
-                    {p.calls !== null && part('walk', `walkthrough · ${count(p.calls, 'call')}`, p.walkthroughReviewed)}
-                  </Box>
-                </Box>
-              ))}
-              {plans.length > 30 && <Text dimColor>and {plans.length - 30} older (/reel &lt;plan&gt; opens one by name)</Text>}
+          {shelves.map((sh, si) => (
+            <Box key={`shelf-${sh.dir}`} flexDirection="column">
+              <Text>
+                <Text bold>{named(sh.dir)}</Text>
+                <Text dimColor> · {away(sh.dir)}</Text>
+              </Text>
+              {sh.videos.slice(0, PER).map((x, vi) => row(x, si === 0 && vi === 0 && away(sh.dir) === 'here'))}
+              {sh.videos.length > PER && (
+                <Text dimColor>
+                  {'  '}and {sh.videos.length - PER} older (/reel &lt;plan&gt; opens one by name)
+                </Text>
+              )}
             </Box>
-          )}
+          ))}
           <Box key="new" flexDirection="column" borderStyle="round" borderDimColor paddingX={1}>
             <Text bold>Make a new video</Text>
             <Text>

@@ -271,11 +271,26 @@ test('where the pane shows the picture, a review the agent starts opens it there
 test('/reel alone lists the videos, with how to make a new one', async ($, on) => {
   world(on, { kitty: true })
   const ui = await $.ui.mount(pane('terminal'))
-  expect(await ui.find({ type: 'Text', text: /1 plan with a video/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /1 video/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /the newest here/ })).toBeDefined()
   expect(await ui.find({ type: 'Button', text: /A small plan/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /to review/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /Make a new video/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /opens here when it is ready/ })).toBeDefined()
+})
+
+test('/reel alone goes by folder: this one first, then each above it, a video in another folder opening by its own', async ($, on) => {
+  const { files } = world(on, { kitty: true })
+  on('session.cwd', () => ({ value: `${ROOT}/app` }))
+  files.set(`${ROOT}/app/videos/how-auth-works/plan-map.json`, JSON.stringify({ title: 'How auth works', frames: [], decisions: [] }))
+  files.set(`${ROOT}/app/videos/how-auth-works/index.html`, '<html></html>')
+  const ui = await $.ui.mount(pane('terminal'))
+  expect(await ui.find({ type: 'Text', text: /2 videos/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /one folder up/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /quick video/ })).toBeDefined()
+  // the folder the session is in comes first: its quick video is 1, the repo's plan above it is 2
+  expect(await ui.find({ type: 'Button', text: /How auth works/ })).toMatchObject({ props: expect.objectContaining({ hotkey: '1' }) })
+  expect(await ui.find({ type: 'Button', text: /A small plan/ })).toMatchObject({ props: expect.objectContaining({ hotkey: '2' }) })
 })
 
 test('in a terminal without kitty graphics, the browser player opens, and the pane keeps the choices and says how to watch here', async ($, on) => {
