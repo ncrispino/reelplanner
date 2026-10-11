@@ -103,7 +103,7 @@ const map = JSON.parse(readFileSync(mapPath, "utf8"));
 // what fresh eyes left as it is, for this build only (the plan map's own run read the map on disk, the last run's)
 const write = () => {
   const fe = leftAfter(dir, { build: { id: map.changes.build, scope: map.changes.baseline ? [...new Set([...(map.changes.changedFrames || []), ...(map.changes.restyledFrames || [])])] : null } });
-  if (fe?.left.length || fe?.again?.length) map.freshEyes = fe; else delete map.freshEyes;
+  if (fe?.left.length || fe?.again?.length || fe?.asks?.length) map.freshEyes = fe; else delete map.freshEyes;
   writeFileSync(mapPath, JSON.stringify(map, null, 2) + "\n");
 };
 if (!prev) {

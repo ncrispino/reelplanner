@@ -52,6 +52,8 @@ npm test                                        # the fast specs
   edit them by hand unless the owner asks.
 - Check a PR's text as CI will: `node bin/reelplanner.mjs reel pr-check --base <upstream>/main --body-file pr.md`.
 - "reelplanner" is lowercase in code and prose.
+- Where a video's time and tokens go: the `pipeline-cost` skill (`.claude/skills/pipeline-cost/`) measures a run from
+  its transcripts and adds it to `eval/pipeline-cost/LEDGER.md`; a change meant to make videos cheaper is judged there.
 
 reelplanner is planned with reelplanner: its own plans, reviews, decisions and system video are in
 `.reelplanner/`, and the plan-to-video skill (`skills/plan-to-video/`) applies here as in any repo.

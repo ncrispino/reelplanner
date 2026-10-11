@@ -2,7 +2,14 @@
 // Build a video once its storyboard, script and frames are written: each stage its own command, run in
 // order:
 //
+//   frames              on a rebuild with frames changed since a build last passed (their hashes), and the storyboard
+//                       and script not (else the assembly is stale, and verify judges the new one): verify's own layout
+//                       check on the video as last assembled (lib/frame-layout.mjs videoCheck), before anything is
+//                       voiced, and frame-lint's findings on those frames said (never a stop); a first build has nothing
+//                       assembled to look at, and leaves it to verify
 //   check-terms         no id said alone, no word used before it is defined (check-terms.mjs; warnings go on)
+//   length              the length the script will run, before the voice: past 1.5× the budget it stops (lib/length.mjs),
+//                       unless BRIEF.md says why it needs more (`- Length:`)
 //   check-sources       an explainer's quoted lines word for word in their pinned sources, no secret or home path in
 //                       its text, no decision beat (check-sources.mjs; skipped for a video that names no source)
 //   narrate             only the lines whose text, voice, speed or model changed (narrate.mjs)
@@ -17,9 +24,11 @@
 //   guide               the video's guide built again with the new pictures, and checked (guide.mjs --check); a
 //                       scene whose picture is missing is a △ (skipped for a video with no plan or sources beside it)
 //
-// Then the video's watched length against its budget (lib/length.mjs): a △ past it, never a stop; and
-// whether its scenes vary (lib/variety.mjs): a △ when over 70% share one layout or one transition, or
-// when BRIEF.md does not say the video's medium, layouts and main transition.
+// Then the video's watched length against its budget (lib/length.mjs): a △ past it, never a stop (the stop is the
+// `length` stage's, on the script, before anything is voiced); whether its scenes vary (lib/variety.mjs): a △ when
+// over 70% share one layout or one transition, or when BRIEF.md does not say the video's medium, layouts and main
+// transition; and, last, the way to the review page: the command that puts this build on it, and where the server
+// running for the repo is, if one is.
 //
 // One line per stage, with its time; the first stage that fails stops the build and prints what it
 // said. Every command above still runs on its own.
@@ -45,10 +54,12 @@ import { join, resolve, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib/env.mjs";
+import { reviewWayLine } from "./lib/inbox.mjs";
 import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
-import { videoLength, lengthLine } from "./lib/length.mjs";
+import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
+import { changedFrames, sourcesChanged, videoCheck, findingLine, recordFrames } from "./lib/frame-layout.mjs";
 
 const argv = process.argv.slice(2);
 const VALUED = ["--speed", "--voice", "--helpers", "--ignore", "--against"];
@@ -109,13 +120,43 @@ function retime() {
 
 // ── the stages ──────────────────────────────────────────────────────────────────────────────────────
 const narrateArgs = ["--speed", "--voice"].flatMap((f) => (flag(f.slice(2)) ? [f, flag(f.slice(2))] : []));
+// on a rebuild, before anything is voiced (cheaper-videos step 11): verify's own layout check on the video as last
+// assembled, when a frame changed since a build last passed (lib/frame-layout.mjs: their hashes); frame-lint's findings
+// on those frames said. It stops on what verify would stop on, a minute and a voice earlier; nothing stricter (a stricter look at each changed frame cost a bench run 92 s a build,
+// and builds stopped on overlaps verify passes).
+function changedFramesStage() {
+  const changed = changedFrames(dir);
+  if (!changed) return { skip: "a first build: nothing assembled yet to look at" };
+  if (!changed.length) return { skip: "no frame changed since the last build" };
+  // the storyboard or script changed too: the last assembly is stale (voice files renumbered, scenes added), and
+  // checking it stops on what this build will remake (a bench run's builds stopped so on missing voice files)
+  if (sourcesChanged(dir)) return { skip: "the storyboard or script changed since the last build: verify checks the new assembly" };
+  const names = changed.map((f) => String(f.index).padStart(2, "0")).join(", ");
+  // frame-lint is the agent's own check on its frames (no stage after this runs it), so here it is said, never a stop
+  const lint = run(["node", [join(SCRIPTS, "frame-lint.mjs"), ...changed.map((f) => join(dir, String(f.meta.src).replace(/^\.\//, "")))]]);
+  const linted = lint.status === 0 ? "" : `${(lint.out.match(/^\s*✗ .+$/gm) || []).length || "some"} with frame-lint findings (\`reelplanner frame-check ${project} <frame>\`); `;
+  const v = videoCheck(dir);
+  if (!v.ran) return { status: 0, warn: true, out: `△ ${changed.length} changed (${names}): ${linted}no layout check (${v.why}): verify checks it\n` };
+  const where = (x) => (x.frame != null ? `frame ${x.frame} (${String(x.sourceFile).split("/").pop()})` : "the video");
+  if (v.errors.length) {
+    const frames = [...new Set(v.errors.map((x) => x.frame).filter((n) => n != null))];
+    return { status: 1, out: `${v.errors.map((x) => `✗ ${where(x)}: ${findingLine(x)}`).join("\n")}\n${linted ? `△ ${changed.length} changed (${names}): ${linted.replace(/; $/, "")}\n` : ""}✗ verify's layout check would stop here${frames.length ? ` (frame${frames.length === 1 ? "" : "s"} ${frames.join(", ")})` : ""}: fix, then build\n` };
+  }
+  const warn = v.warnings.length > 0 || !!linted;
+  return { status: 0, warn, out: `${v.warnings.map((x) => `△ ${where(x)}: ${findingLine(x)}`).join("\n")}\n${warn ? "△" : "✓"} ${changed.length} changed (${names}): ${linted}verify's layout check passes${v.warnings.length ? `, ${v.warnings.length} warning(s)` : ""}\n` };
+}
+
 const STAGES = [
+  ["frames", changedFramesStage],
   // the words before the voice: an id said alone, or a word used before it is defined (check-terms.mjs).
   // Its warnings show as a △ line and the build goes on; a bare id fails it on a `terms_check: strict` storyboard.
   ["check-terms", () => { const r = run(["node", [join(SCRIPTS, "check-terms.mjs"), "."]]); if (r.status === 0 && /^△/.test(last(r.out))) r.warn = true; return r; }],
   // facts from their sources (explain-first step 5): an explainer's quoted lines against its pinned sources, a secret
   // or a home path in its text, a `- decision:` in it. A video that is no explainer and names no source skips it.
   ["check-sources", () => { const r = run(["node", [join(SCRIPTS, "check-sources.mjs"), "."]]); if (r.status === 0 && /^·/.test(last(r.out))) return { skip: last(r.out).replace(/^·\s*check-sources:\s*/, "") }; if (r.status === 0 && /^△/.test(last(r.out))) r.warn = true; return r; }],
+  // the length the script will run, before anything is voiced (cheaper-videos step 7): past 1.5× the budget it stops,
+  // naming the longest parts, unless BRIEF.md says why the video needs more (`- Length:`)
+  ["length", () => { const l = scriptLength(dir); if (!l) return { skip: "no storyboard" }; return { status: l.stop ? 1 : 0, out: `${l.stop ? "✗" : "✓"} ${scriptLengthLine(l)}\n`, ...(l.seconds > l.budget.aim[1] * 60 && !l.stop ? { warn: true } : {}) }; }],
   ["narrate", () => run(["node", [join(SCRIPTS, "narrate.mjs"), ".", ...narrateArgs]])],
   ["fetch-sfx", () => run(["node", [join(S, "audio.mjs"), "fetch-sfx", "--storyboard", "./STORYBOARD.md", "--hyperframes", "."]])],
   ["transcribe-missing", () => run(["node", [join(SCRIPTS, "transcribe-missing.mjs"), "."]])],
@@ -139,8 +180,8 @@ const STAGES = [
   }],
 ];
 
-// the checks a rebuild of an earlier version goes on past (above): they judge words and pages, and make nothing
-const SOFT_IN_REBUILD = new Set(["check-terms", "check-sources", "guide"]);
+// the checks a rebuild of an earlier version goes on past (above): they judge frames, words and pages, and make nothing
+const SOFT_IN_REBUILD = new Set(["frames", "check-terms", "check-sources", "guide"]);
 
 // Each stage's own output is kept and shown in full only when it fails (or with --verbose); a line
 // that passes shows the last thing it said.
@@ -175,9 +216,15 @@ for (const [name, fn] of STAGES) {
   // stopped verify above; no run yet, or scenes changed since the agents looked, is a △ here
   if (name === "verify" && !VERBOSE) for (const l of (r.out || "").split("\n").filter((x) => /^[✓△] fresh eyes/.test(x.trim()))) console.log(`${l.trim()[0]} ${"fresh-eyes".padEnd(w)}  ${"".padStart(7)}  ${l.trim().replace(/^[✓△]\s*fresh eyes[,:]?\s*/, "").slice(0, 150)}`);
 }
+recordFrames(dir);   // what the frames were when this build passed: the next one's frames stage compares against it
 console.log(`✓ built ${relative(process.cwd(), dir) || "."} in ${secs(Date.now() - t0)}`);
 // the watched length against the budget (style guide §1): said, never a failure
 const len = videoLength(dir);
 if (len) console.log(`${len.verdict === "ok" ? "✓" : "△"} length  ${lengthLine(len)}`);
 // one layout or one transition on over 70% of scenes, and a brief that does not say how the video varies: said, never a failure
 for (const l of varietyLines(videoVariety(dir))) console.log(`${l.warn ? "△" : "✓"} variety  ${l.text}`);
+// the way to the review page, last (cheaper-videos step 9): wrong ports, a stale build and an hour with no link cost
+// more than any stage. A running server shows a rebuilt video only once `review --detach` bundles it again, so the
+// line names that command either way, and whether a server is running for this repo and where; build itself starts
+// and changes no server (a headless run cannot reach one).
+console.log(`· review   ${reviewWayLine(dir)}`);

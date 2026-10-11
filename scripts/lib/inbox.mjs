@@ -28,7 +28,7 @@ import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "nod
 import { hostname, homedir } from "node:os";
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { machineDir, realPath } from "./env.mjs";
+import { ROOT, machineDir, realPath, repoRoot, rpDirOf, rpInitialized } from "./env.mjs";
 import { splitCommand } from "./notify.mjs";
 import { sandboxProblem, withoutSandbox } from "./sandbox.mjs";
 
@@ -224,10 +224,15 @@ export function answerQuestion(rp, id, answer, from = null) {
 }
 
 // ---------- no session waiting: a fresh headless run ----------
+// The skill's own path is named (cheaper-videos step 10: headless runs spent their first seconds, some all of them,
+// looking for it), and an approval, which rebuilds nothing, asks for no verify (one failed in the sandbox and cost
+// 2.5 minutes).
+export const SKILL_PATH = join(ROOT, "skills", "plan-to-video", "SKILL.md");
 export const agentPrompt = (relPath, id) =>
-  `Record and act on the review at ${relPath}, per the plan-to-video skill ("Running the loop"): ` +
+  `Record and act on the review at ${relPath}, per the plan-to-video skill (${SKILL_PATH}, its "Running the loop"): ` +
   `hand it to \`reelplanner reel-intake ${relPath}\` and do what the main session would have done with it. ` +
-  `Once the rebuilt video passes \`reelplanner verify <video-dir>\`, commit, run \`reelplanner inbox done ${id}\`, and stop. ` +
+  `If you rebuilt a video, once it passes \`reelplanner verify <video-dir>\` commit; an approval rebuilds nothing and needs no verify: fold its comments into plan.md and commit. ` +
+  `Then run \`reelplanner inbox done ${id}\`, and stop. ` +
   `Commit with \`git commit -m "…"\` as a shell call of its own (more \`-m\` for more paragraphs; no \`cd\`, \`&&\`, \`$(…)\` or heredoc): ` +
   `only that form runs outside the sandbox, where a signed commit works. ` +
   `Nobody is watching this run: when it exits, the review server that started it rebuilds its page and tells the reviewer ` +
@@ -276,4 +281,19 @@ export async function startAgent(rp, id, { config = readConfig(rp), onExit } = {
       ok({ started: true, pid: child.pid, argv, log, ...(unsandboxed ? { unsandboxed } : {}) });
     });
   });
+}
+
+/**
+ * The build's last line (cheaper-videos step 9): the command that puts this video on the review page and prints its
+ * link, and where the page is when a server is running for the repo (its .server.json, its process alive). A running
+ * server shows a rebuilt video only once `review --detach` bundles it again, so the command is named either way.
+ */
+export function reviewWayLine(dir, from = process.cwd()) {
+  const repo = repoRoot(dir), rp = rpDirOf(repo), boxes = [rpInitialized(rp) ? rp : null, machineInbox(repo)].filter(Boolean);
+  const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
+  const read = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+  const srv = boxes.map((b) => read(join(inboxDir(b), ".server.json"))).find((x) => x?.pid && alive(x.pid));
+  const cmd = `reelplanner review ${relative(from, dir) || "."} --detach`;
+  return srv ? `the page is up at ${srv.base || srv.url} (pid ${srv.pid}): \`${cmd}\` puts this build on it and prints its link; give the person that link`
+    : `\`${cmd}\` starts the page and prints its link; give the person that link`;
 }

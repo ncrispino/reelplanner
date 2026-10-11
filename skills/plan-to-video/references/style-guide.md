@@ -23,8 +23,13 @@ six-step plan with four questions is three to five.
 **Length.** A plan video aims for 3–5 minutes (about 700–1,100 words of narration); longer only when
 the plan needs it; past 7 is long, and past 10 is too long: cut or split the plan. A walkthrough video
 shows the change running in about two minutes (§8): past 3 is long, past 5 too long. The system video may
-run 5–8 minutes, never past 12. `$RP build` ends with the length against this budget, a warning, never a
-stop. To stay inside it:
+run 5–8 minutes, never past 12. Before anything is voiced, `$RP build` estimates the length from the script and
+stops past 1.5 times the top of the budget (7:30 for a plan video), unless BRIEF.md says why the video needs more
+(`- Length: <why>`); at its end it gives the watched length against the budget, a warning. Long videos go unwatched:
+first videos of 15–17 minutes were watched 1–4% of the way. To stay inside it:
+
+- Say the whole before the steps: what the plan changes and why, in a scene or two, then the steps; the questions
+  as early as the steps they decide allow, so the person's answers come before their attention goes.
 
 - One beat per step that says what it does; the how goes in the guide (the plan's blocks) or a detail
   (§10), not in more beats.

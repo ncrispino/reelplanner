@@ -9,27 +9,32 @@
 //           - the prompt names the brief and the findings file, and nothing else to read
 //           - a video not built yet is refused
 //   step 2  - --check: no run is a warning; a finding with no answer fails (exit 1), a kept with no reason too,
-//             and a meaning whose phrase has none; every one answered passes; a changed scene is named and asks
-//             for another round
-//           - a new round moves the last one's files to round-1/ and is refused while a finding is unanswered;
-//             after the third round a fourth is refused, and what the author kept is what is left (leftAfter), in the
-//             plan map for the page's Before you watch, and in the notification's line; only the new ones (D-245):
-//             one an earlier round of the build kept for the same reason is folded apart (`again`, sameKept)
+//             and a meaning whose phrase has none; every one answered passes; a frame redrawn with its words as they
+//             were asks for no further round (cheaper-videos step 2), a scene whose words changed asks for one, on it
+//           - a new round moves the last one's files to round-1/ and is refused while a finding is unanswered, and
+//             when the answers changed no scene's words; round 2 looks only at the scenes whose words changed; a
+//             third is refused, and what the author kept is what is left (leftAfter), in the plan map for the page's
+//             Before you watch, and in the notification's line; only the new ones (D-245): one an earlier round of
+//             the build kept for the same reason is folded apart (`again`, sameKept)
+//           - a finding marked [plan] cannot be kept: plan: (plan.md changed since the agents looked) or ask:, which
+//             Before you watch shows first; the designer's ## Advisory notes are no findings (cheaper-videos step 3, 5)
 //   rebuilds - rounds belong to a build (plan-diff's `changes.build`, the last committed build): a video built again
 //             with nothing changed since its commit is that build (its changes kept, the legacy map's build worked
 //             out from git); a rebuild is a new build, whose first run moves the last set to build-<n>/ and starts
-//             round 1 (three rounds a build); its briefs hold the changed scenes, each with the scene before and after
+//             round 1 (two rounds a build); its briefs hold the changed scenes, each with the scene before and after
 //             for context only, and no other; a finding on a context scene is out of scope (not counted, no answer);
 //             Before you watch has only this build's kept findings, never an earlier build's; `--all` looks at every
 //             scene, for the rest of the build; a rebuild that changed nothing a viewer sees has nothing to look at
 //           - the prompt names the exact findings path (absolute) and says it is the only file written; `--check`
 //             fails on this round's findings written anywhere else (not read from there), and on one role's
 //             findings in the other's file
+//   script  - --script: the storyboard and script read against BRIEF.md's - Ask: and the last review, before any
+//             frame; its prompt and --check; a [plan] finding kept fails; a frame round waits for its answers
 //   step 3  - a question asked on the page: reviews/<id>.md lists it (answered, with where from, or to answer in the next
 //             version), and it counts in `reel memory lost`
 //   step 5  - fix-clip-durations restamps a frame shorter than its slot (found by the system video's fresh eyes)
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
@@ -85,7 +90,7 @@ writeFileSync(join(V, "index.html"), "<html></html>\n");
 writeFileSync(join(V, "plan-map.json"), JSON.stringify({ title: "A sample video", frames: [{ index: 1, start: 0, durationSeconds: 4, chapterStart: "The start" }, { index: 2, start: 4, durationSeconds: 5 }] }));
 {
   const r = run(V, "--no-shots");
-  ok("fresh-eyes writes both briefs and a stamp (round 1)", r.status === 0 && /round 1 of 3/.test(r.stdout) && ["newcomer-brief.md", "designer-brief.md", "stamp.json"].every((f) => existsSync(join(V, "fresh-eyes", f))), r.stdout + r.stderr);
+  ok("fresh-eyes writes both briefs and a stamp (round 1)", r.status === 0 && /round 1 of 2/.test(r.stdout) && ["newcomer-brief.md", "designer-brief.md", "stamp.json"].every((f) => existsSync(join(V, "fresh-eyes", f))), r.stdout + r.stderr);
   const nb = readFileSync(join(V, "fresh-eyes", "newcomer-brief.md"), "utf8"), db = readFileSync(join(V, "fresh-eyes", "designer-brief.md"), "utf8"), st = JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "utf8"));
   ok("each brief has every scene's narration, in order", [nb, db].every((b) => b.indexOf("The review page shows the video.") > 0 && b.indexOf("The review page shows the video.") < b.indexOf("Then the list waits at the end.")));
   ok("the newcomer's brief: the glossary (Other words too), the video's own words with their meanings, the recap lines", /Where a video is watched and answered/.test(nb) && /A line of work kept apart/.test(nb) && /\*\*saved review file\*\*: the file the page writes/.test(nb) && /Older: what the older plan decided/.test(nb));
@@ -100,6 +105,8 @@ writeFileSync(join(V, "plan-map.json"), JSON.stringify({ title: "A sample video"
 
 // ── step 2 ──
 const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "utf8")).id;
+// scene 2's words, said another way
+const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileSync(join(V, f), readFileSync(join(V, f), "utf8").replace(/Then the list[^"\n]*\./, t)); };
 {
   const c = run(V, "--check");
   ok("--check: agents not back yet is a warning, not a failure", c.status === 0 && /no newcomer\.md yet/.test(c.stdout), c.stdout);
@@ -121,8 +128,13 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   ok("--check: every finding answered passes, with the tally", a.status === 0 && /round 1: 2 findings answered \(0 fixed, 1 a meaning, 1 kept\)/.test(a.stdout), a.stdout);
   writeFileSync(join(V, "compositions", "frames", "02-the-list.html"), "<div>two, redrawn</div>\n");
   const s = run(V, "--check");
-  ok("--check: a scene changed since they looked is named, and asks for round 2 (a warning)", s.status === 0 && /scene 2 changed since they looked: run fresh eyes again \(round 2 of 3\)/.test(s.stdout), s.stdout);
+  ok("--check: a frame redrawn with its words as they were asks for no further round", s.status === 0 && /scene 2 redrawn, its words as they were: no further round/.test(s.stdout) && freshEyesState(V).state === "done", s.stdout);
+  ok("…and what the author kept is what is left once no round is due", leftAfter(V).rounds === 1 && leftAfter(V).left.map((x) => x.id).join() === "N1", JSON.stringify(leftAfter(V)));
+  said("Then the list of choices waits at the end.");
+  const s2 = run(V, "--check");
+  ok("--check: a scene whose words changed is named, and asks for one more round, on it (a warning)", s2.status === 0 && /scene 2 says something new since they looked: one more round, on it \(round 2 of 2\)/.test(s2.stdout), s2.stdout);
   ok("freshEyesState says stale", freshEyesState(V).state === "stale");
+  ok("leftAfter: nothing is left while a round is due", leftAfter(V).left.length === 0);
 }
 {
   // round 2 is refused while a finding is unanswered
@@ -130,30 +142,38 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   const r = run(V, "--no-shots");
   ok("a new round is refused while a finding is unanswered", r.status !== 0 && /G1/.test(r.stderr), r.stderr);
   writeFileSync(join(V, "fresh-eyes", "designer.md"), readFileSync(join(V, "fresh-eyes", "designer.md"), "utf8") + "  - Answer: fixed: the heading moved down 48 px, compositions/frames/01-opening.html\n");
-  const r2 = run(V, "--no-shots");
-  ok("round 2 moves round 1's files to round-1/", r2.status === 0 && /round 2 of 3/.test(r2.stdout) && existsSync(join(V, "fresh-eyes", "round-1", "newcomer.md")) && existsSync(join(V, "fresh-eyes", "round-1", "stamp.json")) && !existsSync(join(V, "fresh-eyes", "newcomer.md")), r2.stdout + r2.stderr);
-  ok("leftAfter: nothing is left before the third round", leftAfter(V).left.length === 0 && leftAfter(V).rounds === 2);
-  writeFileSync(join(V, "fresh-eyes", "newcomer.md"), `# Fresh eyes: newcomer · round 2 · stamp ${st1()}\n\n- N1 · scene 2 · "the list": still unsure which list.\n  - Answer: kept: scene 2 names it, the choices that don't pause\n`);
-  writeFileSync(join(V, "fresh-eyes", "designer.md"), `# Fresh eyes: designer · round 2 · stamp ${st1()}\n\n- none\n`);
-  const r3 = run(V, "--no-shots"); ok("round 3", r3.status === 0 && /round 3 of 3/.test(r3.stdout), r3.stdout + r3.stderr);
-  // round 3: the list again, worded its own way and kept for the same reason (a repeat); the list for another
-  // reason, a phrase not flagged before, and the designer's "Open" that round 1 fixed, kept now (each new)
-  writeFileSync(join(V, "fresh-eyes", "newcomer.md"), `# Fresh eyes: newcomer · round 3 · stamp ${st1()}\n\n`
+  const r2 = run(V, "--no-shots"), st2 = JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "utf8"));
+  ok("round 2 moves round 1's files to round-1/, and looks only at the scene whose words changed", r2.status === 0 && /round 2 of 2/.test(r2.stdout) && st2.scope?.join() === "2" && existsSync(join(V, "fresh-eyes", "round-1", "newcomer.md")) && existsSync(join(V, "fresh-eyes", "round-1", "stamp.json")) && !existsSync(join(V, "fresh-eyes", "newcomer.md")), r2.stdout + r2.stderr + JSON.stringify(st2.scope));
+  // round 2: the list again, worded its own way and kept for the same reason (a repeat); the list for another
+  // reason (new); a finding about the plan, put to the person as a question; a designer note under Advisory
+  writeFileSync(join(V, "fresh-eyes", "newcomer.md"), `# Fresh eyes: newcomer · round 2 · stamp ${st1()}\n\n`
     + `- N1 · scene 2 · "the list" (on the left): which list is it? I guessed the plans.\n  - Answer: kept: scene 2 names the list, "the choices that don't pause"\n`
     + `- N2 · scene 2 · "the list": it has no title.\n  - Answer: kept: a title would repeat the narration, which says it as the list appears\n`
-    + `- N3 · scene 1 · "shows the video": shows it where?\n  - Answer: kept: the review page is on screen, its name in the glossary\n`);
-  writeFileSync(join(V, "fresh-eyes", "designer.md"), `# Fresh eyes: designer · round 3 · stamp ${st1()}\n\n- G1 · scene 1 · "Open": the tab still sits near the heading (rule 5)\n  - Answer: kept: the tab is 48 px below the heading now, on no words\n`);
+    + `- N3 [plan] · scene 2 · "waits at the end": nothing in the plan says who reads the list.\n  - Answer: kept: out of scope\n`);
+  writeFileSync(join(V, "fresh-eyes", "designer.md"), `# Fresh eyes: designer · round 2 · stamp ${st1()}\n\n- G1 · scene 2 · "choices": cut off at the right (rule 6)\n  - Answer: kept: the word is whole at the scene's end, the picture caught it moving\n\n## Advisory\n\n- the list could sit higher\n`);
+  const pk = run(V, "--check");
+  ok("--check: a [plan] finding kept fails, saying what answers it", pk.status === 1 && /N3 \(scene 2\) is about the plan: answer `plan: <what plan\.md now says>` or `ask:/.test(pk.stdout), pk.stdout);
+  const nm = join(V, "fresh-eyes", "newcomer.md");
+  writeFileSync(nm, readFileSync(nm, "utf8").replace("  - Answer: kept: out of scope\n", "  - Answer: plan: step 1 now says the reviewer reads it\n"));
+  const pu = run(V, "--check");
+  ok("--check: plan: with plan.md unchanged since the agents looked fails", pu.status === 1 && /N3 \(scene 2\) plan:, but plan\.md is unchanged since the agents looked/.test(pu.stdout), pu.stdout);
+  writeFileSync(join(PD, "plan.md"), readFileSync(join(PD, "plan.md"), "utf8") + "\nThe reviewer reads the list.\n");
+  ok("…once plan.md says it, it passes", run(V, "--check").status === 0);
+  writeFileSync(nm, readFileSync(nm, "utf8").replace("  - Answer: plan: step 1 now says the reviewer reads it\n", "  - Answer: ask: should the plan say who reads the list?\n"));
+  const ak = run(V, "--check");
+  ok("--check: ask: passes, and the designer's Advisory note is no finding", ak.status === 0 && /4 findings answered \(0 fixed, 0 a meaning, 3 kept, 1 asked of you\)/.test(ak.stdout) && !/G2/.test(ak.stdout), ak.stdout);
   const r4 = run(V, "--no-shots");
-  ok("a fourth round is refused", r4.status !== 0 && /3 rounds done/.test(r4.stderr), r4.stderr);
+  ok("a third round is refused", r4.status !== 0 && /2 rounds done/.test(r4.stderr), r4.stderr);
   const left = leftAfter(V);
-  ok("after the third round, what the author kept is what is left, with the reason", left.rounds === 3 && left.left.length === 3 && /title would repeat/.test(left.left.find((x) => x.id === "N2")?.why), JSON.stringify(left));
-  ok("…only the new ones (D-245): a finding kept again for the reason an earlier round gave is not listed, it is in `again` with the finding it repeats", left.left.map((x) => x.id).join() === "N2,N3,G1" && left.again.length === 1 && left.again[0].id === "N1" && left.again[0].as === "round 1 · N1" && /choices that don't pause/.test(left.again[0].why), JSON.stringify(left));
+  ok("after the last round, what the author kept is what is left, with the reason", left.rounds === 2 && left.left.length === 2 && /title would repeat/.test(left.left.find((x) => x.id === "N2")?.why), JSON.stringify(left));
+  ok("…only the new ones (D-245): a finding kept again for the reason an earlier round gave is not listed, it is in `again` with the finding it repeats", left.left.map((x) => x.id).join() === "N2,G1" && left.again.length === 1 && left.again[0].id === "N1" && left.again[0].as === "round 1 · N1" && /choices that don't pause/.test(left.again[0].why), JSON.stringify(left));
+  ok("…and the question put to the person is there, first for the page", left.asks.length === 1 && left.asks[0].id === "N3" && /who reads the list/.test(left.asks[0].ask), JSON.stringify(left.asks));
   const pm = spawnSync(process.execPath, [join(ROOT, "scripts", "plan-map.mjs"), V], { cwd: tmp, encoding: "utf8" }), map = JSON.parse(readFileSync(join(V, "plan-map.json"), "utf8"));
-  ok("plan-map carries what is left, for the page's Before you watch, and the repeats folded apart", pm.status === 0 && map.freshEyes?.rounds === 3 && map.freshEyes.left.length === 3 && map.freshEyes.left[0].role === "newcomer" && map.freshEyes.again?.length === 1 && /3 finding\(s\) left as they are after 3 rounds, 1 more kept again/.test(pm.stdout), pm.stdout + pm.stderr);
-  ok("the notification's line says the new ones", /3 things fresh eyes left as they are/.test(waitingLine(map)), waitingLine(map));
-  writeFileSync(join(V, "compositions", "frames", "01-opening.html"), "<div>one, again</div>\n");
+  ok("plan-map carries what is left, for the page's Before you watch, the repeats folded apart, and the question", pm.status === 0 && map.freshEyes?.rounds === 2 && map.freshEyes.left.length === 2 && map.freshEyes.left[0].role === "newcomer" && map.freshEyes.again?.length === 1 && map.freshEyes.asks?.length === 1 && /2 finding\(s\) left as they are after 2 rounds, 1 more kept again/.test(pm.stdout), pm.stdout + pm.stderr);
+  ok("the notification's line says the new ones", /2 things fresh eyes left as they are/.test(waitingLine(map)), waitingLine(map));
+  said("Then the list of choices waits at the very end.");
   const c = run(V, "--check");
-  ok("after three rounds a changed scene is not asked for again", c.status === 0 && /3 rounds done/.test(c.stdout), c.stdout);
+  ok("after two rounds a changed scene is not asked for again", c.status === 0 && /2 rounds done/.test(c.stdout), c.stdout);
 }
 
 // ── D-245: a kept finding repeats one an earlier round kept (same role, scene, thing, reason or near it) ──
@@ -191,15 +211,18 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   const answerAll = (role, n, lines) => writeFileSync(join(FE, `${role}.md`), `# Fresh eyes: ${role} · round ${n} · stamp ${stamp().id}\n\n${lines || "- none"}\n`);
   const kept = (id, scene, what) => `- ${id} · scene ${scene} · "${what}": unclear here.\n  - Answer: kept: scene ${scene} says it plainly already\n`;
 
-  // the first build: every scene, three rounds
+  // the first build: every scene, two rounds (the second on the scene whose words the first's answers changed)
   const d0 = diff();
   ok("plan-diff: no previous build is the first build", d0.status === 0 && mapOf().changes.build === "first" && mapOf().changes.baseline === false, d0.stdout + d0.stderr);
   const r1 = fe("--no-shots"), b1 = readFileSync(join(FE, "newcomer-brief.md"), "utf8");
-  ok("a first build: round 1, every scene in the briefs, nothing marked context", r1.status === 0 && /round 1 of 3:/.test(r1.stdout) && ids.every((_, i) => b1.includes(say(i + 1))) && !/context only/.test(b1) && stamp().build === "first" && stamp().scope === null, r1.stdout + r1.stderr);
+  ok("a first build: round 1, every scene in the briefs, nothing marked context", r1.status === 0 && /round 1 of 2:/.test(r1.stdout) && ids.every((_, i) => b1.includes(say(i + 1))) && !/context only/.test(b1) && stamp().build === "first" && stamp().scope === null, r1.stdout + r1.stderr);
   answerAll("newcomer", 1, kept("N1", 4, "the thing")); answerAll("designer", 1);
-  ok("…round 2 and round 3 of the first build", fe("--no-shots").status === 0 && (answerAll("newcomer", 2, kept("N1", 4, "the thing")), answerAll("designer", 2), fe("--no-shots").status === 0) && stamp().round === 3);
-  answerAll("newcomer", 3, kept("N1", 4, "the old thing") + kept("N2", 5, "another old thing")); answerAll("designer", 3);
-  ok("…and no fourth look at the same build", /3 rounds done on this build/.test(fe("--no-shots").stderr));
+  const reword = (n, t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileSync(join(B, f), readFileSync(join(B, f), "utf8").replace(say(n), t)); };
+  ok("…no round 2 while the answers changed no scene's words", /changed no scene's words/.test(fe("--no-shots").stderr));
+  reword(4, "Scene 4 says its own thing, number 4, said again.");
+  ok("…round 2 of the first build, on the scene whose words changed", fe("--no-shots").status === 0 && stamp().round === 2 && stamp().scope?.join() === "4");
+  answerAll("newcomer", 2, kept("N1", 4, "the old thing") + `- N2 · scene 4 · "said again": why twice?\n  - Answer: kept: the repeat is the scene's point, the narration stresses it\n`); answerAll("designer", 2);
+  ok("…and no third look at the same build", /2 rounds done on this build/.test(fe("--no-shots").stderr));
   spawnSync(process.execPath, [join(ROOT, "scripts", "plan-map.mjs"), B], { cwd: tmp, encoding: "utf8" });
   writeFileSync(join(B, "plan-map.json"), JSON.stringify({ ...mapOf(), frames: mapOf().frames.map((f, i) => ({ ...f, compositionId: ids[i], title: `S${i + 1}` })) }));
   diff();
@@ -210,7 +233,7 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   const d1 = diff();
   ok("plan-diff: built again with nothing changed since the commit, it is that build (its build kept)", d1.status === 0 && /nothing changed/.test(d1.stdout) && mapOf().changes.build === "first", d1.stdout + d1.stderr);
   const c1 = fe("--check");
-  ok("…so fresh eyes stands: 3 rounds done, nothing asked for", c1.status === 0 && freshEyesState(B).state === "done" && !/not had fresh eyes/.test(c1.stdout), c1.stdout);
+  ok("…so fresh eyes stands: its rounds done, nothing asked for", c1.status === 0 && freshEyesState(B).state === "done" && !/not had fresh eyes/.test(c1.stdout), c1.stdout);
 
   // a rebuild: scenes 2 and 6 change
   writeFileSync(join(B, "compositions", "frames", `${ids[1]}.html`), "<div>words of scene 2, rewritten</div>\n");
@@ -221,7 +244,7 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   const c2 = fe("--check");
   ok("--check: the rebuild has not had fresh eyes yet, naming its changed scenes (a warning)", c2.status === 0 && /this build has not had fresh eyes yet \(scenes 2, 6 changed since the last build\)/.test(c2.stdout) && freshEyesState(B).state === "none", c2.stdout);
   const r2 = fe("--no-shots"), nb = readFileSync(join(FE, "newcomer-brief.md"), "utf8"), db = readFileSync(join(FE, "designer-brief.md"), "utf8");
-  ok("a new build: the last set moves to build-1/ (its three rounds kept) and this one starts at round 1", r2.status === 0 && /a new build: the last build's rounds are kept in/.test(r2.stdout) && /round 1 of 3 of this build, on scenes 2, 6/.test(r2.stdout) && [1, 2, 3].every((n) => existsSync(join(FE, "build-1", `round-${n}`, "newcomer.md")) && existsSync(join(FE, "build-1", `round-${n}`, "stamp.json"))) && !existsSync(join(FE, "round-1")) && !existsSync(join(FE, "newcomer.md")), r2.stdout + r2.stderr);
+  ok("a new build: the last set moves to build-1/ (its two rounds kept) and this one starts at round 1", r2.status === 0 && /a new build: the last build's rounds are kept in/.test(r2.stdout) && /round 1 of 2 of this build, on scenes 2, 6/.test(r2.stdout) && [1, 2].every((n) => existsSync(join(FE, "build-1", `round-${n}`, "newcomer.md")) && existsSync(join(FE, "build-1", `round-${n}`, "stamp.json"))) && !existsSync(join(FE, "round-1")) && !existsSync(join(FE, "newcomer.md")), r2.stdout + r2.stderr);
   ok("…its stamp: the build, the scenes in scope, the context scenes", stamp().round === 1 && stamp().build === build2 && stamp().scope.join() === "2,6" && stamp().context.join() === "1,3,5,7", JSON.stringify(stamp()));
   ok("the rebuild's briefs: the changed scenes, the one before and after each marked context only, and no other", [nb, db].every((b) => [1, 2, 3, 5, 6, 7].every((n) => b.includes(say(n))) && !b.includes(say(4)) && /### Scene 2 · look at this one/.test(b) && /### Scene 6 · look at this one/.test(b) && /### Scene 5 · context only/.test(b) && /_\(scene 4: not changed, not here\)_/.test(b) && /This is a rebuild: look only at what it changed/.test(b) && /\(only scenes 2, 6\)/.test(b)), nb.split("## The video, scene by scene")[1]);
   const p = fe("--prompt", "designer");
@@ -250,11 +273,12 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   writeFileSync(join(FE, "designer.md"), good);
   ok("…the file back where it belongs, it passes", fe("--check").status === 0);
 
-  // three rounds a build: rounds 2 and 3 of this build, then no fourth
-  ok("round 2 and round 3 of this build (the cap is per build)", fe("--no-shots").status === 0 && stamp().round === 2 && stamp().build === build2 && (answerAll("newcomer", 2), answerAll("designer", 2), fe("--no-shots").status === 0) && stamp().round === 3 && stamp().scope.join() === "2,6");
-  writeFileSync(join(FE, "newcomer.md"), `# Fresh eyes: newcomer · round 3 · stamp ${stamp().id}\n\n- N1 · scene 3 · "number 3": context.\n- N2 · scene 6 · "rewritten": still unsure how.\n  - Answer: kept: the rewritten frame draws each step while it is spoken\n`);
-  answerAll("designer", 3);
-  ok("…and a fourth is refused", /3 rounds done on this build/.test(fe("--no-shots").stderr));
+  // two rounds a build: round 2 of this build on the scene whose words changed, then no third
+  reword(6, "Scene 6 says its own thing, number 6, said again.");
+  ok("round 2 of this build (the cap is per build), on the scene whose words changed", fe("--no-shots").status === 0 && stamp().round === 2 && stamp().build === build2 && stamp().scope.join() === "6", JSON.stringify(stamp().scope));
+  writeFileSync(join(FE, "newcomer.md"), `# Fresh eyes: newcomer · round 2 · stamp ${stamp().id}\n\n- N1 · scene 3 · "number 3": context.\n- N2 · scene 6 · "rewritten": still unsure how.\n  - Answer: kept: the rewritten frame draws each step while it is spoken\n`);
+  answerAll("designer", 2);
+  ok("…and a third is refused", /2 rounds done on this build/.test(fe("--no-shots").stderr));
   diff();
   const left = mapOf().freshEyes?.left || [];
   ok("Before you watch: only this build's kept findings in scope (not the earlier build's two, not a context scene's)", left.length === 1 && left[0].id === "N2" && left[0].scene === 6 && leftAfter(B).left.length === 1, JSON.stringify(mapOf().freshEyes));
@@ -278,9 +302,39 @@ const st1 = () => JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "
   writeFileSync(join(B, "compositions", "frames", `${ids[6]}.html`), "<div>words of scene 7, rewritten</div>\n");
   diff();
   const r6 = fe("--no-shots", "--all"), ab = readFileSync(join(FE, "newcomer-brief.md"), "utf8");
-  ok("--all on a rebuild: every scene, none context, and the last set kept in build-2/", r6.status === 0 && /every scene \(--all\)/.test(r6.stdout) && ids.every((_, i) => ab.includes(say(i + 1))) && !/context only/.test(ab) && stamp().scope === null && stamp().all === true && existsSync(join(FE, "build-2", "round-3", "stamp.json")), r6.stdout + r6.stderr);
+  ok("--all on a rebuild: every scene, none context, and the last set kept in build-2/", r6.status === 0 && /every scene \(--all\)/.test(r6.stdout) && ids.every((_, i) => ab.includes(`number ${i + 1}`)) && !/context only/.test(ab) && stamp().scope === null && stamp().all === true && existsSync(join(FE, "build-2", "round-2", "stamp.json")), r6.stdout + r6.stderr);
   answerAll("newcomer", 1); answerAll("designer", 1);
   ok("…and the build's next round is the whole video too", fe("--no-shots").status === 0 && stamp().round === 2 && stamp().scope === null);
+}
+
+// ── the script, read against the ask before any frame (cheaper-videos step 4) ──
+{
+  const PS = join(RP, "plans", "2026-10-03-script"), S = join(PS, "video");
+  mkdirSync(join(S, "compositions", "frames"), { recursive: true }); mkdirSync(join(PS, "reviews"), { recursive: true });
+  writeFileSync(join(PS, "plan.md"), "# A bakery site\n\n### Step 1 — Pages\n\nfour pages\n");
+  writeFileSync(join(PS, "reviews", "plan-20261010T060220Z.md"), "Changes requested.\n\n- step 5: show me the order form, not a description of it\n");
+  writeFileSync(join(S, "BRIEF.md"), "# Brief\n\n- Ask: \"show me prototypes of each page, not words\"\n- Medium: screen\n");
+  writeFileSync(join(S, "STORYBOARD.md"), `---\ntitle: "Bakery plan"\nplan_dir: .reelplanner/plans/2026-10-03-script\n---\n\n## Frame 1 — Pages\n\n- scene: four page names in a row\n- voiceover: "The site has four pages."\n- src: compositions/frames/01-pages.html\n\n## Frame 2 — Order\n\n- scene: the words "order form"\n- voiceover: "People order through a form."\n- src: compositions/frames/02-order.html\n`);
+  writeFileSync(join(S, "SCRIPT.md"), "# SCRIPT\n\n## Line 1 — Pages (Frame 1)\n\n    The site has four pages.\n\n## Line 2 — Order (Frame 2)\n\n    People order through a form.\n");
+  const sr = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--script", ...a], { cwd: tmp, encoding: "utf8" });
+  const w = sr(), brief = readFileSync(join(S, "fresh-eyes", "script", "newcomer-brief.md"), "utf8");
+  ok("--script: a brief from the storyboard and script alone, no frames needed, before any build", w.status === 0 && /fresh eyes on the script/.test(w.stdout) && /### Scene 2 · Order/.test(brief) && /_Shows:_ the words "order form"/.test(brief) && /_Says:_ People order through a form\./.test(brief), w.stdout + w.stderr + brief.slice(0, 400));
+  ok("…with what the person asked first: BRIEF.md's - Ask: lines and their last review", brief.indexOf("show me prototypes of each page") > 0 && brief.indexOf("show me prototypes") < brief.indexOf("## The video, scene by scene") && /show me the order form, not a description/.test(brief) && /2 scenes, 1 line of what was asked, the last review/.test(w.stdout), w.stdout);
+  ok("…asking what they asked that it only names, where it loses the big picture, unexplained words, and [plan]", /only names or describes/.test(brief) && /big picture/.test(brief) && /could not explain/.test(brief) && /`\[plan\]`/.test(brief));
+  const pr = sr("--prompt", "newcomer");
+  ok("--script --prompt newcomer names the brief and the one findings file", pr.status === 0 && pr.stdout.includes(join(S, "fresh-eyes", "script", "newcomer-brief.md")) && pr.stdout.includes(join(S, "fresh-eyes", "script", "newcomer.md")), pr.stdout);
+  ok("--script --check before the agent is back: a warning, exit 0", sr("--check").status === 0);
+  const id = JSON.parse(readFileSync(join(S, "fresh-eyes", "script", "stamp.json"), "utf8")).id, fp = join(S, "fresh-eyes", "script", "newcomer.md");
+  writeFileSync(fp, `# Fresh eyes: newcomer · script · stamp ${id}\n\n- N1 [plan] · scene 2 · "a form": they asked to see it; the script only names it\n  - Answer: kept: the form is simple\n`);
+  const k = sr("--check");
+  ok("--script --check: a [plan] finding kept fails", k.status === 1 && /N1 \(scene 2\) is about the plan/.test(k.stdout), k.stdout);
+  // a frame round does not start while the script's findings are open
+  writeFileSync(join(S, "index.html"), "<html></html>\n"); writeFileSync(join(S, "plan-map.json"), JSON.stringify({ title: "Bakery plan", frames: [{ index: 1, start: 0, durationSeconds: 3 }, { index: 2, start: 3, durationSeconds: 3 }] }));
+  for (const f of ["01-pages", "02-order"]) writeFileSync(join(S, "compositions", "frames", `${f}.html`), "<div>x</div>\n");
+  const fr = spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" });
+  ok("a frame round is refused while the script's findings have no answer", fr.status !== 0 && /the script's fresh eyes still have findings with no answer \(N1\)/.test(fr.stderr), fr.stderr);
+  writeFileSync(fp, readFileSync(fp, "utf8").replace("  - Answer: kept: the form is simple\n", "  - Answer: ask: should step 5 draw the order form as a prototype?\n"));
+  ok("…answered (ask:), --check passes and the frame round starts", sr("--check").status === 0 && spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" }).status === 0);
 }
 
 // ── step 3: a question asked on the page, in the record ──

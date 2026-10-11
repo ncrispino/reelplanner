@@ -18,7 +18,7 @@
 // Rounds belong to a build. A build is what plan-diff compares against: the plan map last committed (git
 // HEAD's), hashed, as the plan map's `changes.build` ("first" when there is none). Rebuilding while the rounds
 // go on keeps it (the commit has not moved); the next commit of the video ends it. When the build is not the
-// last set's, `fresh-eyes` moves that set to build-<n>/ and starts at round 1: the three rounds are per build.
+// last set's, `fresh-eyes` moves that set to build-<n>/ and starts at round 1: the rounds are per build.
 // On a rebuild, the agents get the scenes plan-diff says changed (edited, added or restyled), each with the
 // scene before and after it for context only; a finding on any other scene is out of scope, not counted and
 // needing no answer. A first build, or `--all`, gets every scene.
@@ -43,7 +43,9 @@ import { parseScript } from "./narration.mjs";
 import { storyboardFrames, frontMatter, termsOf, glossaryFor } from "./terms.mjs";
 
 export const DIR = "fresh-eyes";
-export const ROUNDS = 3;
+// One round a build, and a second only on what the first's answers changed in what a scene says (its narration, or
+// the scenes' order): never a third (plans/2026-10-10-cheaper-videos, step 2, superseding D-231's third round).
+export const ROUNDS = 2;
 export const ROLES = { newcomer: "N", designer: "G" };
 // the fact check (explain-first step 5): a third fresh agent reads an explainer's narration against its sources, never
 // the author's account, where the video sums up more than it quotes (a source that needs a guide part)
@@ -102,7 +104,30 @@ export function scenesOf(videoDir) {
 export function stampOf(videoDir) {
   const dir = resolve(videoDir);
   const scenes = scenesOf(dir).map((s) => ({ scene: s.scene, narration: hash(s.narration), frame: hash(read(join(dir, s.src))) }));
-  return { id: hash(JSON.stringify(scenes)), scenes };
+  const plan = planOf(dir);
+  return { id: hash(JSON.stringify(scenes)), scenes, ...(plan ? { plan: hash(read(plan)) } : {}) };
+}
+
+/** The plan.md a video is of: its plan folder's (a plan or walkthrough video sits in it), or null (system, explainer). */
+export function planOf(videoDir) {
+  const p = join(resolve(videoDir), "..", "plan.md");
+  return existsSync(p) ? p : null;
+}
+
+/**
+ * The scenes whose words changed since the stamp: narration rewritten, a scene added or removed, or the scenes put in
+ * another order. A frame redrawn with its words as they were is not one: a second round looks only at these (step 2).
+ */
+export function saidSince(videoDir, stamp) {
+  if (!stamp?.scenes) return [];
+  const now = stampOf(videoDir).scenes, was = new Map(stamp.scenes.map((s) => [s.scene, s]));
+  const out = now.filter((s) => { const w = was.get(s.scene); return !w || w.narration !== s.narration; }).map((s) => s.scene);
+  for (const s of stamp.scenes) if (!now.some((x) => x.scene === s.scene)) out.push(s.scene);
+  // the same lines in another order: each moved scene counts
+  const order = (xs) => xs.map((s) => s.narration).join("|");
+  if (out.length === 0 && order(now) !== order(stamp.scenes) && now.length === stamp.scenes.length)
+    now.forEach((s, i) => { if (stamp.scenes[i]?.narration !== s.narration) out.push(s.scene); });
+  return [...new Set(out)].sort((a, b) => a - b);
 }
 
 /** The scenes whose narration or frame changed since the stamp (or were added or removed). */
@@ -114,19 +139,24 @@ export function changedSince(videoDir, stamp) {
   return [...new Set(out)].sort((a, b) => a - b);
 }
 
-const ANSWER = /^\s+[-*]\s*\**answer\**\s*:?\**\s*(fixed|meaning|kept)\b\**\s*[:,;.—–-]?\s*(.*)$/i;
+const ANSWER = /^\s+[-*]\s*\**answer\**\s*:?\**\s*(fixed|meaning|kept|plan|ask)\b\**\s*[:,;.—–-]?\s*(.*)$/i;
 /**
- * A findings file's findings: [{ id, scene, phrase, text, answer: { kind, text } | null }]. `phrase` is the first
- * quoted phrase of the finding ("…" or “…”), the thing a `meaning` answer gives a meaning to.
+ * A findings file's findings: [{ id, scene, phrase, text, plan, answer: { kind, text } | null }]. `phrase` is the first
+ * quoted phrase of the finding ("…" or “…”), the thing a `meaning` answer gives a meaning to; `plan` is a finding the
+ * agent marked `[plan]`: about the plan, not the video. A `## Advisory` section (the designer's notes that do not
+ * block a viewer) holds no findings: nothing under it is counted or needs an answer, up to the next heading.
  */
 export function parseFindings(md) {
   const out = [];
-  let cur = null;
+  let cur = null, advisory = false;
   for (const line of String(md).replace(/\r\n/g, "\n").split("\n")) {
+    const h = /^#{1,6}\s+(.*)$/.exec(line);
+    if (h) { advisory = /^advisory\b/i.test(h[1].trim()); cur = null; continue; }
+    if (advisory) continue;
     const m = /^[-*]\s+\**([NGF]\d+)\**\b\s*(.*)$/.exec(line);
     if (m) {
       const rest = m[2].replace(/^[\s·:,.—–-]+/, "");
-      cur = { id: m[1], scene: Number((/\bscenes?\s+(\d+)/i.exec(rest) || [])[1]) || null, phrase: (/["“]([^"”]{2,80})["”]/.exec(rest) || [])[1] || null, text: rest.trim(), answer: null };
+      cur = { id: m[1], scene: Number((/\bscenes?\s+(\d+)/i.exec(rest) || [])[1]) || null, phrase: (/["“]([^"”]{2,80})["”]/.exec(rest) || [])[1] || null, text: rest.trim(), plan: /\[plan\]/i.test(rest), answer: null };
       out.push(cur); continue;
     }
     if (!cur) continue;
@@ -146,10 +176,23 @@ export function hasMeaning(videoDir, phrase) {
   return glossaryFor(videoDir).some((g) => (g.forms || []).includes(p) || String(g.display || "").toLowerCase() === p);
 }
 
-/** One answer's problem, or null when it answers the finding. */
-export function answerProblem(videoDir, f) {
+/**
+ * One answer's problem, or null when it answers the finding. A `[plan]` finding is answered `plan: <what plan.md now
+ * says>` (plan.md changed since the agents looked) or `ask: <the question put to the person>`, never kept, fixed in
+ * the video or given a meaning (step 3: the web address raised three times and kept). `plan:` and `ask:` answer any
+ * finding the author takes to be about the plan.
+ */
+export function answerProblem(videoDir, f, stamp = readStamp(videoDir)) {
   if (!f.answer) return "no answer";
   const words = f.answer.text.split(/\s+/).filter(Boolean).length;
+  if (f.plan && !["plan", "ask"].includes(f.answer.kind)) return "is about the plan: answer `plan: <what plan.md now says>` or `ask: <the question for the person>`";
+  if (f.answer.kind === "ask" && words < 3) return "ask, with no question";
+  if (f.answer.kind === "plan") {
+    const plan = planOf(videoDir);
+    if (!plan) return "plan:, but this video has no plan.md: answer `ask: <the question for the person>`";
+    if (words < 2) return "plan:, but not what plan.md now says";
+    if (stamp?.plan && hash(read(plan)) === stamp.plan) return "plan:, but plan.md is unchanged since the agents looked";
+  }
   if (f.answer.kind === "kept" && words < 3) return "kept, with no reason";
   if (f.answer.kind === "fixed" && words < 2) return "fixed, but not where";
   if (f.answer.kind === "meaning" && f.phrase && !hasMeaning(videoDir, f.phrase)) return `a meaning, but "${f.phrase}" has none in the glossary or the storyboard's terms:`;
@@ -217,11 +260,12 @@ export function strayFindings(videoDir, stamp) {
  *             changed scenes wait for theirs)
  *   waiting   a brief written, a findings file not there yet (a warning)
  *   open      a finding with no answer, or a bad one, or this round's findings written somewhere else (a failure)
- *   stale     answered, but the scenes changed since the agents looked (a warning: look again, up to three rounds)
+ *   stale     answered, but the scenes changed since the agents looked (a warning: one more look, on the scenes whose words changed)
  *   done      answered, and nothing changed since
  * A finding on a scene outside the round's scope (a rebuild's context scene) is out of scope: listed, not counted.
  */
 export function freshEyesState(videoDir) {
+  const said = (stamp) => saidSince(videoDir, stamp);
   const stamp = readStamp(videoDir), cur = buildOf(videoDir);
   const build = { id: cur.id, scope: cur.scope };
   if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanner fresh-eyes\` on it, launch the newcomer and the designer (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
@@ -236,28 +280,29 @@ export function freshEyesState(videoDir) {
     if (s && s !== stamp.id) lines.push({ level: "warn", text: `fresh eyes: ${r}.md is from another run (stamp ${s}, this round's is ${stamp.id})` });
     for (const x of f[r]) {
       if (!inScope(stamp, x)) { outOfScope.push({ ...x, role: r }); continue; }
-      const p = answerProblem(videoDir, x); if (p) unanswered.push({ ...x, role: r, problem: p });
+      const p = answerProblem(videoDir, x, stamp); if (p) unanswered.push({ ...x, role: r, problem: p });
     }
   }
   if (stray.length) lines.unshift({ level: "fail", text: `fresh eyes, round ${round}: findings written outside ${rel(feDir(videoDir))}/ (the agent writes one file, at the exact path its prompt names, and nothing else): ${stray.map((x) => `the ${x.role}'s at ${rel(x.path)}`).join("; ")}. They are not read from there: move each to ${rel(feDir(videoDir))}/<role>.md (or run that agent again), and delete the stray` });
-  if (unanswered.length) lines.unshift({ level: "fail", text: `fresh eyes, round ${round}: ${unanswered.length} finding${unanswered.length === 1 ? "" : "s"} not answered: ${unanswered.map((x) => `${x.id}${x.scene ? ` (scene ${x.scene})` : ""} ${x.problem}`).join("; ")}. Answer each under it: \`- Answer: fixed: …\`, \`meaning: …\` or \`kept: <the reason>\`` });
+  if (unanswered.length) lines.unshift({ level: "fail", text: `fresh eyes, round ${round}: ${unanswered.length} finding${unanswered.length === 1 ? "" : "s"} not answered: ${unanswered.map((x) => `${x.id}${x.scene ? ` (scene ${x.scene})` : ""} ${x.problem}`).join("; ")}. Answer each under it: \`- Answer: fixed: …\`, \`meaning: …\`, \`kept: <the reason>\`, or for one about the plan \`plan: …\` or \`ask: …\`` });
   if (outOfScope.length) lines.push({ level: "warn", text: `fresh eyes, round ${round}: ${outOfScope.map((x) => `${x.id} (scene ${x.scene})`).join(", ")} ${outOfScope.length === 1 ? "is on a scene" : "are on scenes"} this build did not change (context only): out of scope, not counted, no answer needed` });
-  const changed = changedSince(videoDir, stamp);
+  const changed = changedSince(videoDir, stamp), saidNow = said(stamp);
   const all = Object.values(f).filter(Boolean).flat().filter((x) => inScope(stamp, x));
-  const scopeWord = Array.isArray(stamp.scope) ? ` (scene${stamp.scope.length === 1 ? "" : "s"} ${stamp.scope.join(", ")}, what this build changed)` : "";
+  const scopeWord = Array.isArray(stamp.scope) ? ` (scene${stamp.scope.length === 1 ? "" : "s"} ${stamp.scope.join(", ")}, what ${round > 1 ? "the last round's answers" : "this build"} changed)` : "";
   if (!sameBuild) {
     // the set on disk is an earlier build's: the rebuild has not had its look yet (or changed nothing a viewer sees)
     if (nothingNew) lines.push({ level: "ok", text: `fresh eyes: nothing a viewer sees changed since the last build (plan-diff): its rounds stand` });
     else lines.push({ level: "warn", text: `fresh eyes: this build has not had fresh eyes yet (${cur.scope ? `scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed since the last build` : "every scene"}): run \`reelplanner fresh-eyes\` (round 1 of ${ROUNDS} of this build; the last build's rounds go to fresh-eyes/build-${(buildsKept(videoDir).at(-1) || 0) + 1}/)` });
   } else if (!unanswered.length && !missing.length && !stray.length) {
     const by = (k) => all.filter((x) => x.answer?.kind === k).length;
-    const tally = all.length ? `${all.length} finding${all.length === 1 ? "" : "s"} answered (${by("fixed")} fixed, ${by("meaning")} a meaning, ${by("kept")} kept)` : "no findings";
-    if (changed.length && round < ROUNDS) lines.push({ level: "warn", text: `fresh eyes, round ${round}${scopeWord}: ${tally}; scene${changed.length === 1 ? "" : "s"} ${changed.join(", ")} changed since they looked: run fresh eyes again (round ${round + 1} of ${ROUNDS})` });
-    else if (changed.length) lines.push({ level: "ok", text: `fresh eyes: ${ROUNDS} rounds done on this build, round ${round}'s ${tally}; what is left is said on the page ("Before you watch") and in the notification` });
-    else lines.push({ level: "ok", text: `fresh eyes, round ${round}${scopeWord}: ${tally}` });
+    const tally = all.length ? `${all.length} finding${all.length === 1 ? "" : "s"} answered (${by("fixed")} fixed, ${by("meaning")} a meaning, ${by("kept")} kept${by("plan") ? `, ${by("plan")} into the plan` : ""}${by("ask") ? `, ${by("ask")} asked of you` : ""})` : "no findings";
+    // a second round only on scenes whose words changed; a frame redrawn as the answers said needs no new look
+    if (saidNow.length && round < ROUNDS) lines.push({ level: "warn", text: `fresh eyes, round ${round}${scopeWord}: ${tally}; scene${saidNow.length === 1 ? "" : "s"} ${saidNow.join(", ")} say${saidNow.length === 1 ? "s" : ""} something new since they looked: one more round, on ${saidNow.length === 1 ? "it" : "those"} (round ${round + 1} of ${ROUNDS})` });
+    else if (round >= ROUNDS && changed.length) lines.push({ level: "ok", text: `fresh eyes: ${ROUNDS} rounds done on this build, round ${round}'s ${tally}; what is left is said on the page ("Before you watch") and in the notification` });
+    else lines.push({ level: "ok", text: `fresh eyes, round ${round}${scopeWord}: ${tally}${changed.length ? ` (scene${changed.length === 1 ? "" : "s"} ${changed.join(", ")} redrawn, ${changed.length === 1 ? "its" : "their"} words as they were: no further round)` : ""}` });
   }
-  const state = unanswered.length || stray.length || lines.some((l) => l.level === "fail") ? "open" : !sameBuild ? (nothingNew ? "done" : "none") : missing.length ? "waiting" : changed.length && round < ROUNDS ? "stale" : "done";
-  return { state, round, lines, unanswered, changed, outOfScope, stray, build };
+  const state = unanswered.length || stray.length || lines.some((l) => l.level === "fail") ? "open" : !sameBuild ? (nothingNew ? "done" : "none") : missing.length ? "waiting" : saidNow.length && round < ROUNDS ? "stale" : "done";
+  return { state, round, lines, unanswered, changed, said: saidNow, outOfScope, stray, build };
 }
 
 /**
@@ -276,13 +321,16 @@ export function leftAfter(videoDir, { build } = {}) {
   const cur = build ? { id: build.id, scope: build.scope } : buildOf(videoDir);
   if (buildOfStamp(stamp) !== cur.id && !(cur.scope && !cur.scope.length)) return null;
   const round = stamp.round || 1, f = findingsOf(videoDir);
-  const kept = round >= ROUNDS ? Object.entries(f).filter(([, xs]) => xs).flatMap(([role, xs]) => xs.filter((x) => x.answer?.kind === "kept" && inScope(stamp, x)).map((x) => ({ id: x.id, role, scene: x.scene, what: x.text, why: x.answer.text }))) : [];
+  const done = round >= ROUNDS || !saidSince(videoDir, stamp).length;
+  // a question the author put to the person (ask:) is shown first, whatever the round (step 3)
+  const asks = Object.entries(f).filter(([, xs]) => xs).flatMap(([role, xs]) => xs.filter((x) => x.answer?.kind === "ask" && inScope(stamp, x)).map((x) => ({ id: x.id, role, scene: x.scene, what: x.text, ask: x.answer.text })));
+  const kept = done ? Object.entries(f).filter(([, xs]) => xs).flatMap(([role, xs]) => xs.filter((x) => x.answer?.kind === "kept" && inScope(stamp, x)).map((x) => ({ id: x.id, role, scene: x.scene, what: x.text, why: x.answer.text }))) : [];
   const earlier = kept.length ? keptEarlier(videoDir, stamp) : [], left = [], again = [];
   for (const x of kept) {
     const was = earlier.find((e) => sameKept(x, e));
     if (was) again.push({ ...x, as: `round ${was.round} · ${was.id}` }); else left.push(x);
   }
-  return { rounds: round, left, again };
+  return { rounds: round, left, again, asks };
 }
 
 // The words a finding's subject or an answer's reason is made of: lower case, the small words dropped, a plural's s.

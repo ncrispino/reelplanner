@@ -110,16 +110,22 @@ its own outside the repo; each writes one numbered finding a line (`- N1 · scen
 path its prompt names, `fresh-eyes/newcomer.md` or `designer.md`, and no other file.
 
 The author answers each under it: `- Answer: fixed: <what changed, where>`, `meaning: …` (a meaning a viewer can
-click, in the glossary's "Other words" or the storyboard's `terms:`), or `kept: <the reason>` (D-225). Then the
-video is rebuilt and `fresh-eyes` runs again for a second look, at most three rounds (a new round keeps the last
-in `round-<n>/`, and never starts while a finding has no answer). `verify` (so `build`) runs
+click, in the glossary's "Other words" or the storyboard's `terms:`), or `kept: <the reason>` (D-225). A finding the
+agent marked `[plan]` (the plan leaves something out, or the video only describes what the person needs to see) is
+answered `plan: <what plan.md now says>` (plan.md changed since the agents looked) or `ask: <the question for the
+person>`, which the page shows first; never kept. The designer lists only what stops a viewer; its other notes go under
+`## Advisory` and need no answer. Then the video is rebuilt; **one round a build**, and a second only on the scenes
+whose words the first's answers changed (its narration, or the order), never a third (a new round keeps the last in
+`round-<n>/`, and never starts while a finding has no answer). Before any frame, `fresh-eyes <video-dir> --script`
+has one newcomer read the storyboard and script against what the person asked (BRIEF.md's `- Ask:`, the last
+review): its findings are answered the same way, and a frame round waits for them. `verify` (so `build`) runs
 `fresh-eyes <video-dir> --check`: a finding with no answer, a kept with no reason, or a meaning that isn't there
 stops it, and so does this round's findings file found anywhere else in the repo (it is not read from there); no
-run yet, or scenes changed since the agents looked, is a △ line. What is left after the third round (the findings
+run yet, or scenes changed since the agents looked, is a △ line. What is left after the last round (the findings
 kept) is said on the page's "Before you watch" and in the notification. Without `playwright-core` the pictures are
 the frames alone (HyperFrames' snapshot), and the briefs say so.
 
-Rounds belong to a build: the three are per build. A build is what `plan-diff` compares the video against, its last
+Rounds belong to a build: the two are per build. A build is what `plan-diff` compares the video against, its last
 commit (`changes.build` in `plan-map.json`: that plan map, hashed; `first` when there is none). Rebuilding between
 rounds keeps it; a video built again with nothing changed since its commit is that build (its `changes` kept); a
 video committed before its fresh eyes were done is built with `build <video-dir> --against <the commit before it>`. On a
