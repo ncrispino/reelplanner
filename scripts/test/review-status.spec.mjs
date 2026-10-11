@@ -120,6 +120,8 @@ try {
   procs.push({ kill: () => rmSync(dirname(plain), { recursive: true, force: true }) });
   const box = machine(plain);
   ok("level 1: the repo's name in the machine's inbox is its folder's and a short hash of where it is", /^plain-[0-9a-f]{8}$/.test(basename(box)) && repoKey(join(plain, "videos", "..")) === basename(box), box);
+  const where = execFileSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "inbox", "--where", "--repo", plain], { env: env2 }).toString().trim();
+  ok("level 1: `inbox --where` names that folder (where the reel pane's Send writes)", where === box, where);
   const srv2 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), pv, "--no-open", "--no-notify", "--port", String(testPort(20000 + Math.floor(Math.random() * 10000), 1)), "--out", join(tmp, "bundle2")], { cwd: plain, env: env2 });
   procs.push(srv2);
   let log2 = ""; srv2.stdout.on("data", (d) => (log2 += d)); srv2.stderr.on("data", (d) => (log2 += d));

@@ -34,6 +34,31 @@
 - **pipeline-cost** (`.claude/skills/pipeline-cost/`, for contributors): measures where a run's time and tokens go
   from its transcripts, into `eval/pipeline-cost/`'s ledger.
 
+- **`/reel`: the video plays in a Claude Code pane.** The Claude Code plugin now carries a hooks module beside the
+  skill (`skills/plan-to-video/hooks/`). `/reel` lists the plans with a video; a plan's video plays at the top of
+  the pane (its render's frames from `reel-frames`: the picture itself in kitty or Ghostty, a few frames a second in
+  the desktop and mobile apps, the browser player in any other terminal; its sound), stops at each choice, plays the
+  branch picked and goes on (or stops at each call of a walkthrough), comments are left at their moment (`m`) or on
+  an answer (`c`, the decision's note), `j` and `k` go back and on 5 seconds, a revised video plays just what
+  changed (`v` the whole of it), `z` widens the pane around the video (the whole terminal is Claude Code's classic
+  layout, for one session with `CLAUDE_CODE_NO_FLICKER=0 claude`; the pane never runs `/tui`, which would switch every
+  session), the Send card says what Approve and Changes needed
+  lead to, the answers and comments are sent as the player's Send sends them (a row in the inbox `inbox --where` names,
+  claimed by a waiting session or filed by this one with `reel-intake`), and **Watch** opens the player: the local
+  page from a terminal, an Artifact in a cloud session, where localhost is out of reach. When the agent opens a
+  video for review, the pane opens and plays it where it can show the picture (kitty, Ghostty; the browser then
+  stays shut, `--no-open`), and elsewhere a band above the prompt offers it. `/reel` alone lists the videos by folder,
+  this one first and then each above it (plans and quick videos, newest first), with how to make a new one. `s` plays faster (`reel-frames --speed`), the picture follows the pane's size as it
+  plays, and late frames are passed over so the picture keeps up with the sound. A build in Claude Code starts the pane's
+  render in the background as it finishes, so the pane rarely waits for it. A pause, a seek or a rewind stops the
+  sound with the picture (it played on under the next play), a line says the video is starting until its first frame,
+  and a card shows where the video asks for it: a choice once the video reaches it, Send at the end or when asked for
+  with `n`. The sound starts at the moment asked for (ffplay seeks only to the render's keyframes, about 20 s apart,
+  so a resume or a rewind replayed the sound from there; it is now cut with `atrim`), the picture is paced against the
+  sound in `reel-frames` rather than by ffmpeg (whose decoder held the first frame back about 0.7 s), a line every
+  100 ms lets a stop land at once, and of two quick presses the later one wins. The marketplace entry names the pane's state contract
+  (`types`); `plugin.spec` validates the plugin as installed and runs its tests (`scripts/test/plugin/`) when
+  `claude` is on PATH.
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
   whenever a review was sent with no session waiting; Claude Code's auto mode refused that `reel init` in a
   person's first session, as an agent setting itself up to start unattended. `reel init` now writes none: the session that ran it is an

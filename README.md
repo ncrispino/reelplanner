@@ -26,15 +26,20 @@ reelplanner setup                                                      # ffmpeg,
 npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
 ```
 
-In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
+In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`. The
+plugin also adds `/reel`, which plays the video in a pane beside the conversation ([watch it in Claude
+Code](#watch-it-in-claude-code-reel)). From a terminal:
 
-```
-/plugin marketplace add ncrispino/reelplanner
-/plugin install reelplanner@reelplanner
+```bash
+claude plugin marketplace add ncrispino/reelplanner
+claude plugin install reelplanner@reelplanner      # for you, in every repo
 ```
 
-The plugin is the skill only: the first two lines are still what install the `reelplanner` command and its tools
-(the skill installs them itself when they are missing, but running them first is quicker).
+Or inside Claude Code, the same as `/plugin marketplace add …` and `/plugin install …`; when it asks where, pick
+user scope (for you, in every repo).
+
+The first two lines are still what install the `reelplanner` command and its tools (the skill installs them itself
+when they are missing, but running them first is quicker).
 
 The narration needs a voice. Choose one before you run `reelplanner setup`:
 
@@ -98,6 +103,16 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
   - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
     [three ways](#three-ways-to-use-it)).
 
+## How it works
+
+reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
+`.reelplanner/` record). Each scene is a web page
+rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
+
+This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
+More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
+[every command](./docs/reference.md) · [what works today](./docs/status.md).
+
 ## Three ways to use it
 
 1. **Just a video.** A plan video, or a video explaining code that is already there.
@@ -109,6 +124,25 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 
 Ways 2 and 3 add a `.reelplanner/` folder to the repo (commit it). The first time in a repo, the agent asks
 which way you want, unless you said "quick". To move to a fuller way later, ask the agent. [How it fits together](./docs/lifecycle.md).
+
+## Watch it in Claude Code (`/reel`)
+
+With the reelplanner plugin, `/reel` plays the video in a pane beside the conversation. Answer and comment
+there, then **Send**: with **Changes needed** Claude revises the plan and the pane plays what changed; with
+**Approve** Claude builds the plan.
+
+<img src="docs/media/reel-pane.gif" alt="The reel pane in kitty: the video plays beside the conversation, stops at a choice, takes an answer and comments, and sends the review with Changes needed; Claude rebuilds the video and the pane plays just the change." width="100%">
+
+<p align="center"><i>/reel in kitty: a review sent with Changes needed, then just the change played (75 s, sped up).</i></p>
+
+- **Needs:** the reelplanner plugin (`claude plugin install reelplanner@reelplanner`, as in [Install](#install)) and
+  `reelplanner setup`, then a new session. The picture shows in
+  [kitty](https://sw.kovidgoyal.net/kitty/) or [Ghostty](https://ghostty.org/); other terminals open the browser
+  player, and the pane keeps the choices, comments and Send.
+- **Opening:** in kitty or Ghostty the pane opens by itself when the agent has a video for you; elsewhere a band
+  above the prompt offers it. `/reel` alone lists the videos by folder, this one first, to open an older one.
+- **Keys:** `p` play or pause · `s` faster · `n` and `b` next and previous stop · a digit picks an option · `m` comment ·
+  `w` the browser player, to draw on the video. [Every key and what the pane does](./docs/reference.md#the-reel-pane-in-claude-code).
 
 ## Case studies
 
@@ -136,16 +170,6 @@ Agents write plans faster than people can read them. A long plan gets skimmed, a
 
 Spec Kit is far more widely used, and for a one-line fix or a plan you can read in a minute, text is faster.
 More tools, with sources: [docs/comparison.md](./docs/comparison.md).
-
-## How it works
-
-reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
-`.reelplanner/` record). Each scene is a web page
-rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
-
-This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
-More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
-[every command](./docs/reference.md) · [what works today](./docs/status.md).
 
 ## The voice
 

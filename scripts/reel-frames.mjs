@@ -1,0 +1,243 @@
+#!/usr/bin/env node
+// Play a built video into Claude Code's /reel pane (skills/plan-to-video/hooks/): the frames of its render,
+// at the video's own pace, as lines a hooks module can read (its process stream carries text, not bytes).
+//
+// The render is the video's own, made once by HyperFrames at 12 fps (draft quality) and kept in
+// <video-dir>/renders/terminal.mp4, which git leaves out.
+// `--render` makes it when it is missing or older than the video's sources, printing its progress. A build in Claude Code
+// starts one in the background as it finishes (build.mjs), so it is usually there when the pane opens; while one is
+// running (renders/terminal.lock) another waits for it rather than rendering the same video again.
+//
+// Without --render, the stretch [--from, --to) plays: ffmpeg decodes it in real time and each frame is printed
+// in the form the pane draws (--as):
+//   image    a raw RGB frame written to a ring of files under --dir, for an Image (kitty, Ghostty)
+//   jpeg     the frame as a small JPEG, for an Svg on a surface with no terminal (the desktop and mobile apps)
+// A terminal without kitty graphics gets neither: drawn in its character cells the video is unreadable, so the
+// pane opens the browser player there instead.
+// and the sound plays alongside, on this machine (ffplay, or afplay on macOS), unless --no-audio. --speed plays the
+// stretch faster or slower (0.5 to 3; the sound keeps its pitch), and each frame's <t> is still the video's own time.
+//
+// One line per event:
+//   V <seconds> <cols> <rows>          the video's length and the frame size (pixels for image and jpeg)
+//   P <percent>                        render progress
+//   R <path>                           the render is ready
+//   A <player> | A none <why>          the sound started, or why not
+//   F <t> <base64>                     a frame: the JPEG's bytes
+//   I <t> <path> <generation>          a frame written for an Image
+//   E <t>                              the stretch ended
+//   X <message>                        it failed
+//   H                                  nothing to say yet, at least every 100 ms (the pane ignores it)
+//
+// usage: reelplanner reel-frames <video-dir> --render
+//        reelplanner reel-frames <video-dir> [--from <s>] [--to <s>] [--as image|jpeg] [--width <px>] [--dir <ring-dir>]
+//                                [--fps <n>] [--speed <x>] [--no-audio]
+import { existsSync, statSync, readdirSync, mkdirSync, writeFileSync, readFileSync, mkdtempSync, rmSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { spawn, spawnSync } from "node:child_process";
+import { hyperframesBin } from "./lib/env.mjs";
+
+const args = process.argv.slice(2);
+const flag = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d; };
+const VALUED = new Set(["--from", "--to", "--as", "--width", "--dir", "--fps", "--speed"]);
+const dirArg = args.find((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1]));
+if (!dirArg || args.includes("--help")) {
+  console.log("usage: reelplanner reel-frames <video-dir> --render | [--from s] [--to s] [--as image|jpeg] [--width px] [--dir d] [--fps n] [--speed x] [--no-audio]");
+  process.exit(dirArg ? 0 : 1);
+}
+const say = (line) => process.stdout.write(line + "\n");
+// a line at least every 100 ms, so the pane's stop lands at once: Claude Code kills the child at its next line, and
+// this one is otherwise quiet while it waits for the sound, for ffmpeg's first frame or for another render
+setInterval(() => say("H"), 100).unref();
+const fail = (m) => { say(`X ${m}`); process.exit(1); };
+const dir = resolve(dirArg);
+if (!existsSync(join(dir, "index.html"))) fail(`no built video at ${dir} (index.html is missing)`);
+const mp4 = join(dir, "renders", "terminal.mp4");
+const FPS = Number(flag("fps", 12));
+
+// --- the render ----------------------------------------------------------------------------------------
+// what the picture is made of: the page and its compositions and assets. The plan map, the storyboard and the
+// other records beside them do not change a frame, so rewriting them (plan-map does, every build) renders nothing again.
+function newest(d, depth = 0) {
+  let t = 0;
+  for (const e of readdirSync(d, { withFileTypes: true })) {
+    if (depth === 0 && !["index.html", "compositions", "assets"].includes(e.name)) continue;
+    const p = join(d, e.name);
+    if (e.isDirectory()) { if (depth < 4) t = Math.max(t, newest(p, depth + 1)); }
+    else t = Math.max(t, statSync(p).mtimeMs);
+  }
+  return t;
+}
+const fresh = () => existsSync(mp4) && statSync(mp4).mtimeMs >= newest(dir);
+
+const lock = join(dir, "renders", "terminal.lock");
+const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+const rendering = () => { try { return alive(Number(readFileSync(lock, "utf8"))); } catch { return false; } };
+
+if (args.includes("--render")) {
+  if (fresh()) { say(`R ${mp4}`); process.exit(0); }
+  if (rendering()) {
+    // another render of this video is under way (the build's, in the background): wait for it, then render only if it
+    // did not leave a fresh one
+    say("P 0");
+    const wait = setInterval(() => {
+      if (rendering()) return;
+      clearInterval(wait);
+      if (fresh()) { say(`R ${mp4}`); process.exit(0); }
+      render();
+    }, 500);
+  } else render();
+}
+
+function render() {
+  mkdirSync(join(dir, "renders"), { recursive: true });
+  writeFileSync(lock, String(process.pid));
+  process.on("exit", () => { try { if (readFileSync(lock, "utf8") === String(process.pid)) rmSync(lock); } catch { /* gone */ } });
+  const tmp = join(dir, "renders", "terminal.part.mp4");
+  const child = spawn(process.execPath, [hyperframesBin(), "render", dir, "--fps", String(FPS), "--quality", "draft", "-o", tmp], { stdio: ["ignore", "pipe", "pipe"] });
+  let last = -1, tail = "";
+  const read = (b) => {
+    const s = b.toString();
+    tail = (tail + s).slice(-2000);
+    for (const m of s.matchAll(/(\d{1,3})%/g)) { const p = Number(m[1]); if (p !== last && p <= 100) { last = p; say(`P ${p}`); } }
+  };
+  child.stdout.on("data", read); child.stderr.on("data", read);
+  child.on("exit", (code) => {
+    if (code !== 0 || !existsSync(tmp)) {
+      // a fresh clone: the narration is made by the build and left out of git, so there is no sound to mix
+      if (/Source not found for audio element/.test(tail)) fail(`the video's narration is not on this machine (it is made by the build, and git leaves it out): \`reelplanner reel rebuild\` on its plan makes it again, then play`);
+      fail(`the render failed (exit ${code}): ${tail.replace(/\s+/g, " ").slice(-300)}`);
+    }
+    spawnSync("mv", [tmp, mp4]);
+    say(`R ${mp4}`);
+    process.exit(0);
+  });
+}
+if (!args.includes("--render")) play();
+
+// --- playing a stretch ---------------------------------------------------------------------------------
+function duration(file) {
+  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { encoding: "utf8" });
+  return Number(r.stdout.trim()) || 0;
+}
+
+function play() {
+  if (!existsSync(mp4)) fail(`no render yet: run reelplanner reel-frames ${dirArg} --render`);
+  const as = flag("as", "image");
+  if (!["image", "jpeg"].includes(as)) fail(`--as ${as}: image (kitty graphics) or jpeg`);
+  const total = duration(mp4);
+  const from = Math.max(0, Number(flag("from", 0)));
+  const to = Math.min(total, Number(flag("to", total)) || total);
+  if (to <= from) { say(`E ${from}`); process.exit(0); }
+  const speed = Math.min(3, Math.max(0.5, Number(flag("speed", 1)) || 1));
+  const W = Number(flag("width", as === "jpeg" ? 384 : 640)) & ~1, H = Math.round((W * 9) / 16) & ~1;
+  say(`V ${total.toFixed(3)} ${W} ${H}`);
+
+  const children = [];
+  // the sound runs in a process group of its own (its shell, the player, afplay's subshell): stopping kills the whole
+  // group, or the player would play on after a pause, under the sound of the next play
+  const stop = () => { for (const c of children) { try { if (c.spawnargs[0] === "sh") process.kill(-c.pid, "SIGTERM"); else c.kill("SIGTERM"); } catch { /* gone */ } } };
+  for (const s of ["SIGTERM", "SIGINT", "SIGHUP"]) process.on(s, () => { stop(); process.exit(0); });
+  process.stdout.on("error", () => { stop(); process.exit(0); }); // the pane stopped reading
+
+  // the sound: a child that also watches this process, so it never plays on after the pane stopped it. ffplay seeks
+  // only to the render's keyframes (about 20 s apart), so its sound is cut at the moment itself (atrim), and it takes
+  // a moment to start sounding: the picture's clock starts when ffplay's does (-stats, on stderr), or after 1.5 s at
+  // most. afplay plays a cut made first, and says nothing: the picture's clock starts with it
+  let heard = null;
+  if (!args.includes("--no-audio")) {
+    let cmd = null;
+    if (spawnSync("sh", ["-c", "command -v ffplay"]).status === 0) {
+      const af = [`atrim=start=${from}:end=${to}`, ...(speed !== 1 ? [`atempo=${speed}`] : [])].join(",");
+      cmd = `ffplay -nodisp -autoexit -loglevel error -stats -vn -ss ${from} -af ${af} '${mp4}'`;
+    } else if (spawnSync("sh", ["-c", "command -v afplay"]).status === 0) {
+      const cut = join(mkdtempSync(join(tmpdir(), "reel-audio-")), "a.m4a");
+      spawnSync("ffmpeg", ["-loglevel", "error", "-y", "-ss", String(from), "-t", (to - from).toFixed(3), "-i", mp4, "-vn", "-c:a", "aac", cut]);
+      cmd = `trap "rm -rf '${join(cut, "..")}'" EXIT; afplay${speed !== 1 ? ` -r ${speed} -q 1` : ""} '${cut}'`;
+    }
+    if (cmd) {
+      // the watcher leads the group (detached): at the end it kills the whole group, the player and any subshell
+      const watch = `(${cmd}) & p=$!; while kill -0 ${process.pid} 2>/dev/null && kill -0 $p 2>/dev/null; do sleep 0.3; done; kill 0`;
+      const sound = spawn("sh", ["-c", watch], { detached: true, stdio: ["ignore", "ignore", cmd.startsWith("ffplay") ? "pipe" : "ignore"] });
+      children.push(sound);
+      if (sound.stderr) {
+        heard = new Promise((go) => {
+          const fallback = setTimeout(go, 1500);
+          // each -stats reading starts with ffplay's clock: "nan" or below zero until the sound starts
+          sound.stderr.on("data", (d) => {
+            for (const r of d.toString().split("\r")) {
+              const c = Number(r.trim().split(/\s+/)[0]);
+              if (Number.isFinite(c) && c >= 0) { clearTimeout(fallback); go(); }
+            }
+          });
+          sound.on("exit", () => { clearTimeout(fallback); go(); });
+        });
+      }
+      say(`A ${cmd.match(/(ffplay|afplay)/)?.[1] ?? "sound"}`);
+    } else say("A none no audio player (ffplay or afplay) on this machine");
+  }
+
+  // the picture: ffmpeg decodes from the start, ahead (its decoder holds the first frame back about 0.7 s), and each
+  // frame is said when it is due on the sound's clock, FPS a second at 1× (faster or slower with --speed). A frame
+  // that comes over a quarter of a second after its moment is passed over, so the picture keeps up with the sound
+  const vf = `${speed !== 1 ? `setpts=PTS/${speed},` : ""}fps=${FPS},scale=${W}:${H}:flags=area`;
+  const out = as === "jpeg" ? ["-f", "image2pipe", "-c:v", "mjpeg", "-q:v", "7", "pipe:1"] : ["-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"];
+  const ff = spawn("ffmpeg", ["-loglevel", "error", "-ss", String(from), "-t", String(to - from), "-i", mp4, "-an", "-vf", vf, ...out], { stdio: ["ignore", "pipe", "ignore"] });
+  children.push(ff);
+
+  const frameBytes = W * H * 3;
+  const ring = as === "image" ? resolve(flag("dir", mkdtempSync(join(tmpdir(), "reel-frames-")))) : null;
+  if (ring) mkdirSync(ring, { recursive: true });
+  let buf = Buffer.alloc(0), n = 0, done = false, start = null, timer = null;
+  const queue = [];
+  const at = (k) => (from + (k * speed) / FPS).toFixed(3);
+  const emit = (k, frame) => {
+    if (as === "jpeg") return say(`F ${at(k)} ${frame.toString("base64")}`);
+    const path = join(ring, `frame-${k % 8}.rgb`);
+    writeFileSync(path, frame);
+    say(`I ${at(k)} ${path} ${k}`);
+  };
+  const finish = () => {
+    stop();
+    say(`E ${to.toFixed(3)}`);
+    if (ring && !flag("dir")) rmSync(ring, { recursive: true, force: true });
+    process.exit(0);
+  };
+  const pump = () => {
+    timer = null;
+    if (start === null) return;
+    while (queue.length) {
+      const wait = start + (n * 1000) / FPS - Date.now();
+      if (wait > 0) { timer = setTimeout(pump, wait); break; }
+      const frame = queue.shift();
+      if (-wait <= 250 || (!queue.length && done)) emit(n, frame);
+      n++;
+    }
+    if (queue.length < 12) ff.stdout.resume();
+    if (done && !queue.length) finish();
+  };
+  const take = (frame) => {
+    queue.push(frame);
+    if (queue.length >= 24) ff.stdout.pause();
+    if (!timer) pump();
+  };
+  ff.stdout.on("data", (chunk) => {
+    buf = Buffer.concat([buf, chunk]);
+    if (as === "jpeg") {
+      // split the MJPEG stream at each image's end marker
+      let end;
+      while ((end = buf.indexOf(Buffer.from([0xff, 0xd9]))) >= 0) {
+        take(buf.subarray(0, end + 2));
+        buf = buf.subarray(end + 2);
+      }
+      return;
+    }
+    while (buf.length >= frameBytes) {
+      take(Buffer.from(buf.subarray(0, frameBytes)));
+      buf = buf.subarray(frameBytes);
+    }
+  });
+  ff.on("exit", () => { done = true; if (!timer) pump(); });
+  const go = () => { start = Date.now(); pump(); };
+  if (heard) heard.then(go); else go();
+}

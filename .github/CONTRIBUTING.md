@@ -25,6 +25,21 @@ To try your change through an agent, install this checkout's skill into a scratc
 <this checkout> --skill plan-to-video -a claude-code` (run it in the scratch repo; `-g` puts it in your user's
 skills instead), and tell the agent to run `reelplanner` (after `npm link`) where the skill says `$RP`.
 
+To try a change to the Claude Code plugin (`/reel` and its pane, `skills/plan-to-video/hooks/`), install it from
+your checkout, not GitHub: GitHub's is `main`'s. From a terminal, in the checkout:
+
+```sh
+claude plugin marketplace remove reelplanner          # if the GitHub one is there: both are named reelplanner
+claude plugin marketplace add "$PWD"
+claude plugin install reelplanner@reelplanner --scope local   # for you, in this checkout only
+```
+
+(In Claude Code, `/plugin` asks the same; pick "in this repo only (local scope)".) Then start a new `claude`
+session in the checkout. Install copies the plugin, so after a change run `claude plugin marketplace update
+reelplanner` and start a new session. In a reelplanner checkout the pane runs that checkout's
+`node bin/reelplanner.mjs`, so each worktree uses its own tooling and needs no `npm link`. To go back:
+`claude plugin uninstall reelplanner@reelplanner --scope local` and `claude plugin marketplace remove reelplanner`.
+
 ## Run the tests
 
 | Command | What it runs |

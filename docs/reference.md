@@ -333,7 +333,75 @@ rebuild .reelplanner/plans/2026-09-28-videos-that-make-sense/video, version 1 of
 /plugin install reelplanner@reelplanner
 ```
 
-Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. The plugin is the skill's folder alone, `skills/plan-to-video` (about 110 KB in `~/.claude/plugins/cache`: `marketplace.json`'s entry is its manifest). Adding the marketplace clones the repository at depth 1, about 170 MB on disk (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305), as `npx skills add ncrispino/reelplanner` would. The npm package itself is under 1 MB and carries none of them.
+Then the tooling and `setup`, as in [Install](#install). This keeps the skill updated through `/plugin`; the skill runs the same tooling either way. The plugin is the skill's folder alone, `skills/plan-to-video` (about 140 KB in `~/.claude/plugins/cache`: `marketplace.json`'s entry is its manifest, `types` included), and beside `SKILL.md` it carries the hooks module that adds `/reel` (`hooks/`, its state's contract in `types/`). Adding the marketplace clones the repository at depth 1, about 170 MB on disk (the worked examples in `videos/` with their mp3 narration, `docs/media/`, and this repo's own `.reelplanner/`; no WAV or rendered MP4 is committed, D-305), as `npx skills add ncrispino/reelplanner` would. The npm package itself is under 1 MB and carries none of them.
+
+### The reel pane in Claude Code
+
+A review the agent starts opens the pane by itself where it can show the picture (below), so `/reel` alone is for
+finding a video. It goes by folder, as Claude Code finds CLAUDE.md: the session's folder first, then each folder above
+it, each with its plans' videos (`.reelplanner/plans/`) and its quick videos (`videos/<name>/`), newest first, a line
+each with its date and whether it is still to review. The newest in the session's folder is `1`; a video from another
+folder opens from there, and its review goes to that folder's repo. Under the list it says how to ask for a new one; `/reel <plan>` (a slug, part of one, or a path under `plans/`) opens one, and
+`/reel <video-dir>` any built video. The video plays at once, at the top of the pane: its own frames, its captions under
+them word for word, its clock, and its sound on the machine the session runs on (`ffplay`, or `afplay` on macOS). It
+stops at each open choice (the plan map's `at`), with the question and its options under the frame, the recommended one
+marked: pick one (its digit), choose **Explain this more**, or answer in your own words (on surfaces with a text field),
+and the branch you picked plays before the video goes on from where the question resumes. A walkthrough video stops at
+each call the agent made, to accept, flag, or answer with what to do instead. `p` pauses and plays, `j` and `k` go back and on 5
+seconds (the browser player's arrow keys: in a pane the arrows are Claude Code's, scrolling and moving between
+controls; paused, a seek shows the frame there and stays paused), `r` replays the stretch (until the first frame, a line over the picture says the video is starting and plays by
+itself; the clock line says ▶ playing), `s` plays faster (1.25×, 1.5×, 2×, then 1× again; the sound keeps its pitch), `n`
+and `b` move between stops. The picture follows the pane: dragged wider, `z`, or the terminal resized, it plays on from
+where it was at the new size; a frame that comes after its moment is passed over, so the picture keeps up with the
+sound. The last stop sums the review up, takes a note for the agent, and sends it,
+approved or with changes asked.
+
+The picture is the video's render, made once by HyperFrames at 12 fps in draft quality, kept in
+`renders/terminal.mp4` beside the video (git leaves it out) and made again when the video changes. A build run in
+Claude Code starts it in the background as it finishes, so it is usually ready when the pane opens; otherwise the first
+play makes it and says how far it has got. `reelplanner reel-frames <video-dir>` streams it. Where the terminal draws kitty graphics
+(kitty, Ghostty) the picture is the render itself, as sharp as in the browser. Any other terminal opens the browser
+player instead (`reelplanner review --detach`), and the pane says so, with the link, and keeps the choices, the
+comments and Send: drawn in a terminal's character cells, a frame is a few dozen blocks across, and nothing in it can
+be read. In the desktop and mobile apps the pane shows three frames a second, with the captions under them and no
+sound there (`w` opens the full player).
+
+The pane, top to bottom: the picture; the timeline, with a mark at each stop (filled once answered) and at each
+comment, and the keys (`p` play or pause, `r` replay, `b` and `n` the previous and next stop); the stage, which is the
+card for the stop when the video stops there (its options by number, `e` explain more, `o` your own words) and
+otherwise what comes next; and **Your review**, the answers and comments so far in the video's order. `m` leaves a
+comment at the moment the video is at: the video waits while you write and plays on after, and the comment is filed
+as a note at that moment, as the player's are. `c`, once a choice is answered (while its part of the video plays, or
+back on its card), adds a comment to the answer ("Postgres, but only if…"), filed as the decision's `note`, which
+`reel record` keeps in the ledger as the reviewer's note. Drawing on the video (a circle, a box around something) is
+the browser player's: a terminal pane can show the picture but not take a drawing over it, so the pane points there.
+`z` makes the video bigger: the docked pane asks for most of the terminal's width (a width you dragged it to wins; the
+dock goes to about half the terminal, so it is wider, not full screen) and the review folds away. For the whole
+terminal, start Claude Code with `CLAUDE_CODE_NO_FLICKER=0 claude`: its classic layout, for that session only, where
+the pane opens above the prompt across the whole terminal, as tall as the picture wants with the card under it, and `z`
+gives it every row but the prompt's. The pane does not switch layouts itself: `/tui` saves the layout in the user's
+settings, so it would switch every Claude Code session on the machine.
+
+The Send card says what each answer leads to. For a plan video, **Approve**: Claude folds your answers and comments
+into the plan and builds it, with no new plan video; the walkthrough comes next. **Changes needed**: Claude revises
+the plan, rebuilds the scenes that change, and the new version comes back. For a walkthrough, Approve keeps the build
+(the calls join the ledger) and Changes needed has the flagged calls fixed and their scenes rebuilt. After Send the
+pane stays on the video and says what Claude is doing with the review; the video is rebuilt in its own folder, and
+once its plan map is newer than the Send the pane offers **Watch what changed** (or, after a plan's Approve, the
+walkthrough when it is built). A revised video (some scenes changed since its last build, per `plan-map.json`'s
+`changes`) plays just what changed, as the browser player does: the changed scenes and any scene with a question still
+open; `v` switches to the whole video and plays on in it (from its start when it is at the end), and back. The render the pane plays is made again for the new version, once.
+
+Send writes the review row the player's Send writes, into the inbox the review server uses (`reelplanner inbox
+--where` names it): `.reelplanner/inbox/`, or for a quick video in a repo with no set-up `.reelplanner/`, this
+machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo. A session waiting on
+`review --wait` claims it; with none waiting, the pane asks this session to claim it, file it with `reel-intake` and
+act on it. **Watch** opens the player: from a terminal, `reelplanner review --detach` on that video, the page opening in
+your browser; in a cloud session, where that page would be on the container's localhost, it asks Claude to publish the
+player as an Artifact (see [hosted-review.md](./hosted-review.md)) and keeps the link in the pane once published.
+When the agent runs `reelplanner review` on a video in kitty or Ghostty, the pane opens and plays it, and the browser
+stays shut (the hook adds `--no-open` to the command); in any other terminal the browser opens as before and a band
+above the prompt offers the pane; a cloud session opens the pane by itself. The pane comes with the Claude Code plugin; `npx skills add` installs the skill alone.
 
 ## Voice and timing
 
