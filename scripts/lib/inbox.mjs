@@ -445,12 +445,30 @@ const claimQuestion = (rp, id, owner) => {
   return claimFile(qClaimPath(rp, id), "session", { owner });
 };
 /** The session's answer, with where it came from ("the plan, step 3"). → the question, or null when there is none by that id. */
-export function answerQuestion(rp, id, answer, from = null) {
-  const q = readQuestion(rp, id); if (!q) return null;
-  const out = { ...q, answer: String(answer).trim(), from: from ? String(from).trim() : null, answeredAt: new Date().toISOString() };
-  writeAtomic(join(questionsDir(rp), `${safeId(id)}.json`), JSON.stringify(out, null, 2) + "\n");
-  try { unlinkSync(qClaimPath(rp, id)); } catch {}
-  return out;
+export function answerQuestion(rp, id, answer, from = null, { owner = process.env.REELPLANNER_OWNER || activeSession(process.env)?.key || null } = {}) {
+  id = safeId(id);
+  const path = join(questionsDir(rp), `${id}.json`), cp = qClaimPath(rp, id);
+  if (!existsSync(path)) return null;
+  const words = String(answer).trim(), source = from ? String(from).trim() : null;
+  const result = withClaimLock(cp, () => {
+    const q = readQuestion(rp, id); if (!q) return { question: null };
+    if (q.answer) {
+      if (q.answer === words && (q.from || null) === source) return { question: q };
+      throw new Error(`${id} is already answered; the existing answer is retained`);
+    }
+    if (existsSync(cp)) {
+      let c; try { c = JSON.parse(readFileSync(cp, "utf8")); }
+      catch { throw new Error(`Cannot inspect question ownership for ${id}; recover the claim before answering`); }
+      if (!owner || !c?.owner) throw new Error(`${id} has no verified caller owner; adopt the question with a stable session identity before answering`);
+      if (c.owner !== owner) throw new Error(`${id} belongs to another session; adopt expired ownership before answering`);
+    }
+    const out = { ...q, answer: words, from: source, answeredAt: new Date().toISOString() };
+    writeAtomic(path, JSON.stringify(out, null, 2) + "\n");
+    if (existsSync(cp)) unlinkSync(cp);
+    return { question: out };
+  });
+  if (!result) throw new Error("question claim is being updated; retry answering");
+  return result.question;
 }
 
 // ---------- no session waiting: a fresh headless run ----------

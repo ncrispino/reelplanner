@@ -1,61 +1,61 @@
 # Code check: 2026-10-11-codex-first-class
 
 ## Steps
-- Step 1 — ✓ carried by `plugin.json`, `.agents/plugins/marketplace.json`, `package.json`, `scripts/release/sync-version.mjs`, `scripts/lib/agents.mjs`, `scripts/lib/setup-check.mjs`, `scripts/test/codex-install.spec.mjs`, `skills/plan-to-video/references/harnesses.md` (native packaging, isolated real installation, prerequisite diagnostics and a shared harness boundary).
-- Step 2 — ✓ carried by `scripts/lib/agents.mjs:25`, `scripts/lib/inbox.mjs:243`, `scripts/lib/inbox.mjs:317`, `scripts/inbox.mjs:47`, `scripts/test/delivery.spec.mjs` (sandboxed automatic review, checked-tree commit evidence, preserved owner work and guarded recovery; the direct delivery spec passed all 13 checks).
-- Step 3 — ✓ carried by `scripts/lib/codex-session.mjs:138`, `scripts/lib/agents.mjs:155`, `scripts/lib/inbox.mjs:557`, `scripts/review.mjs:442`, `packages/player/reelplanner-player.js:3341`, `packages/player/guide-review.js:502`, `eval/agents/codex-2026-10-11/cli-live-question.json` (verified live CLI recipient, durable questions, session leases, fallback and sourced answer polling).
-- Step 4 — ✓ carried by `scripts/lib/codex-session.mjs`, `scripts/lib/explainer.mjs:135`, `scripts/explain.mjs:45`, `scripts/session.mjs`, `scripts/test/session-export.spec.mjs` (exact session/project discovery, read-only paginated export and verified external-source fallback without storing transcript contents in Git).
-- Step 5 — ✗ the terminal-pane parity proof remains incomplete: `docs/terminal-review.md:61` explicitly leaves walkthrough Accept/Flag and changed-scenes validation open; the presentation, discovery, seeking and portable-export changes exist in `scripts/lib/presentation.mjs`, `scripts/lib/review-projects.mjs`, `scripts/lib/http-file.mjs` and `packages/player/reelplanner-player.js`.
-- Step 6 — ✗ the real narrated CLI lifecycle, headless requested-change rebuild, session explainer and accepted/flagged walkthrough-to-fix proof remain incomplete: `docs/agents.md:138` limits the focused evidence, and `eval/agents/codex-2026-10-11/headless-summary.json` explicitly excludes video builds and full plan validation; the owner's CLI-only clarification removes desktop-app acceptance from this finding.
+- Step 1 — ✓ carried by `plugin.json`, `.agents/plugins/marketplace.json`, `package.json`, `scripts/release/sync-version.mjs`, `scripts/lib/agents.mjs`, `scripts/lib/setup-check.mjs`, `skills/plan-to-video/references/harnesses.md`
+- Step 2 — ✓ carried by `scripts/lib/agents.mjs:25`, `scripts/lib/inbox.mjs:252`, `scripts/lib/inbox.mjs:332`, `scripts/lib/inbox.mjs:537`, `scripts/review.mjs:341`, `eval/agents/codex-2026-10-11/headless-summary.json`
+- Step 3 — ✗ the new question-ownership recovery is not enforced when answering: `scripts/lib/inbox.mjs:448` writes the answer and unlinks the claim without checking or locking the caller’s ownership; a scratch reproduction let an expired `codex:old` answer after `codex:new` adopted the question and removed the new owner’s claim.
+- Step 4 — ✓ carried by `scripts/lib/codex-session.mjs`, `scripts/lib/explainer.mjs:66`, `scripts/explain.mjs`, `scripts/session.mjs`, `scripts/test/session-export.spec.mjs`, `eval/agents/codex-2026-10-11/current-cli-export.json`
+- Step 5 — ✓ carried by `scripts/lib/presentation.mjs`, `scripts/lib/review-projects.mjs`, `scripts/review.mjs:180`, `scripts/review.mjs:280`, `scripts/lib/http-file.mjs`, `packages/player/reelplanner-player.js:7149`, `docs/terminal-review.md`, `eval/agents/codex-2026-10-11/ghostty-trial.json`
+- Step 6 — ✓ carried by `eval/agents/codex-2026-10-11/lifecycle-final.json`, `eval/agents/codex-2026-10-11/headless-video-source-only.json`, `eval/agents/codex-2026-10-11/cli-live-question.json`, `.reelplanner/plans/2026-10-11-codex-first-class/runs/full-touched.txt`, `docs/agents.md`, `README.md`, `AGENTS.md`, `.reelplanner/spec.md`, `.reelplanner/system.json`
 
 ## Decisions
-- D-023 — ✓ holds: `scripts/lib/details.mjs:7` offers interactive exploration, prototypes and evidence alongside code, with code reserved for justified cases.
-- D-024 — ✓ holds: `scripts/detail.mjs` selects a typed template and falls back to the fresh template.
-- D-082 — ✓ holds: `scripts/lib/agents.mjs:25` uses automatic review with workspace-write, and the Codex adapter preserves that sandbox and signing policy.
-- D-085 — ✓ holds: `scripts/detail.mjs` writes the chosen template file and `scripts/lib/reviews.mjs` preserves review files.
-- D-106 — ✓ holds: `scripts/lib/memory.mjs:50` keeps the cross-repository memory in the machine's home-folder record.
-- D-107 — ✓ holds: `scripts/lib/memory.mjs:40` retains five-plan and three-repeat retro thresholds.
-- D-109 — ✓ holds: `scripts/lib/autonomy.mjs:46` makes an untagged miss stop nothing directly.
-- D-110 — ✓ holds: `skills/plan-to-video/SKILL.md:493` requires asking before a step's fifth call, with enforcement in `scripts/reel.mjs:638`.
-- D-129 — ✓ holds: `scripts/lib/review-scope.mjs:239` records approval with missed checks without blocking it.
-- D-168 — ✓ holds: `eval/case-studies/REPLICATE.md:95` retains fixes and finished-site stopping conditions for the comparison arms.
-- D-169 — ✓ holds: `eval/case-studies/REPLICATE.md:34` retains the owner's review order, ours first with a day between arms.
-- D-170 — ✓ holds: `scripts/case-study.mjs:215` retains rubric evidence, blind judging and the owner's ranking, with process differences covered separately.
-- D-171 — ✓ holds: `scripts/pr-check.mjs:245` checks decision-ID collisions and requires the existing rebase/renumber merge rule.
-- D-195 — ✓ holds: `packages/player/reelplanner-player.js:3895` retains the detail overlay grown from the clicked block.
-- D-197 — ✓ holds: `skills/plan-to-video/SKILL.md:308` retains later checks on a new case, with the timing check in `scripts/check-terms.mjs:226`.
-- D-198 — ✓ holds: `scripts/check-terms.mjs:226` retains separate too-soon and repeated-case warnings.
-- D-199 — ✓ holds: `skills/plan-to-video/SKILL.md:308` retains the quick-check authoring rule and `scripts/check-terms.mjs` applies it to plan/system videos; this diff removes no existing checks.
-- D-200 — ✓ holds: `scripts/pr-check.mjs:15` keeps the video request as something a maintainer may satisfy rather than contributor failure.
-- D-201 — ✓ holds: `scripts/pr-check.mjs:263` retains the rule for the final maintainer answer in the merged record.
-- D-213 — ✓ holds: `scripts/pr-check.mjs:201` keeps built media out of a plan's PR branch, with delivery through the throwaway video branch.
-- D-215 — ✓ holds: `.github/workflows/pr.yml:7` retains cleanup of the unmerged `video/pr-<n>` branch.
-- D-216 — ✓ holds: `scripts/lib/jargon.mjs` and `scripts/check-terms.mjs` retain build-time discovery of likely jargon.
-- D-217 — ✓ holds: `scripts/lib/jargon.mjs:3` retains warnings with strict-mode failure.
-- D-218 — ✓ holds: `packages/player/reelplanner-player.js:3040` retains learned-term tracking and removes underlining once the viewer knows a word.
-- D-219 — ✓ holds: `skills/plan-to-video/SKILL.md:549` requires a short walkthrough showing the change running.
-- D-220 — ✓ holds: `skills/plan-to-video/SKILL.md:542` and `scripts/lib/autonomy.mjs:58` impose no fixed pause count.
-- D-221 — ✓ holds: `scripts/lib/review-scope.mjs:166` records unflagged listed calls as listed rather than accepted.
-- D-222 — ✓ holds: `skills/plan-to-video/SKILL.md:308` places walkthrough predictions where there is something to predict.
-- D-223 — ✓ holds: `scripts/pr-check.mjs:97` retains the visible-choice video threshold and written review of other choices.
-- D-225 — ✓ holds: `scripts/lib/fresh-eyes.mjs:257` retains failure for unanswered findings before presentation.
-- D-227 — ✓ holds: `scripts/fresh-eyes.mjs:239` starts a fresh review set for each rebuild and keeps prior rounds.
-- D-230 — ✓ holds: `skills/plan-to-video/SKILL.md:497` retains the Built-side guide material for every plan.
-- D-244 — ✓ holds: `scripts/guide.mjs:3` builds the guide from plan.md and the recorded sources.
-- D-245 — ✓ holds: `scripts/lib/fresh-eyes.mjs:314` suppresses repeated kept findings with the same reason.
-- D-247 — ✓ holds: `scripts/case-study.mjs:238` retains finished sites as plain files and a Git bundle.
-- D-248 — ✓ holds: `scripts/lib/explainer.mjs:391` retains the explainer as context for a resulting plan.
-- D-249 — ✓ holds: `scripts/lib/explainer.mjs:135` pins an external transcript without copying its contents, and `scripts/lib/codex-session.mjs:111` writes exports outside the repository.
-- D-250 — ✓ holds: `skills/plan-to-video/SKILL.md:197` retains source-driven general explainer principles rather than a fixed list of kinds.
-- D-303 — ✓ holds: `skills/plan-to-video/SKILL.md:553` requires real working installation commands, and `scripts/test/codex-install.spec.mjs:81` exercises the actual plugin installation; the unfinished lifecycle video is covered under Step 6.
-- D-304 — ✗ `README.md:152` explains the difficulty of long plans but never explains the former name's “real planning” meaning as this decision requires; this omission predates the diff and remains in the changed README, although `.reelplanner/spec.md:10` keeps the explanation.
-- D-305 — ✓ holds: `scripts/pr-check.mjs:206` and `templates/reelplanner/gitignore:30` retain the prohibition on committed voice files and renders; this diff adds none.
-- D-306 — ✓ holds: `scripts/lib/ledger.mjs:19`, `scripts/lib/call-lines.mjs:202` and `scripts/fold.mjs` retain binding owner answers, line-sensitive historical calls and approved specification folds.
-- D-309 — ✓ holds: `scripts/reel.mjs:654` retains accepted walkthrough violations as notes and applies failures to unsettled walkthroughs.
-- D-310 — ✓ holds: `scripts/release/make-public.mjs` retains the single-commit public-tree export without pushing it.
-- D-311 — ✓ holds: `.github/workflows/ci.yml` retains push-driven fast/full checks and `.github/workflows/pr.yml` retains separate review checks and video cleanup.
-- D-312 — ✓ holds: `plugin.json`, `.agents/plugins/marketplace.json`, `scripts/lib/old-names.mjs` and `scripts/lib/env.mjs:264` retain lowercase reelplanner identity and old-name read compatibility; player storage keys remain compatible.
-- D-313 — ✓ holds: `scripts/review.mjs`, `packages/player/reelplanner-player.js:7149` and `skills/plan-to-video/references/harnesses.md:138` implement direct local delivery plus portable export while leaving automatic remote hosting outside scope.
+- D-023 — ✓ holds: `skills/plan-to-video/SKILL.md:337` justifies detail from the scene rather than requiring full code
+- D-024 — ✓ holds: `scripts/detail.mjs:52` selects typed detail templates before the fresh fallback
+- D-082 — ✓ holds: `scripts/lib/agents.mjs:25` uses automatic approval review inside workspace-write and preserves harness-specific commit policy
+- D-085 — ✓ holds: `scripts/detail.mjs:54`, `scripts/lib/reviews.mjs` retain scaffolds, files and review records
+- D-106 — ✓ holds: `scripts/lib/memory.mjs:50` retains the home-folder memory, with repository pending records for fenced runs
+- D-107 — ✓ holds: `scripts/lib/memory.mjs:40` keeps the five-plan and three-repeat retro thresholds
+- D-109 — ✓ holds: `scripts/reel.mjs:681` keeps an unlabelled miss from directly selecting a pause
+- D-110 — ✓ holds: `scripts/reel.mjs:624` retains the fifth-call question requirement; this diff records fewer than five calls per step
+- D-129 — ✓ holds: `scripts/lib/memory.mjs:171`, `packages/player/reelplanner-player.js` retain approval while recording missed checks
+- D-168 — ✓ holds: `scripts/case-study.mjs:45` retains all arms through check, fix and done
+- D-169 — ✓ holds: `scripts/case-study.mjs:202` retains owner review with the reelplanner arm first
+- D-170 — ✓ holds: `scripts/case-study.mjs:215` retains rubric scores, the blind judge and owner ranking
+- D-171 — ✓ holds: `scripts/renumber.mjs`, `scripts/lib/contributing.mjs` retain ordered decision IDs and merge conflict checks
+- D-195 — ✓ holds: `packages/player/reelplanner-player.js:3895` retains details over the frame from the clicked block
+- D-197 — ✓ holds: `scripts/check-terms.mjs:226` retains later checks on a fresh case
+- D-198 — ✓ holds: `scripts/check-terms.mjs:226` retains the timing and reused-case warnings
+- D-199 — ✓ holds: `skills/plan-to-video/SKILL.md:308`, `scripts/check-terms.mjs` retain the new/revised video and system check rules
+- D-200 — ✓ holds: `.github/CONTRIBUTING.md`, `scripts/lib/contributing.mjs` retain contributor requests and the maintainer route
+- D-201 — ✓ holds: `scripts/reel.mjs`, `scripts/lib/reviews.mjs` retain the latest recorded answer while preserving review history
+- D-213 — ✓ holds: `scripts/lib/contributing.mjs:83`, `skills/plan-to-video/SKILL.md:323` keep built plan video media out of the PR branch
+- D-215 — ✓ holds: `.github/workflows/pr.yml`, `scripts/review.mjs:176` retain throwaway video-branch delivery
+- D-216 — ✓ holds: `scripts/check-terms.mjs:169` retains discovery of likely jargon without meaning
+- D-217 — ✓ holds: `scripts/check-terms.mjs:169` retains warnings and strict-mode failure for unlabelled jargon
+- D-218 — ✓ holds: `packages/player/reelplanner-player.js:3040`, `scripts/review.mjs:387` retain known-word handling and home memory
+- D-219 — ✓ holds: `eval/agents/codex-2026-10-11/lifecycle-final.json:22` records actual UI capture in the walkthrough
+- D-220 — ✓ holds: `scripts/reel.mjs:681`, `scripts/lib/autonomy.mjs` retain pause selection by choice significance rather than a fixed count
+- D-221 — ✓ holds: `packages/player/reelplanner-player.js:5824` retains listed, unjudged choices at Finish
+- D-222 — ✓ holds: `skills/plan-to-video/SKILL.md:274` retains walkthrough prediction checks where the change supports one
+- D-223 — ✓ holds: `scripts/lib/contributing.mjs`, `.github/PULL_REQUEST_TEMPLATE.md` retain the visible-choice threshold for a small PR
+- D-225 — ✓ holds: `scripts/lib/fresh-eyes.mjs:186` requires findings to be answered and checks the actual explainer source document
+- D-227 — ✓ holds: `scripts/fresh-eyes.mjs:239`, `eval/agents/codex-2026-10-11/lifecycle-final.json` retain fresh review for rebuilt videos
+- D-230 — ✓ holds: `scripts/guide.mjs:3` retains a guide from plan and walkthrough text with its Built side
+- D-244 — ✓ holds: `scripts/guide.mjs:3` retains plan.md as the guide source
+- D-245 — ✓ holds: `scripts/lib/fresh-eyes.mjs:316`, `packages/player/reelplanner-player.js:2914` retain only new kept findings before watching
+- D-247 — ✓ holds: `scripts/case-study.mjs:259` retains plain site files and a verified site.bundle
+- D-248 — ✓ holds: `scripts/reel.mjs:228` retains the explainer review as the source for Plan this
+- D-249 — ✓ holds: `scripts/lib/codex-session.mjs:111`, `scripts/lib/explainer.mjs:134` export privately and pin only source metadata
+- D-250 — ✓ holds: `scripts/explain.mjs:6`, `skills/plan-to-video/SKILL.md:206` retain general source/story principles instead of an explainer-kind list
+- D-303 — ✓ holds: `eval/agents/codex-2026-10-11/native-install-source-only.json`, `.reelplanner/plans/2026-10-11-codex-first-class/runs/setup-supported-node.txt` record actual plugin installation and prerequisite commands
+- D-304 — ✓ holds: `README.md:153` retains the original name and real-planning explanation
+- D-305 — ✓ holds: `skills/plan-to-video/SKILL.md:323`, `scripts/lib/inbox.mjs:466` explicitly leave generated voices, renders and player bundles ignored
+- D-306 — ✓ holds: `scripts/lib/ledger.mjs:3`, `scripts/reel.mjs:326` retain binding owner rules and scoped accepted-call history
+- D-309 — ✓ holds: `scripts/reel.mjs` retains accepted walkthrough rule breaks as notes instead of failures
+- D-310 — ✓ holds: `scripts/release/make-public.mjs:2` retains the one-commit public export without pushing
+- D-311 — ✓ holds: `.github/workflows/ci.yml`, `.github/workflows/pr.yml`, `.github/PULL_REQUEST_TEMPLATE.md` retain PR suites, separate review checks and the maintainer merge check
+- D-312 — ✓ holds: `scripts/lib/env.mjs:264`, `scripts/lib/old-names.mjs`, `packages/player/reelplanner-player.js` retain lowercase naming and old folder/env/storage compatibility
+- D-313 — ✓ holds: `skills/plan-to-video/references/harnesses.md:140`, `packages/player/reelplanner-player.js:7149`, `scripts/review.mjs:431` retain direct local Send plus portable identity-preserving exports, with automatic remote delivery outside scope
 
 ## Unexplained
 - none

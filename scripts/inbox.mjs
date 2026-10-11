@@ -62,7 +62,8 @@ export async function main(args) {
   if (ai >= 0) {
     const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => a !== "--from" && all[i - 1] !== "--from" && a !== "--repo" && all[i - 1] !== "--repo").join(" ").trim();
     if (!id || !words) { console.error('usage: reelplanner inbox answer <id | path> "<answer>" [--from "<where>"]'); return 1; }
-    const q = answerQuestion(box, id, words, flag("from") || null);
+    let q; try { q = answerQuestion(box, id, words, flag("from") || null); }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!q) { console.error(`✗ no question ${id} in the inbox`); return 1; }
     console.log(`✓ answered ${id}: the page shows it within a few seconds${q.from ? ` (from: ${q.from})` : ""}`);
     return 0;

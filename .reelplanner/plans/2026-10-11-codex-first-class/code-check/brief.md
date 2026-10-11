@@ -34,9 +34,12 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..e481b8c)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760844cde5bd1f198c5f2ad3b84caca6a)
 
 ```
+1796951 Recover stopped legacy sessions and record completed CLI lifecycle
+7c89555 Isolate review bundles and finish source-only Codex rebuilds
+8ef559a Scope Codex support to CLI and record exact session evidence
 e481b8c Require checked evidence for every Git review completion
 0fef69b Tie review completion to checked work and preserve portable identity
 0d051e7 Add native Codex integration and shared terminal review
@@ -145,84 +148,109 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..e481b8c` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..1796951760844cde5bd1f198c5f2ad3b84caca6a` (from the repository root). The files it touches:
 
 ```
-.agents/plugins/marketplace.json                   |  20 +
- .reelplanner/glossary.md                           |   2 +
- .../code-check/brief.md                            | 220 ++++++
- .../code-check/checkpoint-0d051e7/brief.md         | 203 ++++++
- .../code-check/checkpoint-0d051e7/findings.md      |  61 ++
- .../code-check/checkpoint-0fef69b/brief.md         | 220 ++++++
- .../code-check/checkpoint-0fef69b/findings.md      |  61 ++
- .../code-check/findings.md                         |  61 ++
- .../runs/completion-recovery.txt                   |   8 +
- .../runs/corrected-contracts.txt                   |   9 +
- .../runs/full-handoff.txt                          |   7 +
- .../runs/full-touched.txt                          |  27 +
- .../runs/ghostty-audio-position.txt                |   3 +
- .../runs/headless-real.txt                         |  27 +
- .../runs/npm-test-audio.txt                        |  69 ++
- .../runs/npm-test-final-guard.txt                  |  69 ++
- .../runs/npm-test-post-review.txt                  |  69 ++
- .../runs/occupied-port.txt                         |   7 +
- .../runs/portable-review.txt                       |  31 +
- .../runs/terminal-lifecycle.txt                    | 791 +++++++++++++++++++++
- .../runs/unclaimed-completion.txt                  |   8 +
- .../2026-10-11-codex-first-class/walkthrough.md    | 476 +++++++++++++
- .reelplanner/spec.md                               |  12 +-
- .reelplanner/system.json                           |   8 +-
- AGENTS.md                                          |   8 +-
- README.md                                          |  34 +-
- docs/agents.md                                     | 128 ++--
- docs/reference.md                                  |  46 +-
- docs/terminal-review.md                            |  82 +++
- .../agents/codex-2026-10-11/cli-live-question.json |  24 +
- eval/agents/codex-2026-10-11/ghostty-trial.json    |  27 +
- .../agents/codex-2026-10-11/headless-commands.json | 360 ++++++++++
- eval/agents/codex-2026-10-11/headless-summary.json |  98 +++
- .../codex-2026-10-11/queue-active-summary.json     |  22 +
- package-lock.json                                  |   3 +-
- package.json                                       |   8 +-
- packages/player/guide-review.js                    |  28 +-
- packages/player/reelplanner-player.js              |  53 +-
- packages/player/test/ask.spec.mjs                  |   9 +-
- packages/player/test/guide-notes.spec.mjs          |  21 +
- packages/player/test/handoff.spec.mjs              |  50 ++
- packages/player/test/working.spec.mjs              |   6 +
- plugin.json                                        |  24 +
- scripts/explain.mjs                                |  11 +-
- scripts/inbox.mjs                                  |  26 +-
- scripts/lib/agents.mjs                             | 142 +++-
- scripts/lib/codex-session.mjs                      | 273 +++++++
- scripts/lib/env.mjs                                |  36 +-
- scripts/lib/explainer.mjs                          |  19 +-
- scripts/lib/http-file.mjs                          |  45 ++
- scripts/lib/inbox.mjs                              | 388 +++++++++-
- scripts/lib/presentation.mjs                       |  56 ++
- scripts/lib/review-projects.mjs                    |  29 +
- scripts/lib/setup-check.mjs                        |  38 +
- scripts/lib/static-server.mjs                      |  11 +-
- scripts/release/sync-version.mjs                   |   8 +-
- scripts/review.mjs                                 | 147 ++--
- scripts/session.mjs                                |  31 +
- scripts/setup.sh                                   |   5 +
- scripts/test/codex-install.spec.mjs                | 105 +++
- scripts/test/delivery.spec.mjs                     | 268 +++++++
- scripts/test/explainer.spec.mjs                    |  15 +-
- scripts/test/harnesses.spec.mjs                    | 106 +++
- scripts/test/init.spec.mjs                         |  12 +-
- scripts/test/loop.spec.mjs                         |   5 +-
- scripts/test/media-seek.spec.mjs                   | 129 ++++
- scripts/test/memory.spec.mjs                       |   4 +-
- scripts/test/package.spec.mjs                      |  19 +-
- scripts/test/presentation.spec.mjs                 |  50 ++
- scripts/test/review-projects.spec.mjs              |  32 +
- scripts/test/review-status.spec.mjs                |  36 +-
- scripts/test/run.mjs                               |   2 +-
- scripts/test/session-export.spec.mjs               | 144 ++++
- scripts/test/version.spec.mjs                      |  23 +-
- skills/plan-to-video/SKILL.md                      |  42 +-
- skills/plan-to-video/references/harnesses.md       | 140 ++++
- 76 files changed, 5619 insertions(+), 278 deletions(-)
+.agents/plugins/marketplace.json                   |   20 +
+ .reelplanner/glossary.md                           |    2 +
+ .../code-check/brief.md                            |  228 ++
+ .../code-check/checkpoint-0d051e7/brief.md         |  203 ++
+ .../code-check/checkpoint-0d051e7/findings.md      |   61 +
+ .../code-check/checkpoint-0fef69b/brief.md         |  220 ++
+ .../code-check/checkpoint-0fef69b/findings.md      |   61 +
+ .../code-check/checkpoint-e481b8c/brief.md         |  228 ++
+ .../code-check/checkpoint-e481b8c/findings.md      |   61 +
+ .../code-check/findings.md                         |   61 +
+ .../plans/2026-10-11-codex-first-class/plan.md     |   25 +-
+ .../runs/audit-checkpoint.txt                      |    3 +
+ .../runs/cli-live-question.txt                     |    8 +
+ .../runs/completion-recovery.txt                   |    8 +
+ .../runs/corrected-contracts.txt                   |    9 +
+ .../runs/current-cli-export.txt                    |    3 +
+ .../runs/full-bundle-isolation.txt                 |    9 +
+ .../runs/full-fresh-eyes-source-doc.txt            |    7 +
+ .../runs/full-generated-removals.txt               |    6 +
+ .../runs/full-handoff.txt                          |    7 +
+ .../runs/full-legacy-recovery.txt                  |   24 +
+ .../runs/full-touched.txt                          |   27 +
+ .../runs/ghostty-audio-position.txt                |    3 +
+ .../runs/headless-real.txt                         |   27 +
+ .../runs/headless-video-served.txt                 |  177 ++
+ .../runs/native-plugin-install.txt                 |   58 +
+ .../runs/native-plugin-source-only.txt             |   58 +
+ .../runs/npm-test-audio.txt                        |   69 +
+ .../runs/npm-test-final-guard.txt                  |   69 +
+ .../runs/npm-test-post-review.txt                  |   69 +
+ .../runs/npm-test-source-doc-and-isolation.txt     |   69 +
+ .../runs/occupied-port.txt                         |    7 +
+ .../runs/plan-check-final.txt                      |    3 +
+ .../runs/portable-review.txt                       |   31 +
+ .../runs/setup-supported-node.txt                  |   19 +
+ .../runs/stops-checkpoint.txt                      |   22 +
+ .../runs/terminal-lifecycle.txt                    | 2577 ++++++++++++++++++++
+ .../runs/unclaimed-completion.txt                  |    8 +
+ .../2026-10-11-codex-first-class/walkthrough.md    |  480 ++++
+ .reelplanner/spec.md                               |   12 +-
+ .reelplanner/system.json                           |    8 +-
+ AGENTS.md                                          |    8 +-
+ README.md                                          |   35 +-
+ docs/agents.md                                     |  129 +-
+ docs/reference.md                                  |   46 +-
+ docs/status.md                                     |    8 +-
+ docs/terminal-review.md                            |   86 +
+ .../agents/codex-2026-10-11/cli-live-question.json |   24 +
+ .../codex-2026-10-11/current-cli-export.json       |   13 +
+ eval/agents/codex-2026-10-11/ghostty-trial.json    |   27 +
+ .../agents/codex-2026-10-11/headless-commands.json |  360 +++
+ eval/agents/codex-2026-10-11/headless-summary.json |   98 +
+ .../headless-video-source-only.json                |  175 ++
+ eval/agents/codex-2026-10-11/headless-video.md     |   21 +
+ eval/agents/codex-2026-10-11/lifecycle-final.json  |  938 +++++++
+ .../native-install-source-only.json                |   16 +
+ .../codex-2026-10-11/queue-active-summary.json     |   22 +
+ package-lock.json                                  |    3 +-
+ package.json                                       |    8 +-
+ packages/player/guide-review.js                    |   28 +-
+ packages/player/reelplanner-player.js              |   53 +-
+ packages/player/test/ask.spec.mjs                  |    9 +-
+ packages/player/test/guide-notes.spec.mjs          |   21 +
+ packages/player/test/handoff.spec.mjs              |   50 +
+ packages/player/test/working.spec.mjs              |    6 +
+ plugin.json                                        |   24 +
+ scripts/explain.mjs                                |   11 +-
+ scripts/inbox.mjs                                  |   26 +-
+ scripts/lib/agents.mjs                             |  142 +-
+ scripts/lib/codex-session.mjs                      |  273 +++
+ scripts/lib/env.mjs                                |   36 +-
+ scripts/lib/explainer.mjs                          |   19 +-
+ scripts/lib/fresh-eyes.mjs                         |   14 +-
+ scripts/lib/http-file.mjs                          |   45 +
+ scripts/lib/inbox.mjs                              |  404 ++-
+ scripts/lib/presentation.mjs                       |   56 +
+ scripts/lib/review-projects.mjs                    |   29 +
+ scripts/lib/setup-check.mjs                        |   38 +
+ scripts/lib/static-server.mjs                      |   11 +-
+ scripts/release/sync-version.mjs                   |    8 +-
+ scripts/review.mjs                                 |  153 +-
+ scripts/session.mjs                                |   31 +
+ scripts/setup.sh                                   |    5 +
+ scripts/test/codex-install.spec.mjs                |  105 +
+ scripts/test/delivery.spec.mjs                     |  333 +++
+ scripts/test/explainer.spec.mjs                    |   15 +-
+ scripts/test/fresh-eyes.spec.mjs                   |   37 +
+ scripts/test/harnesses.spec.mjs                    |  106 +
+ scripts/test/init.spec.mjs                         |   12 +-
+ scripts/test/loop.spec.mjs                         |    5 +-
+ scripts/test/media-seek.spec.mjs                   |  129 +
+ scripts/test/memory.spec.mjs                       |    4 +-
+ scripts/test/package.spec.mjs                      |   19 +-
+ scripts/test/presentation.spec.mjs                 |   50 +
+ scripts/test/review-projects.spec.mjs              |  104 +
+ scripts/test/review-status.spec.mjs                |   53 +-
+ scripts/test/run.mjs                               |    2 +-
+ scripts/test/session-export.spec.mjs               |  144 ++
+ scripts/test/version.spec.mjs                      |   23 +-
+ skills/plan-to-video/SKILL.md                      |   46 +-
+ skills/plan-to-video/references/harnesses.md       |  140 ++
+ 101 files changed, 9585 insertions(+), 298 deletions(-)
 ```

@@ -167,7 +167,7 @@ try {
   // your file across repos (D-106), in a scratch home: a word you looked up and a video you watched (D-218)
   const youHome = join(tmp, "you-home"); mkdirSync(youHome, { recursive: true });
   writeFileSync(join(youHome, "you.jsonl"), JSON.stringify({ repo: "elsewhere", plan: "2026-01-01-x", review: "walkthrough-1", at: "2026-01-01T00:00:00Z", lost: { looked: ["streak", "merge"] }, watched: [{ video: "system", at: "2026-01-01T00:00:00Z" }] }) + "\n");
-  const env = { ...process.env, REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
+  const env = { ...process.env, REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
   rmSync(notified, { force: true });
   const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 0)), "--out", join(tmp, "bundle")], { cwd: tmp, env });
   procs.push(srv);
@@ -235,7 +235,7 @@ try {
     ok("ask: --wait exits 0 with the question's path", qcode === 0 && samePlace(qout.trim(), qfile) && JSON.parse(readFileSync(qfile, "utf8")).narration === "It is saved.", `exit ${qcode}, out ${JSON.stringify(qout)}`);
     const before = await (await fetch(`${url}/api/ask?id=ask-2`)).json();
     ok("ask: not answered yet", before.ok && before.answered === false, JSON.stringify(before));
-    const ans = execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-2", "The", "file", "the", "page", "writes", "when", "you", "press", "Send.", "--from", "the plan, step 3"], { cwd: tmp, encoding: "utf8" });
+    const ans = execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-2", "The", "file", "the", "page", "writes", "when", "you", "press", "Send.", "--from", "the plan, step 3"], { cwd: tmp, env, encoding: "utf8" });
     const after = await (await fetch(`${url}/api/ask?id=ask-2`)).json();
     ok("ask: `inbox answer` answers it, and the page reads it with where it came from", /answered ask-2/.test(ans) && after.answered && after.answer === "The file the page writes when you press Send." && after.from === "the plan, step 3", JSON.stringify(after));
     await until(async () => !(await (await fetch(api)).json()).sessionWaiting);

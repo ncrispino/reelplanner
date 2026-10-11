@@ -4,8 +4,9 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir, hostname } from "node:os";
-import { execFileSync } from "node:child_process";
-import { claim, claimOf, claimLive, connectSession, connectionOf, deliverInbox, writeReview, writeQuestion, readQuestion, waitingQuestions, waitForReview, renewClaim, progressOf, markDone, retryAgent, agentPrompt } from "../lib/inbox.mjs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { ROOT } from "../lib/env.mjs";
+import { claim, claimOf, claimLive, connectSession, connectionOf, deliverInbox, writeReview, writeQuestion, readQuestion, waitingQuestions, waitForReview, renewClaim, progressOf, markDone, retryAgent, agentPrompt, answerQuestion } from "../lib/inbox.mjs";
 
 const repo = mkdtempSync(join(tmpdir(), "reel-delivery-")), rp = join(repo, ".reelplanner"), box = join(rp, "inbox");
 mkdirSync(rp); writeFileSync(join(rp, "config.json"), "{}");
@@ -73,6 +74,41 @@ try {
   writeFileSync(qp, JSON.stringify({ ...old, leaseUntil: 1 }));
   assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:recovered", timeoutMs: 50 }), q.path);
   console.log("✓ failed question delivery stays pending, deduplicated and recoverable by the next waiter");
+
+  const unanswered = readFileSync(q.path, "utf8"), adoptedClaim = readFileSync(qp, "utf8");
+  const previousOwner = process.env.REELPLANNER_OWNER;
+  try {
+    process.env.REELPLANNER_OWNER = "fake:next";
+    assert.throws(() => answerQuestion(rp, q.id, "stale answer", "old session"), /another session/);
+  } finally {
+    if (previousOwner === undefined) delete process.env.REELPLANNER_OWNER;
+    else process.env.REELPLANNER_OWNER = previousOwner;
+  }
+  assert.throws(() => answerQuestion(rp, q.id, "unverified answer", null, { owner: null }), /no verified caller owner/);
+  writeFileSync(join(rp, "decisions.json"), JSON.stringify({ decisions: [] })); // CLI selects this scratch repo's inbox
+  const foreignAnswer = spawnSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", q.id, "stale CLI answer", "--from", "old session"], {
+    cwd: repo, encoding: "utf8", env: { ...process.env, REELPLANNER_OWNER: "fake:next", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "" },
+  });
+  assert.equal(foreignAnswer.status, 1); assert.match(foreignAnswer.stderr, /belongs to another session/);
+  assert(!foreignAnswer.stderr.includes("at answerQuestion"));
+  assert.equal(readFileSync(q.path, "utf8"), unanswered); assert.equal(readFileSync(qp, "utf8"), adoptedClaim);
+  writeFileSync(`${qp}.lock`, JSON.stringify({ pid: process.pid, host: hostname() }));
+  assert.throws(() => answerQuestion(rp, q.id, "locked answer", null, { owner: "fake:recovered" }), /being updated/);
+  assert.equal(readFileSync(q.path, "utf8"), unanswered); assert.equal(readFileSync(qp, "utf8"), adoptedClaim); rmSync(`${qp}.lock`);
+  writeFileSync(qp, JSON.stringify({ ...JSON.parse(adoptedClaim), leaseUntil: 1 }));
+  const expiredClaim = readFileSync(qp, "utf8");
+  assert.throws(() => answerQuestion(rp, q.id, "expired foreign answer", null, { owner: "fake:next" }), /another session/);
+  assert.equal(readFileSync(q.path, "utf8"), unanswered); assert.equal(readFileSync(qp, "utf8"), expiredClaim);
+  assert.equal(await waitForReview(rp, { owner: "fake:latest", questionsOnly: true, timeoutMs: 50 }), q.path);
+  const actualAnswer = answerQuestion(rp, q.id, "Current owner's sourced answer.", "the plan", { owner: "fake:latest" });
+  assert.equal(actualAnswer.answer, "Current owner's sourced answer."); assert(!existsSync(qp));
+  const finishedAnswer = readFileSync(q.path, "utf8");
+  assert.deepEqual(answerQuestion(rp, q.id, actualAnswer.answer, "the plan", { owner: "fake:next" }), actualAnswer);
+  assert.throws(() => answerQuestion(rp, q.id, "overwrite finished answer", "old session", { owner: "fake:next" }), /already answered/);
+  assert.equal(readFileSync(q.path, "utf8"), finishedAnswer);
+  const directQuestion = writeQuestion(rp, { id: "direct-unclaimed", question: "Can you answer directly?" });
+  assert.equal(answerQuestion(rp, directQuestion.id, "Direct, atomically saved.", "the plan", { owner: null }).answer, "Direct, atomically saved.");
+  console.log("✓ adopted questions reject stale/unknown/foreign CLI answers under the ownership lock; finished retries retain answers and direct unclaimed answers work");
 
   const fallback = writeReview(rp, row(2));
   const failed = await deliverInbox(rp, fallback.id, { adapter: { ...adapter, deliver: async () => ({ status: "unavailable" }) }, start: async () => { assert.equal(claimOf(rp, fallback.id), null); starts++; return { started: true, pid: 123 }; } });

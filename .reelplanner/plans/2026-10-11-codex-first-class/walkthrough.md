@@ -204,6 +204,8 @@ The real owned App Server result is focused transport proof. The real CLI questi
 
 **Progress:** the real scratch Ghostty Ask reached the Codex worker, its sourced answer appeared in the player, and a synthetic Large-choice approval reached the waiting scratch inbox as `video-20261011T212129Z`. The worker verified the saved choice and note, recorded its scratch-only decision, revised the plan and committed it after freezing checked work. The current Codex CLI session in iTerm2 also verified its exact loaded thread, adopted the API-queued synthetic question through the inbox, answered it from the documentation, and confirmed GET /api/ask returned the answer/source. Automatic wake is unproved because the recipient deliberately polled. The daemon source field says vscode despite the owner-confirmed CLI client, so it is not used as a UI classification.
 
+**Validation:** final CLI fast run passed all 59 specs with exit 0 (`runs/npm-test-final-cli.txt`); latest full recovery run passed 15 + 49 + 96 checks.
+
 **Not done:** automatic wake is unverified; final owner-facing branch walkthrough handling remains open. The CLI lifecycle trial is complete.
 
 ### Step 4 — Explain the correct Codex session
@@ -449,6 +451,8 @@ The real headless proof and Ghostty position run retain command/output/exit. Ter
 **Ran in a scratch repo:** `runs/headless-real.txt`, `runs/ghostty-audio-position.txt` — the former used a synthetic Git wording-only plan and injected/restored signing failure; the latter inspected the scratch upload-resume reference player's live Ghostty pane. `runs/npm-test-audio.txt` ran the repo suite, whose specs use scratch copies; it was not the acceptance project's narrated lifecycle.
 
 ## Code check
+
+The final fresh checker at `1796951` passed five of six steps, all 47 decisions, and found no unexplained choices. Its Step 3 finding is retained in `code-check/checkpoint-1796951/`: a stale question handler could overwrite an answer after adoption and remove the new owner’s claim. The fix locks and re-reads the claim before answering, rejects stale/unknown claimed owners without changing the question or claim, and retains finished answers on retries. Direct unclaimed answers still work. The actual CLI rejection regression passed; full delivery/loop/review-status/Ask passed 16 + 96 + 49 + 21 checks (`runs/full-question-ownership.txt`). The new final fast run passed all 59 specs in 222.7 seconds with exit 0 (`runs/npm-test-question-ownership.txt`); the independent source recheck remains required. This completes A7’s question-ownership contract; no final all-clear is claimed.
 
 The fresh independent checker reviewed the checkpoint diff and wrote `code-check/findings.md`: two steps passed, four had findings; all 47 cited decisions held, and one implementation choice needed an autonomy row. Each finding is answered here; unfinished evidence remains explicit.
 
