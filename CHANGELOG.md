@@ -50,7 +50,10 @@
   stays shut, `--no-open`), and elsewhere a band above the prompt offers it. `/reel` alone lists the videos by folder,
   this one first and then each above it (plans and quick videos, newest first), with how to make a new one. `s` plays faster (`reel-frames --speed`), the picture follows the pane's size as it
   plays, and late frames are passed over so the picture keeps up with the sound. A build in Claude Code starts the pane's
-  render in the background as it finishes, so the pane rarely waits for it. The marketplace entry names the pane's state contract
+  render in the background as it finishes, so the pane rarely waits for it. A pause, a seek or a rewind stops the
+  sound with the picture (it played on under the next play), a line says the video is starting until its first frame,
+  and a card shows where the video asks for it: a choice once the video reaches it, Send at the end or when asked for
+  with `n`. The marketplace entry names the pane's state contract
   (`types`); `plugin.spec` validates the plugin as installed and runs its tests (`scripts/test/plugin/`) when
   `claude` is on PATH.
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
