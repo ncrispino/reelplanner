@@ -20,8 +20,9 @@ const fake = join(bin, "codex");
 writeFileSync(fake, `#!${process.execPath}
 const fs = require('node:fs'); const readline = require('node:readline');
 const mode = process.env.MOCK_MODE || ''; const repo = process.env.MOCK_REPO;
+const listed = process.env.MOCK_THREADS ? JSON.parse(process.env.MOCK_THREADS) : null, readable = JSON.parse(process.env.MOCK_READ_THREADS || '[]');
 if (process.argv.includes('version')) { console.log(JSON.stringify({status:mode === 'daemon-stopped' ? 'stopped' : 'running',socketPath:process.env.MOCK_SOCKET})); process.exit(0); }
-const thread = (id, extra = {}) => ({ id, cwd: repo, source: mode === 'endpoint-checker' ? 'subAgent' : 'cli', status:{type:mode === 'endpoint-unloaded' ? 'notLoaded' : 'active'}, updatedAt: id === 'new-main' ? 500 : 100, historyMode: mode === 'legacy-api' ? 'legacy' : 'paginated', ...extra });
+const thread = (id, extra = {}) => ({ id, cwd: repo, source: mode === 'endpoint-checker' ? 'subAgent' : 'cli', status:{type:mode === 'endpoint-unloaded' ? 'notLoaded' : 'active'}, updatedAt: id === 'new-main' ? 500 : 100, historyMode: mode === 'legacy-api' ? 'legacy' : 'paginated', ...[...(listed || []), ...readable].find(t => t.id === id), ...extra });
 const turns = (n) => [{id:'turn-'+n,status:'completed',itemsView:'full',items:[{id:'user-'+n,type:'userMessage',content:[{type:'text',text:'visible user '+n}]},{id:'agent-'+n,type:'agentMessage',text:'visible answer '+n},{id:'tool-'+n,type:'commandExecution',command:'npm test',aggregatedOutput:'tests passed',status:'completed'},{id:'private-'+n,type:'reasoning',content:['private reasoning'],summary:[]}]}];
 readline.createInterface({ input: process.stdin }).on('line', line => {
  const m = JSON.parse(line); fs.appendFileSync(process.env.MOCK_TRACE, JSON.stringify({method:m.method,params:m.params})+'\\n');
@@ -32,8 +33,8 @@ readline.createInterface({ input: process.stdin }).on('line', line => {
  if (m.method === 'initialize') result = {};
  else if (m.method === 'thread/read') {
    if (mode === 'missing') { process.stdout.write(JSON.stringify({id:m.id,error:{code:-32000,message:'sensitive contents must not appear'}})+'\\n'); return; }
-   result = { thread:thread(mode === 'wrong-id' ? 'unrelated' : m.params.threadId,{ cwd:mode === 'wrong-repo' ? process.env.MOCK_OTHER : mode === 'missing-repo' ? undefined : repo, ...(mode === 'missing-id' ? {id:undefined} : {}), ...(m.params.includeTurns ? {turns:turns(1)} : {}) }) };
- } else if (m.method === 'thread/list') result = {data:m.params.cursor ? [thread('new-main')] : [thread('checker',{source:{subAgent:'review'},parentThreadId:'active',updatedAt:900}),thread('other',{cwd:process.env.MOCK_OTHER,updatedAt:999})],nextCursor:m.params.cursor ? null : 'next-list'};
+   result = { thread:{...thread(mode === 'wrong-id' ? 'unrelated' : m.params.threadId,{ cwd:mode === 'wrong-repo' ? process.env.MOCK_OTHER : mode === 'missing-repo' ? undefined : repo, ...(mode === 'missing-id' ? {id:undefined} : {}), ...(m.params.includeTurns ? {turns:turns(1)} : {}) }), ...JSON.parse(process.env.MOCK_READ_OVERRIDES || '{}')} };
+ } else if (m.method === 'thread/list') result = listed ? {data:listed,nextCursor:null} : {data:m.params.cursor ? [thread('new-main')] : [thread('checker',{source:{subAgent:'review'},parentThreadId:'active',updatedAt:900}),thread('other',{cwd:process.env.MOCK_OTHER,updatedAt:999})],nextCursor:m.params.cursor ? null : 'next-list'};
  else if (m.method === 'thread/turns/list') {
    if (mode === 'unsupported' || mode === 'legacy-api') { process.stdout.write(JSON.stringify({id:m.id,error:{code:-32601,message:'unsupported method'}})+'\\n'); return; }
    if (mode === 'page-failure' && m.params.cursor) { process.stdout.write(JSON.stringify({id:m.id,error:{code:-32000,message:'sensitive page error'}})+'\\n'); return; }
@@ -75,6 +76,73 @@ try {
   test("canonical repo symlinks match exact metadata", () => { const link = join(tmp, "repo-link"); symlinkSync(repo, link); assert.equal(codexSessionMetadata({ repo: link, env }).repo, realpathSync(repo)); });
   test("no active ID selects current paginated main; excludes newer checker and other repo across pages", () => { clear(); const s = codexSessionMetadata({ repo, env: { ...env, CODEX_THREAD_ID: "" } }); assert.equal(s.id, "new-main"); assert.equal(s.main, true); const listing = calls().filter(c => c.method === "thread/list"); assert.equal(listing.length, 2); assert.equal(listing[0].params.useStateDbOnly, true); });
   test("unsupported store with no active identity preserves newest eligible legacy main fallback", () => { const s = codexSessionMetadata({ repo, env: { ...env, CODEX_THREAD_ID: "", MOCK_MODE: "exit" } }); assert.equal(s.id, "legacy-main"); });
+  const rankingHome = join(tmp, "ranking-home"); mkdirSync(rankingHome);
+  const candidate = (id, updatedAt, extra = {}) => ({ id, cwd: repo, source: "cli", historyMode: "paginated", updatedAt, ...extra });
+  const rankFile = (id, date, cwd = repo, source = "cli") => {
+    const path = join(rankingHome, "sessions", `${id}.jsonl`); mkdirSync(join(path, ".."), { recursive: true });
+    writeFileSync(path, JSON.stringify({ type: "session_meta", payload: { id, cwd, source } }) + "\n" + JSON.stringify({ type: "response_item", payload: { role: "user", content: "synthetic ranking history" } }) + "\n");
+    utimesSync(path, date, date); return realpathSync(path);
+  };
+  const rankEnv = (threads, extra = {}) => ({ ...env, CODEX_HOME: rankingHome, CODEX_THREAD_ID: "", MOCK_MODE: "", MOCK_THREADS: JSON.stringify(threads), ...extra });
+  const rankTest = (name, fn) => test(name, () => { rmSync(join(rankingHome, "sessions"), { recursive: true, force: true }); clear(); fn(); });
+  rankTest("newer eligible legacy main beats available older API main; discovery reads metadata only", () => {
+    const path = rankFile("rank-legacy", 2000); const selected = codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", 1000)]) });
+    assert.equal(selected.id, "rank-legacy"); assert.equal(selected.path, path); assert.equal(selected.updatedAt, 2000);
+    assert(calls().every(c => ["initialize", "initialized", "thread/list"].includes(c.method)));
+  });
+  rankTest("newer API main beats older legacy main using the same seconds scale", () => {
+    rankFile("rank-legacy", 1000); const selected = codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", 2000)]) });
+    assert.equal(selected.id, "rank-api"); assert.equal(selected.updatedAt, 2000); assert.equal(selected.path, null);
+    assert(calls().filter(c => c.method === "thread/read").every(c => c.params.threadId === "rank-api" && c.params.includeTurns === false));
+  });
+  rankTest("equal valid timestamps retain API preference, including the Unix epoch", () => {
+    for (const date of [0, 2000]) {
+      rankFile("rank-legacy", date); assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", date)]) }).id, "rank-api");
+    }
+  });
+  rankTest("missing or invalid competing API time requires explicit ID without silent legacy fallback", () => {
+    rankFile("rank-legacy", 2000);
+    for (const date of [undefined, null, "not-a-time", -1]) {
+      assert.throws(() => codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", date)]) }), /timestamps.*explicit --thread/);
+    }
+  });
+  rankTest("a sole API identity or the same identity in both stores needs no relative timestamp", () => {
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", null)]) }).id, "rank-api");
+    rankFile("rank-api", 2000); assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", null)]) }).id, "rank-api");
+  });
+  rankTest("newer child/checker/other-repo records in either store cannot displace an eligible legacy main", () => {
+    rankFile("rank-legacy", 2000); rankFile("rank-child", 9999, repo, { subAgent: "review" }); rankFile("rank-other", 99999, other);
+    const threads = [candidate("rank-api", 1000), candidate("api-child", 99999, { parentThreadId: "rank-api" }), candidate("api-checker", 999999, { source: { subAgent: "review" } }), candidate("api-other", 9999999, { cwd: other })];
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv(threads) }).id, "rank-legacy");
+  });
+  rankTest("API-only, legacy-only, unavailable API and neither-source cases retain explicit outcomes", () => {
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", 2000)]) }).id, "rank-api");
+    assert.throws(() => codexSessionMetadata({ repo, env: rankEnv([]) }), /no eligible main/);
+    rankFile("rank-legacy", 2000);
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([]) }).id, "rank-legacy");
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([], { MOCK_MODE: "exit" }) }).id, "rank-legacy");
+  });
+  rankTest("explicit legacy/API IDs dominate newer competing sources and never fall back to another ID", () => {
+    rankFile("requested-legacy", 1000); rankFile("newer-legacy", 9999);
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", 99999)], { CODEX_THREAD_ID: "requested-legacy" }) }).id, "requested-legacy"); assert.equal(calls().length, 0);
+    assert.equal(codexSessionMetadata({ repo, env: rankEnv([candidate("requested-api", 1000)], { CODEX_THREAD_ID: "requested-api" }) }).id, "requested-api");
+    assert.throws(() => codexSessionSource({ repo, env: rankEnv([candidate("rank-api", 99999)], { CODEX_THREAD_ID: "absent", MOCK_MODE: "missing" }) }), /Codex conversation absent/);
+  });
+  rankTest("implicitly selected API metadata must still be main and match the canonical repo", () => {
+    rankFile("rank-legacy", 1000);
+    for (const override of [{ parentThreadId: "another-main" }, { source: { subAgent: "review" } }, { cwd: other }, { id: "different-thread" }]) {
+      assert.throws(() => codexSessionMetadata({ repo, env: rankEnv([candidate("rank-api", 2000)], { MOCK_READ_OVERRIDES: JSON.stringify(override) }) }), /Codex conversation/);
+    }
+  });
+  rankTest("no-ID export uses the globally newest identity; unavailable winner never becomes an older source", () => {
+    rankFile("rank-legacy", 2000);
+    const settings = rankEnv([candidate("rank-api", 1000)], { MOCK_READ_THREADS: JSON.stringify([candidate("rank-legacy", 2000)]) });
+    const output = join(tmp, "rank-export.jsonl"), selected = exportCodexSession({ repo, env: settings, output });
+    assert.equal(selected.id, "rank-legacy"); assert.equal(JSON.parse(readFileSync(output, "utf8").split("\n")[0]).payload.id, "rank-legacy");
+    assert(calls().filter(c => c.method === "thread/read" || c.method === "thread/turns/list").every(c => c.params.threadId === "rank-legacy"));
+    assert.throws(() => exportCodexSession({ repo, env: { ...settings, MOCK_MODE: "missing" }, output: join(tmp, "rank-missing.jsonl") }), /Codex conversation rank-legacy/);
+    assert(!existsSync(join(tmp, "rank-missing.jsonl")));
+  });
   test("requested absent thread never substitutes another saved main", () => { assert.throws(() => codexSessionSource({ repo, env: { ...env, CODEX_THREAD_ID: "absent", MOCK_MODE: "missing" } }), /Codex conversation absent.*external copy/); });
   test("unreadable active rollout and failed export never use another readable main", () => {
     const unreadable = rollout("unreadable.jsonl", "unreadable-thread", repo); chmodSync(unreadable, 0o000);

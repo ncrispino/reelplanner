@@ -20,11 +20,26 @@ const fallback = (id) => `Codex conversation ${id || "for this repo"} could not 
 function verified(meta, repo, id = null) {
   if (!meta || typeof meta.id !== "string" || !meta.id || (id && meta.id !== id)) throw new Error("missing or mismatched thread identity");
   if (typeof meta.cwd !== "string" || !canonical(meta.cwd) || canonical(meta.cwd) !== canonical(repo)) throw new Error("missing or mismatched repository metadata");
+  // The documented API uses Unix seconds; absent/invalid time is not evidence of age.
+  const time = typeof meta.updatedAt === "number" ? meta.updatedAt : meta.updatedAt == null && typeof meta.timestamp === "string" ? Date.parse(meta.timestamp) / 1000 : null;
   return { agent: "codex", id: meta.id, repo: canonical(repo), path: null, source: meta.source ?? null,
     parentThreadId: meta.parentThreadId || meta.parent_thread_id || null,
     main: !meta.parentThreadId && !meta.parent_thread_id && mainSources.has(meta.source),
-    historyMode: meta.historyMode || meta.history_mode || "legacy", updatedAt: Number(meta.updatedAt) || Date.parse(meta.timestamp || "") / 1000 || 0 };
+    historyMode: meta.historyMode || meta.history_mode || "legacy", updatedAt: Number.isFinite(time) && time >= 0 ? time : null };
 }
+
+function newestMain(candidates) {
+  if (!candidates.length) throw new Error("no eligible main conversation has matching repository metadata");
+  const ids = new Set(candidates.map((c) => c.id));
+  if (ids.size > 1 && candidates.some((c) => !Number.isFinite(c.updatedAt) || c.updatedAt < 0))
+    throw new Error("conversation timestamps are unavailable or invalid; select an explicit --thread ID");
+  return [...candidates].sort((a, b) => {
+    const before = Number.isFinite(a.updatedAt) ? a.updatedAt : -Infinity, after = Number.isFinite(b.updatedAt) ? b.updatedAt : -Infinity;
+    if (before !== after) return after - before;
+    return Number(Boolean(a.path)) - Number(Boolean(b.path)); // equal valid times retain API preference
+  })[0];
+}
+const apiMetadata = (meta) => ({ id: meta.id, cwd: meta.repo, source: meta.source, historyMode: meta.historyMode, updatedAt: meta.updatedAt, parentThreadId: meta.parentThreadId });
 
 /** Read only the bounded identity header. Conversation bodies never participate in discovery. */
 export function codexFileMetadata(path, { repo, session = null, env = process.env } = {}) {
@@ -88,9 +103,25 @@ function appHistory({ repo, env, session, history = false }) {
 export function codexSessionMetadata({ repo, env = process.env, session = null } = {}) {
   const id = requestedId(session, env), files = legacySources(repo, env, id);
   if (id && files.length) return files[0];
-  // A legacy candidate cannot outrank newer main conversations in the current history store.
-  try { const result = appHistory({ repo, env, session: id }); return verified(result.thread, repo, id); }
-  catch (e) { if (!id && files.length) return files[0]; throw new Error(`${fallback(id)}: ${e.message}`); }
+  if (id) {
+    try { const result = appHistory({ repo, env, session: id }); return verified(result.thread, repo, id); }
+    catch (e) { throw new Error(`${fallback(id)}: ${e.message}`); }
+  }
+  let current = [], unavailable;
+  try {
+    const result = appHistory({ repo, env, session: null });
+    if (!Array.isArray(result.threads)) throw new Error("malformed App Server conversation listing");
+    current = result.threads.map((thread) => verified(thread, repo)).filter((meta) => meta.main);
+  } catch (e) { unavailable = e; }
+  try {
+    // Rank metadata from both stores before reading any selected conversation history.
+    const selected = newestMain([...current, ...files]);
+    if (selected.path) return selected;
+    const result = appHistory({ repo, env, session: selected.id });
+    const meta = verified(result.thread, repo, selected.id);
+    if (!meta.main) throw new Error("selected conversation is no longer an eligible main session");
+    return meta;
+  } catch (e) { throw new Error(`${fallback(null)}: ${!current.length && !files.length && unavailable ? unavailable.message : e.message}`); }
 }
 
 /** Find a usable saved file, otherwise automatically export that same verified thread read-only. */
@@ -109,7 +140,7 @@ export function codexSessionSource({ repo, env = process.env, session = null, so
 
 /** Writes visible history and identity to a private external JSONL; returns its path, never its contents. */
 export function exportCodexSession({ repo, env = process.env, session = null, output = null } = {}) {
-  const id = requestedId(session, env);
+  const id = requestedId(session, env) || codexSessionMetadata({ repo, env }).id;
   let result; try { result = appHistory({ repo, env, session: id, history: true }); } catch (e) { throw new Error(`${fallback(id)}: ${e.message}`); }
   const meta = verified(result.thread, repo, id);
   if (!result.rows.some((row) => row.type === "item")) throw new Error(`${fallback(meta.id)}: no saved visible conversation or tool history`);
@@ -238,12 +269,13 @@ async function readAppHistory({ repo, session, history }) {
     let id = session;
     if (!id) {
       const candidates = await pages("thread/list", { limit: 100, sortKey: "updated_at", sortDirection: "desc", sourceKinds: ["cli", "vscode", "exec", "appServer"], useStateDbOnly: true });
-      const selected = candidates.filter((t) => { try { return verified(t, repo).main; } catch { return false; } }).sort((a, b) => b.updatedAt - a.updatedAt)[0];
-      if (!selected) throw new Error("no eligible main conversation has matching repository metadata"); id = selected.id;
+      const eligible = candidates.flatMap((t) => { try { const meta = verified(t, repo); return meta.main ? [meta] : []; } catch { return []; } });
+      if (!history) return { ok: true, threads: eligible.map(apiMetadata) };
+      id = newestMain(eligible).id;
     }
     const response = await call("thread/read", { threadId: id, includeTurns: false });
     const thread = response?.thread; const meta = verified(thread, repo, id);
-    if (!history) return { ok: true, thread: { id: meta.id, cwd: meta.repo, source: meta.source, historyMode: meta.historyMode, updatedAt: meta.updatedAt, parentThreadId: thread.parentThreadId || null } };
+    if (!history) return { ok: true, thread: apiMetadata(meta) };
     let turns;
     try { turns = await pages("thread/turns/list", { threadId: id, limit: 50, sortDirection: "asc", itemsView: "full" }); }
     catch (e) {

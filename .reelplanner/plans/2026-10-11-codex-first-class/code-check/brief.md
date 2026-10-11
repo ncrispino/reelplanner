@@ -34,9 +34,10 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f)
 
 ```
+b2e2c9f Preserve ownership for agent sessions without a stable ID
 76859a2 Enforce question ownership before answering recovered work
 1796951 Recover stopped legacy sessions and record completed CLI lifecycle
 7c89555 Isolate review bundles and finish source-only Codex rebuilds
@@ -137,7 +138,7 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 |---|---|---|---|---|---|
 | A1 | 1 | Preserve “Decisions in force” in the guide's fold label [visible] | Relaxing the source-coverage check | Preparing the plan exposed an omitted source heading; the existing warning text had hidden the bug in old fixtures. This was fixed before approval. | `templates/guide/guide.js`, `scripts/test/guide.spec.mjs`; `preparation.md` records the passed 52-spec and 111-check runs. |
 | A2 | 3 | Keep an explicit session connection in the ignored inbox's `.connection.json` [visible] | Keeping it only in a server process's memory | A reused or restarted local server should retain the connection the user explicitly selected, while validating it before delivery. | `scripts/review.mjs`, `scripts/lib/inbox.mjs`; connection and stale-recipient specs. |
-| A3 | 3 | Use a renewable five-minute session ownership lease, with explicit renewal/progress commands [close] | Treating the exited waiter process as the worker's lifetime | A waiter exits as soon as it hands work to the agent; expiry must reflect the real owner's activity and must never override a live headless process. | `scripts/lib/inbox.mjs`, `scripts/inbox.mjs`; live-owner, expiry and renewal specs. |
+| A3 | 3 | Use a renewable five-minute session ownership lease, with explicit renewal/progress commands and a returned owner handle for callers without an agent session ID [close] | Treating the exited waiter process as the worker's lifetime | A waiter exits as soon as it hands work to the agent; expiry must reflect the real owner's activity and must never override a live headless process. | `scripts/lib/inbox.mjs`, `scripts/inbox.mjs`; live-owner, expiry and renewal specs. |
 | A4 | 2 | Keep retry phases and the original Git baseline in one persistent ignored progress record [close] | Recreating progress from the latest claim or treating a changed HEAD alone as proof of completion | Recovery must distinguish edited, committed and completed work after a crash, without repeating edits or accepting an unrelated commit. | `scripts/lib/inbox.mjs`; stopped-run recovery and completion-guard specs. |
 | A5 | 4 | Provide `--session-source` for a verified owner copy, and export identity-first JSONL [visible] | Treating an arbitrary transcript path as the active conversation, or exporting an unlabelled conversation | The saved source must identify the requested session and project; JSONL remains readable by the existing sequence-source tools and stays outside Git. | `scripts/explain.mjs`, `scripts/session.mjs`, `scripts/lib/codex-session.mjs`; active-source and export specs. |
 | A6 | 5 | List current and ancestor videos with their owning repo, and keep each review page within one owner [visible] | Combining different repos into a page whose single inbox could receive the wrong review | A nested Git repo must retain its own session and inbox even when an ancestor has a library. Explicit video paths route to their owner; mixed-owner bundles fail before opening. | `scripts/lib/review-projects.mjs`, `scripts/lib/env.mjs`, `scripts/review.mjs`; nested-repo discovery and routing checks. |
@@ -149,22 +150,24 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (from the repository root). The files it touches:
 
 ```
 .agents/plugins/marketplace.json                   |   20 +
  .reelplanner/glossary.md                           |    2 +
- .../code-check/brief.md                            |  256 ++
+ .../code-check/brief.md                            |  263 ++
  .../code-check/checkpoint-0d051e7/brief.md         |  203 ++
  .../code-check/checkpoint-0d051e7/findings.md      |   61 +
  .../code-check/checkpoint-0fef69b/brief.md         |  220 ++
  .../code-check/checkpoint-0fef69b/findings.md      |   61 +
  .../code-check/checkpoint-1796951/brief.md         |  256 ++
  .../code-check/checkpoint-1796951/findings.md      |   61 +
+ .../code-check/checkpoint-76859a2/brief.md         |  263 ++
+ .../code-check/checkpoint-76859a2/findings.md      |   61 +
  .../code-check/checkpoint-e481b8c/brief.md         |  228 ++
  .../code-check/checkpoint-e481b8c/findings.md      |   61 +
  .../code-check/findings.md                         |   61 +
- .../plans/2026-10-11-codex-first-class/plan.md     |   25 +-
+ .../plans/2026-10-11-codex-first-class/plan.md     |   35 +-
  .../runs/audit-checkpoint.txt                      |    3 +
  .../runs/cli-live-question.txt                     |    8 +
  .../runs/completion-recovery.txt                   |    8 +
@@ -175,6 +178,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  .../runs/full-generated-removals.txt               |    6 +
  .../runs/full-handoff.txt                          |    7 +
  .../runs/full-legacy-recovery.txt                  |   24 +
+ .../runs/full-owner-handle.txt                     |   27 +
  .../runs/full-question-ownership.txt               |   25 +
  .../runs/full-touched.txt                          |   27 +
  .../runs/ghostty-audio-position.txt                |    3 +
@@ -182,10 +186,12 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  .../runs/headless-video-served.txt                 |  177 ++
  .../runs/legacy-owner-recovery.txt                 |    5 +
  .../runs/native-plugin-install.txt                 |   58 +
+ .../runs/native-plugin-owner-handle.txt            |   58 +
  .../runs/native-plugin-source-only.txt             |   58 +
  .../runs/npm-test-audio.txt                        |   69 +
  .../runs/npm-test-final-cli.txt                    |   69 +
  .../runs/npm-test-final-guard.txt                  |   69 +
+ .../runs/npm-test-owner-handle.txt                 |   69 +
  .../runs/npm-test-post-review.txt                  |   69 +
  .../runs/npm-test-question-ownership.txt           |   69 +
  .../runs/npm-test-source-doc-and-isolation.txt     |   69 +
@@ -196,7 +202,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  .../runs/stops-checkpoint.txt                      |   22 +
  .../runs/terminal-lifecycle.txt                    | 2577 ++++++++++++++++++++
  .../runs/unclaimed-completion.txt                  |    8 +
- .../2026-10-11-codex-first-class/walkthrough.md    |  484 ++++
+ .../2026-10-11-codex-first-class/walkthrough.md    |  486 ++++
  .reelplanner/spec.md                               |   12 +-
  .reelplanner/system.json                           |    8 +-
  AGENTS.md                                          |    8 +-
@@ -213,6 +219,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  .../headless-video-source-only.json                |  175 ++
  eval/agents/codex-2026-10-11/headless-video.md     |   21 +
  eval/agents/codex-2026-10-11/lifecycle-final.json  |  938 +++++++
+ .../native-install-owner-handle.json               |   16 +
  .../native-install-source-only.json                |   16 +
  .../codex-2026-10-11/queue-active-summary.json     |   22 +
  package-lock.json                                  |    3 +-
@@ -225,14 +232,14 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  packages/player/test/working.spec.mjs              |    6 +
  plugin.json                                        |   24 +
  scripts/explain.mjs                                |   11 +-
- scripts/inbox.mjs                                  |   29 +-
+ scripts/inbox.mjs                                  |   40 +-
  scripts/lib/agents.mjs                             |  142 +-
  scripts/lib/codex-session.mjs                      |  273 +++
  scripts/lib/env.mjs                                |   36 +-
  scripts/lib/explainer.mjs                          |   19 +-
  scripts/lib/fresh-eyes.mjs                         |   14 +-
  scripts/lib/http-file.mjs                          |   45 +
- scripts/lib/inbox.mjs                              |  432 +++-
+ scripts/lib/inbox.mjs                              |  434 +++-
  scripts/lib/presentation.mjs                       |   56 +
  scripts/lib/review-projects.mjs                    |   29 +
  scripts/lib/setup-check.mjs                        |   38 +
@@ -242,7 +249,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  scripts/session.mjs                                |   31 +
  scripts/setup.sh                                   |    5 +
  scripts/test/codex-install.spec.mjs                |  105 +
- scripts/test/delivery.spec.mjs                     |  369 +++
+ scripts/test/delivery.spec.mjs                     |  431 ++++
  scripts/test/explainer.spec.mjs                    |   15 +-
  scripts/test/fresh-eyes.spec.mjs                   |   37 +
  scripts/test/harnesses.spec.mjs                    |  106 +
@@ -253,11 +260,11 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..76859a2` (
  scripts/test/package.spec.mjs                      |   19 +-
  scripts/test/presentation.spec.mjs                 |   50 +
  scripts/test/review-projects.spec.mjs              |  104 +
- scripts/test/review-status.spec.mjs                |   53 +-
+ scripts/test/review-status.spec.mjs                |   59 +-
  scripts/test/run.mjs                               |    2 +-
  scripts/test/session-export.spec.mjs               |  144 ++
  scripts/test/version.spec.mjs                      |   23 +-
- skills/plan-to-video/SKILL.md                      |   46 +-
- skills/plan-to-video/references/harnesses.md       |  140 ++
- 107 files changed, 10165 insertions(+), 306 deletions(-)
+ skills/plan-to-video/SKILL.md                      |   50 +-
+ skills/plan-to-video/references/harnesses.md       |  148 ++
+ 113 files changed, 10767 insertions(+), 310 deletions(-)
 ```
