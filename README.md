@@ -7,7 +7,7 @@ You answer on the video, and the agent updates the plan.
 
 <img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
-**Works with:** Claude Code (tested) · Codex ([features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
+**Works with:** Claude Code (tested) · Codex CLI ([features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
 (untested: [what each needs](./docs/agents.md))
 
 ## Before you try
@@ -150,6 +150,7 @@ Real projects built with reelplanner, each with its videos, reviews and session:
 ## Why, and how it compares
 
 Agents write plans faster than people can read them. A long plan gets skimmed, and the choices in it go unseen.
+The original name, reelplanning, sounded like “real planning”: watching a plan makes long proposals easier to understand.
 
 > "The output format I am most bullish on is fully custom / bespoke explainer videos generated on any arbitrary
 > topic." — Andrej Karpathy, [on X](https://x.com/karpathy/status/2105819303471976479), October 2026

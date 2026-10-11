@@ -4,9 +4,9 @@
 
 **Started from:** `652894a6ddb8cf7303bd0cf709afa27f27b6b399` (plan approval recorded).
 
-**Commits:** `0d051e7` — native integration and terminal review; `0fef69b` — checked-work completion, expired-handler recovery and portable identity. Final lifecycle validation and acceptance are pending.
+**Commits:** `0d051e7` — native integration and terminal review; `0fef69b` — checked-work completion, expired-handler recovery and portable identity; `e481b8c` — close unclaimed/legacy completion bypasses. Final lifecycle validation and acceptance are pending.
 
-The approved scope is local support plus portable remote copies (D-313). Focused runtime trials and the fast suite have passed; complete Codex CLI/app lifecycle proof and final walkthrough review remain open. This is implementation text for the Built side, not a declaration of acceptance.
+The approved scope is local support plus portable remote copies (D-313). On 2026-10-11 the owner narrowed this change to CLI support; desktop-app validation is outside acceptance. Focused runtime trials and the fast suite have passed; complete Codex CLI lifecycle proof and final walkthrough review remain open. This is implementation text for the Built side, not a declaration of acceptance.
 
 ## Autonomous choices
 
@@ -21,7 +21,6 @@ The approved scope is local support plus portable remote copies (D-313). Focused
 | A7 | 3 | Bind a connection to a verified running endpoint, with explicit `--session-endpoint` when needed [visible] | Treating saved identity plus a successful bare queue command as live delivery | A real closed-thread queue returned success without acting. Read-only endpoint verification must confirm that exact project thread is loaded; delivery then targets that endpoint. | `scripts/lib/codex-session.mjs`, `scripts/lib/agents.mjs`, `scripts/lib/inbox.mjs`, `scripts/review.mjs`; actual App Server turn and endpoint regressions. |
 | A8 | 4 | Declare `ws` as a direct dependency for the documented Unix WebSocket transport [close] | Hand-writing WebSocket framing or relying on an undeclared transitive dependency | The daemon socket speaks WebSocket, while the CLI proxy copies raw bytes. A real read-only probe exposed the difference; Node's native WebSocket cannot connect to a Unix socket. | `package.json`, `package-lock.json`, `scripts/lib/codex-session.mjs`; real Unix transport regression and daemon verification. |
 | A9 | 5 | Serve single byte ranges and return the complete file for unsupported multipart ranges [close] | Implementing multipart responses for the local review server | Browser media seeking uses single ranges. The shared response helper supplies exact lengths and partial responses without adding a multipart encoder; unsupported requests still get a valid complete representation. | `scripts/lib/http-file.mjs`, `scripts/lib/static-server.mjs`, `scripts/review.mjs`; `scripts/test/media-seek.spec.mjs`. |
-
 | A10 | 4 | Bound a history export to 64 MiB, 1,000 pages and 30 seconds, with an external-copy fallback [close] | Reading an unbounded conversation through the running service | History can contain large tool output. The limits bound memory, pagination and service waits; an oversized or unavailable history fails explicitly and can use a verified owner copy outside Git. The independent code check identified that these existing implementation limits needed to be recorded. | `scripts/lib/codex-session.mjs`; `scripts/test/session-export.spec.mjs`; `explain --session-source` verifies the exact session and project. |
 | A11 | 5 | Preserve a provided viewer in downloaded reviews, with the same bounded 1.5-second identity wait as hosted Send [visible] | Keeping a known identity only on hosted submissions | The portable path must retain the provided reviewer together with answers and comments. A delayed identity may resolve before download, while an absent or hanging capability still permits export with the existing Git fallback at intake. No new anonymous identity is invented. | `packages/player/reelplanner-player.js`; `packages/player/test/handoff.spec.mjs`; disconnected download/intake trial. |
 
@@ -320,7 +319,7 @@ A launcher success does not prove review parity. Local Send is direct; D-313's d
 
 ### Step 6 — Prove the whole lifecycle and state support accurately
 
-**You can now:** distinguish working focused Codex trials from the lifecycle and app behavior still awaiting proof.
+**You can now:** distinguish validated Codex CLI features from the lifecycle acceptance still in progress.
 
 **Commits:** `0d051e7`.
 
@@ -333,7 +332,7 @@ flow: Evidence before parity
 checkpoint -> focused runtime trials: record
 checkpoint -> fast and touched full specs: validate
 implementation -> fresh independent code check: answer findings
-scratch lifecycle -> CLI and app handoffs: demonstrate
+scratch lifecycle -> CLI handoff and terminal review: demonstrate
 walkthrough -> owner review and flagged fix: finish
 passing evidence -> support table and system map: update
 ```
@@ -346,7 +345,7 @@ passing evidence -> support table and system map: update
 - **What happens:** 59 specs run four at a time, including shared Claude regression paths and the new Codex, ownership, session and seek contracts. The owner-record fixture guard passed according to the checkpoint record.
 - **Output:** `runs/npm-test-audio.txt`, the complete saved stdout and final result.
 - **Edge cases:** a fast run deliberately skips the real native plugin-install branch; model-backed acceptance is separate. A green mock transport case is not an app trial.
-- **Predict:** can the support table say fully tested after these 59 specs? The plan requires a real narrated scratch lifecycle plus both live client handoffs and walkthrough fixes.
+- **Predict:** can the support table say fully tested after these 59 specs? The plan requires a real narrated scratch lifecycle plus the real CLI handoff and walkthrough fixes. The owner explicitly excluded desktop-app support on 2026-10-11.
 
 #### Why it works this way
 
@@ -370,7 +369,7 @@ Codex app, complete local lifecycle, Linux, Windows, WSL and cloud remain unveri
 
 **Progress:** the actual scratch plan is narrated, built, independently reviewed, approved through Ghostty, recorded and revised. The system spec, component file map and glossary now describe the implemented shared behavior.
 
-**Not done:** finish the scratch implementation, code check, accepted/flagged walkthrough and final fix; app proof, final owner walkthrough review and post-acceptance system video refresh.
+**Not done:** finish the scratch implementation, code check, accepted/flagged walkthrough and final fix; final owner walkthrough review and post-acceptance system video refresh.
 
 ## Categories of change
 
@@ -432,7 +431,7 @@ All 47 IDs cited in the approved plan remain accounted for below. “Unchanged�
 | D-249 | Commit explainer text and pins, never external transcript text. | `scripts/lib/explainer.mjs`, `scripts/lib/codex-session.mjs`, `scripts/session.mjs` (step 4). |
 | D-250 | Explain arbitrary sources using story/guide principles rather than a fixed source-kind story. | Skill “An explainer”, `scripts/lib/explainer.mjs`; Codex changes source discovery only. |
 | D-303 | Installation changes require real working commands on-screen. | `scripts/test/codex-install.spec.mjs` full install case, skill implementation step 6; saved final scene pending. |
-| D-304 | Historical “real planning” explanation refers to old name; D-312 renamed the product. Do not silently restore the old name or call its old pun freshly proved. | README, `.reelplanner/decisions.json` D-304/D-312; unchanged naming history. |
+| D-304 | README restores the required historical “real planning” explanation for the former name; D-312 keeps reelplanner as the current product name. | README, `.reelplanner/decisions.json` D-304/D-312; unchanged naming history. |
 | D-305 | No voice files/renders committed. Its slimmed-history publication proposal was replaced in part by D-310. | `.gitignore`, `scripts/release/make-public.mjs`, D-310 ledger note; no publication/history rewrite here. |
 | D-306 | Owner answers bind; accepted calls are history raised when their lines change; folding needs owner approval. | `scripts/lib/ledger.mjs`, `scripts/lib/call-lines.mjs`, `scripts/reel.mjs` (`fold`); unchanged. |
 | D-309 | Only already accepted walkthroughs are settled history. This unfinished one still faces every rule. | `scripts/reel.mjs` (`audit`); audit/final acceptance pending. |
@@ -456,15 +455,16 @@ The fresh independent checker reviewed the checkpoint diff and wrote `code-check
 - **Step 2:** Fixed the unrelated-commit acceptance bug and the second check's unclaimed-review bypass. Git completion now requires a claim and instrumented baseline/check/commit evidence even when no progress was present. Legacy missing evidence fails closed; a new baseline plus newly checked work is explicit recovery. Full delivery/loop passed 13 + 96 checks. Runs: `runs/unclaimed-completion.txt`. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
 - **Step 3:** Fixed stranded expired handlers. A new session atomically adopts expired ownership at every saved phase, preserving baseline and progress; live leases and headless processes stay protected. Full delivery regressions cover default no-headless recovery and concurrent adoption. Runs: `runs/completion-recovery.txt`.
 - **Step 5:** The real Ghostty Ask, answer display, choice, comment and Send now have saved proof. The disconnected download/intake trial now also passes with answers, comments and any provided identity preserved. Walkthrough controls and changed-scenes are still being exercised, so this finding remains open.
-- **Step 6:** System spec/map/glossary have been updated. The real scratch lifecycle has reached approved plan revision; complete implementation, walkthrough/fix and app evidence are still pending, so this finding remains open.
+- **Step 6:** System spec/map/glossary have been updated. The real scratch lifecycle has reached approved plan revision; complete walkthrough/fix evidence is still pending; the owner excluded desktop-app support from this change, so this finding remains open.
 - **`scripts/lib/codex-session.mjs`:** A10 records the existing export ceilings and verified external-copy fallback. No private source text is added to Git.
+- **D-304:** The latest checker found the README had omitted the owner's historical “real planning” explanation even before this branch. README now explains the former reelplanning name under “Why, and how it compares”, while retaining the current reelplanner name required by D-312. No owner ledger entry changed.
 
 A fresh final check must review the corrected committed diff and remaining runtime evidence before acceptance.
 
 ## Not done
 
 - **Complete local acceptance:** the real small project has not yet demonstrated native skill invocation, narrated plan/revision, fresh checks, implementation, independent code check, accepted and flagged walkthrough choices, fix and final commit.
-- **Live clients:** the owner-confirmed Codex CLI in iTerm2 adopted and answered a saved question through its verified active thread; it deliberately polled, so automatic wake is not claimed. Scratch Ghostty plan Send was adopted and recorded. A separate Codex app handoff remains unverified.
+- **Live clients:** the owner-confirmed Codex CLI in iTerm2 adopted and answered a saved question through its verified active thread; it deliberately polled, so automatic wake is not claimed. Scratch Ghostty plan Send was adopted and recorded. The owner explicitly excluded desktop-app support from this change; that handoff remains unverified outside acceptance.
 - **Presentation and remote scope:** Ghostty plan choices, comments, Ask and Send, occupied-port recovery, and disconnected export/intake are proved. Finish walkthrough Accept/Flag and changed-scenes. Hosted automatic service remains outside D-313's scope.
 - **Evidence closure:** save exact native install and private-export command outcomes without transcript text. Full touched-spec and final fast output are saved; the last guard change additionally passed full delivery/loop (13 + 96 checks).
 - **Final check and walkthrough:** fresh code-check findings, their answers, `reel check --base`, `reel audit`, stops, guide validation, fresh script/frame/video checks, walkthrough build and owner review are pending. Checkpoint commit `0d051e7` is an implementation checkpoint, not acceptance.

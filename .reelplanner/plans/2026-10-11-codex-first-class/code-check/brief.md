@@ -34,9 +34,10 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..e481b8c)
 
 ```
+e481b8c Require checked evidence for every Git review completion
 0fef69b Tie review completion to checked work and preserve portable identity
 0d051e7 Add native Codex integration and shared terminal review
 ```
@@ -144,12 +145,16 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..e481b8c` (from the repository root). The files it touches:
 
 ```
 .agents/plugins/marketplace.json                   |  20 +
  .reelplanner/glossary.md                           |   2 +
- .../code-check/brief.md                            | 203 ++++++
+ .../code-check/brief.md                            | 220 ++++++
+ .../code-check/checkpoint-0d051e7/brief.md         | 203 ++++++
+ .../code-check/checkpoint-0d051e7/findings.md      |  61 ++
+ .../code-check/checkpoint-0fef69b/brief.md         | 220 ++++++
+ .../code-check/checkpoint-0fef69b/findings.md      |  61 ++
  .../code-check/findings.md                         |  61 ++
  .../runs/completion-recovery.txt                   |   8 +
  .../runs/corrected-contracts.txt                   |   9 +
@@ -158,17 +163,20 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (
  .../runs/ghostty-audio-position.txt                |   3 +
  .../runs/headless-real.txt                         |  27 +
  .../runs/npm-test-audio.txt                        |  69 ++
+ .../runs/npm-test-final-guard.txt                  |  69 ++
  .../runs/npm-test-post-review.txt                  |  69 ++
+ .../runs/occupied-port.txt                         |   7 +
  .../runs/portable-review.txt                       |  31 +
- .../runs/terminal-lifecycle.txt                    | 792 +++++++++++++++++++++
- .../2026-10-11-codex-first-class/walkthrough.md    | 474 ++++++++++++
+ .../runs/terminal-lifecycle.txt                    | 791 +++++++++++++++++++++
+ .../runs/unclaimed-completion.txt                  |   8 +
+ .../2026-10-11-codex-first-class/walkthrough.md    | 476 +++++++++++++
  .reelplanner/spec.md                               |  12 +-
  .reelplanner/system.json                           |   8 +-
  AGENTS.md                                          |   8 +-
  README.md                                          |  34 +-
- docs/agents.md                                     | 129 ++--
+ docs/agents.md                                     | 128 ++--
  docs/reference.md                                  |  46 +-
- docs/terminal-review.md                            |  80 +++
+ docs/terminal-review.md                            |  82 +++
  .../agents/codex-2026-10-11/cli-live-question.json |  24 +
  eval/agents/codex-2026-10-11/ghostty-trial.json    |  27 +
  .../agents/codex-2026-10-11/headless-commands.json | 360 ++++++++++
@@ -190,7 +198,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (
  scripts/lib/env.mjs                                |  36 +-
  scripts/lib/explainer.mjs                          |  19 +-
  scripts/lib/http-file.mjs                          |  45 ++
- scripts/lib/inbox.mjs                              | 378 +++++++++-
+ scripts/lib/inbox.mjs                              | 388 +++++++++-
  scripts/lib/presentation.mjs                       |  56 ++
  scripts/lib/review-projects.mjs                    |  29 +
  scripts/lib/setup-check.mjs                        |  38 +
@@ -200,7 +208,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (
  scripts/session.mjs                                |  31 +
  scripts/setup.sh                                   |   5 +
  scripts/test/codex-install.spec.mjs                | 105 +++
- scripts/test/delivery.spec.mjs                     | 241 +++++++
+ scripts/test/delivery.spec.mjs                     | 268 +++++++
  scripts/test/explainer.spec.mjs                    |  15 +-
  scripts/test/harnesses.spec.mjs                    | 106 +++
  scripts/test/init.spec.mjs                         |  12 +-
@@ -216,5 +224,5 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..0fef69b` (
  scripts/test/version.spec.mjs                      |  23 +-
  skills/plan-to-video/SKILL.md                      |  42 +-
  skills/plan-to-video/references/harnesses.md       | 140 ++++
- 69 files changed, 4934 insertions(+), 278 deletions(-)
+ 76 files changed, 5619 insertions(+), 278 deletions(-)
 ```

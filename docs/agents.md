@@ -10,8 +10,8 @@ The other agents are untested.
 | Agent | Status | What it needs from you |
 |---|---|---|
 | Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
-| Codex CLI (0.162.1) | Native plugin installation, real headless commit/failure/retry, and read-only conversation export validated on macOS. Full lifecycle and client checks are in progress. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
-| Codex app | Uses the shared local player and inbox. App-specific live delivery and workspace behavior still require separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
+| Codex CLI (0.162.1) | Native plugin installation, real headless commit/failure/retry, and read-only conversation export validated on macOS. Full CLI lifecycle checks are in progress. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
+| Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
 | Cursor (IDE; CLI `agent`, formerly `cursor-agent`) | Untested. | Gets the skill through `npx skills`' link in `~/.cursor/skills`; has subagents and can ask you questions. |
@@ -122,7 +122,7 @@ supported terminals. Ghostty is the current hands-on test target.
 The approved implementation plan is
 [Codex as a first-class reelplanner agent](../.reelplanner/plans/2026-10-11-codex-first-class/plan.md).
 Its [walkthrough](../.reelplanner/plans/2026-10-11-codex-first-class/walkthrough.md) holds validation runs.
-As of this implementation pass:
+The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support remains unverified and is outside acceptance. As of this implementation pass:
 
 - A packed plugin installed, enabled and loaded its skill through the actual CLI in an isolated `CODEX_HOME`.
 - A real headless review created one intake record and commit. An injected scratch signing failure left

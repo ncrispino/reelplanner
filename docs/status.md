@@ -32,8 +32,7 @@ Done:
   ([its pages](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/)): an interactive site from an empty
   folder through four plans, seven videos, each reviewed, with the project, the reviews and the session. The kit for
   it is [`eval/case-studies/`](../eval/case-studies/).
-- **Codex's flags and commands are checked** against codex-cli 0.160.0's own help and a run of its sandbox
-  with no model ([agents](./agents.md#codex)).
+- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. Full narrated lifecycle acceptance is in progress ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change.
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 
