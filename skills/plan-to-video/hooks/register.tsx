@@ -655,71 +655,6 @@ async function send($: EngineInterface, v: Video, verdict: 'approve' | 'changes'
   $.ui.toast('Review sent to Claude.')
 }
 
-// --- full screen: Claude Code's other layout ------------------------------------------------------
-
-/** What the pane hands itself across `/tui`, which restarts Claude Code: $.state is the process's, $.store stays. */
-type Handoff = {
-  at: number
-  open: NonNullable<ReelplannerOpen>
-  t?: number
-  big: boolean
-  answers: Record<string, ReelplannerAnswer>
-  verdicts: Record<string, ReelplannerVerdict>
-  notes: Record<string, string>
-  comments: Record<string, ReelplannerComment[]>
-  sent: Record<string, ReelplannerSent>
-  onlyChanges: Record<string, boolean>
-}
-
-/**
- * t: the video full screen, or back. The docked pane goes no wider than about half the terminal; the classic layout
- * (`/tui default`) seats the pane above the prompt across the whole terminal, and z there gives it every row but the
- * prompt's. Switching restarts Claude Code, which resumes the conversation; the pane comes back where it was, the
- * review so far with it.
- */
-async function switchLayout($: EngineInterface, toDock: boolean) {
-  const o = await read($, open)
-  if (!o) return
-  const pb = await read($, playback)
-  await stopPlayback($)
-  const handoff: Handoff = {
-    at: await $.clock.now(),
-    open: o,
-    ...(pb ? { t: pb.t } : {}),
-    big: !toDock,
-    answers: await read($, answers),
-    verdicts: await read($, verdicts),
-    notes: await read($, notes),
-    comments: await read($, comments),
-    sent: await read($, sent),
-    onlyChanges: await read($, onlyChanges),
-  }
-  await $.store.set('handoff', handoff)
-  await $.command.run({ command: 'tui', args: toDock ? 'fullscreen' : 'default' })
-}
-
-/** After `/tui` restarted Claude Code: the review and the pane as they were, if the switch was just now. */
-async function resumeHandoff($: EngineInterface) {
-  const h = (await $.store.get('handoff')) as Handoff | undefined
-  if (!h) return
-  await $.store.delete('handoff')
-  // Claude Code may first ask why the fullscreen layout is being left (a survey; Esc skips it): ten minutes
-  if ((await $.clock.now()) - h.at > 600_000) return
-  await update($, answers, a => ({ ...h.answers, ...a }))
-  await update($, verdicts, a => ({ ...h.verdicts, ...a }))
-  await update($, notes, a => ({ ...h.notes, ...a }))
-  await update($, comments, a => ({ ...h.comments, ...a }))
-  await update($, sent, a => ({ ...h.sent, ...a }))
-  await update($, onlyChanges, a => ({ ...h.onlyChanges, ...a }))
-  await update($, theater, () => h.big)
-  const root = await $.session.root()
-  const map = await loadMap($, videoOf(root, h.open).dir)
-  // back on the stop it was at, from the moment it was at (a still at a choice plays its stretch again)
-  const s = map ? stretch(map, h.open.which, h.open.stop) : null
-  const from = s && h.t !== undefined && h.t > s.from && h.t < s.to - 0.2 ? h.t : undefined
-  $.clock.after(1500, () => void openPane($, { slug: h.open.slug, which: h.open.which, dir: h.open.dir, stop: h.open.stop, from }))
-}
-
 // --- the full player ------------------------------------------------------------------------------
 
 async function openPlayer($: EngineInterface, v: Video) {
@@ -826,7 +761,6 @@ export const register: Register = on => {
       description: "Browse this repo's reelplanner videos, or open one in a pane",
       argumentHint: '[plan | video-dir]',
     })
-    void resumeHandoff($).catch(() => undefined)
     return next(e)
   })
 
@@ -1408,11 +1342,6 @@ export const register: Register = on => {
                 {big ? 'Smaller' : 'Bigger'}
               </Button>
             )}
-            {e.surface === 'terminal' && (
-              <Button key="layout" plain hotkey="t" onPress={() => switchLayout($, e.props.placement === 'inline')}>
-                {e.props.placement === 'dock' ? 'Full screen' : 'Beside the chat'}
-              </Button>
-            )}
           </Box>
           <Text dimColor>
             {clock(t)} / {clock(total)}
@@ -1537,14 +1466,12 @@ export const register: Register = on => {
         </Box>
         {stage}
         {big ? dim(`Your review: ${count(log.length, 'item')} · z shows it again`) : review}
-        {big && terminal
+        {/* the whole terminal is Claude Code's classic layout; /tui would switch every session on this machine to it,
+            so the pane names the one-session way instead of switching */}
+        {big && terminal && e.props.placement === 'dock'
           ? dim(
-              e.props.placement === 'dock'
-                ? 'The pane beside the conversation goes no wider than this. t: full screen, which switches Claude ' +
-                    'Code to its classic layout (/tui default): it restarts, picks up this conversation, and the ' +
-                    'video comes back across the whole terminal, where it was. If Claude Code asks why you are ' +
-                    'leaving its fullscreen layout, Esc skips the question.'
-                : 't: back beside the conversation, Claude Code\'s fullscreen layout again (/tui fullscreen).',
+              'The pane beside the conversation goes no wider than this. For the whole terminal, start Claude Code ' +
+                'with CLAUDE_CODE_NO_FLICKER=0 claude: its classic layout, for that session only.',
             )
           : null}
         {big ? null : hints}
