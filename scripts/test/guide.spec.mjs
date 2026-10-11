@@ -306,6 +306,19 @@ try {
   if (chromium) {
     const c = run("guide.mjs", vd, "--check", "--no-thumbs");
     ok("guide --check: passes on a guide made from its sources", c.code === 0 && /every heading and paragraph of plan\.md in the page/.test(c.out) && /each opens its layer, each by a visible control/.test(c.out), c.out);
+    // A missing-step warning used to supply the source heading by accident. With every citation assigned,
+    // the guide still needs to preserve the heading itself, without relying on a warning's text.
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      try {
+        writeFileSync(planPath, before.replace("**D-002** Plain words.", "**D-002** Plain words. (step 1)"));
+        const assigned = run("guide.mjs", pd, "--check", "--no-thumbs");
+        ok("guide --check: preserves Decisions in force when every citation names its step", assigned.code === 0 && /every heading and paragraph of plan\.md in the page/.test(assigned.out) && !/D-002: no step/.test(assigned.out), assigned.out);
+      } finally {
+        writeFileSync(planPath, before);
+        run("guide.mjs", pd, "--no-thumbs");
+      }
+    }
     // the page reads in the order a person asks, in plain words: no stat line first, the questions as its headings
     { const b = await chromium.launch(launchOpts()); try { const pg = await b.newPage({ viewport: { width: 900, height: 900 } }); await pg.route(/^(https?|wss?):/, (r) => r.abort());
       await pg.goto(pathToFileURL(join(gd, "index.html")).href); await pg.waitForTimeout(150);

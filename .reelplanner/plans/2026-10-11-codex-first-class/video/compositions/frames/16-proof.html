@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="16-proof"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f16-proof-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f16-proof-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f16-proof-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f16-proof-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f16-proof-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f16-proof-small{font-size:36px;padding:24px 20px}
+.f16-proof-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f16-proof-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f16-proof-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f16-proof-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f16-proof-table{position:absolute;left:90px;top:285px;width:1740px}
+.f16-proof-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f16-proof-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f16-proof-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f16-proof-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f16-proof-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f16-proof-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f16-proof-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f16-proof-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f16-proof-mini-command code{font:inherit}
+
+</style>
+<div id="f16-proof-root" data-composition-id="16-proof" data-width="1920" data-height="1080" data-duration="26.556" data-band="bottom"><div class="clip f16-proof-ground" id="f16-proof-ground" data-start="0" data-duration="26.556" data-track-index="0"></div><div class="f16-proof-status">Proposed</div><h1 class="f16-proof-title">Step 6 · Evidence earns the support claim</h1><div class="f16-proof-node" data-detail="step-6" id="f16-proof-node0" style="left:100px;top:315px;width:525px;height:195px">Install + plan</div><div class="f16-proof-node" id="f16-proof-node1" style="left:680px;top:315px;width:525px;height:195px">Review + revise</div><div class="f16-proof-node" id="f16-proof-node2" style="left:1260px;top:315px;width:525px;height:195px">Implement + check</div><div class="f16-proof-node" id="f16-proof-node3" style="left:100px;top:565px;width:525px;height:195px">Walkthrough + flag</div><div class="f16-proof-node" id="f16-proof-node4" style="left:680px;top:565px;width:525px;height:195px">Fix + commit</div><div class="f16-proof-node" id="f16-proof-node5" style="left:1260px;top:565px;width:525px;height:195px">Evidence + support</div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="16-proof";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=23.3;gsap.set(q(".f16-proof-title"),{opacity:0,y:10});tl.to(q(".f16-proof-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f16-proof-node0"),{opacity:0});tl.to(q("#f16-proof-node0"),{opacity:1,duration:0.12,ease:"none"},1.5);gsap.set(q("#f16-proof-node1"),{opacity:0});tl.to(q("#f16-proof-node1"),{opacity:1,duration:0.12,ease:"none"},5.22);gsap.set(q("#f16-proof-node2"),{opacity:0});tl.to(q("#f16-proof-node2"),{opacity:1,duration:0.12,ease:"none"},10.122);gsap.set(q("#f16-proof-node3"),{opacity:0});tl.to(q("#f16-proof-node3"),{opacity:1,duration:0.12,ease:"none"},8.81);gsap.set(q("#f16-proof-node4"),{opacity:0});tl.to(q("#f16-proof-node4"),{opacity:1,duration:0.12,ease:"none"},9.38);gsap.set(q("#f16-proof-node5"),{opacity:0});tl.to(q("#f16-proof-node5"),{opacity:1,duration:0.12,ease:"none"},15.74);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

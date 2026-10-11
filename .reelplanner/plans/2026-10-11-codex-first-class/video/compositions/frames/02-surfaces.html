@@ -1,0 +1,35 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="02-surfaces"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f02-surfaces-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f02-surfaces-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f02-surfaces-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f02-surfaces-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f02-surfaces-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f02-surfaces-small{font-size:36px;padding:24px 20px}
+.f02-surfaces-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f02-surfaces-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f02-surfaces-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f02-surfaces-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f02-surfaces-table{position:absolute;left:90px;top:570px;width:1740px}
+.f02-surfaces-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f02-surfaces-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f02-surfaces-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f02-surfaces-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f02-surfaces-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f02-surfaces-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f02-surfaces-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f02-surfaces-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f02-surfaces-mini-command code{font:inherit}
+
+ .f02-surfaces-baseline{position:absolute;left:90px;top:285px;width:1740px;height:240px;background:var(--rp-tile);padding:30px;box-sizing:border-box}
+.f02-surfaces-source{font:400 28px/1.2 "JetBrains Mono"}
+.f02-surfaces-baseline-labels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:35px;margin-top:55px;font:400 40px/1.15 "Inter"}
+</style>
+<div id="f02-surfaces-root" data-composition-id="02-surfaces" data-width="1920" data-height="1080" data-duration="35.467" data-band="bottom"><div class="clip f02-surfaces-ground" id="f02-surfaces-ground" data-start="0" data-duration="35.467" data-track-index="0"></div><div class="f02-surfaces-status">Researched surfaces</div><h1 class="f02-surfaces-title">What <code>codex</code> actually offers</h1><div class="f02-surfaces-baseline" data-artifact="audited native reel pane"><div class="f02-surfaces-source" data-gloss="Mods">Claude /reel · ccr-7d2997e8-elkd7p · d09b72d</div><div class="f02-surfaces-baseline-labels"><span>Video + sound</span><span>Choices + notes</span><span>Send + rebuild</span></div></div><div class="f02-surfaces-table" data-artifact="supported surfaces"><div class="f02-surfaces-row" id="f02-surfaces-row0"><span data-gloss="plugin">Plugin / skill</span> <span>Package / instructions</span></div><div class="f02-surfaces-row" id="f02-surfaces-row1"><span>Hook / MCP</span> <span>Trusted event / connected tools</span></div><div class="f02-surfaces-row" id="f02-surfaces-row2"><span>Artifact / Sites</span> <span>Hosted UI still needs durable handoff</span></div></div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="02-surfaces";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=29.6;gsap.set(q(".f02-surfaces-title"),{opacity:0,y:10});tl.to(q(".f02-surfaces-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f02-surfaces-row0"),{opacity:0});tl.to(q("#f02-surfaces-row0"),{opacity:1,duration:0.12,ease:"none"},9.24);gsap.set(q("#f02-surfaces-row1"),{opacity:0});tl.to(q("#f02-surfaces-row1"),{opacity:1,duration:0.12,ease:"none"},12.05);gsap.set(q("#f02-surfaces-row2"),{opacity:0});tl.to(q("#f02-surfaces-row2"),{opacity:1,duration:0.12,ease:"none"},31.467);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>
