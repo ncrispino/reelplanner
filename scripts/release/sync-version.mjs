@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Carry package.json's version into every place that pins it: the skill's `npx -y reelplanner@<v>`,
-// the docs, scripts/release/install.sh and the Claude Code plugin's entry in .claude-plugin/marketplace.json (the
+// the docs, scripts/release/install.sh, Codex's root plugin.json and the Claude Code plugin's entry in .claude-plugin/marketplace.json (the
 // plugin is the skill folder, with no plugin.json of its own: the entry is its manifest). And carry how people run
 // reelplanner (RP_COMMAND in scripts/lib/env.mjs: `reelplanner` while the package is not on npm, `npx -y
 // reelplanner@<v>` once it is) into the player's after-export lines and the guide's export
@@ -35,6 +35,8 @@ export const PINNED_FILES = [
 ].filter((f) => existsSync(join(ROOT, f)));
 /** The marketplace, whose plugin entry's version must match. */
 export const MARKETPLACE = ".claude-plugin/marketplace.json";
+/** The portable Codex plugin owns its version; its catalog points at the root without a separate version. */
+export const CODEX_MANIFEST = "plugin.json";
 
 /** Every place a version is written down that is not VERSION: [{ file, found }]. */
 export function stale() {
@@ -47,6 +49,8 @@ export function stale() {
     for (const m of found) if (m[2] !== RP_COMMAND) out.push({ file: f, found: `RP_COMMAND "${m[2]}", env.mjs says "${RP_COMMAND}"` });
   }
   for (const p of JSON.parse(readFileSync(join(ROOT, MARKETPLACE), "utf8")).plugins || []) if (p.name === "reelplanner" && p.version !== VERSION) out.push({ file: MARKETPLACE, found: p.version });
+  const plugin = JSON.parse(readFileSync(join(ROOT, CODEX_MANIFEST), "utf8"));
+  if (plugin.version !== VERSION) out.push({ file: CODEX_MANIFEST, found: plugin.version });
   return out;
 }
 
@@ -60,6 +64,8 @@ function sync() {
   let touched = false;
   for (const p of market.plugins || []) if (p.name === "reelplanner" && p.version !== VERSION) { p.version = VERSION; touched = true; }
   if (touched) { writeFileSync(join(ROOT, MARKETPLACE), JSON.stringify(market, null, 2) + "\n"); console.log(`✓ ${MARKETPLACE}`); }
+  const plugin = JSON.parse(readFileSync(join(ROOT, CODEX_MANIFEST), "utf8"));
+  if (plugin.version !== VERSION) { plugin.version = VERSION; writeFileSync(join(ROOT, CODEX_MANIFEST), JSON.stringify(plugin, null, 2) + "\n"); console.log(`✓ ${CODEX_MANIFEST}`); }
   console.log(`✓ everything pins reelplanner@${VERSION}`);
 }
 

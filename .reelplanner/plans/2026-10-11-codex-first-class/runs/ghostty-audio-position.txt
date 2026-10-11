@@ -1,0 +1,3 @@
+$ terminal-browser "action" "--browser" "50952-1" "--tab" "1" "--" "eval" "JSON.stringify((()=>{const h=document.querySelector(\"#rp\").player,a=h.iframeElement.contentDocument.querySelector(\"#el-07-branch-1b-voice\");return {video:h.currentTime,audio:a.currentTime,paused:h.paused,seekable:Array.from({length:a.seekable.length},(_,i)=>[a.seekable.start(i),a.seekable.end(i)])};})())"
+"{\"video\":68.96666666666667,\"audio\":4.438066,\"paused\":true,\"seekable\":[[0,5.76]]}"
+exit 0

@@ -120,7 +120,7 @@ try {
     const lsrv = createServer((req, res) => {
       const u = new URL(req.url, "http://x"), J = (o) => res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify(o));
       if (u.pathname === "/api/review") return J({ ok: true, sessionWaiting: st.waiting, agentCommand: null, inbox: 0 });
-      if (u.pathname === "/api/ask" && req.method === "POST") { let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => { const q = JSON.parse(body); st.asked.push(q); J(st.waiting ? { ok: true, id: q.id, handledBy: "session", message: "the waiting session has it" } : { ok: true, handledBy: "review", message: "no session" }); }); return; }
+      if (u.pathname === "/api/ask" && req.method === "POST") { let body = ""; req.on("data", (c) => (body += c)); req.on("end", () => { const q = JSON.parse(body); st.asked.push(q); J(st.waiting ? { ok: true, id: q.id, handledBy: "session", message: "the waiting session has it" } : { ok: true, id: q.id, handledBy: "inbox", message: "saved for next session" }); }); return; }
       if (u.pathname === "/api/ask") { st.polls++; return J(st.polls < 2 ? { ok: true, answered: false } : { ok: true, answered: true, answer: "The file your review is saved in.", from: "the glossary, \"saved review\"" }); }
       if (u.pathname.endsWith("l2-access.json")) return res.writeHead(200, { "content-type": "application/json" }).end(JSON.stringify(map));
       const file = join(ROOT, normalize(decodeURIComponent(u.pathname)));
@@ -141,10 +141,13 @@ try {
     const s = await panel(p), exp = await R(p, () => document.querySelector("#rp").exportPayload().questions);
     ok(st.asked[0]?.question === "what's the saved review file?" && st.asked[0].frame?.index === 3 && /Narration of scene 3/.test(st.asked[0].narration || ""), "local: the question goes to /api/ask with its scene and narration", JSON.stringify(st.asked[0]));
     ok(s.items[0]?.a === "The file your review is saved in." && /From: the glossary/.test(s.items[0].f) && /answered by the agent session/.test(s.items[0].f) && exp[0]?.via === "session", "local: the session's answer shows, with where it came from, and the review keeps it", JSON.stringify({ items: s.items, exp }));
-    st.waiting = false;
+    st.waiting = false; st.polls = 0;
     await ask(p, "and the list?"); await answered(p, 2);
     const s2 = await panel(p);
-    ok(/No agent session is waiting on this page/.test(s2.items[0]?.a || "") && /goes with your review/.test(s2.how), "local: with none waiting, the page says so and the question goes with the review", JSON.stringify(s2));
+    ok(/Saved; waiting for the next agent session/.test(s2.items[0]?.a || "") && /saved on this page's server/.test(s2.how), "local: with none waiting, the saved question stays pending and is polled", JSON.stringify(s2));
+    await p.reload(); await heard(p);
+    await p.waitForFunction(() => document.querySelector("#rp")?.questions?.some((q) => q.question === "and the list?" && q.answer), null, { timeout: 8000 });
+    ok((await R(p, () => document.querySelector("#rp").questions.find((q) => q.question === "and the list?"))).from === 'the glossary, "saved review"', "local: unanswered saved question resumes polling after reload and preserves its answer source");
     await p.close(); lsrv.close();
   }
 } finally { await b.close(); srv.kill(); }

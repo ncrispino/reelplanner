@@ -75,6 +75,9 @@ if [ "$nv" = ok ]; then ok "node $(node -v)"
 elif [ "$nv" = old ]; then ok "node $(node -v): the \`skills\` installer asks for 22.20 or newer; if a step below fails in it, update Node (https://nodejs.org/en/download)"
 else miss "node $(node -v) is too old" "reelplanner needs Node 22.20 or newer: https://nodejs.org/en/download (apt's own nodejs is older; use nvm or NodeSource)"; fi
 
+# ---- npm dependencies: check before any media install, so a source checkout gets its npm ci prerequisite.
+node "$ROOT/scripts/lib/setup-check.mjs" --dependencies || exit 1
+
 # ---- ffmpeg: renders, and the review bundle's wav → mp3
 if have ffmpeg && have ffprobe; then ok "ffmpeg ($(command -v ffmpeg))"
 elif [ "$OS" = Darwin ] && have brew; then run brew install ffmpeg || miss "ffmpeg" "brew install ffmpeg failed"
@@ -297,6 +300,8 @@ else printf '✗ %s\n' "$N"; L="$(grep -m1 '^narration: ' <<<"$N")"; MISSING+=("
 if [ "$NEED_KOKORO" != 1 ] && [ "$NEED_WHISPER" != 1 ]; then :
 elif [ "$DRY" = 1 ]; then node "$ROOT/scripts/lib/local-speed.mjs" --dry-run "$PWD"
 else node "$ROOT/scripts/lib/local-speed.mjs" "$PWD"; fi
+
+node "$ROOT/scripts/lib/setup-check.mjs" || miss "coding agent capabilities" "check the installed CLI and run setup again"
 
 # Claude Code asks before each of the skill's commands, and auto mode may stop one that writes into the repo, until the
 # person allows them once (docs/agents.md, "Claude Code"): said when `claude` is on PATH and neither its user settings

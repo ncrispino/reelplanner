@@ -1771,7 +1771,8 @@ export class ReelplannerPlayer extends HTMLElement {
   // Kept on this machine (`where: "machine"`: no agent command there), the line says so, and what to do: tell the agent.
   localNext() {
     const a = this._localApi || {};
-    return a.sessionWaiting ? "Your open session picks this up."
+    return a.sessionWaiting ? "Your waiting session picks this up."
+      : a.sessionConnected ? "Saved first, then queued to the connected session. If delivery fails, the saved review uses the configured fallback."
       : a.agentCommand ? `No session is open: <code>${esc(a.agentCommand)}</code> starts on it${a.unsandboxed ? `, without Claude Code's sandbox (${esc(a.unsandboxed)}): its shell commands aren't fenced to the repo` : ""}.`
       : a.where === "machine" ? "No agent session is waiting: it's saved on this machine, not in the repo, until you tell your agent it's sent."
       : "Saved for your next session.";
@@ -1844,14 +1845,14 @@ export class ReelplannerPlayer extends HTMLElement {
     this._work = w; this.renderWork(); this.pollWork(true);
   }
   // nothing more will change: stopped, or done (unless a waiting session marked it done before its new video is up)
-  workSettled() { const w = this._work; return !w || ["stopped", "ready", "reload"].includes(w.state) || (w.state === "done" && !w.making); }
+  workSettled() { const w = this._work; return !w || ["ready", "reload"].includes(w.state) || (w.state === "stopped" && w.via === "hosted") || (w.state === "done" && !w.making); }
   stopWorkPoll() { clearTimeout(this._workT); this._workT = null; }
   pollWork(now = false) {
     this.stopWorkPoll();
     const w = this._work; if (!w || this.workSettled()) return;
     if (w.via === "hosted") { if (this._claudeDb && this._watching !== w.id) this.watchReview(w.id); return; }
     if (document.hidden) return;   // asked again when the tab is shown
-    this._workT = setTimeout(() => this.askWork(), now ? 0 : (this._workMs || 3000));
+    this._workT = setTimeout(() => this.askWork(), now ? 0 : (w.state === "stopped" ? 5000 : (this._workMs || 3000)));
   }
   async askWork() {
     this._workT = null;
@@ -1889,7 +1890,7 @@ export class ReelplannerPlayer extends HTMLElement {
       case "reload": return "Done — reload to watch the new version";
       case "done": return w.making ? `Recorded. ${Who} is making the new video` : "Done: recorded, no new video";
       case "stopped": return hosted ? `${Who} could not finish it${w.error ? ` — ${w.error}` : ""}. The commands under Finish still work.`
-        : `The run stopped before it finished: its log is ${w.log || `.reelplanner/inbox/runs/${w.id}.log`}`;
+        : w.step?.startsWith("session ownership") ? "The session stopped handling this review. It is saved for recovery." : `${w.step === "Stopped before commit" ? "Stopped before commit" : "The run stopped before it finished"}: its log is ${w.log || `.reelplanner/inbox/runs/${w.id}.log`}`;
       default: return String(w.state || "");
     }
   }
@@ -1899,7 +1900,7 @@ export class ReelplannerPlayer extends HTMLElement {
     if (box.hidden === on || wrap.classList.contains("working-on") !== on) { box.hidden = !on; wrap.classList.toggle("working-on", on); this.placePlan?.(); }
     clearInterval(this._workTick); this._workTick = null;
     if (!w) { this.closeReady(); return; }
-    const live = !this.workSettled();
+    const live = w.state !== "stopped" && !this.workSettled();
     box.dataset.wstate = w.state; box.dataset.live = live ? "1" : "0";
     const text = this.workText(w), t = box.querySelector(".wtext");
     if (t.textContent !== text) t.textContent = text;   // only a change is read out (the line is polite-live)
@@ -2503,11 +2504,11 @@ export class ReelplannerPlayer extends HTMLElement {
     try { const sd = JSON.parse(localStorage.getItem(this.rkey + ":details") || "[]"); this.detailsOpened = Array.isArray(sd) ? sd : []; } catch { this.detailsOpened = []; }
     try { this.termsOpened = Number(localStorage.getItem(this.rkey + ":terms")) || 0; } catch { this.termsOpened = 0; }
     try { const tk = JSON.parse(localStorage.getItem(this.rkey + ":termkeys") || "[]"); this.termsLookedUp = Array.isArray(tk) ? tk : []; } catch { this.termsLookedUp = []; }
-    try { const qs = JSON.parse(localStorage.getItem(this.rkey + ":questions") || "[]"); this.questions = Array.isArray(qs) ? qs.map((q) => (["asking", "streaming", "waiting"].includes(q.status) ? { ...q, status: "review" } : q)) : []; } catch { this.questions = []; }
+    try { const qs = JSON.parse(localStorage.getItem(this.rkey + ":questions") || "[]"); this.questions = Array.isArray(qs) ? qs.map((q) => (["asking", "streaming"].includes(q.status) ? { ...q, status: "review" } : q)) : []; } catch { this.questions = []; }
     // the words this viewer knows (D-218): this browser's, and on the local review page, what your file says
     this._known = null; this._defDone = {}; this._defPlayed = {}; this._defT = null; this._partT = null; this._partPlayed = {};
     // …and what your file says you watched (D-128): "Before you watch" and the level the video starts at read it too
-    this.reachLocal().then((j) => { if (j?.known && (j.known.looked?.length || j.known.watched?.length)) { this._serverKnown = j.known; this.syncKnown(); this.renderBefore(); this.levelFromBefore(); this.dispatchEvent(new CustomEvent("known", { detail: j.known })); } }).catch(() => {});
+    this.reachLocal().then((j) => { if (j) for (const q of this.questions || []) if (q.askId && !q.answer) this.pollQuestion(q); if (j?.known && (j.known.looked?.length || j.known.watched?.length)) { this._serverKnown = j.known; this.syncKnown(); this.renderBefore(); this.levelFromBefore(); this.dispatchEvent(new CustomEvent("known", { detail: j.known })); } }).catch(() => {});
     // accessible videos: what to watch first (on the poster), and the Terms button when there are words to look up
     this._seenMarked = false; this._guardDoneMem = false; this._walkQueue = null; this._walking = null; this.renderBefore();
     { const tb = this.$(".termsbtn"); if (tb) tb.hidden = !this.termList().length; }
@@ -3202,7 +3203,7 @@ export class ReelplannerPlayer extends HTMLElement {
     const from = this.isExplainer ? "the explainer's sources" : "the plan";
     box.querySelector(".askhow").textContent = { claude: `Claude answers from ${from}, the glossary and this scene, and says where the answer came from. It runs on your Claude account: the first question asks you to allow it.`,
       session: `The agent session waiting on this page answers, in a few seconds, from ${from}, the glossary and this scene.`,
-      nobody: "No agent session is waiting on this page, so your question goes with your review and is answered in the next version.",
+      nobody: "Your question is saved on this page's server for the next agent session to answer. It also goes with your review.",
       review: "Your question goes with your review, and is answered in the next version." }[this.askRoute()];
     const asking = !!this._asking; box.querySelector(".askgo").disabled = asking; box.querySelector(".askstop").hidden = !(asking && this._askCtl);
     const mine = (this.questions || []).slice().reverse();
@@ -3211,7 +3212,7 @@ export class ReelplannerPlayer extends HTMLElement {
   askItemHtml(q) {
     const where = `${q.detail ? `In the guide, ${q.detail.title || q.detail.name}: ` : ""}${q.frame ? `Scene ${q.frame.index}, ${plainTitle(q.frame.title)}, at ${this.fmt(q.t)}` : `At ${this.fmt(q.t)}`}`;
     const state = q.status === "asking" ? "thinking" : q.status === "waiting" ? "waiting" : q.answer ? "answered" : "none";
-    const body = q.answer ? esc(q.answer) : q.status === "asking" ? "Thinking…" : q.status === "waiting" ? "Asked the agent session waiting on this page…" : esc(q.note || "Goes with your review, to be answered in the next version.");
+    const body = q.answer ? esc(q.answer) : q.status === "asking" ? "Thinking…" : q.status === "waiting" ? esc(q.note || "Saved; waiting for an agent session to answer…") : esc(q.note || "Goes with your review, to be answered in the next version.");
     return `<p class="aq">${esc(q.question)}</p><p class="aw">${esc(where)}</p><p class="aa" data-state="${state}">${body}</p>`
       + (q.answer && q.note ? `<p class="af">${esc(q.note)}</p>` : "")
       + (q.answer && q.from ? `<p class="af"><b>From:</b> ${esc(q.from)}${q.via === "session" ? " · answered by the agent session" : q.via === "claude" ? " · answered by Claude" : ""}</p>` : "");
@@ -3332,14 +3333,22 @@ ${clip(gloss || "(none)", 9000)}`;
     } catch { j = null; }
     if (!j?.ok) { Object.assign(q, { status: "review", via: "review", note: "The review server did not take it, so your question goes with your review." }); return; }
     if (this._localApi) this._localApi.sessionWaiting = j.handledBy === "session";
-    if (j.handledBy !== "session") { Object.assign(q, { status: "review", via: "review", note: "No agent session is waiting on this page, so your question goes with your review and is answered in the next version." }); return; }
-    q.status = "waiting"; q.via = "session"; q.askId = j.id; this._asking = null; this.renderAsk();   // another question may be asked meanwhile
-    for (let i = 0; i < 60; i++) {
-      await new Promise((ok) => setTimeout(ok, 2000));
-      let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(j.id)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
-      if (a?.answered) { Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", answeredAt: a.answeredAt || new Date().toISOString() }); this.persistQuestions(); this.renderAskItem(q); return; }
-    }
-    Object.assign(q, { status: "review", note: "No answer from the session in two minutes, so your question goes with your review." }); this.persistQuestions(); this.renderAskItem(q);
+    q.status = "waiting"; q.via = "session"; q.askId = j.id;
+    q.note = j.handledBy === "session" ? "Saved; waiting for the agent session to answer…" : "Saved; waiting for the next agent session to answer. Your question also goes with your review.";
+    this._asking = null; this.persistQuestions(); this.renderAsk();
+    await this.pollQuestion(q);
+  }
+  async pollQuestion(q) {
+    this._pollingQuestions ||= new Set();
+    if (!q.askId || q.answer || this._pollingQuestions.has(q.id)) return;
+    this._pollingQuestions.add(q.id);
+    try {
+      while (this.isConnected && !q.answer && (this.questions || []).some((x) => x.id === q.id)) {
+        let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(q.askId)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
+        if (a?.answered) { Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", note: null, answeredAt: a.answeredAt || new Date().toISOString() }); this.persistQuestions(); this.renderAskItem(q); return; }
+        await new Promise((ok) => setTimeout(ok, 2000));
+      }
+    } finally { this._pollingQuestions.delete(q.id); }
   }
   // "Walk me through it" (a quick check's `- walk_me_through:`): open after a wrong answer, the video waiting
   // while it is read; a button away after a right one. Opening it goes on the record (walked: true).

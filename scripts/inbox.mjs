@@ -23,7 +23,7 @@
 import { fileURLToPath } from "node:url";
 import { resolve, basename } from "node:path";
 import { repoRoot, rpInitialized, rpDirOf } from "./lib/env.mjs";
-import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath } from "./lib/inbox.mjs";
+import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
 
 export async function main(args) {
   const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
@@ -37,9 +37,24 @@ export async function main(args) {
   if (args.includes("--wait")) {
     const t = Number(flag("timeout") || 0);
     console.error(`… waiting for a review in ${where} (Ctrl-C to stop)`);
-    const p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0 });
+    let p; try { p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0, questionsOnly: args.includes("--questions"), repo }); }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!p) { console.error(`△ no review in ${t}s`); return 2; }
     console.log(p);
+    return 0;
+  }
+
+  for (const command of ["renew", "progress", "retry"]) {
+    const i = args.indexOf(command); if (i < 0) continue;
+    const id = basename(String(args[i + 1] || "")).replace(/\.json$/, "");
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,159}$/.test(id)) { console.error(`usage: reelplanner inbox ${command} <id>${command === "progress" ? " <phase>" : ""}`); return 1; }
+    try {
+      if (command === "retry") {
+        const r = await retryAgent(box, id);
+        if (!r.started) { console.error(`△ ${id}: ${r.reason}`); return 1; }
+        console.log(`✓ resumed ${id} (pid ${r.pid}); log: ${shownPath(r.log)}`);
+      } else { renewClaim(box, id, { ...(command === "progress" ? { phase: args[i + 2] } : {}) }); console.log(`✓ ${id}: ${command === "progress" ? args[i + 2] : "lease renewed"}`); }
+    } catch (e) { console.error(`✗ ${e.message}`); return 1; }
     return 0;
   }
 
@@ -59,15 +74,16 @@ export async function main(args) {
   if (di >= 0) {
     const id = basename(String(args[di + 1] || "")).replace(/\.json$/, "");
     if (!id) { console.error("usage: reelplanner inbox done <id | path>"); return 1; }
-    if (!markDone(box, id) && !(before && markDone(before, id))) { console.error(`✗ no review ${id} in the inbox`); return 1; }
+    try { if (!markDone(box, id) && !(before && markDone(before, id))) { console.error(`✗ no review ${id} in the inbox`); return 1; } }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     console.log(`✓ ${id} → inbox/done/`);
     return 0;
   }
 
   const all = listInbox(box), w = liveWaiters(box).length;
   console.log(`${all.length} review(s) in ${setUp ? "the inbox" : where}; ${w ? `${w} session(s) waiting` : "no session waiting"}`);
-  for (const r of all) console.log(`  ${r.claim ? `claimed by ${r.claim.by === "agent" ? "a headless run" : "a session"} ${r.claim.at}` : "waiting"}  ${shownPath(r.path)}`);
-  const qs = waitingQuestions(box);
+  for (const r of all) console.log(`  ${r.claim ? `${claimLive(r.claim) ? "claimed" : "stopped"} by ${r.claim.by === "agent" ? "a headless run" : "a session"} ${r.claim.at}${progressOf(box, r.id)?.phase ? ` (${progressOf(box, r.id).phase})` : ""}${r.claim.log ? `; log: ${r.claim.log}` : ""}` : "waiting"}  ${shownPath(r.path)}`);
+  const qs = waitingQuestions(box, { includeClaimed: true });
   if (qs.length) console.log(`${qs.length} question(s) asked on the page, not answered yet:\n${qs.map((q) => `  ${shownPath(q.path)}`).join("\n")}`);
   const left = before ? listInbox(before).filter((r) => !r.claim) : [];
   if (left.length) console.log(`△ ${left.length} review(s) sent before \`reel init\`, from a video with no plan folder, wait in this machine's folder (nothing here handles them): read each, then \`reelplanner inbox done <id>\`:\n${left.map((r) => `  ${shownPath(r.path)}`).join("\n")}`);

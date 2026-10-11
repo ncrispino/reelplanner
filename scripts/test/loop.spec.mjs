@@ -219,7 +219,10 @@ try {
     const ask = (body, headers = {}) => fetch(`${url}/api/ask`, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) }).then(async (r) => ({ status: r.status, body: await r.json() }));
     ok("ask: another site's page is refused", (await ask({ question: "x" }, { origin: "http://evil.example" })).status === 403);
     const none = await ask({ id: "ask-1", question: "what's the saved review file?", t: 12, frame: { index: 2, title: "The file" }, planStep: 3 });
-    ok("ask: no session waiting → it goes with the review, and nothing is written", none.status === 200 && none.body.handledBy === "review" && !existsSync(join(rp, "inbox", "questions")), JSON.stringify(none.body));
+    ok("ask: no session waiting → it is saved for the next session", none.status === 200 && none.body.handledBy === "inbox" && existsSync(join(rp, "inbox", "questions", "ask-1.json")), JSON.stringify(none.body));
+    const oldQuestion = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), "--wait", "--timeout", "1"], { cwd: tmp, env, encoding: "utf8" });
+    ok("ask: the next waiter claims the previously unanswered question", samePlace(oldQuestion.trim(), join(rp, "inbox", "questions", "ask-1.json")), oldQuestion);
+    execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-1", "The saved review file.", "--from", "the plan"], { cwd: tmp, env });
     const qw = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), "--wait", "--timeout", "30"], { cwd: tmp, env });
     procs.push(qw);
     let qout = ""; qw.stdout.on("data", (d) => (qout += d));

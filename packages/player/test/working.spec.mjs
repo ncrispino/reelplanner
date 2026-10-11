@@ -161,6 +161,12 @@ const sendReview = async (p, verdict = null) => {
   await textIs(p, /stopped/);
   s = await strip(p);
   ok(s.text === "The run stopped before it finished: its log is .reelplanner/inbox/runs/l2-test.log" && s.live === "0" && !s.pop, `stopped: the line says so, with the run's log — "${s.text}"`);
+  A.st.status = { state: "working", by: "agent", build: SIG, step: "recovering saved edits" };
+  await textIs(p, /recovering saved edits/);
+  ok((await strip(p)).live === "1", "a deliberate retry resumes status on the same open page");
+  A.st.status = { state: "done", by: "agent", build: NEW };
+  await until(p, () => !document.querySelector("#rp").shadowRoot.querySelector(".wready").hidden);
+  ok((await strip(p)).pop, "the recovered run's rebuilt result opens ready on the same page");
   await p.close();
 }
 
