@@ -10,6 +10,12 @@ cheaper video that looks more alike shows here.
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-11 | bakery bench, main (fresh EC2, headless, scripted review) | plan video, first look | main (0.2.0 + #21) | 47.8 | 2.3 | 35.4 | 55.5 | — | 34.3 | 374 | — | — | 9 / 18 | [report](2026-10-11-bench.md) |
+| 2026-10-11 | bakery bench, main | revise after review | main | 30.2 | 2.1 | 16.5 | 19.0 | — | 18.3 | 129 | — | — | — | [report](2026-10-11-bench.md) |
+| 2026-10-11 | bakery bench, cheaper-videos as first built | plan video, first look | cost-audit (frames stage v1) | 78.4 | 2.7 | 70.1 | 37.8 | — | 44.0 | 398 | — | — | 10 / 18 | [report](2026-10-11-bench.md) |
+| 2026-10-11 | bakery bench, cheaper-videos as first built | revise after review | cost-audit (frames stage v1) | 29.9 | 2.3 | 26.3 | 12.0 | — | 22.6 | 112 | — | — | — | [report](2026-10-11-bench.md) |
+| 2026-10-11 | bakery bench, cheaper-videos fixed | plan video, first look | cost-audit (frames stage v2) | 35.9 | 2.7 | 18.9 | 20.3 | — | 16.2 | 146 | — | — | 10 / 18 | [report](2026-10-11-bench.md) |
+| 2026-10-11 | bakery bench, cheaper-videos fixed | revise after review | cost-audit (frames stage v2) | 13.6 | 2.2 | 8.9 | 3.5 | — | 13.2 | 39 | — | — | — | [report](2026-10-11-bench.md) |
 | 2026-10-10 | bakery (fresh EC2, c7i.4xlarge) | plan video, first look | 0.2.0 + #21 | 49 | 9 | 11 | 31 | 2 | 24.4 | 65 | 3 | 135 (~15) | — | [report](2026-10-10-bakery.md) |
 | 2026-10-10 | bakery (fresh EC2, c7i.4xlarge) | revise after review | 0.2.0 + #21 | 24 | 2 | 4 | 16 | 2 | 15.2 | 24 | 3 | 94 (—) | 10 / 20 | [report](2026-10-10-bakery.md) |
 | 2026-09-24 | research repo (owner's laptop) | E0 plan video, 44 one-frame workers | 0.1 | 71 | 13 | 370 | 28 | — | — | — | 0 | — | — | [report](2026-10-10-research-repo.md) |
