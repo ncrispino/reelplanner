@@ -23,6 +23,7 @@ import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
 import { parseGlossary, rowFor, splitMeaning, termsOf, plainOf } from "../lib/terms.mjs";
 import { findJargon, saysForm } from "../lib/jargon.mjs";
+import { valueClashes, clashLine } from "../lib/consistency.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-terms-spec-")), RP = join(tmp, ".reelplanner");
 let failed = 0;
@@ -256,6 +257,18 @@ try {
   // "Other words" never make the system video behind: no beat need define them
   r = run("terms-index.mjs", [GV]);
   ok("terms-index: an \"Other words\" row is not a word the system video is behind on", !JSON.parse(readFileSync(join(RP, "terms-index.json"), "utf8")).undefined.some((k) => /agent|flag|quick check/.test(k)), r.out);
+  // one thing, one value in every scene (cheaper-videos step 5): what fresh eyes caught twice on the bakery video
+  {
+    const u = (frame, text, artifact) => ({ frame, text, artifact });
+    const c = valueClashes([u(2, "Call us at 555-201-0101 for cakes."), u(3, "The site has four pages: home, menu, visit, order."), u(5, "All four pages share a header."),
+      u(7, "Lighthouse checks 5 pages."), u(9, "Phone 555-201-0110, or visit rosasbakery.com"), u(10, "Email rosa@rosabakery.com within 3 seconds"), u(11, "Step 2 of 6 steps; 3 steps left"),
+      u(12, "| 555-000-1234 | a real table |", true)]);
+    const kinds = c.map((x) => x.kind).sort().join();
+    ok("values: two phone numbers, an address a letter from another (an email's domain too), a count unlike its usual value", kinds === "addresses,count,phones", JSON.stringify(c));
+    ok("…the lines name each value and its scenes", c.map(clashLine).some((l) => /pages: 4 \(scenes 3, 5\), 5 \(scene 7\)/.test(l)) && c.map(clashLine).some((l) => /phone numbers: 555-201-0101 \(scene 2\), 555-201-0110 \(scene 9\)/.test(l)), c.map(clashLine).join("\n"));
+    ok("…not: counts with no usual value (steps), time (seconds), a real thing's own text, one value everywhere", !c.some((x) => x.thing === "steps" || x.thing === "seconds") && !JSON.stringify(c).includes("555-000-1234")
+      && valueClashes([u(1, "four pages"), u(2, "four pages"), u(3, "call 555-201-0101"), u(4, "call 555-201-0101")]).length === 0);
+  }
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

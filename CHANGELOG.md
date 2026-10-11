@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+- **Cheaper, faster videos** (plans/2026-10-10-cheaper-videos, from the first pipeline-cost audits: making and checking
+  a video was 80–90% of the time before the person saw it).
+  - **One round of fresh eyes**, and a second only on the scenes whose words the first's answers changed: rounds 2
+    and 3 found little and cost as much. A finding marked `[plan]` (the plan leaves something out, or the video only
+    describes what the person needs to see) is answered `plan:` (plan.md changed) or `ask:` (a question shown first on
+    Before you watch), never kept: fresh eyes found what reviewers later flagged, and the builder kept it. The
+    designer lists only what stops a viewer; other notes go under `## Advisory`, with no answer needed.
+  - **The script, read against the ask, before any frame:** `fresh-eyes <video-dir> --script`, from BRIEF.md's new
+    `- Ask:` line (the person's words) and the last review.
+  - **Frame packets:** `reelplanner frame-packet <video-dir> <frames…>` gives a frame worker everything in one file (its
+    storyboard blocks, its line word by word with timings, the marks it needs, the theme by path, a sibling to match);
+    `reelplanner frame-check <video-dir> <frame>` lints it and takes one picture at rest; `references/frames.md` states
+    the formats. The skill draws a short video with one builder and a long one with workers of 3–5 frames, never
+    reading reelplanner's source: one-frame workers spent a median 9 minutes learning the tools.
+  - **Values that agree:** check-terms warns when one thing differs across scenes (two phone numbers, an address a
+    letter from another, "5 pages" against four).
+  - **Length before the voice:** `build` estimates the length from the script and stops past 1.5 times the budget
+    unless BRIEF.md's `- Length:` says why; the style guide puts the whole before the steps.
+  - **The way to the page:** `build` ends with the command that puts this build on the review page, and where a running
+    server is. The video's builder starts fresh with a short brief, not as a fork of the conversation; once a video
+    is shown, the agent waits for the review. A headless run's prompt names the skill's path and asks no verify of
+    an approval.
+  - **Revisions build once.** `frame-check` also runs HyperFrames' layout check on the frame's slot, as advice
+    (text overflowing its box, said in about 10 seconds); `build`'s new first stage, `frames`, runs verify's own
+    check before anything is voiced when frames changed since a build last passed, and stops only on what verify
+    would.
+    The skill gathers every fix before touching a frame, patches only the frames they touch (checked with
+    `frame-check`, never a build), and builds once; fresh eyes start in the background. The frame packet names
+    fonts by family, which HyperFrames loads, so no worker searches the disk for one.
+- **pipeline-cost** (`.claude/skills/pipeline-cost/`, for contributors): measures where a run's time and tokens go
+  from its transcripts, into `eval/pipeline-cost/`'s ledger.
+
 - **No headless agent unless you ask.** `reel init` wrote a command that starts the agent it ran in, unattended,
   whenever a review was sent with no session waiting; Claude Code's auto mode refused that `reel init` in a
   person's first session, as an agent setting itself up to start unattended. `reel init` now writes none: the session that ran it is an

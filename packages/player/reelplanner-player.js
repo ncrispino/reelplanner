@@ -1186,7 +1186,8 @@ h4 .count{font-weight:400;color:var(--ink-3)}
 .before .start{height:36px;padding:0 16px;border:0;border-radius:6px;background:var(--ink);color:var(--paper);font:500 var(--fs-ui)/1 var(--sans);cursor:pointer}
 .before .start kbd{margin-left:8px;color:inherit;opacity:.7}
 .before .lnk{font-size:var(--fs-sm)}
-.before .fleft{margin-top:12px;padding-top:10px;border-top:1px solid var(--ink-12)}
+.before .fleft,.before .fask{margin-top:12px;padding-top:10px;border-top:1px solid var(--ink-12)}
+.before .fask ul{margin:0;padding:0;list-style:none}.before .fask li{padding:6px 0}
 .before .fleft ul{margin:0;padding:0;list-style:none}
 .before .fleft li{display:grid;row-gap:2px;padding:6px 0}
 .before .fleft .fw{font-size:var(--fs-ui);line-height:1.4;color:var(--ink)}
@@ -2877,7 +2878,7 @@ export class ReelplannerPlayer extends HTMLElement {
   }
   renderBefore() {
     const el = this.$?.(".before"); if (!el) return;
-    const ps = this.prereqs, left = this.freshLeft(), again = this.freshAgain(), kept = left.length || again.length;
+    const ps = this.prereqs, left = this.freshLeft(), again = this.freshAgain(), asks = this.freshAsks(), kept = left.length || again.length || asks.length;
     queueMicrotask(() => this.placeBefore());
     el.hidden = !ps.length && !kept; el.classList.remove("one"); if (el.hidden) { el.innerHTML = ""; return; }
     const seen = (p) => !!this.prereqWatched(p), all = ps.every(seen);
@@ -2902,28 +2903,32 @@ export class ReelplannerPlayer extends HTMLElement {
         const tag = here ? `a class="pre" href="${esc(this.prereqHref(p))}"` : 'div class="pre" data-off';
         return `<${tag}${w ? " data-watched" : ""} title="${esc(tip)}"><span class="pt">${esc(name(p))}</span><span class="pl">${p.seconds ? esc(this.fmt(p.seconds)) : ""}</span><span class="pg"${givesWords(p.gives).ids ? ` title="${esc(`Decisions ${givesWords(p.gives).ids}`)}"` : ""}>${esc(givesWords(p.gives).text)}</span><span class="pw">${w ? "Watched" : here ? "Not watched here" : away ? away.short : "Not on this page"}</span></${here ? "a" : "div"}>`;
       }).join("")
-      + this.freshLeftHtml(left, again)
+      + this.freshLeftHtml(left, again, asks)
       + `<div class="acts"><button class="start" data-act="poster-play">Start<kbd>Space</kbd></button>${all && ps.length && !kept ? '<button class="lnk" data-act="before-toggle" aria-expanded="true">Hide</button>' : ""}</div>`;
   }
-  // What fresh eyes left as it is (videos-that-make-sense step 2): after three rounds, the findings a newcomer or a
+  // What fresh eyes left as it is (videos-that-make-sense step 2): after its rounds, the findings a newcomer or a
   // designer made that the author kept, each with the reason. Said before the first play, so a confusion the
   // author chose to keep is never silent (D-225).
   freshLeft() { const l = this.planMap?.freshEyes?.left; return Array.isArray(l) ? l.filter((x) => x && (x.what || x.why)) : []; }
   // D-245: the list is only what is new to this build; a finding the author had already kept, for the same reason, in
   // an earlier round of the build (`again`, each with the round it was kept in, `as`) is one line under it, a click away
   freshAgain() { const l = this.planMap?.freshEyes?.again; return Array.isArray(l) ? l.filter((x) => x && (x.what || x.why)) : []; }
-  freshLeftHtml(left, again = []) {
-    if (!left.length && !again.length) return "";
+  // A finding about the plan the author put to you as a question (`ask:`, cheaper-videos step 3): first on the card
+  freshAsks() { const l = this.planMap?.freshEyes?.asks; return Array.isArray(l) ? l.filter((x) => x && x.ask) : []; }
+  freshLeftHtml(left, again = [], asks = []) {
+    if (!left.length && !again.length && !asks.length) return "";
     const who = (x) => (x.role === "designer" ? "the designer" : "a newcomer");
     // a line each, its first sentence cut short (the whole finding on hover): the card is read before the first play
     const short = (t, n, lead = false) => { t = String(t || "").replace(lead ? /^scenes?\s+\d+\s*[·:,.—–-]*\s*/i : /^$/, "").replace(/\s+/g, " ").trim(); const one = (/^(.+?[.;])(\s|$)/.exec(t) || [, t])[1].replace(/;$/, ""); return one.length > n ? `${one.slice(0, n - 1).replace(/[\s,;:]+\S*$/, "")}…` : one; };
     const li = (x) => `<li title="${esc(`${x.what || ""}\nKept: ${x.why || ""}`)}"><span class="fw">${x.scene ? `Scene ${esc(x.scene)} · ` : ""}${esc(who(x))}: ${esc(short(x.what, 110, true))}</span><span class="fy">Kept: ${esc(short(x.why, 120))}</span></li>`;
     // a few on the card; the rest one click down, so a long list never pushes Start off the poster
     const SHOWN = 3, rest = left.slice(SHOWN);
-    const lead = left.length ? `<b>Left as ${left.length === 1 ? "it is" : "they are"}:</b> two fresh agents, a newcomer and a designer, looked at this video before you. After three rounds, the author kept ${left.length === 1 ? "this" : `these ${left.length}`}${again.length ? ", new in this build," : ""} and says why.`
+    const lead = left.length ? `<b>Left as ${left.length === 1 ? "it is" : "they are"}:</b> two fresh agents, a newcomer and a designer, looked at this video before you. After its rounds, the author kept ${left.length === 1 ? "this" : `these ${left.length}`}${again.length ? ", new in this build," : ""} and says why.`
       : `<b>Left as they are:</b> two fresh agents, a newcomer and a designer, looked at this video before you. Nothing new was kept in this build's rounds.`;
     const was = (x) => `<li title="${esc(`${x.what || ""}\nKept: ${x.why || ""}${x.as ? `\nKept before: ${x.as}` : ""}`)}"><span class="fw">${x.scene ? `Scene ${esc(x.scene)} · ` : ""}${esc(who(x))}: ${esc(short(x.what, 110, true))}</span><span class="fy">Kept${x.as ? ` in ${esc(x.as)}` : ""}: ${esc(short(x.why, 120))}</span></li>`;
-    return `<div class="fleft" role="group" aria-label="What fresh eyes left as it is"><p class="bl">${lead}</p>${left.length ? "<ul>" + left.slice(0, SHOWN).map(li).join("") + "</ul>" : ""}`
+    const askHtml = asks.length ? `<div class="fask" role="group" aria-label="Asked of you"><p class="bl"><b>Asked of you:</b> fresh eyes found ${asks.length === 1 ? "a thing" : `${asks.length} things`} the plan does not settle, and the author asks:</p><ul>${asks.map((x) => `<li title="${esc(x.what || "")}"><span class="fw">${x.scene ? `Scene ${esc(x.scene)} · ` : ""}${esc(x.ask)}</span></li>`).join("")}</ul></div>` : "";
+    if (!left.length && !again.length) return askHtml;
+    return askHtml + `<div class="fleft" role="group" aria-label="What fresh eyes left as it is"><p class="bl">${lead}</p>${left.length ? "<ul>" + left.slice(0, SHOWN).map(li).join("") + "</ul>" : ""}`
       + (rest.length ? `<details class="fmore"><summary>${rest.length} more</summary><ul>${rest.map(li).join("")}</ul></details>` : "")
       + (again.length ? `<details class="fmore fagain"><summary>${left.length ? "and " : ""}${again.length} ${left.length ? "more " : ""}the author had already kept, for the same reason, in an earlier round</summary><ul>${again.map(was).join("")}</ul></details>` : "") + "</div>";
   }

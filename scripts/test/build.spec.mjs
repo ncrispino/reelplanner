@@ -15,12 +15,14 @@
 //   - a line inserted with nothing committed to pair frames by: retime-frames skipped with a warning
 //   - `reel build` runs the same command
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, utimesSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
-import { videoLength, lengthLine, mmss } from "../lib/length.mjs";
+import { videoLength, lengthLine, mmss, scriptLength, scriptLengthLine } from "../lib/length.mjs";
 import { skillsDir } from "../hyperframes-skills.mjs";
+import { reviewWayLine } from "../lib/inbox.mjs";
+import { recordFrames } from "../lib/frame-layout.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-build-spec-"));
 const P = join(tmp, "video"), ENGINE = join(tmp, "fake-engine.mjs"), LOG = join(tmp, "tts.log");
@@ -72,8 +74,9 @@ try {
 
   const b1 = build();
   ok("a first build: one line per stage with its time, in order, up to the first failure", b1.code === 1
-    && b1.stages.join() === "✓check-terms,·check-sources,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,·retime-frames,✗finish-project" && b1.voiced.join() === "01,02,03", b1.out);
+    && b1.stages.join() === "·frames,✓check-terms,·check-sources,✓length,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,·retime-frames,✗finish-project" && b1.voiced.join() === "01,02,03", b1.out);
   ok("…check-sources is skipped for a video that is no explainer and names no source, and says why", /· check-sources +\d+\.\d s +skipped: nothing to check \(not an explainer/.test(b1.out), b1.out);
+  ok("…the frames stage is skipped on a first build (nothing assembled to look at), and says why", /· frames +\d+\.\d s +skipped: a first build/.test(b1.out), b1.out);
   ok("…retime-frames is skipped on a first narration, and says why", /· retime-frames +\d+\.\d s +skipped: a first narration/.test(b1.out), b1.out);
   ok("…the failing stage says what it said, and verify never runs", /✗ finish-project .*stopped here[\s\S]*assemble-index/.test(b1.out) && !/verify/.test(b1.out), b1.out);
   ok("…every stage really ran: durations synced to the voice", /- duration: 3\.2s/.test(read("STORYBOARD.md")) && !/- duration: 5s/.test(read("STORYBOARD.md")) && !existsSync(PENDING), read("STORYBOARD.md"));
@@ -83,12 +86,12 @@ try {
   writeFileSync(join(P, "SCRIPT.md"), script([LINES[0], "reelplanner turns that plan into a short narrated video that you review by watching.", LINES[2]]));
   const b2 = build();
   ok("an edited line: only it is narrated, and retime-frames stops the build with its own message", b2.code === 1 && b2.voiced.join() === "02"
-    && b2.stages.join() === "✓check-terms,·check-sources,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,✗retime-frames" && /wiggle\(… 1\.2\)/.test(b2.out) && /--ignore <name,…>/.test(b2.out), b2.out);
+    && b2.stages.join() === "·frames,✓check-terms,·check-sources,✓length,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,✗retime-frames" && /wiggle\(… 1\.2\)/.test(b2.out) && /--ignore <name,…>/.test(b2.out), b2.out);
   ok("…nothing after it ran, no frame was written, and what the frames are timed to is kept for the next run", !/finish-project/.test(b2.out) && read("compositions/frames/02-beat.html") === f2 && existsSync(PENDING), b2.out);
 
   const b3 = build("--ignore", "wiggle");
   const f2b = read("compositions/frames/02-beat.html");
-  ok("run again with --ignore: nothing narrated, yet the edited frame is retimed now, and only it", b3.voiced.length === 0 && b3.stages.slice(0, 9).join() === "✓check-terms,·check-sources,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,✓retime-frames,✗finish-project"
+  ok("run again with --ignore: nothing narrated, yet the edited frame is retimed now, and only it", b3.voiced.length === 0 && b3.stages.slice(0, 11).join() === "·frames,✓check-terms,·check-sources,✓length,✓narrate,✓fetch-sfx,✓transcribe-missing,✓sync-durations,✓hold-durations,✓retime-frames,✗finish-project"
     && /1 frame\(s\) retimed, 2 unchanged/.test(b3.out) && f2b !== f2 && /wiggle\(el, 1\.2\)/.test(f2b) && read("compositions/frames/01-beat.html") === f1 && !existsSync(PENDING), b3.out);
   const b4 = build("--ignore", "wiggle");
   ok("and again, unchanged: retime-frames is skipped, no frame moves a second time", /· retime-frames +\d+\.\d s +skipped: no line changed/.test(b4.out) && read("compositions/frames/02-beat.html") === f2b, b4.out);
@@ -102,6 +105,25 @@ try {
 
   let rb; try { rb = execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), "build", P], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { rb = `${e.stdout}${e.stderr}`; }
   ok("reel build runs the same build", /^build /m.test(rb) && /✓ narrate +\d+\.\d s/.test(rb) && /✗ finish-project/.test(rb), rb);
+  // the frames stage (cheaper-videos step 11): on a rebuild with frames changed since a build last passed (their hashes),
+  // verify's own layout check before anything is voiced; frame-lint's findings said, never a stop on their own. The
+  // index.html here is a stand-in HyperFrames' lint fails, as verify would: the stage stops on it (the layout half on
+  // a real video is frame-tools.spec's)
+  writeFileSync(join(P, "index.html"), "<!doctype html><title>built</title>");
+  recordFrames(P);
+  const bf1 = build("--ignore", "wiggle");
+  ok("a rebuild with no frame changed since a build last passed: the frames stage is skipped, and says why", /^· frames +\d+\.\d s +skipped: no frame changed since the last build/m.test(bf1.out), bf1.out);
+  const f1b = read("compositions/frames/01-beat.html");
+  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), '<div id="root" data-composition-id="f-01-beat" data-width="1920" data-height="1080"><div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div></div>');
+  const sb = read("STORYBOARD.md");
+  writeFileSync(join(P, "STORYBOARD.md"), sb + "\n");
+  const bf3 = build("--ignore", "wiggle");
+  ok("…the storyboard changed too: the assembly is stale, so the stage is skipped and says why (verify judges the new one)", /^· frames +\d+\.\d s +skipped: the storyboard or script changed since the last build/m.test(bf3.out), bf3.out);
+  writeFileSync(join(P, "STORYBOARD.md"), sb);
+  const bf2 = build("--ignore", "wiggle");
+  ok("…a frame edited since: verify's own check runs before any voice and stops on what verify would stop on, nothing voiced; the frame's frame-lint findings are said", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length
+    && /✗ the video: lint: .*root_missing/.test(bf2.out) && /verify's layout check would stop here/.test(bf2.out) && /△ 1 changed \(01\): \d+ with frame-lint findings/.test(bf2.out), bf2.out);
+  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), f1b); rmSync(join(P, "index.html")); rmSync(join(P, ".hyperframes", "frames-built.json"));
   // check-terms (accessible videos): a word said before it is defined is a △ line and the build goes on;
   // an id said alone, on a storyboard with `terms_check: strict`, stops the build before any voice
   const P2 = join(tmp, "terms"); mkdirSync(join(P2, "compositions", "frames"), { recursive: true });
@@ -128,6 +150,31 @@ try {
   ok("length: a 3:20 walkthrough is long", four2.verdict === "long" && /long for a walkthrough video \(aim 1–2 min; past 3 is long\)/.test(lengthLine(four2)), lengthLine(four2));
   ok("length: a 9-minute system video is past its aim but not long", sys.kind === "system" && sys.verdict === "ok" && /past it/.test(lengthLine(sys)), lengthLine(sys));
   ok("length: this repo's m3 walkthrough (14.6 min) is too long", videoLength(join(ROOT, ".reelplanner/plans/2026-09-22-m3-revise-loop/walkthrough-video")).verdict === "over");
+  // before the voice (cheaper-videos step 7): the script's words give its length; past 1.5× the budget it stops, naming
+  // the longest parts, unless BRIEF.md says why
+  const sDir = (sub, parts, brief = "") => { const d = join(tmp, "slen", sub); mkdirSync(d, { recursive: true }); let n = 0;
+    writeFileSync(join(d, "STORYBOARD.md"), "---\ntitle: t\n---\n\n" + parts.map(([title, k]) => Array.from({ length: k }, (_, i) => `## Frame ${++n}\n\n${i ? "" : `- chapter_start: ${title}\n`}- voiceover: "x"\n`).join("\n")).join("\n"));
+    n = 0; writeFileSync(join(d, "SCRIPT.md"), "# SCRIPT\n\n" + parts.map(([, k]) => Array.from({ length: k }, () => `## Line ${++n} — x (Frame ${n})\n\n    ${Array(62).fill("word").join(" ")}\n`).join("\n")).join("\n"));
+    if (brief) writeFileSync(join(d, "BRIEF.md"), brief); return d; };
+  const short = scriptLength(sDir("ok/video", [["Pages", 3], ["Orders", 3]]));
+  ok("script length: 6 lines of 62 words is about 2 min, in budget", !short.stop && /^about 2:00 from the script \(a plan video: aim 3–5 min\)$/.test(scriptLengthLine(short)), scriptLengthLine(short));
+  const longer = scriptLength(sDir("longer/video", [["Pages", 6], ["Orders", 20], ["Going live", 6]])), why = scriptLength(sDir("why/video", [["Pages", 6], ["Orders", 20], ["Going live", 6]], "- Length: three systems compared side by side\n"));
+  ok("…a 10:40 script stops, naming its longest part first", longer.stop && /past 1\.5× a plan video's 5 min \(7:30\): longest "Orders" 6:40/.test(scriptLengthLine(longer)), scriptLengthLine(longer));
+  ok("…unless BRIEF.md says why it needs more", !why.stop && /BRIEF\.md says why: three systems compared side by side/.test(scriptLengthLine(why)), scriptLengthLine(why));
+  // the build's last line (cheaper-videos step 9): the command that puts this build on the page, and where the page is
+  {
+    const repo = join(tmp, "wayrepo"), v = join(repo, ".reelplanner", "plans", "2026-10-10-x", "video");
+    mkdirSync(join(repo, ".reelplanner", "inbox"), { recursive: true }); mkdirSync(v, { recursive: true });
+    execFileSync("git", ["init", "-q"], { cwd: repo }); writeFileSync(join(repo, ".reelplanner", "decisions.json"), "[]");
+    const none = reviewWayLine(v, repo);
+    writeFileSync(join(repo, ".reelplanner", "inbox", ".server.json"), JSON.stringify({ pid: process.pid, port: 8790, base: "http://127.0.0.1:8790/" }));
+    const up = reviewWayLine(v, repo);
+    writeFileSync(join(repo, ".reelplanner", "inbox", ".server.json"), JSON.stringify({ pid: 999999, port: 8790, base: "http://127.0.0.1:8790/" }));
+    const dead = reviewWayLine(v, repo);
+    ok("review line: no server, the command that starts the page and prints its link", /^`reelplanner review \.reelplanner\/plans\/2026-10-10-x\/video --detach` starts the page/.test(none), none);
+    ok("…a server running for the repo: where it is, and the same command to put this build on it", /the page is up at http:\/\/127\.0\.0\.1:8790\/ \(pid \d+\): `reelplanner review .* --detach` puts this build on it/.test(up), up);
+    ok("…a recorded server whose process is gone counts as none", dead === none, dead);
+  }
   // hold-durations: a hold is a floor; holds.json's "tail" is a pause after every line (the system video's 0.8 s)
   { const d = join(tmp, "holds"); mkdirSync(join(d, ".hyperframes"), { recursive: true });
     writeFileSync(join(d, "STORYBOARD.md"), [1, 2, 3].map((n) => `## Frame ${n} — b${n}\n\n- duration: 1s\n`).join("\n"));

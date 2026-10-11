@@ -10,8 +10,10 @@ export const until = (p, f, a, timeout = 20000) => p.waitForFunction(f, a, { tim
 export const when = async (p, f, a, timeout = 20000) => { const h = await until(p, f, a, timeout); return h ? h.jsonValue() : null; };
 // n frames drawn: what a state change lays out has been laid out
 export const frames = (p, n = 2) => p.evaluate((n) => new Promise((r) => { const f = (k) => (k ? requestAnimationFrame(() => f(k - 1)) : r()); f(n); }), n);
-// a seek landed: the video's time is where it was sent
-export const seeked = (p, t) => until(p, (t) => Math.abs(document.querySelector("#rp").player.currentTime - t) < 0.1, t);
+// a seek landed: the video's time is where it was sent, and the page has drawn that time. The player's currentTime
+// moves at once; the part marker, the bars and the plan's step move on its next timeupdate (_lastT), which a loaded
+// machine delivers a few frames later: a spec that looked between the two saw the part before the seek.
+export const seeked = (p, t) => until(p, (t) => { const el = document.querySelector("#rp"); return Math.abs(el.player.currentTime - t) < 0.1 && Math.abs((el._lastT ?? -1) - t) < 0.1; }, t);
 // what waits is this question (or nothing, for null)
 export const pendingIs = (p, id) => until(p, (id) => (document.querySelector("#rp").pendingId() || null) === id, id);
 // a question is up: it is what waits, and its sheet is on
