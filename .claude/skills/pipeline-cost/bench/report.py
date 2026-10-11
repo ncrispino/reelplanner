@@ -22,7 +22,8 @@ Agent minutes: each model request and tool call (its duration, ending at its tim
 falls in, summed over every session (parallel agents add up). An Agent tool call is left out: its subagent's own
 requests are counted. Tokens and cost are summed the same way.
 
-Checks it makes (and prints): every transcript session sent telemetry; output tokens by telemetry against the
+Checks it makes (and prints): every request ran on one model at one effort (the bench sets Opus 5.5 at medium);
+every transcript session sent telemetry; output tokens by telemetry against the
 transcripts' text/4 estimate; nothing measured after the run ended.
 
 usage: python3 report.py <run.tgz or extracted dir> [--json out.json]
@@ -112,7 +113,7 @@ for line in jl(os.path.join(O, "otel.jsonl")):
                 if name == "api_request":
                     reqs.append(dict(end=t, dur=float(a.get("duration_ms") or 0), session=a.get("session.id"), src=a.get("query_source"),
                         inp=int(a.get("input_tokens") or 0), out=int(a.get("output_tokens") or 0), cr=int(a.get("cache_read_tokens") or 0),
-                        cc=int(a.get("cache_creation_tokens") or 0), cost=float(a.get("cost_usd") or 0), model=a.get("model")))
+                        cc=int(a.get("cache_creation_tokens") or 0), cost=float(a.get("cost_usd") or 0), model=a.get("model"), effort=a.get("effort")))
                 elif name == "tool_result" and a.get("tool_name") not in ("Agent", "Task"):
                     tools.append(dict(end=t, dur=float(a.get("duration_ms") or 0), session=a.get("session.id"), tool=a.get("tool_name")))
 
@@ -165,6 +166,9 @@ checks.append(("output tokens: telemetry against the transcripts' text/4", ratio
 late = [q for q in reqs if TEND and q["end"] > TEND + 60000]
 checks.append(("nothing measured after the run ended", not late, f"{len(late)} requests after the end" if late else "none"))
 checks.append(("both showings and the review were seen", bool(S1 and R and S2), f"shown {S1 is not None}, review sent {R is not None}, shown again {S2 is not None}"))
+mix = collections.Counter((q["model"], q["effort"]) for q in reqs)
+checks.append(("one model and one effort for every request", len(mix) == 1, ", ".join(f"{m} at {e}: {n}" for (m, e), n in mix.most_common()) or "no requests"))
+report["mix"] = {f"{m}@{e}": n for (m, e), n in mix.items()}
 report["checks"] = [dict(name=n, ok=o, detail=d) for n, o, d in checks]
 
 print(f"# {report['run']} · reelplanner {report['reelplanner']} · ended: {report['ended']}\n")

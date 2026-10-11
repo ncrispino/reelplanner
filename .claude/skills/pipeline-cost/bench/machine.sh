@@ -4,8 +4,9 @@
 #   machine.sh setup          as the baseline run was set up (eval/fresh-machine/2026-10-10-bakery-auto-mode.md): Node 22
 #                             from nvm, Claude Code from its installer, the README's three Install lines with `npm i -g`
 #                             pointed at the packed copy in /opt/rp. Then the measuring: Claude Code's telemetry to
-#                             otel-sink.mjs (in ~/.claude/settings.json, so every claude on the machine sends it, fresh
-#                             eyes' `claude -p` too), and rp-shim.sh first on PATH as `reelplanner` and `reel`.
+#                             otel-sink.mjs, the model (Opus 5.5) and medium effort, all in ~/.claude/settings.json, so every
+#                             claude on the machine has them, fresh eyes' `claude -p` too (telemetry records each request's
+#                             effort, so the report can check it), and rp-shim.sh first on PATH as `reelplanner` and `reel`.
 #   machine.sh ready          exit 0 once Claude Code answers (the person has logged in)
 #   machine.sh run <label>    the README's bakery request in an empty ~/bakery-site, headless, with the reviewer
 #                             (reviewer.mjs) sending the same review once the video is shown; stopped once the revised
@@ -35,6 +36,7 @@ setup() {
   cat > "$HOME/.claude/settings.json" <<'JSON'
 {
   "model": "claude-opus-5-5",
+  "effortLevel": "medium",
   "env": {
     "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
     "OTEL_METRICS_EXPORTER": "otlp",
@@ -63,7 +65,7 @@ run() {
   node "$B/reviewer.mjs" "$HOME/bakery-site" "$BENCH_TIMING" "$OUT/reviewer.jsonl" "$OUT/done.json" > "$OUT/reviewer.log" 2>&1 & local rev=$!
   sleep 1
   printf '{"ev":"run-start","at":%s,"label":"%s","reelplanner":"%s"}\n' "$(date +%s%3N)" "$label" "$version" >> "$OUT/run.jsonl"
-  ( cd "$HOME/bakery-site" && claude -p "$PROMPT" --permission-mode auto --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
+  ( cd "$HOME/bakery-site" && claude -p "$PROMPT" --effort medium --permission-mode auto --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
   local deadline=$((SECONDS + minutes * 60)) why="the agent ended"
   while kill -0 "$agent" 2>/dev/null; do
     if [ -f "$OUT/done.json" ]; then why="the revised video was shown"; sleep 20; break; fi
