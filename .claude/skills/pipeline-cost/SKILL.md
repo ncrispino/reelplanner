@@ -13,6 +13,32 @@ Results go in `eval/pipeline-cost/`: one report per audited run, and a row each 
 [`LEDGER.md`](../../../eval/pipeline-cost/LEDGER.md), so a change to the skill or the tools is judged against the
 runs before it, not by impression.
 
+## 0. A measured run: the bench
+
+To compare versions, measure a run as it happens instead of reading it back. `bench/` runs the README's bakery
+request on a fresh EC2 machine, headless, with a scripted reviewer, and records:
+
+- **reelplanner's commands**, each start, end and exit code (`rp-shim.sh`, first on PATH: outside reelplanner, so
+  every version is timed the same way);
+- **Claude Code's telemetry** (`otel-sink.mjs`, set in the machine's `~/.claude/settings.json`): each model request
+  with its exact tokens, cost and duration, each tool call, every session (subagents and fresh eyes' `claude -p`);
+- **the reviewer** (`reviewer.mjs`): when the video was shown, the review sent (the same review every run: the
+  recommended option of each decision, Request changes, the baseline's web-address comment), the revision shown.
+
+```bash
+B=.claude/skills/pipeline-cost/bench; OUT=<a folder outside the repo>
+bash $B/bench.sh --ref origin/main --runs main-1,main-2 --profile <aws> --out $OUT &   # the version before
+bash $B/bench.sh --ref local --runs new-1,new-2 --profile <aws> --out $OUT &            # the version after
+python3 $B/report.py $OUT/new-1.tgz --json $OUT/new-1.json
+```
+
+One machine per version, its runs one after another; each asks the person to log in to Claude Code on it once
+(the command is printed; nothing here copies a credential) and deletes the machine at the end. `report.py` splits
+each episode (first video; revision) into plan, build, verify and rework by reelplanner's own commands, and checks
+itself: every transcript session sent telemetry, output tokens agree with the transcripts, both showings were
+seen. Its numbers go in the ledger; the transcript audit below says why they are what they are. Run each version
+at least twice: one run cannot tell a change from noise.
+
 ## 1. Find the transcripts
 
 Claude Code keeps a session as `~/.claude/projects/<cwd with / as ->/<session-id>.jsonl`. Gather all of a run:
