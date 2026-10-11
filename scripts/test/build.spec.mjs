@@ -115,6 +115,11 @@ try {
   ok("a rebuild with no frame changed since a build last passed: the frames stage is skipped, and says why", /^· frames +\d+\.\d s +skipped: no frame changed since the last build/m.test(bf1.out), bf1.out);
   const f1b = read("compositions/frames/01-beat.html");
   writeFileSync(join(P, "compositions", "frames", "01-beat.html"), '<div id="root" data-composition-id="f-01-beat" data-width="1920" data-height="1080"><div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div></div>');
+  const sb = read("STORYBOARD.md");
+  writeFileSync(join(P, "STORYBOARD.md"), sb + "\n");
+  const bf3 = build("--ignore", "wiggle");
+  ok("…the storyboard changed too: the assembly is stale, so the stage is skipped and says why (verify judges the new one)", /^· frames +\d+\.\d s +skipped: the storyboard or script changed since the last build/m.test(bf3.out), bf3.out);
+  writeFileSync(join(P, "STORYBOARD.md"), sb);
   const bf2 = build("--ignore", "wiggle");
   ok("…a frame edited since: verify's own check runs before any voice and stops on what verify would stop on, nothing voiced; the frame's frame-lint findings are said", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length
     && /✗ the video: lint: .*root_missing/.test(bf2.out) && /verify's layout check would stop here/.test(bf2.out) && /△ 1 changed \(01\): \d+ with frame-lint findings/.test(bf2.out), bf2.out);

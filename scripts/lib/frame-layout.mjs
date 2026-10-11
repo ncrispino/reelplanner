@@ -32,14 +32,24 @@ export function slotOf(dir, src) {
 // build at its end. (index.html's time is no measure: the build leaves it untouched when its content is the same.)
 const RECORD = (dir) => join(dir, ".hyperframes", "frames-built.json");
 const hashOf = (p) => createHash("sha1").update(readFileSync(p)).digest("hex");
-/** Every storyboard frame's file, hashed: { "<src>": "<sha1>" }. */
+// the words and scenes the assembly is made from: when either changed, the last assembly is stale (voice files
+// renumbered, scenes added), and only the build that follows can judge the video
+const SOURCES = ["STORYBOARD.md", "SCRIPT.md"];
+/** Every storyboard frame's file, hashed, and the storyboard's and script's: { "<path>": "<sha1>" }. */
 export function frameHashes(dir) {
   const out = {};
+  for (const f of SOURCES) if (existsSync(join(dir, f))) out[f] = hashOf(join(dir, f));
   for (const f of storyboardFrames(read(join(dir, "STORYBOARD.md")))) { const s = srcOf(f); if (s && existsSync(join(dir, s))) out[s] = hashOf(join(dir, s)); }
   return out;
 }
 /** Write the record, at the end of a build that passed. */
 export function recordFrames(dir) { mkdirSync(join(dir, ".hyperframes"), { recursive: true }); writeFileSync(RECORD(dir), JSON.stringify(frameHashes(dir), null, 2) + "\n"); }
+
+/** The storyboard or script changed since a build last passed (or none has recorded them): the assembly is stale. */
+export function sourcesChanged(dir) {
+  let was = null; try { was = JSON.parse(readFileSync(RECORD(dir), "utf8")); } catch { return true; }
+  return SOURCES.some((f) => existsSync(join(dir, f)) && was[f] !== hashOf(join(dir, f)));
+}
 
 /**
  * The storyboard's frames whose file changed since a build last passed: null when nothing is assembled yet (a first

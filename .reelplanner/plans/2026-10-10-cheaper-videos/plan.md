@@ -299,7 +299,8 @@ assembled, before anything is voiced. It stops on what verify would stop on, and
 findings on the changed frames are said, never a stop (no later stage runs frame-lint).
 
 A first version checked each changed frame three times and stopped on what it found: on a bench run it took 92 s a
-build and stopped builds on overlaps verify passes (`eval/pipeline-cost/`).
+build and stopped builds on overlaps verify passes. A second checked the last assembly after the script had changed
+too, and stopped on voice files the build was about to remake (`eval/pipeline-cost/`).
 
 #### Cases
 
@@ -310,6 +311,7 @@ build and stopped builds on overlaps verify passes (`eval/pipeline-cost/`).
 | A first build | no `index.html` | the `frames` stage is skipped: there is nothing assembled to look at | "· frames   a first build: nothing assembled yet to look at" |
 | A rebuild, frames edited | hashes differ from the last build that passed | verify's check, one browser, about 15 s | "✓ frames   2 changed (04, 07): verify's layout check passes" |
 | A rebuild, no frame edited | | skipped | "· frames   no frame changed since the last build" |
+| The storyboard or script changed too | their hashes differ | skipped: the last assembly is stale (voice files renumbered), and verify judges the new one | "· frames   the storyboard or script changed since the last build" |
 
 #### Interface
 

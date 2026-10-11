@@ -2,7 +2,8 @@
 // Build a video once its storyboard, script and frames are written: each stage its own command, run in
 // order:
 //
-//   frames              on a rebuild with frames changed since a build last passed (their hashes): verify's own layout
+//   frames              on a rebuild with frames changed since a build last passed (their hashes), and the storyboard
+//                       and script not (else the assembly is stale, and verify judges the new one): verify's own layout
 //                       check on the video as last assembled (lib/frame-layout.mjs videoCheck), before anything is
 //                       voiced, and frame-lint's findings on those frames said (never a stop); a first build has nothing
 //                       assembled to look at, and leaves it to verify
@@ -58,7 +59,7 @@ import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
 import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
-import { changedFrames, videoCheck, findingLine, recordFrames } from "./lib/frame-layout.mjs";
+import { changedFrames, sourcesChanged, videoCheck, findingLine, recordFrames } from "./lib/frame-layout.mjs";
 
 const argv = process.argv.slice(2);
 const VALUED = ["--speed", "--voice", "--helpers", "--ignore", "--against"];
@@ -127,6 +128,9 @@ function changedFramesStage() {
   const changed = changedFrames(dir);
   if (!changed) return { skip: "a first build: nothing assembled yet to look at" };
   if (!changed.length) return { skip: "no frame changed since the last build" };
+  // the storyboard or script changed too: the last assembly is stale (voice files renumbered, scenes added), and
+  // checking it stops on what this build will remake (a bench run's builds stopped so on missing voice files)
+  if (sourcesChanged(dir)) return { skip: "the storyboard or script changed since the last build: verify checks the new assembly" };
   const names = changed.map((f) => String(f.index).padStart(2, "0")).join(", ");
   // frame-lint is the agent's own check on its frames (no stage after this runs it), so here it is said, never a stop
   const lint = run(["node", [join(SCRIPTS, "frame-lint.mjs"), ...changed.map((f) => join(dir, String(f.meta.src).replace(/^\.\//, "")))]]);
