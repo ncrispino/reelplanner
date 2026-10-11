@@ -342,7 +342,7 @@ explainer (`<explainer-dir>/video/`).
    view clipped at y 900, and a question's heading and cards sit outside it (or the camera is at rest at
    scale 1 when the scene ends): `$RP frame-lint` fails either. Check each frame as it lands with `$RP frame-check
    <video-dir> <frame>`: frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
-   overflowing its box, overlaps, contrast), and one picture of it at rest to look at (no screenshot scripts of your
+   overflowing its box, overlaps, contrast; advice), and one picture of it at rest to look at (no screenshot scripts of your
    own). Put the
    holds for branch beats, assembling beats and the final frame in `.hyperframes/holds.json`. Details
    (style guide §10) start with `$RP detail new <video-dir> <name> --kind <template>` and are built
@@ -458,8 +458,8 @@ For changes requested:
   before touching a frame. Patch only the frames they touch, each in its own file (where one script writes the
   frames, patch it where the change is, never write it whole again), and check each as it lands with `$RP
   frame-check <video-dir> <frame>` (its layout and lint in seconds, and a picture), never with a build. With several
-  frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: its first stage
-  checks the frames you changed before anything is voiced.
+  frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: when frames
+  changed, its first stage runs verify's layout check before anything is voiced.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review
   watched is marked "Changed since your review", with the old and new words and the review's own words that asked
   for it (`guide --check` fails one left unmarked). Don't hand-edit `reviews/`: the comparison is read from them.

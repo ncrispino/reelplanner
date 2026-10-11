@@ -5,10 +5,11 @@
 //                 option cards), the theme by path and one finished sibling frame, and how to check a frame;
 //                 "narration not ready" with the line's text before the voice exists; a frame the storyboard lacks
 //                 is refused, naming the ones it has
-//   frame-check   frame-lint on that frame, HyperFrames' layout check on its slot (step 11: text overflowing its box
-//                 is found in seconds, with HyperFrames' fix), and one picture of it at rest from the assembled
-//                 video; a frame-lint or layout failure exits 1, the picture is taken all the same; a frame not in
-//                 index.html yet gets no picture, and says how to put it there
+//   frame-check   frame-lint on that frame, HyperFrames' layout check on its slot as advice (step 11: text overflowing
+//                 its box is said in seconds, with HyperFrames' fix, and never fails it: verify judges the whole
+//                 video), and one picture of it at rest from the assembled video; a frame-lint failure exits 1, the
+//                 picture is taken all the same; a frame not in index.html yet gets no picture, and says how to put it
+//                 there
 //   the packet names fonts by family, which HyperFrames loads, and this video's font files (step 13)
 // usage: node scripts/test/frame-tools.spec.mjs
 import { spawnSync } from "node:child_process";
@@ -46,7 +47,7 @@ try {
   // a title too long for its box: HyperFrames' layout check finds it in this frame, in seconds
   writeFileSync(f3, f3was.replace(/(<div id="root"[^>]*>)/, '$1<div class="ovf" style="position:absolute;left:300px;top:400px;width:260px;height:60px;border:2px solid #333;font:500 40px/1.2 Inter;white-space:nowrap">This title is far too long for its box</div>'));
   const t0 = Date.now(), co = rp("frame-check", V, "3", "--no-shot"), took = (Date.now() - t0) / 1000;
-  ok("…text overflowing its box: exit 1, HyperFrames' finding in this frame with its fix, in seconds", co.status === 1 && /✗ layout: .*text_box_overflow, `div\.ovf`, “This title is far too long/.test(co.stdout) && /widen the container/.test(co.stdout) && took < 60, `${took}s\n${co.stdout}${co.stderr}`);
+  ok("…text overflowing its box: HyperFrames' finding in this frame with its fix, in seconds, as advice (exit 0)", co.status === 0 && /△ layout: .*text_box_overflow, `div\.ovf`, “This title is far too long/.test(co.stdout) && /widen the container/.test(co.stdout) && took < 60, `${took}s\n${co.stdout}${co.stderr}`);
   writeFileSync(f3, f3was);
   // a detail's mark in the bottom band, where the player's chips go: frame-lint stops it
   writeFileSync(f3, readFileSync(f3, "utf8").replace(/(<div id="root"[^>]*>)/, '$1<div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div>'));

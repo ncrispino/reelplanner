@@ -291,30 +291,35 @@ The headless prompt in `scripts/review.mjs` (or where it is written).
 ### Step 11 — A changed frame's layout, checked in seconds
 
 `frame-check` also runs HyperFrames' layout and contrast check (`check --at`) on the frame's own slot in the
-assembled video, three times in it, and keeps what is found in that frame's file: text overflowing or overlapping
-stops it, as the build's `verify` would a minute later. `build` gets a first stage, `frames`: on a rebuild (an
-`index.html` there), frame-lint and that check on every frame whose file changed since the last build, before
-anything is voiced; a failure stops the build in seconds, naming the frame.
+assembled video, three times in it, keeping what is found in that frame's file, as advice: looked at that closely,
+an overlap that verify's nine moments over the whole video pass over counts as held, so it never fails the frame.
+`build` gets a first stage, `frames`: on a rebuild with frames changed since a build last passed (their hashes, in
+`.hyperframes/frames-built.json`), verify's own check (`hyperframes check`, as `verify` runs it) on the video as last
+assembled, before anything is voiced. It stops on what verify would stop on, and nothing stricter; frame-lint's
+findings on the changed frames are said, never a stop (no later stage runs frame-lint).
+
+A first version checked each changed frame three times and stopped on what it found: on a bench run it took 92 s a
+build and stopped builds on overlaps verify passes (`eval/pipeline-cost/`).
 
 #### Cases
 
 | Case | Input | What happens | Example |
 |---|---|---|---|
-| A frame's text overflows | an edited frame | frame-check exits 1 with HyperFrames' finding, in that frame | "✗ layout: text overflows its box (`.f04-…-title`), at 31.2s" |
-| Another frame's finding | the check sees the whole video | not this frame's: left to `verify` | |
+| A frame's text overflows | an edited frame | frame-check says so, with HyperFrames' fix, and exits 0 | "△ layout: text extends outside its box (`div.ovf`, 19.7s) — widen the container…" |
+| What verify would stop on | a rebuild | the build stops at `frames`, before any voice | "✗ verify's layout check would stop here (frame 4): fix, then build" |
 | A first build | no `index.html` | the `frames` stage is skipped: there is nothing assembled to look at | "· frames   a first build: nothing assembled yet to look at" |
-| A rebuild, frames edited | files newer than `index.html` | frame-lint and the layout check on those, one browser | "✓ frames   2 changed (04, 07): lint and layout" |
-| A rebuild, no frame edited | | skipped | "· frames   none changed since the last build" |
+| A rebuild, frames edited | hashes differ from the last build that passed | verify's check, one browser, about 15 s | "✓ frames   2 changed (04, 07): verify's layout check passes" |
+| A rebuild, no frame edited | | skipped | "· frames   no frame changed since the last build" |
 
 #### Interface
 
-`scripts/lib/frame-layout.mjs` `layoutCheck(dir, frames)` → per frame, its errors and warnings; used by
-`scripts/frame-check.mjs` and `build`'s `frames` stage.
+`scripts/lib/frame-layout.mjs`: `videoCheck(dir)` (build's `frames` stage), `layoutCheck(dir, frames)` (frame-check),
+`changedFrames(dir)` and `recordFrames(dir)` (the hashes, written when a build passes).
 
 #### Example
 
 ```
-✗ frames    frame 4 (04-step-1.html): text overflows its box (.f04-step-1-title, 31.2s): fix it, frame-check 4, then build
+✗ frames    13.5 s  stopped here: ✗ frame 4 (04-step-1.html): layout: text overflows its box … ✗ verify's layout check would stop here (frame 4): fix, then build
 ```
 
 ### Step 12 — A revision: gather the fixes, patch the frames, build once

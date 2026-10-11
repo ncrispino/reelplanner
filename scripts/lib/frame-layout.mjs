@@ -1,13 +1,18 @@
-// A changed frame's layout, checked in seconds (plans/2026-10-10-cheaper-videos, step 11). verify runs HyperFrames'
-// `check` (layout, contrast, runtime) on the whole video at the end of a build, a minute or more in; a revision's
-// builds failed there 6 times in 13, mostly on text overflowing a frame. This runs the same check at a few moments of
-// the frames asked for, in their slots of the assembled video (index.html), in one browser, and keeps only what is
-// found in those frames' files: about 10 seconds. frame-check runs it on one frame; build's first stage on the frames
-// changed since the last build.
+// A frame's layout, checked in seconds (plans/2026-10-10-cheaper-videos, step 11). verify runs HyperFrames' `check`
+// (layout, contrast, runtime) on the whole video at the end of a build, a minute or more in.
+//
+//   videoCheck    that same check, as verify runs it (its own nine moments over the whole video), on the video as last
+//                 assembled: what it stops on, verify would stop on. build's first stage runs it on a rebuild before
+//                 anything is voiced, about 15 seconds.
+//   layoutCheck   the check at three moments in each frame asked for (a quarter in, past the middle, at rest), keeping
+//                 what is found in those frames' files: frame-check's look at one frame. Advice, never a stop: looking
+//                 three times at one frame makes an overlap that verify's nine moments pass over (a note there, seen
+//                 once) count as held, and a bench run's builds stopped on such overlaps, in 92 s each.
 //
 // HyperFrames samples the whole video's motion too, so a finding can come from another frame: each finding names its
-// file (sourceFile), and only the asked frames' are kept. The rest are verify's.
-import { existsSync, readFileSync, statSync } from "node:fs";
+// file (sourceFile).
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./env.mjs";
@@ -23,13 +28,28 @@ export function slotOf(dir, src) {
   return el && Number.isFinite(num("data-start")) && Number.isFinite(num("data-duration")) ? { start: num("data-start"), duration: num("data-duration") } : null;
 }
 
-/** The storyboard's frames whose file changed since the last build (newer than index.html, which finish-project writes last). */
+// what each frame's file was when a build last passed: .hyperframes/frames-built.json, { "<src>": "<sha1>" }, written by
+// build at its end. (index.html's time is no measure: the build leaves it untouched when its content is the same.)
+const RECORD = (dir) => join(dir, ".hyperframes", "frames-built.json");
+const hashOf = (p) => createHash("sha1").update(readFileSync(p)).digest("hex");
+/** Every storyboard frame's file, hashed: { "<src>": "<sha1>" }. */
+export function frameHashes(dir) {
+  const out = {};
+  for (const f of storyboardFrames(read(join(dir, "STORYBOARD.md")))) { const s = srcOf(f); if (s && existsSync(join(dir, s))) out[s] = hashOf(join(dir, s)); }
+  return out;
+}
+/** Write the record, at the end of a build that passed. */
+export function recordFrames(dir) { mkdirSync(join(dir, ".hyperframes"), { recursive: true }); writeFileSync(RECORD(dir), JSON.stringify(frameHashes(dir), null, 2) + "\n"); }
+
+/**
+ * The storyboard's frames whose file changed since a build last passed: null when nothing is assembled yet (a first
+ * build); every frame when no build has recorded them.
+ */
 export function changedFrames(dir) {
-  const html = join(dir, "index.html");
-  if (!existsSync(html)) return null;
-  const built = statSync(html).mtimeMs;
+  if (!existsSync(join(dir, "index.html"))) return null;
+  let was = null; try { was = JSON.parse(readFileSync(RECORD(dir), "utf8")); } catch { was = null; }
   return storyboardFrames(read(join(dir, "STORYBOARD.md")))
-    .filter((f) => srcOf(f) && existsSync(join(dir, srcOf(f))) && statSync(join(dir, srcOf(f))).mtimeMs > built)
+    .filter((f) => srcOf(f) && existsSync(join(dir, srcOf(f))) && (!was || was[srcOf(f)] !== hashOf(join(dir, srcOf(f)))))
     .sort((a, b) => a.index - b.index);
 }
 
@@ -58,6 +78,30 @@ export function layoutCheck(dir, frames) {
     }
   }
   return { ran: true, byFrame, missing, at };
+}
+
+/**
+ * HyperFrames' check as verify runs it (scripts/verify.sh: `hf check`, its defaults), on the video as last assembled.
+ * → { ran: true, errors: [{ ...finding, frame }], warnings: [...] } (frame: the storyboard's number for the finding's
+ * file, or null for the video's own) or { ran: false, why }.
+ */
+export function videoCheck(dir) {
+  if (!existsSync(join(dir, "index.html"))) return { ran: false, why: "not assembled yet" };
+  const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "check", "--json"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
+  const out = r.stdout || "", i = out.indexOf("\n{") >= 0 ? out.indexOf("\n{") + 1 : out.startsWith("{") ? 0 : -1;
+  let j = null;
+  try { j = i >= 0 ? JSON.parse(out.slice(i)) : null; } catch { j = null; }
+  if (!j) return { ran: false, why: `hyperframes check said ${((r.stderr || out).trim().split("\n").at(-1)) || "nothing"}` };
+  const bySrc = new Map(storyboardFrames(read(join(dir, "STORYBOARD.md"))).map((f) => [srcOf(f), f.index]));
+  const errors = [], warnings = [];
+  for (const part of ["lint", "runtime", "layout", "motion", "contrast"]) {
+    for (const x of j[part]?.findings || []) {
+      if (!["error", "warning"].includes(x.severity)) continue;
+      const frame = bySrc.get(String(x.sourceFile || "").replace(/^\.\//, "")) ?? null;
+      (x.severity === "error" ? errors : warnings).push({ part, frame, ...x });
+    }
+  }
+  return { ran: true, errors, warnings };
 }
 
 /** One line a finding: what, where in the frame, when. */

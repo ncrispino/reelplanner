@@ -22,6 +22,7 @@ import { ROOT } from "../lib/env.mjs";
 import { videoLength, lengthLine, mmss, scriptLength, scriptLengthLine } from "../lib/length.mjs";
 import { skillsDir } from "../hyperframes-skills.mjs";
 import { reviewWayLine } from "../lib/inbox.mjs";
+import { recordFrames } from "../lib/frame-layout.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-build-spec-"));
 const P = join(tmp, "video"), ENGINE = join(tmp, "fake-engine.mjs"), LOG = join(tmp, "tts.log");
@@ -104,18 +105,20 @@ try {
 
   let rb; try { rb = execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), "build", P], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { rb = `${e.stdout}${e.stderr}`; }
   ok("reel build runs the same build", /^build /m.test(rb) && /✓ narrate +\d+\.\d s/.test(rb) && /✗ finish-project/.test(rb), rb);
-  // the frames stage (cheaper-videos step 11): on a rebuild, the frames changed since the last build are checked
-  // before anything is voiced; the layout half is frame-tools.spec's (it needs a video HyperFrames can assemble)
+  // the frames stage (cheaper-videos step 11): on a rebuild with frames changed since a build last passed (their hashes),
+  // verify's own layout check before anything is voiced; frame-lint's findings said, never a stop on their own. The
+  // index.html here is a stand-in HyperFrames' lint fails, as verify would: the stage stops on it (the layout half on
+  // a real video is frame-tools.spec's)
   writeFileSync(join(P, "index.html"), "<!doctype html><title>built</title>");
-  const past = new Date(Date.now() - 60_000);
-  for (const id of ["01-beat", "01b-beat", "02-beat", "03-beat"]) utimesSync(join(P, "compositions", "frames", `${id}.html`), past, past);
+  recordFrames(P);
   const bf1 = build("--ignore", "wiggle");
-  ok("a rebuild with no frame changed since the last build: the frames stage is skipped, and says why", /^· frames +\d+\.\d s +skipped: no frame changed since the last build/m.test(bf1.out), bf1.out);
+  ok("a rebuild with no frame changed since a build last passed: the frames stage is skipped, and says why", /^· frames +\d+\.\d s +skipped: no frame changed since the last build/m.test(bf1.out), bf1.out);
   const f1b = read("compositions/frames/01-beat.html");
   writeFileSync(join(P, "compositions", "frames", "01-beat.html"), '<div id="root" data-composition-id="f-01-beat" data-width="1920" data-height="1080"><div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div></div>');
   const bf2 = build("--ignore", "wiggle");
-  ok("…a frame edited since, failing frame-lint: the build stops at its first stage, nothing voiced, and says how to check it", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length && /frame-lint on the frames changed \(01\)/.test(bf2.out) && /reelplanner frame-check .* <frame>/.test(bf2.out), bf2.out);
-  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), f1b); rmSync(join(P, "index.html"));
+  ok("…a frame edited since: verify's own check runs before any voice and stops on what verify would stop on, nothing voiced; the frame's frame-lint findings are said", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length
+    && /✗ the video: lint: .*root_missing/.test(bf2.out) && /verify's layout check would stop here/.test(bf2.out) && /△ 1 changed \(01\): \d+ with frame-lint findings/.test(bf2.out), bf2.out);
+  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), f1b); rmSync(join(P, "index.html")); rmSync(join(P, ".hyperframes", "frames-built.json"));
   // check-terms (accessible videos): a word said before it is defined is a △ line and the build goes on;
   // an id said alone, on a storyboard with `terms_check: strict`, stops the build before any voice
   const P2 = join(tmp, "terms"); mkdirSync(join(P2, "compositions", "frames"), { recursive: true });

@@ -2,9 +2,10 @@
 // Build a video once its storyboard, script and frames are written: each stage its own command, run in
 // order:
 //
-//   frames              on a rebuild, the frames changed since the last one (newer than index.html): frame-lint and
-//                       HyperFrames' layout check on their slots (lib/frame-layout.mjs), seconds, before anything is
-//                       voiced; a first build has nothing assembled to look at, and leaves it to verify
+//   frames              on a rebuild with frames changed since a build last passed (their hashes): verify's own layout
+//                       check on the video as last assembled (lib/frame-layout.mjs videoCheck), before anything is
+//                       voiced, and frame-lint's findings on those frames said (never a stop); a first build has nothing
+//                       assembled to look at, and leaves it to verify
 //   check-terms         no id said alone, no word used before it is defined (check-terms.mjs; warnings go on)
 //   length              the length the script will run, before the voice: past 1.5× the budget it stops (lib/length.mjs),
 //                       unless BRIEF.md says why it needs more (`- Length:`)
@@ -57,7 +58,7 @@ import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
 import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
-import { changedFrames, layoutCheck, findingLine } from "./lib/frame-layout.mjs";
+import { changedFrames, videoCheck, findingLine, recordFrames } from "./lib/frame-layout.mjs";
 
 const argv = process.argv.slice(2);
 const VALUED = ["--speed", "--voice", "--helpers", "--ignore", "--against"];
@@ -118,26 +119,27 @@ function retime() {
 
 // ── the stages ──────────────────────────────────────────────────────────────────────────────────────
 const narrateArgs = ["--speed", "--voice"].flatMap((f) => (flag(f.slice(2)) ? [f, flag(f.slice(2))] : []));
-// the frames changed since the last build, checked before anything else (cheaper-videos step 11): a revision's builds
-// failed in verify a minute in, mostly on text overflowing a frame, which this finds in seconds
+// on a rebuild, before anything is voiced (cheaper-videos step 11): verify's own layout check on the video as last
+// assembled, when a frame changed since a build last passed (lib/frame-layout.mjs: their hashes); frame-lint's findings
+// on those frames said. It stops on what verify would stop on, a minute and a voice earlier; nothing stricter (a stricter look at each changed frame cost a bench run 92 s a build,
+// and builds stopped on overlaps verify passes).
 function changedFramesStage() {
   const changed = changedFrames(dir);
   if (!changed) return { skip: "a first build: nothing assembled yet to look at" };
   if (!changed.length) return { skip: "no frame changed since the last build" };
   const names = changed.map((f) => String(f.index).padStart(2, "0")).join(", ");
+  // frame-lint is the agent's own check on its frames (no stage after this runs it), so here it is said, never a stop
   const lint = run(["node", [join(SCRIPTS, "frame-lint.mjs"), ...changed.map((f) => join(dir, String(f.meta.src).replace(/^\.\//, "")))]]);
-  if (lint.status !== 0) return { status: 1, out: `${lint.out}\n✗ frame-lint on the frames changed (${names}): fix them, \`reelplanner frame-check ${project} <frame>\` each, then build\n` };
-  const l = layoutCheck(dir, changed);
-  if (!l.ran) return { status: 0, warn: true, out: `△ ${changed.length} changed (${names}): frame-lint clean; no layout check (${l.why}): verify checks it\n` };
-  const lines = [], bad = [];
-  for (const f of changed) {
-    const r = l.byFrame.get(f.index); if (!r) continue;
-    for (const x of r.errors) lines.push(`✗ frame ${f.index} (${String(f.meta.src).split("/").pop()}): ${findingLine(x)}`);
-    for (const x of r.warnings) lines.push(`△ frame ${f.index} (${String(f.meta.src).split("/").pop()}): ${findingLine(x)}`);
-    if (r.errors.length) bad.push(f.index);
+  const linted = lint.status === 0 ? "" : `${(lint.out.match(/^\s*✗ .+$/gm) || []).length || "some"} with frame-lint findings (\`reelplanner frame-check ${project} <frame>\`); `;
+  const v = videoCheck(dir);
+  if (!v.ran) return { status: 0, warn: true, out: `△ ${changed.length} changed (${names}): ${linted}no layout check (${v.why}): verify checks it\n` };
+  const where = (x) => (x.frame != null ? `frame ${x.frame} (${String(x.sourceFile).split("/").pop()})` : "the video");
+  if (v.errors.length) {
+    const frames = [...new Set(v.errors.map((x) => x.frame).filter((n) => n != null))];
+    return { status: 1, out: `${v.errors.map((x) => `✗ ${where(x)}: ${findingLine(x)}`).join("\n")}\n${linted ? `△ ${changed.length} changed (${names}): ${linted.replace(/; $/, "")}\n` : ""}✗ verify's layout check would stop here${frames.length ? ` (frame${frames.length === 1 ? "" : "s"} ${frames.join(", ")})` : ""}: fix, then build\n` };
   }
-  if (bad.length) return { status: 1, out: `${lines.join("\n")}\n✗ frame${bad.length === 1 ? "" : "s"} ${bad.join(", ")}: fix ${bad.length === 1 ? "it" : "them"}, \`reelplanner frame-check ${project} <frame>\` each, then build\n` };
-  return { status: 0, warn: lines.length > 0, out: `${lines.join("\n")}\n${lines.length ? "△" : "✓"} ${changed.length} changed (${names}): lint and layout${lines.length ? `, ${lines.length} warning(s)` : ""}\n` };
+  const warn = v.warnings.length > 0 || !!linted;
+  return { status: 0, warn, out: `${v.warnings.map((x) => `△ ${where(x)}: ${findingLine(x)}`).join("\n")}\n${warn ? "△" : "✓"} ${changed.length} changed (${names}): ${linted}verify's layout check passes${v.warnings.length ? `, ${v.warnings.length} warning(s)` : ""}\n` };
 }
 
 const STAGES = [
@@ -210,6 +212,7 @@ for (const [name, fn] of STAGES) {
   // stopped verify above; no run yet, or scenes changed since the agents looked, is a △ here
   if (name === "verify" && !VERBOSE) for (const l of (r.out || "").split("\n").filter((x) => /^[✓△] fresh eyes/.test(x.trim()))) console.log(`${l.trim()[0]} ${"fresh-eyes".padEnd(w)}  ${"".padStart(7)}  ${l.trim().replace(/^[✓△]\s*fresh eyes[,:]?\s*/, "").slice(0, 150)}`);
 }
+recordFrames(dir);   // what the frames were when this build passed: the next one's frames stage compares against it
 console.log(`✓ built ${relative(process.cwd(), dir) || "."} in ${secs(Date.now() - t0)}`);
 // the watched length against the budget (style guide §1): said, never a failure
 const len = videoLength(dir);
