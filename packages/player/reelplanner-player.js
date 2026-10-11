@@ -1723,7 +1723,7 @@ export class ReelplannerPlayer extends HTMLElement {
   // viewer's opaque id in this organization and whether they own the page, from the `user` capability,
   // declared beside `db` at publish. Only the id is kept, never a name. Where it is absent (not
   // declared, not served, no identity here) the row carries no `viewer` and intake falls back to git's
-  // user.email. Asked once, early, with the db; a send waits for it a moment at most (sendToClaude).
+  // user.email. Asked once, early, with the db; Send and Download wait for it a moment at most.
   reachViewer() {
     if (this._viewerReady) return this._viewerReady;
     this._viewer = null;
@@ -7120,6 +7120,9 @@ ${clip(gloss || "(none)", 9000)}`;
   exportPayload() {
     const dur = this.player.duration || this.planMap?.totalSeconds || 0;
     return { version: 1, src: this.src, project: this.planMap?.project || null, exportedAt: new Date().toISOString(),
+      // A disconnected download keeps the identity the page already knows, as Send does. No
+      // capability means no viewer field: intake then uses git's user.email, without inventing one.
+      ...(this._viewer && (this._viewer.id || this._viewer.owner) ? { viewer: { id: this._viewer.id || null, owner: !!this._viewer.owner } } : {}),
       watch: { firstPlayAt: this._firstPlayAt, maxTimeReached: +this._maxT.toFixed(2), durationSeconds: +dur.toFixed(2), completion: dur ? +Math.min(1, this._maxT / dur).toFixed(3) : null, chapters: (this.planMap?.chapters || []).map((c) => ({ id: c.id, completion: +Math.max(0, Math.min(1, (this._maxT - c.start) / (c.end - c.start))).toFixed(3) })),
         moments: this.moments.map((m) => ({ ...m })),
         // details: each opening, and how long the page was open; none of it is watching time (D-005)
@@ -7143,7 +7146,10 @@ ${clip(gloss || "(none)", 9000)}`;
       ...(this.isExplainer ? { kind: "explainer", end: EXPLAINER_ENDS[this.verdict] ? this.verdict : null, next: this.nextRecord() } : {}),
       annotations: this.annotations };
   }
-  export() {
+  async export() {
+    // A host may still be answering its user capability. Give it the same bounded wait as Send;
+    // a missing or stalled capability must never prevent the reviewer downloading their review.
+    await Promise.race([this.reachViewer(), new Promise((r) => setTimeout(() => r(null), 1500))]).catch(() => null);
     const out = this.exportPayload();
     this.dispatchEvent(new CustomEvent("annotations", { detail: out }));
     const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });

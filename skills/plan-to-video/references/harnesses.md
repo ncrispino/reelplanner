@@ -66,9 +66,18 @@ commit leaves the review unfinished, with its edits and log. Never assume a plai
 the sandbox and never commit from the review server.
 
 Record `handling`, `intake`, `editing`, `checked` and `committed` progress as those stages succeed.
+Record `checked` after the required checks and **before committing**. It freezes the expected review
+tree while excluding preexisting owner work. Completion requires that exact committed tree and
+preserves the original staged, unstaged and untracked owner files. Recording checks may need a
+permitted Git-write approval because its temporary index writes Git objects; it never changes the
+owner's index. Overlapping owner edits fail conservatively and require reconciliation.
 After the required commit succeeds, mark the item with `inbox done <id>`. A stopped run is deliberate
 recovery work: inspect its log, intake record, edits and existing commit, fix the cause, then use
-`inbox retry <id>`. The retry guard checks live ownership and retained progress; it does not make
+`inbox retry <id>`. The next waiting session can also adopt expired ownership at any phase, retaining
+the baseline and progress. A successful commit followed by a crash can finish from its saved checked
+evidence without repeating the edit or commit. A legacy Git review with no checked evidence requires
+reconciliation; an unrelated commit is insufficient. The retry guard checks live ownership and
+retained progress; it does not make
 arbitrary edits transactional or guarantee that a crash never needs reconciliation.
 
 ### Independent reviewers

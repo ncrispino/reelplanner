@@ -128,11 +128,14 @@ As of this implementation pass:
 - A real headless review created one intake record and commit. An injected scratch signing failure left
   edits pending despite exit code zero. Restoring the original signing configuration and retrying made
   one recovery commit without repeating the edit or intake.
+- The owner-confirmed Codex CLI session in iTerm2 verified its exact loaded daemon thread, adopted a saved API question, answered it, and returned the sourced answer to the page API. It deliberately polled; automatic wake is not claimed.
 - Read-only paginated export of a real scratch Codex conversation matched its ID and project; transcript
   contents stayed outside Git.
 - The shared terminal player opened in Ghostty 1.3.1 with terminal-browser 0.13.4. Rewind/pause/resume
   regressions and live timing checks passed, and the owner confirmed normal audio. Full pane review
   submission and changed-scenes checks remain open ([terminal review](./terminal-review.md)).
+- Disconnected download/intake preserved answers and comments. Provided viewer fixtures survived export; unauthenticated browser intake kept the Git identity fallback. This proves preservation, not hosted authentication.
+- The corrected fast suite passed all 59 specs; full runs of all 21 touched specs passed, including 60 handoff checks.
 - These focused proofs do not establish the entire plan/video/walkthrough lifecycle, the Codex app,
   cloud, Linux, Windows or WSL. Remaining trials are recorded in the walkthrough.
 

@@ -1,3 +1,4 @@
+$ PATH=/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin:/opt/homebrew/bin:/usr/bin:/bin npm test 2>&1 | tee /private/tmp/reelplanner-ghostty-review-20261011/npm-test-audio.txt
 
 > reelplanner@0.2.0 test
 > node scripts/test/run.mjs
@@ -65,3 +66,4 @@ fast run: 59 specs, 4 at a time (npm run test:full for everything)
 ✓ scripts/test/guide.spec.mjs                      70.7 s  111 checks
 
 ✓ all 59 passed in 219.8 s (the slowest, packages/player/test/access.spec.mjs, 82.7 s)
+exit 0

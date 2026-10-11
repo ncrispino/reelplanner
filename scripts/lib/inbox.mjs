@@ -25,7 +25,7 @@
 // has no agent command, so a review there waits for a session's `review --wait`. Once `reel init` sets the repo up,
 // its own inbox is used and the machine's is left as it is: nothing is moved, so nothing is handled twice, and
 // `inbox` there names a review still waiting in it.
-import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, readdirSync, statSync, openSync, closeSync, writeSync, unlinkSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, renameSync, readdirSync, statSync, lstatSync, readlinkSync, openSync, closeSync, writeSync, unlinkSync, rmSync } from "node:fs";
 import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "node:path";
 import { hostname, homedir } from "node:os";
 import { createHash, randomUUID } from "node:crypto";
@@ -60,7 +60,7 @@ export function shownPath(p, from = process.cwd()) {
 }
 const ensure = (d) => { mkdirSync(d, { recursive: true }); return d; };
 // written whole or not at all: a waiter never reads half a file
-const writeAtomic = (path, text) => { const tmp = `${path}.${process.pid}.tmp`; writeFileSync(tmp, text); renameSync(tmp, path); };
+const writeAtomic = (path, text, options) => { const tmp = `${path}.${process.pid}.tmp`; writeFileSync(tmp, text, options); renameSync(tmp, path); };
 // a claim file, created exclusively: true for exactly one caller, ever (until it is removed)
 function withClaimLock(path, action) {
   const lock = `${path}.lock`; let fd;
@@ -149,6 +149,24 @@ const headOf = (repo) => { try { return execFileSync("git", ["-C", repo, "rev-pa
 const descendsFrom = (repo, base, head) => { try { execFileSync("git", ["-C", repo, "merge-base", "--is-ancestor", base, head], { stdio: "ignore" }); return true; } catch { return false; } };
 const gitBytes = (repo, argv) => execFileSync("git", ["-C", repo, ...argv], { stdio: ["ignore", "pipe", "pipe"], maxBuffer: 32 << 20 });
 const hash = (value) => createHash("sha256").update(value).digest("hex");
+const gitPaths = (bytes) => {
+  if (!Buffer.from(bytes.toString("utf8")).equals(bytes)) throw new Error("Cannot fingerprint non-UTF-8 Git paths safely");
+  return bytes.toString("utf8").split("\0").filter(Boolean).sort();
+};
+const outsideInbox = (repo, rp, path) => {
+  const box = relative(realPath(repo), realPath(inboxDir(rp))).split(sep).join("/");
+  return path !== box && !path.startsWith(box + "/");
+};
+const untrackedPaths = (repo, rp) => gitPaths(gitBytes(repo, ["ls-files", "--others", "--exclude-standard", "-z"]))
+  .filter((path) => outsideInbox(repo, rp, path));
+function untrackedFingerprint(repo, rp) {
+  return Object.fromEntries(untrackedPaths(repo, rp).map((path) => {
+    const f = join(repo, path), stat = lstatSync(f);
+    const bytes = stat.isSymbolicLink() ? Buffer.from(readlinkSync(f)) : readFileSync(f);
+    return [hash(path), hash(Buffer.concat([Buffer.from(`${stat.isSymbolicLink() ? "link" : stat.mode & 0o111 ? "executable" : "file"}\0`), bytes]))];
+  }).sort(([a], [b]) => a.localeCompare(b)));
+}
+const ownerPatchPath = (rp, id, stage) => join(inboxDir(rp), ".progress", `${id}.owner-${stage}.patch`);
 // Zero context and normalized hunk/index coordinates let a separate committed edit move the original
 // owner's text without changing its fingerprint. Modes, +/- text and binary patch content remain.
 const patchFingerprint = (patch) => hash(Buffer.from(patch.toString("latin1")
@@ -160,16 +178,16 @@ function trackedFingerprint(repo) {
     const cached = stage === "staged" ? ["--cached"] : [];
     const names = gitBytes(repo, ["diff", ...cached, "--name-only", "-z", "--no-renames"]);
     if (!Buffer.from(names.toString("utf8")).equals(names)) throw new Error("Cannot fingerprint non-UTF-8 Git paths safely");
-    const paths = names.toString("utf8").split("\0").filter(Boolean).sort();
+    const paths = gitPaths(names);
     for (const path of paths) {
       const key = hash(path);
       result[key] ||= {};
-      result[key][stage] = patchFingerprint(gitBytes(repo, ["diff", ...cached, "--binary", "--no-ext-diff", "--no-textconv", "--no-renames", "--unified=0", "--", path]));
+      result[key][stage] = patchFingerprint(gitBytes(repo, ["--literal-pathspecs", "diff", ...cached, "--binary", "--no-ext-diff", "--no-textconv", "--no-renames", "--unified=0", "--", path]));
     }
   }
   return Object.fromEntries(Object.entries(result).sort(([a], [b]) => a.localeCompare(b)));
 }
-function completionBaseline(rp, repo) {
+function completionBaseline(rp, repo, id) {
   if (isMachineInbox(rp)) return { completionMode: "quick-review", completionReason: "no project record" };
   try { gitBytes(repo, ["rev-parse", "--show-toplevel"]); }
   catch (e) {
@@ -184,29 +202,78 @@ function completionBaseline(rp, repo) {
     try { gitBytes(repo, ["show-ref", "--quiet", "--verify", ref]); }
     catch (e) { if (e.status !== 1) throw new Error("Cannot inspect the initial Git commit; the review remains pending"); }
   }
-  return { completionMode: "git", repo: realPath(repo), startHead, baselineTracked: trackedFingerprint(repo) };
+  const ownerPatches = {};
+  ensure(dirname(progressPath(rp, id)));
+  for (const stage of ["staged", "unstaged"]) {
+    const patch = gitBytes(repo, ["diff", ...(stage === "staged" ? ["--cached"] : []), "--binary", "--full-index", "--no-ext-diff", "--no-textconv", "--no-renames"]);
+    writeAtomic(ownerPatchPath(rp, id, stage), patch, { mode: 0o600 });
+    ownerPatches[stage] = hash(patch);
+  }
+  return { completionMode: "git", repo: realPath(repo), startHead, baselineTracked: trackedFingerprint(repo), baselineUntracked: untrackedFingerprint(repo, rp), ownerPatches };
 }
-function claimItem(rp, id, by, extra, { repo = dirname(rp), phase = "handling" } = {}) {
+function claimItem(rp, id, by, extra, { repo = dirname(rp), phase = "handling", recover = false } = {}) {
   return withClaimLock(claimPath(rp, id), () => {
-    if (existsSync(claimPath(rp, id))) return false;
+    if (existsSync(claimPath(rp, id))) {
+      const current = claimOf(rp, id);
+      if (!recover || !current || claimLive(current)) return false;
+      unlinkSync(claimPath(rp, id));
+    }
     const previous = progressOf(rp, id);
     const baseline = previous?.completionMode ? previous : previous && "startHead" in previous
       ? { ...previous, completionMode: "git", repo: realPath(repo), baselineTracked: {} }
-      : { ...previous, ...completionBaseline(rp, repo) };
+      : { ...previous, ...completionBaseline(rp, repo, id) };
     if (!createClaim(claimPath(rp, id), by, extra)) return false;
     try {
       ensure(dirname(progressPath(rp, id)));
-      writeAtomic(progressPath(rp, id), JSON.stringify({ ...baseline, phase, at: new Date().toISOString() }) + "\n");
+      // Adoption does not rewind completed intake, edits, checks or a recorded commit.
+      const retainedPhase = ["handling", "intake", "editing", "checked", "committed"].includes(previous?.phase) ? previous.phase : phase;
+      writeAtomic(progressPath(rp, id), JSON.stringify({ ...baseline, phase: retainedPhase, at: new Date().toISOString() }) + "\n");
     } catch (e) { try { unlinkSync(claimPath(rp, id)); } catch {} throw e; }
     return true;
   }) || false;
 }
-function commitEvidenceMatches(progress, { completed = false } = {}) {
+// Freeze exactly the tree the handler checked, excluding the owner's preexisting edits.
+// Git writes only a temporary index and objects here: never the owner's index, a commit,
+// signing configuration, hooks or permissions. Overlapping owner hunks fail closed.
+function checkedEvidence(rp, id, progress) {
+  if (!progress?.ownerPatches || !progress.baselineUntracked) throw new Error("No original work evidence; reconcile this legacy review before recording checked work");
+  const repo = progress.repo, head = headOf(repo), currentUntracked = untrackedFingerprint(repo, rp);
+  for (const [path, fingerprint] of Object.entries(progress.baselineUntracked)) {
+    if (currentUntracked[path] !== fingerprint) throw new Error("Original untracked owner files changed; preserve them before recording checked work");
+  }
+  const temp = mkdtempSync(join(ensure(dirname(progressPath(rp, id))), `${id}.index-`));
+  const git = (argv, input) => execFileSync("git", ["-C", repo, ...argv], {
+    env: { ...process.env, GIT_INDEX_FILE: resolve(temp, "index") }, input, stdio: ["pipe", "pipe", "pipe"], maxBuffer: 32 << 20,
+  });
+  try {
+    git(head ? ["read-tree", head] : ["read-tree", "--empty"]);
+    const paths = [...new Set([
+      ...gitPaths(gitBytes(repo, ["ls-files", "-z"])),
+      ...(head ? gitPaths(gitBytes(repo, ["ls-tree", "-r", "--name-only", "-z", head])) : []),
+      ...untrackedPaths(repo, rp),
+    ])].filter((path) => outsideInbox(repo, rp, path) && !(hash(path) in progress.baselineUntracked));
+    if (paths.length) git(["--literal-pathspecs", "add", "--all", "--force", "--pathspec-from-file=-", "--pathspec-file-nul"], Buffer.from(paths.join("\0") + "\0"));
+    for (const stage of ["unstaged", "staged"]) {
+      const patch = readFileSync(ownerPatchPath(rp, id, stage));
+      if (hash(patch) !== progress.ownerPatches[stage]) throw new Error("Original owner patch evidence is missing or changed");
+      if (patch.length) git(["apply", "--reverse", "--cached", "--whitespace=nowarn", "-"], patch);
+    }
+    const checkedTree = git(["write-tree"]).toString("utf8").trim();
+    const beforeTree = head ? git(["rev-parse", `${head}^{tree}`]).toString("utf8").trim() : git(["mktree"], "").toString("utf8").trim();
+    if (checkedTree === beforeTree) throw new Error("No new review work to check; unrelated commits cannot prove this review was applied");
+    return { checkedHead: head, checkedTree };
+  } catch (e) {
+    throw new Error(`Cannot record checked review work: ${String(e.stderr || e.message).trim()}; reconcile owner edits and record checked before committing`);
+  } finally { rmSync(temp, { recursive: true, force: true }); }
+}
+function commitEvidenceMatches(progress, { completed = false, rp } = {}) {
   if (progress?.completionMode !== "git") return true; // pre-instrumentation claims and quick reviews
   const head = headOf(progress.repo);
-  if (!head || head === progress.startHead || (progress.startHead && !descendsFrom(progress.repo, progress.startHead, head))) return false;
+  if (!progress.checkedTree || !("checkedHead" in progress) || !head || head === progress.checkedHead || head === progress.startHead || (progress.startHead && !descendsFrom(progress.repo, progress.startHead, head)) || (progress.checkedHead && !descendsFrom(progress.repo, progress.checkedHead, head))) return false;
   if (completed && (progress.phase !== "committed" || progress.committedHead !== head)) return false;
-  try { return JSON.stringify(trackedFingerprint(progress.repo)) === JSON.stringify(progress.baselineTracked); }
+  try { return gitBytes(progress.repo, ["rev-parse", `${head}^{tree}`]).toString("utf8").trim() === progress.checkedTree
+    && JSON.stringify(trackedFingerprint(progress.repo)) === JSON.stringify(progress.baselineTracked)
+    && JSON.stringify(untrackedFingerprint(progress.repo, rp)) === JSON.stringify(progress.baselineUntracked); }
   catch { return false; }
 }
 export function renewClaim(rp, id, { phase, owner = process.env.REELPLANNER_OWNER || activeSession(process.env)?.key || null } = {}) {
@@ -219,8 +286,10 @@ export function renewClaim(rp, id, { phase, owner = process.env.REELPLANNER_OWNE
     writeAtomic(path, JSON.stringify(next) + "\n");
     if (phase) {
       const previous = progressOf(rp, id), head = headOf(previous?.repo || dirname(rp));
-      if (phase === "committed" && !commitEvidenceMatches(previous)) throw new Error("committed phase requires a new descendant commit and unchanged original owner edits, with no new pending tracked edits");
-      ensure(dirname(progressPath(rp, id))); writeAtomic(progressPath(rp, id), JSON.stringify({ ...previous, phase, at: new Date().toISOString(), head, ...(phase === "committed" ? { committedHead: head } : {}) }) + "\n");
+      if (phase === "committed" && !commitEvidenceMatches(previous, { rp })) throw new Error("committed phase requires a new descendant commit containing the recorded checked work and unchanged original owner edits, with no new pending tracked edits or untracked files; record checked before committing");
+      const evidence = phase === "checked" && previous?.completionMode === "git"
+        ? commitEvidenceMatches(previous, { rp }) ? {} : checkedEvidence(rp, id, previous) : {};
+      ensure(dirname(progressPath(rp, id))); writeAtomic(progressPath(rp, id), JSON.stringify({ ...previous, ...evidence, phase, at: new Date().toISOString(), head, ...(phase === "committed" ? { committedHead: head } : {}) }) + "\n");
     }
     return next;
   });
@@ -247,7 +316,7 @@ export function markDone(rp, id, { owner = process.env.REELPLANNER_OWNER || acti
     const c = claimOf(rp, id), progress = progressOf(rp, id);
     if (progress?.completionMode === "git" && !c) throw new Error(`no owner claim for ${id}; recover it before completion`);
     if (progress?.completionMode === "git" && owner && c?.owner !== owner) throw new Error(`${id} belongs to another session`);
-    if (c && !commitEvidenceMatches(progress, { completed: true })) throw new Error("Stopped before commit: completion requires a recorded successful commit and unchanged original owner edits, with no new pending tracked edits; keep the edits and retry after correcting the cause");
+    if (c && !commitEvidenceMatches(progress, { completed: true, rp })) throw new Error("Stopped before commit: completion requires a recorded successful commit containing the checked review work and unchanged original owner edits, with no new pending tracked edits or untracked files; record checked before committing, keep the edits and retry after correcting the cause");
     if (!existsSync(from)) return false;
     renameSync(from, join(done, `${id}.json`));
     if (existsSync(claimPath(rp, id))) renameSync(claimPath(rp, id), join(done, `${id}.claim`));
@@ -268,7 +337,7 @@ export function startHeartbeat(rp, { everyMs = HEARTBEAT_MS } = {}) {
   const beat = () => { try { writeFileSync(f, JSON.stringify({ pid: process.pid, host: hostname(), startedAt, beat: Date.now() }) + "\n"); } catch { /* next beat */ } };
   beat();
   const t = setInterval(beat, everyMs);
-  const stop = () => { clearInterval(t); try { unlinkSync(f); } catch { /* gone */ } };
+  const stop = () => { clearInterval(t); process.removeListener("exit", stop); try { unlinkSync(f); } catch { /* gone */ } };
   process.once("exit", stop);
   return stop;
 }
@@ -307,11 +376,10 @@ export function waitForReview(rp, { timeoutMs = 0, pollMs = 500, owner = ownerOf
       // a question asked on the page while this session waits (Ask about this): answered in a few seconds
       for (const q of waitingQuestions(rp, { owner })) if (claimQuestion(rp, q.id, owner)) { stop(); ok(q.path); return; }
       if (!questionsOnly) for (const r of listInbox(rp)) {
-        if (progressOf(rp, r.id)?.phase === "queued" && (!claimLive(r.claim) || r.claim.owner === owner)) {
-          if (r.claim.owner === owner) { renewClaim(rp, r.id, { owner, phase: "handling" }); stop(); ok(r.path); return; }
-          if (!releaseExpired(claimPath(rp, r.id), r.claim.owner)) continue;
+        if (r.claim?.owner === owner && progressOf(rp, r.id)?.phase === "queued") {
+          renewClaim(rp, r.id, { owner, phase: "handling" }); stop(); ok(r.path); return;
         }
-        if (!claimOf(rp, r.id) && claimItem(rp, r.id, "session", { owner }, { repo })) { stop(); ok(r.path); return; }
+        if (claimItem(rp, r.id, "session", { owner }, { repo, recover: true })) { stop(); ok(r.path); return; }
       }
       if (timeoutMs && Date.now() - t0 >= timeoutMs) { stop(); ok(null); return; }
       setTimeout(tick, pollMs);
@@ -371,7 +439,7 @@ export const agentPrompt = (relPath, id, harness = getHarness("command"), { reco
   `hand it to \`reelplanner reel-intake ${relPath}\` and do what the main session would have done with it. ` +
   `If you rebuilt a video, once it passes \`reelplanner verify <video-dir>\` commit; an approval rebuilds nothing and needs no verify: fold its comments into plan.md and commit. ` +
   `Keep the claim alive with \`reelplanner inbox renew ${id}\` at least every two minutes; record intake, editing, checked and committed phases with \`reelplanner inbox progress ${id} <phase>\`. ` +
-  `Preserve tracked owner edits that already existed when this review was claimed, including whether they were staged. Inspect git status and diff before editing; commit only this review's work and never stage all files blindly. Completion checks private fingerprints of the original owner edits and rejects new residual tracked changes. If an overlapping edit cannot be separated safely, stop with the review unfinished. ` +
+  `Preserve tracked and untracked owner edits that already existed when this review was claimed, including whether they were staged. Inspect git status and diff before editing; commit only this review's work and never stage all files blindly. Record checked after the required checks and BEFORE committing: it freezes the intended review tree, including new intake files, while excluding original owner edits. Completion requires that exact tree and rejects new residual tracked or untracked changes. A review with no saved checked evidence cannot be completed merely because HEAD advanced. If an overlapping edit cannot be separated safely, stop with the review unfinished. ` +
   `Only after the required checks and a successful Git commit run \`reelplanner inbox done ${id}\`, and stop. A denied operation or signing failure leaves the review unfinished: keep edits, progress and the log; never disable signing to finish. ` +
   `${(typeof harness === "string" ? getHarness(harness) : harness).commitAdvice || "Use the configured command's permission policy for Git operations; preserve signing and request permitted approval if required."} ` +
   `${recovery ? `This is recovery from saved progress ${JSON.stringify(recovery)}. First inspect the existing intake record, git status, git diff and git log. Reconcile existing edits instead of applying them twice; if the required result is already committed, complete the review without a duplicate edit or commit. ` : ""}` +
@@ -423,7 +491,10 @@ export async function startAgent(rp, id, { config = readConfig(rp), onExit, env 
       clearInterval(renewal);
       if (!spawned) return;
       const done = existsSync(join(inboxDir(rp), "done", `${id}.json`));
-      if (!done) { const c = claimOf(rp, id); if (c?.owner === owner) writeAtomic(claimPath(rp, id), JSON.stringify({ ...c, leaseUntil: 0, stoppedAt: new Date().toISOString(), exitCode: code, signal }) + "\n"); }
+      if (!done) withClaimLock(claimPath(rp, id), () => {
+        const c = claimOf(rp, id);
+        if (c?.owner === owner) writeAtomic(claimPath(rp, id), JSON.stringify({ ...c, leaseUntil: 0, stoppedAt: new Date().toISOString(), exitCode: code, signal }) + "\n");
+      });
       onExit?.({ code, signal, done, log });
     });
     child.once("spawn", () => {

@@ -81,6 +81,7 @@ try {
   await until(() => !claimLive(claimOf(rp, run.id)));
   assert.equal(progressOf(rp, run.id).startHead, baseline);
   assert.deepEqual(progressOf(rp, run.id).baselineTracked, saved.baselineTracked);
+  renewClaim(rp, run.id, { owner: claimOf(rp, run.id).owner, phase: "checked" });
   git("add", "app.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "review change");
   renewClaim(rp, run.id, { owner: claimOf(rp, run.id).owner, phase: "committed" });
   assert(finish(run.id));
@@ -101,6 +102,7 @@ try {
   assert(!JSON.stringify(directProgress).includes("owner-private"));
   assert.throws(() => finish(owned.id), /Stopped before commit/);
   writeFileSync(join(repo, "reviewed.txt"), "review applied\n");
+  renewClaim(rp, owned.id, { owner: "fake:direct", phase: "checked" });
   git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "review only");
   assert.throws(() => finish(owned.id), /Stopped before commit/); // phase evidence is still required
   renewClaim(rp, owned.id, { owner: "fake:direct", phase: "committed" });
@@ -116,6 +118,7 @@ try {
   assert.equal(await waitForReview(rp, { owner: "fake:main", timeoutMs: 50 }), connected.path);
   assert.deepEqual(progressOf(rp, connected.id).baselineTracked, connectedBaseline.baselineTracked);
   writeFileSync(join(repo, "reviewed.txt"), "connected review applied\n");
+  renewClaim(rp, connected.id, { owner: "fake:main", phase: "checked" });
   // --only commits the review file while leaving the owner's staged file staged.
   git("-c", "commit.gpgsign=false", "commit", "--only", "reviewed.txt", "-qm", "connected review only");
   renewClaim(rp, connected.id, { owner: "fake:main", phase: "committed" });
@@ -130,17 +133,104 @@ try {
   git("restore", "--staged", "owner-private.txt"); git("restore", "owner-private.txt");
   const initialText = Array.from({ length: 20 }, (_, i) => `line ${i + 1}`).join("\n") + "\n";
   writeFileSync(join(repo, "shared.txt"), initialText); git("add", "shared.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "offset fixture");
-  writeFileSync(join(repo, "shared.txt"), initialText.replace("line 15", "owner text at line 15"));
+  const stagedOwnerText = initialText.replace("line 5", "owner staged text at line 5");
+  writeFileSync(join(repo, "shared.txt"), stagedOwnerText); git("add", "shared.txt");
+  writeFileSync(join(repo, "shared.txt"), stagedOwnerText.replace("line 15", "owner text at line 15"));
   const offset = writeReview(rp, row(7)); claim(rp, offset.id, "session", { owner: "fake:offset" });
   const baselineOffset = progressOf(rp, offset.id).baselineTracked;
   const reviewedText = "review introduction\n" + initialText;
-  writeFileSync(join(repo, "shared.txt"), "review introduction\n" + initialText.replace("line 15", "owner text at line 15"));
+  writeFileSync(join(repo, "shared.txt"), "review introduction\n" + stagedOwnerText.replace("line 15", "owner text at line 15"));
+  const untouchedOwnerIndex = git("ls-files", "--stage");
+  renewClaim(rp, offset.id, { owner: "fake:offset", phase: "checked" });
+  assert.equal(git("ls-files", "--stage"), untouchedOwnerIndex);
   const blob = execFileSync("git", ["-C", repo, "hash-object", "-w", "--stdin"], { input: reviewedText, encoding: "utf8" }).trim();
   git("update-index", "--cacheinfo", `100644,${blob},shared.txt`); git("-c", "commit.gpgsign=false", "commit", "-qm", "separate edit in same file");
+  const ownerBlob = execFileSync("git", ["-C", repo, "hash-object", "-w", "--stdin"], { input: "review introduction\n" + stagedOwnerText, encoding: "utf8" }).trim();
+  git("update-index", "--cacheinfo", `100644,${ownerBlob},shared.txt`);
   renewClaim(rp, offset.id, { owner: "fake:offset", phase: "committed" });
   assert.deepEqual(progressOf(rp, offset.id).baselineTracked, baselineOffset); assert(finish(offset.id));
   assert(git("diff", "--", "shared.txt").includes("owner text at line 15"));
-  console.log("✓ a committed edit elsewhere in the same file can shift owner hunks without losing their preserved fingerprint");
+  assert(git("diff", "--cached", "--", "shared.txt").includes("owner staged text at line 5"));
+  console.log("✓ a committed edit elsewhere in the same file shifts staged and unstaged owner hunks while preserving both fingerprints and staging states");
+
+  git("restore", "--staged", "shared.txt"); git("restore", "shared.txt");
+  const proof = writeReview(rp, row(9)); claim(rp, proof.id, "session", { owner: "fake:proof" });
+  git("-c", "commit.gpgsign=false", "commit", "--allow-empty", "-qm", "unrelated empty commit");
+  assert.throws(() => renewClaim(rp, proof.id, { owner: "fake:proof", phase: "committed" }), /recorded checked work/);
+  writeFileSync(join(repo, "app.txt"), "unrelated nonempty change\n");
+  git("add", "app.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "unrelated nonempty commit");
+  assert.throws(() => renewClaim(rp, proof.id, { owner: "fake:proof", phase: "committed" }), /recorded checked work/);
+  assert.throws(() => renewClaim(rp, proof.id, { owner: "fake:proof", phase: "checked" }), /No new review work/);
+  writeFileSync(join(repo, "reviewed.txt"), "the checked review result\n");
+  renewClaim(rp, proof.id, { owner: "fake:proof", phase: "checked" });
+  const checkedProof = progressOf(rp, proof.id);
+  git("restore", "reviewed.txt");
+  writeFileSync(join(repo, "app.txt"), "another unrelated nonempty change\n");
+  git("add", "app.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "unrelated after checked");
+  assert.throws(() => renewClaim(rp, proof.id, { owner: "fake:proof", phase: "committed" }), /recorded checked work/);
+  assert.throws(() => finish(proof.id), /Stopped before commit/);
+  writeFileSync(join(repo, "app.txt"), "unrelated nonempty change\n");
+  writeFileSync(join(repo, "reviewed.txt"), "the checked review result\n");
+  git("add", "app.txt", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "commit exactly the checked result");
+  renewClaim(rp, proof.id, { owner: "fake:proof", phase: "committed" });
+  assert.equal(progressOf(rp, proof.id).checkedTree, checkedProof.checkedTree); assert(finish(proof.id));
+  console.log("✓ empty and nonempty unrelated commits cannot complete a review; commitment must match the previously checked work");
+
+  const ownerUntrackedText = `owner untracked sentinel ${repo}\n`;
+  writeFileSync(join(repo, "owner-untracked.txt"), ownerUntrackedText);
+  const privateUntrackedBlob = git("hash-object", "owner-untracked.txt"); // read-only: no -w
+  assert.throws(() => git("cat-file", "-e", privateUntrackedBlob));
+  const intake = writeReview(rp, { ...row(9), project: "intake" }); claim(rp, intake.id, "session", { owner: "fake:intake" });
+  writeFileSync(join(repo, "new-intake.md"), "durable review intake\n");
+  const intakeOwnerIndex = git("ls-files", "--stage");
+  renewClaim(rp, intake.id, { owner: "fake:intake", phase: "checked" });
+  assert.equal(git("ls-files", "--stage"), intakeOwnerIndex);
+  assert.throws(() => git("cat-file", "-e", privateUntrackedBlob)); // owner bytes never enter even unreachable Git objects
+  git("-c", "commit.gpgsign=false", "commit", "--allow-empty", "-qm", "did not commit intake");
+  assert.throws(() => renewClaim(rp, intake.id, { owner: "fake:intake", phase: "committed" }), /recorded checked work/);
+  git("add", "new-intake.md"); git("-c", "commit.gpgsign=false", "commit", "-qm", "review intake only");
+  renewClaim(rp, intake.id, { owner: "fake:intake", phase: "committed" });
+  writeFileSync(join(repo, "residual-new.txt"), "not committed\n");
+  assert.throws(() => finish(intake.id), /untracked files/); rmSync(join(repo, "residual-new.txt"));
+  assert(finish(intake.id)); assert.equal(readFileSync(join(repo, "owner-untracked.txt"), "utf8"), ownerUntrackedText);
+  assert.equal(git("ls-files", "owner-untracked.txt"), "");
+  rmSync(join(repo, "owner-untracked.txt"));
+  console.log("✓ checked evidence includes untracked intake without writing original untracked owner bytes to Git objects or changing their files/index; residual new files block completion");
+
+  for (const situation of ["handling", "intake", "editing", "checked", "committed", "checked-after-commit"]) {
+    const phase = situation === "checked-after-commit" ? "checked" : situation;
+    const alreadyCommitted = ["committed", "checked-after-commit"].includes(situation);
+    const recovery = writeReview(rp, { ...row(9), project: `recover-${situation}` });
+    claim(rp, recovery.id, "session", { owner: "fake:expired" });
+    if (["checked", "committed"].includes(phase)) writeFileSync(join(repo, "reviewed.txt"), `recovery ${situation}\n`);
+    renewClaim(rp, recovery.id, { owner: "fake:expired", phase: phase === "committed" ? "checked" : phase });
+    if (alreadyCommitted) {
+      git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "result committed before handler crashed");
+      if (phase === "committed") renewClaim(rp, recovery.id, { owner: "fake:expired", phase });
+    }
+    const retained = progressOf(rp, recovery.id), retainedHead = git("rev-parse", "HEAD"), recoveryClaim = join(box, `${recovery.id}.claim`);
+    assert.equal(await waitForReview(rp, { owner: "fake:blocked", timeoutMs: 20, pollMs: 5 }), null);
+    writeFileSync(recoveryClaim, JSON.stringify({ ...claimOf(rp, recovery.id), leaseUntil: 1, runPid: process.pid }));
+    assert.equal(await waitForReview(rp, { owner: "fake:blocked", timeoutMs: 20, pollMs: 5 }), null); // even an expired lease cannot steal a live run
+    writeFileSync(recoveryClaim, JSON.stringify({ ...claimOf(rp, recovery.id), runPid: undefined }));
+    const [winner, loser] = await Promise.all([
+      waitForReview(rp, { owner: "fake:recovery-one", timeoutMs: 40, pollMs: 5 }),
+      waitForReview(rp, { owner: "fake:recovery-two", timeoutMs: 40, pollMs: 5 }),
+    ]);
+    assert.equal(winner, recovery.path); assert.equal(loser, null);
+    assert.deepEqual(progressOf(rp, recovery.id), { ...retained, at: progressOf(rp, recovery.id).at });
+    if (phase !== "committed") {
+      if (phase !== "checked") {
+        writeFileSync(join(repo, "reviewed.txt"), `recovery ${phase}\n`);
+        renewClaim(rp, recovery.id, { owner: "fake:recovery-one", phase: "checked" });
+      }
+      if (!alreadyCommitted) { git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "finish recovered checked work"); }
+      renewClaim(rp, recovery.id, { owner: "fake:recovery-one", phase: "committed" });
+    }
+    assert(finish(recovery.id));
+    if (alreadyCommitted) assert.equal(git("rev-parse", "HEAD"), retainedHead);
+  }
+  console.log("✓ next live session atomically recovers every expired handler phase without headless configuration or losing baseline/check/commit evidence; live leases and runs remain protected");
 
   const unreadable = writeReview(rp, row(8)), configPath = join(repo, ".git/config"), goodConfig = readFileSync(configPath);
   writeFileSync(configPath, Buffer.concat([goodConfig, Buffer.from("\n[broken\n")]));
