@@ -109,7 +109,7 @@ reelplanner review videos/<name> --detach --workspace terminal-browser
 
 Replace `videos/<name>` with the video folder your agent built. The player opens in a pane beside
 your agent; **Send** saves your review for the agent, with no file to download.
-Use any terminal supported by terminal-browser; we've verified opening and audio playback in Ghostty.
+Use any terminal supported by terminal-browser; we've tested playback and review controls in Ghostty.
 See [terminal setup and testing status](./docs/terminal-review.md) for details. The ordinary browser
 remains the default.
 

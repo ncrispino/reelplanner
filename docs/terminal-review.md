@@ -58,7 +58,11 @@ had not supplied seekable media responses. The server now supplies file lengths 
 the regression and live Ghostty timing checks pass, and the owner confirmed the audio sounds normal
 after the fix. A separate synthetic plan trial then exercised a choice, comment, sourced Ask answer,
 Finish and direct Send through the Ghostty pane. The saved review was adopted, recorded and used
-to revise the scratch plan. Walkthrough Accept/Flag and changed-scenes are still being checked.
+to revise the scratch plan. The same pane then exercised walkthrough Accept/Flag and requested changes. After the agent
+removed the flagged panel and rebuilt four of five scenes, the changed-scenes view skipped the
+unchanged scene. A second review accepted both choices; its verified note survived Send, intake,
+commit and completion. These were synthetic acceptance trials, separate from the owner’s review of
+this change. See the [saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json).
 
 After updating reelplanner, restart an older review server with `review --stop`, then open it again.
 Refresh an existing page so its audio loads from the updated server. That matters because an already

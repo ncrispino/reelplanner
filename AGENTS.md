@@ -3,7 +3,7 @@
 reelplanner turns an implementation plan into a short narrated review video that stops at each open choice,
 records the answers in a decision log in the repo, and after the build makes a walkthrough video of what the
 agent decided on its own. It is an agent skill (`skills/plan-to-video/`) plus a CLI (`reelplanner`, `reel`).
-Tested with Claude Code; Codex features and actual validation: [`docs/agents.md`](docs/agents.md).
+Tested with Claude Code and Codex CLI on macOS; exact features and limits: [`docs/agents.md`](docs/agents.md).
 Other agents are untested.
 Codex and most other agents read this file; Claude Code reads it through `CLAUDE.md`.
 

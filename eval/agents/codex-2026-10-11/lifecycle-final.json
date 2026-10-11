@@ -1,0 +1,938 @@
+{
+  "fixture": "Synthetic Reading page; reviewer inputs are synthetic test inputs, not owner acceptance",
+  "source": "Current checkout CLI with Node22.20.0 and HyperFrames0.8.52",
+  "authoring": "Real installed Codex CLI model gpt-6.1-sol/provider openai; local Kokoro narration with Whisper word timing",
+  "plan": {
+    "seconds": 63.28,
+    "script_findings": 6,
+    "frame_newcomer_findings": 9,
+    "frame_designer_findings": 6,
+    "decision": "Large24px, plus keyboard/375px note",
+    "review_id": "video-20261011T212129Z",
+    "checked_before_commit": "9632455",
+    "done": true
+  },
+  "implementation": {
+    "initial_commit": "fa4d7d8",
+    "independent_check": "Found missed Back/pageshow reset; corrected in ba2073c",
+    "real_browser": "Large24/Normal20, keyboard typeahead, reload, Back, both375px sizes and last paragraph, explained disabled no-script fallback"
+  },
+  "walkthrough": {
+    "seconds": 72,
+    "script_findings": 6,
+    "frame_round_1": 19,
+    "frame_round_2": 6,
+    "build": "build-walkthrough-final.txt exit0",
+    "real_recorded_actions": "16.12s Playwright UI recording plus no-script capture",
+    "final_review": "actual native Ghostty final approval saved, recorded, checked, committed and done",
+    "requested_changes_id": "walkthrough-video-20261011T221900Z",
+    "requested_change_fix": "Removed outlined panel, retained linked native selector and explained disabled fallback",
+    "requested_change_rebuild": {
+      "seconds": 76.309,
+      "changed_scenes": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "script_findings": 6,
+      "frame_newcomer_findings": 6,
+      "frame_designer_findings": 2,
+      "build": "build-walk-requested-final.txt exit0",
+      "fresh_eyes_archive": "build-1 preserved original two rounds; new build round1 with8answered, unchanged narrated words after frame fixes"
+    },
+    "checked_before_commit": "b068bb4",
+    "requested_changes_done": true,
+    "version": 2,
+    "version_commit_reference_checkpoint": "aa1c02c",
+    "final_approval_id": "walkthrough-video-20261011T223917Z",
+    "final_note_verified": true,
+    "final_accepted_calls": [
+      "A1 native selector",
+      "A2 unboxed setting after requested panel removal"
+    ],
+    "final_review_mode": "actual changed-scenes-only1/2/4/5; unchangedquiz3skipped",
+    "final_record_commit": "7d01269",
+    "final_done": true,
+    "seconds_after_rebuild": 76.309,
+    "dark_qa": "parent visually inspected actual Ghostty opening/end screenshots; readable paper/ink in dark host"
+  },
+  "explainer": {
+    "seconds": 41,
+    "script_findings": 5,
+    "frame_newcomer_findings": 9,
+    "frame_designer_findings": 0,
+    "selected_source": "separate independent synthetic code-check session; never current main chat",
+    "source_check": "3scenes,0quotedpieces,1pinnedexternal source",
+    "build": "build-explainer-source-fix.txt exit0",
+    "raw_export": "external private only"
+  },
+  "checkpoints": [
+    "32e9098 sources",
+    "621f34a frozen review versions",
+    "b068bb4 checked A2 fix and requested-change rebuild",
+    "aa1c02c generated version2 commit reference",
+    "7d01269 final synthetic approval record after checked"
+  ],
+  "review_server": {
+    "port": 8788,
+    "pid": 69798,
+    "out": "unique explicit scratch review-bundle"
+  },
+  "limits": [
+    "No main-chat text was read or included; parent separately verified main CLI session export",
+    "No desktop-app proof: user narrowed scope to CLI only",
+    "No global config, push, deployment or owner ledger mutation",
+    "Initial interrupted narration stdout was incomplete; successful later command stdout/exit/durations retained",
+    "Initial failed model log was overwritten on successful retry; original tool trace is retained",
+    "Initial ArrowDown-only native selection attempts failed; successful keyboard proof uses typeahead plus Enter",
+    "An early terminal Send attempt was incomplete; later visible-current-panel Send produced real receipt",
+    "Shared default bundle collision detected by sibling; final review uses isolated explicit out",
+    "Existing D-305 version freeze does not restore ignored recorded video files; exact actual UI recording is retained privately and served from ignored scratch assets."
+  ],
+  "approval_review": {
+    "rejection": "explainer-review-rejected.txt",
+    "resolved": "Independent payload inspection proved synthetic-only approved Step6 scope; same exact command/provider/sandbox accepted once; no alternate route"
+  },
+  "privacy": "This public-safe summary contains no credentials, actual homes, initial fallback identity, raw conversation text or private current-main session identity. Canonical whole stdout/exact commands/exit/durations remain in private scratch evidence; no raw model/session transcripts copied into owner repo.",
+  "final_state": {
+    "git_clean": true,
+    "stage": "accepted",
+    "reviews": "1plan,2walkthrough",
+    "rules_in_force": 1,
+    "accepted_call_history": 2,
+    "system_video": "not built; outside this CLI acceptance trial"
+  },
+  "private_evidence_policy": "Parents may publish this summary; raw external exports, codex-home and model transcript logs remain private.",
+  "command_results": [
+    {
+      "name": "skill-discovery",
+      "exit": 0,
+      "seconds": 14.159
+    },
+    {
+      "name": "script-brief",
+      "exit": 0,
+      "seconds": 0.084
+    },
+    {
+      "name": "script",
+      "exit": 1,
+      "seconds": 16.544
+    },
+    {
+      "name": "script",
+      "exit": 0,
+      "seconds": 39.305
+    },
+    {
+      "name": "script-check",
+      "exit": 0,
+      "seconds": 0.09
+    },
+    {
+      "name": "terms-check",
+      "exit": 1,
+      "seconds": 0.096
+    },
+    {
+      "name": "plan-check",
+      "exit": 0,
+      "seconds": 0.072
+    },
+    {
+      "name": "terms-check-fixed",
+      "exit": 0,
+      "seconds": 0.105
+    },
+    {
+      "name": "narration-revised",
+      "exit": 0,
+      "seconds": 33.19
+    },
+    {
+      "name": "build-plan",
+      "exit": 1,
+      "seconds": 26.032
+    },
+    {
+      "name": "fresh-brief",
+      "exit": 0,
+      "seconds": 7.888
+    },
+    {
+      "name": "guide-plan-fixed",
+      "exit": 0,
+      "seconds": 2.951
+    },
+    {
+      "name": "newcomer",
+      "exit": 0,
+      "seconds": 56.39
+    },
+    {
+      "name": "designer",
+      "exit": 0,
+      "seconds": 63.288
+    },
+    {
+      "name": "baseline-capture",
+      "exit": 0,
+      "seconds": 1.125
+    },
+    {
+      "name": "build-plan-revised",
+      "exit": 0,
+      "seconds": 27.453
+    },
+    {
+      "name": "review-plan",
+      "exit": 0,
+      "seconds": 0.68
+    },
+    {
+      "name": "wait-plan",
+      "exit": 0,
+      "seconds": 104.345
+    },
+    {
+      "name": "inbox-plan-question",
+      "exit": 0,
+      "seconds": 0.072
+    },
+    {
+      "name": "answer-plan-question",
+      "exit": 0,
+      "seconds": 0.071
+    },
+    {
+      "name": "initial-plan-stage",
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "initial-plan-commit",
+      "exit": 0,
+      "seconds": 0.026
+    },
+    {
+      "name": "initial-terms-stage",
+      "exit": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "initial-terms-commit",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "name": "wait-plan-after-question",
+      "exit": 0,
+      "seconds": 297.468
+    },
+    {
+      "name": "plan-progress-handling",
+      "exit": 0,
+      "seconds": 0.087
+    },
+    {
+      "name": "intake-plan",
+      "exit": 0,
+      "seconds": 0.214
+    },
+    {
+      "name": "plan-progress-intake",
+      "exit": 0,
+      "seconds": 0.082
+    },
+    {
+      "name": "plan-progress-editing",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "name": "reviewed-plan-check",
+      "exit": 0,
+      "seconds": 0.067
+    },
+    {
+      "name": "reviewed-guide-check",
+      "exit": 0,
+      "seconds": 3.07
+    },
+    {
+      "name": "plan-progress-checked",
+      "exit": 0,
+      "seconds": 0.216
+    },
+    {
+      "name": "revised-plan-stage",
+      "exit": 0,
+      "seconds": 0.012
+    },
+    {
+      "name": "revised-plan-commit",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "name": "plan-progress-committed",
+      "exit": 0,
+      "seconds": 0.189
+    },
+    {
+      "name": "plan-inbox-done",
+      "exit": 0,
+      "seconds": 0.154
+    },
+    {
+      "name": "plan-approved-status",
+      "exit": 0,
+      "seconds": 0.092
+    },
+    {
+      "name": "implement",
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "name": "app-check",
+      "exit": 1,
+      "seconds": 1.827
+    },
+    {
+      "name": "app-check-keyboard",
+      "exit": 1,
+      "seconds": 0.682
+    },
+    {
+      "name": "app-check-native-typeahead",
+      "exit": 0,
+      "seconds": 1.368
+    },
+    {
+      "name": "implemented-plan-check",
+      "exit": 0,
+      "seconds": 0.112
+    },
+    {
+      "name": "implementation-stage",
+      "exit": 0,
+      "seconds": 0.02
+    },
+    {
+      "name": "implementation-commit",
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "name": "code-brief",
+      "exit": 0,
+      "seconds": 0.137
+    },
+    {
+      "name": "walkthrough-init",
+      "exit": 0,
+      "seconds": 0.693
+    },
+    {
+      "name": "walkthrough-prereqs",
+      "exit": 0,
+      "seconds": 0.084
+    },
+    {
+      "name": "code",
+      "exit": 0,
+      "seconds": 97.082
+    },
+    {
+      "name": "walkthrough-page-captures",
+      "exit": 0,
+      "seconds": 3.304
+    },
+    {
+      "name": "app-check-code-fix",
+      "exit": 0,
+      "seconds": 1.018
+    },
+    {
+      "name": "code-fix-stage",
+      "exit": 0,
+      "seconds": 0.028
+    },
+    {
+      "name": "code-fix-commit",
+      "exit": 0,
+      "seconds": 0.027
+    },
+    {
+      "name": "audit-implementation",
+      "exit": 0,
+      "seconds": 0.113
+    },
+    {
+      "name": "stops-implementation",
+      "exit": 0,
+      "seconds": 0.081
+    },
+    {
+      "name": "walkthrough-script",
+      "exit": 0,
+      "seconds": 0.035
+    },
+    {
+      "name": "walkthrough-script-brief",
+      "exit": 0,
+      "seconds": 0.094
+    },
+    {
+      "name": "session-export",
+      "exit": 0,
+      "seconds": 0.517
+    },
+    {
+      "name": "explainer-start",
+      "exit": 0,
+      "seconds": 1.467
+    },
+    {
+      "name": "walkthrough-narration",
+      "exit": 0,
+      "seconds": 35.654
+    },
+    {
+      "name": "walk-script",
+      "exit": 0,
+      "seconds": 47.43
+    },
+    {
+      "name": "walkthrough-script-check",
+      "exit": 0,
+      "seconds": 0.08
+    },
+    {
+      "name": "walkthrough-frames",
+      "exit": 0,
+      "seconds": 0.028
+    },
+    {
+      "name": "walkthrough-full-captures",
+      "exit": 0,
+      "seconds": 0.863
+    },
+    {
+      "name": "walkthrough-narration-revised",
+      "exit": 0,
+      "seconds": 17.293
+    },
+    {
+      "name": "walkthrough-terms",
+      "exit": 1,
+      "seconds": 0.104
+    },
+    {
+      "name": "build-walkthrough",
+      "exit": 1,
+      "seconds": 0.174
+    },
+    {
+      "name": "build-walkthrough-fixed",
+      "exit": 0,
+      "seconds": 27.333
+    },
+    {
+      "name": "explainer-script",
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "explainer-script-brief",
+      "exit": 0,
+      "seconds": 0.089
+    },
+    {
+      "name": "explainer-local-narration",
+      "exit": 0,
+      "seconds": 15.225
+    },
+    {
+      "name": "explainer-frames-local",
+      "exit": 0,
+      "seconds": 0.036
+    },
+    {
+      "name": "explainer-sources-check",
+      "exit": 1,
+      "seconds": 0.087
+    },
+    {
+      "name": "explainer-terms-check",
+      "exit": 0,
+      "seconds": 0.108
+    },
+    {
+      "name": "build-walkthrough-dark-fix",
+      "exit": 0,
+      "seconds": 34.581
+    },
+    {
+      "name": "explainer-sources-fixed",
+      "exit": 0,
+      "seconds": 0.085
+    },
+    {
+      "name": "walkthrough-fresh-brief",
+      "exit": 0,
+      "seconds": 6.511
+    },
+    {
+      "name": "build-explainer-local",
+      "exit": 0,
+      "seconds": 19.268
+    },
+    {
+      "name": "walk-designer",
+      "exit": 0,
+      "seconds": 49.546
+    },
+    {
+      "name": "exp-script",
+      "exit": 0,
+      "seconds": 39.199
+    },
+    {
+      "name": "walk-newcomer",
+      "exit": 0,
+      "seconds": 91.608
+    },
+    {
+      "name": "walkthrough-apply-findings",
+      "exit": 0,
+      "seconds": 0.023
+    },
+    {
+      "name": "app-check-walk-findings",
+      "exit": 0,
+      "seconds": 1.53
+    },
+    {
+      "name": "walkthrough-narrate-frame-findings",
+      "exit": 0,
+      "seconds": 17.919
+    },
+    {
+      "name": "explainer-script-check",
+      "exit": 0,
+      "seconds": 0.078
+    },
+    {
+      "name": "explainer-narration-revised",
+      "exit": 0,
+      "seconds": 15.61
+    },
+    {
+      "name": "walkthrough-complete-captures",
+      "exit": 0,
+      "seconds": 1.733
+    },
+    {
+      "name": "audit-walk-findings",
+      "exit": 0,
+      "seconds": 0.082
+    },
+    {
+      "name": "build-walkthrough-reviewed",
+      "exit": 0,
+      "seconds": 32.092
+    },
+    {
+      "name": "build-explainer-reviewed-script",
+      "exit": 0,
+      "seconds": 19.784
+    },
+    {
+      "name": "walkthrough-fresh-round2",
+      "exit": 0,
+      "seconds": 6.202
+    },
+    {
+      "name": "explainer-fresh-brief",
+      "exit": 0,
+      "seconds": 4.291
+    },
+    {
+      "name": "walk-designer2",
+      "exit": 0,
+      "seconds": 48.852
+    },
+    {
+      "name": "walk-newcomer2",
+      "exit": 0,
+      "seconds": 72.842
+    },
+    {
+      "name": "build-explainer-no-quotes",
+      "exit": 0,
+      "seconds": 18.629
+    },
+    {
+      "name": "record-real-ui",
+      "exit": 0,
+      "seconds": 18.014
+    },
+    {
+      "name": "ui-capture-duration",
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "name": "explainer-fresh-final-brief",
+      "exit": 0,
+      "seconds": 5.492
+    },
+    {
+      "name": "build-walkthrough-final",
+      "exit": 0,
+      "seconds": 32.845
+    },
+    {
+      "name": "current-audit-final",
+      "exit": 0,
+      "seconds": 0.071
+    },
+    {
+      "name": "exp-newcomer",
+      "exit": 0,
+      "seconds": 65.933
+    },
+    {
+      "name": "exp-designer",
+      "exit": 0,
+      "seconds": 26.319
+    },
+    {
+      "name": "explainer-reviewed-page-capture",
+      "exit": 0,
+      "seconds": 1.369
+    },
+    {
+      "name": "build-explainer-final",
+      "exit": 1,
+      "seconds": 19.946
+    },
+    {
+      "name": "final-fixture-app-check",
+      "exit": 0,
+      "seconds": 1.096
+    },
+    {
+      "name": "stop-shared-review",
+      "exit": 0,
+      "seconds": 0.099
+    },
+    {
+      "name": "build-explainer-source-fix",
+      "exit": 0,
+      "seconds": 25.169
+    },
+    {
+      "name": "scratch-review-source-stage",
+      "exit": 0,
+      "seconds": 0.065
+    },
+    {
+      "name": "scratch-review-source-commit",
+      "exit": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "unique-final-review-server",
+      "exit": 0,
+      "seconds": 1.584
+    },
+    {
+      "name": "scratch-review-version-stage",
+      "exit": 0,
+      "seconds": 0.018
+    },
+    {
+      "name": "scratch-review-version-commit",
+      "exit": 0,
+      "seconds": 0.026
+    },
+    {
+      "name": "final-pre-review-audit",
+      "exit": 0,
+      "seconds": 0.069
+    },
+    {
+      "name": "preview-ownership-proof",
+      "exit": 0,
+      "seconds": 0.086
+    },
+    {
+      "name": "wait-final-walk-review",
+      "exit": 0,
+      "seconds": 454.877
+    },
+    {
+      "name": "walk-progress-handling",
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "name": "intake-walk-request-changes",
+      "exit": 0,
+      "seconds": 0.218
+    },
+    {
+      "name": "walk-progress-intake",
+      "exit": 0,
+      "seconds": 0.084
+    },
+    {
+      "name": "walk-progress-editing",
+      "exit": 0,
+      "seconds": 0.083
+    },
+    {
+      "name": "final-flagged-app-check",
+      "exit": 0,
+      "seconds": 1.224
+    },
+    {
+      "name": "capture-fixed-app",
+      "exit": 0,
+      "seconds": 1.0
+    },
+    {
+      "name": "narrate-fixed-walk",
+      "exit": 0,
+      "seconds": 6.438
+    },
+    {
+      "name": "record-fixed-ui",
+      "exit": 0,
+      "seconds": 17.505
+    },
+    {
+      "name": "rebuild-walk-requested-changes",
+      "exit": 1,
+      "seconds": 0.184
+    },
+    {
+      "name": "narrate-fixed-walk-terms",
+      "exit": 0,
+      "seconds": 5.31
+    },
+    {
+      "name": "fresh-script-fixed-walk",
+      "exit": 0,
+      "seconds": 0.079
+    },
+    {
+      "name": "rebuild-walk-requested-changes-terms",
+      "exit": 0,
+      "seconds": 27.782
+    },
+    {
+      "name": "fresh-script-fixed-walk-current",
+      "exit": 0,
+      "seconds": 0.072
+    },
+    {
+      "name": "walk-fix-script",
+      "exit": 0,
+      "seconds": 37.226
+    },
+    {
+      "name": "capture-panel-before-after",
+      "exit": 0,
+      "seconds": 1.187
+    },
+    {
+      "name": "narrate-fixed-walk-script-findings",
+      "exit": 0,
+      "seconds": 12.739
+    },
+    {
+      "name": "check-fixed-walk-script",
+      "exit": 0,
+      "seconds": 0.084
+    },
+    {
+      "name": "rebuild-walk-fixed-script",
+      "exit": 0,
+      "seconds": 27.902
+    },
+    {
+      "name": "renew-walk-fix",
+      "exit": 0,
+      "seconds": 0.076
+    },
+    {
+      "name": "rebuild-walk-fixed-media-hold",
+      "exit": 0,
+      "seconds": 31.072
+    },
+    {
+      "name": "fresh-frames-fixed-walk",
+      "exit": 0,
+      "seconds": 6.117
+    },
+    {
+      "name": "walk-fix-designer",
+      "exit": 0,
+      "seconds": 48.411
+    },
+    {
+      "name": "walk-fix-newcomer",
+      "exit": 0,
+      "seconds": 55.192
+    },
+    {
+      "name": "capture-readable-panel-pair",
+      "exit": 0,
+      "seconds": 0.865
+    },
+    {
+      "name": "record-readable-nojs",
+      "exit": 0,
+      "seconds": 2.705
+    },
+    {
+      "name": "check-fixed-walk-frames",
+      "exit": 0,
+      "seconds": 0.116
+    },
+    {
+      "name": "build-walk-requested-final",
+      "exit": 0,
+      "seconds": 37.197
+    },
+    {
+      "name": "audit-fixed-walk",
+      "exit": 0,
+      "seconds": 0.095
+    },
+    {
+      "name": "bundle-fixed-walk-review",
+      "exit": 0,
+      "seconds": 1.095
+    },
+    {
+      "name": "walk-progress-checked",
+      "exit": 0,
+      "seconds": 0.33
+    },
+    {
+      "name": "stage-a2-fix",
+      "exit": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "commit-a2-fix",
+      "exit": 0,
+      "seconds": 0.04
+    },
+    {
+      "name": "walk-progress-committed",
+      "exit": 0,
+      "seconds": 0.181
+    },
+    {
+      "name": "walk-request-changes-done",
+      "exit": 0,
+      "seconds": 0.162
+    },
+    {
+      "name": "refresh-fixed-review-commit-reference",
+      "exit": 0,
+      "seconds": 0.663
+    },
+    {
+      "name": "stage-fixed-version-commit-ref",
+      "exit": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "commit-fixed-version-reference",
+      "exit": 0,
+      "seconds": 0.027
+    },
+    {
+      "name": "wait-walk-final-approval",
+      "exit": 0,
+      "seconds": 506.431
+    },
+    {
+      "name": "verify-final-approved-row",
+      "exit": 0,
+      "seconds": 0.019
+    },
+    {
+      "name": "final-review-handling",
+      "exit": 0,
+      "seconds": 0.098
+    },
+    {
+      "name": "intake-final-walk-approval",
+      "exit": 0,
+      "seconds": 0.206
+    },
+    {
+      "name": "final-review-intake",
+      "exit": 0,
+      "seconds": 0.087
+    },
+    {
+      "name": "final-review-editing",
+      "exit": 0,
+      "seconds": 0.086
+    },
+    {
+      "name": "final-approval-audit",
+      "exit": 0,
+      "seconds": 0.082
+    },
+    {
+      "name": "final-review-checked",
+      "exit": 0,
+      "seconds": 0.29
+    },
+    {
+      "name": "stage-final-approval-record",
+      "exit": 0,
+      "seconds": 0.014
+    },
+    {
+      "name": "commit-final-approval-record",
+      "exit": 0,
+      "seconds": 0.022
+    },
+    {
+      "name": "final-review-committed",
+      "exit": 0,
+      "seconds": 0.163
+    },
+    {
+      "name": "final-review-done",
+      "exit": 0,
+      "seconds": 0.147
+    },
+    {
+      "name": "final-scratch-status",
+      "exit": 0,
+      "seconds": 0.214
+    }
+  ],
+  "private_log_manifest": {
+    "successful_commands": "Complete command/stdout/exit logs plus timings retained externally",
+    "initial_gaps": [
+      "Initial interrupted narration stdout was incomplete; successful later command stdout/exit/durations retained",
+      "Initial failed model log was overwritten on successful retry; original tool trace is retained"
+    ],
+    "root_terminal_actions": "Complete actual terminal-browser command trace, receipt/dark screenshots retained externally; only synthetic trial data",
+    "exports": "Selected synthetic checker export remains external; actual main export separately verified by parent and never read here"
+  }
+}

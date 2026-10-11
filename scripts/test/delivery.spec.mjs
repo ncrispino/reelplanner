@@ -37,6 +37,32 @@ try {
   assert.equal(progressOf(rp, r.id).completionMode, "quick-review"); assert(finish(r.id));
   console.log("✓ fake harness uses shared queue/adoption/lease guard without a server branch");
 
+  const deadSessionPid = Number(execFileSync(process.execPath, ["-e", "console.log(process.pid)"], { encoding: "utf8" }).trim());
+  const legacySession = { by: "session", pid: deadSessionPid, host: hostname(), at: "2026-01-01T00:00:00Z" };
+  assert(!claimLive(legacySession));
+  assert(claimLive({ ...legacySession, pid: process.pid }));
+  assert(claimLive({ ...legacySession, host: "unverified-remote-host" }));
+  assert(claimLive({ ...legacySession, host: undefined }));
+  assert(claimLive({ ...legacySession, pid: undefined }));
+  assert(claimLive({ ...legacySession, pid: "not-a-pid" }));
+  assert(claimLive({ ...legacySession, owner: "modern:missing-lease" }));
+  assert(claimLive({ ...legacySession, owner: "modern:leased", leaseUntil: Date.now() + 60000 }));
+  assert(!claimLive({ ...legacySession, owner: "modern:expired", leaseUntil: 0 }));
+  const realKill = process.kill;
+  try {
+    for (const code of ["EPERM", "EIO"]) {
+      process.kill = () => { throw Object.assign(new Error("process probe unavailable"), { code }); };
+      assert(claimLive(legacySession));
+    }
+  } finally { process.kill = realKill; }
+  const legacyWaiting = writeReview(rp, { ...row(9), project: "legacy-dead-session" });
+  writeFileSync(join(box, `${legacyWaiting.id}.claim`), JSON.stringify(legacySession));
+  assert.equal(progressOf(rp, legacyWaiting.id), null);
+  assert.equal(await waitForReview(rp, { owner: "fake:legacy-adopter", timeoutMs: 50 }), legacyWaiting.path);
+  assert.equal(claimOf(rp, legacyWaiting.id).owner, "fake:legacy-adopter");
+  assert.equal(progressOf(rp, legacyWaiting.id).phase, "handling"); assert(finish(legacyWaiting.id));
+  console.log("✓ proven dead same-host ownerless legacy session is adoptable; live/remote/unverifiable claims stay held and modern leases ignore waiter exit");
+
   const q = writeQuestion(rp, { id: "ask-pending", question: "Why?" });
   await deliverInbox(rp, q.id, { question: true, adapter: { ...adapter, deliver: async () => ({ status: "error", reason: "stale session" }) }, start: async () => { starts++; } });
   assert.equal(starts, 0); assert.equal(readQuestion(rp, q.id).answer, undefined);

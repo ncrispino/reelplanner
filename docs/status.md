@@ -32,7 +32,7 @@ Done:
   ([its pages](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/)): an interactive site from an empty
   folder through four plans, seven videos, each reviewed, with the project, the reviews and the session. The kit for
   it is [`eval/case-studies/`](../eval/case-studies/).
-- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. Full narrated lifecycle acceptance is in progress ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change.
+- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. A real narrated plan, implementation, walkthrough flag/fix and rebuilt approval completed ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change.
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 
@@ -53,8 +53,7 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 
 - **The comparison arms of the case study:** the same Bob Dylan prompt planned as plain text and as an HTML page, set
   beside the reelplanner run, as the kit allows ([`eval/case-studies/bob-dylan-site/`](../eval/case-studies/bob-dylan-site/README.md)).
-- **A Codex run end to end** (and one more agent): install with `npx skills add`, then run a plan through. Not
-  possible in the cloud sessions so far (no Codex CLI or key there).
+- **Another agent end to end:** install the skill and run a narrated plan through review, implementation, walkthrough and a requested-change fix. Codex CLI completed this trial on macOS; other agents and cloud sessions remain unverified.
 - **The sample videos under `videos/` hosted where they play in the browser**; today they play on the local review
   page (`npm run review`), and the case study's videos are hosted on its pages.
 
@@ -89,7 +88,7 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
   only that line, and the check runs again, so the loop can run without the person. Where to start:
   `scripts/narrate.mjs`, `scripts/lib/say.mjs`, `scripts/lib/narration.mjs`, `.reelplanner/names.md`.
   The two items above are independent and can be built in parallel.
-- **Watch and review from the terminal: a Claude Code mod.** Today the review page opens in a browser. A Claude Code
+- **An agent-native review pane: a Claude Code mod.** The shared terminal-browser viewer now plays and reviews videos beside a supported terminal agent ([setup](./terminal-review.md)). A native mod could additionally integrate the session’s controls. A Claude Code
   mod (a plugin of function hooks that draws a pane, band, status line or toast inside the terminal or the desktop
   Code tab) could bring the loop into the session itself: the review's state as the page now shows it after Send
   (waiting, working, ready), the questions still open with their options to pick by key, the walkthrough's calls to

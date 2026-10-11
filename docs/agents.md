@@ -10,7 +10,7 @@ The other agents are untested.
 | Agent | Status | What it needs from you |
 |---|---|---|
 | Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
-| Codex CLI (0.162.1) | Native plugin installation, real headless commit/failure/retry, and read-only conversation export validated on macOS. Full CLI lifecycle checks are in progress. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
+| Codex CLI (0.162.1) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. Automatic session wake remains unverified. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
 | Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
@@ -132,11 +132,12 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
 - Read-only paginated export of a real scratch Codex conversation matched its ID and project; transcript
   contents stayed outside Git.
 - The shared terminal player opened in Ghostty 1.3.1 with terminal-browser 0.13.4. Rewind/pause/resume
-  regressions and live timing checks passed, and the owner confirmed normal audio. Scratch plan choices, comments, Ask and direct Send passed; walkthrough judgments and changed-scenes remain open ([terminal review](./terminal-review.md)).
+  regressions and live timing checks passed, and the owner confirmed normal audio. Scratch plan choices, comments, Ask and direct Send passed, followed by walkthrough Accept/Flag, a requested-change rebuild and changed-scenes approval ([terminal review](./terminal-review.md)).
 - Disconnected download/intake preserved answers and comments. Provided viewer fixtures survived export; unauthenticated browser intake kept the Git identity fallback. This proves preservation, not hosted authentication.
 - The final completion-guard fast suite passed all 59 specs in 247.2 seconds; full runs of all 21 touched specs passed, including 60 handoff checks. The last guard change additionally passed full delivery/loop (13 + 96 checks).
-- These focused proofs do not establish the entire plan/video/walkthrough lifecycle, the Codex app,
-  cloud, Linux, Windows or WSL. Remaining trials are recorded in the walkthrough.
+- A real narrated scratch plan was reviewed, recorded, implemented and independently checked. A walkthrough flag led to a code fix, rebuilt narration and four changed scenes; the subsequent approval was recorded, committed and completed. [Saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json) distinguishes synthetic trial reviews from owner acceptance.
+- A real unattended Codex review rebuilt one narrated scene, preserved six others, and completed with source-only commits. The initial ignored-audio mistake and completion-guard rejection are retained in the [headless trial](../eval/agents/codex-2026-10-11/headless-video.md).
+- These trials cover Codex CLI 0.162.1 on this macOS machine. Automatic wake, the Codex app, cloud, Linux, Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
 
 ## Open work
 

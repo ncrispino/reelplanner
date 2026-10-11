@@ -4,9 +4,9 @@
 
 **Started from:** `652894a6ddb8cf7303bd0cf709afa27f27b6b399` (plan approval recorded).
 
-**Commits:** `0d051e7` — native integration and terminal review; `0fef69b` — checked-work completion, expired-handler recovery and portable identity; `e481b8c` — close unclaimed/legacy completion bypasses. Final lifecycle validation and acceptance are pending.
+**Commits:** `0d051e7` — native integration and terminal review; `0fef69b` — checked-work completion, expired-handler recovery and portable identity; `e481b8c` — close unclaimed/legacy completion bypasses. `8ef559a` — CLI-only scope and exact main-thread export evidence; `7c89555` — isolated review bundles, explainer source checks and source-only completion. Final branch acceptance is pending.
 
-The approved scope is local support plus portable remote copies (D-313). On 2026-10-11 the owner narrowed this change to CLI support; desktop-app validation is outside acceptance. Focused runtime trials and the fast suite have passed; complete Codex CLI lifecycle proof and final walkthrough review remain open. This is implementation text for the Built side, not a declaration of acceptance.
+The approved scope is local support plus portable remote copies (D-313). On 2026-10-11 the owner narrowed this change to CLI support; desktop-app validation is outside acceptance. Focused runtime trials and the fast suite have passed; the real narrated Codex CLI lifecycle has completed; final branch walkthrough review remains open. This is implementation text for the Built side, not a declaration of acceptance.
 
 ## Autonomous choices
 
@@ -196,7 +196,7 @@ An unreachable endpoint, stale identity or unavailable queue leaves durable work
 
 #### Limits
 
-The real owned App Server result is focused transport proof. Required live CLI and Codex app Send, Ask, answer display and state changes remain unverified.
+The real owned App Server result is focused transport proof. The real CLI question and scratch plan/walkthrough review proofs now supplement it; the owner excluded Codex app acceptance.
 
 #### Files and commands
 
@@ -204,7 +204,7 @@ The real owned App Server result is focused transport proof. Required live CLI a
 
 **Progress:** the real scratch Ghostty Ask reached the Codex worker, its sourced answer appeared in the player, and a synthetic Large-choice approval reached the waiting scratch inbox as `video-20261011T212129Z`. The worker verified the saved choice and note, recorded its scratch-only decision, revised the plan and committed it after freezing checked work. The current Codex CLI session in iTerm2 also verified its exact loaded thread, adopted the API-queued synthetic question through the inbox, answered it from the documentation, and confirmed GET /api/ask returned the answer/source. Automatic wake is unproved because the recipient deliberately polled. The daemon source field says vscode despite the owner-confirmed CLI client, so it is not used as a UI classification.
 
-**Not done:** complete client lifecycle/notification evidence and final walkthrough handling.
+**Not done:** automatic wake is unverified; final owner-facing branch walkthrough handling remains open. The CLI lifecycle trial is complete.
 
 ### Step 4 — Explain the correct Codex session
 
@@ -319,7 +319,7 @@ A launcher success does not prove review parity. Local Send is direct; D-313's d
 
 ### Step 6 — Prove the whole lifecycle and state support accurately
 
-**You can now:** distinguish validated Codex CLI features from the lifecycle acceptance still in progress.
+**You can now:** use the tested local Codex CLI lifecycle and distinguish its evidence from unverified clients and automatic wake.
 
 **Commits:** `0d051e7`.
 
@@ -361,15 +361,15 @@ An unresolved code-check finding, missing runtime prerequisite or incomplete req
 
 #### Limits
 
-Codex app, complete local lifecycle, Linux, Windows, WSL and cloud remain unverified. The existing full-suite summaries are evidence summaries, not new quoted command output.
+Codex app, automatic wake, Linux, Windows, WSL and cloud remain unverified. The narrated local CLI lifecycle completed on macOS. The existing full-suite summaries are evidence summaries, not new quoted command output.
 
 #### Files and commands
 
 `docs/agents.md`, `README.md`, `AGENTS.md`, `docs/reference.md`, `skills/plan-to-video/SKILL.md`, `eval/agents/codex-2026-10-11/`; `npm test`, `node scripts/test/run.mjs --full <name>`, `code-check <plan-dir> --base 652894a6ddb8cf7303bd0cf709afa27f27b6b399`, `reel audit <plan-dir>`.
 
-**Progress:** the actual scratch plan is narrated, built, independently reviewed, approved through Ghostty, recorded and revised. The system spec, component file map and glossary now describe the implemented shared behavior.
+**Progress:** the actual scratch plan was narrated, reviewed through Ghostty, recorded, revised and implemented. An independent code check found a Back-navigation issue, which was fixed. The actual walkthrough received Accept/Flag and requested changes; the agent removed the flagged panel, rebuilt four of five scenes and narrated the change. The changed-scenes review accepted both choices and preserved its verified note through intake, checked-before-commit evidence, commit and completion. The scratch repo is clean and accepted. `eval/agents/codex-2026-10-11/lifecycle-final.json` preserves the synthetic trial summary, actual review IDs, commit IDs, durations and trial failures; this is not owner acceptance of this branch. A separate real unattended video review rebuilt one narrated scene while preserving six, then completed with source-only commits (`eval/agents/codex-2026-10-11/headless-video.md`). The system spec, component file map and glossary describe the implemented shared behavior.
 
-**Not done:** finish the scratch implementation, code check, accepted/flagged walkthrough and final fix; final owner walkthrough review and post-acceptance system video refresh.
+**Not done:** final independent branch code check, owner walkthrough review and post-acceptance system video refresh.
 
 ## Categories of change
 
@@ -453,9 +453,10 @@ The real headless proof and Ghostty position run retain command/output/exit. Ter
 The fresh independent checker reviewed the checkpoint diff and wrote `code-check/findings.md`: two steps passed, four had findings; all 47 cited decisions held, and one implementation choice needed an autonomy row. Each finding is answered here; unfinished evidence remains explicit.
 
 - **Step 2:** Fixed the unrelated-commit acceptance bug and the second check's unclaimed-review bypass. Git completion now requires a claim and instrumented baseline/check/commit evidence even when no progress was present. Legacy missing evidence fails closed; a new baseline plus newly checked work is explicit recovery. Full delivery/loop passed 13 + 96 checks for the legacy/unclaimed fix; the later generated-removal regression passes 14 + 96. Runs: `runs/unclaimed-completion.txt`. `scripts/lib/inbox.mjs` freezes an expected review tree at checked before commit, verifies that exact tree at committed/done, and preserves original owner staging/content. Full delivery/loop regressions reject unrelated empty and nonempty commits and prove legitimate commit/crash recovery. Runs: `runs/completion-recovery.txt`.
+- **Legacy session recovery:** the real original review had an ownerless, leaseless same-host claim whose PID no longer existed. `scripts/lib/inbox.mjs` now permits adoption only when that exact legacy process probe reports ESRCH; live/remote/unknown or permission-denied claims remain held. Modern claims continue using the renewable lease rather than the exited waiter PID. Full delivery/review-status/loop passed 15 + 49 + 96 checks, including an actually exited child, adoption and HTTP stopped-to-working state (`runs/full-legacy-recovery.txt`). This completes A3/A4’s recovery contract.
 - **Step 3:** Fixed stranded expired handlers. A new session atomically adopts expired ownership at every saved phase, preserving baseline and progress; live leases and headless processes stay protected. Full delivery regressions cover default no-headless recovery and concurrent adoption. Runs: `runs/completion-recovery.txt`.
-- **Step 5:** The real Ghostty Ask, answer display, choice, comment and Send now have saved proof. The disconnected download/intake trial now also passes with answers, comments and any provided identity preserved. Walkthrough controls and changed-scenes are still being exercised, so this finding remains open.
-- **Step 6:** System spec/map/glossary have been updated. The real scratch lifecycle has reached approved plan revision; complete walkthrough/fix evidence is still pending; the owner excluded desktop-app support from this change, so this finding remains open.
+- **Step 5:** The real Ghostty Ask, answer display, choice, comment and Send now have saved proof. The disconnected download/intake trial now also passes with answers, comments and any provided identity preserved. Actual walkthrough Accept/Flag, requested changes, four changed scenes and a subsequent changed-only approval completed; the verified note and verdicts reached the recorded scratch ledger and completion. `eval/agents/codex-2026-10-11/lifecycle-final.json` contains the final synthetic evidence.
+- **Step 6:** System spec/map/glossary have been updated. The real narrated scratch CLI lifecycle completed implementation, independent code check, walkthrough flag/fix, changed-scenes rebuild and final recorded approval. The owner excluded desktop-app support from this change. The final independent branch check and this branch’s owner-facing walkthrough remain separate gates.
 - **`scripts/lib/codex-session.mjs`:** A10 records the existing export ceilings and verified external-copy fallback. No private source text is added to Git.
 - **Step 4 source validation:** the real session explainer failed when plan-tagged findings could only reference plan.md. `scripts/lib/fresh-eyes.mjs` now stamps/checks explain.md for explainers while retaining change/missing-source guards. Full script/frame regressions passed 89 checks (`runs/full-fresh-eyes-source-doc.txt`); the unchanged-tag real explainer subsequently built.
 - **Step 5 bundle isolation:** the real concurrent trials overwrote a shared default temp folder. `scripts/review.mjs` now keys it by canonical owning repo; full live-server regressions pass 8 checks alongside 46 review-status and 27 media-seek checks (`runs/full-bundle-isolation.txt`). Explicit output, reuse and same-name clones remain covered. A6 already records keeping owners separate.
@@ -468,8 +469,8 @@ A fresh final check must review the corrected committed diff and remaining runti
 
 - **Complete local acceptance:** the real small project has not yet demonstrated native skill invocation, narrated plan/revision, fresh checks, implementation, independent code check, accepted and flagged walkthrough choices, fix and final commit.
 - **Live clients:** the owner-confirmed Codex CLI in iTerm2 adopted and answered a saved question through its verified active thread; it deliberately polled, so automatic wake is not claimed. Scratch Ghostty plan Send was adopted and recorded. The owner explicitly excluded desktop-app support from this change; that handoff remains unverified outside acceptance.
-- **Presentation and remote scope:** Ghostty plan choices, comments, Ask and Send, occupied-port recovery, and disconnected export/intake are proved. Finish walkthrough Accept/Flag and changed-scenes. Hosted automatic service remains outside D-313's scope.
-- **Evidence closure:** save exact native install and private-export command outcomes without transcript text. Full touched-spec and final fast output are saved; the last guard change additionally passed full delivery/loop (13 + 96 checks).
+- **Presentation and remote scope:** Ghostty plan choices, comments, Ask and Send, occupied-port recovery, and disconnected export/intake are proved. Actual walkthrough Accept/Flag, requested-change rebuild and changed-scenes approval also completed in the synthetic trial. Hosted automatic service remains outside D-313's scope.
+- **Evidence closure:** exact native install and main private-export command outcomes are saved without transcript text; the final safe lifecycle summary is now saved. Full touched-spec and final fast output are saved; the last guard change additionally passed full delivery/loop (13 + 96 checks).
 - **Final check and walkthrough:** fresh code-check findings, their answers, `reel check --base`, `reel audit`, stops, guide validation, fresh script/frame/video checks, walkthrough build and owner review are pending. Checkpoint commit `0d051e7` is an implementation checkpoint, not acceptance.
 - **System record:** spec/map/glossary now describe the implementation; affected system video scenes await post-acceptance refresh.
 - **Other surfaces:** Linux, Windows, WSL and cloud are unverified. Public plugin submission, deployment and owner-repo unattended enablement remain separate explicit actions.

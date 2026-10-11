@@ -22,7 +22,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSyn
 import { join, dirname, basename, sep } from "node:path";
 import { tmpdir, hostname, homedir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
-import { writeReview, claim, markDone, repoKey } from "../lib/inbox.mjs";
+import { writeReview, claim, markDone, repoKey, waitForReview } from "../lib/inbox.mjs";
 
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${detail}` : ""}`); if (!cond) failed++; };
@@ -135,6 +135,21 @@ try {
   writeFileSync(join(rp, "inbox", `${queued.id}.claim`), JSON.stringify({ by: "session", owner: "fake:main", leaseUntil: 1 }));
   s = (await status(queued.id)).body;
   ok("expired session ownership reports stopped with the saved review available", s.state === "stopped" && s.step.includes("saved for recovery"), JSON.stringify(s));
+  const deadLegacyPid = Number(execFileSync(process.execPath, ["-e", "console.log(process.pid)"], { encoding: "utf8" }).trim());
+  const legacy = writeReview(rp, row("2026-01-05T02:00:00Z"));
+  const legacyClaim = join(rp, "inbox", `${legacy.id}.claim`);
+  writeFileSync(legacyClaim, JSON.stringify({ by: "session", pid: deadLegacyPid, host: "unverified-remote-host", at: "2026-01-05T02:00:01Z" }));
+  s = (await status(legacy.id)).body;
+  ok("legacy claim on an unverifiable host stays working and protected", s.state === "working", JSON.stringify(s));
+  writeFileSync(legacyClaim, JSON.stringify({ by: "session", pid: deadLegacyPid, host: hostname(), at: "2026-01-05T02:00:01Z" }));
+  s = (await status(legacy.id)).body;
+  ok("dead same-host legacy session reports stopped with saved review available", s.state === "stopped" && s.step.includes("saved for recovery"), JSON.stringify(s));
+  // Keep the earlier expired fixture owned so this waiter reaches the legacy row.
+  const earlierClaim = join(rp, "inbox", `${queued.id}.claim`), retained = JSON.parse(readFileSync(earlierClaim, "utf8"));
+  writeFileSync(earlierClaim, JSON.stringify({ ...retained, owner: "fake:other", leaseUntil: Date.now() + 60000 }));
+  const adoptedLegacy = await waitForReview(rp, { owner: "fake:legacy-adopter", timeoutMs: 100 });
+  s = (await status(legacy.id)).body;
+  ok("next live waiter adopts the dead legacy claim and status becomes working", adoptedLegacy === legacy.path && s.state === "working" && JSON.parse(readFileSync(legacyClaim, "utf8")).owner === "fake:legacy-adopter", JSON.stringify(s));
   ok("set up (decisions.json): Send files the review in the inbox", /files the review in \.reelplanner\/inbox\//.test(log), log);
   const home = join(tmp, "home"), machine = (repo) => join(home, "inbox", repoKey(repo));
   // a machine inbox's path as a line and a response show it (from ~ when it is under your home folder)

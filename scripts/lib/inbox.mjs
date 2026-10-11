@@ -136,12 +136,21 @@ function releaseExpired(path, expectedOwner) {
   return withClaimLock(path, () => { let c; try { c = JSON.parse(readFileSync(path, "utf8")); } catch { return true; } if (c.owner !== expectedOwner || claimLive(c)) return false; unlinkSync(path); return true; });
 }
 
-/** A waiter only delivers a path. Its exit says nothing about the session which owns that path. */
+/** Modern claims use the session lease, never the exited waiter's pid. Ownerless legacy
+ *  session claims can be recovered only when their same-host process is proven gone. */
 export function claimLive(c, { now = Date.now() } = {}) {
   if (!c) return false;
   if (c.runPid && (c.host !== hostname() || alive(Number(c.runPid)))) return true;
   if (c.runPid) return false;
-  return c.leaseUntil ? Number(c.leaseUntil) > now : true; // legacy claims require deliberate recovery
+  if (Object.hasOwn(c, "leaseUntil")) {
+    const lease = Number(c.leaseUntil);
+    return c.leaseUntil == null || c.leaseUntil === "" || !Number.isFinite(lease) || lease > now;
+  }
+  if (c.by !== "session" || c.host !== hostname() || Object.hasOwn(c, "owner") || Object.hasOwn(c, "session") || Object.hasOwn(c, "runPid")) return true;
+  const pid = Number(c.pid);
+  if (!["number", "string"].includes(typeof c.pid) || !Number.isSafeInteger(pid) || pid <= 0 || pid > 0x7fffffff) return true;
+  try { process.kill(pid, 0); return true; }
+  catch (e) { return e.code !== "ESRCH"; } // EPERM and unknown errors do not prove death
 }
 const progressPath = (rp, id) => join(inboxDir(rp), ".progress", `${id}.json`);
 export const progressOf = (rp, id) => { try { return JSON.parse(readFileSync(progressPath(rp, id), "utf8")); } catch { return null; } };
