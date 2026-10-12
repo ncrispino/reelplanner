@@ -486,3 +486,8 @@ A fresh final check must review the corrected committed diff and remaining runti
 ## The walkthrough video
 
 Pending. Build from the real installation, stopped-commit/retry, durable live question, private source export and corrected seek behavior. Keep the story about two minutes; group pauses by the A1–A11 table and actual `reel stops` report, and show one saved real result for each claimed change. End with the tests, unfinished gates and the list. The final accepted/flagged review is part of acceptance, not assumed from this checkpoint.
+
+
+## Source checkpoint reconciliation
+
+The checked-tree attempt immediately before source checkpoint `67c3074` failed because `.reelplanner/.env.swp` disappeared while Git inspected the new-file list. The source commit was made despite that error; this was a sequencing mistake, not successful checked-before-commit evidence. No committed/done phase was recorded for it. Owner environment and pending-memory files remain preserved. `.gitignore` now excludes editor swap files, which can contain private environment data. A new successful checked snapshot must precede the next matching reconciliation commit; the final walkthrough/source tree will be checked again before its delivery commit. Raw conversation exports remain outside Git.

@@ -70,3 +70,7 @@ videos/*/fresh-eyes/shots/
 !.reelplanner/media/**
 !.reelplanner/**/versions/**
 __pycache__/
+
+# Editor swap files can contain local .env data; keep them out of review trees and packages.
+*.swp
+*.swo
