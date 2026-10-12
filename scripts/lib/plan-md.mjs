@@ -126,14 +126,15 @@ export function parseQuestions(md) {
     for (const line of lines) {
       const o = /^- \*\*([A-Z])\s*[·.:-]\s*([^*]+?)\.?\*\*\s*(.*)$/.exec(line);
       if (o) { options.push({ letter: o[1], label: o[2].trim(), text: o[3].trim() }); continue; }
+      if (/^(?:I recommend\b|Recommendation\s*:)/i.test(line.trim())) { rec = line.trim(); continue; }
       if (/^\s+\S/.test(line) && options.length && !rec && !answered) { options[options.length - 1].text += " " + line.trim(); continue; }
-      if (/^I recommend\b/i.test(line)) { rec = line.trim(); continue; }
       if (/^\*{1,2}(?:answered|decided)\b/i.test(line.trim()) || (answered && line.trim())) { answered = { text: ((answered?.text || "") + " " + line.replace(/^\*+|\*+$/g, "").trim()).trim() }; continue; }
       if (rec && line.trim()) { rec += " " + line.trim(); continue; }
       if (!options.length && line.trim()) setup.push(line.trim());
     }
     if (answered) answered.ids = [...answered.text.matchAll(/\bD-\d{3,4}\b/g)].map((x) => x[0]);
-    qs.push({ n: +h[1], title: h[2].trim(), steps: stepsNamed(h[3]) || [...(h[3].match(/\d+/g) || [])].map(Number), setup: setup.join(" "), options, recommend: rec, answered, text: m.trim() });
+    const named = stepsNamed(h[3]) || stepsNamed(h[2]) || [...(h[3].match(/\d+/g) || [])].map(Number);
+    qs.push({ n: +h[1], title: h[2].trim(), steps: named === "all" ? parseSteps(md).map((s) => s.n) : named, setup: setup.join(" "), options, recommend: rec, answered, text: m.trim() });
   }
   return qs;
 }

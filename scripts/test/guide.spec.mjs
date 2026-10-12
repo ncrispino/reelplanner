@@ -43,7 +43,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, launchOpts, chromiumEnv } from "../lib/env.mjs";
 import { pathToFileURL } from "node:url";
-import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample } from "../lib/plan-md.mjs";
+import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample, parseQuestions } from "../lib/plan-md.mjs";
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
 import { paragraphsOf, checkGuide } from "../lib/guide/check.mjs";
 import { canLine, youPhrase, canOf, thinOf, wroteOf, whereRan, choicesOf, choiceCounts, firstSentence } from "../lib/guide/reader.mjs";
@@ -151,6 +151,17 @@ try {
   ok("blocks: a trace cell split into beats, a label only where it is one", JSON.stringify(traceBeats("sent: the review; filed → you see it")) === JSON.stringify([{ label: "sent", text: "the review" }, { label: null, text: "filed" }, { label: null, text: "you see it" }]));
   ok("blocks: the steps a line keeps, at its end", JSON.stringify([stepsNamed("… kept. (step 4)"), stepsNamed("… (steps 1, 3)"), stepsNamed("… (steps 1 to 3)."), stepsNamed("… (all steps)"), stepsNamed("… nothing")]) === JSON.stringify([[4], [1, 3], [1, 2, 3], "all", null]));
   ok("blocks: an option gives an example when it has a value, a quote, a command or a number", hasExample("Your script still runs, and prints `one` warning") && !hasExample("It stops."));
+  {
+    const alternate = PLAN(true).replace("**Keep --out working?** (step 1)", "**Keep --out working? (step 1)**")
+      .replace("I recommend A: nothing breaks.", "  Recommendation: A: nothing breaks.");
+    const q = parseQuestions(alternate)[0];
+    ok("questions: step annotations inside bold headings and indented recommendations retain their meaning",
+      q.steps.join() === "1" && q.recommend === "Recommendation: A: nothing breaks." && q.options[1].text === "It stops.", JSON.stringify(q));
+    const ranged = parseQuestions(alternate.replace("(step 1)**", "(steps 1 to 2)**"))[0];
+    ok("questions: an inside-bold step range retains every step", ranged.steps.join() === "1,2", JSON.stringify(ranged));
+    const all = parseQuestions(alternate.replace("(step 1)**", "(all steps)**"))[0];
+    ok("questions: all-step annotations expand to the actual plan steps", all.steps.join() === "1,2", JSON.stringify(all));
+  }
 
   // ── diagrams: the format, drawn as SVG at build time ──
   { const g = parseDiagram("flow: How it builds\nplan.md (file) -> model: steps | the model reads every step\nmodel --> page: sometimes\nmodel -x git: never committed\nmodel = The model | scripts/lib/guide/model.mjs\n// a comment\n");
@@ -306,6 +317,33 @@ try {
   if (chromium) {
     const c = run("guide.mjs", vd, "--check", "--no-thumbs");
     ok("guide --check: passes on a guide made from its sources", c.code === 0 && /every heading and paragraph of plan\.md in the page/.test(c.out) && /each opens its layer, each by a visible control/.test(c.out), c.out);
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      const prose = "No decisions have been recorded yet. All choices remain open.";
+      try {
+        for (const mixed of [false, true]) {
+          const changed = before.replace(/## Decisions in force[\s\S]*$/, `## Decisions in force\n\n${prose}\n\n${mixed ? "- **D-001** Reviews go to the inbox: kept. (step 2)\n\nKeep the earlier review rule while the new choice is open.\n" : ""}`)
+            .replace("(steps 1, 2)", "(all steps)")
+            .replace("**Keep --out working?** (step 1)", "**Keep --out working? (step 1)**")
+            .replace("I recommend A: nothing breaks.", "Recommendation: A: nothing breaks.");
+          writeFileSync(planPath, changed);
+          const result = run("guide.mjs", vd, "--check", "--no-thumbs");
+          const made = JSON.parse(readFileSync(join(gd, "index.html"), "utf8").match(/<script type="application\/json" id="guide-data">([\s\S]*?)<\/script>/)[1]);
+          ok(`guide --check: ${mixed ? "mixed decision prose and citations" : "empty-ledger prose"}, all-step components and alternate question formatting render at desktop and mobile widths`,
+            result.code === 0 && made.inForceProse.includes(prose) && made.touchedAll[0].steps.join() === "1,2" && made.steps[0].questions[0]?.recommend === "Recommendation: A: nothing breaks." && (!mixed || made.inForce[0]?.ids[0] === "D-001"), result.out);
+          const browser = await chromium.launch(launchOpts());
+          try {
+            const page = await browser.newPage();
+            await page.goto(pathToFileURL(join(gd, "index.html")).href);
+            ok(`guide page: Recommendation: A marks only option A as recommended (${mixed ? "mixed" : "empty"} ledger)`,
+              await page.locator('.qq .opt[data-l="A"] .rec').count() === 1 && await page.locator('.qq .opt[data-l="B"] .rec').count() === 0);
+          } finally { await browser.close(); }
+        }
+      } finally {
+        writeFileSync(planPath, before);
+        run("guide.mjs", vd, "--no-thumbs");
+      }
+    }
     // A missing-step warning used to supply the source heading by accident. With every citation assigned,
     // the guide still needs to preserve the heading itself, without relying on a warning's text.
     {

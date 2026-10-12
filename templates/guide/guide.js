@@ -958,7 +958,7 @@ function decidedSection({ asQuestion }) {
   const inForceBody = inForce.map((x, i) => { const ids = x.ids.filter((id) => kept.includes(id)); if (!ids.length && x.ids.length) return `<p class="ifl" data-anchor="decisions in force · ${esc(x.ids.join(", ") || String(i + 1))}" data-editable>${inl(x.text)}</p>`;
     return `<div class="ifl" data-anchor="decisions in force · ${esc(x.ids.join(", ") || String(i + 1))}" data-editable><p>${inl(x.text)}</p>${ids.map((id) => decisionRow(id)).join("")}${x.steps ? "" : `<p class="q3">The plan doesn't say which step this applies to.</p>`}</div>`; }).join("");
   const body = `${own.length ? `<div class="decs">${own.map((id) => decisionRow(id)).join("")}</div>` : ""}
-    ${inForce.length ? fold(`Decisions in force: earlier decisions it keeps <span class="n">${kept.length || inForce.length}</span>${chgMark("decisions-in-force")}`, chgWhat("decisions-in-force") + inForceBody, { cls: "grp" }) : ""}`;
+    ${inForce.length || G.inForceProse ? fold(`Decisions in force${inForce.length ? `: earlier decisions it keeps <span class="n">${kept.length || inForce.length}</span>` : ""}${chgMark("decisions-in-force")}`, chgWhat("decisions-in-force") + md(G.inForceProse || "", { anchor: "decisions in force", editable: true }) + inForceBody, { cls: "grp" }) : ""}`;
   // once built, the reference it rests on: one line, folded, and left out of "Open everything" (a part shows it open)
   if (!asQuestion && FULL) return `<section data-flow class="q ref" id="decisions" data-part="decisions"><h2>The decisions it was built on</h2>${fold(`<span>${cap(count(own.length + kept.length, "decision"))}: ${own.length ? `${NUM[own.length] || own.length} made for this plan` : "none made for this plan"}${kept.length ? `, ${NUM[kept.length] || kept.length} earlier ${kept.length === 1 ? "one" : "ones"} it keeps` : ""}, each with why.</span>`, `<p class="say">${say}</p>${body}`, { id: "decisions-all", cls: "ref-fold", attrs: " data-noexpand" })}</section>`;
   return `<section data-flow class="q" id="decisions" data-part="decisions"><h2>${asQuestion ? "What's already decided, and why" : "The decisions it was built on"}</h2><p class="say">${say}</p>
@@ -992,8 +992,8 @@ function needsSection() {
   return `<section data-flow class="q" id="needs-you"><h2>What needs you</h2>${parts.join("")}</section>`;
 }
 function questionHtml(s, q) {
-  return `<div class="qq" data-q="${q.n}" data-step="${s.n}"><div class="opts">${q.options.map((o) => `<button type="button" class="opt" data-l="${o.letter}" aria-pressed="false"><b>${o.letter}</b> ${inl(o.label)}${q.recommend && new RegExp(`^I recommend\\s+${o.letter}\\b`).test(q.recommend) ? ` <span class="rec">recommended</span>` : ""}</button>`).join("")}</div><div class="world" aria-live="polite"></div>
-    ${q.recommend ? `<p class="recw" data-anchor="question ${q.n} · recommendation" data-editable><span class="lab2">The plan recommends</span> ${inl(q.recommend.replace(/^I recommend\s+/, ""))}</p>` : ""}
+  return `<div class="qq" data-q="${q.n}" data-step="${s.n}"><div class="opts">${q.options.map((o) => `<button type="button" class="opt" data-l="${o.letter}" aria-pressed="false"><b>${o.letter}</b> ${inl(o.label)}${q.recommend && new RegExp(`^(?:I recommend\\s+|Recommendation\\s*:\\s*)${o.letter}\\b`, "i").test(q.recommend) ? ` <span class="rec">recommended</span>` : ""}</button>`).join("")}</div><div class="world" aria-live="polite"></div>
+    ${q.recommend ? `<p class="recw" data-anchor="question ${q.n} · recommendation" data-editable><span class="lab2">The plan recommends</span> ${inl(q.recommend.replace(/^(?:I recommend\s+|Recommendation\s*:\s*)/i, ""))}</p>` : ""}
     ${fold("The question as the plan wrote it", md(q.text, { anchor: `question ${q.n}`, editable: true }))}</div>`;
 }
 document.addEventListener("click", (e) => {

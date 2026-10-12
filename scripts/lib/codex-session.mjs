@@ -28,6 +28,29 @@ function verified(meta, repo, id = null) {
     historyMode: meta.historyMode || meta.history_mode || "legacy", updatedAt: Number.isFinite(time) && time >= 0 ? time : null };
 }
 
+// Notifications can target an explicitly selected main conversation in another linked
+// worktree. History discovery/export remains limited to its exact repository folder.
+function verifiedNotification(meta, repo, id, env) {
+  try { return verified(meta, repo, id); } catch (error) {
+    if (error.message !== "missing or mismatched repository metadata") throw error;
+    const target = typeof meta?.cwd === "string" ? canonical(meta.cwd) : null;
+    const review = canonical(repo);
+    if (!target || !review || !id) throw error;
+    const gitEnv = { ...env };
+    for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR"]) delete gitEnv[key];
+    const common = (folder) => {
+      const result = spawnSync("git", ["-C", folder, "rev-parse", "--path-format=absolute", "--show-toplevel", "--git-common-dir"],
+        { env: gitEnv, encoding: "utf8", timeout: 5000, maxBuffer: 1 << 20, stdio: ["ignore", "pipe", "ignore"] });
+      if (result.status !== 0) return null;
+      const [root, shared] = result.stdout.trim().split("\n");
+      return canonical(root) === folder && shared ? canonical(shared) : null;
+    };
+    const shared = common(review);
+    if (!shared || shared !== common(target)) throw error;
+    return { ...verified(meta, target, id), reviewRepo: review };
+  }
+}
+
 function newestMain(candidates) {
   if (!candidates.length) throw new Error("no eligible main conversation has matching repository metadata");
   const ids = new Set(candidates.map((c) => c.id));
@@ -213,7 +236,7 @@ export async function verifyCodexSessionEndpoint({ repo, env = process.env, sess
     const call = (method, params) => new Promise((resolve, reject) => { const id = ++nextId; pending.set(id, { resolve, reject }); transport.send(JSON.stringify({ id, method, params })); });
     await call("initialize", { clientInfo: { name: "reelplanner_session_verify", title: "reelplanner session verification", version: "1.0.0" }, capabilities: { experimentalApi: true } });
     transport.send(JSON.stringify({ method: "initialized", params: {} }));
-    const result = await call("thread/read", { threadId: id, includeTurns: false }); const meta = verified(result?.thread, repo, id);
+    const result = await call("thread/read", { threadId: id, includeTurns: false }); const meta = verifiedNotification(result?.thread, repo, id, env);
     if (!meta.main) throw new Error("Choose the main Codex conversation, not a checker or subagent");
     const status = result.thread.status;
     const loaded = ["idle", "active"].includes(status?.type);

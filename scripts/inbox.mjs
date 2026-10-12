@@ -31,6 +31,9 @@ import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitin
 
 export async function main(args) {
   const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
+  const valued = ["--repo", "--owner", "--timeout", "--from"];
+  const commandIndex = args.findIndex((a, i) => !a.startsWith("--") && !valued.includes(args[i - 1]));
+  const subcommand = args[commandIndex];
   const explicitOwner = flag("owner");
   if (args.includes("--owner") && (!explicitOwner || !/^[a-z][a-z0-9-]*:[A-Za-z0-9._-]+$/.test(explicitOwner))) { console.error("✗ --owner requires the handle printed by --wait"); return 1; }
   const callerOwner = explicitOwner || process.env.REELPLANNER_OWNER || activeSession(process.env)?.key || null;
@@ -41,7 +44,7 @@ export async function main(args) {
   const box = setUp ? rp : machineInbox(repo);
   const where = `${shownPath(inboxDir(box)) || "."}/${setUp ? "" : " (this machine's folder: the repo has no set-up .reelplanner/)"}`;
 
-  if (args.includes("--wait")) {
+  if (!subcommand && args.includes("--wait")) {
     const t = Number(flag("timeout") || 0);
     console.error(`… waiting for a review in ${where} (Ctrl-C to stop)`);
     const waitOwner = callerOwner || `session:${randomUUID()}`;
@@ -54,7 +57,7 @@ export async function main(args) {
   }
 
   for (const command of ["renew", "progress", "retry"]) {
-    const i = args.indexOf(command); if (i < 0) continue;
+    const i = subcommand === command ? commandIndex : -1; if (i < 0) continue;
     const id = basename(String(args[i + 1] || "")).replace(/\.json$/, "");
     if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,159}$/.test(id)) { console.error(`usage: reelplanner inbox ${command} <id>${command === "progress" ? " <phase>" : ""}`); return 1; }
     try {
@@ -67,7 +70,7 @@ export async function main(args) {
     return 0;
   }
 
-  const ai = args.indexOf("answer");
+  const ai = subcommand === "answer" ? commandIndex : -1;
   if (ai >= 0) {
     const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => !["--from", "--repo", "--owner"].includes(a) && !["--from", "--repo", "--owner"].includes(all[i - 1])).join(" ").trim();
     if (!id || !words) { console.error('usage: reelplanner inbox answer <id | path> "<answer>" [--from "<where>"]'); return 1; }
@@ -80,7 +83,7 @@ export async function main(args) {
 
   // a set-up repo's reviews sent before `reel init`, still in the machine's inbox: named in the list, and done here too
   const before = setUp ? machineInbox(repo) : null;
-  const di = args.indexOf("done");
+  const di = subcommand === "done" ? commandIndex : -1;
   if (di >= 0) {
     const id = basename(String(args[di + 1] || "")).replace(/\.json$/, "");
     if (!id) { console.error("usage: reelplanner inbox done <id | path>"); return 1; }

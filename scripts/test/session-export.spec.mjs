@@ -196,6 +196,29 @@ try {
   await testAsync("running Unix endpoint uses an actual HTTP Upgrade and read-only WebSocket RPC", async () => {
     endpointMode="";clear(); const meta = await verifyCodexSessionEndpoint({repo, env, session:"endpoint-main", endpoint}); assert.ok(upgradeSeen);assert.equal(meta.id,"endpoint-main"); assert.equal(meta.loaded,true); assert.equal(meta.main,true); assert.equal(meta.status.type,"active"); assert.ok(calls().every(c => ["initialize","initialized","thread/read"].includes(c.method))); assert.ok(calls().filter(c => c.method === "thread/read").every(c => c.params.includeTurns === false));
   });
+  await testAsync("explicit live notification target can use a linked worktree without widening history access", async () => {
+    const linked = join(tmp, "linked-worktree"), separate = join(tmp, "separate-repository");
+    const git = (folder, ...args) => execFileSync("git", ["-C", folder, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    git(repo, "init");
+    git(repo, "-c", "user.name=Reelplanner fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false", "commit", "--allow-empty", "-m", "fixture");
+    git(repo, "worktree", "add", "--detach", linked, "HEAD");
+    mkdirSync(separate); git(separate, "init");
+    endpointMode = ""; clear();
+    const meta = await verifyCodexSessionEndpoint({ repo: linked, env, session: "endpoint-main", endpoint });
+    assert.equal(meta.repo, realpathSync(repo));
+    assert.equal(meta.reviewRepo, realpathSync(linked));
+    assert.ok(meta.loaded && meta.main);
+    assert.ok(calls().every(c => ["initialize", "initialized", "thread/read"].includes(c.method)));
+    assert.throws(() => codexSessionMetadata({ repo: linked, env, session: "endpoint-main" }), /could not be read/);
+    await assert.rejects(verifyCodexSessionEndpoint({ repo: separate, env, session: "endpoint-main", endpoint }), /repository metadata/);
+    const nested = join(repo, "nested"); mkdirSync(nested);
+    await assert.rejects(verifyCodexSessionEndpoint({ repo: nested, env, session: "endpoint-main", endpoint }), /repository metadata/);
+    endpointMode = "endpoint-checker";
+    await assert.rejects(verifyCodexSessionEndpoint({ repo: linked, env, session: "endpoint-main", endpoint }), /main Codex/);
+    endpointMode = "endpoint-unloaded";
+    await assert.rejects(verifyCodexSessionEndpoint({ repo: linked, env, session: "endpoint-main", endpoint }), /not loaded/);
+    endpointMode = "";
+  });
   for (const mode of ["endpoint-unloaded","endpoint-checker","wrong-id","wrong-repo","missing-repo","malformed","missing"]) await testAsync(`endpoint ${mode} cannot claim a live recipient`, async () => {
     endpointMode=mode;await assert.rejects(verifyCodexSessionEndpoint({repo,env,session:"endpoint-main",endpoint}));
   });

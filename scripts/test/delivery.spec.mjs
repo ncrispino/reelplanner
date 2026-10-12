@@ -5,6 +5,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { join } from "node:path";
 import { tmpdir, hostname } from "node:os";
 import { execFileSync, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { ROOT } from "../lib/env.mjs";
 import { claim, claimOf, claimLive, connectSession, connectionOf, deliverInbox, writeReview, writeQuestion, readQuestion, waitingQuestions, waitForReview, renewClaim, progressOf, markDone, retryAgent, agentPrompt, answerQuestion } from "../lib/inbox.mjs";
 
@@ -108,6 +109,18 @@ try {
   assert.equal(readFileSync(q.path, "utf8"), finishedAnswer);
   const directQuestion = writeQuestion(rp, { id: "direct-unclaimed", question: "Can you answer directly?" });
   assert.equal(answerQuestion(rp, directQuestion.id, "Direct, atomically saved.", "the plan", { owner: null }).answer, "Direct, atomically saved.");
+  for (const [index, words] of ["renew", "progress", "retry", "done", "answer", "--wait"].entries()) {
+    const question = writeQuestion(rp, { id: `literal-answer-${index}`, question: "Which word?" });
+    const result = spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "inbox", "--repo", repo,
+      "answer", question.id, words, "--from", "renew"], {
+      cwd: repo, encoding: "utf8", timeout: 2000,
+      env: { ...process.env, REELPLANNER_OWNER: "fake:literal", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "" },
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(readQuestion(rp, question.id).answer, words);
+    assert.equal(readQuestion(rp, question.id).from, "renew");
+  }
+  console.log("✓ CLI answers and source labels that match command names are saved verbatim, including --wait");
   console.log("✓ adopted questions reject stale/unknown/foreign CLI answers under the ownership lock; finished retries retain answers and direct unclaimed answers work");
 
   const fallback = writeReview(rp, row(2));
@@ -193,6 +206,25 @@ try {
   console.log("✓ connected claims require a commit, preserve staged owner edits, and block new residual tracked changes");
 
   git("restore", "--staged", "owner-private.txt"); git("restore", "owner-private.txt");
+  const runtimeLog = join(box, "server.log");
+  writeFileSync(runtimeLog, "server started\n"); git("add", "-f", ".reelplanner/inbox/server.log");
+  git("-c", "commit.gpgsign=false", "commit", "-qm", "legacy tracked runtime fixture");
+  writeFileSync(runtimeLog, "server running\n");
+  const operationalReview = writeReview(rp, { ...row(8), project: "tracked-inbox" });
+  claim(rp, operationalReview.id, "session", { owner: "fake:operational" });
+  const operationalProgressPath = join(box, ".progress", `${operationalReview.id}.json`);
+  const legacyProgress = progressOf(rp, operationalReview.id);
+  legacyProgress.baselineTracked[createHash("sha256").update(".reelplanner/inbox/server.log").digest("hex")] = { unstaged: "legacy runtime fingerprint" };
+  writeFileSync(operationalProgressPath, JSON.stringify(legacyProgress));
+  writeFileSync(runtimeLog, "server running; review received\n");
+  writeFileSync(join(repo, "reviewed.txt"), "review updated despite runtime log activity\n");
+  renewClaim(rp, operationalReview.id, { owner: "fake:operational", phase: "checked" });
+  git("add", "reviewed.txt"); git("-c", "commit.gpgsign=false", "commit", "--only", "reviewed.txt", "-qm", "apply operational review");
+  renewClaim(rp, operationalReview.id, { owner: "fake:operational", phase: "committed" });
+  assert(finish(operationalReview.id));
+  assert.equal(readFileSync(runtimeLog, "utf8"), "server running; review received\n");
+  git("restore", ".reelplanner/inbox/server.log");
+  console.log("✓ tracked operational inbox updates do not become source edits or block older claims' checked commit proof");
   const initialText = Array.from({ length: 20 }, (_, i) => `line ${i + 1}`).join("\n") + "\n";
   writeFileSync(join(repo, "shared.txt"), initialText); git("add", "shared.txt"); git("-c", "commit.gpgsign=false", "commit", "-qm", "offset fixture");
   const stagedOwnerText = initialText.replace("line 5", "owner staged text at line 5");

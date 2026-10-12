@@ -49,6 +49,21 @@ const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} $
 const RP = join(tmp, ".reelplanner"), PD = join(RP, "plans", "2026-10-01-sample"), V = join(PD, "video");
 const run = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), ...a], { cwd: tmp, encoding: "utf8" });
 
+for (const ids of [[0, 2, 6], [1, 2, 3]]) {
+  const video = mkdtempSync(join(tmpdir(), "rp-chapter-order-"));
+  try {
+    const storyboard = "---\ntitle: Chapter order\n---\n\n" + ids.map((id, position) =>
+      `## Frame ${id} — Scene ${id}\n\n- duration: 3s\n- src: compositions/frames/${id}.html\n${position === 0 || position === 2 ? `- chapter_start: Chapter ${position}\n` : ""}\n`).join("");
+    writeFileSync(join(video, "STORYBOARD.md"), storyboard);
+    const result = spawnSync(process.execPath, [join(ROOT, "scripts", "plan-map.mjs"), video], { cwd: tmp, encoding: "utf8" });
+    const map = result.status === 0 ? JSON.parse(readFileSync(join(video, "plan-map.json"), "utf8")) : null;
+    ok(`chapters end at the preceding scene in storyboard order for frames ${ids.join(", ")}`,
+      map?.chapters?.length === 2 && map.chapters[0].fromFrame === ids[0] && map.chapters[0].toFrame === ids[1]
+      && map.chapters[0].end === 6 && map.chapters[1].fromFrame === ids[2] && map.chapters[1].toFrame === ids[2]
+      && map.chapters[1].end === 9, result.stdout + result.stderr);
+  } finally { rmSync(video, { recursive: true, force: true }); }
+}
+
 mkdirSync(join(V, "compositions", "frames"), { recursive: true }); mkdirSync(join(PD, "reviews"), { recursive: true });
 execFileSync("git", ["init", "-q"], { cwd: tmp });
 writeFileSync(join(RP, "glossary.md"), "# Glossary\n\n| Term | id | Meaning |\n|---|---|---|\n| The review page | `page` | Where a video is watched and answered |\n\n## Other words\n\n| Term | id | Meaning |\n|---|---|---|\n| A branch | — | A line of work kept apart from the main code until it is merged |\n");

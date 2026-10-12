@@ -181,13 +181,13 @@ const ownerPatchPath = (rp, id, stage) => join(inboxDir(rp), ".progress", `${id}
 const patchFingerprint = (patch) => hash(Buffer.from(patch.toString("latin1")
   .replace(/^index [0-9a-f]+\.\.[0-9a-f]+(.*)$/gm, "index <blobs>$1")
   .replace(/^@@ -[\d,]+ \+[\d,]+ @@.*$/gm, "@@ <coordinates> @@"), "latin1"));
-function trackedFingerprint(repo) {
+function trackedFingerprint(repo, rp = null) {
   const result = {};
   for (const stage of ["staged", "unstaged"]) {
     const cached = stage === "staged" ? ["--cached"] : [];
     const names = gitBytes(repo, ["diff", ...cached, "--name-only", "-z", "--no-renames"]);
     if (!Buffer.from(names.toString("utf8")).equals(names)) throw new Error("Cannot fingerprint non-UTF-8 Git paths safely");
-    const paths = gitPaths(names);
+    const paths = gitPaths(names).filter((path) => !rp || outsideInbox(repo, rp, path));
     for (const path of paths) {
       const key = hash(path);
       result[key] ||= {};
@@ -223,7 +223,7 @@ function completionBaseline(rp, repo, id) {
     writeAtomic(ownerPatchPath(rp, id, stage), patch, { mode: 0o600 });
     ownerPatches[stage] = hash(patch);
   }
-  return { completionMode: "git", repo: realPath(repo), startHead, baselineTracked: trackedFingerprint(repo), baselineUntracked: untrackedFingerprint(repo, rp), ownerPatches };
+  return { completionMode: "git", repo: realPath(repo), startHead, baselineTracked: trackedFingerprint(repo, rp), baselineUntracked: untrackedFingerprint(repo, rp), ownerPatches };
 }
 function claimItem(rp, id, by, extra, { repo = dirname(rp), phase = "handling", recover = false } = {}) {
   return withClaimLock(claimPath(rp, id), () => {
@@ -276,7 +276,8 @@ function checkedEvidence(rp, id, progress) {
     for (const stage of ["unstaged", "staged"]) {
       const patch = readFileSync(ownerPatchPath(rp, id, stage));
       if (hash(patch) !== progress.ownerPatches[stage]) throw new Error("Original owner patch evidence is missing or changed");
-      if (patch.length) git(["apply", "--reverse", "--cached", "--whitespace=nowarn", "-"], patch);
+      const box = relative(realPath(repo), realPath(inboxDir(rp))).split(sep).join("/");
+      if (patch.length) git(["apply", "--reverse", "--cached", "--whitespace=nowarn", `--exclude=${box}/*`, "-"], patch);
     }
     const checkedTree = git(["write-tree"]).toString("utf8").trim();
     const beforeTree = head ? git(["rev-parse", `${head}^{tree}`]).toString("utf8").trim() : git(["mktree"], "").toString("utf8").trim();
@@ -292,8 +293,15 @@ function commitEvidenceMatches(progress, { completed = false, rp } = {}) {
   const head = headOf(progress.repo);
   if (!progress.checkedTree || !("checkedHead" in progress) || !head || head === progress.checkedHead || head === progress.startHead || (progress.startHead && !descendsFrom(progress.repo, progress.startHead, head)) || (progress.checkedHead && !descendsFrom(progress.repo, progress.checkedHead, head))) return false;
   if (completed && (progress.phase !== "committed" || progress.committedHead !== head)) return false;
-  try { return gitBytes(progress.repo, ["rev-parse", `${head}^{tree}`]).toString("utf8").trim() === progress.checkedTree
-    && JSON.stringify(trackedFingerprint(progress.repo)) === JSON.stringify(progress.baselineTracked)
+  try {
+    const operational = new Set(gitPaths(gitBytes(progress.repo, ["ls-files", "-z"]))
+      .filter((path) => !outsideInbox(progress.repo, rp, path)).map(hash));
+    return gitBytes(progress.repo, ["rev-parse", `${head}^{tree}`]).toString("utf8").trim() === progress.checkedTree
+    && JSON.stringify(trackedFingerprint(progress.repo, rp)) === JSON.stringify(Object.fromEntries(Object.entries(progress.baselineTracked).filter(([key]) => {
+      // Older claims included tracked operational inbox files in their baseline.
+      // Their updates are not owner source edits and never enter the checked tree.
+      return !operational.has(key);
+    })))
     && JSON.stringify(untrackedFingerprint(progress.repo, rp)) === JSON.stringify(progress.baselineUntracked); }
   catch { return false; }
 }

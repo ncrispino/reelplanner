@@ -86,6 +86,9 @@ else if(args[0]==='app-server' && args[1]==='daemon') console.log(JSON.stringify
     const message = queued.args[queued.args.indexOf("--message") + 1];
     assert.equal(message.includes(realpathSync(item)), true); assert.equal(message.includes("do not include this annotation"), false);
     assert.match(message, /older item first/);
+    assert.ok(message.includes(`inbox --wait --timeout 1 --repo ${shellQuote(realpathSync(repo))}`));
+    assert.ok(message.includes(`keep --repo ${shellQuote(realpathSync(repo))} on every inbox command`));
+    assert.match(message, /run reel-intake from that repository folder/);
   });
   const foreign = join(scratch, "not-in-inbox.json"); writeFileSync(foreign, "{}");
   const rejected = await getHarness("codex").deliver({ repo, env, session: `codex:${id}`, inboxPath: foreign, inboxRoot: inbox, executable: binary });
