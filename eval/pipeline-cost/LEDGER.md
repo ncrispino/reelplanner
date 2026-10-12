@@ -6,10 +6,18 @@ capped at 60 s). **Wall** is what the person waited; the phase columns are agent
 they can sum past wall. **In tok** counts input tokens with cache reads, usually most of the cost; **Out tok** is estimated from what the model wrote (— where the runs were measured before that). **Rounds** are
 fresh-eyes rounds; **material** is how many of their findings a viewer would have been misled or lost without.
 **Variety** is how many layouts the video's scenes take, over its scenes (`reelplanner variety <video-dir>`): a
-cheaper video that looks more alike shows here.
+cheaper video that looks more alike shows here. Capped episodes are lower bounds with no completed showing; Codex benchmark input/output totals exclude automatic approval review, which is reported separately.
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-12 | synthetic Codex EC2, baseline-1 | first look; capped, not shown | frozen 45f64f2 + guidance | ≥40.01 (capped) | — | — | — | — | 27.762 | 120.7 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | synthetic Codex EC2, baseline-2 | first look | frozen 45f64f2 + guidance | 38.04 | — | — | — | — | 11.147 | 50.6 | 1 script + 2 frame | 5 script + 16 frame | 11 / 20 | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | synthetic Codex EC2, baseline-2 | scripted revision; capped, not shown | frozen 45f64f2 + guidance | ≥1.96 (capped) | — | — | — | — | 0.991 | 1.1 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | synthetic Codex EC2, packet-1 | first look; capped, not shown | frozen 45f64f2 + guidance | ≥40.01 (capped) | — | — | — | — | 25.111 | 118.1 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | synthetic Codex EC2, packet-2 | first look | frozen 45f64f2 + guidance | 36.49 | — | — | — | — | 10.412 | 48.0 | 1 script + 2 frame | 9 script + 20 frame | 8 / 20 | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | synthetic Codex EC2, packet-2 | scripted revision; capped, not shown | frozen 45f64f2 + guidance | ≥3.50 (capped) | — | — | — | — | 1.095 | 2.1 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |
+| 2026-10-12 | research repo, Codex CLI, owner Mac | reading-prompt plan, first look | checkout, PR #27 + c161c82 | 38.6 | — | — | — | — | 14.885 | 84.1 | 1 script + 1 frame | 16 script + 56 frame (material timing and meaning errors; repeated symptoms) | 10 / 30 | [report](2026-10-12-reading-prompt-codex.md) |
+| 2026-10-12 | research repo, Codex CLI, owner Mac | revise, plus worktree delivery and timing repairs | checkout + local delivery-fix branch | 32.5 | — | — | — | — | — | — | 1 script + 1 frame | 31 final frame findings | — | [report](2026-10-12-reading-prompt-codex.md) |
 | 2026-10-11 | bakery bench, main (fresh EC2, headless, scripted review) | plan video, first look | main (0.2.0 + #21) | 47.8 | 2.3 | 35.4 | 55.5 | — | 34.3 | 374 | — | — | 9 / 18 | [report](2026-10-11-bench.md) |
 | 2026-10-11 | bakery bench, main | revise after review | main | 30.2 | 2.1 | 16.5 | 19.0 | — | 18.3 | 129 | — | — | — | [report](2026-10-11-bench.md) |
 | 2026-10-11 | bakery bench, cheaper-videos as first built | plan video, first look | cost-audit (frames stage v1) | 78.4 | 2.7 | 70.1 | 37.8 | — | 44.0 | 398 | — | — | 10 / 18 | [report](2026-10-11-bench.md) |

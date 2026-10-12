@@ -5,6 +5,24 @@ feature checks, launch and permission advice, session notification, and conversa
 The shared workflow owns saving, claims, retries, progress and completion. A notification is not
 proof that a review was handled.
 
+## Selecting harness guidance
+
+Use the shared workflow and video style guide in every harness. For execution advice below, read the
+section for your active harness plus the shared review surfaces. For conversation style, load only
+the matching profile:
+
+| Active harness | Conversation guidance |
+|---|---|
+| Codex | Read [communication/codex.md](communication/codex.md). |
+| Claude Code | Use the shared teaching guidance and the person's preferences; no extra profile. |
+| Other or unknown | Use the shared teaching guidance and the person's preferences; no extra profile. |
+
+Select by the agent harness running the task, or the explicitly selected harness for a headless run.
+A terminal such as Ghostty or iTerm2, a browser surface, and a session source label such as `vscode`
+do not select a conversation profile. Do not load another harness's profile as a fallback.
+The profiles guide behavior; they are not an enforced runtime setting. The person's instructions
+still take precedence. Add another profile here when it has a concrete adjustment to make.
+
 ## Codex
 
 Install the executable first: `npm i -g github:ncrispino/reelplanner`. Check the media tools with
@@ -50,6 +68,11 @@ permission-setting change. An unclaimed question can still be answered directly.
 For a supported connected Codex session, use `review <video-dir> --detach --session codex:<id>`.
 Use the current `CODEX_THREAD_ID` or a deliberately selected session ID. Connection verifies the
 running endpoint's project, main thread and loaded status; a saved conversation ID alone is insufficient.
+An explicitly selected main conversation may belong to another linked Git worktree of the same
+repository. Both folders must be verified worktree roots with the same Git common directory;
+an unrelated checkout is rejected. Saved conversation discovery and export still require an exact
+folder match. A background waiter's completion alone does not establish that this client will wake
+the conversation; say whether a live connection was actually verified.
 Omit `--session-endpoint` only when the already-running daemon can be discovered and verified.
 Otherwise add `--session-endpoint ws://127.0.0.1:<port>` for the selected running App Server.
 No daemon or model turn is started during verification. An unavailable queue leaves the saved item available through

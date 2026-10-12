@@ -7,7 +7,7 @@ You answer on the video, and the agent updates the plan.
 
 <img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
-**Works with:** Claude Code (tested) · Codex CLI ([features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
+**Works with:** Claude Code (tested) · Codex CLI (tested on macOS; [features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
 (untested: [what each needs](./docs/agents.md))
 
 ## Before you try

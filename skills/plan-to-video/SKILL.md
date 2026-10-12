@@ -11,6 +11,12 @@ and the calls you made on your own. This skill decides the story; HyperFrames' f
 builds the frames: load it (`/faceless-explainer` in Claude Code, `$faceless-explainer` in Codex). Read
 [references/style-guide.md](references/style-guide.md) before a storyboard.
 
+Work as a patient engineering partner: explain the reason for an approach and what the result means.
+When teaching a mechanism, start with a concrete example, define new terms in context, and show the
+behavior visually. The style guide covers narration, visuals and guide depth for every harness.
+Before working, follow [the harness guidance](references/harnesses.md#selecting-harness-guidance):
+load only the conversation profile for the active harness, alongside the shared workflow.
+
 Three levels; the person chooses, and can move up at any time:
 
 1. **One video**, the basic unit: a plan video (of a plan you write for their request, or of one they already
@@ -270,7 +276,9 @@ explainer (`<explainer-dir>/video/`).
    `.reelplanner/`, `$RP reel stage <plan-dir>` writes the shared stage.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`** (Step 3) as the style guide says: a series of parts of
    about a minute, 3–5 minutes in all (the system video 5–8), decisions after their steps, a quick
-   check per step. A walkthrough video is the change running instead, in about two minutes, with a quick
+   check per step. Before assigning frames, follow [references/authoring.md](references/authoring.md):
+   budget scenes by examples and choices, settle voice pace, and keep each builder stage focused.
+   A walkthrough video is the change running instead, in about two minutes, with a quick
    check only where the change has something to predict, just before the scene that runs it (a change to
    what is saved or to a command's output counts, though the page looks the same), and one open question
    at the end (style guide §8). The front matter carries
@@ -317,8 +325,9 @@ explainer (`<explainer-dir>/video/`).
    | a system-video frame | `- spec_section: <heading>` and/or `- components: <id>, <id>` |
    | every scene (optional) | `- layout: <word>` (code, table, terminal, before-after, wall…) |
 
-3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step.
-   `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
+3. **Narrate in the background once the checked script and voice pace are settled.**
+   `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (initially at 1.25× unless the person
+   chose another pace; rebuilds retain the recorded pace, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json`;
    leave generated voice files, renders and player bundles ignored. Never force-add them. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
@@ -658,7 +667,10 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   check, a fix). When one returns, check its work, run the tests and commit. Start a video's builder as a **fresh
   agent with a short brief**, not a fork of this conversation (a fork carries all of it into every call): the plan's
   folder, BRIEF.md, the decisions in force on the plan's parts, and the person's own words quoted (the request, the
-  review's comments), under about 50k tokens; it reads this skill itself.
+   review's comments). Keep the handoff to about 1,200 words plus paths to complete evidence; the builder
+   reads this skill itself. Split writing, frame construction and repair into fresh stages when supported,
+   following [references/authoring.md](references/authoring.md#stage-handoffs). A smaller initial brief alone
+   does not keep a long-running builder's accumulated context small.
 - **Local page.** Start the server with `$RP review <video-dir> --detach`: it runs in its own process,
   outlives this session, and is reused by the next `--detach` (one per repo; `$RP review --stop` stops
   it). Keep `$RP review --wait` running as your own background task. When the reviewer presses Send,
