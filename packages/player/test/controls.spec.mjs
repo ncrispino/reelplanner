@@ -177,5 +177,53 @@ ok(!!fb && /reads as a hole/.test(fb), "a blocked clipboard falls back to select
 await rp.locator('[data-act="copy-close"]').click(); await until(p, () => document.querySelector("#rp").shadowRoot.querySelector(".copyout").hidden);
 ok(await p.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector(".copyout").hidden), "and it closes again");
 
+// The control must do what its label promises even while old runtime state is arriving.
+// A state message commits after timeupdate, and can disagree with the last Play/Pause event.
+const transport = await b.newPage({ viewport: { width: 1440, height: 1000 } });
+await transport.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}`);
+await loaded(transport);
+await until(transport, () => document.querySelector("#rp").player._assetsReady);
+for (const via of ["click", "Space", "mini-click"]) for (const action of ["Play", "Pause"]) {
+  const result = await transport.evaluate(({ via, action }) => {
+    const el = document.querySelector("#rp"), pl = el.player, button = el.shadowRoot.querySelector('[data-act="play"]');
+    el.start(); pl.pause(); pl.seek(2); if (action === "Pause") pl.play();
+    if (via === "mini-click") el.setMini(true);
+    const control = via === "mini-click" ? el.shadowRoot.querySelector('[data-act="mini-play"]') : button;
+    const label = () => via === "mini-click" ? control.getAttribute("aria-label") : control.textContent;
+    const shown = label();
+    pl._lastUpdateMs = 0;
+    window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+      data: { source: "hf-preview", type: "state", frame: 60, isPlaying: action === "Play" } }));
+    // A following runtime tick refreshes the visible mini bar after the stale state was mirrored.
+    pl._lastUpdateMs = 0;
+    window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+      data: { source: "hf-preview", type: "state", frame: 61, isPlaying: action === "Play" } }));
+    const afterPacket = label(), mirrored = pl.paused, calls = [], play = pl.play, pause = pl.pause;
+    pl.play = function () { calls.push("Play"); return play.call(this); };
+    pl.pause = function () { calls.push("Pause"); return pause.call(this); };
+    try {
+      if (via !== "Space") control.click();
+      else { el.focus(); el.dispatchEvent(new KeyboardEvent("keydown", { key: " ", code: "Space", bubbles: true })); }
+      return { shown, afterPacket, mirrored, calls, paused: pl.paused, label: label() };
+    } finally { pl.play = play; pl.pause = pause; pl.pause(); if (via === "mini-click") el.setMini(false); }
+  }, { via, action });
+  ok(result.shown === action && result.afterPacket === action && result.mirrored === (action === "Pause") && result.calls.join() === action
+    && result.paused === (action === "Pause") && result.label === (action === "Play" ? "Pause" : "Play"),
+  `${via} honors displayed ${action} despite an opposite runtime packet — ${JSON.stringify(result)}`);
+}
+const ended = await transport.evaluate(() => {
+  const el = document.querySelector("#rp"), pl = el.player, button = el.shadowRoot.querySelector('[data-act="play"]');
+  el.setMini(true); pl.seek(pl.duration - 0.1); pl.play(); pl._lastUpdateMs = 0;
+  // The runtime reports completion before committing its final paused state to the player.
+  window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+    data: { source: "hf-preview", type: "state", frame: pl.duration * 30, isPlaying: false } }));
+  const label = button.textContent, miniLabel = el.shadowRoot.querySelector('[data-act="mini-play"]').getAttribute("aria-label"), paused = pl.paused;
+  button.click(); const replay = { t: pl.currentTime, playing: !pl.paused }; pl.pause();
+  el.setMini(false); return { label, miniLabel, paused, replay };
+});
+ok(ended.label === "Play" && ended.miniLabel === "Play" && ended.paused && ended.replay.playing && ended.replay.t === 0,
+  `completion offers Play and replays from the start — ${JSON.stringify(ended)}`);
+await transport.close();
+
 console.log(fails.length ? `\n${fails.length} failing` : "\nall checks pass");
 await b.close(); srv.kill(); process.exit(fails.length ? 1 : 0);

@@ -2487,7 +2487,7 @@ export class ReelplannerPlayer extends HTMLElement {
     this.player.addEventListener("play", () => { this._run = null; runFrom(); if (!this._firstPlayAt) this._firstPlayAt = new Date().toISOString(); this.stage.dataset.started = "1"; this.hideCaptions("before", false); this.deselect(); this.syncPlay(); });   // a selection belongs to a paused frame
     this.player.addEventListener("pause", () => { this._run = null; this.syncPlay(); });
     this.player.addEventListener("ratechange", () => { if (this._run) runFrom(); });
-    this.player.addEventListener("ended", () => { this.syncPlay(); this.markWatched("seen"); });   // watched: 80 % seen, or the end, whichever comes first (D-128)
+    this.player.addEventListener("ended", () => { this.syncPlay(false); this.markWatched("seen"); });   // ended arrives before the runtime's final paused state is committed
     this.player.addEventListener("ready", () => { this.stage.dataset.ready = "1"; this.placeBefore(); if (this._mini) this.miniCaptions(true); this.hideRuntimeLoader(); this.idle(true); this.renderScrub(); this.syncPlay(); this.redraw(); this.poster(); this.applyPicks(); this.detectBand(); this.syncBand(); if (this._pendingDecision) this.recheckCards(); for (const ms of [0, 800, 2500, 6000]) setTimeout(() => this.wireCaptions(), ms); }); // fires again after a seek loads a new sub-composition
     const mapUrl = this.getAttribute("plan-map") || this.src.replace(/index\.html$/, "plan-map.json");
     try { this._mapUrl = new URL(mapUrl, document.baseURI).href; } catch { this._mapUrl = null; }
@@ -3552,7 +3552,8 @@ ${clip(gloss || "(none)", 9000)}`;
   }
   syncMiniBar(t = this.watchedT()) {
     const bar = this.$?.(".minibar"); if (!bar || bar.hidden) return;
-    const playing = !!this.player && !this.player.paused, dur = this.dur() || 0, q = !!this._pendingDecision && !this.isAnswered();
+    // Both controls present the same transport action, including between delayed runtime packets.
+    const playing = this.$('[data-act="play"]').dataset.playing === "true", dur = this.dur() || 0, q = !!this._pendingDecision && !this.isAnswered();
     const pb = bar.querySelector(".mplay");
     if (pb.dataset.playing !== String(playing)) { pb.dataset.playing = String(playing); pb.setAttribute("aria-label", playing ? "Pause" : "Play"); pb.title = playing ? "Pause (space)" : "Play (space)"; }
     bar.querySelector(".mnow").textContent = this.fmt(t); bar.querySelector(".mdur").textContent = this.fmt(dur);
@@ -6118,7 +6119,7 @@ ${clip(gloss || "(none)", 9000)}`;
     this.status(`chapter ${j + 1} of ${chs.length} · ${plainTitle(c.title)}`);
   }
 
-  syncPlay() { const b = this.$('[data-act="play"]'); const playing = !!this.player && !this.player.paused; b.textContent = playing ? "Pause" : "Play"; b.dataset.playing = String(playing); b.setAttribute("aria-label", playing ? "Pause (space)" : "Play (space)"); this.$(".dmark")?.toggleAttribute("data-playing", playing); this.updateStatus(); if (this._mini) this.syncMiniBar(); }
+  syncPlay(playing = !!this.player && !this.player.paused) { const b = this.$('[data-act="play"]'); b.textContent = playing ? "Pause" : "Play"; b.dataset.playing = String(playing); b.setAttribute("aria-label", playing ? "Pause (space)" : "Play (space)"); this.$(".dmark")?.toggleAttribute("data-playing", playing); this.updateStatus(); if (this._mini) this.syncMiniBar(); }
   // One home per question. A question is asked in exactly one place, the sheet on the video;
   // this is the record of what has been ANSWERED. The ones still to come are a count, not a second
   // copy of the question, so there is never a version of it here to answer instead.
@@ -6374,7 +6375,9 @@ ${clip(gloss || "(none)", 9000)}`;
       case "mini-play": if (this._pendingDecision && !this.isAnswered()) this.backToVideo(); else this.$('[data-act="play"]').click(); break;
       case "mini-up": this.backToVideo(); break;
       case "play": // the runtime queues a play until its assets are ready; the first play from the poster starts at 0
-        if (!this.player.paused) { this.player.pause(); break; }
+        // Honor the displayed control. A delayed runtime packet can mirror the old play state after
+        // an explicit Play/Pause event without changing the label the reviewer is activating.
+        if (this.$('[data-act="play"]').dataset.playing === "true") { this.player.pause(); break; }
         if (this.isAnswered()) { this.skipWait(); break; }   // an answered sheet: Play is Continue, not a video running under it
         if (this._pendingDecision && this._folded) { const at = this.pendingAt(); if (at != null && (this.player.currentTime || 0) >= at - 0.05) { this.unfoldAt(); break; } }
         if (!this.stage.dataset.started && this._posterT != null && Math.abs((this.player.currentTime || 0) - this._posterT) < 0.25) this.player.seek(0);

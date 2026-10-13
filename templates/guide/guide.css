@@ -191,7 +191,7 @@ ul.ment li{color:var(--ink-2);margin:4px 0}
 .ibl code{background:none;padding:0;white-space:pre-wrap;word-break:break-word}
 .ibl.new{box-shadow:inset 3px 0 0 var(--add-ink);padding-left:10px}.ibl.gone{box-shadow:inset 3px 0 0 var(--del-ink);padding-left:10px}
 .mdh{font:600 15px/1.4 var(--sans);margin:18px 0 6px}
-.fbody p,.fbody li{color:var(--ink-2)}
+.fbody p,.fbody li{color:var(--ink-2);overflow-wrap:anywhere}
 .fbody blockquote,.hero blockquote{margin:10px 0;padding-left:14px;box-shadow:inset 2px 0 0 var(--ink-20);color:var(--ink-2)}
 pre.code{background:var(--ink-06);padding:12px 14px;border-radius:8px;overflow:auto;font:13.5px/1.6 var(--mono);white-space:pre}
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}

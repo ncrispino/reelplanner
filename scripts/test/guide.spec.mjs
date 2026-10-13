@@ -413,6 +413,24 @@ try {
         run("guide.mjs", vd, "--no-thumbs");
       }
     }
+    // Plain prose can contain an unbroken protocol or path; keep every word readable on a phone.
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      const phrase = "Git/package/skill/model/effort/browser/runtime";
+      try {
+        writeFileSync(planPath, before.replace("The flag says where, not what.", `The flag says where, not what. Freeze the same ${phrase} for both attempts.`));
+        const result = run("guide.mjs", vd, "--check", "--no-thumbs");
+        ok("guide --check: long plain-text protocol names wrap at mobile width without dropping source words", result.code === 0, result.out);
+        const browser = await chromium.launch(launchOpts());
+        try {
+          const page = await browser.newPage({ viewport: { width: 375, height: 844 } });
+          await page.goto(pathToFileURL(join(gd, "index.html")).href);
+          await page.evaluate(() => document.querySelectorAll("details").forEach(d => { d.open = true; }));
+          const got = await page.evaluate(phrase => ({ retained: document.body.innerText.includes(phrase), width: document.documentElement.scrollWidth }), phrase);
+          ok("guide page: the entire unbroken phrase remains readable without page-wide scrolling", got.retained && got.width <= 376, JSON.stringify(got));
+        } finally { await browser.close(); }
+      } finally { writeFileSync(planPath, before); run("guide.mjs", vd, "--no-thumbs"); }
+    }
     // A missing-step warning used to supply the source heading by accident. With every citation assigned,
     // the guide still needs to preserve the heading itself, without relying on a warning's text.
     {

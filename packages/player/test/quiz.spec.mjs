@@ -188,7 +188,7 @@ async function checksOnOff() {
 // overlaps the teaching frame. Replay starts at the teaching anchor, not at that question.
 async function backToExplainedBoundary() {
   const fixture = map.split("/").pop();
-  const open = async (priorKind = "check") => {
+  const open = async (priorKind = "check", delayedLoad = false) => {
     const pg = await browser.newPage({ viewport: { width: 1400, height: 900 } });
     pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route((u) => u.pathname.endsWith(`/${fixture}`), async (route) => {
@@ -202,6 +202,22 @@ async function backToExplainedBoundary() {
     });
     await pg.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}&map=${map}&checks=on`);
     await pg.waitForFunction(() => { const el = document.querySelector("#rp"); return el?.player?.ready && el.planMap?.quizzes?.some((q) => q.id === "kreturn"); }, null, { timeout: 60000 });
+    // A same-document iframe load can invalidate the first ready event. Delay its probe
+    // in one case so the boundary check cannot depend on how quickly the machine re-probes.
+    if (delayedLoad) await pg.evaluate(() => {
+      const pl = document.querySelector("#rp").player;
+      for (const name of ["_onProbeReady", "_onRuntimeTimelineReady"]) {
+        const ready = pl[name];
+        pl[name] = function (...args) { setTimeout(() => { this[name] = ready; ready.apply(this, args); }, 900); };
+      }
+      pl.iframeElement.dispatchEvent(new Event("load"));
+    });
+    // play() before final readiness can start the runtime without emitting play until
+    // a later ready callback. Our pause-on-play fixture needs that event at the anchor.
+    await pg.waitForFunction(() => {
+      const pl = document.querySelector("#rp").player;
+      return pl.ready && pl.assetsReady && pl.iframeElement.contentDocument?.readyState === "complete";
+    }, null, { timeout: 60000 });
     await pg.evaluate(() => { const el = document.querySelector("#rp"); el.start(); el.player.pause(); });
     return pg;
   };
@@ -219,7 +235,7 @@ async function backToExplainedBoundary() {
     await pg.locator("#rp").locator('[data-act="quiz-back"]').click();
   };
   for (const priorKind of ["check", "call"]) {
-    const pg = await open(priorKind);
+    const pg = await open(priorKind, priorKind === "check");
     try {
       await back(pg, true);
       const held = await until(pg, () => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kreturn");
