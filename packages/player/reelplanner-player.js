@@ -4446,7 +4446,7 @@ ${clip(gloss || "(none)", 9000)}`;
   // there and then: kept open (or folded) it would stay the pending question, and the next question
   // would show this one's sheet.
   dropAnswered() { const p = this._pendingDecision; if (!p || !this.isAnswered(p)) return false; this.stopWait(); this.closeCard(); return true; }
-  jump(t) { this._seeked = true; this.dropAnswered(); const dur = this.player.duration || Infinity; const wasPlaying = !this.player.paused; if (t >= dur - 0.1) { this.player.seek(dur); return; } this.player.seek(t + 0.05); if (wasPlaying) this.player.play(); }
+  jump(t) { this._explainedFrom = null; this._seeked = true; this.dropAnswered(); const dur = this.player.duration || Infinity; const wasPlaying = !this.player.paused; if (t >= dur - 0.1) { this.player.seek(dur); return; } this.player.seek(t + 0.05); if (wasPlaying) this.player.play(); }
   // Every point where the video asks something, one shape per kind (as on the timeline): quick
   // checks first, then the agent's calls, then the plan's choices, the order a tick looks at them.
   points() { const m = this.planMap || {}; return [...(m.quizzes || []).map((q) => ({ kind: "check", q })), ...(m.autonomy || []).map((q) => ({ kind: "call", q })), ...(m.autonomyGroups || []).map((q) => ({ kind: "group", q })), ...(m.decisions || []).map((q) => ({ kind: "choice", q }))]; }
@@ -4484,7 +4484,7 @@ ${clip(gloss || "(none)", 9000)}`;
   meet(pt) {
     this._past = { ...(this._past || {}), [pt.q.id]: true };
     // reached again after "Back to where this was explained": it waits, answered or not, until Continue
-    const back = this._waitFor === pt.q.id; if (back) { this._waitFor = null; this._opening = true; }
+    const back = this._waitFor === pt.q.id; if (back) { this._waitFor = null; this._explainedFrom = null; this._opening = true; }
     try { if (pt.kind === "check") this.askQuiz(pt.q); else if (pt.kind === "call") this.askAutonomy(pt.q); else if (pt.kind === "group") this.askGroup(pt.q); else this.askDecision(pt.q); }
     finally { if (back) { this._opening = false; this._openedFor = this._pendingDecision; } }
   }
@@ -4503,6 +4503,7 @@ ${clip(gloss || "(none)", 9000)}`;
     this.giveWay();
     if (this._past) delete this._past[q.id];
     this._waitFor = q.id;
+    this._explainedFrom = to;
     this.start(); this.toFrame(); this.$(".chend").classList.remove("on"); this._byHand = true; this._seeked = true;
     this.player.seek(to + 0.05); this.player.play();
     this.noteRewind(from, to);   // a trip back is a rewind (D-005), whichever button made it
@@ -4513,6 +4514,7 @@ ${clip(gloss || "(none)", 9000)}`;
   openPoint(kind, id) {
     // a grouped call's time in the record opens its group's sheet
     const pt = this.points().find((x) => x.kind === kind && x.q.id === id) || (kind === "call" ? this.points().find((x) => x.kind === "group" && (x.q.ids || []).includes(id)) : null); if (!pt) return;
+    this._explainedFrom = null;
     if (this._dopen) { this._dopen.wasPlaying = false; this.closeDetail(); }
     this.giveWay();
     this.start(); this.toFrame(); this.$(".chend").classList.remove("on"); this._byHand = true;
@@ -4590,9 +4592,14 @@ ${clip(gloss || "(none)", 9000)}`;
     // a branch) is not playing across; it lands where it was sent. Crossed more than one, the first is met (its ask
     // takes the video back to it).
     const across = (q) => ran && from < q.at && t >= q.at;
+    // Back starts replay at its teaching anchor. An earlier question's arrival window
+    // may overlap that frame; it was not crossed. Keep the boundary over pause/resume,
+    // but a rewind before it (including a native seek/play) makes earlier points due again.
+    if (this._explainedFrom != null && (t < this._explainedFrom || (run && run.t < this._explainedFrom))) this._explainedFrom = null;
     for (const pt of [...this.points()].sort((a, b) => a.q.at - b.q.at)) {
       const q = pt.q;
       if ((t < q.at || t >= q.at + 0.6) && !across(q)) continue;
+      if (this._explainedFrom != null && q.at < this._explainedFrom && !across(q)) continue;
       if (this._past?.[q.id] || this.passedOver(q, t)) continue;
       if (pt.kind === "check" && !this.checksOn) continue;   // quick checks off: the video does not stop for one
       this.meet(pt); return;
