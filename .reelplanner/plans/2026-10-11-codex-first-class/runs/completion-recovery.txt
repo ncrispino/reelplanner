@@ -1,0 +1,8 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full delivery loop > /private/tmp/reelplanner-codex-completion-fix/full-delivery-loop-final.log 2>&1
+full run: 2 specs, 8 at a time
+
+✓ scripts/test/delivery.spec.mjs     7.2 s  12 checks
+✓ scripts/test/loop.spec.mjs        11.8 s  96 checks
+
+✓ all 2 passed in 11.8 s (the slowest, scripts/test/loop.spec.mjs, 11.8 s)
+exit 0

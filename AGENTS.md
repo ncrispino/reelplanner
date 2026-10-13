@@ -3,7 +3,8 @@
 reelplanner turns an implementation plan into a short narrated review video that stops at each open choice,
 records the answers in a decision log in the repo, and after the build makes a walkthrough video of what the
 agent decided on its own. It is an agent skill (`skills/plan-to-video/`) plus a CLI (`reelplanner`, `reel`).
-Tested with Claude Code, basic support for Codex, untested elsewhere: [`docs/agents.md`](docs/agents.md).
+Tested with Claude Code and Codex CLI on macOS; exact features and limits: [`docs/agents.md`](docs/agents.md).
+Other agents are untested.
 Codex and most other agents read this file; Claude Code reads it through `CLAUDE.md`.
 
 ## To use reelplanner in another repo
@@ -22,6 +23,11 @@ npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y
 - `setup` needs the network and may need sudo for ffmpeg; on Codex, ask the person to run it outside the sandbox.
 - Load the skill: `/plan-to-video <plan.md>` in Claude Code, `$plan-to-video <plan.md>` in Codex, or read
   `~/.agents/skills/plan-to-video/SKILL.md`. It also applies when someone asks you for an implementation plan.
+- Codex can install the native plugin from the installed package or this checkout:
+  `codex plugin marketplace add <package-or-checkout>`, then `codex plugin add reelplanner@reelplanner`.
+  The executable and media dependencies are separate. Read the skill's
+  [`references/harnesses.md`](skills/plan-to-video/references/harnesses.md) for feature checks, connected
+  sessions, ownership, approval policy and private conversation export.
 - In Claude Code, the person can allow the commands once, `Bash(reelplanner:*)` and `Bash(reel:*)`, so they run
   without a prompt each ([README](README.md#install)). Never add the rules yourself; run each command on its own.
 - The skill writes commands as `$RP`: the installed `reelplanner` (until reelplanner is on npm, it is installed

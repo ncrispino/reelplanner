@@ -1,0 +1,27 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' 'scripts/test/run.mjs' '--full' 'version' 'package' 'init' 'loop' 'memory' 'explainer' 'review-status' 'codex-install' 'session-export' 'delivery' 'harnesses' 'presentation' 'review-projects' 'media-seek' 'static-server' 'ask' 'guide-notes' 'working' 'handoff' 'controls' 'sound'
+full run: 21 specs, 8 at a time
+
+✓ scripts/test/version.spec.mjs                 0.3 s  10 checks
+✓ scripts/test/package.spec.mjs                 1.0 s  9 checks
+✓ scripts/test/codex-install.spec.mjs           1.4 s  6 checks
+✓ scripts/test/init.spec.mjs                    1.9 s  46 checks
+✓ scripts/test/harnesses.spec.mjs               0.7 s  11 checks
+✓ scripts/test/session-export.spec.mjs          2.2 s  35 checks
+✓ scripts/test/review-projects.spec.mjs         0.3 s  3 checks
+✓ scripts/test/presentation.spec.mjs            0.7 s  14 checks
+✓ scripts/test/static-server.spec.mjs           0.3 s  7 checks
+✓ scripts/test/explainer.spec.mjs               7.0 s  64 checks
+✓ scripts/test/media-seek.spec.mjs              5.9 s  27 checks
+✓ scripts/test/review-status.spec.mjs          10.2 s  46 checks
+✓ packages/player/test/ask.spec.mjs            10.8 s  21 checks
+✓ scripts/test/delivery.spec.mjs               14.7 s  12 checks
+✓ scripts/test/loop.spec.mjs                   16.8 s  96 checks
+✓ packages/player/test/controls.spec.mjs        8.6 s  39 checks
+✓ packages/player/test/sound.spec.mjs           6.8 s  10 checks
+✓ scripts/test/memory.spec.mjs                 21.1 s  81 checks
+✓ packages/player/test/working.spec.mjs        15.7 s  27 checks
+✓ packages/player/test/handoff.spec.mjs        15.3 s  60 checks
+✓ packages/player/test/guide-notes.spec.mjs    44.8 s  51 checks
+
+✓ all 21 passed in 47.9 s (the slowest, packages/player/test/guide-notes.spec.mjs, 44.8 s)
+exit 0

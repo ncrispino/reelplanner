@@ -1,0 +1,27 @@
+{
+  "terminal_browser": "0.13.4",
+  "ghostty": "1.3.1",
+  "url": "http://127.0.0.1:8965/?project=l2-upload-resume",
+  "fixture": "scratch copies of l2-upload-resume and w1-upload-resume reference videos",
+  "reviewer_report": "Opens in Ghostty. Rewind/pause/play audio also broke in ordinary browser; after the fix, owner reports: Audio sounds normal now.",
+  "audio_cause": "Production review server lacked Content-Length and byte-range responses; fully buffered narration reported seekable [0,0] and position assignments returned to zero.",
+  "tests": {
+    "fast_specs": 59,
+    "fast_result": "All 59 passed in 219.8 seconds after the audio fix; committed fixture guard passed.",
+    "full_checks": {
+      "presentation": 14,
+      "review-projects": 3,
+      "harnesses": 11,
+      "review-status": 46,
+      "memory": 81,
+      "sound": 10,
+      "media-seek": 27,
+      "static-server": 7,
+      "controls": 39
+    },
+    "node": "22.20.0"
+  },
+  "owner_records_changed_by_trial": false,
+  "audio_fix": "Shared seekable file response helper for review and preview servers; live Ghostty media reports seekable [0,5.76] and advances in sync.",
+  "audio_owner_verification": "Audio sounds normal now"
+}

@@ -1,0 +1,58 @@
+$ node --version
+v22.20.0
+
+exit 0
+duration 0.011s
+$ codex --version
+codex-cli 0.162.1
+
+exit 0
+duration 0.034s
+$ codex plugin marketplace add /private/tmp/reelplanner-codex-native-owner-handle-20261011/package --json
+{
+  "marketplaceName": "reelplanner",
+  "installedRoot": "/private/tmp/reelplanner-codex-native-owner-handle-20261011/package",
+  "alreadyAdded": false
+}
+
+exit 0
+duration 0.037s
+$ codex plugin add reelplanner@reelplanner --json
+{
+  "pluginId": "reelplanner@reelplanner",
+  "name": "reelplanner",
+  "marketplaceName": "reelplanner",
+  "version": "0.2.0",
+  "installedPath": "/private/tmp/reelplanner-codex-native-owner-handle-20261011/codex-home/plugins/cache/reelplanner/reelplanner/0.2.0",
+  "authPolicy": "ON_INSTALL"
+}
+
+exit 0
+duration 0.057s
+$ codex plugin list --json
+{
+  "installed": [
+    {
+      "pluginId": "reelplanner@reelplanner",
+      "name": "reelplanner",
+      "marketplaceName": "reelplanner",
+      "version": "0.2.0",
+      "installed": true,
+      "enabled": true,
+      "source": {
+        "source": "local",
+        "path": "/private/tmp/reelplanner-codex-native-owner-handle-20261011/package"
+      },
+      "marketplaceSource": {
+        "sourceType": "local",
+        "source": "/private/tmp/reelplanner-codex-native-owner-handle-20261011/package"
+      },
+      "installPolicy": "AVAILABLE",
+      "authPolicy": "ON_INSTALL"
+    }
+  ],
+  "available": []
+}
+
+exit 0
+duration 0.035s

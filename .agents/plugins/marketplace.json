@@ -1,0 +1,20 @@
+{
+  "name": "reelplanner",
+  "interface": {
+    "displayName": "reelplanner"
+  },
+  "plugins": [
+    {
+      "name": "reelplanner",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

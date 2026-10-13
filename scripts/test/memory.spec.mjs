@@ -133,7 +133,9 @@ try {
   const repo = join(tmp, "repo"), rp = join(repo, ".reelplanner");
   // the record, not the videos: of a video's files only its plan map (the questions and checks) is read
   const inVideo = (s) => /[\\/](video|walkthrough-video|system-video|inbox)[\\/]/.test(s.slice(ROOT.length));
-  mkdirSync(repo); cpSync(join(ROOT, ".reelplanner"), rp, { recursive: true, filter: (s) => statSync(s).isDirectory() ? !/[\\/](assets|renders|snapshots|node_modules|compositions|capture)$/.test(s) : !inVideo(s) || basename(s) === "plan-map.json" });
+  // Pending summaries are owner state. The cases below create their own queue
+  // against the isolated home; an inherited owner queue would change its counts.
+  mkdirSync(repo); cpSync(join(ROOT, ".reelplanner"), rp, { recursive: true, filter: (s) => s !== join(ROOT, ".reelplanner", "you.pending.jsonl") && (statSync(s).isDirectory() ? !/[\\/](assets|renders|snapshots|node_modules|compositions|capture)$/.test(s) : !inVideo(s) || basename(s) === "plan-map.json") });
   git(repo, "init", "-q"); git(repo, "config", "user.email", "owner@example.com");
   // one person's repo: this repo's maintainers (the contributing plan) would make owner@example.com a contributor
   { const c = JSON.parse(readFileSync(join(rp, "config.json"), "utf8")); delete c.maintainers; writeFileSync(join(rp, "config.json"), JSON.stringify(c, null, 2) + "\n"); }

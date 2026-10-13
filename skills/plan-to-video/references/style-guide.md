@@ -156,7 +156,25 @@ A reviewer who knows them skips it at `familiar`.
 
 ## 4. Voice and plain language
 
-- Conversational: "you", "we", "here's where we have a question". Brisk, no hedging, no filler.
+Speak as a patient engineer helping a peer understand the system. Assume intelligence, not familiarity
+with the tools. Be conversational and clear about why something works; give a difficult idea room
+without padding the narration. Warmth comes from useful explanation, not praise or forced enthusiasm.
+
+**Teach from a case.** For a mechanism, start with a concrete situation and values the viewer can
+follow, show what happens, define the new term where it becomes useful, then explain the rule and why
+it exists. Keep the example's names and values consistent across the voice, picture and guide.
+For example:
+
+> You ask what changed on Monday. Seven commits land later, but Monday's video still shows Monday's
+> code. It's a snapshot: a saved view of the source at that time. That keeps the explanation tied to
+> the evidence you reviewed; ask again to explain the newer code.
+
+The picture shows Monday's source leading to Monday's video, then the later commits arriving while
+that video stays fixed. The term is defined before the rule leans on it. The guide can work through
+asking again and show the new folder and its pinned source. Use the ordering where it helps explain a
+mechanism; chapter openers, short summaries and direct answers need no extra example.
+
+- Conversational: "you", "we", "here's where we have a question". Clear, no hedging, no filler.
 - **Plain words on screen; the files keep theirs**. What the viewer sees and hears uses the
   glossary's on-screen word where a row has one: a *choice* the agent made (not a call), a *label* (not a
   tag), an *off-plan change* (not a deviation), a *late fix* (not a miss), a *chapter* (not a part), a
@@ -182,9 +200,17 @@ A reviewer who knows them skips it at `familiar`.
   sentence with an id also says which kind it is (decision, choice or call, quick check, question) and,
   the first time, what it decided or asked. `check-terms` fails a bare id on a `terms_check: strict`
   storyboard. The player glosses ids too, but the voice has to stand on its own.
-- The register to aim for is a good teacher talking to a peer: a concrete case first, then the rule.
+- Recommend an option with the reason that matters in its example. Explain the trade-off without
+  giving every alternative equal time (§6).
 
 ## 5. What to draw
+
+**Design for a conclusion the viewer can see.** Before drawing, state what the viewer should understand
+from the picture: which thing changed, where a value goes, why a guard stops a failure, or how two
+options differ. Choose the visual form that makes that relationship clear. Use the theme's typography,
+spacing and colour consistently, put labels beside what they explain, and reveal changes in the
+narration's order. Polish means a composed, legible picture that earns its space. Check the scene in
+the actual player with captions and controls present, under the seven frame rules below.
 
 **Draw what the plan changes; don't default to a node graph.** A graph of boxes and edges says "these
 parts exchange data at runtime". That is right for a service and wrong for a static site or a document,
@@ -480,6 +506,16 @@ When the repo has `.reelplanner/`, the video is built from it:
 A beat can open one page, a **detail**: the reviewer clicks the thing on the frame the page explains, and
 the page opens over the paused frame, grown from that thing. The video still tells the whole story:
 it must make sense to someone who opens nothing.
+
+**The guide teaches the next layer.** Start its explanation with the concrete question or task this
+part answers. Define its new terms locally: the reader may arrive from a link without watching the
+video. Work an example from input through the intermediate states to the outcome, with real values,
+then show a boundary or failure case when it changes the reader's expectation. Include what they need
+to try it, what they should see, and the evidence behind the claim. Distinguish a saved scratch run
+from a command they can run in their own checkout. Use a diagram the reader can follow or step through
+when it makes the mechanism clearer; name what each arrow means. A transcript recap or a list of files
+alone does not supply that depth. The existing plan and walkthrough blocks are the source (§9 and
+SKILL.md); organize them to answer the question rather than inventing new behavior.
 
 - **A detail holds what the video cannot**: more than a screen shows, something to try, or the evidence
   behind a claim. Before adding one, write the sentence the video would say instead. If that sentence is

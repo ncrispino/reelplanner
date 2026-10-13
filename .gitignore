@@ -70,3 +70,12 @@ videos/*/fresh-eyes/shots/
 !.reelplanner/media/**
 !.reelplanner/**/versions/**
 __pycache__/
+
+# Editor swap files can contain local .env data; keep them out of review trees and packages.
+*.swp
+*.swo
+
+# Rebuilt review output; keep authored storyboard, script and frames.
+.reelplanner/plans/*/*video/caption_groups.json
+.reelplanner/plans/*/*video/plan-map.json
+.reelplanner/plans/*/*video/compositions/captions.html

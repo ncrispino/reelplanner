@@ -6,8 +6,8 @@
 // It takes your question and the sources that hold the answer, and nothing that names a kind of explainer: what an
 // explainer can be of is open, so the command knows only how to pin each source (lib/explainer.mjs). A source is a
 // path (a file or a folder, in the repo or outside it), a commit or a range (`main..HEAD`), `worktree` (what is
-// changed and not committed), `since:<date>`, `pr:<n>`, `ci:<run-id>`, `this-session` (Claude Code's transcript
-// of this repo's newest session) or a decision (`D-233`).
+// changed and not committed), `since:<date>`, `pr:<n>`, `ci:<run-id>`, `this-session` (the detected harness's
+// verified conversation for this repo) or a decision (`D-233`).
 //
 // It makes .reelplanner/explainers/<date>-<slug>/:
 //   explain.md     your words; what it will cover and leave out (the agent fills those two in from the sources)
@@ -23,14 +23,15 @@ import { sourcePart } from "./lib/guide/model.mjs";
 import { hyperframesBin, rpInitialized, rpDirOf } from "./lib/env.mjs";
 
 const args = process.argv.slice(2);
-const VALUED = new Set(["--slug", "--date", "--repo"]);
+const VALUED = new Set(["--slug", "--date", "--repo", "--session-source"]);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
 const die = (m) => { console.error(`✗ explain: ${m}`); process.exit(1); };
 const plain = args.filter((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1]));
 const [question, ...specs] = plain;
 if (!question || !specs.length) die(`usage: reelplanner explain "<what you asked>" <source> … [--slug <slug>]
   a source: a path (file or folder, in the repo or outside it), a commit or a range (a..b), worktree,
-            since:<yyyy-mm-dd>, pr:<n>, ci:<run-id>, this-session, or a decision (D-233)`);
+            since:<yyyy-mm-dd>, pr:<n>, ci:<run-id>, this-session, or a decision (D-233)
+  --session-source <path>: an external copy of the requested Codex conversation; ID and repo are checked`);
 const repo = repoTop(resolve(flag("repo") || process.cwd())) || die("not inside a git repo");
 const rp = rpDirOf(repo);
 if (!rpInitialized(rp)) die(`${existsSync(rp) ? `${rp} is not set up yet (no decisions.json, only setup files)` : `no .reelplanner/ in ${repo}`} (reel init first; without it, the skill's one-off video under videos/ stays as it is)`);
@@ -41,7 +42,7 @@ const slug = (flag("slug") || slugOf(question)).toLowerCase().replace(/[^a-z0-9-
 let head = "";
 try { head = execFileSync("git", ["-C", repo, "rev-parse", "--short=12", "--verify", "HEAD"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
 catch { die(`${repo} has no commit yet: an explainer is pinned to the commit it explains, so commit once first`); }
-const { sources, errors } = pinAll(specs, { repo, rp, head });
+const { sources, errors } = pinAll(specs, { repo, rp, head, sessionSource: flag("session-source") });
 if (errors.length) die(`could not pin ${errors.length === 1 ? "a source" : `${errors.length} sources`}:\n${errors.map((e) => `  ${e}`).join("\n")}`);
 
 let name = `${date}-${slug}`; for (let i = 2; existsSync(join(rp, "explainers", name)); i++) name = `${date}-${slug}-${i}`;

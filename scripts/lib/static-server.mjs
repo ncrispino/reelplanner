@@ -16,10 +16,11 @@
 //   staticServer(port, { dir })                          the same as a child process (scripts/lib/env.mjs), for a spec:
 //                                                        await serverUp(port, { child }), and child.kill() at the end
 import { createServer } from "node:http";
-import { existsSync, statSync, createReadStream } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { resolve, join, normalize, extname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { vendorFile } from "./env.mjs";
+import { sendFile } from "./http-file.mjs";
 
 export const TYPES = { ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript",
   ".css": "text/css", ".json": "application/json", ".map": "application/json", ".mp3": "audio/mpeg", ".wav": "audio/wav", ".m4a": "audio/mp4",
@@ -52,14 +53,12 @@ export function createStaticServer(dir) {
     const hit = servedFile(dir, path);
     if (!hit) { res.writeHead(404, { "content-type": "text/plain" }).end("not found"); return; }
     if (hit.redirect) { res.writeHead(301, { location: hit.redirect.split("/").map(encodeURIComponent).join("/") + url.search }).end(); return; }
-    // the headers python's server sent (a Last-Modified, and a 304 to a request that has it), and no others: the
-    // specs' timings were measured against them (a no-store audio file, say, is fetched again on every seek)
+    // Keep the checkout's existing conditional caching; share seekable media
+    // response framing with the production review server.
     const st = statSync(hit), modified = new Date(Math.floor(st.mtimeMs / 1000) * 1000);
     const since = Date.parse(req.headers["if-modified-since"] || "");
     if (!req.headers["if-none-match"] && since >= modified.getTime()) { res.writeHead(304).end(); return; }
-    res.writeHead(200, { "content-type": TYPES[extname(hit).toLowerCase()] || "application/octet-stream", "content-length": st.size, "last-modified": modified.toUTCString() });
-    if (req.method === "HEAD") { res.end(); return; }
-    createReadStream(hit).on("error", () => res.destroy()).pipe(res);
+    sendFile(req, res, hit, { contentType: TYPES[extname(hit).toLowerCase()] || "application/octet-stream", stat: st });
   });
 }
 

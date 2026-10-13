@@ -1,0 +1,98 @@
+{
+  "proof": "/private/tmp/reelplanner-headless-real-TSB9Pj",
+  "command": "codex exec --approve-for-me -c 'sandbox_mode=\"workspace-write\"' -c sandbox_workspace_write.network_access=true --color never",
+  "fixture": "synthetic approved wording-only plan; no implementation/video work",
+  "results": [
+    {
+      "id": "video-20261011T230100Z",
+      "retry": false,
+      "code": 0,
+      "done": true,
+      "durationMs": 80800,
+      "head": "cab1061e2ace648ff95eba7a1ce963ded4f518c9",
+      "trackedStatus": "",
+      "phase": "committed",
+      "startHead": "1c19f49f7859b2498848a2246a4fb71f2a2c450e",
+      "committedHead": "cab1061e2ace648ff95eba7a1ce963ded4f518c9"
+    },
+    {
+      "id": "video-20261011T230200Z",
+      "retry": false,
+      "code": 0,
+      "done": false,
+      "durationMs": 83809,
+      "head": "cab1061e2ace648ff95eba7a1ce963ded4f518c9",
+      "trackedStatus": "M  .reelplanner/plans/2026-10-11-headless-proof/plan.md\nA  .reelplanner/plans/2026-10-11-headless-proof/reviews/plan-20261011T230200Z.json\nA  .reelplanner/plans/2026-10-11-headless-proof/reviews/plan-20261011T230200Z.md",
+      "phase": "checked",
+      "startHead": "cab1061e2ace648ff95eba7a1ce963ded4f518c9"
+    },
+    {
+      "id": "video-20261011T230200Z",
+      "retry": true,
+      "code": 0,
+      "done": true,
+      "durationMs": 79956,
+      "head": "636f19800a647edbd51a5c8dafa55c7f22690b7c",
+      "trackedStatus": "",
+      "phase": "committed",
+      "startHead": "cab1061e2ace648ff95eba7a1ce963ded4f518c9",
+      "committedHead": "636f19800a647edbd51a5c8dafa55c7f22690b7c"
+    }
+  ],
+  "runtime": [
+    {
+      "file": "/private/tmp/reelplanner-headless-real-TSB9Pj/repo/.reelplanner/inbox/runs/video-20261011T230100Z.log",
+      "metadata": [
+        "OpenAI Codex v0.162.1",
+        "model: gpt-6.1-sol",
+        "provider: openai",
+        "approval: on-request",
+        "sandbox: workspace-write [workdir, /tmp, $TMPDIR] (network access enabled)",
+        "reasoning effort: high"
+      ],
+      "tokenReports": [
+        29177
+      ],
+      "signingFailureObserved": false
+    },
+    {
+      "file": "/private/tmp/reelplanner-headless-real-TSB9Pj/repo/.reelplanner/inbox/runs/video-20261011T230200Z.log",
+      "metadata": [
+        "OpenAI Codex v0.162.1",
+        "model: gpt-6.1-sol",
+        "provider: openai",
+        "approval: on-request",
+        "sandbox: workspace-write [workdir, /tmp, $TMPDIR] (network access enabled)",
+        "reasoning effort: high",
+        "OpenAI Codex v0.162.1",
+        "model: gpt-6.1-sol",
+        "provider: openai",
+        "approval: on-request",
+        "sandbox: workspace-write [workdir, /tmp, $TMPDIR] (network access enabled)",
+        "reasoning effort: high"
+      ],
+      "tokenReports": [
+        30659,
+        32617
+      ],
+      "signingFailureObserved": true
+    }
+  ],
+  "localConfigRestored": true,
+  "reviewRecords": [
+    "plan-20261011T230100Z.json",
+    "plan-20261011T230200Z.json"
+  ],
+  "done": true,
+  "gitLog": "636f198 Record approval video-20261011T230200Z and fold Step 1 recovery comment\ncab1061 Record approval video-20261011T230100Z and fold Step 1 comment\n1c19f49 Set up isolated approval proof",
+  "limitations": [
+    "No server/player or video build was exercised in this model trial.",
+    "The tiny synthetic plan omitted Cases and Interface authoring sections. The failure/retry model transparently reported those existing reel check failures and used scoped record/comment/diff checks. Do not describe reel check or complete plan-authoring validation as passed.",
+    "Original signing settings did not require a signature; the injected failure was local to this fixture, then restored exactly."
+  ],
+  "startedAt": "2026-10-11T19:40:50.187Z",
+  "verifiedAt": "2026-10-11T19:46:00.074Z",
+  "totalModelDurationMs": 244565,
+  "reportedTokens": 92453,
+  "modelProcessesSettled": true
+}

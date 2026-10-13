@@ -1,0 +1,22 @@
+{
+  "queueExit": 0,
+  "threadId": "01a12c86-c907-7583-87ce-b35cf44d8a47",
+  "endpoint": "ws://127.0.0.1:51626",
+  "resumedApprovalPolicy": "on-request",
+  "resumedSandboxPolicy": "workspaceWrite",
+  "turnCompleted": true,
+  "queueProofWritten": true,
+  "events": [
+    {
+      "method": "turn/started",
+      "threadMatches": true,
+      "status": "inProgress"
+    },
+    {
+      "method": "turn/completed",
+      "threadMatches": true,
+      "status": "completed"
+    }
+  ],
+  "transport": "owned loopback App Server with explicit --remote"
+}

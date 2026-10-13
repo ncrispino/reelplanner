@@ -19,14 +19,24 @@
 //
 //   --timeout <s>   (--wait) give up after s seconds, exit 2
 //   --repo <dir>    the repo (default: the one you are in)
+//   --owner <handle>  reuse the owner handle printed on stderr by an anonymous --wait;
+//                     pass it to answer, renew, progress, done or a later --wait
 // `reelplanner review --wait` is the same as `inbox --wait`.
 import { fileURLToPath } from "node:url";
 import { resolve, basename } from "node:path";
+import { randomUUID } from "node:crypto";
+import { activeSession } from "./lib/agents.mjs";
 import { repoRoot, rpInitialized, rpDirOf } from "./lib/env.mjs";
-import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath } from "./lib/inbox.mjs";
+import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
 
 export async function main(args) {
   const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
+  const valued = ["--repo", "--owner", "--timeout", "--from"];
+  const commandIndex = args.findIndex((a, i) => !a.startsWith("--") && !valued.includes(args[i - 1]));
+  const subcommand = args[commandIndex];
+  const explicitOwner = flag("owner");
+  if (args.includes("--owner") && (!explicitOwner || !/^[a-z][a-z0-9-]*:[A-Za-z0-9._-]+$/.test(explicitOwner))) { console.error("✗ --owner requires the handle printed by --wait"); return 1; }
+  const callerOwner = explicitOwner || process.env.REELPLANNER_OWNER || activeSession(process.env)?.key || null;
   const repo = resolve(flag("repo") || repoRoot(process.cwd()));
   const rp = rpDirOf(repo), setUp = rpInitialized(rp);
   // the repo's inbox once `reel init` set it up; before that (one video) the one in this machine's folder, as the
@@ -34,20 +44,38 @@ export async function main(args) {
   const box = setUp ? rp : machineInbox(repo);
   const where = `${shownPath(inboxDir(box)) || "."}/${setUp ? "" : " (this machine's folder: the repo has no set-up .reelplanner/)"}`;
 
-  if (args.includes("--wait")) {
+  if (!subcommand && args.includes("--wait")) {
     const t = Number(flag("timeout") || 0);
     console.error(`… waiting for a review in ${where} (Ctrl-C to stop)`);
-    const p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0 });
+    const waitOwner = callerOwner || `session:${randomUUID()}`;
+    let p; try { p = await waitForReview(box, { timeoutMs: t > 0 ? t * 1000 : 0, questionsOnly: args.includes("--questions"), repo, owner: waitOwner }); }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!p) { console.error(`△ no review in ${t}s`); return 2; }
+    if (!callerOwner) console.error(`owner handle: ${waitOwner}\nPass --owner ${waitOwner} to inbox answer, renew, progress and done; keep it for this claimed item.`);
     console.log(p);
     return 0;
   }
 
-  const ai = args.indexOf("answer");
+  for (const command of ["renew", "progress", "retry"]) {
+    const i = subcommand === command ? commandIndex : -1; if (i < 0) continue;
+    const id = basename(String(args[i + 1] || "")).replace(/\.json$/, "");
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,159}$/.test(id)) { console.error(`usage: reelplanner inbox ${command} <id>${command === "progress" ? " <phase>" : ""}`); return 1; }
+    try {
+      if (command === "retry") {
+        const r = await retryAgent(box, id);
+        if (!r.started) { console.error(`△ ${id}: ${r.reason}`); return 1; }
+        console.log(`✓ resumed ${id} (pid ${r.pid}); log: ${shownPath(r.log)}`);
+      } else { renewClaim(box, id, { owner: callerOwner, ...(command === "progress" ? { phase: args[i + 2] } : {}) }); console.log(`✓ ${id}: ${command === "progress" ? args[i + 2] : "lease renewed"}`); }
+    } catch (e) { console.error(`✗ ${e.message}`); return 1; }
+    return 0;
+  }
+
+  const ai = subcommand === "answer" ? commandIndex : -1;
   if (ai >= 0) {
-    const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => a !== "--from" && all[i - 1] !== "--from" && a !== "--repo" && all[i - 1] !== "--repo").join(" ").trim();
+    const id = basename(String(args[ai + 1] || "")).replace(/\.json$/, ""), words = args.slice(ai + 2).filter((a, i, all) => !["--from", "--repo", "--owner"].includes(a) && !["--from", "--repo", "--owner"].includes(all[i - 1])).join(" ").trim();
     if (!id || !words) { console.error('usage: reelplanner inbox answer <id | path> "<answer>" [--from "<where>"]'); return 1; }
-    const q = answerQuestion(box, id, words, flag("from") || null);
+    let q; try { q = answerQuestion(box, id, words, flag("from") || null, { owner: callerOwner }); }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!q) { console.error(`✗ no question ${id} in the inbox`); return 1; }
     console.log(`✓ answered ${id}: the page shows it within a few seconds${q.from ? ` (from: ${q.from})` : ""}`);
     return 0;
@@ -55,19 +83,20 @@ export async function main(args) {
 
   // a set-up repo's reviews sent before `reel init`, still in the machine's inbox: named in the list, and done here too
   const before = setUp ? machineInbox(repo) : null;
-  const di = args.indexOf("done");
+  const di = subcommand === "done" ? commandIndex : -1;
   if (di >= 0) {
     const id = basename(String(args[di + 1] || "")).replace(/\.json$/, "");
     if (!id) { console.error("usage: reelplanner inbox done <id | path>"); return 1; }
-    if (!markDone(box, id) && !(before && markDone(before, id))) { console.error(`✗ no review ${id} in the inbox`); return 1; }
+    try { if (!markDone(box, id, { owner: callerOwner }) && !(before && markDone(before, id, { owner: callerOwner }))) { console.error(`✗ no review ${id} in the inbox`); return 1; } }
+    catch (e) { console.error(`✗ ${e.message}`); return 1; }
     console.log(`✓ ${id} → inbox/done/`);
     return 0;
   }
 
   const all = listInbox(box), w = liveWaiters(box).length;
   console.log(`${all.length} review(s) in ${setUp ? "the inbox" : where}; ${w ? `${w} session(s) waiting` : "no session waiting"}`);
-  for (const r of all) console.log(`  ${r.claim ? `claimed by ${r.claim.by === "agent" ? "a headless run" : "a session"} ${r.claim.at}` : "waiting"}  ${shownPath(r.path)}`);
-  const qs = waitingQuestions(box);
+  for (const r of all) console.log(`  ${r.claim ? `${claimLive(r.claim) ? "claimed" : "stopped"} by ${r.claim.by === "agent" ? "a headless run" : "a session"} ${r.claim.at}${progressOf(box, r.id)?.phase ? ` (${progressOf(box, r.id).phase})` : ""}${r.claim.log ? `; log: ${r.claim.log}` : ""}` : "waiting"}  ${shownPath(r.path)}`);
+  const qs = waitingQuestions(box, { includeClaimed: true });
   if (qs.length) console.log(`${qs.length} question(s) asked on the page, not answered yet:\n${qs.map((q) => `  ${shownPath(q.path)}`).join("\n")}`);
   const left = before ? listInbox(before).filter((r) => !r.claim) : [];
   if (left.length) console.log(`△ ${left.length} review(s) sent before \`reel init\`, from a video with no plan folder, wait in this machine's folder (nothing here handles them): read each, then \`reelplanner inbox done <id>\`:\n${left.map((r) => `  ${shownPath(r.path)}`).join("\n")}`);
