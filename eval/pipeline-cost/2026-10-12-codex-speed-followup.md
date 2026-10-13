@@ -156,3 +156,10 @@ repository fixtures and owner edits were preserved throughout. The attempted cle
 timeouts (49/59 specs passed). Idle-sleep prevention does not prevent clamshell sleep. These local
 full-suite runs are not clean validation; the draft PR uses the normal remote CI runner. The focused
 23 benchmark checks and full 14-check frame-tools run pass.
+
+Remote CI on `512dbf1` passes all 59 fast specs and fresh installs on macOS, Ubuntu Node 22 and
+Ubuntu apt Node. The exhaustive run passed 79/80 specs and found two stale local-review text
+expectations: the player says “Your waiting session picks this up,” while the older assertions
+expected “Your open session picks this up.” Updating those exact assertions preserves the intended
+waiting-session behavior; the full local-review spec then passes all 26 checks in 14.3 seconds.
+The draft PR reruns remote validation on that correction.
