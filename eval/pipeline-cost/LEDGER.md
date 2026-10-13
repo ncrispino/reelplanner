@@ -10,6 +10,8 @@ cheaper video that looks more alike shows here. Capped episodes are lower bounds
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-13 | Codex batched pilot, after-2 | first look; capped, not shown | frozen d5818bc | ≥60.007 | — | — | — | — | ≥34.741 observed | ≥178.362 observed | Unassessed | Unknown; no delivered-artifact assessment | Unknown | [report](2026-10-12-codex-batched-pilot.md) |
+| 2026-10-13 | Codex batched pilot, before-2 | first look; capped, not shown | frozen 1866c4c | ≥60.008 | — | — | — | — | ≥38.209 observed | ≥157.009 observed | Unassessed | Unknown; no delivered-artifact assessment | Unknown | [report](2026-10-12-codex-batched-pilot.md) |
 | 2026-10-12 | Codex batched pilot, after-1 | first look; capped, not shown | frozen d5818bc | ≥60.005 | — | — | — | — | ≥45.361 observed | ≥154.468 observed | 2 script; frame round unfinished | 4 designer reports; 2 picture-confirmed occlusions; newcomer unfinished | Unknown | [report](2026-10-12-codex-batched-pilot.md) |
 | 2026-10-12 | Codex batched pilot, before-1 | first look; capped, not shown | frozen 1866c4c | ≥60.005 | — | — | — | — | ≥40.804 observed | ≥192.687 observed | 1 frame round; round 2 required | 25 reported; material total unclassified; repairs unfinished | Unknown | [report](2026-10-12-codex-batched-pilot.md) |
 | 2026-10-12 | Codex follow-up, before-1 | first look; required branches omitted | frozen 45f64f2 + guidance | 29.51 | — | — | — | — | 12.027 | 50.0 | 2 script + 2 frame | 19 first-frame + 1 second; see scope limit | 10 / 19 | [report](2026-10-12-codex-speed-followup.md) |
