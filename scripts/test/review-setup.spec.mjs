@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { tmpdir, platform } from "node:os";
 import { ROOT, FULL } from "../lib/env.mjs";
 import { localReviewUrl, openerPrefix, openerRule, preferencesFile, ruleFile } from "../lib/review-preferences.mjs";
+import { checkReviewServer } from "../lib/review-health.mjs";
 
 const scratch = realpathSync(mkdtempSync(join(tmpdir(), "rp-review-setup-")));
 const bin = join(scratch, "bin"), log = join(scratch, "opened.jsonl");
@@ -94,6 +95,25 @@ try {
     redirect = true;
     assert.equal((await runAsync(["review-open", url])).status, 1);
     redirect = false; response = { ok: true, inbox: 0, where: "repo" };
+    assert.equal(opened().length, 1);
+  });
+  await test("health failures distinguish denied access, a stopped server, and timeout without retrying", async () => {
+    for (const [error, expected] of [
+      [new TypeError("fetch failed", { cause: { code: "EPERM" } }), /blocked \(EPERM\).*cannot access localhost/],
+      [new TypeError("fetch failed", { cause: { code: "EACCES" } }), /blocked \(EACCES\)/],
+      [new TypeError("fetch failed", { cause: { code: "ECONNREFUSED" } }), /connection refused.*No server accepted/],
+      [new DOMException("timeout", "TimeoutError"), /timed out.*unverified/],
+      [new TypeError("private network details"), /health check failed.*unverified/],
+    ]) {
+      let calls = 0;
+      await assert.rejects(checkReviewServer(url, async (target, options) => {
+        calls++;
+        assert.equal(target.href, new URL("/api/review", url).href);
+        assert.equal(options.redirect, "error");
+        throw error;
+      }), expected);
+      assert.equal(calls, 1);
+    }
     assert.equal(opened().length, 1);
   });
   await test("explicit opening survives missing, invalid, and browser-default workspace settings", async () => {

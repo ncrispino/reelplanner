@@ -74,6 +74,18 @@ Codex's rule parser. It does not open a pane or prove the current session loaded
 rules and managed restrictions can take precedence. After moving/upgrading Node or reelplanner,
 run setup again if the check reports a stale path.
 
+If opening fails, use the reported health-check error to distinguish the next step:
+
+- `EPERM` or `EACCES`: the process cannot connect to localhost. A matching saved rule is not
+  evidence that the current session loaded or applied it. Check that session's effective permissions;
+  do not restart a healthy server or retry through another route after a denial.
+- `ECONNREFUSED`: no server accepted the connection at the supplied URL. Check the launcher's
+  server status and URL before attempting another open.
+- A timeout or other network failure leaves server availability unverified. Do not claim the
+  server is running or start a review waiter based only on the saved URL.
+
+The CLI reports these failures without changing permissions or automatically retrying.
+
 Use `reelplanner review-setup --codex-disable-open` to remove just this rule, then restart Codex.
 Use `reelplanner review-setup --workspace browser` to restore the ordinary browser preference.
 `review --workspace …` overrides the preference for one invocation; `--no-open` opens nothing.
