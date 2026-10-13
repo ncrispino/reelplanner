@@ -40,3 +40,12 @@ cheaper video that looks more alike shows here. Capped episodes are lower bounds
 | 2026-09-29 | research repo (owner's laptop) | E6 plan video, fresh builder + generator | 0.1 | 21 | 2 | 17 | 4 | — | — | — | 0 | — | — | [report](2026-10-10-research-repo.md) |
 | 2026-10-06 – 10-10 | research repo (owner's laptop) | 10 videos, 4–24 frame workers each (sum) | 0.2 | 558 | 73 | 1,451 | 323 | 135 | 1147 | — | 0–2 | 528 over all rounds (fact checker 76% fixed) | — | [report](2026-10-10-research-repo.md) |
 | 2026-10-10 | research repo (owner's laptop) | plan video 10, 21 frame workers | 0.2 | 90 | — | — | — | — | 200 | — | 2 | 122 | — | [report](2026-10-10-research-repo.md) |
+
+## Tool probes (not review episodes)
+
+These measure command strategies on unchanged artifacts, without model usage or a new showing.
+They are kept separate from request-to-showing times above.
+
+| Date | Probe | Separate mean | Batch mean | Quality evidence | Report |
+| --- | --- | ---: | ---: | --- | --- |
+| 2026-10-12 | Three assembled frame checks, `d5818bc` | 41.918 s | 17.175 s | Same samples; six PNG equality comparisons; defective-scene differential regressions | [report](2026-10-12-frame-check-batching.md) |
