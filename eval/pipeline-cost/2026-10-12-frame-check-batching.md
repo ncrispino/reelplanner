@@ -40,7 +40,7 @@ remain required. A documented mechanics-only shell was also checked with two dis
 visual forms, local fonts and assembled browser samples.
 
 Validation: all **59 fast specs** pass in 263.3 seconds; full **28 frame-tools**, **35 build** and
-**51 visuals** checks pass; **42 offline benchmark checks** pass. The fast suite retains Codex CLI,
+**51 visuals** checks pass; **49 offline benchmark checks** pass. The fast suite retains Codex CLI,
 inbox delivery, guide and player regressions. No owner fixtures were changed.
 
 The [matched AWS protocol](../../.claude/skills/pipeline-cost/bench/codex-batched/README.md) measures

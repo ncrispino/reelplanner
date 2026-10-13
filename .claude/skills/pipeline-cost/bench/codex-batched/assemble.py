@@ -22,7 +22,7 @@ def assemble(dest):
         if source.is_file():
             shutil.copy2(source, dest / source.name)
     shutil.copy2(dest / 'phase_monitor.py', dest / 'phase_monitor_original.py')
-    for name in ['phase_monitor.py', 'durable.py', 'drain.py', 'collection.py', 'assess.py',
+    for name in ['phase_monitor.py', 'durable.py', 'drain.py', 'collection.py', 'assess.py', 'verify-package.py',
                  'protocol.json', 'CONTRACT.md', 'QUALITY.md']:
         shutil.copy2(HERE / name, dest / name)
     prompt = (dest / 'prompt.txt').read_text()

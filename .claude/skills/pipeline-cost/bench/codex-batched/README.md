@@ -15,8 +15,15 @@ python3 -m unittest discover -s .claude/skills/pipeline-cost/bench/codex-batched
 Upload that harness as `/opt/rp/codex-bench/` and frozen packages as `/opt/rp/packages/{before,after}.tgz`
 on the dedicated disposable machine. The external controller records package/harness hashes in
 `/opt/rp/source-manifest.json`. Reuse the existing VM-only device login lifecycle and setup commands;
-never copy an active local credential. Model, effort, permissions and pace stay fixed. The inherited
-run-all order is before-1, after-1, after-2, before-2, serially, with independent episode
+never copy an active local credential. Model, effort, permissions and pace stay fixed.
+
+Native cache verification compares the complete `skills/plan-to-video/**/*.md` relative-path/hash
+tree with the selected installed package, including authoring and frame-shell references. Missing,
+extra or changed Markdown and mixed stale copies fail before a trial. Only this skill's cache roots
+are inspected; authentication/configuration files and unrelated skills are not read. The resulting
+`selected-guidance.json` records every expected Markdown hash and each verified cache root.
+
+The inherited run-all order is before-1, after-1, after-2, before-2, serially, with independent episode
 allowances of 60 minutes for the first showing and 45 minutes for revision. These caps were raised
 before freezing because the fully scoped prior baseline's revision was censored at 25 minutes.
 Caps are identical in both conditions. Four worst-case trials take seven hours; the external controller

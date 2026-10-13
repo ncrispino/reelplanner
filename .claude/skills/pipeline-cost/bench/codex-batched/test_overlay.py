@@ -234,6 +234,7 @@ class Assembly(unittest.TestCase):
             dest = Path(folder) / 'harness'
             assemble(dest)
             self.assertFalse((dest / 'collect-and-cleanup.py').exists())
+            self.assertEqual((dest / 'verify-package.py').read_bytes(), (HERE / 'verify-package.py').read_bytes())
             reviewer = (dest / 'reviewer.mjs').read_text()
             self.assertIn('P/P/Q/R four-row', reviewer)
             self.assertIn('counts remain 4/3', reviewer)
