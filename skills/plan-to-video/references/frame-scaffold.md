@@ -42,8 +42,9 @@ seek-safe motion after generation; the initial timeline holds the full scene wit
 
 Generation requires `frame.md` with the project's exact local `@font-face` declarations and their files,
 plus `assets/vendor/gsap.min.js`. Initialize/stage those project assets first; it never downloads or guesses
-fonts. The composition ID remains the storyboard source basename. Duration uses the frame's audio metadata
-when available, otherwise its positive storyboard duration. The command does not edit storyboard, narration,
+fonts. The composition ID remains the storyboard source basename. Duration uses the longer positive duration from
+the storyboard and the frame's audio metadata, preserving declared holds without cutting longer narration.
+The helper adds no new tail; `hold-durations` owns those declared holds and tails. The command does not edit storyboard, narration,
 owner records or other frames.
 
 Header, body and conclusion share normal flow within the safe content area ending at y=900. Added content

@@ -56,8 +56,12 @@ export function scaffold(dir, number, content) {
   if (!families.length) throw Error('local font declarations need font-family');
   const bodyFont = families.find(f=>/Inter/.test(f)) || families[0], displayFont = families.find(f=>/Garamond/.test(f)) || families[0];
   let audio = null; if (existsSync(join(dir,'audio_meta.json'))) audio = JSON.parse(read(join(dir,'audio_meta.json'))).voices?.find(v=>Number(v.frame) === frame.index);
-  const duration = audio ? Number(audio.duration_s) : Number(String(frame.meta.duration || '').replace(/\s*s$/,''));
-  if (!Number.isFinite(duration) || duration <= 0) throw Error('frame needs a positive audio duration or storyboard duration');
+  // hold-durations writes deliberate holds/tails into the storyboard. Keep that slot,
+  // but never cut narration that has since grown longer; this helper adds no new tail.
+  const declaredDuration = Number(String(frame.meta.duration || '').replace(/\s*s$/,''));
+  const durations = [declaredDuration, Number(audio?.duration_s)].filter(n => Number.isFinite(n) && n > 0);
+  if (!durations.length) throw Error('frame needs a positive audio duration or storyboard duration');
+  const duration = Math.max(...durations);
   const id = basename(src,'.html'), prefix = `f${frame.index}`;
   const region = (n) => `id="${prefix}-${n}" data-rp-region="${n}"`;
   const group = (g,i,tag='section') => `<${tag} ${region(`group-${i+1}`)} class="${prefix}-group"><h2>${escape(g.label)}</h2>${g.html}</${tag}>`;

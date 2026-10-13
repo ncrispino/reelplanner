@@ -48,8 +48,22 @@ try {
   });
   writeFileSync(join(dir,'STORYBOARD.md'),storyboard.replace('- duration: 4','- duration: 4\n- decision: q1'));
   writeFileSync(join(dir,'audio_meta.json'),JSON.stringify({voices:[{frame:1,duration_s:5.75}]}));
-  check('audio duration takes precedence',()=>assert.equal(scaffold(dir,1,content(layouts[0])).duration,5.75));
+  check('longer narration extends a shorter storyboard slot without cutting voice',()=>{
+    assert.equal(scaffold(dir,1,content(layouts[0])).duration,5.75);
+    assert.match(readFileSync(first,'utf8'), /data-duration="5\.75"/);
+    assert.match(readFileSync(first,'utf8'), /5\.75-0\.001/);
+  });
   assert.match(readFileSync(first,'utf8'), /data-question/);
+  rmSync(first);
+  writeFileSync(join(dir,'STORYBOARD.md'),storyboard.replace('- duration: 4','- duration: 9s\n- decision: q1'));
+  check('a longer declared hold survives shorter narration in root and timeline',()=>{
+    const held=scaffold(dir,1,content(layouts[0]));
+    assert.equal(held.duration,9); assert.equal(held.id,generated[0].id);
+    const html=readFileSync(first,'utf8');
+    assert.match(html,/data-duration="9"/); assert.match(html,/9-0\.001/);
+    assert.match(html,/data-question/);
+  });
+  writeFileSync(join(dir,'STORYBOARD.md'),storyboard);
   writeFileSync(first,original);
   check('region advice preserves ambiguous selectors without invented region',()=>{
     const html='<main data-rp-region="body"><p class="same">one</p><p class="same">two</p><p id="unique">three</p></main>';
