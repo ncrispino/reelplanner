@@ -3,7 +3,8 @@
 The formats the build reads, written down so no one learns them from reelplanner's source. How a frame looks is
 the theme's (`theme/frame.md`, `theme/motion-language.md`) and the style guide's; this is only what the tools need.
 A worker drawing frames gets its frames' part of this, with their words and timings, from
-`reelplanner frame-packet <video-dir> <frame>…`, and checks each with `reelplanner frame-check <video-dir> <frame>`.
+`reelplanner frame-packet <video-dir> <frame>…`, and checks a finished batch with
+`reelplanner frame-check <video-dir> <frame> [<frame>…] [--no-shot] [--no-layout]`.
 
 ## The file
 
@@ -72,3 +73,12 @@ a question's heading or card inside something that moves, unless at rest at scal
 `data-detail` mark in the bottom band, under 120 × 44 px, still moving in the scene's last 3 s, or twice with one
 name; empty bars where words go; anything within 40 px above a `data-detail` mark. An image drawn wider than half its
 pixels is a note (take screenshots at 2×).
+
+A batch shares one layout browser and one snapshot browser. Every requested frame retains the same three layout
+moments (25%, 60%, and 0.4 s before its end) and its plain at-rest PNG in `.hyperframes/shots/`. Inspect every PNG.
+Framework lint or runtime errors, incomplete browser checks, and failed requested pictures exit 1; they cannot
+produce a clean layout message. Frames not assembled yet get static checks and an explanation of missing pictures.
+Layout, motion, and contrast findings remain advice; the full assembled `build` and independent reviews still apply.
+Batch layout findings are grouped per source using the pinned HyperFrames persistence rules, so shared classes in
+different scenes cannot hide one scene's finding. Updating the HyperFrames pin requires rerunning the differential
+checks before updating those rules.

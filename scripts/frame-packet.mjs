@@ -90,6 +90,7 @@ ${realThings ? `- Real things (shown as themselves, in a \`data-artifact\` conta
 - Fonts: by family name in the frame's CSS (\`font: 400 46px/1.1 "EB Garamond"\`; the theme's are "EB Garamond",
   "Inter" and "JetBrains Mono"); HyperFrames loads them. Don't look for font files${fontFiles.length ? `; this video's are in \`${rel(fontsDir)}\`: ${fontFiles.join(", ")}` : ""}.
 - ${sibling ? `A finished frame to keep consistent with (its type, spacing and colour), not to copy: \`${rel(fileOf(sibling))}\` (frame ${sibling.index})` : "No other frame is drawn yet: yours sets the look the theme describes."}
+- Shared mechanics: \`${rel(join(ROOT, "skills", "plan-to-video", "references", "frame-shell.md"))}\`. Reuse the checked shell, with this scene's own populated evidence and layout; run pinned HyperFrames lint on the first batch before repeating its pattern.
 
 Design each frame for its own scene: what it shows decides its layout. The video warns when most scenes share one layout.
 

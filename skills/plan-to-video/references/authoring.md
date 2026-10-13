@@ -15,11 +15,24 @@ otherwise disappear. Explain the extra scope in BRIEF.md before assigning frames
 or a second version of the same diagram rarely needs another animated scene. Put full traces and
 reference detail in the guide, while keeping the evidence needed to decide in the video.
 
+Count every authored conditional option branch, including the branches a selected path skips. Many open
+choices can take a small plan past this target; keep their consequences and checks rather than trimming
+them to meet a scene count. Record authored count and the selected path's length separately.
+
 List each scene's teaching purpose, concrete artifact and intended layout in STORYBOARD.md. Reuse theme
 and layout code where it fits, with scene-specific content and motion. Preserve visual variety; record
 `reelplanner variety <video-dir>` alongside the checks. Don't trade readable examples for fewer scenes.
 
+Before drawing, list the exact visible input, result, field names and uncertainty/hypothetical qualifiers
+in each scene's storyboard block. Both alternatives of a choice show populated consequences on the same
+case. A format title alone cannot demonstrate how its proposed records differ. The guide holds longer
+traces; the video keeps the evidence the reviewer needs to decide.
+
 ## Check the first frame batch before copying its pattern
+
+Start from [the frame shell](frame-shell.md) and the packet's scene-specific content contract. Reuse its
+validated root, local font declarations, scoped selectors, safe region and paused timeline. Choose the
+actual form independently for each scene; reusing mechanics does not require repeating its layout.
 
 A composition root is the container for one scene. Follow HyperFrames' root contract: give it
 `id="root"` and style it through `#root`. Give animated elements letter-prefixed DOM IDs such as
@@ -32,6 +45,11 @@ alone do not establish the framework contract. The follow-up AWS test reached as
 styling errors after its frame checks; an earlier baseline hit 19 numeric-selector runtime errors.
 Fix the shared pattern before repeating it across the remaining frames. Keep the full assembled
 checks and independent reviewers.
+
+The first populated batch must also be assembled for its browser check and pictures. Check a substantive
+evidence scene and a question scene when present, save the output in the handoff, and inspect them with
+captions and controls. Check later frames in batches when the command supports it, retaining every
+frame's requested samples and picture. A skipped check or missing picture is unfinished verification.
 
 ## Settle narration before timing frames
 
@@ -56,11 +74,22 @@ and the exact remaining findings. Keep it around 1,200 words. Link complete evid
 generated HTML, full transcripts or repeated command output into the handoff.
 
 Where the harness supports fresh workers, use a fresh writer for storyboard/script, frame workers with
-3–5 frame packets for larger videos, and a fresh repair worker after the assembled review when the
-builder has grown long. The coordinator owns the artifact paths and checks stage completion. A worker
-gets the complete evidence relevant to its stage, the current constraints and the person's own words;
-it does not inherit the conversation. A single-agent harness uses the same handoff file and selective
-reads without pretending it has reset its context.
+3–5 frame packets for larger videos. For more than 20 authored frames, hand assembly and review repairs
+to a **new focused owner** by default: the original frame builder writes the handoff and transfers the
+remaining work rather than carrying every repair in its continuing conversation. Give the new owner
+the source and artifact paths, exact current findings and evidence, settled voice/pace, stable frame IDs,
+successful checks and remaining work. Keep the same model and effort. The coordinator tracks artifact
+paths and stage gates; the repair owner reads the relevant evidence and makes the changes.
+
+A requested revision likewise starts with a new focused owner from the actual saved review and first
+showing's handoff. Include the recorded decisions and the reviewer's exact words, the source/version they
+saw, changed-scope evidence, stable IDs and narration record. Preserve accepted content and reuse unchanged
+audio at its recorded pace. Fresh script/frame reviewers remain separate and receive only their exact
+generated prompts, without the authoring conversation or the repair owner's conclusions.
+
+A worker gets the complete evidence relevant to its stage, the current constraints and the person's own
+words; it does not inherit the conversation. A single-agent harness uses the same handoff file and
+selective reads without pretending it has reset its context.
 
 Read required references once, then revisit the relevant section. Inspect specific frame files and
 short failure output instead of repeatedly dumping whole artifacts. Capture full output in a saved log
