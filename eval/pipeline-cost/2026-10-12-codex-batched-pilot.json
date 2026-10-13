@@ -1,5 +1,5 @@
 {
-  "status": "in_progress; first baseline capped; pilot cannot qualify under all-four rule",
+  "status": "in_progress; first baseline and improved runs capped; pilot cannot qualify under all-four rule",
   "protocol": {
     "version": 1,
     "order": [
@@ -234,11 +234,200 @@
         "privacy_allowlist_passed": true
       },
       "variant": "before"
+    },
+    {
+      "claim_limitation": "cap_result_cannot_establish_authoring_speedup_or_quality_parity",
+      "commands": {
+        "by_kind": {
+          "help": {
+            "completed_calls": 13,
+            "failed_calls": 0,
+            "open_calls": 0,
+            "started_calls": 13,
+            "summed_seconds": 0.817,
+            "union_seconds": 0.817
+          },
+          "informational": {
+            "completed_calls": 0,
+            "failed_calls": 0,
+            "open_calls": 0,
+            "started_calls": 0,
+            "summed_seconds": 0.0,
+            "union_seconds": 0.0
+          },
+          "substantive": {
+            "completed_calls": 76,
+            "failed_calls": 21,
+            "open_calls": 1,
+            "started_calls": 77,
+            "summed_seconds": 1262.721746,
+            "union_seconds": 1095.516746
+          }
+        },
+        "completed_calls": 89,
+        "completed_intervals": {
+          "summed_seconds": 1051.302,
+          "union_seconds": 949.141
+        },
+        "failed_completed_calls": 21,
+        "including_censored_open_intervals": {
+          "summed_seconds": 1263.538746,
+          "union_seconds": 1096.277746
+        },
+        "interval_note": "sum_and_union_include_unresolved_interval_clipped_at_cap",
+        "open_calls": 1,
+        "open_command_note": "duration_and_exit_unknown_without_end_receipt",
+        "open_execution_note": "unresolved_logged_interval_is_not_proof_of_continuous_execution",
+        "open_interval_bounds": [
+          {
+            "actual_duration_seconds": null,
+            "censored_at_after_run_start_seconds": 3600.2918428,
+            "elapsed_since_logged_start_at_cap_seconds": 212.236746,
+            "exit_code": null,
+            "start_after_run_start_seconds": 3388.0550968
+          }
+        ],
+        "scope": "reelplanner_shim_only",
+        "started_calls": 90,
+        "units": "seconds"
+      },
+      "label": "after-1",
+      "phases": {
+        "first": {
+          "capped": true,
+          "complete": false,
+          "elapsed_at_cap_seconds": 3600.2918428,
+          "end_basis": "run.end",
+          "right_censored": true,
+          "started": true,
+          "time_to_showing_seconds": null
+        },
+        "revision": {
+          "complete": null,
+          "started": false,
+          "status": "not_started",
+          "time_to_showing_seconds": null
+        }
+      },
+      "provenance": {
+        "after_commit_sha1": "d5818bc98e1de0d5d6fe83a170de4b3d37553c1b",
+        "after_package_sha256": "370193f6da163967e2a6279b07b5631a81a8634bdcfc8eceafe2ebbdb16aa893",
+        "after_runtime_sources_manifest_sha256": "2556ea078fdf6d16dd6938ac9fd0a40d39219718b1c0a20bcc86b7216fb937e0",
+        "archive_sha256": "35666eab1ef6b9e13de63afb8853550b6afa80159076197129d90f426d2f1d33",
+        "before_commit_sha1": "1866c4c049fcd54ca455a7253bb7a406d7264513",
+        "extractor_sha256": "069284a01c99bd579e2ae68f6fdd292540cf1c2bdd3dbae1aabfa00604c849e5",
+        "harness_manifest_sha256": "35ad676a8da00dcc788512e357dbbb7aa6a521315446add9ebb88b0f229f8342",
+        "metrics_sha256": "b38f0732fec0ec167364894da78c36ec8f9801d67bcf7adfc407456fe43baf54",
+        "protocol_commit_sha1": "bd014c8e6a1e7891b9a9483a8e66de9ceab0daac",
+        "source_manifest_sha256": "813173e436c68c719e6d5d775acfda17be959e7d5d9d6d3c4c3e10be30fe61d2"
+      },
+      "qualification_reason": "censored_failure_not_semantic_quality_failure",
+      "qualifies": false,
+      "quality": {
+        "delivery": false,
+        "evidence": null,
+        "guide": null,
+        "independent_reviews": null,
+        "paired_quality": null,
+        "quick_checks": null,
+        "readability": null,
+        "revision": null,
+        "scope": null,
+        "visual_variety": null,
+        "worked_examples": null
+      },
+      "quality_assessed": false,
+      "quality_notes": {
+        "delivery": "no_successful_showing_receipt",
+        "remaining_gates": "all_non_delivery_gates_require_unavailable_showing_artifacts"
+      },
+      "schema": 1,
+      "status": "terminal_first_cap_failure",
+      "termination": {
+        "cap_monitor_overrun_seconds": 0.2918428,
+        "drained": true,
+        "elapsed_at_cap_seconds": 3600.2918428,
+        "exit_code": 124,
+        "reason": "first_phase_cap",
+        "scheduled_first_cap_seconds": 3600.0,
+        "time_interpretation": "elapsed_at_cap_is_not_time_to_complete",
+        "time_to_complete_seconds": null
+      },
+      "usage": {
+        "accounting_note": "cached_is_subset_of_input_reasoning_is_subset_of_output",
+        "basis": "observed_exact_response_records_only",
+        "coverage": "partial",
+        "duplicate_response_records_ignored": 0,
+        "excluded_outside_episode_response_records": {
+          "authors_and_reviewers": 0,
+          "guardian": 0,
+          "unknown_role": 0
+        },
+        "export_count": 21,
+        "fallback_note": "zero_cumulative_fallbacks",
+        "guardian_timing": {
+          "basis": "ISO_task_event_intervals",
+          "completed_checks": 337,
+          "open_checks": 1,
+          "summed_seconds": 829.654746,
+          "union_seconds": 758.887746
+        },
+        "post_run_checkpoint_delay_seconds": 0.5504145,
+        "post_run_guardian_completions_excluded": 0,
+        "post_run_note": "post_run_checkpoint_events_excluded_from_episode_usage",
+        "roles": {
+          "authors_and_reviewers": {
+            "coverage": "partial",
+            "observed_tokens": {
+              "cache_write_input_tokens": 0,
+              "cached_input_tokens": 44286464,
+              "input_tokens": 45361025,
+              "output_tokens": 154468,
+              "reasoning_output_tokens": 47485,
+              "total_tokens": 45515493
+            },
+            "observed_unique_response_records": 389,
+            "whole_episode_model_requests": null,
+            "whole_episode_tokens": null
+          },
+          "guardian": {
+            "coverage": "partial",
+            "observed_tokens": {
+              "cache_write_input_tokens": 0,
+              "cached_input_tokens": 19221248,
+              "input_tokens": 20028913,
+              "output_tokens": 25452,
+              "reasoning_output_tokens": 7511,
+              "total_tokens": 20054365
+            },
+            "observed_unique_response_records": 337,
+            "whole_episode_model_requests": null,
+            "whole_episode_tokens": null
+          },
+          "unknown_role": {
+            "coverage": "partial",
+            "observed_tokens": {},
+            "observed_unique_response_records": 0,
+            "whole_episode_model_requests": null,
+            "whole_episode_tokens": null
+          }
+        },
+        "whole_episode_model_requests": null,
+        "whole_episode_tokens": null
+      },
+      "validation": {
+        "archive_hash_matches_metrics": true,
+        "checkpoint_hashes_verified": true,
+        "exact_usage_matches_exports": true,
+        "independent_command_sweep_matches": true,
+        "independent_guardian_sweep_matches": true,
+        "privacy_allowlist_passed": true
+      },
+      "variant": "after"
     }
   ],
   "remaining_trials": {
-    "after-1": "running",
-    "after-2": "pending",
+    "after-2": "running",
     "before-2": "pending"
   },
   "whole_video_speedup_demonstrated": false,
