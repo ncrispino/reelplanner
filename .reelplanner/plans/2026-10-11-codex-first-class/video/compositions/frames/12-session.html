@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="12-session"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f12-session-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f12-session-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f12-session-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f12-session-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f12-session-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f12-session-small{font-size:36px;padding:24px 20px}
+.f12-session-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f12-session-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f12-session-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f12-session-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f12-session-table{position:absolute;left:90px;top:285px;width:1740px}
+.f12-session-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f12-session-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f12-session-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f12-session-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f12-session-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f12-session-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f12-session-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f12-session-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f12-session-mini-command code{font:inherit}
+
+</style>
+<div id="f12-session-root" data-composition-id="12-session" data-width="1920" data-height="1080" data-duration="29.143" data-band="bottom"><div class="clip f12-session-ground" id="f12-session-ground" data-start="0" data-duration="29.143" data-track-index="0"></div><div class="f12-session-status">Proposed</div><h1 class="f12-session-title">Step 4 · This conversation means this one</h1><div class="f12-session-win" data-artifact="Proposed" data-detail="step-4"><div class="f12-session-bar"><span data-gloss="CLI">Proposed</span></div><div class="f12-session-command" id="f12-session-cmd0" style="top:100px"><span class="f12-session-prompt">›</span><code>CODEX_THREAD_ID → matching repo → exact source</code></div><div class="f12-session-command" id="f12-session-cmd1" style="top:205px"><span class="f12-session-prompt">›</span><code>CODEX_HOME → detected supported storage</code></div><div class="f12-session-command" id="f12-session-cmd2" style="top:310px"><span class="f12-session-prompt">›</span><code>sources.json: path + hash + size</code></div><div class="f12-session-command" id="f12-session-cmd3" style="top:415px"><span class="f12-session-prompt">›</span><code>missing active source → explicit path</code></div></div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="12-session";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=18.4;gsap.set(q(".f12-session-title"),{opacity:0,y:10});tl.to(q(".f12-session-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f12-session-cmd0"),{opacity:0});tl.to(q("#f12-session-cmd0"),{opacity:1,duration:0.12,ease:"none"},5.15);gsap.set(q("#f12-session-cmd1"),{opacity:0});tl.to(q("#f12-session-cmd1"),{opacity:1,duration:0.12,ease:"none"},9.49);gsap.set(q("#f12-session-cmd2"),{opacity:0});tl.to(q("#f12-session-cmd2"),{opacity:1,duration:0.12,ease:"none"},15.14);gsap.set(q("#f12-session-cmd3"),{opacity:0});tl.to(q("#f12-session-cmd3"),{opacity:1,duration:0.12,ease:"none"},15.46);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

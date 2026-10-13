@@ -3,7 +3,8 @@
 The formats the build reads, written down so no one learns them from reelplanner's source. How a frame looks is
 the theme's (`theme/frame.md`, `theme/motion-language.md`) and the style guide's; this is only what the tools need.
 A worker drawing frames gets its frames' part of this, with their words and timings, from
-`reelplanner frame-packet <video-dir> <frame>…`, and checks each with `reelplanner frame-check <video-dir> <frame>`.
+`reelplanner frame-packet <video-dir> <frame>…`, and checks a finished batch with
+`reelplanner frame-check <video-dir> <frame> [<frame>…] [--no-shot] [--no-layout]`.
 
 ## The file
 
@@ -72,3 +73,46 @@ a question's heading or card inside something that moves, unless at rest at scal
 `data-detail` mark in the bottom band, under 120 × 44 px, still moving in the scene's last 3 s, or twice with one
 name; empty bars where words go; anything within 40 px above a `data-detail` mark. An image drawn wider than half its
 pixels is a note (take screenshots at 2×).
+
+A batch shares one layout browser and one snapshot browser. Every requested frame retains the same three layout
+moments (25%, 60%, and 0.4 s before its end) and its plain at-rest PNG in `.hyperframes/shots/`. Inspect every PNG.
+Framework lint or runtime errors, incomplete browser checks, and failed requested pictures exit 1; they cannot
+produce a clean layout message. Frames not assembled yet get static checks and an explanation of missing pictures.
+Layout, motion, and contrast findings remain advice; the full assembled `build` and independent reviews still apply.
+Batch layout findings are grouped per source using the pinned HyperFrames persistence rules, so shared classes in
+different scenes cannot hide one scene's finding. Updating the HyperFrames pin requires rerunning the differential
+checks before updating those rules.
+
+
+### Intended visible content
+
+In each `## Frame N` block of `STORYBOARD.md`, keep the `- scene:` summary and add
+`### Visible content` when the scene needs concrete evidence beyond that summary. Put only intended
+screen content here: exact input/output values, intermediate reasoning, qualifications and relationships.
+The section ends at the next heading of level 3 or above outside a fenced block. Fenced examples remain
+content. Keep private author notes and guide-only text in another section. Legacy scenes need no migration.
+
+```markdown
+## Frame 25 — Count actors
+- scene: count actors
+- src: compositions/frames/25-counts.html
+### Visible content
+Input X/X/Y. Repeated X retains one actor identity.
+Result: three occurrences, two actors. One versus three episodes changes neither count.
+### Author notes
+Layout and implementation notes go here.
+```
+
+`fresh-eyes --script` and `frame-packet` share this parsed scene summary, visible section and narration.
+The packet also retains its original block, metadata, marks and word timing. This contract describes
+intended evidence; final independent screenshot review still checks what actually reached the screen.
+A missing explanation still needs a real repair and independent rereview, even if its intended labels exist.
+
+New script stamps version and hash reviewer-visible scene content, narration, asks, terms, glossary and
+latest review. `--script --check` fails stale input and mismatched findings headers. Timing and private-note
+edits do not stale the review. Regenerating identical input preserves its stamp, timestamp, plan hash and
+findings. Changed input archives the answered brief, stamp and findings under `fresh-eyes/script/review-N/`
+and requires new independent findings; unanswered findings block regeneration. Legacy stamps remain
+readable with a warning that they did not certify this contract. Do not copy old findings into a new review.
+Count the larger brief's tokens, rereviews and repair time in the experiment cost; a clean intended-content
+review never replaces the final newcomer and designer screenshot reviews.

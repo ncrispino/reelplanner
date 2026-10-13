@@ -1,0 +1,177 @@
+$ node /private/tmp/reelplanner-codex-headless-video-20261011/verify-served.mjs --source-only
+{
+  "served": {
+    "build": "2026-10-11T22:18:47.484Z",
+    "changes": {
+      "against": "HEAD",
+      "baseline": true,
+      "at": "2026-10-11T22:18:47.484Z",
+      "build": "dd978b63be21",
+      "added": 0,
+      "edited": 1,
+      "restyled": 0,
+      "retimed": 0,
+      "same": 6,
+      "removed": [],
+      "changedFrames": [
+        2
+      ],
+      "restyledFrames": [],
+      "changedSeconds": 17.62,
+      "totalSeconds": 70.294
+    },
+    "frames": [
+      {
+        "id": "01-overview",
+        "start": 0
+      },
+      {
+        "id": "02-setting",
+        "start": 9.792
+      },
+      {
+        "id": "03-choice",
+        "start": 27.413
+      },
+      {
+        "id": "04-normal",
+        "start": 36.544
+      },
+      {
+        "id": "05-large",
+        "start": 43.221
+      },
+      {
+        "id": "06-check",
+        "start": 50.112
+      },
+      {
+        "id": "07-ending",
+        "start": 60.331
+      }
+    ],
+    "changed": [
+      2
+    ],
+    "body": "Comfortable reading\n\nWhat to do here:\n1 question to answer as it stops: A–D to pick. Then Finish review.\n\nVideos\n· 1 needs you"
+  },
+  "status": {
+    "ok": true,
+    "id": "video-20261011T221238Z",
+    "state": "done",
+    "by": "agent",
+    "since": "2026-10-11T22:22:15.409Z",
+    "build": "2026-10-11T22:18:47.484Z",
+    "log": ".reelplanner/inbox/runs/video-20261011T221238Z.log"
+  },
+  "changedSceneIds": [
+    2
+  ],
+  "frameKeyboard": [
+    {
+      "text": "Reading size ready for keyboard input",
+      "present": true
+    },
+    {
+      "text": "Arrow keys: choose",
+      "present": true
+    },
+    {
+      "text": "Enter: confirm",
+      "present": true
+    }
+  ],
+  "progress": {
+    "completionMode": "git",
+    "repo": "/private/tmp/reelplanner-codex-headless-video-20261011/app",
+    "startHead": "520a21b3e989b5ac65be80975d716e5401f13518",
+    "baselineTracked": {},
+    "baselineUntracked": {
+      "2cc3547899c73bcf4d9e239040c1d9e96af9a8229fd86719700d26bcd79d6faa": "acb76d40599dd9a3c92c7103cefdad6b7bde8be7e121a6ad415dd7f21416b158",
+      "aa01c54228d22e37f172b462ddb980a3cd673db0cc0804388a020d79efb5ad9f": "8ef3ee82b4a6053c866f3e876c1c1b1d2f17aa714c9e7e32b07950e3a7c9b944",
+      "c2215267a43009c2d435646df8ba08918fad6ca23a7e80461b37970c1b7189a5": "b0a8aea67f6f04f2ada837fe9d4f6d5b2313797eae903464aafe6411af7b8efd"
+    },
+    "ownerPatches": {
+      "staged": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unstaged": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "phase": "committed",
+    "at": "2026-10-11T22:22:09.093Z",
+    "runOwner": "run:7c2b9af5-9b60-47dd-b4f9-aa30e7a0a0c8",
+    "head": "7287fff3f69b71d65a879b518a7b94c3b35e77b3",
+    "checkedHead": "c4e576d4d8dc385ce37c65507392a6156248050e",
+    "checkedTree": "e6d0dbc5e28080e3ce09357dcae3e3628c45cc62",
+    "committedHead": "7287fff3f69b71d65a879b518a7b94c3b35e77b3"
+  },
+  "head": "7287fff3f69b71d65a879b518a7b94c3b35e77b3",
+  "tree": "e6d0dbc5e28080e3ce09357dcae3e3628c45cc62",
+  "statusPorcelain": "?? .reelplanner/media/",
+  "trackedGeneratedMedia": "",
+  "originalArchiveFiles": [
+    {
+      "path": ".reelplanner/media/7350dae2f9744ccf.json",
+      "sha256": "7350dae2f9744ccf894c5ff2f0615aec4ecd067b491486bf87082f3f8edf673f",
+      "unchangedFromClaim": true
+    },
+    {
+      "path": ".reelplanner/media/9a59cba100093dc0.html",
+      "sha256": "9a59cba100093dc0c5896f0b9f538a75ecefb2736562da220a8bd50dfc872141",
+      "unchangedFromClaim": true
+    },
+    {
+      "path": ".reelplanner/media/f57ba385d7b1c609.json",
+      "sha256": "f57ba385d7b1c60945d7c265a5ef1c5df64a9690ea1d6be5f547723ccdff3248",
+      "unchangedFromClaim": true
+    }
+  ],
+  "voiceChanges": [
+    {
+      "name": "01.wav",
+      "before": "07d4720af3ac19ada8258b39b02b95c5256d10c5938d556a5d026ff2f74cc2b0",
+      "after": "07d4720af3ac19ada8258b39b02b95c5256d10c5938d556a5d026ff2f74cc2b0",
+      "changed": false
+    },
+    {
+      "name": "02.wav",
+      "before": "1f1d14e47e9fbbaa4a582b215c0a27733b216e415f70edcda6edb644aacaa906",
+      "after": "1305c23e26d64b615836591659e02c7e771a3d0dd97be451b56c950121e086a3",
+      "changed": true
+    },
+    {
+      "name": "03.wav",
+      "before": "8386f88fd9a73807e787981910b089eccddd88b0e5a645cdeb7858db32af4d18",
+      "after": "8386f88fd9a73807e787981910b089eccddd88b0e5a645cdeb7858db32af4d18",
+      "changed": false
+    },
+    {
+      "name": "04.wav",
+      "before": "921ec6b7dd11f729f8d5d38a14f2f1dd07d32956c0c185ff22acd1fc166724db",
+      "after": "921ec6b7dd11f729f8d5d38a14f2f1dd07d32956c0c185ff22acd1fc166724db",
+      "changed": false
+    },
+    {
+      "name": "05.wav",
+      "before": "cea3ff88e98e6444964067b084e7335cde127eab5f3a6ab2f8cb70539c7f61e6",
+      "after": "cea3ff88e98e6444964067b084e7335cde127eab5f3a6ab2f8cb70539c7f61e6",
+      "changed": false
+    },
+    {
+      "name": "06.wav",
+      "before": "ce190f17af46ba2ad10f5e7ab694fc0102d96627def4fc594bf7f39b0dd1b8d7",
+      "after": "ce190f17af46ba2ad10f5e7ab694fc0102d96627def4fc594bf7f39b0dd1b8d7",
+      "changed": false
+    },
+    {
+      "name": "07.wav",
+      "before": "72ce2f61024438bf6a9a114697569aa0315258c940b75ccdd58268329206dc96",
+      "after": "72ce2f61024438bf6a9a114697569aa0315258c940b75ccdd58268329206dc96",
+      "changed": false
+    }
+  ],
+  "versions": [
+    "35b3fb0f3c23.json",
+    "c93c6b323aa5.json"
+  ],
+  "decisionCount": 0
+}
+exit 0

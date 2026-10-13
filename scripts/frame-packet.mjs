@@ -19,7 +19,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join, resolve, basename, relative } from "node:path";
 import { ROOT } from "./lib/env.mjs";
-import { storyboardFrames } from "./lib/terms.mjs";
+import { sceneContent, visibleContent } from "./lib/scene-content.mjs";
 
 const args = process.argv.slice(2);
 const usage = "usage: reelplanner frame-packet <video-dir> <frame> [<frame>…]";
@@ -29,15 +29,12 @@ if (!target || !asked.length) die(usage);
 const dir = resolve(target), read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const sb = read(join(dir, "STORYBOARD.md"));
 if (!sb) die(`no STORYBOARD.md in ${target}: write the storyboard first`);
-const frames = storyboardFrames(sb).sort((a, b) => a.index - b.index);
+const frames = sceneContent(sb, read(join(dir, "SCRIPT.md")));
 const ids = frames.map((f) => f.index);
 const want = asked.map((a) => { const n = Number(a); if (!Number.isInteger(n) || !ids.includes(n)) die(`no frame ${a} in the storyboard (it has ${ids[0]}–${ids.at(-1)})`); return n; });
 
-// the storyboard's own block for a frame, as written: from its "## Frame N" heading to the next
-const blocks = Object.fromEntries(sb.split(/\n(?=## Frame \d+)/).map((b) => [Number((/^## Frame (\d+)/.exec(b) || [])[1]), b.trim()]).filter(([n]) => n));
 const meta = (() => { try { return JSON.parse(read(join(dir, "audio_meta.json"))); } catch { return null; } })();
 const voice = (n) => meta?.voices?.find((v) => Number(v.frame) === n) || null;
-const script = (() => { const out = {}; for (const b of read(join(dir, "SCRIPT.md")).split(/\n(?=## Line )/)) { const n = (b.match(/^## Line .*\(Frame (\d+)\)/m) || [])[1]; if (n) out[n] = b.split("\n").filter((l) => /^ {4}\S/.test(l)).map((l) => l.trim()).join(" "); } return out; })();
 
 // what the beat needs marked in its frame (SKILL.md's step 3, and the tags table): the player answers on the frame
 function marks(f) {
@@ -90,6 +87,7 @@ ${realThings ? `- Real things (shown as themselves, in a \`data-artifact\` conta
 - Fonts: by family name in the frame's CSS (\`font: 400 46px/1.1 "EB Garamond"\`; the theme's are "EB Garamond",
   "Inter" and "JetBrains Mono"); HyperFrames loads them. Don't look for font files${fontFiles.length ? `; this video's are in \`${rel(fontsDir)}\`: ${fontFiles.join(", ")}` : ""}.
 - ${sibling ? `A finished frame to keep consistent with (its type, spacing and colour), not to copy: \`${rel(fileOf(sibling))}\` (frame ${sibling.index})` : "No other frame is drawn yet: yours sets the look the theme describes."}
+- Shared mechanics: \`${rel(join(ROOT, "skills", "plan-to-video", "references", "frame-shell.md"))}\`. Reuse the checked shell, with this scene's own populated evidence and layout; run pinned HyperFrames lint on the first batch before repeating its pattern.
 
 Design each frame for its own scene: what it shows decides its layout. The video warns when most scenes share one layout.
 
@@ -100,19 +98,24 @@ rest, \`.hyperframes/shots/<frame>.png\`. Look at the picture. Run it on each fr
 
 for (const n of want) {
   const f = frames.find((x) => x.index === n), v = voice(n), file = fileOf(f);
+  const fence = "`".repeat(Math.max(3, ...[...f.block.matchAll(/`+/g)].map((m) => m[0].length + 1)));
   const words = v?.words?.length ? v.words.map((w) => `${w.text} (${fmt(w.start)}–${fmt(w.end)})`).join(" · ") : null;
   parts.push(`## Frame ${n}${f.title ? ` — ${f.title}` : ""}
 
 - **File:** \`${file ? rel(file) : "(no src: in the storyboard)"}\`${file && existsSync(file) ? " (exists: you are redrawing it)" : ""}, composition id \`${file ? basename(file, ".html") : "?"}\`
 - **Length:** ${v ? `${fmt(v.duration_s)} s of voice` : f.meta.duration ? `${f.meta.duration} (from the storyboard; narration not ready)` : "not known yet"}
 - **The line, word by word** (seconds from the scene's start; put each cue on its word):
-  ${words || `narration not ready: draw first, cue after. The line: “${script[n] || String(f.meta.voiceover || "").replace(/^"|"$/g, "")}”`}
+  ${words || `narration not ready: draw first, cue after. The line: “${f.narration}”`}
 - **Mark in the frame:**
 ${marks(f).map((x) => `  - ${x}`).join("\n")}
 
-\`\`\`
-${blocks[n] || "(no storyboard block)"}
-\`\`\``);
+### Intended scene content (shared with script review)
+
+${visibleContent(f)}
+
+${fence}
+${f.block}
+${fence}`);
 }
 
 const out = join(dir, ".hyperframes", "packets", `${String(want[0]).padStart(2, "0")}.md`);

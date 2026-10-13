@@ -1,0 +1,24 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full delivery review-status loop > /private/tmp/reelplanner-codex-completion-fix/full-legacy-pid.log 2>&1
+cwd: /Users/ncrispin/GitHubProjects/reelplanner
+shell: zsh (exec_command default login shell)
+environment: inherited tool environment; no explicit environment overrides
+argv: ["/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node", "scripts/test/run.mjs", "--full", "delivery", "review-status", "loop"]
+exact shell command:
+/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full delivery review-status loop > /private/tmp/reelplanner-codex-completion-fix/full-legacy-pid.log 2>&1
+permissions: require_escalated (runner/server local loopback sockets)
+exec session: 87536
+terminal exit: 0
+output: /private/tmp/reelplanner-codex-completion-fix/full-legacy-pid.log
+counts: delivery 15; review-status 49; loop 96
+elapsed: 15.3 seconds
+metadata: /private/tmp/reelplanner-codex-completion-fix/test-results.json
+note: run.mjs itself sets RP_FULL=1 and isolated scratch TMPDIR/TMP/TEMP/REELPLANNER_HOME/RP_TEST_PORT for child specs; no environment values or secrets were exported.
+
+full run: 3 specs, 8 at a time
+
+✓ scripts/test/review-status.spec.mjs    11.3 s  49 checks
+✓ scripts/test/loop.spec.mjs             14.6 s  96 checks
+✓ scripts/test/delivery.spec.mjs         15.2 s  15 checks
+
+✓ all 3 passed in 15.3 s (the slowest, scripts/test/delivery.spec.mjs, 15.2 s)
+exit 0

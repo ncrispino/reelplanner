@@ -1,0 +1,7 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' '/Users/ncrispin/GitHubProjects/reelplanner/bin/reelplanner.mjs' 'review' '/private/tmp/reelplanner-port-collision-20261011/videos/l1-upload-resume' '--detach' '--no-open' '--no-notify' '--port' '8964' '--out' '/private/tmp/reelplanner-port-collision-20261011/player'  [scratch cwd /private/tmp/reelplanner-port-collision-20261011]
+✓ review page: http://127.0.0.1:8966/?project=l1-upload-resume
+  (a review server of its own, pid 17252: it outlives this session; logs in machine/inbox/reelplanner-port-collision-20261011-87ee5c85/server.log; `reelplanner review --stop` stops it)
+exit 0
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' '/Users/ncrispin/GitHubProjects/reelplanner/bin/reelplanner.mjs' 'review' '--stop'  [scratch cwd /private/tmp/reelplanner-port-collision-20261011]
+✓ stopped the review server (pid 17252, http://127.0.0.1:8966/)
+exit 0

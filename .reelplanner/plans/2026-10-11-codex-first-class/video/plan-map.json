@@ -1,0 +1,3125 @@
+{
+  "project": "video",
+  "title": "video",
+  "planDir": ".reelplanner/plans/2026-10-11-codex-first-class",
+  "totalSeconds": 358.89,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "The goal and the boundary",
+      "fromFrame": 1,
+      "toFrame": 2,
+      "start": 0,
+      "end": 47.406,
+      "linearSeconds": 47.406,
+      "watchedSeconds": 47.406,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Your chosen local scope",
+      "fromFrame": 3,
+      "toFrame": 5,
+      "start": 47.406,
+      "end": 115.591,
+      "linearSeconds": 68.185,
+      "watchedSeconds": 68.185,
+      "decisions": []
+    },
+    {
+      "id": "ch3",
+      "title": "Install and finish safely",
+      "fromFrame": 6,
+      "toFrame": 8,
+      "start": 115.591,
+      "end": 179.681,
+      "linearSeconds": 64.09,
+      "watchedSeconds": 64.09,
+      "decisions": []
+    },
+    {
+      "id": "ch4",
+      "title": "Deliver and find the right session",
+      "fromFrame": 9,
+      "toFrame": 12,
+      "start": 179.681,
+      "end": 258.834,
+      "linearSeconds": 79.153,
+      "watchedSeconds": 79.153,
+      "decisions": []
+    },
+    {
+      "id": "ch5",
+      "title": "Prove the result before claiming support",
+      "fromFrame": 13,
+      "toFrame": 14,
+      "start": 258.834,
+      "end": 295.808,
+      "linearSeconds": 36.974,
+      "watchedSeconds": 36.974,
+      "decisions": []
+    },
+    {
+      "id": "ch6",
+      "title": "Evidence earns the support claim",
+      "fromFrame": 15,
+      "toFrame": 18,
+      "start": 295.808,
+      "end": 358.89,
+      "linearSeconds": 63.082,
+      "watchedSeconds": 63.082,
+      "decisions": []
+    }
+  ],
+  "levels": null,
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 8,
+      "planStep": 1,
+      "question": "Plugin installed; video tools absent. What next?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Diagnostics name missing tools",
+          "why": "A plugin supplies the skill; diagnostics must report missing CLI and video dependencies."
+        },
+        {
+          "id": "b",
+          "label": "Installation counts as full proof",
+          "why": "This does not satisfy the proposed rule."
+        },
+        {
+          "id": "c",
+          "label": "Enable hooks automatically",
+          "why": "This would claim a result that has not been proved."
+        }
+      ],
+      "answer": "a",
+      "explain": "A plugin supplies the skill; diagnostics must report missing CLI and video dependencies.",
+      "at": 179.631,
+      "explainedAt": 115.591,
+      "explainedFrame": 6,
+      "walkMeThrough": "The teammate has the agent instructions, but the tools needed to build a video are absent. Diagnostics name those missing dependencies and how to install them. The plugin install alone is not a completed lifecycle."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 10,
+      "planStep": 2,
+      "question": "Files edited; commit fails. Finished?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Done because the edit exists",
+          "why": "This skips a required part of the supported outcome."
+        },
+        {
+          "id": "b",
+          "label": "Unfinished; keep edits and show the log",
+          "why": "Keep the unfinished work until the required commit succeeds."
+        },
+        {
+          "id": "c",
+          "label": "Server commits without signing",
+          "why": "This would claim a result that has not been proved."
+        }
+      ],
+      "answer": "b",
+      "explain": "Finished means the required checks and commit succeeded. Edited files alone are unfinished work.",
+      "at": 221.362,
+      "explainedAt": 139.614,
+      "explainedFrame": 7,
+      "walkMeThrough": "The files are edited and checks passed, but the required commit did not succeed. Keep the edits and show Stopped before commit with the failure log. Resolve the permission problem and retry from that work; only then mark the review done."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 12,
+      "planStep": 3,
+      "question": "Connected session closes; Ask arrives. What happens?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Start headless answering",
+          "why": "This skips a required part of the supported outcome."
+        },
+        {
+          "id": "b",
+          "label": "Discard the question",
+          "why": "This does not satisfy the proposed rule."
+        },
+        {
+          "id": "c",
+          "label": "Saved for a live session",
+          "why": "Questions remain available for a live session and do not launch headless work."
+        }
+      ],
+      "answer": "c",
+      "explain": "Questions remain available for a live session and do not launch headless work.",
+      "at": 258.784,
+      "explainedAt": 179.681,
+      "explainedFrame": 9,
+      "walkMeThrough": "The question is saved, but its connected live session is gone. The headless setting applies to reviews, not questions. The question remains recoverable for a live session rather than being consumed silently."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 14,
+      "planStep": 4,
+      "question": "Active source and export fail. Which source?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Newer main conversation",
+          "why": "This skips a required part of the supported outcome."
+        },
+        {
+          "id": "b",
+          "label": "Copy or path of this exact conversation",
+          "why": "A known active session must not silently be replaced by another session."
+        },
+        {
+          "id": "c",
+          "label": "Newest checker conversation",
+          "why": "This would claim a result that has not been proved."
+        }
+      ],
+      "answer": "b",
+      "explain": "A known active session must not silently be replaced by another session.",
+      "at": 295.758,
+      "explainedAt": 221.412,
+      "explainedFrame": 11,
+      "walkMeThrough": "The active conversation and its supported export are unreadable. The newer main conversation is different evidence. Ask the owner for a readable copy or path of the identified conversation and check its session and project, rather than explain a different one."
+    },
+    {
+      "id": "k5",
+      "frameIndex": 16,
+      "planStep": 5,
+      "question": "Disconnected copy reviewed elsewhere. What next?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Codex receives it automatically",
+          "why": "This copy has no connection to notify Codex."
+        },
+        {
+          "id": "b",
+          "label": "Return the saved review file",
+          "why": "The saved review file carries the answers back to the project."
+        },
+        {
+          "id": "c",
+          "label": "The review cannot be kept",
+          "why": "The file preserves the answers even without a server connection."
+        }
+      ],
+      "answer": "b",
+      "explain": "Direct Send requires a connection to the project. A disconnected portable copy needs its review file returned.",
+      "at": 332.043,
+      "explainedAt": 258.834,
+      "explainedFrame": 13,
+      "walkMeThrough": "The teammate is viewing a copy elsewhere with no project server connection. Their answers can be exported as a review file. Return that file to the agent to record it; the ordinary local page uses direct Send instead."
+    },
+    {
+      "id": "k6",
+      "frameIndex": 17,
+      "planStep": 6,
+      "question": "Specs pass; no real live answer. Claim fully tested?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, mocks prove the lifecycle",
+          "why": "This skips a required part of the supported outcome."
+        },
+        {
+          "id": "b",
+          "label": "No, record the live path as unverified",
+          "why": "Automated contracts and accepted flags do not replace a real model-driven lifecycle."
+        },
+        {
+          "id": "c",
+          "label": "Yes, command help accepts queue",
+          "why": "This would claim a result that has not been proved."
+        }
+      ],
+      "answer": "b",
+      "explain": "Automated contracts and accepted flags do not replace a real model-driven lifecycle.",
+      "at": 339.511,
+      "explainedAt": 295.808,
+      "explainedFrame": 15,
+      "walkMeThrough": "The specs prove the simulated contract, but the live question path has not been exercised. The docs keep that path unverified until a real supported session answers on the page. A passing parser check cannot supply that missing evidence."
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 358.89,
+  "frames": [
+    {
+      "index": 1,
+      "title": "A complete alternative",
+      "compositionId": "01-goal",
+      "type": "hook",
+      "durationSeconds": 15.639,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "The goal and the boundary",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "You should be able to finish the same review loop with Codex or Claude Code. This proposal changes installation, review follow-up, conversation discovery and lifecycle proof. The branch is feat/codex-first-class; integration behavior remains proposed.",
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-8.07s.png",
+      "terms": [
+        "review",
+        "finish",
+        "branch",
+        "lifecycle",
+        "codex"
+      ],
+      "defines": [
+        "review",
+        "finish"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 1
+      }
+    },
+    {
+      "index": 2,
+      "title": "The same review with either agent",
+      "compositionId": "02-surfaces",
+      "type": "product_intro",
+      "durationSeconds": 31.767,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "The goal is the same review experience with either agent: watch with sound, answer choices, leave comments, press Send and see the revised video. Codex plugins install instructions. Trusted hooks trigger commands; tool connections expose services. These are extension options, not a complete hosted review system. The existing browser player handles review. We will test a browser beside Codex in the terminal. A hosted Claude page also saves reviews, checks reviewer identity and answers questions. We have not found a proven Codex replacement for those services.",
+      "start": 15.639,
+      "thumb": "snapshots/frame-01-at-31.77s.png",
+      "terms": [
+        "plugin",
+        "skill",
+        "agent",
+        "pane",
+        "call",
+        "review",
+        "terminal",
+        "hook",
+        "codex"
+      ],
+      "defines": [
+        "plugin",
+        "skill",
+        "agent",
+        "pane",
+        "call"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 2
+      }
+    },
+    {
+      "index": 3,
+      "title": "Your chosen scope: A",
+      "compositionId": "03-remote-choice",
+      "type": "cta",
+      "durationSeconds": 14.444,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Your chosen local scope",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "You chose A: finish the local Codex workflow and check portable reviews. That scope is settled. Local Send goes directly to the project and notifies Codex. Automatic delivery from a hosted page elsewhere stays outside this change.",
+      "start": 47.406,
+      "thumb": "snapshots/frame-02-at-54.88s.png",
+      "terms": [
+        "step",
+        "call",
+        "detail",
+        "review",
+        "finish",
+        "hosted page",
+        "codex"
+      ],
+      "defines": [
+        "step",
+        "call",
+        "detail"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 3
+      }
+    },
+    {
+      "index": 4,
+      "title": "Local Send needs no download",
+      "compositionId": "04-remote-a",
+      "type": "benefit_highlight",
+      "durationSeconds": 16.172,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "On this machine, press Send. The project saves your answers and comments, then the waiting Codex session receives the review. That is how your first review reached us: you did not download anything. A file transfer is needed only for a disconnected portable copy reviewed elsewhere.",
+      "start": 61.85,
+      "thumb": "snapshots/frame-03-at-70.19s.png",
+      "terms": [
+        "review",
+        "codex"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 4
+      }
+    },
+    {
+      "index": 5,
+      "title": "One workflow, small agent differences",
+      "compositionId": "06-recap",
+      "type": "product_intro",
+      "durationSeconds": 37.569,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-1#interface",
+      "options": [],
+      "narration": "Good code means one shared review workflow: save, notify, review and fix, then commit. Small agent adapters contain only the differences: check available features, launch with the right permissions, notify the right session, and find its saved conversation. Each function receives this project and the relevant review or session, then reports what happened. Shared code owns retries and decides when work is finished. Adding another agent should mean adding those small functions. Keep one player, one server and one inbox, the saved pending reviews. Earlier answers still bind the plan; independent checks and real walkthroughs still apply. The guide holds the exact function contract.",
+      "start": 78.022,
+      "thumb": "snapshots/frame-04-at-96.81s.png",
+      "detail": "step-1",
+      "terms": [
+        "adapter",
+        "inbox",
+        "walkthrough video",
+        "explainer",
+        "guide",
+        "memory",
+        "quick check",
+        "review",
+        "agent",
+        "commit"
+      ],
+      "defines": [
+        "adapter",
+        "inbox",
+        "walkthrough video",
+        "explainer",
+        "guide",
+        "memory",
+        "quick check"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 6
+      }
+    },
+    {
+      "index": 6,
+      "title": "Step 1 · Native installation",
+      "compositionId": "07-install",
+      "type": "feature_showcase",
+      "durationSeconds": 24.023,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Install and finish safely",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-1#interface",
+      "options": [],
+      "narration": "Step one stands alone. Package reelplanner natively for Codex; preserve Claude’s skill install. Validate these proposed commands in an isolated Codex settings folder. The marketplace is the plugin catalog. The skill supplies instructions; CLI and video tools still need setup. Diagnostics name missing tools. Optional hooks need manual local trust; the public plugin directory excludes bundled hooks.",
+      "start": 115.591,
+      "thumb": "snapshots/frame-05-at-127.85s.png",
+      "detail": "step-1",
+      "terms": [
+        "step",
+        "cli",
+        "isolated codex settings folder",
+        "public plugin directory",
+        "plugin",
+        "skill",
+        "hook",
+        "codex",
+        "marketplace"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 7
+      }
+    },
+    {
+      "index": 7,
+      "title": "Step 2 · Edited files can still be unfinished",
+      "compositionId": "08-permissions",
+      "type": "feature_showcase",
+      "durationSeconds": 31.895,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-2#cases",
+      "options": [],
+      "narration": "Step two uses the feature checks from step one. Starting Codex with no session open is enabled only when you ask. It must follow the allowed permissions and preserve commit signing. Here is the failure case: the files were edited, but the signing key is unavailable. The commit fails. The work is still unfinished. The review page shows Stopped before commit and the log. Keep the edits. You restore the signing key or settings; Codex then uses the guarded retry command, checking for any live worker and any work already finished. Only a successful commit allows the review to be marked done.",
+      "start": 139.614,
+      "thumb": "snapshots/frame-06-at-155.56s.png",
+      "detail": "step-2",
+      "terms": [
+        "headless",
+        "headless run",
+        "sandbox",
+        "escalation",
+        "signing",
+        "review",
+        "step",
+        "commit",
+        "codex"
+      ],
+      "defines": [
+        "headless",
+        "headless run",
+        "sandbox",
+        "escalation",
+        "signing"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 8
+      }
+    },
+    {
+      "index": 8,
+      "title": "Quick check · Installation",
+      "compositionId": "09-check-install",
+      "type": "social_proof",
+      "durationSeconds": 8.172,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Plugin installed; video tools absent. What next?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "a",
+      "explain": "A plugin supplies the skill; diagnostics must report missing CLI and video dependencies.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Diagnostics name missing tools",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Installation counts as full proof",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Enable hooks automatically",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "A teammate installs the plugin without video tools. Does installation prove the lifecycle, or should diagnostics name missing tools?",
+      "start": 171.509,
+      "thumb": "snapshots/frame-07-at-175.6s.png",
+      "terms": [
+        "cli",
+        "plugin",
+        "skill",
+        "lifecycle"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 9
+      }
+    },
+    {
+      "index": 9,
+      "title": "Step 3 · Save, then notify Codex",
+      "compositionId": "10-delivery",
+      "type": "feature_showcase",
+      "durationSeconds": 29.804,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Deliver and find the right session",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-3#interface",
+      "options": [],
+      "narration": "Step three uses installation and the safe follow-up from step two. First save the review. Then notify the session already waiting, or the verified connected Codex session. If neither is available, use an explicitly configured new run; otherwise keep the review for the next session. Only one agent handles the saved item. Notification means the message arrived, not that the work finished. Ask about this saves a question for a live session. Its reply appears on this page. A disconnected question waits rather than starting a new run.",
+      "start": 179.681,
+      "thumb": "snapshots/frame-08-at-194.58s.png",
+      "detail": "step-3",
+      "terms": [
+        "inbox",
+        "queue",
+        "claim",
+        "ask about this",
+        "notification",
+        "review",
+        "step",
+        "agent",
+        "codex"
+      ],
+      "defines": [
+        "inbox",
+        "queue",
+        "claim",
+        "ask about this",
+        "notification"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 10
+      }
+    },
+    {
+      "index": 10,
+      "title": "Quick check · Stopped before commit",
+      "compositionId": "11-check-commit",
+      "type": "social_proof",
+      "durationSeconds": 11.927,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Files edited; commit fails. Finished?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "Finished means the required checks and commit succeeded. Edited files alone are unfinished work.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Done because the edit exists",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Unfinished; keep edits and show the log",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Server commits without signing",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "A different change passes its checks, but Git refuses permission to create the commit. The files are edited. Is the review finished, still unfinished with its edits saved, or should the server commit for Codex?",
+      "start": 209.485,
+      "thumb": "snapshots/frame-09-at-215.7s.png",
+      "terms": [
+        "review",
+        "commit",
+        "git",
+        "codex"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 11
+      }
+    },
+    {
+      "index": 11,
+      "title": "Step 4 · This conversation means this one",
+      "compositionId": "12-session",
+      "type": "feature_showcase",
+      "durationSeconds": 29.143,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-4#cases",
+      "options": [],
+      "narration": "Step four. A transcript is the saved conversation. Match active Codex identity and repo, not the newest session. If this file is unreadable, Codex first tries its supported read-only conversation export. If that fails, it asks you for a readable copy or path for this specific conversation and checks that it belongs to this session and project. If none is readable, stop and name the missing conversation. Record the conversation’s path, fingerprint and size in the explainer’s source list. The private text stays outside Git.",
+      "start": 221.412,
+      "thumb": "snapshots/frame-10-at-235.98s.png",
+      "detail": "step-4",
+      "terms": [
+        "transcript",
+        "hash",
+        "fingerprint",
+        "step",
+        "explainer",
+        "repo",
+        "git",
+        "codex"
+      ],
+      "defines": [
+        "transcript",
+        "hash",
+        "fingerprint"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": false,
+        "retimed": true,
+        "wasIndex": 12
+      }
+    },
+    {
+      "index": 12,
+      "title": "Quick check · A question after disconnection",
+      "compositionId": "13-check-delivery",
+      "type": "social_proof",
+      "durationSeconds": 8.279,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Connected session closes; Ask arrives. What happens?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "c",
+      "explain": "Questions remain available for a live session and do not launch headless work.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Start headless answering",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Discard the question",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Saved for a live session",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "The connected session closes, then a question arrives. Yesterday’s headless setting exists. Does the question launch work, vanish, or stay saved?",
+      "start": 250.555,
+      "thumb": "snapshots/frame-11-at-254.69s.png",
+      "terms": [
+        "connected session",
+        "headless"
+      ],
+      "change": {
+        "status": "edited",
+        "said": false,
+        "shown": true,
+        "retimed": false,
+        "wasIndex": 13
+      }
+    },
+    {
+      "index": 13,
+      "title": "Step 5 · Send here; transfer only elsewhere",
+      "compositionId": "14-remote-proof",
+      "type": "feature_showcase",
+      "durationSeconds": 27.031,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Prove the result before claiming support",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-5#example",
+      "options": [],
+      "narration": "Step five tests the same player in the ordinary browser and beside Codex in a terminal workspace. Watch with sound, answer choices, leave comments, and press Send. Codex receives the saved review; you see which scenes changed after revision. Check the printed address opens this plan, even when another server occupies the first port. Then test a separate portable copy elsewhere: only that disconnected copy needs a file returned to the agent. Your chosen scope A stays the same.",
+      "start": 258.834,
+      "thumb": "snapshots/frame-12-at-272.35s.png",
+      "detail": "step-5",
+      "terms": [
+        "beat",
+        "review",
+        "call",
+        "step",
+        "agent",
+        "terminal",
+        "codex"
+      ],
+      "defines": [
+        "beat"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 14
+      }
+    },
+    {
+      "index": 14,
+      "title": "Quick check · Missing active source",
+      "compositionId": "15-check-session",
+      "type": "social_proof",
+      "durationSeconds": 9.943,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Active source and export fail. Which source?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "A known active session must not silently be replaced by another session.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Newer main conversation",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Copy or path of this exact conversation",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Newest checker conversation",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "The active conversation is unreadable and its supported export fails, but a newer main conversation from this project is readable. Which source should the explainer use?",
+      "start": 285.865,
+      "thumb": "snapshots/frame-13-at-291.09s.png",
+      "terms": [
+        "explainer",
+        "main conversation"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 15
+      }
+    },
+    {
+      "index": 15,
+      "title": "Step 6 · Evidence earns the support claim",
+      "compositionId": "16-proof",
+      "type": "feature_showcase",
+      "durationSeconds": 26.556,
+      "planStep": 6,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Evidence earns the support claim",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-6#example",
+      "options": [],
+      "narration": "Step six needs all five steps. A real scratch project installs, builds a narrated plan, reviews and revises, implements, passes independent code check, shows a walkthrough, fixes a flagged choice and commits. Exercise questions, headless changes, failure recovery and session discovery. Record commands, versions, durations and results. Fast and full touched specs plus Claude regressions protect existing behavior. Untested live paths and platforms remain unverified.",
+      "start": 295.808,
+      "thumb": "snapshots/frame-14-at-309.09s.png",
+      "detail": "step-6",
+      "terms": [
+        "code check",
+        "review",
+        "call",
+        "step",
+        "walkthrough video",
+        "commit",
+        "spec",
+        "headless",
+        "regression",
+        "specs"
+      ],
+      "defines": [
+        "code check"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 16
+      }
+    },
+    {
+      "index": 16,
+      "title": "Quick check · A disconnected copy",
+      "compositionId": "17-check-remote",
+      "type": "social_proof",
+      "durationSeconds": 9.729,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Disconnected copy reviewed elsewhere. What next?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "b",
+      "explain": "Direct Send requires a connection to the project. A disconnected portable copy needs its review file returned.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Codex receives it automatically",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Return the saved review file",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The review cannot be kept",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "A teammate opens a portable copy with no connection to your project. They finish reviewing. Does Codex receive it automatically, or must they return the review file?",
+      "start": 322.364,
+      "thumb": "snapshots/frame-15-at-327.23s.png",
+      "terms": [
+        "review",
+        "finish",
+        "codex"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 17
+      }
+    },
+    {
+      "index": 17,
+      "title": "Quick check · Honest support",
+      "compositionId": "18-check-proof",
+      "type": "social_proof",
+      "durationSeconds": 7.468,
+      "planStep": 6,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "Specs pass; no real live answer. Claim fully tested?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k6",
+      "answer": "b",
+      "explain": "Automated contracts and accepted flags do not replace a real model-driven lifecycle.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Yes, mocks prove the lifecycle",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "No, record the live path as unverified",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Yes, command help accepts queue",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Mocked queue specs pass, but no real Codex session has answered a page question. Can the complete lifecycle be called tested?",
+      "start": 332.093,
+      "thumb": "snapshots/frame-16-at-336.08s.png",
+      "terms": [
+        "spec",
+        "flag",
+        "queue",
+        "claim",
+        "lifecycle",
+        "mocked",
+        "specs",
+        "codex"
+      ],
+      "change": {
+        "status": "same",
+        "said": false,
+        "shown": false,
+        "retimed": false,
+        "wasIndex": 18
+      }
+    },
+    {
+      "index": 18,
+      "title": "Review the clearer local plan",
+      "compositionId": "19-ending",
+      "type": "cta",
+      "durationSeconds": 19.329,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "The revised plan keeps your chosen local scope. Send here needs no download. One shared workflow and small agent adapters keep the code easy to extend. Failed commits remain unfinished. The guide holds the full examples and interfaces. Approve this clearer plan or ask for changes; implementation follows approval.",
+      "start": 339.561,
+      "thumb": "snapshots/frame-17-at-349.23s.png",
+      "terms": [
+        "approve",
+        "beat",
+        "agent",
+        "guide",
+        "commit",
+        "adapter"
+      ],
+      "defines": [
+        "approve",
+        "beat"
+      ],
+      "change": {
+        "status": "edited",
+        "said": true,
+        "shown": true,
+        "retimed": true,
+        "wasIndex": 19
+      }
+    }
+  ],
+  "decisions": [],
+  "details": [
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html#step-1-interface",
+      "title": "Step 1 · Install through Codex's own plugin system",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 5,
+      "compositionId": "06-recap",
+      "planStep": 1,
+      "start": 78.022,
+      "end": 115.591,
+      "autonomy": null
+    },
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html#step-1-interface",
+      "title": "Step 1 · Install through Codex's own plugin system",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 6,
+      "compositionId": "07-install",
+      "planStep": 1,
+      "start": 115.591,
+      "end": 139.614,
+      "autonomy": null
+    },
+    {
+      "name": "step-2",
+      "src": "guide/step-2.html#step-2-cases",
+      "title": "Step 2 · Finish headless reviews with Codex's permission model",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 7,
+      "compositionId": "08-permissions",
+      "planStep": 2,
+      "start": 139.614,
+      "end": 171.509,
+      "autonomy": null
+    },
+    {
+      "name": "step-3",
+      "src": "guide/step-3.html#step-3-interface",
+      "title": "Step 3 · Deliver reviews to a live Codex session",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 9,
+      "compositionId": "10-delivery",
+      "planStep": 3,
+      "start": 179.681,
+      "end": 209.485,
+      "autonomy": null
+    },
+    {
+      "name": "step-4",
+      "src": "guide/step-4.html#step-4-cases",
+      "title": "Step 4 · Explain the correct Codex session",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 11,
+      "compositionId": "12-session",
+      "planStep": 4,
+      "start": 221.412,
+      "end": 250.555,
+      "autonomy": null
+    },
+    {
+      "name": "step-5",
+      "src": "guide/step-5.html#step-5-example",
+      "title": "Step 5 · Match terminal review and choose the remote path",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 13,
+      "compositionId": "14-remote-proof",
+      "planStep": 5,
+      "start": 258.834,
+      "end": 285.865,
+      "autonomy": null
+    },
+    {
+      "name": "step-6",
+      "src": "guide/step-6.html#step-6-example",
+      "title": "Step 6 · Prove the whole lifecycle and publish honest support claims",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 15,
+      "compositionId": "16-proof",
+      "planStep": 6,
+      "start": 295.808,
+      "end": 322.364,
+      "autonomy": null
+    }
+  ],
+  "guide": {
+    "parts": [
+      {
+        "name": "step-1",
+        "title": "Step 1 · Install through Codex's own plugin system",
+        "planStep": 1,
+        "kind": "step",
+        "src": "guide/step-1.html"
+      },
+      {
+        "name": "step-2",
+        "title": "Step 2 · Finish headless reviews with Codex's permission model",
+        "planStep": 2,
+        "kind": "step",
+        "src": "guide/step-2.html"
+      },
+      {
+        "name": "step-3",
+        "title": "Step 3 · Deliver reviews to a live Codex session",
+        "planStep": 3,
+        "kind": "step",
+        "src": "guide/step-3.html"
+      },
+      {
+        "name": "step-4",
+        "title": "Step 4 · Explain the correct Codex session",
+        "planStep": 4,
+        "kind": "step",
+        "src": "guide/step-4.html"
+      },
+      {
+        "name": "step-5",
+        "title": "Step 5 · Match terminal review and choose the remote path",
+        "planStep": 5,
+        "kind": "step",
+        "src": "guide/step-5.html"
+      },
+      {
+        "name": "step-6",
+        "title": "Step 6 · Prove the whole lifecycle and publish honest support claims",
+        "planStep": 6,
+        "kind": "step",
+        "src": "guide/step-6.html"
+      },
+      {
+        "name": "decisions",
+        "title": "Decisions in force",
+        "planStep": null,
+        "kind": "decisions",
+        "src": "guide/decisions.html"
+      }
+    ]
+  },
+  "plan": {
+    "title": "Codex as a first-class reelplanner agent",
+    "problem": "The owner asked: \"Pls create a branch. Our goal is to get codex fully working, fully featured on reelplanner as an alternative so it is first-class like claude code\". They added: \"oh i am not sure about the claude artifact euqivalent i ahven used in codex. do look into that and codex if it has something similar to claude plugisn and mods though too\".\n\nThe branch `feat/codex-first-class` has been created. The Codex implementation below is proposed. Preparing its review exposed one guide-heading bug, fixed and tracked separately in `preparation.md`; the native plugin and lifecycle changes have not landed yet. Current Codex support checks flags, without a complete model-driven run. A headless review gets Claude-specific commit instructions, its default sandbox cannot write Git metadata, and `this-session` finds only Claude transcripts. The skill's polling advice predates Codex's current queue and hooks. The repo offers a Claude plugin marketplace, but no Codex package.\n\nThe owner also supplied `ccr-7d2997e8-elkd7p`, inspected at `d09b72d`, as the Claude Mods implementation. It has a real `/reel` pane with video and sound, branching questions, comments, walkthrough judgments, Send into the session and changed-scenes playback. It is a separate branch, not merged into this one. That pane's user-visible behavior is part of the comparison below; its Claude-specific runtime is not assumed portable.\n\nFour changes make the local experience first-class: a native install; reliable review delivery and headless follow-up; explainers of the right Codex session; and a real installation-to-walkthrough proof. Remote hosting needs its own explicit choice. OpenAI supports plugins, skills, MCP tools and trusted hooks, but does not preserve Claude live Artifacts or their database. ChatGPT Sites and MCP Apps UI are candidates, not evidence that Codex CLI has an Artifact runtime. The current browser player already works across agents. Research and exact sources live in `research.md` beside this plan.\n\n| reelplanner capability | Claude Code today | Codex today | Acceptance in this plan |\n|---|---|---|---|\n| Install and invoke the skill | Native marketplace and skill install | Skill install; no native package | Native plugin and existing skill route both work |\n| Narration, frames, player, guide and media tools | Shared pipeline exercised | Same commands, no full model run | Real narrated plan and walkthrough builds, with guide and real tool setup |\n| Decisions, records, memory, revise/fix and system updates | Shared CLI exercised | Same CLI, unproven complete workflow | Real reviews preserve decisions, comments and memory; fixes and system record agree |\n| Fresh eyes and independent code check | Fresh agents used | Instructions exist, execution not proven | Fresh Codex reviewers write and satisfy the actual finding contracts |\n| Local Send, questions and status | Waiter/headless routes exercised | Generic routes, no proven Codex handoff | Active-session questions, reviews, status and failure recovery tested |\n| Unattended review and commit | Claude command and commit exception | Wrong shared commit advice; strict sandbox | Supported automatic review, real commits and recoverable denials |\n| Explain this session | Claude transcript discovery | Claude-only lookup | Correct Codex main thread, including supported current history |\n| Review within a terminal workspace | Supplied branch has a full native `/reel` pane | No documented native pane API found | Delivered optional terminal-browser/workspace integration must preserve the pane's review outcomes |\n| Remote automatic Send and model answers | Claude Artifact database/identity/model runtime | No direct equivalent established | Option A remains manual export; option B proves a hosted bridge before service implementation |\n\nOption A therefore makes the core local workflow first-class; it does not claim complete automatic hosted parity. Neither Claude nor Codex has a model-driven GitHub workflow in this checkout. Cloud execution and other operating systems require their own evidence before support claims expand.\n\n### What your review changed\n\nYou chose **A** in the review, recorded as **D-313**. On this machine, **Send delivers the review to the project; you do not download a file**. That is how this review reached the waiting Codex session. Step 3 makes the direct notification work with a connected Codex session too. A download is needed only when someone reviews a portable copy elsewhere, with no connection to the project. That separate remote case is the limit of A, not the normal local workflow.\n\nYou also asked for clear interfaces, less repeated code and simpler language. The shared workflow will own reviews, saved answers, ownership, retries and status. Small agent-specific modules will handle only what Codex or Claude must do differently. The video explains what you do and what you see; exact flags and storage details stay in the guide and research. An unfinished Git commit is shown plainly as unfinished work, even if the edited files already exist.\n\n### Step 1 — Install through Codex's own plugin system\n\n**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n**Keep the coding-agent interface small.** Extend the existing agent-selection code instead of building a second review system for Codex. A shared caller selects a Claude, Codex or generic-command adapter once. Agent differences belong behind the contract below: checking available features; producing the launch command and permission/commit instructions; notifying a verified session; and finding that session's saved conversation. These operations receive an explicit repo and environment rather than reading unrelated global state. Use ordinary functions and small modules; no registration framework, dependency injection container or repeated copies of the lifecycle scripts.\n\nThe shared code owns input validation, saving reviews and questions, claims and their renewal, retries, recording decisions, progress/status, builds and completion. An adapter cannot mark a review done, modify its answers, or claim that a queued message was acted on. A presentation adapter opens a URL in a browser or terminal workspace; it does not implement a second player or review format. Existing custom agent commands keep a generic path, with unsupported features stated explicitly. Add another coding agent by implementing its small adapter and contract checks, not by copying the review server, inbox or player. The independent code check must look for agent-name branches escaping this boundary and for duplicate workflow code.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\nThe proposed internal contract, with exact names settled during implementation, is:\n\n```text\ngetHarness(id) -> supported agent or generic command  # choose the agent-specific functions once\nprobe({ repo, env, executable }) -> capabilities     # check the installed version and usable features\nheadless({ repo, env, reviewPath }) -> launchSpec    # command arguments, environment and commit advice\ndeliver({ repo, session, inboxPath }) -> result      # delivered, unavailable or failed; never finished\nsessionSource({ repo, env, session }) -> source      # verified conversation source or an explicit limit\nopenReview({ url, workspace }) -> opened | unavailable | error  # separate presentation adapter\n```\n\nDelivery means the message reached the agent's supported interface; it does not mean the work finished. The shared workflow decides the fallback and eventual status. Contract checks exercise the same result shapes for both agents, and require useful unsupported results for generic commands. A tiny fake adapter proves shared delivery/retry logic can be used without adding another agent-name branch. Test behavior and recovery, not merely that an object has these method names.\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```\n\n### Step 2 — Finish headless reviews with Codex's permission model\n\n**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n**What “finished” means:** the required edits are checked, the Git commit succeeds, and only then is the review marked done. If the files were edited but the signing key is unavailable, the work is **still unfinished**. Keep those edits and show “Stopped before commit” with the log; fix the signing setup and retry from the saved work. The server must not commit on the agent's behalf or report “ready” merely because the files changed. The video shows this concrete example before the prediction question, using the same plain words.\n\nFor that signing failure, the review page shows the stopped state and log. The owner restores their signing key or corrects its configuration; reelplanner preserves that configuration. The agent then runs the guarded `inbox retry` operation, which checks for a live worker and already-completed work before resuming. Do not suggest that the person must repeat the edits or turn off signing to finish.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation, or the signing key is unavailable | Keep edits and show “Stopped before commit”; retry after the cause is fixed | agent edits: files; commit fails: reason logged; kept: unfinished review; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```\n\n### Step 3 — Deliver reviews to a live Codex session\n\n**It lets you:** press Send or Ask about this and have your active Codex session handle it.\n\nDepends on steps 1 and 2. Add an explicit connection between the review server and a Codex session, using the CLI's queue capability where available. Verify delivery in the installed app/CLI daemon; an accepted queue command alone is not proof the session acted. A trusted optional session hook may advertise its session identity; provide a documented explicit connection for installations without hooks. Do not make the core plugin depend on trust changes.\n\nKeep the current inbox as the durable record and preserve delivery priority: a waiting session, then the connected live session, then an explicitly configured headless run, then the inbox. Use claims to prevent two agents processing a review. A failed queue releases its delivery claim and uses the documented fallback. Questions still go to a live session only, without starting headless runs. Save an accepted question before attempting delivery. A failed or stale connection leaves it unanswered and available to the next session and in the submitted review, with a clear waiting indication; a queue acknowledgement is not an answer and does not consume it. Disconnection and stale session identity must not silently consume a review. The exact connection command is proposed below; its behavior is tested before it is advertised.\n\n“Exactly once” here means one stored/intaken review and at most one live handler, with explicit crash recovery; it is not a guarantee that an arbitrary edit can never need reconciliation. Associate ownership with the session/run and a renewable lease instead of treating an exited waiter process as proof that the agent died. A worker that dies after editing leaves its phase record and files intact; a retry checks them before proceeding. Connection obtains the current `CODEX_THREAD_ID` when invoked from that session, or a user-selected ID from Codex's session listing; verify both repository and active-session identity before registering, and reject a mismatched recipient.\n\nOn reconnect or at session start, the skill runs `inbox` and claims the oldest unanswered question through the bounded waiter, reads its plan/scene context and runs `inbox answer <id> \"<answer>\" --from \"<source>\"`. The page's existing question-status polling displays the answer and its source. A pending question is retained until answered, even when it is also included in a submitted review; deduplicate by its ID.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Live session connected | Send review | Queue only its inbox path to that session | you send: review; saved: inbox; queued: path; agent reads: file |\n| Waiting CLI task | `review --wait` already running | Existing waiter wins; no duplicate queued work | you send: review; claimed: waiter; handled: once |\n| Page question | Ask about this | Live session answers from plan/scene; no headless job | you ask: question; queued: path; agent answers: evidence; you see: answer |\n| Session gone | Queue fails or connection is stale | Retain inbox entry and fall back safely | you send: review; failed: delivery; kept: inbox; you see: waiting or headless status |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach --session codex:<id>  # proposed explicit connection\ncodex queue --thread <id> --message <inbox-path message>     # notify, without embedding review prose\nreelplanner review --wait --timeout 90                      # fallback bounded waiter\nreelplanner inbox                                          # durable pending items\n```\n\n#### Example\n\nConnect a scratch review server to a real Codex session. Submit one review and one question. Verify each is handled once and the page shows the answer. Stop the session, submit again, and verify the review stays available rather than disappearing into an unreachable session.\n\n```diagram\nflow: Review delivery\nSend -> inbox file: save first\ninbox file -> waiting session: first choice\ninbox file --> connected Codex session: notify\nconnected Codex session --> headless run: delivery unavailable\nheadless run --> next session inbox: not configured\n```\n\n### Step 4 — Explain the correct Codex session\n\n**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\nIf the active thread is verified but no file is readable, first try that supported read-only export. If it cannot recover the source, explain which conversation could not be read and ask the owner for an export or file path for that conversation. Verify its session and project before using it. Neither the agent nor the owner should have to guess which newer conversation happens to contain the right work.\n\nIf the active source, supported export and owner-provided copy are all unavailable or unreadable, stop the explainer with a clear missing-source error naming the requested conversation. It remains unfinished until its source can be read; never substitute another conversation or fabricate an account of this one.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```\n\n### Step 5 — Match terminal review and choose the remote path\n\n**It lets you:** watch the plan beside Codex, send a local review directly, and share a portable copy when someone is elsewhere.\n\nYour review selected **A (D-313)**. The usual local workflow is watch → answer → Send → Codex handles the saved review. **No download is needed locally.** The portable-copy workflow is for a reviewer elsewhere with no connection to the project: watch → answer → download → transfer the file to the agent. It has no automatic remote answers. Keep those two cases visibly separate in the video, docs and player messages; never describe all browser reviews as manual exports. A hosted service that connects remote Send to the project is a later, separately reviewed change.\n\nDocument the extension choices using concrete outcomes. Codex plugins install agent instructions and tools. Trusted hooks run small commands at chosen moments. Compatible MCP interfaces can show an app, and ChatGPT Sites can host one. These do not automatically provide the stored reviews, signed-in reviewer or model answers that today's Claude-hosted page uses. The research keeps the exact technical names and limits. The main explanation should say what each choice lets the reviewer do.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows a proposed layout with Codex on one side and the player on the other: watch, answer, Send, then see the updated video. It is labelled as a proposal. The implementation walkthrough must show that sequence working, including sound, the right project's library and one agent receiving each review. `review <video-dir> --detach` starts the local server and prints the browser address. A portable bundle is a copy of the player files; opening that copy elsewhere does not connect it to the project. The printed address must name the server's actual listening port, including when the first port is occupied; verify the served plan and active-session status before presenting the link. The first review here exposed that wrong-port failure, which was worked around using a free port.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nValidate the selected portable route: the transferred file must retain the reviewer's identity, answers and comments when recorded through the existing CLI. Explain how to return a question to the agent when the copy is remote. Test the ordinary local Send separately: it needs no file transfer and must show whether Codex has started, stopped or finished. Remote automatic delivery remains a named follow-up under D-313. The unselected hosted investigation is kept in the original scope question and research; it is not included in this implementation.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Normal local review | Open the server address on this machine and press Send | Save the review and notify the waiting/connected Codex session; no download | you open: local page; answer: questions; send: review; Codex receives: saved review |\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| First port occupied | Start the local review while another server uses the default port | Print the actual free port and serve the correct plan there | you open: printed address; checked: correct title and session status; Send reaches: this project's inbox |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach        # normal local page: Send goes directly to the project\nreelplanner bundle-player <out> <video-dir>    # portable copy for a reviewer elsewhere\nannotations.json                              # transfer only for a disconnected portable copy\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nFirst open the local server address in a scratch project, answer a choice and press Send. Codex must receive it without a downloaded file. Then open a separate portable copy with no server connection, export its answers and record the file through the CLI. Confirm the chosen answer and reviewer identity survive both routes. Start another server on the first port and repeat the local test using the printed free port.\n\n```diagram\ncompare: Two ways to review\nbefore: local player -> project inbox -> Codex: Send directly\nafter: portable copy elsewhere -> review file -> Codex: transfer manually\n```\n\n### Step 6 — Prove the whole lifecycle and publish honest support claims\n\n**It lets you:** choose Codex with evidence that the complete supported workflow works.\n\nDepends on steps 1–5. Run a small real scratch project with Codex: native plugin install and discovery, new plan, narrated video, fresh script and frame checks, local review submission, revision, implementation, independent code check, walkthrough with one accepted and one flagged choice, fix and final commit. Exercise headless approval and requested changes, a live-session question, failure recovery, a session explainer, and the terminal-pane checklist from the supplied Claude branch. Test Codex CLI and the app browser separately; a CLI result is not proof of the app handoff. Save commands, versions, durations and results in `eval/agents/`, without credentials or copied private transcripts. The walkthrough shows real commands and outcomes. A blocked account feature or platform remains explicitly unverified; do not change the support table to fully tested from mocked commands.\n\nUpdate `docs/agents.md`, README, AGENTS.md, relevant reference docs, and the system spec/map to match what landed. Run `npm test` and full versions of each touched spec, with a fresh independent code check before the walkthrough. Test Claude regressions to protect existing behavior. Public plugin directory submission, real remote deployment and enabling headless automation in this owner's repo are separate explicit actions.\n\nThe initial acceptance environment is the installed Codex CLI 0.162.1 and Codex app on this macOS machine, using a scratch Git repo and a real supported graphics/browser pane for the terminal workflow. Verify capability checks against this version; document the actual minimum supported version after testing. Both CLI and app must complete their required live handoffs. If account policy, sandboxing, signing, session delivery or terminal support blocks a required path, finish unaffected work and report the missing evidence; the support claim and goal remain incomplete until that blocker is resolved. Linux/Windows/cloud claims remain separate and unverified unless independently exercised.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Full scratch run | Installed supported Codex | Complete all advertised lifecycle outcomes | installed: plugin; built: plan; reviewed: choices; built: code; checked: diff; reviewed: walkthrough |\n| Real denial | Blocked operation or signing failure | Pending review remains recoverable with log | run: stopped; saved: evidence; corrected: prerequisite; retried: once |\n| Automated regression suite | Mocked edge and race cases | Proves contracts, separately from model evidence | run: specs; checked: cases; you see: actual counts |\n| Platform unavailable | Cloud or another OS not exercised | Support docs say unverified | inspected: availability; absent: evidence; you see: limit |\n\n#### Interface\n\n```text\neval/agents/<date>-codex-lifecycle.md          # real runtime evidence, commands and versions\nnpm test                                      # required fast suite\nnode scripts/test/run.mjs --full <names>        # exhaustive touched specs\nreelplanner code-check <plan-dir> --base <ref>  # independent implementation review\nreelplanner reel audit <plan-dir>              # walkthrough coverage and answered findings\n```\n\n#### Example\n\nThe scratch task adds a visible setting to a tiny app. The reviewer changes its default in the plan video, flags one implementation choice in the walkthrough, and sees the corrected app. The repo records both reviews and the final commits. Only after that evidence passes does the support table say the local lifecycle is tested.\n\n```diagram\nflow: Proof before support claim\nnative install -> plan video: build\nplan video -> review -> implementation: decide\nimplementation -> independent code check -> walkthrough: verify\nwalkthrough -> flagged choice fix -> evidence: finish\nevidence -> support table: state what passed\n```",
+    "steps": [
+      {
+        "n": 1,
+        "title": "Install through Codex's own plugin system",
+        "text": "**It lets you:** add reelplanner as a Codex plugin and invoke its plan-to-video skill.\n\nThis step stands alone. Add a portable root plugin manifest and a Codex marketplace entry referencing the package root, where `skills/plan-to-video/SKILL.md` lives. Preserve the existing Claude marketplace's lightweight skill install. Keep package versions together through `scripts/release/sync-version.mjs`; include manifests in the npm package. Use a clean temporary Codex home to verify the actual CLI discovers and installs the plugin. A plugin install makes the skill available; the CLI and video dependencies still need setup.\n\nA fresh user's supported sequence is `npm i -g github:ncrispino/reelplanner` for the executable, `reelplanner setup --dry-run` then `reelplanner setup` for the media tools, and the Codex marketplace/plugin commands for the skill. The source checkout instead uses `npm ci` and `node bin/reelplanner.mjs`. Run machine setup outside a restricted agent sandbox as the current AGENTS.md says; do not tell someone to run an executable they have not installed. Optional local hooks are supplied separately with explicit installation/trust instructions; the core public-compatible plugin must work without them.\n\nCreate a harness reference for Codex and Claude: invocation, fresh agents without conversation history, permissions, background jobs, inbox handling, supported surfaces, and transcripts. Link it at the relevant skill steps. Setup diagnostics must explain the selected agent's needs and distinguish available tools from model runs that have passed. For a source checkout, report missing npm dependencies and `npm ci`; dependency lookup must return a useful missing-package error rather than recursively alternating absent packages. This happened while building this plan's own video, after setup reported the media tools ready. Do not edit the user's global config or enable headless follow-up implicitly. Hooks are optional local integration, since bundled hooks currently require manual installation and trust and are not eligible for the public directory.\n\n**Keep the coding-agent interface small.** Extend the existing agent-selection code instead of building a second review system for Codex. A shared caller selects a Claude, Codex or generic-command adapter once. Agent differences belong behind the contract below: checking available features; producing the launch command and permission/commit instructions; notifying a verified session; and finding that session's saved conversation. These operations receive an explicit repo and environment rather than reading unrelated global state. Use ordinary functions and small modules; no registration framework, dependency injection container or repeated copies of the lifecycle scripts.\n\nThe shared code owns input validation, saving reviews and questions, claims and their renewal, retries, recording decisions, progress/status, builds and completion. An adapter cannot mark a review done, modify its answers, or claim that a queued message was acted on. A presentation adapter opens a URL in a browser or terminal workspace; it does not implement a second player or review format. Existing custom agent commands keep a generic path, with unsupported features stated explicitly. Add another coding agent by implementing its small adapter and contract checks, not by copying the review server, inbox or player. The independent code check must look for agent-name branches escaping this boundary and for duplicate workflow code.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Native install | `codex plugin marketplace add <checkout>` then `codex plugin add reelplanner@reelplanner` | Codex discovers the packaged skill | you run: add marketplace; found: package; installed: skill; you invoke: `$plan-to-video` |\n| Skill-only install | `npx skills add <checkout> --skill plan-to-video -g -y` | Existing path still works | you run: install; linked: skill; you invoke: plan |\n| Dependencies absent | `reelplanner setup --dry-run` | Names missing tools and the way to install them | you run: check; inspected: tools; you see: missing and commands |\n| Older Codex | CLI lacks automatic review or queue | Reports the capability limit and supported fallback | you run: check; inspected: help; you see: update or manual inbox |\n\n#### Interface\n\n```text\nplugin.json                                   # portable identity and packaged skills\n.agents/plugins/marketplace.json               # Codex discovery of the package root\ncodex plugin marketplace add <checkout>        # register this source\ncodex plugin add reelplanner@reelplanner        # install its skill\nskills/plan-to-video/references/harnesses.md    # execution instructions by harness\nreelplanner setup --dry-run                    # read-only prerequisites and capability checks\n```\n\nThe proposed internal contract, with exact names settled during implementation, is:\n\n```text\ngetHarness(id) -> supported agent or generic command  # choose the agent-specific functions once\nprobe({ repo, env, executable }) -> capabilities     # check the installed version and usable features\nheadless({ repo, env, reviewPath }) -> launchSpec    # command arguments, environment and commit advice\ndeliver({ repo, session, inboxPath }) -> result      # delivered, unavailable or failed; never finished\nsessionSource({ repo, env, session }) -> source      # verified conversation source or an explicit limit\nopenReview({ url, workspace }) -> opened | unavailable | error  # separate presentation adapter\n```\n\nDelivery means the message reached the agent's supported interface; it does not mean the work finished. The shared workflow decides the fallback and eventual status. Contract checks exercise the same result shapes for both agents, and require useful unsupported results for generic commands. A tiny fake adapter proves shared delivery/retry logic can be used without adding another agent-name branch. Test behavior and recovery, not merely that an object has these method names.\n\n#### Example\n\nIn a temporary Codex home, register this checkout, install `reelplanner@reelplanner`, and inspect the installed skill and its references. Then plan a tiny change in a scratch repo, using that skill and this checkout's CLI. Save commands and their actual results for the walkthrough.\n\n```diagram\nflow: Native install\nCodex marketplace -> plugin package: find\nplugin package -> plan-to-video skill: install\nplan-to-video skill -> reelplanner CLI: run the loop\n```"
+      },
+      {
+        "n": 2,
+        "title": "Finish headless reviews with Codex's permission model",
+        "text": "**It lets you:** send a review with no session open and get a committed result from Codex.\n\nDepends on step 1's capability checks. For explicit `reel init --agent codex`, use the installed CLI's supported automatic review mode within workspace-write, with the existing network setting stated plainly. The installed `0.162.1` accepts `codex exec --approve-for-me`; official docs say automatic review judges eligible escalations without enlarging the sandbox. Verify the minimum supported version rather than assuming old CLIs accept this flag.\n\nMake `agentPrompt` aware of the configured harness. Claude's commit exclusion applies only to Claude. Codex must request an eligible escalation for Git operations when its sandbox blocks them; it must not be told commits automatically escape the sandbox. Preserve signing and existing user configuration. A failed or denied commit leaves the review unfinished with its log, rather than reporting success or committing from the server. Remove stale parent-agent identity when launching a different headless harness so session discovery and nested execution see the correct agent.\n\nThe reviewer sees the stopped state and log link on the review page; `reelplanner inbox` also names the same item and run log. Provide a deliberate retry operation for a stopped run, after checking that no live owner still holds it. Record progress phases in the ignored inbox run state, so retry first inspects existing intake records, the worktree and any commit before applying anything. A failure after edits but before commit resumes from those edits; an already committed result needs completion, not another edit or commit. Intake remains deduplicated. Do not describe arbitrary agent edits as transactional exactly-once execution.\n\n**What “finished” means:** the required edits are checked, the Git commit succeeds, and only then is the review marked done. If the files were edited but the signing key is unavailable, the work is **still unfinished**. Keep those edits and show “Stopped before commit” with the log; fix the signing setup and retry from the saved work. The server must not commit on the agent's behalf or report “ready” merely because the files changed. The video shows this concrete example before the prediction question, using the same plain words.\n\nFor that signing failure, the review page shows the stopped state and log. The owner restores their signing key or corrects its configuration; reelplanner preserves that configuration. The agent then runs the guarded `inbox retry` operation, which checks for a live worker and already-completed work before resuming. Do not suggest that the person must repeat the edits or turn off signing to finish.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Approved plan | Send an approval with a comment | Intake, fold comment, commit, mark done; no video rebuild | you send: approval; filed: review; changed: plan; committed: result; you see: ready |\n| Changes requested | Send a correction | Rebuild affected beats, verify, commit, mark done | you send: change; changed: beats; checked: video; committed: result; you see: ready |\n| Commit blocked | Automatic review denies escalation, or the signing key is unavailable | Keep edits and show “Stopped before commit”; retry after the cause is fixed | agent edits: files; commit fails: reason logged; kept: unfinished review; you see: stopped |\n| No configured headless agent | Send while nobody waits | Review waits for next session | you send: review; saved: inbox; you see: waiting |\n\n#### Interface\n\n```text\nreel init <repo> --agent codex             # explicitly configure future headless reviews\nagent.command                            # supported sandboxed Codex command\nagentPrompt(path, id, harness)            # correct harness-specific follow-up instructions\nreelplanner inbox retry <id>              # proposed recovery of a stopped run, with live-owner guard\nreelplanner inbox done <id>               # only after required work and commit succeed\n```\n\n#### Example\n\nInitialize a scratch Git repo, configure Codex, send an approval through the review page, and inspect `git log`, the recorded review and the inbox status. Repeat with a signing failure: the page must show stopped, with the pending work discoverable. Run Claude regression cases as well.\n\n```diagram\nflow: Headless follow-up\nreview sent -> Codex run: start once\nCodex run -> automatic reviewer: request commit escalation\nautomatic reviewer -> commit: approved\ncommit -> inbox done: success\nautomatic reviewer --> stopped review: denied\n```"
+      },
+      {
+        "n": 3,
+        "title": "Deliver reviews to a live Codex session",
+        "text": "**It lets you:** press Send or Ask about this and have your active Codex session handle it.\n\nDepends on steps 1 and 2. Add an explicit connection between the review server and a Codex session, using the CLI's queue capability where available. Verify delivery in the installed app/CLI daemon; an accepted queue command alone is not proof the session acted. A trusted optional session hook may advertise its session identity; provide a documented explicit connection for installations without hooks. Do not make the core plugin depend on trust changes.\n\nKeep the current inbox as the durable record and preserve delivery priority: a waiting session, then the connected live session, then an explicitly configured headless run, then the inbox. Use claims to prevent two agents processing a review. A failed queue releases its delivery claim and uses the documented fallback. Questions still go to a live session only, without starting headless runs. Save an accepted question before attempting delivery. A failed or stale connection leaves it unanswered and available to the next session and in the submitted review, with a clear waiting indication; a queue acknowledgement is not an answer and does not consume it. Disconnection and stale session identity must not silently consume a review. The exact connection command is proposed below; its behavior is tested before it is advertised.\n\n“Exactly once” here means one stored/intaken review and at most one live handler, with explicit crash recovery; it is not a guarantee that an arbitrary edit can never need reconciliation. Associate ownership with the session/run and a renewable lease instead of treating an exited waiter process as proof that the agent died. A worker that dies after editing leaves its phase record and files intact; a retry checks them before proceeding. Connection obtains the current `CODEX_THREAD_ID` when invoked from that session, or a user-selected ID from Codex's session listing; verify both repository and active-session identity before registering, and reject a mismatched recipient.\n\nOn reconnect or at session start, the skill runs `inbox` and claims the oldest unanswered question through the bounded waiter, reads its plan/scene context and runs `inbox answer <id> \"<answer>\" --from \"<source>\"`. The page's existing question-status polling displays the answer and its source. A pending question is retained until answered, even when it is also included in a submitted review; deduplicate by its ID.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Live session connected | Send review | Queue only its inbox path to that session | you send: review; saved: inbox; queued: path; agent reads: file |\n| Waiting CLI task | `review --wait` already running | Existing waiter wins; no duplicate queued work | you send: review; claimed: waiter; handled: once |\n| Page question | Ask about this | Live session answers from plan/scene; no headless job | you ask: question; queued: path; agent answers: evidence; you see: answer |\n| Session gone | Queue fails or connection is stale | Retain inbox entry and fall back safely | you send: review; failed: delivery; kept: inbox; you see: waiting or headless status |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach --session codex:<id>  # proposed explicit connection\ncodex queue --thread <id> --message <inbox-path message>     # notify, without embedding review prose\nreelplanner review --wait --timeout 90                      # fallback bounded waiter\nreelplanner inbox                                          # durable pending items\n```\n\n#### Example\n\nConnect a scratch review server to a real Codex session. Submit one review and one question. Verify each is handled once and the page shows the answer. Stop the session, submit again, and verify the review stays available rather than disappearing into an unreachable session.\n\n```diagram\nflow: Review delivery\nSend -> inbox file: save first\ninbox file -> waiting session: first choice\ninbox file --> connected Codex session: notify\nconnected Codex session --> headless run: delivery unavailable\nheadless run --> next session inbox: not configured\n```"
+      },
+      {
+        "n": 4,
+        "title": "Explain the correct Codex session",
+        "text": "**It lets you:** ask what happened in this Codex session and get an explainer pinned to its transcript.\n\nThis step stands alone. Extend `thisSession` to support Codex's session storage under `CODEX_HOME`, including the formats actually present on the supported CLI. Prefer the active `CODEX_THREAD_ID` and matching repository metadata; never substitute an unrelated or fresh checker session simply because it is newer. When no active identity exists, use the newest eligible main session for this repo in the detected harness. Keep Claude behavior working; use real paths for repo matching, handle malformed/unreadable records, and give an explicit-source fallback when storage is unsupported or the identified session is absent.\n\nPin external transcripts by path, hash and size only. The source privacy checks still apply and the transcript's contents do not enter Git. Test multiple repos, both harnesses, subagents, a non-default Codex home, legacy rollout files and any current paginated history observed in the runtime probe.\n\nProvide a supported `session export` adapter for current history when no usable transcript file exists. It reads the selected thread through Codex's documented read-only App Server history methods without resuming it, writes visible conversation/tool history plus session/repo metadata to an external local file, and prints its path. Its default output is outside the repo and Git; never commit it. `CODEX_THREAD_ID` comes from Codex, `CODEX_HOME` is the user's optional storage setting, and `sources.json` is the explainer's repo record containing only the pin. A this-session export must match the requested ID and canonical repository metadata; missing or mismatched identity is an error. An explicitly chosen generic source path remains the source the person chose, without silently being relabelled this session.\n\nIf the active thread is verified but no file is readable, first try that supported read-only export. If it cannot recover the source, explain which conversation could not be read and ask the owner for an export or file path for that conversation. Verify its session and project before using it. Neither the agent nor the owner should have to guess which newer conversation happens to contain the right work.\n\nIf the active source, supported export and owner-provided copy are all unavailable or unreadable, stop the explainer with a clear missing-source error naming the requested conversation. It remains unfinished until its source can be read; never substitute another conversation or fabricate an account of this one.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Active Codex session | `this-session`, matching thread ID | Pins that thread's source | you ask: session; matched: ID and repo; pinned: source; video uses: evidence |\n| Different repo newer | Another repo's transcript has newest timestamp | Excludes it | searched: metadata; rejected: wrong repo; pinned: this repo |\n| Independent checker newer | Subagent transcript written most recently | Main session remains the source | searched: sessions; rejected: checker; pinned: main |\n| Unsupported storage | No eligible readable source | Error names explicit transcript path fallback | you ask: session; absent: source; you see: pass a path |\n\n#### Interface\n\n```text\nreelplanner explain \"What happened in this session?\" this-session  # discover and pin\nCODEX_HOME                                                        # Codex storage root\nCODEX_THREAD_ID                                                   # prefer this session\nreelplanner explain \"What happened?\" <transcript-path>              # explicit fallback\nreelplanner session export codex:<id> --out <external-path>         # proposed supported current-history export\n```\n\n#### Example\n\nA fake Codex home holds the current main thread, a newer checker and a different repo's newer thread. `this-session` selects the current main thread. Inspect `sources.json`: it names the source and hash and does not copy transcript contents. Repeat against a real supported Codex session.\n\n```diagram\nflow: Find this session\nactive thread ID -> repo metadata: match\nrepo metadata -> transcript: pin exact session\nmissing active session -> explicit source error: no silent substitution\n```"
+      },
+      {
+        "n": 5,
+        "title": "Match terminal review and choose the remote path",
+        "text": "**It lets you:** watch the plan beside Codex, send a local review directly, and share a portable copy when someone is elsewhere.\n\nYour review selected **A (D-313)**. The usual local workflow is watch → answer → Send → Codex handles the saved review. **No download is needed locally.** The portable-copy workflow is for a reviewer elsewhere with no connection to the project: watch → answer → download → transfer the file to the agent. It has no automatic remote answers. Keep those two cases visibly separate in the video, docs and player messages; never describe all browser reviews as manual exports. A hosted service that connects remote Send to the project is a later, separately reviewed change.\n\nDocument the extension choices using concrete outcomes. Codex plugins install agent instructions and tools. Trusted hooks run small commands at chosen moments. Compatible MCP interfaces can show an app, and ChatGPT Sites can host one. These do not automatically provide the stored reviews, signed-in reviewer or model answers that today's Claude-hosted page uses. The research keeps the exact technical names and limits. The main explanation should say what each choice lets the reviewer do.\n\nThe owner clarified \"mods\": \"oh there is a claude mod that lets you add windows and stuff within claude so we can view the plan in a terminal\". Claude has an official in-process Mods API that draws panes and widgets, distinct from shell lifecycle hooks. The `terminal-browser` mod embeds Chromium in a supported graphics terminal; its standalone CLI also offers split panes independently of Claude. No documented Codex-native equivalent to that pane API was found. Research and trial a portable presentation adapter: Codex in a terminal pane with reelplanner's existing HTML player in an adjacent browser pane, using standalone terminal-browser in a compatible graphics terminal or cmux on macOS. Preserve the player's narration, choices and Send behavior, and confirm audio, keyboard/mouse and session handoff. Offer it only as an explicit optional integration after a real trial; ordinary browser review remains available when the terminal workspace is absent or unsupported. Do not require a Codex fork or claim that a text-only tmux pane renders the video. cmux and terminal-browser are not installed on this machine; plain tmux is present. Record that platform limitation until the trial can run.\n\nUse the supplied pane branch as an explicit behavior checklist: find videos in the current and ancestor folders; route a video from another repo's library back to its owning repo; play sharp video with synchronized sound and captions; pause, seek, replay, change speed and move between unanswered or answered stops; answer single/multiple choices, ask for clarification, write own words and notes; accept/flag a walkthrough choice; leave timestamped comments; finish with Approve or Changes needed; deliver into the owning session exactly once; show rebuild/walkthrough readiness; and watch only changed scenes with a whole-video toggle. The browser player supplies most of these controls already. Fill the discovery and delivery gaps rather than copying the 1,845-line Claude UI into Codex. Inspect reusable `reel-frames`/review contracts from the branch where needed; importing the whole branch is not part of this plan. A terminal integration is optional for users to install, but its parity evidence is required before we claim that aspect complete.\n\nThe plan review shows a proposed layout with Codex on one side and the player on the other: watch, answer, Send, then see the updated video. It is labelled as a proposal. The implementation walkthrough must show that sequence working, including sound, the right project's library and one agent receiving each review. `review <video-dir> --detach` starts the local server and prints the browser address. A portable bundle is a copy of the player files; opening that copy elsewhere does not connect it to the project. The printed address must name the server's actual listening port, including when the first port is occupied; verify the served plan and active-session status before presenting the link. The first review here exposed that wrong-port failure, which was worked around using a free port.\n\nFor the app surface, investigate its existing in-app browser and supported annotation handoff as well as the portable player. A platform annotation is user-mediated, not an automatic prompt-submission API; preserve durable review intake and explicit sending. Feature-detect the capability and keep the ordinary browser path working. The Claude pane itself delegates drawing/guide features to the browser, so Codex should keep the full player available too.\n\nValidate the selected portable route: the transferred file must retain the reviewer's identity, answers and comments when recorded through the existing CLI. Explain how to return a question to the agent when the copy is remote. Test the ordinary local Send separately: it needs no file transfer and must show whether Codex has started, stopped or finished. Remote automatic delivery remains a named follow-up under D-313. The unselected hosted investigation is kept in the original scope question and research; it is not included in this implementation.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Normal local review | Open the server address on this machine and press Send | Save the review and notify the waiting/connected Codex session; no download | you open: local page; answer: questions; send: review; Codex receives: saved review |\n| Portable static player | Reviewer opens a packed video | Downloads answers for the existing record command | you open: bundle; answer: questions; download: review; agent records: decisions |\n| Terminal workspace | Codex beside a compatible browser pane | Match the supplied native pane's library, playback, comments, choices, Send and rebuild outcomes | you open: pane; watch: player; answer: choice; agent receives: review |\n| Claimed Artifact equivalent | Candidate supplies UI only | Mark it as missing durable review handoff | found: UI; checked: storage and intake; you see: limitations |\n| First port occupied | Start the local review while another server uses the default port | Print the actual free port and serve the correct plan there | you open: printed address; checked: correct title and session status; Send reaches: this project's inbox |\n| CLI-only environment | No inline UI or display | Give bundle location and supported browser path | agent builds: player; you open: browser; answers return: review file |\n\n#### Interface\n\n```text\nreelplanner review <video-dir> --detach        # normal local page: Send goes directly to the project\nreelplanner bundle-player <out> <video-dir>    # portable copy for a reviewer elsewhere\nannotations.json                              # transfer only for a disconnected portable copy\nreelplanner reel record <plan-dir> <file>      # local intake of exported answers\nresearch.md                                   # official sources, evidence and hosted limits\noptional terminal presentation adapter        # explicit opt-in; available only after runtime trial\nccr-7d2997e8-elkd7p at d09b72d                  # read-only Claude pane feature baseline\n```\n\n#### Example\n\nFirst open the local server address in a scratch project, answer a choice and press Send. Codex must receive it without a downloaded file. Then open a separate portable copy with no server connection, export its answers and record the file through the CLI. Confirm the chosen answer and reviewer identity survive both routes. Start another server on the first port and repeat the local test using the printed free port.\n\n```diagram\ncompare: Two ways to review\nbefore: local player -> project inbox -> Codex: Send directly\nafter: portable copy elsewhere -> review file -> Codex: transfer manually\n```"
+      },
+      {
+        "n": 6,
+        "title": "Prove the whole lifecycle and publish honest support claims",
+        "text": "**It lets you:** choose Codex with evidence that the complete supported workflow works.\n\nDepends on steps 1–5. Run a small real scratch project with Codex: native plugin install and discovery, new plan, narrated video, fresh script and frame checks, local review submission, revision, implementation, independent code check, walkthrough with one accepted and one flagged choice, fix and final commit. Exercise headless approval and requested changes, a live-session question, failure recovery, a session explainer, and the terminal-pane checklist from the supplied Claude branch. Test Codex CLI and the app browser separately; a CLI result is not proof of the app handoff. Save commands, versions, durations and results in `eval/agents/`, without credentials or copied private transcripts. The walkthrough shows real commands and outcomes. A blocked account feature or platform remains explicitly unverified; do not change the support table to fully tested from mocked commands.\n\nUpdate `docs/agents.md`, README, AGENTS.md, relevant reference docs, and the system spec/map to match what landed. Run `npm test` and full versions of each touched spec, with a fresh independent code check before the walkthrough. Test Claude regressions to protect existing behavior. Public plugin directory submission, real remote deployment and enabling headless automation in this owner's repo are separate explicit actions.\n\nThe initial acceptance environment is the installed Codex CLI 0.162.1 and Codex app on this macOS machine, using a scratch Git repo and a real supported graphics/browser pane for the terminal workflow. Verify capability checks against this version; document the actual minimum supported version after testing. Both CLI and app must complete their required live handoffs. If account policy, sandboxing, signing, session delivery or terminal support blocks a required path, finish unaffected work and report the missing evidence; the support claim and goal remain incomplete until that blocker is resolved. Linux/Windows/cloud claims remain separate and unverified unless independently exercised.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Full scratch run | Installed supported Codex | Complete all advertised lifecycle outcomes | installed: plugin; built: plan; reviewed: choices; built: code; checked: diff; reviewed: walkthrough |\n| Real denial | Blocked operation or signing failure | Pending review remains recoverable with log | run: stopped; saved: evidence; corrected: prerequisite; retried: once |\n| Automated regression suite | Mocked edge and race cases | Proves contracts, separately from model evidence | run: specs; checked: cases; you see: actual counts |\n| Platform unavailable | Cloud or another OS not exercised | Support docs say unverified | inspected: availability; absent: evidence; you see: limit |\n\n#### Interface\n\n```text\neval/agents/<date>-codex-lifecycle.md          # real runtime evidence, commands and versions\nnpm test                                      # required fast suite\nnode scripts/test/run.mjs --full <names>        # exhaustive touched specs\nreelplanner code-check <plan-dir> --base <ref>  # independent implementation review\nreelplanner reel audit <plan-dir>              # walkthrough coverage and answered findings\n```\n\n#### Example\n\nThe scratch task adds a visible setting to a tiny app. The reviewer changes its default in the plan video, flags one implementation choice in the walkthrough, and sees the corrected app. The repo records both reviews and the final commits. Only after that evidence passes does the support table say the local lifecycle is tested.\n\n```diagram\nflow: Proof before support claim\nnative install -> plan video: build\nplan video -> review -> implementation: decide\nimplementation -> independent code check -> walkthrough: verify\nwalkthrough -> flagged choice fix -> evidence: finish\nevidence -> support table: state what passed\n```"
+      }
+    ]
+  },
+  "slug": "2026-10-11-codex-first-class",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 5,
+      "partTitle": "After you send",
+      "title": "reelplanner: the whole system",
+      "gives": "after you send, with the review server, the reel CLI, the headless run",
+      "seconds": 78,
+      "terms": [
+        "own words",
+        "plan.md",
+        "walkthrough.md",
+        "spec.md",
+        "system.json",
+        "interface",
+        "HyperFrames",
+        "maintainer",
+        "author",
+        "glossary",
+        "pr-check",
+        "case",
+        "reel-intake",
+        "the list",
+        "reel fold",
+        "past choice",
+        "decisions.md",
+        "superseded",
+        "in force",
+        "cite",
+        "pipeline"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 7,
+      "partTitle": "What's kept",
+      "title": "reelplanner: the whole system",
+      "gives": "what is kept, with the reel CLI and the explainer",
+      "seconds": 113.4,
+      "terms": [
+        "own words",
+        "plan.md",
+        "walkthrough.md",
+        "spec.md",
+        "system.json",
+        "interface",
+        "HyperFrames",
+        "maintainer",
+        "author",
+        "glossary",
+        "pr-check",
+        "case",
+        "reel-intake",
+        "the list",
+        "reel fold",
+        "past choice",
+        "decisions.md",
+        "superseded",
+        "in force",
+        "cite",
+        "pipeline"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-contributing",
+      "title": "Several people, one repo: contributing with reelplanning",
+      "gives": "how binding decisions and contributions work",
+      "seconds": 288.4,
+      "terms": [
+        "pull request",
+        "contributor",
+        "maintainer",
+        "CI",
+        "CONTRIBUTING.md",
+        "pr-check",
+        "plan.md",
+        "terms index"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-case-study",
+      "title": "A case study for any plan: text only, HTML and ours, from one prompt to a finished site",
+      "gives": "complete outcomes need real evidence",
+      "seconds": 299.4,
+      "terms": [
+        "arm",
+        "case study",
+        "rubric",
+        "blind judge",
+        "feedback sheet",
+        "preflight",
+        "container"
+      ],
+      "found": true
+    }
+  ],
+  "terms": [
+    "adapter",
+    "Claude /reel · ccr-7d2997e8-elkd7p · d09b72d",
+    "--session codex:<id>",
+    "parity",
+    "authenticated hosted spike",
+    "first acceptance bar",
+    "codex intake",
+    "no automatic remote answering",
+    "Codex handoff",
+    "Separate service review",
+    "isolated Codex settings folder",
+    "public plugin directory",
+    "--approve-for-me",
+    "waiting session",
+    "connected session",
+    "CODEX_THREAD_ID",
+    "CODEX_HOME",
+    "sources.json",
+    "local-review-url",
+    "exported identity",
+    "main conversation",
+    "checker conversation",
+    "audited branch",
+    "ccr-7d2997e8-elkd7p",
+    "d09b72d",
+    "Mods",
+    "owning-repo",
+    "multi",
+    "ancestor",
+    "bundle",
+    "mock",
+    "terminal-browser",
+    "plugin",
+    "skill",
+    "hook",
+    "MCP",
+    "Artifact",
+    "CLI",
+    "database",
+    "headless",
+    "sandbox",
+    "escalation",
+    "inbox",
+    "queue",
+    "claim",
+    "transcript",
+    "hash",
+    "manifest",
+    "lifecycle",
+    "repo",
+    "runtime",
+    "authenticated",
+    "paginated history",
+    "parser",
+    "signing",
+    "bridge",
+    "rollout",
+    "regression",
+    "mocked",
+    "flag",
+    "specs",
+    "UI",
+    "intake",
+    "Codex",
+    "ChatGPT Sites",
+    "Visualization",
+    "deploy",
+    "checkout",
+    "render",
+    "marketplace",
+    "pane",
+    "cmux",
+    "binding decisions",
+    "case study",
+    "deep dive",
+    "review",
+    "agent",
+    "step",
+    "headless run",
+    "walkthrough video",
+    "explainer",
+    "guide",
+    "quick check",
+    "code check",
+    "ask about this",
+    "memory",
+    "complete-lifecycle",
+    "API"
+  ],
+  "termMeanings": {
+    "adapter": "a small module containing only what one coding agent does differently",
+    "claude /reel · ccr-7d2997e8-elkd7p · d09b72d": "the native Claude reel pane source inspected on branch ccr-7d2997e8-elkd7p at commit d09b72d. This is source inspection, not a passed Codex runtime trial",
+    "--session codex:<id>": "proposed connection to the active runtime thread. Validate its repo and identity first. Failed or stale delivery retains the saved inbox work",
+    "parity": "the same usable supported review outcomes. native visual appearance need not be identical",
+    "authenticated hosted spike": "a working scratch investigation of signed-in storage, automatic submission and question handoff. service design and deployment are reviewed separately",
+    "first acceptance bar": "the evidence required before calling the proposed local Codex workflow tested. automatic hosted parity depends on the selected remote scope",
+    "codex intake": "the agent records the reviewer-exported annotations.json locally after the reviewer transfers it",
+    "no automatic remote answering": "remote Ask about this questions require a manual transfer to a live agent and a manually returned reply in export-only option A",
+    "codex handoff": "the proposed service delivers durable saved review work to an identified Codex session",
+    "separate service review": "the owner reviews the working scratch results and a concrete implementation, hosting and cost proposal before service deployment",
+    "isolated codex settings folder": "a temporary CODEX_HOME used for clean installation tests. it does not change the owner’s normal configuration",
+    "public plugin directory": "the public catalog of plugin packages. bundled hooks currently require separate manual installation and trust",
+    "--approve-for-me": "the supported Codex automatic reviewer flag. requests still need an eligible approval policy and may be denied",
+    "waiting session": "a session already running the review --wait command and waiting for an inbox item",
+    "connected session": "the exact Codex session explicitly linked to the review server through its current thread identity",
+    "codex_thread_id": "the active session identity supplied by supported Codex runtimes. use the verified current thread when connecting",
+    "codex_home": "the Codex settings and history root. a person may choose a custom location, and scratch installation tests use a temporary one",
+    "sources.json": "the explainer’s source record inside its project folder, containing the external source path, hash and size instead of private transcript contents",
+    "local-review-url": "the localhost browser address printed by reelplanner review for a served HTML player. a bundle is a separate portable export",
+    "exported identity": "reviewer metadata carried with a manually exported review. this does not prove authenticated service identity",
+    "main conversation": "the primary implementation session, excluding independent checker and subagent sessions",
+    "checker conversation": "a separate independent review session, not the active primary source",
+    "audited branch": "ccr-7d2997e8-elkd7p, inspected at commit d09b72d. this source comparison was not merged and is not Codex runtime evidence",
+    "ccr-7d2997e8-elkd7p": "the inspected source branch containing Claude’s native /reel Mods pane",
+    "d09b72d": "the inspected commit on that branch, where the source includes picture and sound synchronization",
+    "mods": "Claude’s native API for panes and widgets",
+    "owning-repo": "the project repository a review belongs to",
+    "multi": "a question allowing multiple answers",
+    "ancestor": "an earlier plan in the project library",
+    "bundle": "a portable package of player files",
+    "mock": "a simulated test substitute",
+    "terminal-browser": "a standalone browser pane for a terminal workspace",
+    "plugin": "a package of agent extensions",
+    "skill": "instructions an agent follows",
+    "hook": "a trusted command at a lifecycle event",
+    "mcp": "the connection protocol for external tools and compatible interfaces",
+    "artifact": "a hosted interactive Claude page with runtime services",
+    "cli": "the command-line interface",
+    "database": "durable stored records",
+    "headless": "an agent run with no session already open",
+    "sandbox": "the boundary limiting file writes and network access",
+    "escalation": "a request to execute an operation outside that boundary",
+    "inbox": "the durable record of pending review work",
+    "queue": "a message addressed to a particular Codex session",
+    "claim": "the ownership marker that prevents duplicate processing",
+    "transcript": "the saved conversation",
+    "hash": "a fingerprint used to detect source changes",
+    "manifest": "the package description file",
+    "lifecycle": "the complete installation-to-reviewed-build workflow",
+    "repo": "the project repository",
+    "runtime": "the services available while an interface runs",
+    "authenticated": "identified and authorized by a sign-in check",
+    "paginated history": "saved conversation storage read in bounded pieces",
+    "parser": "the command reader that checks accepted flags",
+    "signing": "cryptographic proof attached to a commit",
+    "bridge": "the service that transfers a remote review to the project",
+    "rollout": "a legacy saved Codex conversation file",
+    "regression": "a test that existing behavior still works",
+    "mocked": "simulated rather than exercised with the real session",
+    "flag": "a reviewer request to fix a choice",
+    "specs": "automated tests of expected behavior",
+    "ui": "the user interface",
+    "intake": "recording a submitted review in the project",
+    "codex": "OpenAI’s coding agent",
+    "chatgpt sites": "hosted apps and stored data in supported ChatGPT accounts",
+    "visualization": "an interactive visual supported in ChatGPT chats",
+    "deploy": "publish and run a service for people to reach",
+    "checkout": "a local working copy of the repository",
+    "render": "produce the visible image or video",
+    "marketplace": "a catalog of installable plugins",
+    "pane": "a separate view inside a terminal workspace",
+    "cmux": "a terminal workspace that can put a real browser beside an agent",
+    "binding decisions": "earlier answers that later plans must keep",
+    "case study": "a comparison that tests a complete workflow",
+    "deep dive": "an expanded view of the evidence",
+    "review": "the person’s approval, answers and comments",
+    "agent": "the coding assistant",
+    "step": "one implementation task",
+    "headless run": "an agent run without an existing open session",
+    "walkthrough video": "a video showing the built change running",
+    "explainer": "a video explaining evidence or existing behavior",
+    "guide": "the full plan text beside the video",
+    "quick check": "a prediction question testing the explained rule",
+    "code check": "an independent agent review of the implemented changes",
+    "ask about this": "the player’s button for asking a question about a scene",
+    "memory": "saved learning from earlier reviews",
+    "complete-lifecycle": "the entire process from installation through reviewed changes",
+    "api": "the supported interface for software extensions"
+  },
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video (skills/plan-to-video/, made with HyperFrames: plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video.",
+      "files": [
+        "`skills/plan-to-video/`, made with HyperFrames: `plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "The skill, and which agents",
+        "start": 73.664,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanner build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanner build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result (finish-project: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check)",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result.",
+      "files": [
+        "`finish-project`: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "spec-diff",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanner spec-diff); it also names a row no scene explains yet",
+      "forms": [
+        "spec-diff"
+      ],
+      "said": "Which scenes of the system video a change to the system's description, its parts or this glossary reaches, so only those are rebuilt; it also names a row no scene explains yet.",
+      "files": [
+        "`spec.md`",
+        "`system.json`",
+        "`reelplanner spec-diff`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "The video player on the review page (<reelplanner-player>). You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review",
+      "forms": [
+        "review player"
+      ],
+      "said": "The video player on the review page. You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review.",
+      "files": [
+        "`<reelplanner-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "The review player",
+        "start": 229.866,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanner review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanner review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "The review page",
+        "start": 206.101,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project's record: its plans, reviews and decisions (scripts/reel.mjs, in .reelplanner/). For example, reel record files a review and logs your answers, and reel status says what is waiting",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project's record: its plans, reviews and decisions. For example, `reel record` files a review and logs your answers, and `reel status` says what is waiting.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanner/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "The tooling, once per machine",
+        "start": 86.731,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "What the agent does with your review of a plan (plan.md). If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "What the agent does with your review of a plan. If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 29,
+        "title": "Only what your words touched",
+        "start": 379.839,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "The agent building what the approved plan says (plan.md), and noting each choice the plan left open (in walkthrough.md). A second agent then checks the code against the plan: the code check",
+      "forms": [
+        "implement step"
+      ],
+      "said": "The agent building what the approved plan says, and noting each choice the plan left open. A second agent then checks the code against the plan: the code check.",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 31,
+        "title": "Every choice, written down",
+        "start": 402.581,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 36,
+        "title": "What was built, and the fix",
+        "start": 466.805,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes (spec.md, system.json, this glossary)",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes.",
+      "files": [
+        "`spec.md`, `system.json`, this glossary"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "Finish: approve, or ask for changes",
+        "start": 303.434,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanner/inbox/: reviews the review server has taken, each handed on once; not committed. A repo not set up has it in this machine's ~/.reelplanner/inbox/<repo-key>/",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed. A repo not set up has it in this machine's `~/.reelplanner/inbox/<repo-key>/`.",
+      "files": [
+        "`.reelplanner/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "The review page",
+        "start": 206.101,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices pause the walkthrough video: an off-plan change always, a choice labelled *visible* or *hard-to-undo*, and one sharing a label with a recent late fix; every other choice goes on the list at the end",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices pause the walkthrough video: an off-plan change always, a choice labelled *visible* or *hard-to-undo*, and one sharing a label with a recent late fix; every other choice goes on the list at the end.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanner/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanner/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 40,
+        "title": "What your reviews teach",
+        "start": 535.285,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label pause the walkthrough video",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label pause the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A choice labelled *visible* or *hard-to-undo* pauses the walkthrough video; the rest go on the list at the end",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A choice labelled *visible* or *hard-to-undo* pauses the walkthrough video; the rest go on the list at the end.",
+      "definedIn": {
+        "video": "system",
+        "frame": 31,
+        "title": "Every choice, written down",
+        "start": 402.581,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 40,
+        "title": "What your reviews teach",
+        "start": 535.285,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 35,
+        "title": "A pause, and the list",
+        "start": 458.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A long plan",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "Finish: approve, or ask for changes",
+        "start": 303.434,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: the record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it",
+      "forms": [
+        "decision log"
+      ],
+      "said": "The record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Then, in each repo",
+        "start": 120.597,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Quick check: a login page, built",
+        "start": 140.042,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "It stops, and you answer on the frame",
+        "start": 240.501,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A part of the guide / guide part",
+      "meaning": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video (- guide: <part>, built by reelplanner guide; - detail:, from a template in templates/details/; the frame marks the thing with data-detail)",
+      "forms": [
+        "part of the guide",
+        "guide part"
+      ],
+      "display": "part of the guide",
+      "said": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video.",
+      "files": [
+        "`- guide: <part>`, built by `reelplanner guide`; `- detail:`, from a template in `templates/details/`; the frame marks the thing with `data-detail`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A quiet way into the guide",
+        "start": 287.285,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip",
+      "forms": [
+        "open chip"
+      ],
+      "said": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip.",
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A quiet way into the guide",
+        "start": 287.285,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here.",
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words, shown beside the video with the current step highlighted (from plan.md). It is off until you turn it on with the Plan switch, or press L",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, shown beside the video with the current step highlighted. It is off until you turn it on with the Plan switch, or press L.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The details check / check-details",
+      "meaning": "The check that every detail page works and that each frame marks only its own scene's detail (check-details), run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build (under details_check: strict, so does a scene whose thing is marked nowhere)",
+      "forms": [
+        "details check",
+        "check-details"
+      ],
+      "said": "The check that every detail page works and that each frame marks only its own scene's detail, run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build.",
+      "files": [
+        "`check-details`",
+        "under `details_check: strict`, so does a scene whose thing is marked nowhere"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The agent",
+      "meaning": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses (config.json names its command)",
+      "forms": [
+        "agent"
+      ],
+      "said": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses.",
+      "files": [
+        "`config.json` names its command"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A long plan",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The plan video",
+      "meaning": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised",
+      "forms": [
+        "plan video"
+      ],
+      "said": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised.",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The walkthrough video / walkthrough",
+      "meaning": "The video made after the code is built: what was built, step by step, and each choice the agent made alone (listed in walkthrough.md). You accept or flag each choice, then approve the build or ask for changes",
+      "forms": [
+        "walkthrough video",
+        "walkthrough"
+      ],
+      "said": "The video made after the code is built: what was built, step by step, and each choice the agent made alone. You accept or flag each choice, then approve the build or ask for changes.",
+      "files": [
+        "listed in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The code check",
+      "meaning": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made (code-check, from a short brief)",
+      "forms": [
+        "code check"
+      ],
+      "said": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made.",
+      "files": [
+        "`code-check`, from a short brief"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "A second agent checks",
+        "start": 422.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "Fresh eyes",
+      "meaning": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you (reelplanner fresh-eyes; what is kept after the third look is said on Before you watch)",
+      "forms": [
+        "fresh eyes"
+      ],
+      "said": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you.",
+      "files": [
+        "`reelplanner fresh-eyes`; what is kept after the third look is said on Before you watch"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Fresh eyes, before you",
+        "start": 187.786,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The frame rules",
+      "meaning": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven",
+      "forms": [
+        "frame rules"
+      ],
+      "said": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Fresh eyes, before you",
+        "start": 187.786,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "frame-lint",
+      "meaning": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at (reelplanner frame-lint)",
+      "forms": [
+        "frame-lint"
+      ],
+      "said": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at.",
+      "files": [
+        "`reelplanner frame-lint`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "Ask about this",
+      "meaning": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review",
+      "forms": [
+        "ask about this"
+      ],
+      "said": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review.",
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "A brief",
+      "meaning": "A short written description an agent starts from. A video's brief (BRIEF.md) says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare",
+      "forms": [
+        "brief"
+      ],
+      "said": "A short written description an agent starts from. A video's brief says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare.",
+      "files": [
+        "`BRIEF.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The storyboard",
+      "meaning": "A video's plan, scene by scene (STORYBOARD.md): what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains",
+      "forms": [
+        "storyboard"
+      ],
+      "said": "A video's plan, scene by scene: what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains.",
+      "files": [
+        "`STORYBOARD.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "reel audit / audit",
+      "meaning": "The check on a walkthrough (reel audit): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked",
+      "forms": [
+        "reel audit",
+        "audit"
+      ],
+      "said": "The check on a walkthrough: it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked.",
+      "files": [
+        "`reel audit`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "A second agent checks",
+        "start": 422.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The explainer",
+      "id": "explainer",
+      "meaning": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (reelplanner explain \"<what you asked>\" <source> …, in .reelplanner/explainers/; every fact from a named source, check-sources)",
+      "forms": [
+        "explainer"
+      ],
+      "said": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it.",
+      "files": [
+        "`reelplanner explain \"<what you asked>\" <source> …`, in `.reelplanner/explainers/`; every fact from a named source, `check-sources`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "How much you use",
+        "start": 51.552,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The guide",
+      "id": "guide",
+      "meaning": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from plan.md by reelplanner guide, never committed; D-264). Select any words on it to comment, suggest an edit or ask",
+      "forms": [
+        "guide"
+      ],
+      "said": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner. Select any words on it to comment, suggest an edit or ask.",
+      "files": [
+        "built from `plan.md` by `reelplanner guide`, never committed; D-264"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "A repo / repository",
+      "meaning": "A project's folder of code together with its whole history, kept with git (on GitHub, say)",
+      "forms": [
+        "repo",
+        "repository"
+      ],
+      "said": "A project's folder of code together with its whole history, kept with git (on GitHub, say).",
+      "other": true
+    },
+    {
+      "term": "A branch",
+      "meaning": "A line of work kept apart from the main code until it is merged",
+      "forms": [
+        "branch"
+      ],
+      "said": "A line of work kept apart from the main code until it is merged.",
+      "other": true
+    },
+    {
+      "term": "Merge",
+      "meaning": "To bring a branch's changes into the main code. A pull request is merged when it is accepted",
+      "forms": [
+        "merge"
+      ],
+      "said": "To bring a branch's changes into the main code. A pull request is merged when it is accepted.",
+      "other": true
+    },
+    {
+      "term": "A commit",
+      "meaning": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them",
+      "forms": [
+        "commit"
+      ],
+      "said": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them.",
+      "other": true
+    },
+    {
+      "term": "Clone",
+      "meaning": "To copy a repo, with its history, onto your own computer",
+      "forms": [
+        "clone"
+      ],
+      "said": "To copy a repo, with its history, onto your own computer.",
+      "other": true
+    },
+    {
+      "term": "A diff",
+      "meaning": "The lines a change adds and removes, shown together",
+      "forms": [
+        "diff"
+      ],
+      "said": "The lines a change adds and removes, shown together.",
+      "other": true
+    },
+    {
+      "term": "A pull request / PR",
+      "meaning": "A change someone asks to have merged into a repo; others read it and comment before it goes in",
+      "forms": [
+        "pull request",
+        "pr"
+      ],
+      "said": "A change someone asks to have merged into a repo; others read it and comment before it goes in.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 1,
+        "title": "One person per repo, then a shared one",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "One repo, several people"
+      }
+    },
+    {
+      "term": "Squash",
+      "meaning": "To merge a pull request's commits as one commit",
+      "forms": [
+        "squash"
+      ],
+      "said": "To merge a pull request's commits as one commit.",
+      "other": true
+    },
+    {
+      "term": "CI",
+      "meaning": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it",
+      "forms": [
+        "ci"
+      ],
+      "said": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 10,
+        "title": "Step 3: watching and checking, as decided",
+        "start": 145.322,
+        "chapter": 4,
+        "chapterTitle": "Step 3: watching, checking, and where the video lives"
+      }
+    },
+    {
+      "term": "A test suite",
+      "meaning": "All of a project's tests, run together to check that nothing broke",
+      "forms": [
+        "test suite"
+      ],
+      "said": "All of a project's tests, run together to check that nothing broke.",
+      "other": true
+    },
+    {
+      "term": "A spec",
+      "meaning": "Two meanings here: one file of tests (scripts/test/terms.spec.mjs), run with the others by npm test; or the system's own description of its parts, spec.md",
+      "forms": [
+        "spec"
+      ],
+      "said": "Two meanings here: one file of tests, run with the others by `npm test`; or the system's own description of its parts, `spec.md`.",
+      "files": [
+        "`scripts/test/terms.spec.mjs`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Lint / linter",
+      "meaning": "A check that reads code or files for mistakes without running them (frame-lint reads a video's scenes)",
+      "forms": [
+        "lint",
+        "linter"
+      ],
+      "said": "A check that reads code or files for mistakes without running them.",
+      "files": [
+        "`frame-lint` reads a video's scenes"
+      ],
+      "other": true
+    },
+    {
+      "term": "A flag",
+      "meaning": "In a command, an option written after its name (like --dry-run). On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept)",
+      "forms": [
+        "flag"
+      ],
+      "said": "In a command, an option written after its name. On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept).",
+      "files": [
+        "like `--dry-run`"
+      ],
+      "other": true
+    },
+    {
+      "term": "A prompt",
+      "meaning": "The words given to an agent to start it on a task",
+      "forms": [
+        "prompt"
+      ],
+      "said": "The words given to an agent to start it on a task.",
+      "other": true
+    },
+    {
+      "term": "A template",
+      "meaning": "A file to start from, filled in for each new use",
+      "forms": [
+        "template"
+      ],
+      "said": "A file to start from, filled in for each new use.",
+      "other": true
+    },
+    {
+      "term": "A dependency",
+      "meaning": "A package of someone else's code a project needs in order to run",
+      "forms": [
+        "dependency"
+      ],
+      "said": "A package of someone else's code a project needs in order to run.",
+      "other": true
+    },
+    {
+      "term": "A terminal",
+      "meaning": "The window where you type commands",
+      "forms": [
+        "terminal"
+      ],
+      "said": "The window where you type commands.",
+      "other": true
+    },
+    {
+      "term": "CLI",
+      "meaning": "A command-line tool: a program you run by typing its name and options in a terminal",
+      "forms": [
+        "cli"
+      ],
+      "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
+      "other": true
+    },
+    {
+      "term": "HTML",
+      "meaning": "The language web pages are written in; each scene of a video is an HTML page",
+      "forms": [
+        "html"
+      ],
+      "said": "The language web pages are written in; each scene of a video is an HTML page.",
+      "other": true
+    },
+    {
+      "term": "reelplanning",
+      "meaning": "reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written",
+      "forms": [
+        "reelplanning"
+      ],
+      "said": "Reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written.",
+      "other": true
+    },
+    {
+      "term": "CSS",
+      "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
+      "forms": [
+        "css"
+      ],
+      "said": "The rules for how a web page looks: its colours, sizes and where things sit.",
+      "other": true
+    },
+    {
+      "term": "JSON",
+      "meaning": "A plain-text format for data a program reads (plan-map.json, say)",
+      "forms": [
+        "json"
+      ],
+      "said": "A plain-text format for data a program reads.",
+      "files": [
+        "`plan-map.json`, say"
+      ],
+      "other": true
+    },
+    {
+      "term": "TTS",
+      "meaning": "Text to speech: the voice made from a video's script",
+      "forms": [
+        "tts"
+      ],
+      "said": "Text to speech: the voice made from a video's script.",
+      "other": true
+    },
+    {
+      "term": "git",
+      "meaning": "The tool that keeps a repo's history: its commits and branches",
+      "forms": [
+        "git"
+      ],
+      "said": "The tool that keeps a repo's history: its commits and branches.",
+      "other": true
+    },
+    {
+      "term": "GitHub",
+      "meaning": "The website where many repos are kept and pull requests are reviewed",
+      "forms": [
+        "github"
+      ],
+      "said": "The website where many repos are kept and pull requests are reviewed.",
+      "other": true
+    },
+    {
+      "term": "npm",
+      "meaning": "The tool that installs a JavaScript project's packages and runs its scripts (npm test)",
+      "forms": [
+        "npm"
+      ],
+      "said": "The tool that installs a JavaScript project's packages and runs its scripts.",
+      "files": [
+        "`npm test`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "Claude Code's mode where the agent plans in chat and changes nothing until you approve",
+      "forms": [
+        "plan mode"
+      ],
+      "said": "Claude Code's mode where the agent plans in chat and changes nothing until you approve.",
+      "other": true
+    },
+    {
+      "term": "npx",
+      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanner@0.2.0 reel record …)",
+      "forms": [
+        "npx"
+      ],
+      "said": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it.",
+      "files": [
+        "`npx -y reelplanner@0.2.0 reel record …`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Recommended",
+      "meaning": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it",
+      "forms": [
+        "recommended"
+      ],
+      "said": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it.",
+      "other": true
+    },
+    {
+      "term": "The real thing",
+      "meaning": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it",
+      "forms": [
+        "real thing"
+      ],
+      "said": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-better-visuals",
+        "frame": 3,
+        "title": "What “the real thing” means",
+        "start": 27.2,
+        "chapter": 2,
+        "chapterTitle": "The real thing, even across ten files"
+      }
+    },
+    {
+      "term": "A hosted page",
+      "meaning": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account",
+      "forms": [
+        "hosted page"
+      ],
+      "said": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account.",
+      "other": true,
+      "definedIn": {
+        "video": "system",
+        "frame": 26,
+        "title": "How a review arrives",
+        "start": 324.618,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "Before you watch",
+      "meaning": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why",
+      "forms": [
+        "before you watch"
+      ],
+      "said": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why.",
+      "other": true
+    },
+    {
+      "term": "Walk me through it",
+      "meaning": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences",
+      "forms": [
+        "walk me through it"
+      ],
+      "said": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences.",
+      "other": true
+    }
+  ],
+  "ids": {
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "Plugin installed; video tools absent. What next?"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "Files edited; commit fails. Finished?"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "Connected session closes; Ask arrives. What happens?"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "Active source and export fail. Which source?"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "Disconnected copy reviewed elsewhere. What next?"
+    },
+    "k6": {
+      "kind": "quick check",
+      "n": 6,
+      "gloss": "Specs pass; no real live answer. Claim fully tested?"
+    }
+  },
+  "termsCheck": "strict",
+  "changes": {
+    "against": "HEAD",
+    "baseline": true,
+    "at": "2026-10-11T18:53:40.576Z",
+    "build": "5eef57c2c1f0",
+    "added": 0,
+    "edited": 13,
+    "restyled": 0,
+    "retimed": 0,
+    "same": 5,
+    "removed": [
+      {
+        "index": 5,
+        "title": "B · Prove the hosted bridge"
+      }
+    ],
+    "changedFrames": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      18
+    ],
+    "restyledFrames": [],
+    "changedSeconds": 277.02,
+    "totalSeconds": 358.89
+  }
+}

@@ -59,6 +59,7 @@ import { feDir, readStamp, stampOf, scenesOf, saidSince, freshEyesState, finding
 import { explainerDirOf, readSources, sourceLine } from "./lib/explainer.mjs";
 import { frontMatter, fmValue, glossaryFor, termsOf, rpDirFor, slugOf, storyboardFrames } from "./lib/terms.mjs";
 import { lostBefore } from "./lib/memory.mjs";
+import { sceneContent, visibleContent } from "./lib/scene-content.mjs";
 import { freshAgentHow } from "./lib/agents.mjs";
 
 const args = process.argv.slice(2);
@@ -79,7 +80,24 @@ const rel = (p) => relative(process.cwd(), p) || ".";
 if (args.includes("--script")) {
   const sd = join(fe, "script"), briefP = join(sd, "newcomer-brief.md"), outP = join(sd, "newcomer.md"), stampP = join(sd, "stamp.json");
   const stampS = (() => { try { return JSON.parse(read(stampP)); } catch { return null; } })();
+  const sbS = read(join(dir, "STORYBOARD.md")), fmS = frontMatter(sbS), titleS = fmValue(fmS, "title") || basename(dir);
+  const framesS = sceneContent(sbS, read(join(dir, "SCRIPT.md")));
+  const asks = [...read(join(dir, "BRIEF.md")).matchAll(/^- Ask:[ \t]*(.+)$/gm)].map((m) => m[1].trim());
+  const planDir = planOf(dir) ? dirname(planOf(dir)) : null;
+  const lastReview = (() => { if (!planDir) return null; const rd = join(planDir, "reviews"); if (!existsSync(rd)) return null; const md = readdirSync(rd).filter((f) => f.endsWith(".md")).sort().at(-1); return md ? read(join(rd, md)) : null; })();
+  const glossS = glossaryFor(dir), ownS = termsOf(fmS);
+  const version = 1;
+  const input = { version, title: titleS, scenes: framesS.map((f) => ({ index: f.index, title: f.title, scene: f.meta.scene || "", visible: f.visible, narration: f.narration })), asks, lastReview,
+    terms: ownS, glossary: glossS.map((g) => ({ term: g.display || g.term, meaning: g.said || g.meaning })) };
+  const idS = createHash("sha256").update(JSON.stringify(input)).digest("hex").slice(0, 12);
+  const findingsHeader = (id) => `# Fresh eyes: newcomer · script · stamp ${id}`;
+  const headerMatches = () => stampS && read(outP).split(/\r?\n/)[0] === findingsHeader(stampS.id);
   if (args.includes("--check")) {
+    if (stampS?.version != null && (stampS.version !== version || stampS.id !== idS)) {
+      console.log("✗ fresh eyes on the script: stale reviewer-visible input; fix the explanation and regenerate --script for an independent rereview"); process.exit(1);
+    }
+    if (stampS && stampS.version == null) console.log("△ legacy script stamp: readable, but it did not certify the versioned visible-content contract; regenerate and rereview");
+    if (existsSync(outP) && !headerMatches()) { console.log("✗ fresh eyes on the script: newcomer.md header does not match this script stamp"); process.exit(1); }
     if (!existsSync(outP)) { console.log(`△ fresh eyes on the script: ${existsSync(briefP) ? "no newcomer.md yet (launch the newcomer: --script --prompt newcomer)" : "not run (reelplanner fresh-eyes <video-dir> --script)"}`); process.exit(0); }
     const open = parseFindings(read(outP)).map((x) => ({ ...x, problem: answerProblem(dir, x, stampS) })).filter((x) => x.problem);
     if (open.length) { console.log(`✗ fresh eyes on the script: ${open.length} finding${open.length === 1 ? "" : "s"} not answered: ${open.map((x) => `${x.id}${x.scene ? ` (scene ${x.scene})` : ""} ${x.problem}`).join("; ")}`); process.exit(1); }
@@ -102,16 +120,22 @@ Write your findings to exactly this file, in exactly the shape the brief gives (
 It is the only file you write. Then reply with how many findings you wrote and the path.`);
     process.exit(0);
   }
+  if (existsSync(outP)) {
+    if (!headerMatches()) die("newcomer.md header does not match this script stamp; preserve and reconcile the findings before regenerating");
+    const open = parseFindings(read(outP)).filter((x) => answerProblem(dir, x, stampS));
+    if (open.length) die(`the script still has findings with no answer (${open.map((x) => x.id).join(", ")}): answer each before regenerating`);
+  }
   mkdirSync(sd, { recursive: true });
-  const sbS = read(join(dir, "STORYBOARD.md")), fmS = frontMatter(sbS), titleS = fmValue(fmS, "title") || basename(dir);
-  const said = Object.fromEntries(read(join(dir, "SCRIPT.md")).split(/\n(?=## Line )/).map((b) => [Number((b.match(/^## Line .*\(Frame (\d+)\)/m) || [])[1]), b.split("\n").filter((l) => /^ {4}\S/.test(l)).map((l) => l.trim()).join(" ")]).filter(([n]) => n));
-  const framesS = storyboardFrames(sbS).sort((a, b) => a.index - b.index);
-  const asks = [...read(join(dir, "BRIEF.md")).matchAll(/^- Ask:\s*(.+)$/gm)].map((m) => m[1].trim());
-  const planDir = planOf(dir) ? dirname(planOf(dir)) : null;
-  const lastReview = (() => { if (!planDir) return null; const rd = join(planDir, "reviews"); if (!existsSync(rd)) return null; const md = readdirSync(rd).filter((f) => f.endsWith(".md")).sort().at(-1); return md ? read(join(rd, md)).slice(0, 4000) : null; })();
-  const idS = createHash("sha256").update(JSON.stringify(framesS.map((f) => said[f.index] || f.meta.voiceover || ""))).digest("hex").slice(0, 12);
-  const glossS = glossaryFor(dir), ownS = termsOf(fmS);
-  writeFileSync(stampP, JSON.stringify({ id: idS, at: new Date().toISOString(), ...(planOf(dir) ? { plan: createHash("sha256").update(read(planOf(dir))).digest("hex").slice(0, 12) } : {}) }, null, 2) + "\n");
+  if (stampS && stampS.version === version && stampS.id === idS && existsSync(briefP)) {
+    console.log(`✓ fresh eyes on the script: reviewer-visible input unchanged; preserved brief, stamp and findings in ${rel(sd)}`);
+    process.exit(0);
+  }
+  if ([stampP, briefP, outP].some(existsSync)) {
+    const n = Math.max(0, ...readdirSync(sd).map((f) => Number(/^review-(\d+)$/.exec(f)?.[1]) || 0)) + 1;
+    const archive = join(sd, `review-${n}`); mkdirSync(archive);
+    for (const p of [stampP, briefP, outP]) if (existsSync(p)) renameSync(p, join(archive, basename(p)));
+  }
+  writeFileSync(stampP, JSON.stringify({ version, id: idS, at: new Date().toISOString(), ...(planOf(dir) ? { plan: createHash("sha256").update(read(planOf(dir))).digest("hex").slice(0, 12) } : {}) }, null, 2) + "\n");
   writeFileSync(briefP, `# Fresh eyes: the newcomer's script brief · ${titleS}
 
 You are a newcomer to this project, reading the script of "${titleS}", a narrated video of ${framesS.length} scenes,
@@ -153,7 +177,7 @@ ${glossS.length ? glossS.map((g) => `- **${g.display || g.term}**: ${g.said || g
 
 ## The video, scene by scene
 
-${framesS.map((f) => `### Scene ${f.index}${f.title ? ` · ${f.title}` : ""}\n\n${f.meta.scene ? `_Shows:_ ${f.meta.scene}\n\n` : ""}_Says:_ ${said[f.index] || String(f.meta.voiceover || "").replace(/^"|"$/g, "")}`).join("\n\n")}
+${framesS.map((f) => `### Scene ${f.index}${f.title ? ` · ${f.title}` : ""}\n\n${visibleContent(f)}`).join("\n\n")}
 `);
   console.log(`✓ fresh eyes on the script: ${rel(briefP)} (${framesS.length} scenes${asks.length ? `, ${asks.length} line${asks.length === 1 ? "" : "s"} of what was asked` : ", no \`- Ask:\` in BRIEF.md: add the person's words"}${lastReview ? ", the last review" : ""})`);
   console.log(`next: launch one fresh agent, ${freshAgentHow({ writes: sd })}, with the prompt from \`fresh-eyes ${rel(dir)} --script --prompt newcomer\`; answer each finding under it in ${rel(outP)} before drawing frames`);

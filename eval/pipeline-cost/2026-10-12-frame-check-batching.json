@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-12",
+  "scope": "command batching on an unchanged assembled artifact; not end-to-end video latency",
+  "runtime_commit": "d5818bc",
+  "environment": {
+    "node": "v22.19.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "hyperframes": "0.8.52"
+  },
+  "fixture": "videos/l2-upload-resume",
+  "frames": [
+    3,
+    4,
+    5
+  ],
+  "cache": false,
+  "records": [
+    {
+      "node": "v22.19.0",
+      "fixture": "videos/l2-upload-resume scratch",
+      "frames": [
+        3,
+        4,
+        5
+      ],
+      "method": "same current checks, separate vs true batched CLI, no cache"
+    },
+    {
+      "round": 0,
+      "kind": "three separate CLI calls",
+      "ms": 42271.08725,
+      "individual": [
+        {
+          "ms": 14104.244499999999,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        },
+        {
+          "ms": 13910.331957999999,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        },
+        {
+          "ms": 14256.510792000001,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "kind": "one batch CLI call",
+      "ms": 17274.432625,
+      "status": 0,
+      "layouts": 3,
+      "shots": 3,
+      "error": "",
+      "samePNGs": true
+    },
+    {
+      "round": 1,
+      "kind": "three separate CLI calls",
+      "ms": 41565.236708,
+      "individual": [
+        {
+          "ms": 13620.496958000003,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        },
+        {
+          "ms": 13789.657875000004,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        },
+        {
+          "ms": 14155.081874999989,
+          "status": 0,
+          "layouts": 1,
+          "shots": 1,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "kind": "one batch CLI call",
+      "ms": 17074.78112500001,
+      "status": 0,
+      "layouts": 3,
+      "shots": 3,
+      "error": "",
+      "samePNGs": true
+    }
+  ],
+  "means_seconds": {
+    "separate": 41.91816197899999,
+    "batch": 17.174606875000006,
+    "saving": 24.743555103999984,
+    "fraction_saved": 0.590282444072713
+  },
+  "quality": {
+    "algorithm": "sha256",
+    "comparisons": 6,
+    "allMatched": true,
+    "digestValuesRetained": false,
+    "reason": "benchmark printed equality results and cleaned scratch PNGs; actual per-image digests unavailable"
+  },
+  "source_sha256": {
+    "bin/reelplanner.mjs": "8cb2e4b53881eb5303daf0a3c75b03310eaebad889db9c84254daf623d185ac2",
+    "scripts/frame-check.mjs": "fc3e89fa2d93476b378525b343adda6c182c0d2f12fe4190b87671052236ce15",
+    "scripts/lib/frame-layout.mjs": "e0f4922d2f0f80b739550b8087a78257f3d8dec4feb9250d3e063463172f78d2",
+    "scripts/frame-lint.mjs": "be9694be1c16fa38f088f394074ef275497dc698cbb878af840558145f9a8c01",
+    "scripts/lib/frame-html.mjs": "f18f6bc9f8e70673ab3d9068af3449371476f5a859100d2d4864797677e84cf2",
+    "scripts/lib/timeline.mjs": "02bae5d741f6cd7f2e05b56df74c95755e2bb6a11ed6d6b98d5125582d489c4a",
+    "scripts/lib/env.mjs": "f4a472a94d8081ecb846143ee351b4177fb8ff2e2440e8ddd8340b56806f55c1",
+    "package.json": "08da7c55addfb8b418914e185721b3b14453d300dc485d1731df72c7c89c6368",
+    "package-lock.json": "4778da08944ac94cdd6a4c2d78707904eb5b4011746d185f1f9cd0319c437834"
+  },
+  "evidence_sha256": {
+    "bench.mjs": "d978e8292fcdc25dd9804b06f05649c3a2e9852dfb47d11b9ae0be1e51e793e0",
+    "raw.jsonl": "af7a6d0805ad9c464a1588f2d8517e88b8e664862336c14bd66c29716c31effa"
+  },
+  "validation": {
+    "fast_specs_passed": 59,
+    "full_frame_tools_checks_passed": 28,
+    "full_build_checks_passed": 35,
+    "full_visuals_checks_passed": 51,
+    "offline_benchmark_checks_passed": 49
+  }
+}

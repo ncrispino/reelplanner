@@ -1,0 +1,244 @@
+{
+  "model": "gpt-6.1-sol",
+  "primary_effort": "high",
+  "voice_engine": "local Kokoro",
+  "automatic_review_model": "codex-auto-review",
+  "automatic_review_effort": "low",
+  "trials": [
+    {
+      "trial": "baseline-1",
+      "condition": "baseline",
+      "initial_and_revision_completed": false,
+      "cap_minutes": 40,
+      "elapsed_minutes": 40.01,
+      "episodes": [
+        {
+          "episode": "first-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 40.01,
+          "primary_usage": {
+            "input_tokens": 27761868,
+            "cached_input_tokens": 27093632,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 120708,
+            "reasoning_output_tokens": 32448,
+            "total_tokens": 27882576
+          },
+          "primary_recorded_requests": 314,
+          "automatic_review_usage": {
+            "input_tokens": 17822805,
+            "cached_input_tokens": 17105664,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 17587,
+            "reasoning_output_tokens": 6593,
+            "total_tokens": 17840392
+          },
+          "automatic_review_recorded_requests": 301,
+          "automatic_review_timing": {
+            "completed_checks": 300,
+            "summed_turn_minutes": 10.41,
+            "union_turn_minutes": 9.328,
+            "median_seconds": 1.7565
+          }
+        }
+      ],
+      "first_showing": []
+    },
+    {
+      "trial": "baseline-2",
+      "condition": "baseline",
+      "initial_and_revision_completed": false,
+      "cap_minutes": 40,
+      "elapsed_minutes": 40.01,
+      "episodes": [
+        {
+          "episode": "first",
+          "complete": true,
+          "capped": false,
+          "minutes": 38.04,
+          "primary_usage": {
+            "input_tokens": 11146664,
+            "cached_input_tokens": 10812800,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 50556,
+            "reasoning_output_tokens": 15283,
+            "total_tokens": 11197220
+          },
+          "primary_recorded_requests": 107,
+          "automatic_review_usage": {
+            "input_tokens": 9845044,
+            "cached_input_tokens": 9480448,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 11685,
+            "reasoning_output_tokens": 3163,
+            "total_tokens": 9856729
+          },
+          "automatic_review_recorded_requests": 151,
+          "automatic_review_timing": {
+            "completed_checks": 151,
+            "summed_turn_minutes": 4.933,
+            "union_turn_minutes": 4.934,
+            "median_seconds": 1.792
+          }
+        },
+        {
+          "episode": "revision-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 1.96,
+          "primary_usage": {
+            "input_tokens": 990502,
+            "cached_input_tokens": 985984,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1111,
+            "reasoning_output_tokens": 419,
+            "total_tokens": 991613
+          },
+          "primary_recorded_requests": 5,
+          "automatic_review_usage": {
+            "input_tokens": 1600904,
+            "cached_input_tokens": 1586432,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 847,
+            "reasoning_output_tokens": 232,
+            "total_tokens": 1601751
+          },
+          "automatic_review_recorded_requests": 11,
+          "automatic_review_timing": {
+            "completed_checks": 11,
+            "summed_turn_minutes": 0.363,
+            "union_turn_minutes": 0.363,
+            "median_seconds": 1.884
+          }
+        }
+      ],
+      "first_showing": [
+        {
+          "capture_delay_seconds": 0.5,
+          "frames": 20,
+          "decisions": 5,
+          "total_seconds": 470.602
+        }
+      ]
+    },
+    {
+      "trial": "packet-1",
+      "condition": "packet",
+      "initial_and_revision_completed": false,
+      "cap_minutes": 40,
+      "elapsed_minutes": 40.01,
+      "episodes": [
+        {
+          "episode": "first-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 40.01,
+          "primary_usage": {
+            "input_tokens": 25111391,
+            "cached_input_tokens": 24613376,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 118105,
+            "reasoning_output_tokens": 28816,
+            "total_tokens": 25229496
+          },
+          "primary_recorded_requests": 247,
+          "automatic_review_usage": {
+            "input_tokens": 15531729,
+            "cached_input_tokens": 14979584,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 14938,
+            "reasoning_output_tokens": 4395,
+            "total_tokens": 15546667
+          },
+          "automatic_review_recorded_requests": 210,
+          "automatic_review_timing": {
+            "completed_checks": 210,
+            "summed_turn_minutes": 6.434,
+            "union_turn_minutes": 6.005,
+            "median_seconds": 1.634
+          }
+        }
+      ],
+      "first_showing": []
+    },
+    {
+      "trial": "packet-2",
+      "condition": "packet",
+      "initial_and_revision_completed": false,
+      "cap_minutes": 40,
+      "elapsed_minutes": 40.01,
+      "episodes": [
+        {
+          "episode": "first",
+          "complete": true,
+          "capped": false,
+          "minutes": 36.49,
+          "primary_usage": {
+            "input_tokens": 10412280,
+            "cached_input_tokens": 10157696,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 47999,
+            "reasoning_output_tokens": 11387,
+            "total_tokens": 10460279
+          },
+          "primary_recorded_requests": 117,
+          "automatic_review_usage": {
+            "input_tokens": 8050302,
+            "cached_input_tokens": 7711744,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 10296,
+            "reasoning_output_tokens": 3298,
+            "total_tokens": 8060598
+          },
+          "automatic_review_recorded_requests": 124,
+          "automatic_review_timing": {
+            "completed_checks": 123,
+            "summed_turn_minutes": 6.054,
+            "union_turn_minutes": 5.937,
+            "median_seconds": 2.642
+          }
+        },
+        {
+          "episode": "revision-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 3.5,
+          "primary_usage": {
+            "input_tokens": 1095411,
+            "cached_input_tokens": 1089792,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 2137,
+            "reasoning_output_tokens": 1132,
+            "total_tokens": 1097548
+          },
+          "primary_recorded_requests": 6,
+          "automatic_review_usage": {
+            "input_tokens": 1676145,
+            "cached_input_tokens": 1656832,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 899,
+            "reasoning_output_tokens": 225,
+            "total_tokens": 1677044
+          },
+          "automatic_review_recorded_requests": 12,
+          "automatic_review_timing": {
+            "completed_checks": 12,
+            "summed_turn_minutes": 0.55,
+            "union_turn_minutes": 0.55,
+            "median_seconds": 2.5605
+          }
+        }
+      ],
+      "first_showing": [
+        {
+          "capture_delay_seconds": 0.86,
+          "frames": 20,
+          "decisions": 5,
+          "total_seconds": 460.306
+        }
+      ]
+    }
+  ],
+  "interpretation": "Capped drafts and revisions are incomplete; observed first-showing times do not establish a speedup or full workflow equivalence."
+}

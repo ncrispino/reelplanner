@@ -1,0 +1,7 @@
+Use reelplanner to make a narrated plan review video for the synthetic multi-agent research case in this repository. Read REQUEST.md and the evidence sources it names. Preserve all five open choices; do not assume an answer.
+
+Use the plan-plus-walkthrough level, but this session ends after the revised plan video. Do not build a standalone system/context video, implement the proposed changes or build a walkthrough. Keep the normal independent script/frame checks and companion guide, with a quick check for each plan step. The same scope applies in both test conditions.
+
+Read the selected installed package's plan-to-video skill, at the path printed by `reelplanner --help`. Use its pinned HyperFrames skills. Use local Kokoro am_michael narration at 1.25x and retain that pace through the revision. HTML review only; no MP4. Start frame numbering at 1 and preserve stable IDs on revision. Never modify reelplanner's package or inspect authentication files and credentials.
+
+Run package commands as `reelplanner` or `reel` from PATH so the shared timing shim records them. Give the first review with `reelplanner review <video-dir> --detach --no-open`. An automated reviewer will select all recommended options and request the same clearer examples in every trial. After showing, wait in the foreground with `reelplanner review --wait`, read and intake the saved review and revise as the skill says. Show the revised video with the same command and stop. The synthetic review is not owner acceptance of a production change.

@@ -61,12 +61,12 @@ try {
 
   const codex = init("codex", ["--agent", "codex"]);
   const argv = splitCommand(codex.config?.agent?.command);
-  ok("init --agent codex: `codex exec` in the workspace-write sandbox, network on, nothing after it but the prompt",
-    codex.code === 0 && argv.slice(0, 2).join(" ") === "codex exec" && argv[argv.indexOf("-s") + 1] === "workspace-write"
-      && argv[argv.indexOf("-c") + 1] === "sandbox_workspace_write.network_access=true" && codex.config.agent.command === CODEX_COMMAND, codex.out);
-  ok("init --agent codex: no flag codex-cli 0.160.0 rejects (-a, --full-auto) and no Claude-only flag", !argv.some((a) => ["-a", "--full-auto", "--approve-for-me", "-p", "--settings"].includes(a)), argv.join(" "));
-  ok("init --agent codex: the note says what is not tried yet (the commit) and how to run with the network off",
-    /read-only/.test(codex.config.agent["//"]) && codex.config.agent["//"].includes(`(\`${RP_INSTALL}\`)`) && !/npx -y reelplanner/.test(codex.config.agent["//"]), codex.config?.agent?.["//"]);
+  ok("init --agent codex: automatic review, explicit workspace-write configuration and network setting",
+    codex.code === 0 && argv.slice(0, 2).join(" ") === "codex exec" && argv.includes("--approve-for-me")
+      && argv.includes('sandbox_mode="workspace-write"') && argv.includes("sandbox_workspace_write.network_access=true") && codex.config.agent.command === CODEX_COMMAND, codex.out);
+  ok("init --agent codex: no conflicting sandbox flag, Full Access bypass or Claude-only flags", !argv.some((a) => ["-s", "--sandbox", "--dangerously-bypass-approvals-and-sandbox", "-a", "--full-auto", "-p", "--settings"].includes(a)), argv.join(" "));
+  ok("init --agent codex: the note explains approval, signing and the opt-in network setting",
+    /unfinished/.test(codex.config.agent["//"]) && /signing/.test(codex.config.agent["//"]) && codex.config.agent["//"].includes(RP_INSTALL) && /network_access=true/.test(codex.config.agent["//"]), codex.config?.agent?.["//"]);
   ok("init --agent codex: the rest of config.json is the template's", JSON.stringify(codex.config.maintainers) === JSON.stringify(template.maintainers) && codex.config["//maintainers"] === template["//maintainers"]);
 
   const none = init("none", ["--agent", "none"]);

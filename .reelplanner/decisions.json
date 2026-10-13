@@ -11563,6 +11563,42 @@
       "components": [
         "cli"
       ]
+    },
+    {
+      "id": "D-313",
+      "date": "2026-10-11",
+      "plan": "2026-10-11-codex-first-class",
+      "step": 5,
+      "stepTitle": "Match terminal review and choose the remote path",
+      "questionId": "q1",
+      "question": "How far should remote reviews go?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Local loop + portable exports",
+          "why": "Concrete local gaps; no drop-in Artifact runtime proved",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Add authenticated hosted spike",
+          "why": "Proves automatic remote handoff before service design",
+          "recommended": false
+        }
+      ],
+      "chosen": "Local loop + portable exports",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "Concrete local gaps; no drop-in Artifact runtime proved",
+      "components": [
+        "finish",
+        "player",
+        "server",
+        "cli",
+        "guide"
+      ],
+      "status": "active",
+      "supersedes": []
     }
   ]
 }

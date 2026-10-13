@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "order": ["before-1", "after-1", "after-2", "before-2"],
+  "matched_pairs": [["before-1", "after-1"], ["before-2", "after-2"]],
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "codex": "0.162.1",
+  "node": "22.23.3",
+  "approval": "--approve-for-me",
+  "sandbox": "workspace-write; network_access=true",
+  "voice": "Kokoro am_michael 1.25x; unchanged on revision",
+  "first_cap_minutes": 60,
+  "revision_cap_minutes": 45,
+  "authored_frames": [28, 30],
+  "choices": 5,
+  "branches": 10,
+  "quick_checks": 5,
+  "session_checkpoint_seconds": 15,
+  "pilot_total_median_reduction": 0.20,
+  "maximum_episode_median_regression": 0.05,
+  "quality_gates": [
+    "scope", "evidence", "worked_examples", "quick_checks", "readability",
+    "visual_variety", "guide", "independent_reviews", "delivery", "revision", "paired_quality"
+  ],
+  "claim_scope": "Matched synthetic pilot; repeat qualifying pairs before production reliability claims"
+}

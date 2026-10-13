@@ -88,6 +88,7 @@ try {
   check("and that quick checks were on", ex.checks === "on", String(ex.checks));
   check("no page errors", errors.length === 0, errors.join(" | "));
   await checksOnOff();
+  await backToExplainedBoundary();
 } catch (e) { ok = false; console.error("✗", e.message); }
 await browser.close(); server.kill(); process.exit(ok ? 0 : 1);
 
@@ -181,4 +182,98 @@ async function checksOnOff() {
   check("a video with no quick checks has no switch", none.b && none.box, JSON.stringify(none));
   await p5.close();
   check("no page errors with checks off", errors.length === 0, errors.join(" | "));
+}
+
+// Back can land just after an unanswered earlier question: its 0.6 s arrival window
+// overlaps the teaching frame. Replay starts at the teaching anchor, not at that question.
+async function backToExplainedBoundary() {
+  const fixture = map.split("/").pop();
+  const open = async (priorKind = "check", delayedLoad = false) => {
+    const pg = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+    pg.on("pageerror", (e) => errors.push(String(e)));
+    await pg.route((u) => u.pathname.endsWith(`/${fixture}`), async (route) => {
+      const response = await route.fetch(), m = await response.json(), teaching = m.frames.find((f) => f.index === 4);
+      const prior = { ...m.quizzes[0], id: "kprior", frameIndex: 3, at: teaching.start - 0.05 };
+      const later = { ...m.quizzes[0], id: "kreturn", frameIndex: 4, at: teaching.start + 1.5, explainedAt: teaching.start, explainedFrame: 4 };
+      m.quizzes = priorKind === "check" ? [prior, later] : [later];
+      m.autonomy = priorKind === "call" ? [{ ...m.autonomy[0], id: "aprior", frameIndex: 3, at: prior.at }] : [];
+      m.decisions = []; m.autonomyGroups = []; m.chapters = []; m.levels = null;
+      await route.fulfill({ response, json: m });
+    });
+    await pg.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}&map=${map}&checks=on`);
+    await pg.waitForFunction(() => { const el = document.querySelector("#rp"); return el?.player?.ready && el.planMap?.quizzes?.some((q) => q.id === "kreturn"); }, null, { timeout: 60000 });
+    // A same-document iframe load can invalidate the first ready event. Delay its probe
+    // in one case so the boundary check cannot depend on how quickly the machine re-probes.
+    if (delayedLoad) await pg.evaluate(() => {
+      const pl = document.querySelector("#rp").player;
+      for (const name of ["_onProbeReady", "_onRuntimeTimelineReady"]) {
+        const ready = pl[name];
+        pl[name] = function (...args) { setTimeout(() => { this[name] = ready; ready.apply(this, args); }, 900); };
+      }
+      pl.iframeElement.dispatchEvent(new Event("load"));
+    });
+    // play() before final readiness can start the runtime without emitting play until
+    // a later ready callback. Our pause-on-play fixture needs that event at the anchor.
+    await pg.waitForFunction(() => {
+      const pl = document.querySelector("#rp").player;
+      return pl.ready && pl.assetsReady && pl.iframeElement.contentDocument?.readyState === "complete";
+    }, null, { timeout: 60000 });
+    await pg.evaluate(() => { const el = document.querySelector("#rp"); el.start(); el.player.pause(); });
+    return pg;
+  };
+  const state = (pg) => pg.evaluate(() => {
+    const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kreturn");
+    return { t: el.player.currentTime, paused: el.player.paused, pending: el.pendingId(), waitFor: el._waitFor || null,
+      frame: el.frameAt(el.player.currentTime)?.index, anchor: q.explainedAt,
+      answers: Object.keys(el.quizzes), calls: Object.keys(el.autonomy) };
+  });
+  const back = async (pg, pauseAtAnchor = false) => {
+    await pg.evaluate((pause) => {
+      const el = document.querySelector("#rp"); el.openPoint("check", "kreturn");
+      if (pause) el.player.addEventListener("play", () => el.player.pause(), { once: true });
+    }, pauseAtAnchor);
+    await pg.locator("#rp").locator('[data-act="quiz-back"]').click();
+  };
+  for (const priorKind of ["check", "call"]) {
+    const pg = await open(priorKind, priorKind === "check");
+    try {
+      await back(pg, true);
+      const held = await until(pg, () => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kreturn");
+        return el.player.paused && el._lastT >= q.explainedAt && el._lastT < q.explainedAt + 0.6; }, null, 10000);
+      const s = await state(pg);
+      check(`Back past an unanswered ${priorKind}: pause at the teaching anchor stays on its frame without an earlier sheet`,
+        !!held && s.frame === 4 && !s.pending && s.waitFor === "kreturn" && !s.answers.length && !s.calls.length, JSON.stringify(s));
+      // Pause/resume while still inside the old arrival window must retain the replay boundary.
+      await pg.locator("#rp").locator('[data-act="play"]').click();
+      const advanced = await until(pg, () => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kreturn");
+        return !el.player.paused && !el.pendingId() && el.player.currentTime > q.explainedAt + 0.6; }, null, 10000);
+      check(`Back past an unanswered ${priorKind}: resumed playback advances through the teaching frame`, !!advanced, JSON.stringify(await state(pg)));
+      const returned = await until(pg, () => { const el = document.querySelector("#rp"); return el.pendingId() === "kreturn" && el.player.paused && !el._waitFor && el._openedFor === el._pendingDecision; }, null, 10000);
+      check(`Back past an unanswered ${priorKind}: real playback returns to the requested quiz without inventing answers`,
+        !!returned && !(await state(pg)).answers.length && !(await state(pg)).calls.length, JSON.stringify(await state(pg)));
+    } finally { await pg.close(); }
+  }
+  // Intentional movement to the earlier boundary remains an arrival, paused or playing.
+  for (const [navigation, playing] of [["jump", false], ["seek", false], ["jump", true], ["seek", true], ["openPoint", false]]) {
+    const pg = await open();
+    try {
+      await back(pg, !playing);
+      const starting = await until(pg, (playing) => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kreturn");
+        return !el.pendingId() && el._waitFor === "kreturn" && (playing ? !el.player.paused && el.player.currentTime > q.explainedAt + 0.08 : el.player.paused && el._lastT >= q.explainedAt); }, playing, 10000);
+      check(`Back reaches the teaching frame before intentional ${navigation} (${playing ? "playing" : "paused"})`, !!starting, JSON.stringify(await state(pg)));
+      await pg.evaluate(([how, play]) => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kprior");
+        // A native seek can quantize just before q.at; land after it, still before the teaching anchor.
+        if (how === "openPoint") el.openPoint("check", q.id); else if (how === "jump") el.jump(q.at); else { el.player.seek(q.at + 0.03); if (play) el.player.play(); } }, [navigation, playing]);
+      const met = await until(pg, () => document.querySelector("#rp").pendingId() === "kprior", null, 10000);
+      const boundary = await pg.evaluate(() => document.querySelector("#rp")._explainedFrom);
+      check(`After Back, intentional ${navigation} to the earlier quiz still opens it (${playing ? "playing" : "paused"})`, !!met && boundary == null, JSON.stringify(await state(pg)));
+    } finally { await pg.close(); }
+  }
+  const pg = await open();
+  try {
+    await pg.evaluate(() => { const el = document.querySelector("#rp"), q = el.planMap.quizzes.find((q) => q.id === "kprior"); el.player.seek(q.at - 0.5); el.player.play(); });
+    const met = await until(pg, () => document.querySelector("#rp").pendingId() === "kprior", null, 10000);
+    check("The close teaching boundary does not suppress an earlier quiz crossed during normal playback", !!met, JSON.stringify(await state(pg)));
+  } finally { await pg.close(); }
+  check("no page errors during close-boundary Back and navigation", errors.length === 0, errors.join(" | "));
 }

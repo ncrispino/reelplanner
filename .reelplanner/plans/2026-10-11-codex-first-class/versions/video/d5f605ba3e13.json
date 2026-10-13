@@ -1,0 +1,162 @@
+{
+  "format": 1,
+  "video": ".reelplanner/plans/2026-10-11-codex-first-class/video",
+  "build": null,
+  "id": "d5f605ba3e13",
+  "keptAt": "2026-10-11T18:21:22.480Z",
+  "keptBy": "keep",
+  "commit": "dbe7bd0fba4cc060d47ccd6ce6a99b12a4e6fb0d",
+  "dirty": [],
+  "scenes": {
+    ".hyperframes/caption-skin.html": "fcaf21e51bea8272",
+    ".hyperframes/holds.json": "d0fd0c0e5cde480f",
+    ".hyperframes/narration.json": "1c8d6f737fdc5bfc",
+    ".hyperframes/stage-snippet.html": "2d4813d9f0616b95",
+    "AGENTS.md": "6361e5d1b78020e6",
+    "BRIEF.md": "210b78a48497e25d",
+    "CLAUDE.md": "6361e5d1b78020e6",
+    "SCRIPT.md": "fea5acf4b74c6591",
+    "STORYBOARD.md": "afa2802004f7732b",
+    "audio_request.json": "7350dae2f9744ccf",
+    "caption-overrides.json": "37517e5f3dc66819",
+    "caption_groups.json": "811e98eb29038f87",
+    "compositions/captions.html": "e936a6cd3ed903e1",
+    "compositions/frames/01-goal.html": "d25bbab877e16324",
+    "compositions/frames/02-surfaces.html": "93b433bf76d3f4de",
+    "compositions/frames/03-remote-choice.html": "6562f69dc7624c67",
+    "compositions/frames/04-remote-a.html": "d1abeb78b2e52aed",
+    "compositions/frames/05-remote-b.html": "be5eda209cfe0745",
+    "compositions/frames/06-recap.html": "cdd6dd8ac93691dd",
+    "compositions/frames/07-install.html": "32dc63242c141fd0",
+    "compositions/frames/08-permissions.html": "b01da7bcb84f6f1a",
+    "compositions/frames/09-check-install.html": "7f07af40cbac85eb",
+    "compositions/frames/10-delivery.html": "406af43efbaf9440",
+    "compositions/frames/11-check-commit.html": "60533665c844c995",
+    "compositions/frames/12-session.html": "65e888dd4d10f431",
+    "compositions/frames/13-check-delivery.html": "ad2046de32682cca",
+    "compositions/frames/14-remote-proof.html": "86ee63339f107f3b",
+    "compositions/frames/15-check-session.html": "54ed7a2eb10e404d",
+    "compositions/frames/16-proof.html": "f97e723d82f44779",
+    "compositions/frames/17-check-remote.html": "e89fe27f6be24b90",
+    "compositions/frames/18-check-proof.html": "4e8eedb1fba958d4",
+    "compositions/frames/19-ending.html": "f67c550a133b339b",
+    "frame.md": "d29bcf50cb191b36",
+    "fresh-eyes/designer-brief.md": "20e652b4890f44d8",
+    "fresh-eyes/designer.md": "5b0c5cdc77882b62",
+    "fresh-eyes/newcomer-brief.md": "9130084ecd88f505",
+    "fresh-eyes/newcomer.md": "40bb64785d08789a",
+    "fresh-eyes/script/newcomer-brief.md": "a3366da2092b449d",
+    "fresh-eyes/script/newcomer.md": "27c94cfaaa2dfa30",
+    "fresh-eyes/script/stamp.json": "2cf383e8c78da29a",
+    "fresh-eyes/stamp.json": "fd46216b57934eee",
+    "hyperframes.json": "9313260261b6e431",
+    "index.html": "dc369e7977cabf0c",
+    "meta.json": "13d9450c27adf9e7",
+    "package.json": "688cc2ecfcaf661c",
+    "plan-map.json": "67a68d3a3c679622"
+  },
+  "files": [
+    {
+      "path": "assets/pane-review-preview.png",
+      "sha256": "78d989c2b1eae4b675179abf5bbcb45facbfbf5dc1354266ffb76df1760a7d9a",
+      "size": 81374,
+      "store": "media/78d989c2b1eae4b6.png",
+      "as": "as-is"
+    },
+    {
+      "path": "capture/extracted/tokens.json",
+      "sha256": "3d5a124d5743599ba988e3b11f2eedf42629ac28d4c9443dae840e8b460d62de",
+      "size": 169,
+      "store": "media/3d5a124d5743599b.json",
+      "as": "as-is"
+    },
+    {
+      "path": "capture/extracted/visible-text.txt",
+      "sha256": "159e059441d7f1c6a2cf051758d86a8c448d505f104ed9eb09939bfcc3d3b9a5",
+      "size": 34641,
+      "store": "media/159e059441d7f1c6.txt",
+      "as": "as-is"
+    }
+  ],
+  "shipped": [
+    {
+      "path": "assets/fonts/EBGaramond-400.woff2",
+      "sha256": "b63448e2680a0dbde70ebb2f3de78f6c515122835491f938e8a8595b46f29210",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/EBGaramond-400.woff2"
+    },
+    {
+      "path": "assets/fonts/EBGaramond-700.woff2",
+      "sha256": "5d0f8a497a48fd2a3611d07acc844f65c9fbb35419eafa4e1295f5f0f95f86e4",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/EBGaramond-700.woff2"
+    },
+    {
+      "path": "assets/fonts/Inter-400.woff2",
+      "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/Inter-400.woff2"
+    },
+    {
+      "path": "assets/fonts/Inter-700.woff2",
+      "sha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/Inter-700.woff2"
+    },
+    {
+      "path": "assets/fonts/JetBrainsMono-400.woff2",
+      "sha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/JetBrainsMono-400.woff2"
+    },
+    {
+      "path": "assets/fonts/JetBrainsMono-700.woff2",
+      "sha256": "d0d4e818808f2a0ba39b2b09d1989366f63494e295f003c7ef436697378507e8",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/JetBrainsMono-700.woff2"
+    },
+    {
+      "path": "assets/fonts/OFL-eb-garamond.txt",
+      "sha256": "f03c8eda63076cd52317dcd40aa04db8472d4cb592dfaafa385129dfdafc7f9c",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/OFL-eb-garamond.txt"
+    },
+    {
+      "path": "assets/fonts/OFL-inter.txt",
+      "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/OFL-inter.txt"
+    },
+    {
+      "path": "assets/fonts/OFL-jetbrains-mono.txt",
+      "sha256": "403581b69dac5cff4079205e01c6b467e56af449ecbd7247693ddb1baafa005b",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/OFL-jetbrains-mono.txt"
+    }
+  ],
+  "regenerated": {
+    "assets/voice/": 19,
+    "audio_engine_meta.json": 1,
+    "audio_meta.json": 1
+  },
+  "rebuilt": [
+    "assets/vendor/",
+    "fresh-eyes/shots/",
+    "guide/",
+    "snapshots/"
+  ],
+  "lost": [],
+  "tools": {
+    "reelplanner": "0.2.0",
+    "reelplannerCommit": "dbe7bd0fba4cc060d47ccd6ce6a99b12a4e6fb0d",
+    "hyperframes": "0.8.52",
+    "skills": {
+      "ref": "v0.8.52",
+      "faceless-explainer": "0ce9b0c671b18eab220d5398c0c122ef3387f99e",
+      "media-use": "870c710e28908e65586008686f88ce446a95e7bb",
+      "hyperframes-creative": "babbc7f918852ef57eca68464aea2c4f8defb9e6"
+    }
+  },
+  "narration": {
+    "voice": "am_michael",
+    "speed": 1.25,
+    "model": "kokoro-v1.0 + whisper small.en",
+    "provider": "kokoro",
+    "lines": 19
+  },
+  "audio": {
+    "sfx": [],
+    "bgm": null
+  }
+}

@@ -1,0 +1,27 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full harnesses codex-install delivery loop review-status ask > /private/tmp/reelplanner-codex-completion-fix/full-owner-handle.log 2>&1
+cwd: /Users/ncrispin/GitHubProjects/reelplanner
+shell: zsh (exec_command default login shell)
+environment: inherited tool environment; no explicit environment overrides
+argv: ["/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node", "scripts/test/run.mjs", "--full", "harnesses", "codex-install", "delivery", "loop", "review-status", "ask"]
+exact shell command:
+/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full harnesses codex-install delivery loop review-status ask > /private/tmp/reelplanner-codex-completion-fix/full-owner-handle.log 2>&1
+permissions: require_escalated (runner/server/browser local loopback sockets)
+exec session: 30555
+terminal exit: 0
+output: /private/tmp/reelplanner-codex-completion-fix/full-owner-handle.log
+counts: harnesses 11; codex-install 6; delivery 18; loop 96; review-status 49; player ask 21
+elapsed: 18.2 seconds
+metadata: /private/tmp/reelplanner-codex-completion-fix/test-results.json
+note: run.mjs supplies RP_FULL=1 and isolated scratch TMPDIR/TMP/TEMP/REELPLANNER_HOME/RP_TEST_PORT. Anonymous CLI tests delete REELPLANNER_OWNER/CODEX_THREAD_ID/CODEX_SESSION_ID/CLAUDE_SESSION_ID/CLAUDECODE/CLAUDE_CODE_ENTRYPOINT, then set only CLAUDECODE=1 in that one test context; all CLI calls retain ordinary executable prefixes and pass --owner as an argument.
+
+full run: 6 specs, 8 at a time
+
+✓ scripts/test/harnesses.spec.mjs         0.9 s  11 checks
+✓ scripts/test/codex-install.spec.mjs     1.7 s  6 checks
+✓ packages/player/test/ask.spec.mjs       8.6 s  21 checks
+✓ scripts/test/review-status.spec.mjs     9.7 s  49 checks
+✓ scripts/test/loop.spec.mjs             13.1 s  96 checks
+✓ scripts/test/delivery.spec.mjs         18.1 s  18 checks
+
+✓ all 6 passed in 18.2 s (the slowest, scripts/test/delivery.spec.mjs, 18.1 s)
+exit 0

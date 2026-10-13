@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="07-install"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f07-install-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f07-install-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f07-install-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f07-install-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f07-install-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f07-install-small{font-size:36px;padding:24px 20px}
+.f07-install-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f07-install-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f07-install-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f07-install-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f07-install-table{position:absolute;left:90px;top:285px;width:1740px}
+.f07-install-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f07-install-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f07-install-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f07-install-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f07-install-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f07-install-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f07-install-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f07-install-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f07-install-mini-command code{font:inherit}
+
+</style>
+<div id="f07-install-root" data-composition-id="07-install" data-width="1920" data-height="1080" data-duration="24.523" data-band="bottom"><div class="clip f07-install-ground" id="f07-install-ground" data-start="0" data-duration="24.523" data-track-index="0"></div><div class="f07-install-status">Proposed</div><h1 class="f07-install-title">Step 1 · Native installation</h1><div class="f07-install-win" data-artifact="Proposed" data-detail="step-1"><div class="f07-install-bar"><span data-gloss="CLI">Proposed</span></div><div class="f07-install-command" id="f07-install-cmd0" style="top:100px"><span class="f07-install-prompt">$</span><code>codex plugin marketplace add &lt;checkout&gt;</code></div><div class="f07-install-command" id="f07-install-cmd1" style="top:205px"><span class="f07-install-prompt">$</span><code>codex plugin add reelplanner@reelplanner</code></div><div class="f07-install-command" id="f07-install-cmd2" style="top:310px"><span class="f07-install-prompt">$</span><code>reelplanner setup --dry-run</code></div></div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="07-install";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=20.8;gsap.set(q(".f07-install-title"),{opacity:0,y:10});tl.to(q(".f07-install-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f07-install-cmd0"),{opacity:0});tl.to(q("#f07-install-cmd0"),{opacity:1,duration:0.12,ease:"none"},7.35);gsap.set(q("#f07-install-cmd1"),{opacity:0});tl.to(q("#f07-install-cmd1"),{opacity:1,duration:0.12,ease:"none"},9.86);gsap.set(q("#f07-install-cmd2"),{opacity:0});tl.to(q("#f07-install-cmd2"),{opacity:1,duration:0.12,ease:"none"},16.2);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

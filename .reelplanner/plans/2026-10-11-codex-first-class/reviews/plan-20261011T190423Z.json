@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "src": "2026-10-11-codex-first-class/index.html",
+  "project": "video",
+  "exportedAt": "2026-10-11T19:04:23.699Z",
+  "watch": {
+    "firstPlayAt": "2026-10-11T19:00:39.416Z",
+    "maxTimeReached": 358.89,
+    "durationSeconds": 358.89,
+    "completion": 1,
+    "chapters": [
+      {
+        "id": "ch1",
+        "completion": 1
+      },
+      {
+        "id": "ch2",
+        "completion": 1
+      },
+      {
+        "id": "ch3",
+        "completion": 1
+      },
+      {
+        "id": "ch4",
+        "completion": 1
+      },
+      {
+        "id": "ch5",
+        "completion": 1
+      },
+      {
+        "id": "ch6",
+        "completion": 1
+      }
+    ],
+    "moments": [],
+    "details": [
+      {
+        "name": "step-5",
+        "openedAt": "2026-10-11T19:03:22.833Z",
+        "seconds": 1.3,
+        "from": "frame"
+      },
+      {
+        "name": "step-5",
+        "openedAt": "2026-10-11T19:03:25.488Z",
+        "seconds": 1,
+        "from": "frame"
+      }
+    ]
+  },
+  "decisions": [],
+  "quizzes": [
+    {
+      "id": "k2",
+      "answer": "b",
+      "correct": true,
+      "t": 221.362,
+      "answeredAt": "2026-10-11T19:02:38.748Z"
+    },
+    {
+      "id": "k3",
+      "answer": "c",
+      "correct": true,
+      "t": 258.784,
+      "answeredAt": "2026-10-11T19:03:13.298Z"
+    },
+    {
+      "id": "k4",
+      "answer": "b",
+      "correct": true,
+      "t": 295.758,
+      "answeredAt": "2026-10-11T19:03:37.645Z"
+    },
+    {
+      "id": "k5",
+      "answer": "b",
+      "correct": true,
+      "t": 332.043,
+      "answeredAt": "2026-10-11T19:03:52.422Z"
+    }
+  ],
+  "checks": "on",
+  "autonomy": [],
+  "knowledgeLevel": null,
+  "watched": [
+    {
+      "video": "2026-10-11-codex-first-class",
+      "seen": "2026-10-11T18:27:20.180Z",
+      "sent": "2026-10-11T18:27:41.025Z"
+    }
+  ],
+  "confusion": {
+    "wrongChecks": 0,
+    "walked": 0,
+    "termsOpened": 1,
+    "termsLookedUp": [
+      "codex"
+    ],
+    "rewinds": 0,
+    "watchedPct": 100
+  },
+  "questions": [],
+  "verdict": "approve",
+  "annotations": [
+    {
+      "id": "amv46zitym74j",
+      "kind": "approve",
+      "t": 358.89,
+      "frame": {
+        "index": 18,
+        "compositionId": "19-ending",
+        "title": "Review the clearer local plan"
+      },
+      "plan": {
+        "step": null,
+        "questions": [],
+        "component": null
+      },
+      "comment": ""
+    }
+  ],
+  "recorded": {
+    "reviewer": "ncrispino@wustl.edu",
+    "via": "git user.email",
+    "reelplanner": "0.2.0"
+  }
+}

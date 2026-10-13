@@ -1,0 +1,27 @@
+$ node /private/tmp/reelplanner-codex-headless-proof/run.mjs  [synthetic scratch repo; real configured Codex]
+PROOF_DIR=/private/tmp/reelplanner-headless-real-TSB9Pj
+RUN video-20261011T230100Z pid=87142 log=/private/tmp/reelplanner-headless-real-TSB9Pj/repo/.reelplanner/inbox/runs/video-20261011T230100Z.log
+PROGRESS video-20261011T230100Z: handling elapsed=15s
+PROGRESS video-20261011T230100Z: editing elapsed=30s
+PROGRESS video-20261011T230100Z: editing elapsed=45s
+PROGRESS video-20261011T230100Z: checked elapsed=60s
+PROGRESS video-20261011T230100Z: committed elapsed=75s
+EXIT video-20261011T230100Z: code=0 done=true phase=committed duration=81s
+VERIFIED approved comment, one intake record, real commit, committed progress, done
+RUN video-20261011T230200Z pid=1616 log=/private/tmp/reelplanner-headless-real-TSB9Pj/repo/.reelplanner/inbox/runs/video-20261011T230200Z.log
+PROGRESS video-20261011T230200Z: handling elapsed=15s
+PROGRESS video-20261011T230200Z: editing elapsed=30s
+PROGRESS video-20261011T230200Z: editing elapsed=45s
+PROGRESS video-20261011T230200Z: editing elapsed=60s
+PROGRESS video-20261011T230200Z: checked elapsed=75s
+EXIT video-20261011T230200Z: code=0 done=false phase=checked duration=84s
+VERIFIED signing failure: saved edits, no commit, unfinished review
+RETRY video-20261011T230200Z pid=15566 log=/private/tmp/reelplanner-headless-real-TSB9Pj/repo/.reelplanner/inbox/runs/video-20261011T230200Z.log
+PROGRESS video-20261011T230200Z: checked elapsed=15s
+PROGRESS video-20261011T230200Z: editing elapsed=30s
+PROGRESS video-20261011T230200Z: editing elapsed=45s
+PROGRESS video-20261011T230200Z: editing elapsed=60s
+PROGRESS video-20261011T230200Z: committed elapsed=75s
+EXIT video-20261011T230200Z: code=0 done=true phase=committed duration=80s
+VERIFIED retry: one edit per comment, two unique intake records, one recovery commit, baseline preserved, done
+exit 0

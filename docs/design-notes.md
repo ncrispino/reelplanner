@@ -165,3 +165,37 @@ files. What went:
 - The skill walked an agent through nine build commands by hand; `reelplanner build` runs them.
 - The skill and the style guide, written as a changelog with version tags and contradictions, became
   one current guide each, with the history here.
+
+## Teaching guidance for Codex and the shared videos
+
+The October Codex work adds explicit guidance to speak as a patient engineering partner: explain the
+approach and its reason, introduce technical terms through examples, and explain the outcome and its
+evidence after a change. The shared skill routes each harness to its own conversation profile; Codex
+has one in `references/communication/codex.md`. Claude Code and unknown harnesses keep the shared
+teaching guidance without loading that profile. The principles for narration, visuals and guides
+remain shared by all agents. This is instruction routing, not an enforced runtime setting.
+
+The saved Claude-branch videos and their reviews give concrete examples to learn from:
+
+- [Videos you can follow](../.reelplanner/plans/2026-09-25-videos-you-can-follow/reviews/plan-20260925T212252Z.md)
+  was watched in full and approved. Its plain-language choice includes the owner's request to keep
+  the plans themselves simple. Definitions belong where an idea first becomes useful.
+- [Better visuals](../.reelplanner/plans/2026-09-26-better-visuals/reviews/plan-20260926T185319Z.md)
+  prompted a useful correction: showing all ten changed files is infeasible. Its revised storyboard
+  shows the map, a representative code change with plain labels attached to its tokens, then a
+  diagram where that explains the mechanism better. The saved before-and-after stills in
+  `video/assets/shots/10-step-2-{before,after}.jpg` demonstrate that treatment.
+  The [later walkthrough review](../.reelplanner/plans/2026-09-26-better-visuals/reviews/walkthrough-20260927T083220Z.md)
+  was watched in full and approved with no additional confusion recorded.
+- [Explain first](../.reelplanner/plans/2026-09-29-explain-first/reviews/plan-20260929T063245Z.md)
+  was approved and watched in full, yet three checks were missed. Approval is not proof of clarity:
+  a snapshot needs the concrete “Monday's video after later commits” case, and a stopping rule needs
+  an example of what fails and what succeeds.
+- The [guide depth review](../.reelplanner/plans/2026-09-28-plan-guide/guide-clarity/depth-round-3/newcomer-2026-09-29-explain-first.md)
+  found the repeated-request example and the failed-then-fixed output pair helpful. It also found
+  overlapping diagram labels, missing setup, unexplained terms and narration repeated as prose.
+  The guide should add a worked explanation and a usable way to try it, with readable diagrams and
+  locally defined terms. Its examples must make clear when they use a different scratch repo.
+
+These are teaching patterns, not frame templates. A visual should help answer the particular question;
+the theme and the seven frame rules supply the shared standards for how it looks and reads.

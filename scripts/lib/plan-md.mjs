@@ -1,3 +1,4 @@
+import { headingSource } from "./markdown-source.mjs";
 // A plan's own text, read from its plan.md: the title, the problem and each step's body as Markdown.
 // plan-map puts it in plan-map.json, where the player and the guide read it.
 import { existsSync, readFileSync } from "node:fs";
@@ -5,7 +6,7 @@ import { dirname, join, resolve } from "node:path";
 import { repoRoot } from "./env.mjs";
 import { diagramBlocks } from "./guide/diagram.mjs";
 import { forGuideOf } from "./guide/depth.mjs";
-const stepHasExamples = (s, fg) => /^#### +(?:worked )?examples\b/im.test(s.text || "") || !!(fg?.steps?.[s.n]?.examples || []).length;
+const stepHasExamples = (s, fg) => /^#### +(?:worked )?examples\b/im.test(headingSource(s.text || "")) || !!(fg?.steps?.[s.n]?.examples || []).length;
 
 /** plan.md for a video: `plan_dir` is relative to the repo root; a video copied or moved elsewhere finds it one folder up. */
 export function planMdFor(videoDir, planDir) {
@@ -15,7 +16,7 @@ export function planMdFor(videoDir, planDir) {
 }
 
 // a section runs to the next heading of its own level or above
-const upTo = (rest, levels) => { const end = rest.search(new RegExp(`^#{1,${levels}} `, "m")); return (end < 0 ? rest : rest.slice(0, end)).trim(); };
+const upTo = (rest, levels) => { const end = headingSource(rest).search(new RegExp(`^#{1,${levels}} `, "m")); return (end < 0 ? rest : rest.slice(0, end)).trim(); };
 
 /**
  * A plan's steps: `### Step N` then a dash (—, – or -) or a colon, then the title. The one step parser:
@@ -24,14 +25,14 @@ const upTo = (rest, levels) => { const end = rest.search(new RegExp(`^#{1,${leve
  */
 export function parseSteps(md) {
   md = String(md).replace(/\r\n/g, "\n");
-  return [...md.matchAll(/^### Step (\d+)\s*[—–:-]\s*(.+)$/gm)].map((m) => ({ n: Number(m[1]), title: m[2].trim(), text: upTo(md.slice(m.index + m[0].length), 3) }));
+  return [...headingSource(md).matchAll(/^### Step (\d+)\s*[—–:-]\s*(.+)$/gm)].map((m) => ({ n: Number(m[1]), title: m[2].trim(), text: upTo(md.slice(m.index + m[0].length), 3) }));
 }
 
 /** { title, problem, steps: [{ n, title, text }] } from plan.md's text. */
 export function readPlanMd(path) {
   const md = readFileSync(path, "utf8").replace(/\r\n/g, "\n");
-  const pm = md.match(/^## The problem[^\n]*$/m);
-  return { title: (md.match(/^# (.+)$/m) || [])[1]?.trim() || null, problem: pm ? upTo(md.slice(pm.index + pm[0].length), 2) : null, steps: parseSteps(md) };
+  const headings = headingSource(md), pm = headings.match(/^## The problem[^\n]*$/m);
+  return { title: (headings.match(/^# (.+)$/m) || [])[1]?.trim() || null, problem: pm ? upTo(md.slice(pm.index + pm[0].length), 2) : null, steps: parseSteps(md) };
 }
 
 // ---------- the four blocks a step carries (the plan guide, step 2), and the rest of plan.md, for the guide ----------
@@ -40,7 +41,7 @@ export function readPlanMd(path) {
 // Decisions are generated (the ledger by step, and each "Decisions in force" line that names the step). Nothing here
 // fills a gap: a block not written is null, and the guide shows it as not written.
 
-const sectionOf = (md, re) => { const m = md.match(re); return m ? upTo(md.slice(m.index + m[0].length), 2) : null; };
+const sectionOf = (md, re) => { const m = headingSource(md).match(re); return m ? upTo(md.slice(m.index + m[0].length), 2) : null; };
 /** A Markdown table's rows as arrays of cells (the header row first; the |---| line dropped). */
 export function tableRows(text) {
   const rows = [];
@@ -62,8 +63,10 @@ export function traceBeats(cell) {
 }
 // the #### blocks of a step: { head, body }[] after its prose
 function blocksOf(text) {
-  const parts = String(text).split(/^#### +/m);
-  const prose = parts.shift();
+  text = String(text);
+  const marks = [...headingSource(text).matchAll(/^#### +/gm)];
+  const prose = marks.length ? text.slice(0, marks[0].index) : text;
+  const parts = marks.map((m, i) => text.slice(m.index + m[0].length, marks[i + 1]?.index ?? text.length));
   return { prose: prose.trim(), blocks: parts.map((p) => { const nl = p.indexOf("\n"); return { head: (nl < 0 ? p : p.slice(0, nl)).trim(), body: nl < 0 ? "" : p.slice(nl + 1).trim() }; }) };
 }
 /** An Interface block's parts: each unindented line of its fenced block a part; an indented line with a `# meaning`,
@@ -126,14 +129,15 @@ export function parseQuestions(md) {
     for (const line of lines) {
       const o = /^- \*\*([A-Z])\s*[·.:-]\s*([^*]+?)\.?\*\*\s*(.*)$/.exec(line);
       if (o) { options.push({ letter: o[1], label: o[2].trim(), text: o[3].trim() }); continue; }
+      if (/^(?:I recommend\b|Recommendation\s*:)/i.test(line.trim())) { rec = line.trim(); continue; }
       if (/^\s+\S/.test(line) && options.length && !rec && !answered) { options[options.length - 1].text += " " + line.trim(); continue; }
-      if (/^I recommend\b/i.test(line)) { rec = line.trim(); continue; }
       if (/^\*{1,2}(?:answered|decided)\b/i.test(line.trim()) || (answered && line.trim())) { answered = { text: ((answered?.text || "") + " " + line.replace(/^\*+|\*+$/g, "").trim()).trim() }; continue; }
       if (rec && line.trim()) { rec += " " + line.trim(); continue; }
       if (!options.length && line.trim()) setup.push(line.trim());
     }
     if (answered) answered.ids = [...answered.text.matchAll(/\bD-\d{3,4}\b/g)].map((x) => x[0]);
-    qs.push({ n: +h[1], title: h[2].trim(), steps: stepsNamed(h[3]) || [...(h[3].match(/\d+/g) || [])].map(Number), setup: setup.join(" "), options, recommend: rec, answered, text: m.trim() });
+    const named = stepsNamed(h[3]) || stepsNamed(h[2]) || [...(h[3].match(/\d+/g) || [])].map(Number);
+    qs.push({ n: +h[1], title: h[2].trim(), steps: named === "all" ? parseSteps(md).map((s) => s.n) : named, setup: setup.join(" "), options, recommend: rec, answered, text: m.trim() });
   }
   return qs;
 }
@@ -147,13 +151,14 @@ export function readPlanBlocks(path) { return planBlocksOf(readFileSync(path, "u
 /** The same, from plan.md's text (an earlier version of it: the guide's "Changed since your review", lib/guide/revised.mjs). */
 export function planBlocksOf(text) {
   const md = String(text).replace(/\r\n/g, "\n");
-  const title = (md.match(/^# (.+)$/m) || [])[1]?.trim() || null;
-  const sections = [...md.matchAll(/^## (.+)$/gm)].map((m) => ({ title: m[1].trim(), text: upTo(md.slice(m.index + m[0].length), 2) }));
+  const headings = headingSource(md);
+  const title = (headings.match(/^# (.+)$/m) || [])[1]?.trim() || null;
+  const sections = [...headings.matchAll(/^## (.+)$/gm)].map((m) => ({ title: m[1].trim(), text: upTo(md.slice(m.index + m[0].length), 2) }));
   const steps = parseSteps(md).map((s) => ({ ...s, ...stepBlocks(s.text) }));
   const inForce = bullets(sectionOf(md, /^## Decisions in force[^\n]*$/m)).map((line) => ({ text: line, ids: [...line.matchAll(/\bD-\d{3,4}\b/g)].map((x) => x[0]), steps: stepsNamed(line) }));
   const touched = bullets(sectionOf(md, /^## Components(?: touched)?[^\n]*$/m)).map((line) => ({ name: (/^\*\*([^*]+)\*\*/.exec(line) || [])[1]?.trim() || line.split(/[:(—]/)[0].trim(), text: line, steps: stepsNamed(line) || [...((/\(steps?\s+([^)]*)\)/i.exec(line) || [])[1] || "").matchAll(/\d+/g)].map((x) => +x[0]) }));
   const parts = bullets(sectionOf(md, /^## Parts[^\n]*$/m)).map((line) => ({ name: (/^\*\*([^*]+)\*\*/.exec(line) || /^`([^`]+)`/.exec(line) || [])[1]?.trim() || line.split(/[:—]/)[0].trim(), text: line }));
-  const pm = md.match(/^## The problem[^\n]*$/m);
+  const pm = headings.match(/^## The problem[^\n]*$/m);
   return { md, title, problem: pm ? upTo(md.slice(pm.index + pm[0].length), 2) : null, sections, steps, questions: parseQuestions(md), inForce, touched, parts };
 }
 

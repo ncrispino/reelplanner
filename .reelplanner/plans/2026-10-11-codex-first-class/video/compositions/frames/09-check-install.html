@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="09-check-install"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f09-check-install-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f09-check-install-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f09-check-install-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f09-check-install-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f09-check-install-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f09-check-install-small{font-size:36px;padding:24px 20px}
+.f09-check-install-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f09-check-install-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f09-check-install-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f09-check-install-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f09-check-install-table{position:absolute;left:90px;top:285px;width:1740px}
+.f09-check-install-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f09-check-install-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f09-check-install-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f09-check-install-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f09-check-install-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f09-check-install-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f09-check-install-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f09-check-install-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f09-check-install-mini-command code{font:inherit}
+
+</style>
+<div id="f09-check-install-root" data-composition-id="09-check-install" data-width="1920" data-height="1080" data-duration="8.172" data-band="bottom"><div class="clip f09-check-install-ground" id="f09-check-install-ground" data-start="0" data-duration="8.172" data-track-index="0"></div><div class="f09-check-install-status">Quick check</div><h1 class="f09-check-install-title" data-question>Plugin installed; video tools absent. What next?</h1><div class="f09-check-install-option" id="f09-check-install-option-a" data-option="a" style="left:90px;top:335px;width:1740px;height:135px"><span class="f09-check-install-letter">A</span><span class="f09-check-install-option-label">Diagnostics name missing tools</span></div><div class="f09-check-install-option" id="f09-check-install-option-b" data-option="b" style="left:90px;top:498px;width:1740px;height:135px"><span class="f09-check-install-letter">B</span><span class="f09-check-install-option-label">Installation counts as full proof</span></div><div class="f09-check-install-option" id="f09-check-install-option-c" data-option="c" style="left:90px;top:661px;width:1740px;height:135px"><span class="f09-check-install-letter">C</span><span class="f09-check-install-option-label">Enable hooks automatically</span></div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="09-check-install";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=9.0;gsap.set(q(".f09-check-install-title"),{opacity:0,y:10});tl.to(q(".f09-check-install-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f09-check-install-option-a"),{opacity:0});tl.to(q("#f09-check-install-option-a"),{opacity:1,duration:0.12,ease:"none"},0.63);gsap.set(q("#f09-check-install-option-b"),{opacity:0});tl.to(q("#f09-check-install-option-b"),{opacity:1,duration:0.12,ease:"none"},3.3);gsap.set(q("#f09-check-install-option-c"),{opacity:0});tl.to(q("#f09-check-install-option-c"),{opacity:1,duration:0.12,ease:"none"},4.672);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

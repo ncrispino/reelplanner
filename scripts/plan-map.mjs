@@ -104,7 +104,7 @@ const decisions = frames.filter((f) => f.decision).map((f) => {
 // chapters: each frame tagged chapter_start opens one; a chapter runs to the frame before the next start
 const chapters = [];
 for (const f of frames) if (f.chapterStart) chapters.push({ id: `ch${chapters.length + 1}`, title: f.chapterStart, fromFrame: f.index, toFrame: null, start: f.start, end: null });
-for (let i = 0; i < chapters.length; i++) { const nxt = chapters[i + 1]; const last = nxt ? frames.find((x) => x.index === nxt.fromFrame - 1) : frames[frames.length - 1]; chapters[i].toFrame = last.index; chapters[i].end = +(last.start + last.durationSeconds).toFixed(3); }
+for (let i = 0; i < chapters.length; i++) { const nxt = chapters[i + 1]; const last = nxt ? frames[frames.findIndex((x) => x.index === nxt.fromFrame) - 1] : frames[frames.length - 1]; chapters[i].toFrame = last.index; chapters[i].end = +(last.start + last.durationSeconds).toFixed(3); }
 for (const c of chapters) {
   const skipped = decisions.filter((d) => d.frameIndex >= c.fromFrame && d.frameIndex <= c.toFrame).reduce((a, d) => a + d.options.filter((o) => o.branch && !o.recommended).reduce((b, o) => b + (o.branch.end - o.branch.start), 0), 0);
   c.linearSeconds = +(c.end - c.start).toFixed(3); c.watchedSeconds = +(c.end - c.start - skipped).toFixed(3);

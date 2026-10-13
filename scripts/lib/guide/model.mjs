@@ -34,11 +34,17 @@ export function guideTarget(dir) {
     const vids = ["video", "walkthrough-video"].map((v) => join(d, v)).filter((v) => has(join(v, "STORYBOARD.md")) || has(join(v, "plan-map.json")));
     return vids.length ? { kind: "plan", many: vids.map((v) => guideTarget(v)) } : { kind: "plan-only", planDir: d, outDir: join(d, "guide"), slug: basename(d), own: "plan" };
   }
-  if (has(join(d, "explain.md")) || has(join(d, "sources.json"))) return has(join(d, "video")) ? guideTarget(join(d, "video")) : { kind: "none", why: `${dir}: an explainer with no video/ yet, so no guide to build (\`reelplanner explain\` starts its video/)` };
   const sb = has(join(d, "STORYBOARD.md")) ? readFileSync(join(d, "STORYBOARD.md"), "utf8") : "";
   if (/^kind:\s*system\b/m.test(sb) || name === "system-video") return { kind: "none", why: `${dir}: the system video has no guide` };
-  if (has(join(up, "sources.json")) || /^kind:\s*explainer\b/m.test(sb)) return { kind: "explainer", videoDir: d, explainerDir: up, outDir: join(d, "guide"), slug: `${basename(up)}--explainer`, own: "explainer" };
-  if (planVideo(up) && name === "walkthrough-video") return { kind: "walkthrough", videoDir: d, planDir: up, outDir: join(d, "guide"), slug: `${basename(up)}--walkthrough`, own: "built" };
+  const explainer = () => ({ kind: "explainer", videoDir: d, explainerDir: up, outDir: join(d, "guide"), slug: `${basename(up)}--explainer`, own: "explainer" });
+  if (/^kind:\s*explainer\b/m.test(sb)) return explainer();
+  // A plan's videos may pin evidence locally or beside plan.md. Sources alone do not change their owner.
+  if (planVideo(up) && ["video", "walkthrough-video"].includes(name)) {
+    const built = name === "walkthrough-video";
+    return { kind: built ? "walkthrough" : "plan-video", videoDir: d, planDir: up, outDir: join(d, "guide"), slug: `${basename(up)}${built ? "--walkthrough" : ""}`, own: built ? "built" : "plan" };
+  }
+  if (has(join(d, "explain.md")) || has(join(d, "sources.json"))) return has(join(d, "video")) ? guideTarget(join(d, "video")) : { kind: "none", why: `${dir}: an explainer with no video/ yet, so no guide to build (\`reelplanner explain\` starts its video/)` };
+  if (has(join(up, "sources.json"))) return explainer();
   if (planVideo(up)) return { kind: "plan-video", videoDir: d, planDir: up, outDir: join(d, "guide"), slug: basename(up), own: "plan" };
   return { kind: "none", why: `${dir}: not a plan folder, a plan's video/ or walkthrough-video/, or an explainer's video/ (no plan.md or sources.json here or beside it): give one of those` };
 }
@@ -310,7 +316,9 @@ export async function buildModel(t, { thumbs = true, whole = true, outside = fal
   // every open question, with where it sits (a question naming no step of this plan is shown whole here)
   const questions = plan.questions.map((q) => { const placed = (q.steps || []).find((n) => steps.some((s) => s.n === n)); return { n: q.n, title: q.title, step: placed ?? null, answered: !!answeredIn(q, ledgerAll, planName), text: placed == null ? q.text : null }; });
   const data = { v: 1, kind: "plan", title: plan.title, planName, own: t.own, side, slug: t.slug, videos, steps, rest, questions, inForce: plan.inForce.map((x) => ({ text: x.text, ids: x.ids, steps: x.steps })),
-    ledger, parts: plan.parts, allParts: (sys?.components || []).map((c) => c.name), touchedAll: plan.touched.map((c) => ({ name: c.name, steps: c.steps })),
+    // Decision bullets have their own editable rows; preserve the ordinary paragraphs around them too.
+    inForceProse: (plan.sections.find((x) => /^decisions in force/i.test(x.title))?.text || "").replace(/^- [^\n]*(?:\n[ \t]+\S[^\n]*)*/gm, "").trim(),
+    ledger, parts: plan.parts, allParts: (sys?.components || []).map((c) => c.name), touchedAll: plan.touched.map((c) => ({ name: c.name, steps: c.steps === "all" ? plan.steps.map((s) => s.n) : c.steps })),
     built: built && { commits: built.commits, started: built.started, cats: built.cats, runs: built.runs, looseRuns: built.looseRuns, totals: built.totals, calls: built.calls, texts: built.texts, from: built.from },
     gaps, made, reader, overview, auto, exRuns };
   // what changed since the version of plan.md the last plan review saw (lib/guide/revised.mjs): a plan's own page only

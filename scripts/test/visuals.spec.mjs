@@ -20,7 +20,7 @@
 //   - variety: over 70% of scenes on one layout or one transition warns; a BRIEF.md without its medium,
 //     layouts and main transition warns; an optional `- Real things:` line is repeated, never warned on
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, cpSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
@@ -61,6 +61,42 @@ ${tl}
 const lint = (f, ...extra) => node("frame-lint.mjs", [f, ...extra]);
 
 try {
+  // The documented mechanics shell must assemble with different, independently supplied visual forms.
+  const shellDoc = readFileSync(join(ROOT, "skills/plan-to-video/references/frame-shell.md"), "utf8");
+  const shell = /```html\n([\s\S]*?)\n```/.exec(shellDoc)?.[1];
+  const SP = join(tmp, "shell"), SF = join(SP, "compositions/frames"); mkdirSync(SF, { recursive: true });
+  for (const part of ["fonts", "vendor"]) cpSync(join(ROOT, "videos/l2-upload-resume/assets", part), join(SP, "assets", part), { recursive: true });
+  const forms = [
+    { id: "17-evidence", body: '<table id="f17-record" data-artifact="file record"><thead><tr><th>File</th><th>Result</th></tr></thead><tbody><tr><td>draft.txt</td><td>Kept</td></tr></tbody></table>',
+      css: '#f17-record { position:absolute;left:8cqw;top:20cqh;width:70cqw;border-collapse:collapse;font:400 2.08cqw/1.5 "JetBrains Mono"; } #f17-record th,#f17-record td { text-align:left;padding:2cqh 2cqw;border-bottom:1px solid var(--rp-ink); }' },
+    { id: "18-comparison", body: '<div id="f18-before">Before: unsaved note</div><div id="f18-after">After: saved note</div>',
+      css: '#f18-before,#f18-after { position:absolute;top:22cqh;width:34cqw;height:20cqh;display:grid;place-items:center;background:var(--rp-tile);font:400 2.3cqw/1.4 "Inter"; } #f18-before { left:8cqw; } #f18-after { left:58cqw; }' },
+  ];
+  for (const form of forms) {
+    const source = shell.replaceAll("17-evidence", form.id).replaceAll("f17-", `f${form.id.slice(0, 2)}-`)
+      .replace("/* Add this scene's own styles, prefixed with f17-. */".replaceAll("f17-", `f${form.id.slice(0, 2)}-`), form.css)
+      .replace("<!-- Add this scene's populated artifact or explanation. -->", form.body);
+    writeFileSync(join(SF, `${form.id}.html`), source);
+    const result = lint(join(SF, `${form.id}.html`));
+    ok(`documented shell: ${form.id} keeps the safe region and frame rules with its own visual form`, result.code === 0, result.out);
+  }
+  writeFileSync(join(SP, "index.html"), `<!doctype html><html lang="en"><head><meta charset="UTF-8"><script src="assets/vendor/gsap.min.js"></script><style>
+    :root { --rp-paper:#FAF9F5;--rp-ink:#141413;--rp-tile:#EFE9DE; }
+    html,body { margin:0;width:1920px;height:1080px;overflow:hidden; }
+    #root { position:relative;width:100%;height:100%;overflow:hidden; } .clip { position:absolute;inset:0; }
+  </style></head><body><div id="root" data-composition-id="main" data-width="1920" data-height="1080" data-duration="16">
+    ${forms.map((f, i) => `<div class="clip" data-composition-id="${f.id}" data-composition-src="compositions/frames/${f.id}.html" data-start="${i * 8}" data-duration="8" data-track-index="${i}"></div>`).join("\n")}
+  </div><script>window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});tl.to({},{duration:16},0);window.__timelines.main=tl;</script></body></html>`);
+  const hf = (...args) => spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "hyperframes", ...args, SP], { cwd: tmp, encoding: "utf8", maxBuffer: 16 << 20 });
+  const checked = hf("check", "--at", "2,4,7.6,10,12,15.6", "--json"), checkText = checked.stdout || "";
+  const report = JSON.parse(checkText.slice(checkText.indexOf("{") >= 0 ? checkText.indexOf("{") : checkText.length) || "{}");
+  ok("documented shell: two different forms pass pinned assembled lint, runtime, layout and local font loading", checked.status === 0 && report.layout?.samples?.length === 6 && !report.error,
+    checked.stdout + checked.stderr);
+  const shots = hf("snapshot", "--at", "4,12", "--no-end", "--describe", "false", "-o", join(SP, "shots"));
+  const pngs = shots.status === 0 ? readdirSync(join(SP, "shots")).filter((f) => f.endsWith(".png")) : [];
+  ok("documented shell: both independently composed forms produce distinct nonempty browser snapshots", pngs.length === 2 && pngs.every((f) => readFileSync(join(SP, "shots", f)).length > 1000)
+    && !readFileSync(join(SP, "shots", pngs[0])).equals(readFileSync(join(SP, "shots", pngs[1]))), shots.stdout + shots.stderr);
+
   // ── cameras and the clipped view ─────────────────────────────────────────────────────────────────────
   const move = `  gsap.set("#v-cam", { x: 208, y: 136, scale: 1.6 });\n  tl.to("#v-cam", { x: 0, y: 0, scale: 1, duration: 1.5, ease: "expo.out" }, 0.05);`;
   let r = lint(frame("cam-open", { body: `<div class="v-open" id="v-open"><div class="v-cam" id="v-cam"><div class="v-card">the real thing</div></div></div>`, tl: move }));

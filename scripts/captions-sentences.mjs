@@ -37,6 +37,7 @@ if (!existsSync(capPath)) { console.error(`✗ no compositions/captions.html in 
 // frame starts (cumulative durations, storyboard order)
 const durs = [...sb.matchAll(/^- duration:\s*([\d.]+)s?/gm)].map((m) => parseFloat(m[1]));
 const starts = []; let t = 0; for (const d of durs) { starts.push(t); t += d; }
+const frameIds = [...sb.matchAll(/^## Frame (\d+)\b/gm)].map((m) => Number(m[1]));
 // script lines per frame: "## Line N — … (Frame N)" then the indented spoken block
 const lines = {};
 for (const m of script.matchAll(/^## Line \d+ —[^\n]*\(Frame (\d+)\)[\s\S]*?\n\n((?:    [^\n]*\n?)+)/gm)) {
@@ -66,7 +67,8 @@ for (const v of meta.voices || []) {
   if (!text || !v.words?.length) { skipped.push(`${fi}${!text ? " (no script line)" : " (no word timings)"}`); continue; }
   // the script's words, each as the words the voice said for it (`-p` → dash, p), aligned to whisper's
   const written = text.split(" ").filter(Boolean), said = written.flatMap((w, k) => saidWords(w).map((t) => ({ t, k })));
-  const S = said.map((x) => x.t), W = v.words, pairs = align(S, W), off = starts[fi - 1] || 0, cap = (v.duration_s || durs[fi - 1] || 1e9);
+  const frameIndex = frameIds.indexOf(Number(fi));
+  const S = said.map((x) => x.t), W = v.words, pairs = align(S, W), off = starts[frameIndex] || 0, cap = (v.duration_s || durs[frameIndex] || 1e9);
   // timing per said word: matched → whisper's; unmatched → interpolate between neighbours
   const saidTimed = S.map((w, k) => ({ text: w, start: pairs[k] != null ? W[pairs[k]].start : null, end: pairs[k] != null ? W[pairs[k]].end : null }));
   for (let k = 0; k < saidTimed.length; k++) if (saidTimed[k].start == null) {

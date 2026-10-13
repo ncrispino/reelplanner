@@ -15,6 +15,11 @@ import "./old-names.mjs"; // a setting's old name (REELPLANNING_*) read as its n
  */
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
+/** A literal argument in the POSIX shell commands shown to agents; never expands $, backticks or quotes. */
+export const shellQuote = (value) => `'${String(value).replace(/'/g, "'\\''")}'`;
+/** Execute the same package that built this prompt, including when a checkout's PATH install is older. */
+export const RP_LOCAL_COMMAND = `${shellQuote(process.execPath)} ${shellQuote(join(ROOT, "bin", "reelplanner.mjs"))}`;
+
 /**
  * A Chromium for Playwright to drive, or undefined to let Playwright resolve its own.
  * CHROMIUM_PATH wins; then the usual browser stores, newest build first; then the Chrome headless shell `setup`
@@ -152,21 +157,30 @@ export const RP_INSTALL = ON_NPM ? "npm i -g reelplanner" : "npm i -g github:ncr
  * every layout; `exports` maps are sidestepped because a file on disk is wanted, not an entry point.
  */
 export function pkgDir(name, from = ROOT) {
-  const req = createRequire(join(from, "package.json"));
-  for (const d of req.resolve.paths(name) || []) if (existsSync(join(d, name, "package.json"))) return join(d, name);
+  const lookup = (pkg, base) => {
+    const req = createRequire(join(base, "package.json"));
+    for (const d of req.resolve.paths(pkg) || []) if (existsSync(join(d, pkg, "package.json"))) return join(d, pkg);
+    return null;
+  };
+  const direct = lookup(name, from);
+  if (direct) return direct;
   // a transitive dependency npm did not hoist sits under whichever package pulled it in
   if (from === ROOT) for (const via of ["hyperframes", "@hyperframes/player"]) {
-    const dir = via !== name && pkgDir(via, ROOT);
-    const hit = dir && pkgDir(name, dir);
+    const dir = via !== name && lookup(via, ROOT);
+    const hit = dir && lookup(name, dir);
     if (hit) return hit;
   }
   return null;
 }
 
+/** A source checkout installs its locked dependencies; a packaged install is reinstalled normally. */
+export const dependencyFix = () => existsSync(join(ROOT, "package-lock.json"))
+  ? `run npm ci in ${ROOT}` : `reinstall reelplanner: ${RP_INSTALL}`;
+
 /** A file inside an installed dependency, or an error naming what is missing. */
 export function depFile(name, rel) {
   const dir = pkgDir(name), p = dir && join(dir, rel);
-  if (!p || !existsSync(p)) throw new Error(`${name}/${rel} not found next to reelplanner at ${ROOT} — reinstall reelplanner`);
+  if (!p || !existsSync(p)) throw new Error(`${name}/${rel} not found next to reelplanner at ${ROOT} — ${dependencyFix()}`);
   return p;
 }
 
@@ -208,15 +222,19 @@ export const hyperframesBin = () => depFile("hyperframes", "bin/hyperframes.mjs"
  * never to wherever reelplanner itself is installed.
  */
 export function repoRoot(p = process.cwd()) {
-  let d = resolve(p);
+  const at = existsSync(p) && statSync(p).isDirectory() ? resolve(p) : dirname(resolve(p));
+  let top; try { top = execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
+  catch { /* a library without Git still owns its own videos */ }
+  let d = at;
   for (let i = 0; i < 12; i++) {
     if (isRpDirName(basename(d))) return dirname(d);
     if (hasRp(d)) return d;
+    // A nested repository belongs to its own agent/session, even if an ancestor
+    // repository has a reelplanner library. Never route its quick videos there.
+    if (top && realPath(d) === realPath(top)) return d;
     const up = dirname(d); if (up === d) break; d = up;
   }
-  const at = existsSync(p) && statSync(p).isDirectory() ? resolve(p) : dirname(resolve(p));
-  let top; try { top = execFileSync("git", ["rev-parse", "--show-toplevel"], { cwd: at, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); }
-  catch { return process.cwd(); }
+  if (!top) return process.cwd();
   // spelled as the caller spelled `p`, like the answers above: git names the real path
   for (let d = at; ; d = dirname(d)) { if (realPath(d) === top) return d; if (dirname(d) === d) return top; }
 }

@@ -1723,7 +1723,7 @@ export class ReelplannerPlayer extends HTMLElement {
   // viewer's opaque id in this organization and whether they own the page, from the `user` capability,
   // declared beside `db` at publish. Only the id is kept, never a name. Where it is absent (not
   // declared, not served, no identity here) the row carries no `viewer` and intake falls back to git's
-  // user.email. Asked once, early, with the db; a send waits for it a moment at most (sendToClaude).
+  // user.email. Asked once, early, with the db; Send and Download wait for it a moment at most.
   reachViewer() {
     if (this._viewerReady) return this._viewerReady;
     this._viewer = null;
@@ -1771,7 +1771,8 @@ export class ReelplannerPlayer extends HTMLElement {
   // Kept on this machine (`where: "machine"`: no agent command there), the line says so, and what to do: tell the agent.
   localNext() {
     const a = this._localApi || {};
-    return a.sessionWaiting ? "Your open session picks this up."
+    return a.sessionWaiting ? "Your waiting session picks this up."
+      : a.sessionConnected ? "Saved first, then queued to the connected session. If delivery fails, the saved review uses the configured fallback."
       : a.agentCommand ? `No session is open: <code>${esc(a.agentCommand)}</code> starts on it${a.unsandboxed ? `, without Claude Code's sandbox (${esc(a.unsandboxed)}): its shell commands aren't fenced to the repo` : ""}.`
       : a.where === "machine" ? "No agent session is waiting: it's saved on this machine, not in the repo, until you tell your agent it's sent."
       : "Saved for your next session.";
@@ -1844,14 +1845,14 @@ export class ReelplannerPlayer extends HTMLElement {
     this._work = w; this.renderWork(); this.pollWork(true);
   }
   // nothing more will change: stopped, or done (unless a waiting session marked it done before its new video is up)
-  workSettled() { const w = this._work; return !w || ["stopped", "ready", "reload"].includes(w.state) || (w.state === "done" && !w.making); }
+  workSettled() { const w = this._work; return !w || ["ready", "reload"].includes(w.state) || (w.state === "stopped" && w.via === "hosted") || (w.state === "done" && !w.making); }
   stopWorkPoll() { clearTimeout(this._workT); this._workT = null; }
   pollWork(now = false) {
     this.stopWorkPoll();
     const w = this._work; if (!w || this.workSettled()) return;
     if (w.via === "hosted") { if (this._claudeDb && this._watching !== w.id) this.watchReview(w.id); return; }
     if (document.hidden) return;   // asked again when the tab is shown
-    this._workT = setTimeout(() => this.askWork(), now ? 0 : (this._workMs || 3000));
+    this._workT = setTimeout(() => this.askWork(), now ? 0 : (w.state === "stopped" ? 5000 : (this._workMs || 3000)));
   }
   async askWork() {
     this._workT = null;
@@ -1889,7 +1890,7 @@ export class ReelplannerPlayer extends HTMLElement {
       case "reload": return "Done — reload to watch the new version";
       case "done": return w.making ? `Recorded. ${Who} is making the new video` : "Done: recorded, no new video";
       case "stopped": return hosted ? `${Who} could not finish it${w.error ? ` — ${w.error}` : ""}. The commands under Finish still work.`
-        : `The run stopped before it finished: its log is ${w.log || `.reelplanner/inbox/runs/${w.id}.log`}`;
+        : w.step?.startsWith("session ownership") ? "The session stopped handling this review. It is saved for recovery." : `${w.step === "Stopped before commit" ? "Stopped before commit" : "The run stopped before it finished"}: its log is ${w.log || `.reelplanner/inbox/runs/${w.id}.log`}`;
       default: return String(w.state || "");
     }
   }
@@ -1899,7 +1900,7 @@ export class ReelplannerPlayer extends HTMLElement {
     if (box.hidden === on || wrap.classList.contains("working-on") !== on) { box.hidden = !on; wrap.classList.toggle("working-on", on); this.placePlan?.(); }
     clearInterval(this._workTick); this._workTick = null;
     if (!w) { this.closeReady(); return; }
-    const live = !this.workSettled();
+    const live = w.state !== "stopped" && !this.workSettled();
     box.dataset.wstate = w.state; box.dataset.live = live ? "1" : "0";
     const text = this.workText(w), t = box.querySelector(".wtext");
     if (t.textContent !== text) t.textContent = text;   // only a change is read out (the line is polite-live)
@@ -2486,7 +2487,7 @@ export class ReelplannerPlayer extends HTMLElement {
     this.player.addEventListener("play", () => { this._run = null; runFrom(); if (!this._firstPlayAt) this._firstPlayAt = new Date().toISOString(); this.stage.dataset.started = "1"; this.hideCaptions("before", false); this.deselect(); this.syncPlay(); });   // a selection belongs to a paused frame
     this.player.addEventListener("pause", () => { this._run = null; this.syncPlay(); });
     this.player.addEventListener("ratechange", () => { if (this._run) runFrom(); });
-    this.player.addEventListener("ended", () => { this.syncPlay(); this.markWatched("seen"); });   // watched: 80 % seen, or the end, whichever comes first (D-128)
+    this.player.addEventListener("ended", () => { this.syncPlay(false); this.markWatched("seen"); });   // ended arrives before the runtime's final paused state is committed
     this.player.addEventListener("ready", () => { this.stage.dataset.ready = "1"; this.placeBefore(); if (this._mini) this.miniCaptions(true); this.hideRuntimeLoader(); this.idle(true); this.renderScrub(); this.syncPlay(); this.redraw(); this.poster(); this.applyPicks(); this.detectBand(); this.syncBand(); if (this._pendingDecision) this.recheckCards(); for (const ms of [0, 800, 2500, 6000]) setTimeout(() => this.wireCaptions(), ms); }); // fires again after a seek loads a new sub-composition
     const mapUrl = this.getAttribute("plan-map") || this.src.replace(/index\.html$/, "plan-map.json");
     try { this._mapUrl = new URL(mapUrl, document.baseURI).href; } catch { this._mapUrl = null; }
@@ -2503,11 +2504,11 @@ export class ReelplannerPlayer extends HTMLElement {
     try { const sd = JSON.parse(localStorage.getItem(this.rkey + ":details") || "[]"); this.detailsOpened = Array.isArray(sd) ? sd : []; } catch { this.detailsOpened = []; }
     try { this.termsOpened = Number(localStorage.getItem(this.rkey + ":terms")) || 0; } catch { this.termsOpened = 0; }
     try { const tk = JSON.parse(localStorage.getItem(this.rkey + ":termkeys") || "[]"); this.termsLookedUp = Array.isArray(tk) ? tk : []; } catch { this.termsLookedUp = []; }
-    try { const qs = JSON.parse(localStorage.getItem(this.rkey + ":questions") || "[]"); this.questions = Array.isArray(qs) ? qs.map((q) => (["asking", "streaming", "waiting"].includes(q.status) ? { ...q, status: "review" } : q)) : []; } catch { this.questions = []; }
+    try { const qs = JSON.parse(localStorage.getItem(this.rkey + ":questions") || "[]"); this.questions = Array.isArray(qs) ? qs.map((q) => (["asking", "streaming"].includes(q.status) ? { ...q, status: "review" } : q)) : []; } catch { this.questions = []; }
     // the words this viewer knows (D-218): this browser's, and on the local review page, what your file says
     this._known = null; this._defDone = {}; this._defPlayed = {}; this._defT = null; this._partT = null; this._partPlayed = {};
     // …and what your file says you watched (D-128): "Before you watch" and the level the video starts at read it too
-    this.reachLocal().then((j) => { if (j?.known && (j.known.looked?.length || j.known.watched?.length)) { this._serverKnown = j.known; this.syncKnown(); this.renderBefore(); this.levelFromBefore(); this.dispatchEvent(new CustomEvent("known", { detail: j.known })); } }).catch(() => {});
+    this.reachLocal().then((j) => { if (j) for (const q of this.questions || []) if (q.askId && !q.answer) this.pollQuestion(q); if (j?.known && (j.known.looked?.length || j.known.watched?.length)) { this._serverKnown = j.known; this.syncKnown(); this.renderBefore(); this.levelFromBefore(); this.dispatchEvent(new CustomEvent("known", { detail: j.known })); } }).catch(() => {});
     // accessible videos: what to watch first (on the poster), and the Terms button when there are words to look up
     this._seenMarked = false; this._guardDoneMem = false; this._walkQueue = null; this._walking = null; this.renderBefore();
     { const tb = this.$(".termsbtn"); if (tb) tb.hidden = !this.termList().length; }
@@ -3202,7 +3203,7 @@ export class ReelplannerPlayer extends HTMLElement {
     const from = this.isExplainer ? "the explainer's sources" : "the plan";
     box.querySelector(".askhow").textContent = { claude: `Claude answers from ${from}, the glossary and this scene, and says where the answer came from. It runs on your Claude account: the first question asks you to allow it.`,
       session: `The agent session waiting on this page answers, in a few seconds, from ${from}, the glossary and this scene.`,
-      nobody: "No agent session is waiting on this page, so your question goes with your review and is answered in the next version.",
+      nobody: "Your question is saved on this page's server for the next agent session to answer. It also goes with your review.",
       review: "Your question goes with your review, and is answered in the next version." }[this.askRoute()];
     const asking = !!this._asking; box.querySelector(".askgo").disabled = asking; box.querySelector(".askstop").hidden = !(asking && this._askCtl);
     const mine = (this.questions || []).slice().reverse();
@@ -3211,7 +3212,7 @@ export class ReelplannerPlayer extends HTMLElement {
   askItemHtml(q) {
     const where = `${q.detail ? `In the guide, ${q.detail.title || q.detail.name}: ` : ""}${q.frame ? `Scene ${q.frame.index}, ${plainTitle(q.frame.title)}, at ${this.fmt(q.t)}` : `At ${this.fmt(q.t)}`}`;
     const state = q.status === "asking" ? "thinking" : q.status === "waiting" ? "waiting" : q.answer ? "answered" : "none";
-    const body = q.answer ? esc(q.answer) : q.status === "asking" ? "Thinking…" : q.status === "waiting" ? "Asked the agent session waiting on this page…" : esc(q.note || "Goes with your review, to be answered in the next version.");
+    const body = q.answer ? esc(q.answer) : q.status === "asking" ? "Thinking…" : q.status === "waiting" ? esc(q.note || "Saved; waiting for an agent session to answer…") : esc(q.note || "Goes with your review, to be answered in the next version.");
     return `<p class="aq">${esc(q.question)}</p><p class="aw">${esc(where)}</p><p class="aa" data-state="${state}">${body}</p>`
       + (q.answer && q.note ? `<p class="af">${esc(q.note)}</p>` : "")
       + (q.answer && q.from ? `<p class="af"><b>From:</b> ${esc(q.from)}${q.via === "session" ? " · answered by the agent session" : q.via === "claude" ? " · answered by Claude" : ""}</p>` : "");
@@ -3332,14 +3333,22 @@ ${clip(gloss || "(none)", 9000)}`;
     } catch { j = null; }
     if (!j?.ok) { Object.assign(q, { status: "review", via: "review", note: "The review server did not take it, so your question goes with your review." }); return; }
     if (this._localApi) this._localApi.sessionWaiting = j.handledBy === "session";
-    if (j.handledBy !== "session") { Object.assign(q, { status: "review", via: "review", note: "No agent session is waiting on this page, so your question goes with your review and is answered in the next version." }); return; }
-    q.status = "waiting"; q.via = "session"; q.askId = j.id; this._asking = null; this.renderAsk();   // another question may be asked meanwhile
-    for (let i = 0; i < 60; i++) {
-      await new Promise((ok) => setTimeout(ok, 2000));
-      let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(j.id)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
-      if (a?.answered) { Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", answeredAt: a.answeredAt || new Date().toISOString() }); this.persistQuestions(); this.renderAskItem(q); return; }
-    }
-    Object.assign(q, { status: "review", note: "No answer from the session in two minutes, so your question goes with your review." }); this.persistQuestions(); this.renderAskItem(q);
+    q.status = "waiting"; q.via = "session"; q.askId = j.id;
+    q.note = j.handledBy === "session" ? "Saved; waiting for the agent session to answer…" : "Saved; waiting for the next agent session to answer. Your question also goes with your review.";
+    this._asking = null; this.persistQuestions(); this.renderAsk();
+    await this.pollQuestion(q);
+  }
+  async pollQuestion(q) {
+    this._pollingQuestions ||= new Set();
+    if (!q.askId || q.answer || this._pollingQuestions.has(q.id)) return;
+    this._pollingQuestions.add(q.id);
+    try {
+      while (this.isConnected && !q.answer && (this.questions || []).some((x) => x.id === q.id)) {
+        let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(q.askId)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
+        if (a?.answered) { Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", note: null, answeredAt: a.answeredAt || new Date().toISOString() }); this.persistQuestions(); this.renderAskItem(q); return; }
+        await new Promise((ok) => setTimeout(ok, 2000));
+      }
+    } finally { this._pollingQuestions.delete(q.id); }
   }
   // "Walk me through it" (a quick check's `- walk_me_through:`): open after a wrong answer, the video waiting
   // while it is read; a button away after a right one. Opening it goes on the record (walked: true).
@@ -3543,7 +3552,8 @@ ${clip(gloss || "(none)", 9000)}`;
   }
   syncMiniBar(t = this.watchedT()) {
     const bar = this.$?.(".minibar"); if (!bar || bar.hidden) return;
-    const playing = !!this.player && !this.player.paused, dur = this.dur() || 0, q = !!this._pendingDecision && !this.isAnswered();
+    // Both controls present the same transport action, including between delayed runtime packets.
+    const playing = this.$('[data-act="play"]').dataset.playing === "true", dur = this.dur() || 0, q = !!this._pendingDecision && !this.isAnswered();
     const pb = bar.querySelector(".mplay");
     if (pb.dataset.playing !== String(playing)) { pb.dataset.playing = String(playing); pb.setAttribute("aria-label", playing ? "Pause" : "Play"); pb.title = playing ? "Pause (space)" : "Play (space)"; }
     bar.querySelector(".mnow").textContent = this.fmt(t); bar.querySelector(".mdur").textContent = this.fmt(dur);
@@ -4437,7 +4447,7 @@ ${clip(gloss || "(none)", 9000)}`;
   // there and then: kept open (or folded) it would stay the pending question, and the next question
   // would show this one's sheet.
   dropAnswered() { const p = this._pendingDecision; if (!p || !this.isAnswered(p)) return false; this.stopWait(); this.closeCard(); return true; }
-  jump(t) { this._seeked = true; this.dropAnswered(); const dur = this.player.duration || Infinity; const wasPlaying = !this.player.paused; if (t >= dur - 0.1) { this.player.seek(dur); return; } this.player.seek(t + 0.05); if (wasPlaying) this.player.play(); }
+  jump(t) { this._explainedFrom = null; this._seeked = true; this.dropAnswered(); const dur = this.player.duration || Infinity; const wasPlaying = !this.player.paused; if (t >= dur - 0.1) { this.player.seek(dur); return; } this.player.seek(t + 0.05); if (wasPlaying) this.player.play(); }
   // Every point where the video asks something, one shape per kind (as on the timeline): quick
   // checks first, then the agent's calls, then the plan's choices, the order a tick looks at them.
   points() { const m = this.planMap || {}; return [...(m.quizzes || []).map((q) => ({ kind: "check", q })), ...(m.autonomy || []).map((q) => ({ kind: "call", q })), ...(m.autonomyGroups || []).map((q) => ({ kind: "group", q })), ...(m.decisions || []).map((q) => ({ kind: "choice", q }))]; }
@@ -4475,7 +4485,7 @@ ${clip(gloss || "(none)", 9000)}`;
   meet(pt) {
     this._past = { ...(this._past || {}), [pt.q.id]: true };
     // reached again after "Back to where this was explained": it waits, answered or not, until Continue
-    const back = this._waitFor === pt.q.id; if (back) { this._waitFor = null; this._opening = true; }
+    const back = this._waitFor === pt.q.id; if (back) { this._waitFor = null; this._explainedFrom = null; this._opening = true; }
     try { if (pt.kind === "check") this.askQuiz(pt.q); else if (pt.kind === "call") this.askAutonomy(pt.q); else if (pt.kind === "group") this.askGroup(pt.q); else this.askDecision(pt.q); }
     finally { if (back) { this._opening = false; this._openedFor = this._pendingDecision; } }
   }
@@ -4494,6 +4504,7 @@ ${clip(gloss || "(none)", 9000)}`;
     this.giveWay();
     if (this._past) delete this._past[q.id];
     this._waitFor = q.id;
+    this._explainedFrom = to;
     this.start(); this.toFrame(); this.$(".chend").classList.remove("on"); this._byHand = true; this._seeked = true;
     this.player.seek(to + 0.05); this.player.play();
     this.noteRewind(from, to);   // a trip back is a rewind (D-005), whichever button made it
@@ -4504,6 +4515,7 @@ ${clip(gloss || "(none)", 9000)}`;
   openPoint(kind, id) {
     // a grouped call's time in the record opens its group's sheet
     const pt = this.points().find((x) => x.kind === kind && x.q.id === id) || (kind === "call" ? this.points().find((x) => x.kind === "group" && (x.q.ids || []).includes(id)) : null); if (!pt) return;
+    this._explainedFrom = null;
     if (this._dopen) { this._dopen.wasPlaying = false; this.closeDetail(); }
     this.giveWay();
     this.start(); this.toFrame(); this.$(".chend").classList.remove("on"); this._byHand = true;
@@ -4539,7 +4551,12 @@ ${clip(gloss || "(none)", 9000)}`;
     // it lands where it was sent. A tick outside that (one from before the seek that began the run, still on its way
     // from the old place) or while paused leaves the run as it was.
     const run = this._run, from = run?.last;
-    const ran = !!run && !this.player.paused && t > from && t >= run.t - 0.05 && t - run.t <= ((performance.now() - run.at) / 1000) * (this.speed || 1) * 1.5 + 0.35;
+    const withinRun = !run || this.player.paused || (t >= run.t - 0.05 && t - run.t <= ((performance.now() - run.at) / 1000) * (this.speed || 1) * 1.5 + 0.35);
+    // A queued tick from before a backward seek must not consume the chosen branch's
+    // end route, or route through an unchosen branch below. Paused seeks and repeated
+    // valid ticks still land where requested; advancing playback keeps the same fence.
+    if (!withinRun) return;
+    const ran = !!run && !this.player.paused && t > from;
     if (ran) run.last = t;
     // A part boundary. By default the video plays straight on into the next part and names it in the
     // frame's corner (the reviewer asked for it: clicking "Next part" at the end of every part was
@@ -4561,8 +4578,9 @@ ${clip(gloss || "(none)", 9000)}`;
     if (this._pendingDecision && this._folded) { const at = this.pendingAt(); if (at != null && t >= at - 0.05 && !this.player.paused) this.unfoldAt(); return; }
     // An open question, not answered and not put aside, that the video has left while playing (Play
     // pressed with it up, or a seek away and Play) gives way, and stops the video again when it is reached.
-    // Not in its first 600 ms: a timeupdate from before its seek can still arrive from the old place.
-    if (this._pendingDecision && !this.player.paused && !this.isAnswered() && performance.now() - (this._askedAt || 0) > 600) { const at = this.pendingAt(); if (at != null && (t < at - 0.15 || t >= at + 0.6)) this.giveWay(); }
+    // Require a new Play run: delayed runtime packets can mirror `paused = false` after the question
+    // paused, even beyond its opening grace period. They are not the reviewer choosing to play on.
+    if (this._pendingDecision && run && !this.player.paused && !this.isAnswered() && performance.now() - (this._askedAt || 0) > 600) { const at = this.pendingAt(); if (at != null && (t < at - 0.15 || t >= at + 0.6)) this.giveWay(); }
     if (this._pendingDecision) return;
     // A question stops the video once per pass, not once ever: gone back before it, it is due again
     // (the owner: going back to before a question should bring it back, even an answered one). Not
@@ -4576,9 +4594,14 @@ ${clip(gloss || "(none)", 9000)}`;
     // a branch) is not playing across; it lands where it was sent. Crossed more than one, the first is met (its ask
     // takes the video back to it).
     const across = (q) => ran && from < q.at && t >= q.at;
+    // Back starts replay at its teaching anchor. An earlier question's arrival window
+    // may overlap that frame; it was not crossed. Keep the boundary over pause/resume,
+    // but a rewind before it (including a native seek/play) makes earlier points due again.
+    if (this._explainedFrom != null && (t < this._explainedFrom || (run && run.t < this._explainedFrom))) this._explainedFrom = null;
     for (const pt of [...this.points()].sort((a, b) => a.q.at - b.q.at)) {
       const q = pt.q;
       if ((t < q.at || t >= q.at + 0.6) && !across(q)) continue;
+      if (this._explainedFrom != null && q.at < this._explainedFrom && !across(q)) continue;
       if (this._past?.[q.id] || this.passedOver(q, t)) continue;
       if (pt.kind === "check" && !this.checksOn) continue;   // quick checks off: the video does not stop for one
       this.meet(pt); return;
@@ -6096,7 +6119,7 @@ ${clip(gloss || "(none)", 9000)}`;
     this.status(`chapter ${j + 1} of ${chs.length} · ${plainTitle(c.title)}`);
   }
 
-  syncPlay() { const b = this.$('[data-act="play"]'); const playing = !!this.player && !this.player.paused; b.textContent = playing ? "Pause" : "Play"; b.dataset.playing = String(playing); b.setAttribute("aria-label", playing ? "Pause (space)" : "Play (space)"); this.$(".dmark")?.toggleAttribute("data-playing", playing); this.updateStatus(); if (this._mini) this.syncMiniBar(); }
+  syncPlay(playing = !!this.player && !this.player.paused) { const b = this.$('[data-act="play"]'); b.textContent = playing ? "Pause" : "Play"; b.dataset.playing = String(playing); b.setAttribute("aria-label", playing ? "Pause (space)" : "Play (space)"); this.$(".dmark")?.toggleAttribute("data-playing", playing); this.updateStatus(); if (this._mini) this.syncMiniBar(); }
   // One home per question. A question is asked in exactly one place, the sheet on the video;
   // this is the record of what has been ANSWERED. The ones still to come are a count, not a second
   // copy of the question, so there is never a version of it here to answer instead.
@@ -6352,7 +6375,9 @@ ${clip(gloss || "(none)", 9000)}`;
       case "mini-play": if (this._pendingDecision && !this.isAnswered()) this.backToVideo(); else this.$('[data-act="play"]').click(); break;
       case "mini-up": this.backToVideo(); break;
       case "play": // the runtime queues a play until its assets are ready; the first play from the poster starts at 0
-        if (!this.player.paused) { this.player.pause(); break; }
+        // Honor the displayed control. A delayed runtime packet can mirror the old play state after
+        // an explicit Play/Pause event without changing the label the reviewer is activating.
+        if (this.$('[data-act="play"]').dataset.playing === "true") { this.player.pause(); break; }
         if (this.isAnswered()) { this.skipWait(); break; }   // an answered sheet: Play is Continue, not a video running under it
         if (this._pendingDecision && this._folded) { const at = this.pendingAt(); if (at != null && (this.player.currentTime || 0) >= at - 0.05) { this.unfoldAt(); break; } }
         if (!this.stage.dataset.started && this._posterT != null && Math.abs((this.player.currentTime || 0) - this._posterT) < 0.25) this.player.seek(0);
@@ -7111,6 +7136,9 @@ ${clip(gloss || "(none)", 9000)}`;
   exportPayload() {
     const dur = this.player.duration || this.planMap?.totalSeconds || 0;
     return { version: 1, src: this.src, project: this.planMap?.project || null, exportedAt: new Date().toISOString(),
+      // A disconnected download keeps the identity the page already knows, as Send does. No
+      // capability means no viewer field: intake then uses git's user.email, without inventing one.
+      ...(this._viewer && (this._viewer.id || this._viewer.owner) ? { viewer: { id: this._viewer.id || null, owner: !!this._viewer.owner } } : {}),
       watch: { firstPlayAt: this._firstPlayAt, maxTimeReached: +this._maxT.toFixed(2), durationSeconds: +dur.toFixed(2), completion: dur ? +Math.min(1, this._maxT / dur).toFixed(3) : null, chapters: (this.planMap?.chapters || []).map((c) => ({ id: c.id, completion: +Math.max(0, Math.min(1, (this._maxT - c.start) / (c.end - c.start))).toFixed(3) })),
         moments: this.moments.map((m) => ({ ...m })),
         // details: each opening, and how long the page was open; none of it is watching time (D-005)
@@ -7134,7 +7162,10 @@ ${clip(gloss || "(none)", 9000)}`;
       ...(this.isExplainer ? { kind: "explainer", end: EXPLAINER_ENDS[this.verdict] ? this.verdict : null, next: this.nextRecord() } : {}),
       annotations: this.annotations };
   }
-  export() {
+  async export() {
+    // A host may still be answering its user capability. Give it the same bounded wait as Send;
+    // a missing or stalled capability must never prevent the reviewer downloading their review.
+    await Promise.race([this.reachViewer(), new Promise((r) => setTimeout(() => r(null), 1500))]).catch(() => null);
     const out = this.exportPayload();
     this.dispatchEvent(new CustomEvent("annotations", { detail: out }));
     const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
