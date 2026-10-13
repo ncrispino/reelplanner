@@ -152,6 +152,28 @@ const open = await p.evaluate(async () => {
 ok(!open.none && open.never, `a video never reviewed opens on the whole video, though the build has changes (${JSON.stringify(open)})`);
 ok(open.only && open.plays && open.asked, `an open question in an unchanged beat plays and is asked in just the changes (${open.id})`);
 
+// Runtime state is asynchronous: packets already sent before the question's pause can arrive after
+// its 600 ms opening grace period. They mirror `paused = false`, but the reviewer did not press Play.
+// Deliver them through HyperFrames' message handler, including its state commit after timeupdate.
+const delayed = await p.evaluate(() => {
+  const rp = document.querySelector("#rp"), pl = rp.player, q = rp.planMap.decisions[0];
+  if (rp.pendingId() !== q.id) return { missing: true };
+  rp._askedAt -= 1000;
+  for (const t of [q.at + 1, q.at + 1.2]) {
+    pl._lastUpdateMs = 0; // both packets represent UI updates, normally at least 100 ms apart
+    window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+      data: { source: "hf-preview", type: "state", frame: t * 30, isPlaying: true } }));
+  }
+  const held = rp.pendingId() === q.id, run = !!rp._run;
+  // The reviewer's explicit seek and Play must still let the open sheet give way.
+  pl.seek(q.at + 1.2); pl.play();
+  pl.dispatchEvent(new CustomEvent("timeupdate", { detail: { currentTime: pl.currentTime } }));
+  const gaveWay = !rp.pendingId(); pl.pause();
+  return { held, run, gaveWay };
+});
+ok(delayed.held && !delayed.run, `late pre-pause playback packets keep the open question waiting (${JSON.stringify(delayed)})`);
+ok(delayed.gaveWay, "an explicit seek and Play still lets the open question give way");
+
 // a quick check at the very end of an unchanged beat (a synthetic one here: the fixture has none) is
 // passed over on landing on the changed beat after it while just the changes play, and asked when the
 // reviewer switches to the whole video and reaches it

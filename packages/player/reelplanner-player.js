@@ -4577,8 +4577,9 @@ ${clip(gloss || "(none)", 9000)}`;
     if (this._pendingDecision && this._folded) { const at = this.pendingAt(); if (at != null && t >= at - 0.05 && !this.player.paused) this.unfoldAt(); return; }
     // An open question, not answered and not put aside, that the video has left while playing (Play
     // pressed with it up, or a seek away and Play) gives way, and stops the video again when it is reached.
-    // Not in its first 600 ms: a timeupdate from before its seek can still arrive from the old place.
-    if (this._pendingDecision && !this.player.paused && !this.isAnswered() && performance.now() - (this._askedAt || 0) > 600) { const at = this.pendingAt(); if (at != null && (t < at - 0.15 || t >= at + 0.6)) this.giveWay(); }
+    // Require a new Play run: delayed runtime packets can mirror `paused = false` after the question
+    // paused, even beyond its opening grace period. They are not the reviewer choosing to play on.
+    if (this._pendingDecision && run && !this.player.paused && !this.isAnswered() && performance.now() - (this._askedAt || 0) > 600) { const at = this.pendingAt(); if (at != null && (t < at - 0.15 || t >= at + 0.6)) this.giveWay(); }
     if (this._pendingDecision) return;
     // A question stops the video once per pass, not once ever: gone back before it, it is due again
     // (the owner: going back to before a question should bring it back, even an answered one). Not
