@@ -57,7 +57,7 @@
 //   --out         where to put the bundle (default: <tmp>/reelplanner-review/<owning repo key>)
 //   --port        first port to try (default 8787; the next free one is used)
 //   --no-open     print the URL, don't launch a browser
-//   --workspace   browser (default), terminal-browser, or cmux; optional panes open the same URL
+//   --workspace   browser, terminal-browser, or cmux; overrides review-setup's saved choice (default browser)
 //   --session     connect a verified Codex session: codex:<id>
 //   --session-endpoint  its running App Server transport; omitted only for a verified active daemon
 //   --list        list built videos in the current/ancestor folders, with each owning repo
@@ -86,6 +86,7 @@ import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs
 import { unsandboxedNote } from "./lib/sandbox.mjs";
 import { harnessForCommand } from "./lib/agents.mjs";
 import { openReview, REVIEW_WORKSPACES } from "./lib/presentation.mjs";
+import { readReviewPreferences, openerCommand } from "./lib/review-preferences.mjs";
 import { discoverReviewProjects } from "./lib/review-projects.mjs";
 import { sendFile } from "./lib/http-file.mjs";
 import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, claimLive, progressOf, repoKey } from "./lib/inbox.mjs";
@@ -96,7 +97,10 @@ const args = process.argv.slice(2);
 // the waiting half: no server, no bundle — wait on the inbox and exit with the review's path
 if (args.includes("--wait")) { const { main } = await import("./inbox.mjs"); process.exit(await main(args)); }
 const flag = (n, d) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
-const workspace = flag("workspace", "browser");
+let reviewPreferences;
+try { reviewPreferences = args.includes("--stop") || args.includes("--list") ? { workspace: "browser" } : readReviewPreferences(); }
+catch (error) { console.error(`✗ ${error.message}`); process.exit(1); }
+const workspace = flag("workspace", reviewPreferences.workspace);
 if (!REVIEW_WORKSPACES.includes(workspace)) { console.error(`✗ --workspace must be ${REVIEW_WORKSPACES.join(" | ")}`); process.exit(1); }
 const valued = new Set(["--out", "--port", "--timeout", "--repo", "--session", "--session-endpoint", "--workspace"]);
 if (flag("session-endpoint") && !flag("session")) { console.error("✗ --session-endpoint requires --session codex:<id>"); process.exit(1); }
@@ -221,7 +225,13 @@ if (!packedDir && !rp && !process.env.REELPLANNER_REVIEW_DETACHED) for (const p 
 const bundle = (dir) => packedDir ? undefined : execFileSync(process.execPath, [join(ROOT, "scripts", "bundle-player.mjs"), dir, ...projects, ...(rp ? ["--reelplanner", rp] : [])], { stdio: ["ignore", "inherit", "inherit"] });
 // one video: open it; the whole repo: open on the library
 const pageUrl = (base, dir) => rp ? base : `${base}?project=${encodeURIComponent(JSON.parse(readFileSync(join(dir, "library.json"), "utf8")).slugs[0])}`;
+const printOpener = (url) => {
+  if (workspace === "terminal-browser" && reviewPreferences.codexAutoOpen) {
+    console.log(`· Codex: run this separately to use the saved opener permission:\n  ${openerCommand(url)}`);
+  }
+};
 const announce = async (url) => {
+  printOpener(url);
   // A video was just built and its page is up: say so, with what is waiting. (The library, opened on
   // demand, is not news.) It never fails the page: a missing notifier is only a line on stdout.
   if (!rp && !args.includes("--no-notify")) {
@@ -272,6 +282,7 @@ if (args.includes("--detach")) {
   }
   if (!s) { console.error(`✗ the review server did not start; its output is in ${shownPath(log)}`); process.exit(1); }
   console.log(`✓ review page: ${s.url}`);
+  printOpener(s.url);
   console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${shownPath(log)}; \`reelplanner review --stop\` stops it)`);
   if (s.unsandboxed) console.log(s.unsandboxed);
   process.exit(0);

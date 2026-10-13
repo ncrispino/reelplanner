@@ -135,8 +135,17 @@ reelplanner review videos/<name> --detach --workspace terminal-browser
 Replace `videos/<name>` with the video folder your agent built. The player opens in a pane beside
 your agent; **Send** saves your review for the agent, with no file to download.
 Use any terminal supported by terminal-browser; we've tested playback and review controls in Ghostty.
+To remember this workspace and let Codex open ready reviews without a prompt each time, opt in once
+from your local shell, then restart Codex:
+
+```sh
+reelplanner review-setup --workspace terminal-browser --codex-allow-open
+```
+
+This grants only the local review opener; starting the server keeps its existing permission checks.
+`reelplanner review-setup --check` checks the saved setup; `--codex-disable-open` removes its rule.
 See [terminal setup and testing status](./docs/terminal-review.md) for details. The ordinary browser
-remains the default.
+remains the default until you choose a workspace.
 
 ## Case studies
 

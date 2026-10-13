@@ -46,6 +46,37 @@ See `docs/agents.md` for actual evidence and client/platform limits.
 
 ### Local review
 
+#### Automatic terminal opening
+
+The user can opt in once from their local shell (not from a sandbox that forbids permission changes):
+
+```sh
+reelplanner review-setup --workspace terminal-browser --codex-allow-open --dry-run
+reelplanner review-setup --workspace terminal-browser --codex-allow-open
+reelplanner review-setup --check
+```
+
+This saves a machine-local workspace choice and a dedicated Codex rule for the exact installed
+`review-open` command. The rule opens only an existing `http://127.0.0.1:<port>/` review through
+terminal-browser; it does not grant arbitrary reelplanner commands, server startup, page control,
+review submission, or agent launch. The CLI verifies the generated rule using `codex execpolicy
+check`, without a model call. It does not change Codex's approval policy, sandbox, other rules, or
+Claude permissions. Restart Codex after enabling/disabling; rerun setup if Node or reelplanner moves.
+
+When enabled, start the server with `review <video-dir> --detach --no-open`, then run its printed
+absolute opener command separately with normal execution. An allow rule runs that command without
+a fresh approval prompt; don't request escalation explicitly when the rule already permits it.
+An unavailable escalation prompt (`sandbox_approval: false`) is not itself proof that an existing
+allow rule is ineffective. Conversely, `--check` proves only this saved rule's match, not what a
+running session loaded: managed forbids or other stricter rules still win. Respect an actual denial.
+If server startup is forbidden, have the user start the review server from their local shell; don't
+promise that opener setup grants permission to create the server too.
+
+Disable with `reelplanner review-setup --codex-disable-open`; choose the ordinary browser with
+`reelplanner review-setup --workspace browser`. Disabling removes only reelplanner's dedicated rule.
+Terminal-browser remains a separate installation. This opt-in needs no hook.
+See [Codex command rules](https://developers.openai.com/codex/rules).
+
 Start a waiting task before presenting a review:
 
 ```sh

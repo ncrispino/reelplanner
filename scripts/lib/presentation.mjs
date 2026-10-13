@@ -21,7 +21,7 @@ function run(command, args, env, timeout = 30000) {
  * the launcher accepted the request, not that playback, sound or Send was verified.
  * Callers may fall back to workspace:"browser" after reporting an optional failure.
  */
-export async function openReview({ url, workspace = "browser", env = process.env }) {
+export async function openReview({ url, workspace = "browser", env = process.env, terminalBrowser = "terminal-browser" }) {
   if (!REVIEW_WORKSPACES.includes(workspace)) return { status: "error", reason: `unknown review workspace: ${workspace}` };
   let parsed;
   try { parsed = new URL(url); } catch { return { status: "error", reason: "review URL must be an HTTP or HTTPS address" }; }
@@ -49,8 +49,8 @@ export async function openReview({ url, workspace = "browser", env = process.env
   // shorter terminal allowlist here: new supported terminals should work without
   // reelplanner or an agent-specific integration changing. Only a real open can
   // establish whether this invoking pane supports graphics and split automation.
-  const help = await run("terminal-browser", ["open", "--help"], env, 5000);
+  const help = await run(terminalBrowser, ["open", "--help"], env, 5000);
   if (help.status !== "opened") return { status: help.status, reason: help.reason };
   if (!/--split\b/.test(help.output)) return { status: "unavailable", reason: "installed terminal-browser has no --split option" };
-  return result("terminal-browser", ["open", "--split", "right", url]);
+  return result(terminalBrowser, ["open", "--split", "right", url]);
 }

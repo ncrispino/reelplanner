@@ -66,6 +66,19 @@ Codex plugin installation, feature checks, sandbox approvals, and the existing C
 Use this checkout's CLI when contributing here. Preserve the person's approval and signing policy;
 request only the permission a real command needs.
 
+**Review workspace:** before the first review in a session, `$RP review-setup --check` reports the
+machine's saved browser/terminal choice and any Codex opener rule. If the user asks for automatic
+terminal opening, offer the explicit one-time setup in
+[references/harnesses.md#automatic-terminal-opening](references/harnesses.md#automatic-terminal-opening).
+Installing the plugin alone grants no permissions. With Codex automatic opening enabled, every
+"Open it" step below uses `$RP review <video-dir> --detach --no-open` first, then runs the exact
+absolute `review-open` command it prints, as a separate tool call. Use normal execution so the saved
+allow rule can match; don't force an escalation request or wrap it in another command. Server
+startup still needs its normal permissions. If the session forbids that operation, report the
+boundary and hand off the printed URL/command; don't change policy or try another opening route.
+The opener rule does not authorize clicking controls or submitting a review. An explicit
+`--workspace` overrides the saved choice; `--no-open` alone never opens a pane.
+
 **In Claude Code,** each `$RP` command asks for permission, or in auto mode is judged and may be refused (most
 often one that writes into the repo). Never edit permission settings yourself, and never rerun a refused command
 in another form to get past the check. Tell the person once, in two lines: they can allow reelplanner's commands

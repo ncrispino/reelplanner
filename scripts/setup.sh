@@ -302,6 +302,8 @@ elif [ "$DRY" = 1 ]; then node "$ROOT/scripts/lib/local-speed.mjs" --dry-run "$P
 else node "$ROOT/scripts/lib/local-speed.mjs" "$PWD"; fi
 
 node "$ROOT/scripts/lib/setup-check.mjs" || miss "coding agent capabilities" "check the installed CLI and run setup again"
+echo "→ Optional terminal reviews: $RP review-setup --workspace terminal-browser"
+echo "  Codex automatic opening is a separate opt-in: add --codex-allow-open (preview with --dry-run)."
 
 # Claude Code asks before each of the skill's commands, and auto mode may stop one that writes into the repo, until the
 # person allows them once (docs/agents.md, "Claude Code"): said when `claude` is on PATH and neither its user settings

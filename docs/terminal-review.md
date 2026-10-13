@@ -36,6 +36,44 @@ directly; no download is needed.** A disconnected portable copy still exports a 
 the agent. Agent-specific connection and recovery commands are in the
 [harness reference](../skills/plan-to-video/references/harnesses.md).
 
+## Remember the workspace and allow automatic opening
+
+Run this once in your local terminal to remember terminal-browser for future reviews:
+
+```sh
+reelplanner review-setup --workspace terminal-browser
+```
+
+For Codex, explicitly authorize the opener once so opening each ready review needs no new prompt:
+
+```sh
+reelplanner review-setup --workspace terminal-browser --codex-allow-open --dry-run
+reelplanner review-setup --workspace terminal-browser --codex-allow-open
+reelplanner review-setup --check
+```
+
+Restart Codex afterward. The first command previews the exact rule; the second saves it under
+`$CODEX_HOME/rules/reelplanner-review.rules` (normally `~/.codex/rules/`) and records the choice in
+the machine's reelplanner folder (`~/.reelplanner/review.json`, or `REELPLANNER_HOME`). No other
+Codex rules or approval settings change. Plain setup and plugin installation never grant this access.
+
+The skill starts the review with `--no-open`, then runs the separate absolute `review-open` command
+printed by the server launcher. This lets Codex match the permission to the opener itself. The
+opener accepts only local review-page URLs, checks the server, and asks terminal-browser to split
+right. It never starts a server, controls the page, sends a review, or falls back to another browser.
+Server startup can still require approval; when policy prohibits it, run the review command yourself
+from a local shell. Opener permission does not override a managed prohibition or the screen-capture
+permissions of your recording tools.
+
+`--check` checks the installed executable, terminal-browser's split option, and the saved rule with
+Codex's rule parser. It does not open a pane or prove the current session loaded the rule; other
+rules and managed restrictions can take precedence. After moving/upgrading Node or reelplanner,
+run setup again if the check reports a stale path.
+
+Use `reelplanner review-setup --codex-disable-open` to remove just this rule, then restart Codex.
+Use `reelplanner review-setup --workspace browser` to restore the ordinary browser preference.
+`review --workspace …` overrides the preference for one invocation; `--no-open` opens nothing.
+
 ## Ghostty trial
 
 On macOS, terminal-browser's Ghostty split support requires Ghostty 1.3.0 or newer, according to its
