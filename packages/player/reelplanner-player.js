@@ -4548,7 +4548,12 @@ ${clip(gloss || "(none)", 9000)}`;
     // it lands where it was sent. A tick outside that (one from before the seek that began the run, still on its way
     // from the old place) or while paused leaves the run as it was.
     const run = this._run, from = run?.last;
-    const ran = !!run && !this.player.paused && t > from && t >= run.t - 0.05 && t - run.t <= ((performance.now() - run.at) / 1000) * (this.speed || 1) * 1.5 + 0.35;
+    const withinRun = !run || this.player.paused || (t >= run.t - 0.05 && t - run.t <= ((performance.now() - run.at) / 1000) * (this.speed || 1) * 1.5 + 0.35);
+    // A queued tick from before a backward seek must not consume the chosen branch's
+    // end route, or route through an unchosen branch below. Paused seeks and repeated
+    // valid ticks still land where requested; advancing playback keeps the same fence.
+    if (!withinRun) return;
+    const ran = !!run && !this.player.paused && t > from;
     if (ran) run.last = t;
     // A part boundary. By default the video plays straight on into the next part and names it in the
     // frame's corner (the reviewer asked for it: clicking "Next part" at the end of every part was

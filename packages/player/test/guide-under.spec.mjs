@@ -13,7 +13,7 @@
 import { chromium } from "playwright-core"; import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs"; import { join } from "node:path"; import { tmpdir } from "node:os";
 import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
-import { until, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } from "./wait.mjs";
+import { until, when, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } from "./wait.mjs";
 import { planGuideRepo } from "./plan-guide-repo.mjs";
 import { webpEncoder } from "../../../scripts/lib/guide/pictures.mjs";
 
@@ -226,10 +226,21 @@ try {
     const room = await gf.evaluate(() => { const r = document.querySelector(".lb-img").getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(innerWidth - r.right), b: Math.round(innerHeight - r.bottom) }; });
     check("a picture opened full size in the guide: the small player steps out of its way (hidden) and pauses", lb.overlay && lb.bar === "hidden" && lb.pic === "hidden" && lb.paused, JSON.stringify(lb));
     check("…the picture fitted with room round it (48 px a side or more, 72 px above and below or more)", Math.min(room.l, room.r) >= 47 && Math.min(room.t, room.b) >= 71, JSON.stringify(room));
+    // Keep the actual resumed runtime state in the page. A later node-side look can arrive after
+    // a legitimate review stop; observing play() alone could also precede a queued pause response.
+    await p.evaluate(() => {
+      const el = document.querySelector("#rp"), R = el.shadowRoot, t0 = el.player.currentTime;
+      window.__rpPictureResumed = null;
+      const resumed = (e) => { const t = e.detail?.currentTime ?? el.player.currentTime;
+        if (!el.hasAttribute("overlay") && !el.player.paused && t > t0 + 0.05) {
+          window.__rpPictureResumed = { overlay: false, bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: true, mini: !!el._mini, from: t0, t };
+          el.player.removeEventListener("timeupdate", resumed);
+        } };
+      el.player.addEventListener("timeupdate", resumed);
+    });
     await gf.press("body", "Escape");
-    await until(p, () => !document.querySelector("#rp").hasAttribute("overlay") && !document.querySelector("#rp").player.paused);
-    const back = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini }; });
-    check("…and closed, the small player is back as it was, playing again", !back.overlay && back.bar === "visible" && back.playing && back.mini, JSON.stringify(back));
+    const back = (await when(p, () => window.__rpPictureResumed)) || await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini }; });
+    check("…and closed, the small player is back as it was, playing again", !back.overlay && back.bar === "visible" && back.playing && back.mini && back.t > back.from + 0.05, JSON.stringify(back));
     await p.evaluate(() => document.querySelector("#rp").player.pause());
   }
 

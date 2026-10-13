@@ -213,6 +213,9 @@ try {
   let log3 = ""; srv3.stdout.on("data", (d) => (log3 += d)); srv3.stderr.on("data", (d) => (log3 += d));
   const url3 = await until(() => log3.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   const bbox = machine(bare);
+  // The address and inbox explanation can arrive in different stdout chunks.
+  // Wait for the message this assertion checks, as the level-1 case above does.
+  if (url3) await until(() => log3.includes(`files the review in ${tilde(bbox)}/`));
   ok("setup files only: Send files the review in this machine's inbox for the repo", !!url3 && log3.includes(`files the review in ${tilde(bbox)}/`), log3);
   const p3 = url3 && await fetch(`${url3}/api/review`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(row("2026-01-08T00:00:00Z", { project: "demo", planDir: null })) }).then((r) => r.json());
   ok("…a posted review lands there; nothing written in .reelplanner/", p3?.handledBy === "inbox" && existsSync(join(bbox, `${p3.id}.json`)) && readdirSync(bareRp).sort().join() === ".env,config.json", JSON.stringify(p3) + " " + readdirSync(bareRp).join());
