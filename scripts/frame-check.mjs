@@ -7,7 +7,7 @@
 // .hyperframes/shots/<frame>.png. Every frame worker used to write its own screenshot harness for this; one set of
 // them filled a disk.
 //
-// usage: reelplanner frame-check <video-dir> <frame> [<frame>…] [--no-shot] [--no-layout]
+// usage: reelplanner frame-check <video-dir> <frame> [<frame>…] [--notes] [--no-shot] [--no-layout]
 //   a frame is its number (4, 04) as the storyboard numbers it. A batch shares one layout check and one snapshot
 //   browser, retaining each frame's three layout moments and plain at-rest PNG. Exit 1 for frame-lint, framework
 //   lint/runtime errors, incomplete browser checks or failed pictures. Layout/motion/contrast findings are advice;
@@ -22,8 +22,8 @@ import { layoutCheck, findingLine, slotOf } from "./lib/frame-layout.mjs";
 
 const args = process.argv.slice(2);
 const die = (m, code = 1) => { console.error(`✗ frame-check: ${m}`); process.exit(code); };
-const usage = "usage: reelplanner frame-check <video-dir> <frame> [<frame>…] [--no-shot] [--no-layout]";
-for (const a of args) if (a.startsWith("-") && !["--no-shot", "--no-layout"].includes(a)) die(`unknown option ${a}\n${usage}`);
+const usage = "usage: reelplanner frame-check <video-dir> <frame> [<frame>…] [--notes] [--no-shot] [--no-layout]";
+for (const a of args) if (a.startsWith("-") && !["--notes", "--no-shot", "--no-layout"].includes(a)) die(`unknown option ${a}\n${usage}`);
 const [target, ...asked] = args.filter((a) => !a.startsWith("--"));
 if (!target || !asked.length) die(usage);
 const dir = resolve(target), read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
@@ -39,7 +39,7 @@ const selected = [...new Set(asked.map((which) => {
 const rel = (p) => relative(process.cwd(), p) || p;
 
 // the rules a program can see, on this frame alone
-const lint = spawnSync(process.execPath, [join(ROOT, "scripts", "frame-lint.mjs"), ...selected.map((f) => join(dir, f.meta.src))], { cwd: dir, encoding: "utf8" });
+const lint = spawnSync(process.execPath, [join(ROOT, "scripts", "frame-lint.mjs"), ...selected.map((f) => join(dir, f.meta.src)), ...(args.includes("--notes") ? ["--notes"] : [])], { cwd: dir, encoding: "utf8" });
 process.stdout.write(lint.stdout || ""); process.stderr.write(lint.stderr || "");
 let failed = lint.status !== 0;
 

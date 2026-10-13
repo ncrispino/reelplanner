@@ -60,6 +60,12 @@ try {
     ok(`an invalid later argument (${tail[0]}) is refused before checks`, invalid.status === 1 && !/all frames clean|✓ layout|picture at/.test(invalid.stdout), invalid.stdout + invalid.stderr);
   }
   const f3 = join(V, "compositions", "frames", "03-pretrain.html"), f3was = readFileSync(f3, "utf8");
+  // Following frame-lint's printed advice through frame-check must reveal the note.
+  writeFileSync(f3, f3was.replace('<script>', '<script>\nconst noteTimeline = gsap.timeline({paused:true}); noteTimeline.to("#root", {width:1800, duration:1});'));
+  const quietNotes = rp("frame-check", V, "3", "--no-shot", "--no-layout");
+  const shownNotes = rp("frame-check", V, "3", "--notes", "--no-shot", "--no-layout");
+  ok("--notes reveals the lint advice frame-check tells authors to request", quietNotes.status === 0 && /pass --notes/.test(quietNotes.stdout) && !/note: tween animates width/.test(quietNotes.stdout) && shownNotes.status === 0 && /note: tween animates width/.test(shownNotes.stdout), quietNotes.stdout + quietNotes.stderr + shownNotes.stdout + shownNotes.stderr);
+  writeFileSync(f3, f3was);
   // a title too long for its box: HyperFrames' layout check finds it in this frame, in seconds
   writeFileSync(f3, f3was.replace(/(<div id="root"[^>]*>)/, '$1<div class="ovf" style="position:absolute;left:300px;top:400px;width:260px;height:60px;border:2px solid #333;font:500 40px/1.2 Inter;white-space:nowrap">This title is far too long for its box</div>'));
   const t0 = Date.now(), co = rp("frame-check", V, "3", "--no-shot"), took = (Date.now() - t0) / 1000;
