@@ -10,6 +10,13 @@ cheaper video that looks more alike shows here. Capped episodes are lower bounds
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-12 | Codex follow-up, before-1 | first look; required branches omitted | frozen 45f64f2 + guidance | 29.51 | — | — | — | — | 12.027 | 50.0 | 2 script + 2 frame | 19 first-frame + 1 second; see scope limit | 10 / 19 | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, before-1 | scripted revision | frozen 45f64f2 + guidance | 19.60 | — | — | — | — | 6.387 | 31.3 | — | see report | — | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, after-1 | first look; capped, not shown | 4851416 | ≥40.01 | — | — | — | — | 24.955 | 132.2 | partial | material source/readability repairs | — | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, after-2 | first look | 4851416 | 32.23 | — | — | — | — | 24.752 | 61.1 | — | see report | 12 / 29 | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, after-2 | scripted revision; capped, not shown | 4851416 | ≥25.00 | — | — | — | — | 18.344 | 40.6 | — | revised build passed; show still running at cap | — | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, before-2 | first look | frozen 45f64f2 + guidance | 30.71 | — | — | — | — | Unknown | Unknown | — | model-session export missing | 8 / 27 | [report](2026-10-12-codex-speed-followup.md) |
+| 2026-10-12 | Codex follow-up, before-2 | scripted revision; capped, not shown | frozen 45f64f2 + guidance | ≥25.00 | — | — | — | — | Unknown | Unknown | — | revised checks passed; not shown within allowance | — | [report](2026-10-12-codex-speed-followup.md) |
 | 2026-10-12 | synthetic Codex EC2, baseline-1 | first look; capped, not shown | frozen 45f64f2 + guidance | ≥40.01 (capped) | — | — | — | — | 27.762 | 120.7 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |
 | 2026-10-12 | synthetic Codex EC2, baseline-2 | first look | frozen 45f64f2 + guidance | 38.04 | — | — | — | — | 11.147 | 50.6 | 1 script + 2 frame | 5 script + 16 frame | 11 / 20 | [report](2026-10-12-codex-packet-bench.md) |
 | 2026-10-12 | synthetic Codex EC2, baseline-2 | scripted revision; capped, not shown | frozen 45f64f2 + guidance | ≥1.96 (capped) | — | — | — | — | 0.991 | 1.1 | — | partial; see report | — | [report](2026-10-12-codex-packet-bench.md) |

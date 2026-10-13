@@ -19,6 +19,20 @@ List each scene's teaching purpose, concrete artifact and intended layout in STO
 and layout code where it fits, with scene-specific content and motion. Preserve visual variety; record
 `reelplanner variety <video-dir>` alongside the checks. Don't trade readable examples for fewer scenes.
 
+## Check the first frame batch before copying its pattern
+
+A composition root is the container for one scene. Follow HyperFrames' root contract: give it
+`id="root"` and style it through `#root`. Give animated elements letter-prefixed DOM IDs such as
+`scene-17-title`, or escape their CSS selectors; `#17-title` is an invalid selector even though the
+HTML ID itself is allowed. Frame numbers and composition metadata can remain numeric.
+
+After the first HTML batch, run the pinned `$RP hyperframes lint <video-dir> --json` while authoring
+continues. It checks `compositions/` before the final browser check. Individual `frame-check` passes
+alone do not establish the framework contract. The follow-up AWS test reached assembly with 26 root
+styling errors after its frame checks; an earlier baseline hit 19 numeric-selector runtime errors.
+Fix the shared pattern before repeating it across the remaining frames. Keep the full assembled
+checks and independent reviewers.
+
 ## Settle narration before timing frames
 
 Use the existing narration record's voice and pace on a revision. On a new video, use 1.25× unless the

@@ -18,7 +18,8 @@ def timestamp(e):
 def usage_between(sessions,start,end):
  total=collections.Counter();auto_review=collections.Counter();exact_ids=set();auto_ids=set();fallback=0;updates=0;auto_sessions=0;auto_fallback=0
  auto_starts={};auto_turns=set();auto_intervals=[];auto_durations=[]
- for path in sessions.glob("*.jsonl"):
+ session_paths=list(sessions.glob("*.jsonl"));missing_exports=not session_paths
+ for path in session_paths:
   events=rows(path);exact={};before={};after={};changes=set()
   source=(events[0].get("payload",{}).get("source") if events else None)
   guardian=isinstance(source,dict) and source.get("subagent",{}).get("other")=="guardian"
@@ -59,7 +60,7 @@ def usage_between(sessions,start,end):
   if merged and a<=merged[-1][1]:merged[-1][1]=max(b,merged[-1][1])
   else:merged.append([a,b])
  timing={"completed_checks":len(auto_turns),"summed_turn_minutes":round(sum(auto_durations)/60,3),"union_turn_minutes":round(sum(b-a for a,b in merged)/60000,3),"median_seconds":statistics.median(auto_durations) if auto_durations else None}
- return {"tokens":dict(total),"model_requests":None if fallback else len(exact_ids),"cumulative_sessions":fallback,"usage_updates":updates,"auto_review_tokens":dict(auto_review),"auto_review_sessions":auto_sessions,"auto_review_requests":None if auto_fallback else len(auto_ids),"auto_review_timing":timing}
+ return {"session_exports_missing":missing_exports,"tokens":dict(total),"model_requests":None if fallback or missing_exports else len(exact_ids),"cumulative_sessions":fallback,"usage_updates":updates,"auto_review_tokens":dict(auto_review),"auto_review_sessions":auto_sessions,"auto_review_requests":None if auto_fallback or missing_exports else len(auto_ids),"auto_review_timing":timing}
 
 def summarize(folder):
  run=json.loads((folder/"run.json").read_text());review=rows(folder/"reviewer.jsonl")

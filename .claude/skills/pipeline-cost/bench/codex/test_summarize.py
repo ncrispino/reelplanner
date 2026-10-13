@@ -70,6 +70,13 @@ class AccountingTests(unittest.TestCase):
         self.assertEqual(result["auto_review_timing"]["union_turn_minutes"], 0.25)
         self.assertEqual(result["auto_review_timing"]["summed_turn_minutes"], 0.333)
 
+    def test_missing_session_exports_leave_request_counts_unknown(self):
+        result = usage_between(self.sessions, 0, 60000)
+        self.assertTrue(result["session_exports_missing"])
+        self.assertIsNone(result["model_requests"])
+        self.assertIsNone(result["auto_review_requests"])
+        self.assertEqual(result["tokens"], {})
+
     def test_cap_preserves_completed_first_showing_and_incomplete_revision(self):
         (self.root / "run.json").write_text(json.dumps({"label": "fixture", "variant": "baseline",
             "start": 0, "end": 40 * 60, "exit_code": 124, "completed": False}))

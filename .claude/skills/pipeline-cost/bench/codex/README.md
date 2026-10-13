@@ -26,3 +26,8 @@ These cover login expiry/cleanup and exact-response deduplication, cumulative fa
 approval accounting, overlapping approval intervals and censored revisions. The completed
 [experiment report](../../../../../eval/pipeline-cost/2026-10-12-codex-packet-bench.md) records results,
 scope differences and cleanup; these scripts preserve that exploratory protocol, not a speed guarantee.
+
+The subsequent version comparison has a [separate protocol](../codex-speed/README.md) and
+[measured follow-up](../../../../../eval/pipeline-cost/2026-10-12-codex-speed-followup.md), with separate
+revision deadlines, fresh plugin caches and fixed narration pace. It also identifies missing branch
+coverage and interrupted-export limits; these experiments do not establish a production speedup.

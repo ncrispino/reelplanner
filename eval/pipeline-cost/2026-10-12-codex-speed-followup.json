@@ -1,0 +1,1199 @@
+{
+  "protocol": {
+    "before_core_commit": "45f64f23c4c2a741b05c3b2ccdd544787041b43d",
+    "after_commit": "4851416",
+    "conditions": [
+      "before",
+      "after"
+    ],
+    "source": "synthetic fixture only",
+    "node": "22.23.3",
+    "codex": "0.162.1",
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "voice": "local Kokoro, 1.25x",
+    "order": [
+      "before-1",
+      "after-1",
+      "after-2",
+      "before-2"
+    ],
+    "first_cap_minutes": 40,
+    "revision_cap_minutes": 25,
+    "system_video": false,
+    "packet_treatment": false,
+    "sha256": {
+      "before": "ce7501c370dcc3f9ccf832231c8fbf1a1bf51aff9257176f29882fa91ef2bb2b",
+      "after": "eed111373aea946768f0e8979221960006b864e6abdd65bedd0fb01f560fc97c"
+    }
+  },
+  "status": "complete; resources deleted; no demonstrated production speedup",
+  "limits": [
+    "before-1 omitted ten required option branches",
+    "after-1 capped without a showing",
+    "after-2 and before-2 revisions capped",
+    "before-2 model-session export missing",
+    "after-1 tool build continued 2.77 minutes beyond CLI cap during after-2 initial planning",
+    "temporary local network interruption; archive recovered from complete entries before interrupted tail"
+  ],
+  "trials": [
+    {
+      "label": "before-1",
+      "two_showings_observed": true,
+      "elapsed_minutes": 49.17,
+      "episodes": [
+        {
+          "episode": "first",
+          "complete": true,
+          "capped": false,
+          "minutes": 29.51,
+          "usage": {
+            "session_exports_missing": false,
+            "tokens": {
+              "input_tokens": 12027240,
+              "cached_input_tokens": 11668352,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 50033,
+              "reasoning_output_tokens": 13670,
+              "total_tokens": 12077273
+            },
+            "model_requests": 135,
+            "cumulative_sessions": 0,
+            "usage_updates": 134,
+            "auto_review_tokens": {
+              "input_tokens": 9874318,
+              "cached_input_tokens": 9568256,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 10772,
+              "reasoning_output_tokens": 3163,
+              "total_tokens": 9885090
+            },
+            "auto_review_sessions": 7,
+            "auto_review_requests": 144,
+            "auto_review_timing": {
+              "completed_checks": 144,
+              "summed_turn_minutes": 3.992,
+              "union_turn_minutes": 3.923,
+              "median_seconds": 1.513
+            }
+          },
+          "commands": {
+            "--help": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.05
+            },
+            "setup": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 1.39
+            },
+            "hyperframes-skills": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.15
+            },
+            "narration-check": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 6.88
+            },
+            "reel init": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.26
+            },
+            "patch-tts-speed": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "reel status": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel new-plan": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.26
+            },
+            "inbox": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "reel check": {
+              "calls": 5,
+              "failed": 0,
+              "summed_command_seconds": 0.67
+            },
+            "hyperframes": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 2.05
+            },
+            "reel stage": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel prereqs": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "fresh-eyes": {
+              "calls": 18,
+              "failed": 1,
+              "summed_command_seconds": 32.46
+            },
+            "check-terms": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 0.66
+            },
+            "frame-check": {
+              "calls": 23,
+              "failed": 20,
+              "summed_command_seconds": 80.45
+            },
+            "frame-lint": {
+              "calls": 4,
+              "failed": 0,
+              "summed_command_seconds": 0.72
+            },
+            "guide": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 16.6
+            },
+            "plan-map": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.27
+            },
+            "narrate": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 299.81
+            },
+            "build": {
+              "calls": 5,
+              "failed": 2,
+              "summed_command_seconds": 342.47
+            },
+            "chapters": {
+              "calls": 1,
+              "failed": 1,
+              "summed_command_seconds": 0.08
+            },
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.99
+            }
+          }
+        },
+        {
+          "episode": "revision",
+          "complete": true,
+          "capped": false,
+          "minutes": 19.6,
+          "usage": {
+            "session_exports_missing": false,
+            "tokens": {
+              "input_tokens": 6387187,
+              "cached_input_tokens": 6291072,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 31271,
+              "reasoning_output_tokens": 16165,
+              "total_tokens": 6418458
+            },
+            "model_requests": 43,
+            "cumulative_sessions": 0,
+            "usage_updates": 42,
+            "auto_review_tokens": {
+              "input_tokens": 8559477,
+              "cached_input_tokens": 8459008,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 4408,
+              "reasoning_output_tokens": 1430,
+              "total_tokens": 8563885
+            },
+            "auto_review_sessions": 4,
+            "auto_review_requests": 57,
+            "auto_review_timing": {
+              "completed_checks": 57,
+              "summed_turn_minutes": 1.906,
+              "union_turn_minutes": 1.906,
+              "median_seconds": 1.894
+            }
+          },
+          "commands": {
+            "review": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 1.05
+            },
+            "reel-intake": {
+              "calls": 2,
+              "failed": 1,
+              "summed_command_seconds": 0.17
+            },
+            "revise-scope": {
+              "calls": 2,
+              "failed": 1,
+              "summed_command_seconds": 0.23
+            },
+            "reel record": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.29
+            },
+            "reel check": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 0.41
+            },
+            "fresh-eyes": {
+              "calls": 7,
+              "failed": 0,
+              "summed_command_seconds": 12.64
+            },
+            "frame-check": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 83.54
+            },
+            "narrate": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 107.31
+            },
+            "plan-diff": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 0.45
+            },
+            "inbox": {
+              "calls": 6,
+              "failed": 0,
+              "summed_command_seconds": 0.83
+            },
+            "build": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 196.35
+            }
+          }
+        }
+      ],
+      "showings": [
+        {
+          "number": 1,
+          "frames": 19,
+          "choices": 5,
+          "quick_checks": 5,
+          "branch_frames": 0,
+          "missing_option_branches": [
+            "q1=a",
+            "q1=b",
+            "q2=a",
+            "q2=b",
+            "q3=a",
+            "q3=b",
+            "q4=a",
+            "q4=b",
+            "q5=a",
+            "q5=b"
+          ],
+          "total_seconds": 494.096,
+          "capture_delay_seconds": 0.28
+        },
+        {
+          "number": 2,
+          "frames": 19,
+          "choices": 5,
+          "quick_checks": 5,
+          "branch_frames": 0,
+          "missing_option_branches": [
+            "q1=a",
+            "q1=b",
+            "q2=a",
+            "q2=b",
+            "q3=a",
+            "q3=b",
+            "q4=a",
+            "q4=b",
+            "q5=a",
+            "q5=b"
+          ],
+          "total_seconds": 506.138,
+          "capture_delay_seconds": 0.45
+        }
+      ],
+      "role_context_observations": [
+        {
+          "episode": "first",
+          "roles": [
+            {
+              "role": "designer_round2",
+              "requests": 5,
+              "mean_input": 20741,
+              "max_input": 25135
+            },
+            {
+              "role": "newcomer_review",
+              "requests": 23,
+              "mean_input": 27956,
+              "max_input": 37249
+            },
+            {
+              "role": "script_recheck",
+              "requests": 4,
+              "mean_input": 19297,
+              "max_input": 21828
+            },
+            {
+              "role": "script_review",
+              "requests": 4,
+              "mean_input": 19152,
+              "max_input": 21549
+            },
+            {
+              "role": "newcomer_round2",
+              "requests": 13,
+              "mean_input": 23435,
+              "max_input": 28070
+            },
+            {
+              "role": "coordinator",
+              "requests": 76,
+              "mean_input": 138699,
+              "max_input": 190987
+            },
+            {
+              "role": "designer_review",
+              "requests": 10,
+              "mean_input": 28098,
+              "max_input": 38993
+            }
+          ]
+        },
+        {
+          "episode": "revision",
+          "roles": [
+            {
+              "role": "revision_script_review",
+              "requests": 5,
+              "mean_input": 20463,
+              "max_input": 23426
+            },
+            {
+              "role": "coordinator",
+              "requests": 28,
+              "mean_input": 216606,
+              "max_input": 237523
+            },
+            {
+              "role": "revision_newcomer",
+              "requests": 5,
+              "mean_input": 22451,
+              "max_input": 28659
+            },
+            {
+              "role": "revision_designer",
+              "requests": 5,
+              "mean_input": 21529,
+              "max_input": 26898
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "after-1",
+      "two_showings_observed": false,
+      "elapsed_minutes": 40.01,
+      "episodes": [
+        {
+          "episode": "first-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 40.01,
+          "usage": {
+            "session_exports_missing": false,
+            "tokens": {
+              "input_tokens": 24955414,
+              "cached_input_tokens": 24305536,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 132186,
+              "reasoning_output_tokens": 29309,
+              "total_tokens": 25087600
+            },
+            "model_requests": 261,
+            "cumulative_sessions": 0,
+            "usage_updates": 261,
+            "auto_review_tokens": {
+              "input_tokens": 15233129,
+              "cached_input_tokens": 14689536,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 18004,
+              "reasoning_output_tokens": 5407,
+              "total_tokens": 15251133
+            },
+            "auto_review_sessions": 12,
+            "auto_review_requests": 227,
+            "auto_review_timing": {
+              "completed_checks": 227,
+              "summed_turn_minutes": 7.068,
+              "union_turn_minutes": 6.675,
+              "median_seconds": 1.661
+            }
+          },
+          "commands": {
+            "--help": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.05
+            },
+            "hyperframes-skills": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.15
+            },
+            "setup": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 1.42
+            },
+            "narration-check": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 6.87
+            },
+            "reel init": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.26
+            },
+            "narrate": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 279.75
+            },
+            "hyperframes": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 1.88
+            },
+            "reel status": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.14
+            },
+            "inbox": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "reel new-plan": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.25
+            },
+            "fresh-eyes": {
+              "calls": 14,
+              "failed": 3,
+              "summed_command_seconds": 34.05
+            },
+            "patch-tts-speed": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "guide": {
+              "calls": 5,
+              "failed": 2,
+              "summed_command_seconds": 14.69
+            },
+            "frame-check": {
+              "calls": 54,
+              "failed": 7,
+              "summed_command_seconds": 7.5
+            },
+            "reel check": {
+              "calls": 4,
+              "failed": 0,
+              "summed_command_seconds": 0.55
+            },
+            "reel stage": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel prereqs": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.14
+            },
+            "check-terms": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 0.43
+            },
+            "frame-packet": {
+              "calls": 9,
+              "failed": 0,
+              "summed_command_seconds": 0.89
+            },
+            "vendor-gsap": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.1
+            },
+            "frame-lint": {
+              "calls": 9,
+              "failed": 0,
+              "summed_command_seconds": 1.01
+            },
+            "variety": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "hold-durations": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "build": {
+              "calls": 7,
+              "failed": 4,
+              "summed_command_seconds": 183.23
+            },
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.05
+            }
+          }
+        }
+      ],
+      "showings": [],
+      "role_context_observations": [
+        {
+          "role": "designer_first",
+          "requests": 12,
+          "mean_input": 30369,
+          "output": 2596,
+          "reasoning": 990
+        },
+        {
+          "role": "author",
+          "requests": 13,
+          "mean_input": 47503,
+          "output": 16875,
+          "reasoning": 2254
+        },
+        {
+          "role": "frames_11",
+          "requests": 11,
+          "mean_input": 38339,
+          "output": 9856,
+          "reasoning": 731
+        },
+        {
+          "role": "frames_16",
+          "requests": 15,
+          "mean_input": 43056,
+          "output": 13516,
+          "reasoning": 2383
+        },
+        {
+          "role": "coordinator",
+          "requests": 142,
+          "mean_input": 144698,
+          "output": 47037,
+          "reasoning": 14926
+        },
+        {
+          "role": "frames_06",
+          "requests": 11,
+          "mean_input": 36768,
+          "output": 8196,
+          "reasoning": 1229
+        },
+        {
+          "role": "script_check",
+          "requests": 4,
+          "mean_input": 19054,
+          "output": 1055,
+          "reasoning": 304
+        },
+        {
+          "role": "script_repair",
+          "requests": 4,
+          "mean_input": 19026,
+          "output": 1170,
+          "reasoning": 346
+        },
+        {
+          "role": "frames_01",
+          "requests": 14,
+          "mean_input": 39446,
+          "output": 10381,
+          "reasoning": 1204
+        },
+        {
+          "role": "newcomer_first",
+          "requests": 7,
+          "mean_input": 28105,
+          "output": 2945,
+          "reasoning": 609
+        },
+        {
+          "role": "frames_26",
+          "requests": 11,
+          "mean_input": 35609,
+          "output": 7998,
+          "reasoning": 1957
+        },
+        {
+          "role": "frames_21",
+          "requests": 17,
+          "mean_input": 38904,
+          "output": 10561,
+          "reasoning": 2376
+        }
+      ]
+    },
+    {
+      "label": "after-2",
+      "two_showings_observed": false,
+      "elapsed_minutes": 57.24,
+      "episodes": [
+        {
+          "episode": "first",
+          "complete": true,
+          "capped": false,
+          "minutes": 32.23,
+          "usage": {
+            "session_exports_missing": false,
+            "tokens": {
+              "input_tokens": 24751546,
+              "cached_input_tokens": 24247040,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 61051,
+              "reasoning_output_tokens": 13915,
+              "total_tokens": 24812597
+            },
+            "model_requests": 267,
+            "cumulative_sessions": 0,
+            "usage_updates": 266,
+            "auto_review_tokens": {
+              "input_tokens": 11062271,
+              "cached_input_tokens": 10656512,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 11125,
+              "reasoning_output_tokens": 3360,
+              "total_tokens": 11073396
+            },
+            "auto_review_sessions": 6,
+            "auto_review_requests": 149,
+            "auto_review_timing": {
+              "completed_checks": 149,
+              "summed_turn_minutes": 6.323,
+              "union_turn_minutes": 6.179,
+              "median_seconds": 2.568
+            }
+          },
+          "commands": {
+            "--help": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "setup": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 1.55
+            },
+            "hyperframes-skills": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 6.73
+            },
+            "narration-check": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 7.61
+            },
+            "inbox": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.11
+            },
+            "reel init": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.14
+            },
+            "reel status": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel new-plan": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel check": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 0.4
+            },
+            "hyperframes": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 7.56
+            },
+            "fresh-eyes": {
+              "calls": 8,
+              "failed": 1,
+              "summed_command_seconds": 31.31
+            },
+            "patch-tts-speed": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "check-terms": {
+              "calls": 6,
+              "failed": 3,
+              "summed_command_seconds": 1.38
+            },
+            "frame-packet": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 0.28
+            },
+            "frame-lint": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 0.65
+            },
+            "reel stage": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.14
+            },
+            "reel prereqs": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.15
+            },
+            "narrate": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 257.7
+            },
+            "frame-check": {
+              "calls": 45,
+              "failed": 0,
+              "summed_command_seconds": 1042.53
+            },
+            "build": {
+              "calls": 6,
+              "failed": 5,
+              "summed_command_seconds": 290.27
+            },
+            "variety": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "guide": {
+              "calls": 2,
+              "failed": 1,
+              "summed_command_seconds": 8.7
+            },
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.99
+            }
+          }
+        },
+        {
+          "episode": "revision-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 25.0,
+          "usage": {
+            "session_exports_missing": false,
+            "tokens": {
+              "input_tokens": 18344246,
+              "cached_input_tokens": 18157056,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 40634,
+              "reasoning_output_tokens": 18819,
+              "total_tokens": 18384880
+            },
+            "model_requests": 125,
+            "cumulative_sessions": 0,
+            "usage_updates": 125,
+            "auto_review_tokens": {
+              "input_tokens": 7923262,
+              "cached_input_tokens": 7438848,
+              "cache_write_input_tokens": 0,
+              "output_tokens": 7168,
+              "reasoning_output_tokens": 1852,
+              "total_tokens": 7930430
+            },
+            "auto_review_sessions": 5,
+            "auto_review_requests": 74,
+            "auto_review_timing": {
+              "completed_checks": 73,
+              "summed_turn_minutes": 3.801,
+              "union_turn_minutes": 3.801,
+              "median_seconds": 2.452
+            }
+          },
+          "commands": {
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.17
+            },
+            "reel-intake": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 0.39
+            },
+            "reel record": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "revise-scope": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "narrate": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 55.66
+            },
+            "reel check": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.27
+            },
+            "plan-diff": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.17
+            },
+            "check-terms": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.28
+            },
+            "fresh-eyes": {
+              "calls": 8,
+              "failed": 1,
+              "summed_command_seconds": 13.76
+            },
+            "frame-check": {
+              "calls": 6,
+              "failed": 1,
+              "summed_command_seconds": 146.89
+            },
+            "build": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 187.47
+            },
+            "frame-lint": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.1
+            },
+            "inbox": {
+              "calls": 7,
+              "failed": 2,
+              "summed_command_seconds": 0.87
+            }
+          }
+        }
+      ],
+      "showings": [
+        {
+          "number": 1,
+          "frames": 29,
+          "choices": 5,
+          "quick_checks": 5,
+          "branch_frames": 10,
+          "missing_option_branches": [],
+          "total_seconds": 413.757,
+          "capture_delay_seconds": 0.62
+        }
+      ]
+    },
+    {
+      "label": "before-2",
+      "two_showings_observed": false,
+      "elapsed_minutes": 55.74,
+      "episodes": [
+        {
+          "episode": "first",
+          "complete": true,
+          "capped": false,
+          "minutes": 30.71,
+          "usage": {
+            "session_exports_missing": true,
+            "tokens": null,
+            "model_requests": null,
+            "auto_review_tokens": null,
+            "auto_review_requests": null,
+            "auto_review_timing": null
+          },
+          "commands": {
+            "--help": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.05
+            },
+            "hyperframes-skills": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 6.45
+            },
+            "setup": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 1.39
+            },
+            "narration-check": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 7.26
+            },
+            "reel init": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel new-plan": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel check": {
+              "calls": 6,
+              "failed": 2,
+              "summed_command_seconds": 0.8
+            },
+            "patch-tts-speed": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.09
+            },
+            "reel prereqs": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.14
+            },
+            "hyperframes": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 6.3
+            },
+            "fresh-eyes": {
+              "calls": 8,
+              "failed": 1,
+              "summed_command_seconds": 29.49
+            },
+            "check-terms": {
+              "calls": 4,
+              "failed": 2,
+              "summed_command_seconds": 0.69
+            },
+            "reel stage": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "reel status": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "vendor-gsap": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.1
+            },
+            "guide": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 16.83
+            },
+            "frame-packet": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.18
+            },
+            "inbox": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "narrate": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 348.8
+            },
+            "--version": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.05
+            },
+            "plan-map": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.18
+            },
+            "frame-lint": {
+              "calls": 4,
+              "failed": 2,
+              "summed_command_seconds": 0.77
+            },
+            "frame-check": {
+              "calls": 31,
+              "failed": 0,
+              "summed_command_seconds": 78.42
+            },
+            "build": {
+              "calls": 5,
+              "failed": 3,
+              "summed_command_seconds": 233.54
+            },
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.99
+            }
+          }
+        },
+        {
+          "episode": "revision-incomplete",
+          "complete": false,
+          "capped": true,
+          "minutes": 25.0,
+          "usage": {
+            "session_exports_missing": true,
+            "tokens": null,
+            "model_requests": null,
+            "auto_review_tokens": null,
+            "auto_review_requests": null,
+            "auto_review_timing": null
+          },
+          "commands": {
+            "review": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.17
+            },
+            "reel-intake": {
+              "calls": 3,
+              "failed": 1,
+              "summed_command_seconds": 0.39
+            },
+            "reel record": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.13
+            },
+            "revise-scope": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.11
+            },
+            "reel check": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.28
+            },
+            "fresh-eyes": {
+              "calls": 7,
+              "failed": 0,
+              "summed_command_seconds": 14.66
+            },
+            "plan-diff": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 0.34
+            },
+            "narrate": {
+              "calls": 3,
+              "failed": 0,
+              "summed_command_seconds": 138.58
+            },
+            "inbox": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.12
+            },
+            "check-terms": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.31
+            },
+            "retime-frames": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.1
+            },
+            "frame-lint": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 0.21
+            },
+            "build": {
+              "calls": 2,
+              "failed": 0,
+              "summed_command_seconds": 207.25
+            },
+            "frame-check": {
+              "calls": 4,
+              "failed": 0,
+              "summed_command_seconds": 105.74
+            },
+            "guide": {
+              "calls": 1,
+              "failed": 0,
+              "summed_command_seconds": 4.53
+            }
+          }
+        }
+      ],
+      "showings": [
+        {
+          "number": 1,
+          "frames": 27,
+          "choices": 5,
+          "quick_checks": 5,
+          "branch_frames": 10,
+          "missing_option_branches": [],
+          "total_seconds": 464.766,
+          "capture_delay_seconds": 0.34
+        }
+      ]
+    }
+  ]
+}

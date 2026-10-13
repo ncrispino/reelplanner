@@ -1,0 +1,50 @@
+{
+  "before_core_commit": "45f64f23c4c2a741b05c3b2ccdd544787041b43d",
+  "after_commit": "4851416",
+  "conditions": [
+    "before",
+    "after"
+  ],
+  "source": "synthetic fixture only",
+  "node": "22.23.3",
+  "codex": "0.162.1",
+  "model": "gpt-6.1-sol",
+  "effort": "high",
+  "voice": "local Kokoro, 1.25x",
+  "order": [
+    "before-1",
+    "after-1",
+    "after-2",
+    "before-2"
+  ],
+  "first_cap_minutes": 40,
+  "revision_cap_minutes": 25,
+  "system_video": false,
+  "packet_treatment": false,
+  "sha256": {
+    "before": "ce7501c370dcc3f9ccf832231c8fbf1a1bf51aff9257176f29882fa91ef2bb2b",
+    "after": "eed111373aea946768f0e8979221960006b864e6abdd65bedd0fb01f560fc97c"
+  },
+  "harness_sha256": {
+    "test_phase_monitor.py": "b3ab3c858abd9c2c80a8b4bd16a9aed398f8457459e276ce6bad9eab3c47dfe2",
+    "observe-showings.py": "239d459608c64bc7de34c4ce7db2138263dda344d16bc34e1995763747a05123",
+    "rp-shim.sh": "c9ba021a1ee5d615583b2d7b69aae10d3586ba4398db4cdde2902bbacc50c95a",
+    "verify-package.py": "acc9c7df61d44907e394b10e0805ff7107e712492ce87a0a83eab3dc5d18976f",
+    "phase_monitor.py": "7961958f29994d15553ae6d26fe8e95a112e8925034f79127b8ec9e96564adc7",
+    "test_login.py": "c1fcf8080146aa543409c52a42cacf9f439110da843c1f3f169ef81f05621f66",
+    "reviewer.mjs": "b800104ac7231bc277426422b1626fb04167b004e7269c37495e26da2a68ab84",
+    "prompt.txt": "e309099173ed24b2e6e088babb024b05c47a7531430fdea20510743bebf3bec7",
+    "summarize.py": "60ba39a77ef147d344b8671a18935c2dfe362e48341b81f479065dd9ed106cc0",
+    "stop-server.py": "09c4fd4fde2df3c03c478e778fb59c3d14e1cec08456261f5385fcdeb5740efb",
+    "test_summarize.py": "89ea9f4d9b20f872c7c98b81c82367a7497d07538bd520c06104b7e47c7e8b30",
+    "login.py": "783845bb615f9da19c66a1c368e7ac929aab1d3b01cc48eb2876f8ad30ed2df4",
+    "codex-machine.sh": "3d6bc9608fea6207bf98209ee16bc5da239c3d7a3bcb20323a11e4907f01795a",
+    "run-all.sh": "58ebe6b9141ad7fe97aae930aaf364e7669a8f1a1fa7dc38c7ea0012ef8fa7e5",
+    "finish.py": "426c91757196f5541683d8202e85acf41884bf29b763c3ffb3a5c4610f519ee7",
+    "fixture/choices.md": "609e9bbabefab8a671db3908bffff5e024efdf0df4fba633f97341880433a878",
+    "fixture/definitions.md": "2e60e90ee639adff1f0026000e5da4e937489c0c0cbf6ec3cdf71ba3c06a23dd",
+    "fixture/task.md": "f853cebf46e3043ad70d9fc61c40c958b76510335d62e2ef962776cfafcacab1",
+    "fixture/record.jsonl": "794ed9e27ba5fb9c4f80b27fd64e519a9e3a385af530205c58eec9e2647a565b",
+    "fixture/REQUEST.md": "bbbbe537341b67c4e957374dc771ff39fb30e3227c36ff8782819f4040747993"
+  }
+}
