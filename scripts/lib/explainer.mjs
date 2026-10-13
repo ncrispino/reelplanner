@@ -22,6 +22,7 @@ import { join, resolve, relative, dirname, extname, sep } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { rpDirOf } from "./env.mjs";
+import { detectAgent, getHarness } from "./agents.mjs";
 
 /** Over this many lines a source is far longer than a video can show: it gets a guide part (plan step 1). */
 export const GUIDE_LINES = 200;
@@ -62,12 +63,12 @@ export function slugOf(text, max = 6) {
 export function repoTop(from) { const t = tryGit(existsSync(from) && statSync(from).isDirectory() ? from : dirname(from), "rev-parse", "--show-toplevel"); return t ? t.trim() : null; }
 
 /** Claude Code's transcripts of a folder live under ~/.claude/projects/<the folder, its separators as dashes>/. */
-export function sessionDir(repo) { return join(homedir(), ".claude", "projects", resolve(repo).replace(/[\\/.:]/g, "-")); }
+export function sessionDir(repo, { env = process.env } = {}) { return join(env.HOME || homedir(), ".claude", "projects", resolve(repo).replace(/[\\/.:]/g, "-")); }
 /** The newest session transcript of this repo, or null. */
-export function thisSession(repo) {
-  const d = sessionDir(repo); if (!existsSync(d)) return null;
-  const all = readdirSync(d).filter((f) => f.endsWith(".jsonl")).map((f) => ({ f: join(d, f), t: statSync(join(d, f)).mtimeMs })).sort((a, b) => b.t - a.t);
-  return all[0]?.f || null;
+export function thisSession(repo, { env = process.env, agent = null, session = null, source = null } = {}) {
+  const selected = agent || detectAgent(env).agent;
+  if (source && selected !== "codex") throw new Error("--session-source requires the requested Codex conversation identity");
+  return getHarness(selected === "none" ? "claude" : selected).sessionSource({ repo, env, session, source })?.path || null;
 }
 
 // a file's pin: its hash, its lines, its shape, and whether it needs a guide part
@@ -86,7 +87,7 @@ function filesUnder(repo, abs) {
  * Pin one source, given as you would name it. `repo` is the repo's top folder, `rp` its .reelplanner/.
  * Throws with a plain reason when it cannot be pinned (nothing by that name, gh not there).
  */
-export function pinSource(spec, { repo, rp = rpDirOf(repo), head = null } = {}) {
+export function pinSource(spec, { repo, rp = rpDirOf(repo), head = null, env = process.env, agent = null, session = null, sessionSource = null } = {}) {
   const s = String(spec).trim(); if (!s) throw new Error("an empty source");
   const HEAD = head || tryGit(repo, "rev-parse", "--short=12", "HEAD")?.trim() || null;
   // a decision, by its id
@@ -130,9 +131,11 @@ export function pinSource(spec, { repo, rp = rpDirOf(repo), head = null } = {}) 
     const text = git(repo, "diff", "HEAD") + untracked.map((f) => `\n+++ ${f}\n${readFileSync(join(repo, f), "utf8")}`).join("");
     return { id: s, form: "worktree", shape: "files", commit: HEAD, files: files.map((p) => ({ path: p, hash: existsSync(join(repo, p)) ? sha(readFileSync(join(repo, p))) : null })), size: { lines: changed, files: files.length }, hash: sha(text), guide: changed > GUIDE_LINES };
   }
-  // this repo's newest Claude Code session: a file outside the repo, read where it is
+  // The detected harness's selected conversation, outside the repo and read where it is.
   if (s === "this-session") {
-    const f = thisSession(repo); if (!f) throw new Error(`no Claude Code transcript for this repo under ${tilde(sessionDir(repo))}`);
+    const f = thisSession(repo, { env, agent, session, source: sessionSource }); if (!f) throw new Error(`no Claude Code transcript for this repo under ${tilde(sessionDir(repo))}`);
+    const rel = relative(repo, f);
+    if (!rel || (!rel.startsWith(`..${sep}`) && rel !== ".." && !rel.startsWith(sep))) throw new Error("this-session transcript must be outside the repository; provide an external export");
     return { ...pinOutside(f), id: "this-session" };
   }
   // a path: in the repo (at the commit it is pinned at), or outside it (its path, hash and lines; never its text)

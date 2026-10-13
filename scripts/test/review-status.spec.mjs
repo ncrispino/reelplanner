@@ -17,11 +17,12 @@
 // video still says the repo is not set up. Once `reel init` sets the repo up, a review left in the machine's inbox is
 // named by `inbox` and finished by `inbox done`, and `--wait` never takes it: nothing is lost or handled twice.
 import { spawn, execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, existsSync, realpathSync } from "node:fs";
+import { createServer, request } from "node:http";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, existsSync, realpathSync, renameSync } from "node:fs";
 import { join, dirname, basename, sep } from "node:path";
 import { tmpdir, hostname, homedir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
-import { writeReview, claim, markDone, repoKey } from "../lib/inbox.mjs";
+import { writeReview, claim, markDone, repoKey, waitForReview } from "../lib/inbox.mjs";
 
 let failed = 0;
 const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} ${name}${!cond && detail ? `\n  ${detail}` : ""}`); if (!cond) failed++; };
@@ -51,13 +52,20 @@ const row = (at, extra = {}) => ({ status: "submitted", submittedAt: at, project
 
 const procs = [];
 try {
-  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(testPort(20000 + Math.floor(Math.random() * 10000))), "--out", join(tmp, "bundle")],
+  const occupied = createServer((req, res) => res.end("occupied"));
+  await new Promise((done) => occupied.listen(0, "127.0.0.1", done));
+  procs.push({ kill: () => occupied.close() });
+  const firstPort = occupied.address().port;
+  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(firstPort), "--out", join(tmp, "bundle")],
     { cwd: tmp, env: { ...process.env, REELPLANNER_HOME: join(tmp, "home"), REELPLANNER_RECHECK_MS: "1500" } });
   procs.push(srv);
   let log = ""; srv.stdout.on("data", (d) => (log += d)); srv.stderr.on("data", (d) => (log += d));
   const url = await until(() => log.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   ok("server: starts", !!url, log);
   if (!url) throw new Error("no server");
+  ok("occupied first port: printed address is the actual free port", Number(new URL(url).port) > firstPort && (await (await fetch(`${url}/api/review`)).json()).ok);
+  const wrongHost = await new Promise((done, fail) => { const req = request(`${url}/api/review`, { headers: { host: `127.0.0.1:${firstPort}` } }, (res) => { res.resume(); done(res.statusCode); }); req.on("error", fail); req.end(); });
+  ok("occupied first port: API Host validation uses the actual listening port", wrongHost === 403);
   const status = async (id, headers = {}) => { const r = await fetch(`${url}/api/review/status?id=${encodeURIComponent(id)}`, { headers }); return { code: r.status, body: await r.json() }; };
   const post = (body) => fetch(`${url}/api/review`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json());
 
@@ -73,10 +81,10 @@ try {
   let s = (await status(w.id)).body;
   ok("in the inbox, nobody's: waiting, since it was sent", s.ok && s.state === "waiting" && s.by === null && s.since === "2026-01-02T10:00:00Z" && !("step" in s), JSON.stringify(s));
   ok("build: the served video's build signature (its plan map's changes.at)", s.build === "2026-01-01T00:00:00.000Z", JSON.stringify(s));
-  claim(rp, w.id, "session");
+  claim(rp, w.id, "session", { owner: "session:review-status" });
   s = (await status(w.id)).body;
   ok("claimed by a waiting session: working, by the session, since the claim", s.state === "working" && s.by === "session" && /^\d{4}-/.test(s.since || "") && !s.log, JSON.stringify(s));
-  markDone(rp, w.id);
+  markDone(rp, w.id, { owner: "session:review-status" });
   s = (await status(w.id)).body;
   ok("in inbox/done/: done, by the session; the build as served", s.state === "done" && s.by === "session" && s.build === "2026-01-01T00:00:00.000Z", JSON.stringify(s));
 
@@ -96,6 +104,17 @@ try {
   ok("once it exits: done, and the build is the rebuilt video's", s?.state === "done" && s.by === "agent" && s.build === "2026-02-02T00:00:00.000Z", JSON.stringify(s));
   ok("…which is what the page now serves", JSON.parse(readFileSync(join(tmp, "bundle", "2026-01-01-demo", "plan-map.json"), "utf8")).changes.at === "2026-02-02T00:00:00.000Z");
 
+  const recoveredClaim = join(rp, "inbox", `${r1.id}.claim`);
+  writeFileSync(recoveredClaim, JSON.stringify({ by: "agent", owner: "run:recovered", host: hostname(), runPid: process.pid, at: new Date().toISOString() }));
+  s = (await status(r1.id)).body;
+  ok("a CLI retry's new owner overrides this server's earlier stopped run", s.state === "working", JSON.stringify(s));
+  writeFileSync(join(vd, "plan-map.json"), JSON.stringify({ ...MAP, changes: { ...MAP.changes, at: "2026-03-03T00:00:00.000Z" } }));
+  renameSync(join(rp, "inbox", `${r1.id}.json`), join(rp, "inbox/done", `${r1.id}.json`));
+  writeFileSync(recoveredClaim, JSON.stringify({ by: "agent", owner: "run:recovered", host: hostname(), runPid: 9999999 }));
+  renameSync(recoveredClaim, join(rp, "inbox/done", `${r1.id}.claim`));
+  s = (await status(r1.id)).body;
+  ok("once an external retry finishes and exits, the server rebuilds its served page", s.state === "done" && s.build === "2026-03-03T00:00:00.000Z", JSON.stringify(s));
+
   // ---- a run started by an earlier server: its pid says whether it still runs ----
   const w3 = writeReview(rp, row("2026-01-05T00:00:00Z"));
   writeFileSync(join(rp, "inbox", `${w3.id}.claim`), JSON.stringify({ by: "agent", pid: 1, host: hostname(), at: new Date().toISOString(), runPid: 2 ** 22 + 12345 /* no such process */, log: `.reelplanner/inbox/runs/${w3.id}.log` }) + "\n");
@@ -104,6 +123,33 @@ try {
   writeFileSync(join(rp, "inbox", `${w3.id}.claim`), JSON.stringify({ by: "agent", pid: 1, host: hostname(), at: new Date().toISOString(), runPid: process.pid }) + "\n");
   s = (await status(w3.id)).body;
   ok("one that still runs: working", s.state === "working" && s.by === "agent", JSON.stringify(s));
+  const queued = writeReview(rp, row("2026-01-05T01:00:00Z"));
+  claim(rp, queued.id, "session", { owner: "fake:main", pid: 9999999, leaseUntil: Date.now() + 60000 });
+  mkdirSync(join(rp, "inbox/.progress"), { recursive: true });
+  writeFileSync(join(rp, "inbox/.progress", `${queued.id}.json`), JSON.stringify({ phase: "queued" }));
+  s = (await status(queued.id)).body;
+  ok("queue acknowledgement is waiting, not evidence of actual handling", s.state === "waiting" && s.step === "queued for connected session", JSON.stringify(s));
+  writeFileSync(join(rp, "inbox/.progress", `${queued.id}.json`), JSON.stringify({ phase: "handling" }));
+  s = (await status(queued.id)).body;
+  ok("exited waiter does not make the owning session dead while its lease is valid", s.state === "working", JSON.stringify(s));
+  writeFileSync(join(rp, "inbox", `${queued.id}.claim`), JSON.stringify({ by: "session", owner: "fake:main", leaseUntil: 1 }));
+  s = (await status(queued.id)).body;
+  ok("expired session ownership reports stopped with the saved review available", s.state === "stopped" && s.step.includes("saved for recovery"), JSON.stringify(s));
+  const deadLegacyPid = Number(execFileSync(process.execPath, ["-e", "console.log(process.pid)"], { encoding: "utf8" }).trim());
+  const legacy = writeReview(rp, row("2026-01-05T02:00:00Z"));
+  const legacyClaim = join(rp, "inbox", `${legacy.id}.claim`);
+  writeFileSync(legacyClaim, JSON.stringify({ by: "session", pid: deadLegacyPid, host: "unverified-remote-host", at: "2026-01-05T02:00:01Z" }));
+  s = (await status(legacy.id)).body;
+  ok("legacy claim on an unverifiable host stays working and protected", s.state === "working", JSON.stringify(s));
+  writeFileSync(legacyClaim, JSON.stringify({ by: "session", pid: deadLegacyPid, host: hostname(), at: "2026-01-05T02:00:01Z" }));
+  s = (await status(legacy.id)).body;
+  ok("dead same-host legacy session reports stopped with saved review available", s.state === "stopped" && s.step.includes("saved for recovery"), JSON.stringify(s));
+  // Keep the earlier expired fixture owned so this waiter reaches the legacy row.
+  const earlierClaim = join(rp, "inbox", `${queued.id}.claim`), retained = JSON.parse(readFileSync(earlierClaim, "utf8"));
+  writeFileSync(earlierClaim, JSON.stringify({ ...retained, owner: "fake:other", leaseUntil: Date.now() + 60000 }));
+  const adoptedLegacy = await waitForReview(rp, { owner: "fake:legacy-adopter", timeoutMs: 100 });
+  s = (await status(legacy.id)).body;
+  ok("next live waiter adopts the dead legacy claim and status becomes working", adoptedLegacy === legacy.path && s.state === "working" && JSON.parse(readFileSync(legacyClaim, "utf8")).owner === "fake:legacy-adopter", JSON.stringify(s));
   ok("set up (decisions.json): Send files the review in the inbox", /files the review in \.reelplanner\/inbox\//.test(log), log);
   const home = join(tmp, "home"), machine = (repo) => join(home, "inbox", repoKey(repo));
   // a machine inbox's path as a line and a response show it (from ~ when it is under your home folder)
@@ -112,7 +158,7 @@ try {
 
   // ---- one video (level 1): no .reelplanner/ at all, so Send lands in this machine's inbox and nothing in the repo ----
   // (its own folder, outside the set-up repo above, whose .reelplanner/ it would otherwise be found under; a git repo)
-  const env2 = { ...process.env, REELPLANNER_HOME: home };
+  const env2 = { ...process.env, REELPLANNER_OWNER: "session:review-status-cli", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: home };
   const plain = join(mkdtempSync(join(tmpdir(), "reel-status-plain-")), "plain"), pv = join(plain, "videos", "demo");
   mkdirSync(join(pv, "compositions"), { recursive: true }); execFileSync("git", ["-C", plain, "init", "-q"]);
   writeFileSync(join(pv, "index.html"), "<!doctype html><title>demo</title>\n");
@@ -124,6 +170,7 @@ try {
   procs.push(srv2);
   let log2 = ""; srv2.stdout.on("data", (d) => (log2 += d)); srv2.stderr.on("data", (d) => (log2 += d));
   const url2 = await until(() => log2.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
+  if (url2) await until(() => log2.includes("files the review in"));
   ok("level 1: the page is served, and Send files the review in this machine's inbox for the repo", !!url2 && log2.includes(`files the review in ${tilde(box)}/ (this machine's folder: the repo has no set-up .reelplanner/, and nothing is added to it)`), log2);
   if (!url2) throw new Error("no level-1 server");
   const api2 = `${url2}/api/review`, post2 = (body) => fetch(api2, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then(async (r) => ({ code: r.status, body: await r.json() }));

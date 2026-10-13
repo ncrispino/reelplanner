@@ -55,9 +55,10 @@ is written the same way, from one setting (`RP_COMMAND` in `scripts/lib/env.mjs`
   ffmpeg, `unzip` and the pip packages (`kokoro-onnx`, `soundfile`) are left; a repo's `.reelplanner/` is its own.
 - `scripts/release/install.sh` runs the same commands, for `curl -fsSL https://raw.githubusercontent.com/ncrispino/reelplanner/main/scripts/release/install.sh | sh`: the skill, then the tooling from npm when npm has the version and from GitHub when it does not, then `setup`. `REELPLANNER_VERSION`, `REELPLANNER_SOURCE` (a local path works), `REELPLANNER_GITHUB` and `SKILLS_AGENTS` override its defaults.
 
-**On Codex** ([agents](./agents.md)): its sandbox has no network, so install the package globally (above) and run
-`reelplanner setup` outside the agent, or start Codex with the network on, `codex -c
-sandbox_workspace_write.network_access=true`.
+**On Codex** ([agent setup and evidence](./agents.md#codex)): install the executable separately from the
+native plugin, and run media setup outside a restricted sandbox when it needs network or system packages.
+Keep the user's approval and signing policy; request the specific permission a server or commit needs.
+`setup --dry-run` checks checkout dependencies and the selected agent's installed capabilities.
 
 `reelplanner --help` lists every command, and `--help` after any of them says what it takes. `reelplanner reel …`
 (or `reel …`) keeps the project record; `reelplanner hyperframes …` is the HyperFrames CLI at the version
@@ -212,7 +213,7 @@ With no folder, `reelplanner review` opens the whole repo: the system video and 
 it is answered in the side panel from the plan, the glossary and the scene's narration and frame, each answer
 ending with where it came from. On a hosted page Claude answers (the page's `sample` capability, on your own
 Claude account, asked the first time); on your machine the agent session waiting on the page answers
-(`reelplanner inbox answer`); anywhere else, or with nobody waiting, the question goes with your review and is
+(`reelplanner inbox answer`); on a local page with nobody waiting, the question stays saved for the next live session and is
 answered in the next version. A plain caption word clicked opens it too, with that caption quoted, and an underlined
 word's card says "Still unclear? Ask about this". Every question is kept in the review (`questions`), listed in
 `reviews/<id>.md`, counted in `reel memory lost`, and given to the next video's newcomer.
@@ -248,7 +249,7 @@ The player is tested headlessly against built projects (`npm run test:full` runs
 ## Other agents
 
 reelplanner is meant for any coding agent, and most of the loop does not care which one runs. It is tested with
-Claude Code, has basic support for Codex, and is untested elsewhere: [`agents.md`](./agents.md) has the table, and
+Claude Code, has native Codex integration with validation recorded separately, and is untested elsewhere: [`agents.md`](./agents.md) has the table, and
 the open work a contributor can pick up for each agent.
 
 **Which command:** none unless asked for. `reel init` leaves `agent.command` empty, so a review sent while no session
@@ -262,9 +263,38 @@ the first of `claude` and `codex` on PATH (`scripts/lib/agents.mjs`, checked by 
 
 **Claude Code only:** the hosted review page (a claude.ai Artifact: only a Claude session can read its store; other agents use the local page); auto mode and `--permission-prompts none`; the `sandbox` settings in `--settings`, the check the server runs before starting such a run (and turning the sandbox off where it can't run), and the file-tools hook. The server probes only a command that turns Claude Code's sandbox on through `--settings`; any other command is started as it is and never changed, and nothing about the sandbox is said for it.
 
-**Their own fences:** Codex has its own approval and sandbox modes. `reel init --agent codex` writes `codex exec -s workspace-write -c sandbox_workspace_write.network_access=true --color never`: it writes only inside the repo and the temp folder, never asks (approval is `never` for `exec`; `-a` and `--full-auto` are rejected by codex-cli 0.160.0), and has the network on so `npx` can fetch the package (drop that `-c` once the package is installed globally). Its sandbox keeps `.git` read-only, so the run's commit may be refused: not yet tried end to end. opencode has `opencode run --auto` with `permission` rules in `opencode.json` and no OS sandbox; it is not set up or tested here (D-066).
+**Codex permissions:** `reel init --agent codex` writes
+`codex exec --approve-for-me -c 'sandbox_mode="workspace-write"' -c sandbox_workspace_write.network_access=true --color never`.
+CLI 0.162.1 was tested with real model runs; combining that approval flag with `-s` is rejected.
+Automatic review keeps the sandbox and judges eligible requests. It can refuse Git metadata writes;
+signing can fail independently. Completion requires the review's commit and recorded progress, not
+just an exit code. The server preserves pending work and never commits it itself. See
+[the harness reference](../skills/plan-to-video/references/harnesses.md) for recovery and exact commands.
+Other custom commands retain their configured fences and remain untested.
 
-**Less safe:** reelplanner gives their runs no sandbox and no file-tools hook, so an unattended Codex or opencode run is fenced only by its own flags: less safe than a Claude Code run.
+**Connected sessions:** `review <video-dir> --detach --session codex:<id>` verifies the selected
+session and project. Delivery prefers a waiting task, then a supported connected queue, then an
+explicit headless command, then the inbox. A queued notification is still waiting until adopted.
+Use `inbox renew <id>` during work and `inbox progress <id> <phase>` when handling, intake, editing,
+checks and the commit succeed. Saved questions remain available for a later live session and never
+start unattended work. An answered question appears on the page after reload too.
+The connection checks the loaded thread on its running transport. Pass `--session-endpoint
+ws://127.0.0.1:<port>` when automatic existing-daemon discovery cannot verify it; no new daemon or
+model turn is started by that check.
+
+**Conversation export:** `session export codex:<id> --out <external.jsonl>` reads the selected
+conversation without resuming it, writes a private external file, and prints its path.
+`explain --session-source <external.jsonl> "What happened?" this-session` validates an owner copy's
+identity and project. Raw transcript text stays outside Git.
+
+**Review workspaces:** `review <video-dir> --workspace browser|terminal-browser|cmux` opens the same
+player URL. Optional integrations need their executable and supported graphics workspace. A missing
+integration reports why and falls back to the ordinary browser; `--no-open` opens nothing.
+Launcher checks do not prove video, audio or review-control parity. See the evidence in
+[agents.md](./agents.md#codex).
+Installation and the shared Ghostty/terminal trial are in [terminal review](./terminal-review.md).
+`review --list` discovers built current/ancestor videos with their owning repo. Opening an explicit
+source video routes Send to that owner; mixed-owner bundles are refused before opening.
 
 ## Decisions in the video (L4b)
 

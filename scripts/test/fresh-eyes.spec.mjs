@@ -49,6 +49,21 @@ const ok = (name, cond, detail = "") => { console.log(`${cond ? "✓" : "✗"} $
 const RP = join(tmp, ".reelplanner"), PD = join(RP, "plans", "2026-10-01-sample"), V = join(PD, "video");
 const run = (...a) => spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), ...a], { cwd: tmp, encoding: "utf8" });
 
+for (const ids of [[0, 2, 6], [1, 2, 3]]) {
+  const video = mkdtempSync(join(tmpdir(), "rp-chapter-order-"));
+  try {
+    const storyboard = "---\ntitle: Chapter order\n---\n\n" + ids.map((id, position) =>
+      `## Frame ${id} — Scene ${id}\n\n- duration: 3s\n- src: compositions/frames/${id}.html\n${position === 0 || position === 2 ? `- chapter_start: Chapter ${position}\n` : ""}\n`).join("");
+    writeFileSync(join(video, "STORYBOARD.md"), storyboard);
+    const result = spawnSync(process.execPath, [join(ROOT, "scripts", "plan-map.mjs"), video], { cwd: tmp, encoding: "utf8" });
+    const map = result.status === 0 ? JSON.parse(readFileSync(join(video, "plan-map.json"), "utf8")) : null;
+    ok(`chapters end at the preceding scene in storyboard order for frames ${ids.join(", ")}`,
+      map?.chapters?.length === 2 && map.chapters[0].fromFrame === ids[0] && map.chapters[0].toFrame === ids[1]
+      && map.chapters[0].end === 6 && map.chapters[1].fromFrame === ids[2] && map.chapters[1].toFrame === ids[2]
+      && map.chapters[1].end === 9, result.stdout + result.stderr);
+  } finally { rmSync(video, { recursive: true, force: true }); }
+}
+
 mkdirSync(join(V, "compositions", "frames"), { recursive: true }); mkdirSync(join(PD, "reviews"), { recursive: true });
 execFileSync("git", ["init", "-q"], { cwd: tmp });
 writeFileSync(join(RP, "glossary.md"), "# Glossary\n\n| Term | id | Meaning |\n|---|---|---|\n| The review page | `page` | Where a video is watched and answered |\n\n## Other words\n\n| Term | id | Meaning |\n|---|---|---|\n| A branch | — | A line of work kept apart from the main code until it is merged |\n");
@@ -335,6 +350,43 @@ const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileS
   ok("a frame round is refused while the script's findings have no answer", fr.status !== 0 && /the script's fresh eyes still have findings with no answer \(N1\)/.test(fr.stderr), fr.stderr);
   writeFileSync(fp, readFileSync(fp, "utf8").replace("  - Answer: kept: the form is simple\n", "  - Answer: ask: should step 5 draw the order form as a prototype?\n"));
   ok("…answered (ask:), --check passes and the frame round starts", sr("--check").status === 0 && spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" }).status === 0);
+}
+
+// An explainer answers source-scope findings in explain.md, with the same change
+// requirement as a plan. An unrelated sibling plan must never satisfy the finding.
+{
+  const EP = join(RP, "explainers", "2026-10-11-source-check"), E = join(EP, "video");
+  mkdirSync(join(E, "compositions", "frames"), { recursive: true });
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nPRIVATE-EXPLAINER-SCOPE\n");
+  writeFileSync(join(E, "BRIEF.md"), '# Brief\n\n- Ask: "Explain the source boundary"\n');
+  writeFileSync(join(E, "STORYBOARD.md"), '---\ntitle: Source boundary\nkind: explainer\n---\n\n## Frame 1 — Scope\n\n- scene: a source boundary\n- voiceover: "This source describes the setting."\n- src: compositions/frames/01-scope.html\n- duration: 3s\n');
+  writeFileSync(join(E, "SCRIPT.md"), '# SCRIPT\n\n## Line 1 — Scope (Frame 1)\n\n    This source describes the setting.\n');
+  writeFileSync(join(E, "index.html"), "<html></html>\n");
+  writeFileSync(join(E, "compositions", "frames", "01-scope.html"), "<div>Source scope</div>\n");
+  writeFileSync(join(E, "plan-map.json"), JSON.stringify({ title: "Source boundary", frames: [{ index: 1, start: 0, durationSeconds: 3 }] }));
+  const sr = (...a) => run(E, "--script", ...a);
+  ok("explainer script: source scope is stamped without exposing explain.md to the reviewer", sr().status === 0
+    && JSON.parse(readFileSync(join(E, "fresh-eyes", "script", "stamp.json"), "utf8")).plan
+    && !readFileSync(join(E, "fresh-eyes", "script", "newcomer-brief.md"), "utf8").includes("PRIVATE-EXPLAINER-SCOPE"));
+  const sid = JSON.parse(readFileSync(join(E, "fresh-eyes", "script", "stamp.json"), "utf8")).id;
+  writeFileSync(join(E, "fresh-eyes", "script", "newcomer.md"), `# Fresh eyes: newcomer · script · stamp ${sid}\n\n- N1 [plan] · scene 1 · "the source": the source boundary is missing\n  - Answer: plan: explain.md now defines the source boundary\n`);
+  const unchanged = sr("--check");
+  ok("explainer script: an unchanged source document still fails a plan-tagged answer", unchanged.status === 1 && /explain\.md is unchanged/.test(unchanged.stdout), unchanged.stdout);
+  writeFileSync(join(EP, "plan.md"), "# Unrelated plan\n\nA changed sibling is not the explainer source.\n");
+  ok("explainer script: adding an unrelated plan.md cannot satisfy the finding", sr("--check").status === 1);
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nOnly the selected setting is depicted.\n");
+  ok("explainer script: a clarified explain.md satisfies the source finding", sr("--check").status === 0);
+  ok("explainer frame review starts after the resolved script finding", run(E, "--no-shots").status === 0);
+  const stamp = JSON.parse(readFileSync(join(E, "fresh-eyes", "stamp.json"), "utf8"));
+  writeFileSync(join(E, "fresh-eyes", "newcomer.md"), `# Fresh eyes: newcomer · round 1 · stamp ${stamp.id}\n\n- N1 [plan] · scene 1 · "the setting": source scope needs its exclusion\n  - Answer: plan: explain.md now excludes unrelated screens\n`);
+  writeFileSync(join(E, "fresh-eyes", "designer.md"), `# Fresh eyes: designer · round 1 · stamp ${stamp.id}\n\n- none\n`);
+  const frameUnchanged = run(E, "--check");
+  ok("explainer frames: unchanged explain.md remains unresolved", frameUnchanged.status === 1 && /explain\.md is unchanged/.test(frameUnchanged.stdout), frameUnchanged.stdout);
+  writeFileSync(join(EP, "explain.md"), "# Source scope\n\nOnly the selected setting is depicted; unrelated screens are excluded.\n");
+  ok("explainer frames: clarified source document resolves the finding", run(E, "--check").status === 0);
+  rmSync(join(EP, "explain.md"));
+  const missing = run(E, "--check");
+  ok("explainer frames: a missing explain.md fails closed despite the sibling plan.md", missing.status === 1 && /no explain\.md/.test(missing.stdout), missing.stdout);
 }
 
 // ── step 3: a question asked on the page, in the record ──

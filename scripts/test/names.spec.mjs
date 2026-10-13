@@ -72,6 +72,38 @@ try {
   let r = run("captions-sentences.mjs", [V]);
   const groups = JSON.parse(readFileSync(join(V, "caption_groups.json"), "utf8")), all = groups.flatMap((g) => g.words);
   ok("captions-sentences: the product word carries code, the command a run of two", r.code === 0 && all[0].text === "reelplanner" && all[0].code === "reelplanner" && !all[0].run && all.find((x) => x.text === "build.")?.run === "end" && all.filter((x) => x.code).length === 3, r.out + JSON.stringify(all));
+  for (const first of [0, 1, 7]) {
+    const video = join(tmp, `frame-numbering-${first}`), second = first + 3;
+    w(join(video, "STORYBOARD.md"), `---\ntitle: timing\n---\n\n## Frame ${first} — first\n\n- duration: 4s\n\n## Frame ${second} — second\n\n- duration: 6s\n`);
+    w(join(video, "SCRIPT.md"), `# SCRIPT\n\n## Line 1 — first (Frame ${first})\n\n    First.\n\n## Line 2 — second (Frame ${second})\n\n    Second.\n`);
+    w(join(video, "audio_meta.json"), JSON.stringify({ voices: [
+      { frame: first, duration_s: 1, words: [{ text: "First", start: 0, end: 0.5 }] },
+      { frame: second, duration_s: 1, words: [{ text: "Second", start: 0, end: 0.5 }] }
+    ] }));
+    w(join(video, "compositions", "captions.html"), layer);
+    const output = run("captions-sentences.mjs", [video]);
+    const timed = JSON.parse(readFileSync(join(video, "caption_groups.json"), "utf8"));
+    ok(`captions follow storyboard order for frames ${first} and ${second}, not numeric offsets`,
+      output.code === 0 && timed.length === 2 && timed[0].frame === first && timed[0].start === 0 && timed[0].end > 0
+      && timed[1].frame === second && timed[1].start === 4 && timed[1].words[0].start === 4 && timed[1].end > 4,
+      output.out + JSON.stringify(timed));
+  }
+  {
+    // Stable frame IDs need not follow playback order; narration metadata can arrive in another order too.
+    const ordered = join(tmp, "ordered-captions"), ids = [17, 2, 42], durations = [4, 9, 3], text = ["First.", "Second.", "Last."];
+    w(join(ordered, "STORYBOARD.md"), ids.map((id, i) => `## Frame ${id} — part\n\n- duration: ${durations[i]}s\n`).join("\n"));
+    w(join(ordered, "SCRIPT.md"), ids.map((id, i) => `## Line ${i + 1} — part (Frame ${id})\n\n    ${text[i]}\n`).join("\n"));
+    w(join(ordered, "audio_meta.json"), JSON.stringify({ voices: [2, 0, 1].map((i) => ({ frame: String(ids[i]), duration_s: 1,
+      words: [{ text: text[i].replace(".", ""), start: 0.25, end: 0.75 }] })) }));
+    w(join(ordered, "compositions", "captions.html"), layer);
+    const result = run("captions-sentences.mjs", [ordered]), actual = JSON.parse(readFileSync(join(ordered, "caption_groups.json"), "utf8"));
+    ok("captions follow storyboard order with nonconsecutive IDs and shuffled narration", result.code === 0 &&
+      JSON.stringify(actual.map((g) => [Number(g.frame), g.text, g.start])) === JSON.stringify([[17, "First.", 0.25], [2, "Second.", 4.25], [42, "Last.", 13.25]]), result.out + JSON.stringify(actual));
+    ok("reordered captions preserve each word's relative narration timings", JSON.stringify(actual.map((g) => [g.words[0].start, g.words[0].end])) ===
+      JSON.stringify([[0.25, 0.75], [4.25, 4.75], [13.25, 13.75]]), JSON.stringify(actual));
+    const saved = readFileSync(join(ordered, "caption_groups.json"), "utf8");
+    ok("rebuilding reordered captions retains identical timing and text", run("captions-sentences.mjs", [ordered]).code === 0 && readFileSync(join(ordered, "caption_groups.json"), "utf8") === saved);
+  }
   const html1 = readFileSync(join(V, "compositions", "captions.html"), "utf8");
   ok("…the caption layer draws it (the word builder calls __rpShowWord) and carries the chip's style, no coral", /__rpShowWord\(span, w\);/.test(html1) && !/span\.textContent = String\(w\.text\)/.test(html1) && /<style data-rp-caption-code>[\s\S]*\.cap-code[\s\S]*JetBrains Mono/.test(html1) && !/coral/.test(html1.match(/<style data-rp-caption-code>[\s\S]*?<\/style>/)[0].replace(/\/\*[\s\S]*?\*\//g, "")), html1.slice(-1500));
   // the chip reads: the words' own size, a solid fill, and letters at strong contrast on it, in each karaoke

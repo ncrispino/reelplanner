@@ -1,0 +1,7 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' 'scripts/test/run.mjs' '--full' 'fresh-eyes'
+full run: 1 specs, 8 at a time
+
+✓ scripts/test/fresh-eyes.spec.mjs     4.9 s  89 checks
+
+✓ all 1 passed in 5.0 s (the slowest, scripts/test/fresh-eyes.spec.mjs, 4.9 s)
+exit 0

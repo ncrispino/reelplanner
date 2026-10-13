@@ -240,6 +240,27 @@ try {
   check("Ask, from the box: the question joins the review's, about the words, answered (or kept for the review) in the box", qd?.via === "guide" && !!qd.quote && qd.planStep === 1, JSON.stringify(qd));
   await gf.locator('.rpn-box [data-a="discard"]').click(); await boxShut(gf);
 
+  // A local unanswered question is durable even without a waiter, and its later answer reaches the guide.
+  let pendingGuideQuestion = null, allowGuideAnswer = false;
+  await p.route("**/api/ask**", async (route) => {
+    const req = route.request();
+    if (req.method() === "POST") { pendingGuideQuestion = req.postDataJSON(); await route.fulfill({ json: { ok: true, id: pendingGuideQuestion.id, handledBy: "inbox" } }); }
+    else await route.fulfill({ json: allowGuideAnswer ? { ok: true, answered: true, answer: "The guide keeps its sources together.", from: "the plan, step 1" } : { ok: true, answered: false } });
+  });
+  await gf.evaluate(() => { const meta = document.createElement("meta"); meta.name = "reelplanning-review-server"; meta.content = "1"; document.head.appendChild(meta); });
+  await center(gf, SAY); await settle(gf); off = await frameOff(p);
+  await drag(p, off, sa); await boxOpen(gf);
+  await gf.locator(".rpn-box textarea").fill("Can the next session answer this?");
+  await gf.locator('.rpn-box [data-a="ask"]').click();
+  await fUntil(gf, () => /Saved; waiting for the next agent session/.test(document.querySelector(".rpn-box .ans").textContent));
+  check("guide: no live waiter still saves the question and shows waiting", !!pendingGuideQuestion && /Can the next/.test(pendingGuideQuestion.question));
+  allowGuideAnswer = true;
+  await fUntil(gf, () => /The guide keeps its sources together/.test(document.querySelector(".rpn-box .ans").textContent));
+  await until(p, () => (document.querySelector("#rp").questions || []).some((q) => q.question === "Can the next session answer this?" && q.answer));
+  const resumedGuideQuestion = await p.evaluate(() => document.querySelector("#rp").questions.find((q) => q.question === "Can the next session answer this?"));
+  check("guide: a later session answer displays and preserves its source", resumedGuideQuestion?.from === "the plan, step 1" && resumedGuideQuestion?.answer === "The guide keeps its sources together.");
+  await gf.locator('.rpn-box [data-a="discard"]').click(); await boxShut(gf);
+
   // ── a highlight clicked: its note again; edited, the review follows; the bin deletes it ──
   await center(gf, SAY); await settle(gf); off = await frameOff(p);
   const hp = await gf.evaluate((id) => { const r = window.RPGuideReview.page.live.get(id).range.getClientRects()[0]; return { x: r.left + Math.min(20, r.width / 2), y: r.top + r.height / 2 }; }, n1.id);

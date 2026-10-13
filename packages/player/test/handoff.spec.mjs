@@ -204,6 +204,52 @@ const anon = await hostedSend("anon");
 ok(!!anon.body && !("viewer" in anon.body), "a viewer with no identity there (no id, not the owner): the field is left out");
 const hang = await hostedSend("hang");
 ok(!!hang.body && !("viewer" in hang.body) && hang.took < 5000, `a user capability that never answers holds the send ${hang.took} ms at most, and the row goes without a viewer`);
+// A disconnected page may still know its viewer through the host's user capability. Download must
+// keep that identity without needing db/Send; an ordinary browser still supplies no identity.
+const { mkdtempSync, readFileSync, rmSync } = await import("node:fs");
+const { tmpdir } = await import("node:os"); const { join } = await import("node:path");
+const downloads = mkdtempSync(join(tmpdir(), "handoff-download-"));
+async function disconnectedDownload(kind) {
+  const pg = await b.newPage({ viewport: { width: 1440, height: 1000 } });
+  pg.on("pageerror", (e) => fails.push(`page error (download, ${kind}): ` + String(e).slice(0, 140)));
+  await pg.addInitScript((kind) => {
+    if (kind === "missing") return;
+    const people = { owner: { id: "u_owner123", owner: true }, other: { id: "u_colleague9", owner: false }, delayed: { id: "u_delayed7", owner: false }, anon: { id: null, owner: false } };
+    window.claude = { use: (n) => {
+      if (n !== "user") return Promise.resolve(null);  // no database: only manual handoff
+      if (kind === "hang") return new Promise(() => {});
+      const user = { id: async () => people[kind].id, isOwner: async () => people[kind].owner, name: async () => "Ada Lovelace" };
+      if (kind === "delayed") return new Promise((resolve) => { window.__releaseViewer = () => resolve(user); });
+      return Promise.resolve(user);
+    } };
+  }, kind);
+  await pg.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}`);
+  await pg.waitForFunction(() => document.querySelector("#rp")?.planMap, null, { timeout: 90000 });
+  const r = pg.locator("#rp");
+  await r.locator(".composer textarea").fill("a disconnected review comment"); await r.locator('[data-act="post"]').click();
+  await pg.evaluate(() => {
+    const el = document.querySelector("#rp");
+    el.planMap = { ...el.planMap, decisions: [{ id: "q1", question: "Which route?", planStep: 1, at: 2, options: [{ id: "a", label: "Manual export" }] }] };
+    el.answerFromGuide("q1", "a");
+  });
+  if (kind === "delayed") await pg.evaluate(() => { setTimeout(() => window.__releaseViewer(), 100); });
+  const t0 = Date.now(), promised = pg.waitForEvent("download", { timeout: 5000 });
+  await r.focus(); await pg.keyboard.press("e");
+  const download = await promised, took = Date.now() - t0;
+  const path = join(downloads, `${kind}.json`); await download.saveAs(path);
+  const body = JSON.parse(readFileSync(path, "utf8"));
+  ok(download.suggestedFilename() === "annotations.json" && body.decisions?.[0]?.option === "a" && body.annotations?.[0]?.comment === "a disconnected review comment",
+    `disconnected ${kind}: a real download retains the answer and comment`);
+  ok(!/Ada|Lovelace/.test(JSON.stringify(body)), `disconnected ${kind}: the review contains no viewer name`);
+  await pg.close(); return { body, took };
+}
+const exportedOwner = await disconnectedDownload("owner"), exportedOther = await disconnectedDownload("other"), exportedDelayed = await disconnectedDownload("delayed");
+ok(JSON.stringify(exportedOwner.body.viewer) === JSON.stringify({ id: "u_owner123", owner: true }), "Download retains the known owner's viewer and opaque id");
+ok(JSON.stringify(exportedOther.body.viewer) === JSON.stringify({ id: "u_colleague9", owner: false }), "Download retains a known non-owner's viewer");
+ok(JSON.stringify(exportedDelayed.body.viewer) === JSON.stringify({ id: "u_delayed7", owner: false }), "Download waits for a pending user capability and retains its viewer");
+const exportedAnon = await disconnectedDownload("anon"), exportedMissing = await disconnectedDownload("missing"), exportedHang = await disconnectedDownload("hang");
+ok(!("viewer" in exportedAnon.body) && !("viewer" in exportedMissing.body), "an anonymous or ordinary unauthenticated browser downloads no invented viewer");
+ok(!("viewer" in exportedHang.body) && exportedHang.took < 5000, `a stalled user capability cannot prevent Download (${exportedHang.took} ms)`);
 // what intake makes of each row: the stamp recordedBy writes
 {
   const { recordedBy } = await import("../../../scripts/lib/reviews.mjs");
@@ -211,8 +257,12 @@ ok(!!hang.body && !("viewer" in hang.body) && hang.took < 5000, `a user capabili
   const g = mkdtempSync(join(tmpdir(), "handoff-g-")); execFileSync("git", ["-C", g, "init", "-q"]); execFileSync("git", ["-C", g, "config", "user.email", "agent@example.com"]);
   const who = [own, other, anon].map((x) => recordedBy(g, { row: x.body }).reviewer);
   ok(who[0] === "owner" && who[1] === "id:u_colleague9" && who[2] === "agent@example.com", `intake records them as "owner", id:<id>, and git's user.email — ${JSON.stringify(who)}`);
+  const stamps = [exportedOwner, exportedOther, exportedMissing].map((x) => recordedBy(g, { review: x.body }));
+  ok(stamps[0].reviewer === "owner" && stamps[0].id === "id:u_owner123" && stamps[1].reviewer === "id:u_colleague9" && stamps[1].via === "the page's viewer" && stamps[2].reviewer === "agent@example.com" && stamps[2].via === "git user.email",
+    `download intake keeps owner/non-owner provenance and falls back to git only without identity — ${JSON.stringify(stamps)}`);
   rmSync(g, { recursive: true, force: true });
 }
+rmSync(downloads, { recursive: true, force: true });
 
 // A page that cannot reach Claude must not lose the manual path — the whole point of the fallback.
 const p3 = await b.newPage({ viewport: { width: 1440, height: 1000 } });

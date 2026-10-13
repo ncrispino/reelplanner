@@ -1,0 +1,24 @@
+{
+  "id": "app-live-proof-1791753056601",
+  "thread": "01a12c02-d0bc-71e0-82eb-3f1c2723100b",
+  "loaded": true,
+  "status": {
+    "type": "active",
+    "activeFlags": []
+  },
+  "sessionSource": "vscode",
+  "transport": "verified existing local Unix WebSocket daemon",
+  "httpStatus": 200,
+  "response": {
+    "ok": true,
+    "id": "app-live-proof-1791753056601",
+    "answered": true,
+    "answer": "Ghostty 1.3.1, using terminal-browser 0.13.4. The owner confirmed that audio sounded normal after the seeking fix.",
+    "from": "docs/terminal-review.md, Ghostty trial",
+    "answeredAt": "2026-10-11T21:29:27.977Z"
+  },
+  "adoption": "Actual current Codex conversation ran inbox --wait --questions and inbox answer",
+  "automaticWake": "Not established: recipient deliberately polled the inbox while its turn was active.",
+  "client": "Codex CLI in iTerm2, confirmed by owner",
+  "clientSourceNote": "The daemon source field says vscode; this is not a reliable UI-client classification."
+}

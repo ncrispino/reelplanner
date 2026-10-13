@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="05-remote-b"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f05-remote-b-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f05-remote-b-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f05-remote-b-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f05-remote-b-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f05-remote-b-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f05-remote-b-small{font-size:36px;padding:24px 20px}
+.f05-remote-b-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f05-remote-b-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f05-remote-b-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f05-remote-b-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f05-remote-b-table{position:absolute;left:90px;top:285px;width:1740px}
+.f05-remote-b-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f05-remote-b-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f05-remote-b-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f05-remote-b-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f05-remote-b-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f05-remote-b-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f05-remote-b-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f05-remote-b-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f05-remote-b-mini-command code{font:inherit}
+
+</style>
+<div id="f05-remote-b-root" data-composition-id="05-remote-b" data-width="1920" data-height="1080" data-duration="17.056" data-band="bottom"><div class="clip f05-remote-b-ground" id="f05-remote-b-ground" data-start="0" data-duration="17.056" data-track-index="0"></div><div class="f05-remote-b-status">Scope consequence</div><h1 class="f05-remote-b-title">B · Prove the hosted bridge</h1><div class="f05-remote-b-node" id="f05-remote-b-node0" style="left:120.0px;top:365px;width:325.0px;height:205px">Authenticated reviewer</div><div class="f05-remote-b-arrow" style="left:449.0px;top:445px">→</div><div class="f05-remote-b-node" id="f05-remote-b-node1" style="left:510.0px;top:365px;width:325.0px;height:205px">Durable storage</div><div class="f05-remote-b-arrow" style="left:839.0px;top:445px">→</div><div class="f05-remote-b-node" id="f05-remote-b-node2" style="left:900.0px;top:365px;width:325.0px;height:205px"><span><code>codex</code> handoff</span></div><div class="f05-remote-b-arrow" style="left:1229.0px;top:445px">→</div><div class="f05-remote-b-node" id="f05-remote-b-node3" style="left:1290.0px;top:365px;width:325.0px;height:205px">Separate service review</div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="05-remote-b";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=14.5;gsap.set(q(".f05-remote-b-title"),{opacity:0,y:10});tl.to(q(".f05-remote-b-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f05-remote-b-node0"),{opacity:0});tl.to(q("#f05-remote-b-node0"),{opacity:1,duration:0.12,ease:"none"},3.49);gsap.set(q("#f05-remote-b-node1"),{opacity:0});tl.to(q("#f05-remote-b-node1"),{opacity:1,duration:0.12,ease:"none"},4.69);gsap.set(q("#f05-remote-b-node2"),{opacity:0});tl.to(q("#f05-remote-b-node2"),{opacity:1,duration:0.12,ease:"none"},5.92);gsap.set(q("#f05-remote-b-node3"),{opacity:0});tl.to(q("#f05-remote-b-node3"),{opacity:1,duration:0.12,ease:"none"},10.29);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

@@ -167,7 +167,7 @@ try {
   // your file across repos (D-106), in a scratch home: a word you looked up and a video you watched (D-218)
   const youHome = join(tmp, "you-home"); mkdirSync(youHome, { recursive: true });
   writeFileSync(join(youHome, "you.jsonl"), JSON.stringify({ repo: "elsewhere", plan: "2026-01-01-x", review: "walkthrough-1", at: "2026-01-01T00:00:00Z", lost: { looked: ["streak", "merge"] }, watched: [{ video: "system", at: "2026-01-01T00:00:00Z" }] }) + "\n");
-  const env = { ...process.env, REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
+  const env = { ...process.env, REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
   rmSync(notified, { force: true });
   const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 0)), "--out", join(tmp, "bundle")], { cwd: tmp, env });
   procs.push(srv);
@@ -219,7 +219,10 @@ try {
     const ask = (body, headers = {}) => fetch(`${url}/api/ask`, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) }).then(async (r) => ({ status: r.status, body: await r.json() }));
     ok("ask: another site's page is refused", (await ask({ question: "x" }, { origin: "http://evil.example" })).status === 403);
     const none = await ask({ id: "ask-1", question: "what's the saved review file?", t: 12, frame: { index: 2, title: "The file" }, planStep: 3 });
-    ok("ask: no session waiting → it goes with the review, and nothing is written", none.status === 200 && none.body.handledBy === "review" && !existsSync(join(rp, "inbox", "questions")), JSON.stringify(none.body));
+    ok("ask: no session waiting → it is saved for the next session", none.status === 200 && none.body.handledBy === "inbox" && existsSync(join(rp, "inbox", "questions", "ask-1.json")), JSON.stringify(none.body));
+    const oldQuestion = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), "--wait", "--timeout", "1"], { cwd: tmp, env, encoding: "utf8" });
+    ok("ask: the next waiter claims the previously unanswered question", samePlace(oldQuestion.trim(), join(rp, "inbox", "questions", "ask-1.json")), oldQuestion);
+    execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-1", "The saved review file.", "--from", "the plan"], { cwd: tmp, env });
     const qw = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), "--wait", "--timeout", "30"], { cwd: tmp, env });
     procs.push(qw);
     let qout = ""; qw.stdout.on("data", (d) => (qout += d));
@@ -232,7 +235,7 @@ try {
     ok("ask: --wait exits 0 with the question's path", qcode === 0 && samePlace(qout.trim(), qfile) && JSON.parse(readFileSync(qfile, "utf8")).narration === "It is saved.", `exit ${qcode}, out ${JSON.stringify(qout)}`);
     const before = await (await fetch(`${url}/api/ask?id=ask-2`)).json();
     ok("ask: not answered yet", before.ok && before.answered === false, JSON.stringify(before));
-    const ans = execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-2", "The", "file", "the", "page", "writes", "when", "you", "press", "Send.", "--from", "the plan, step 3"], { cwd: tmp, encoding: "utf8" });
+    const ans = execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", "ask-2", "The", "file", "the", "page", "writes", "when", "you", "press", "Send.", "--from", "the plan, step 3"], { cwd: tmp, env, encoding: "utf8" });
     const after = await (await fetch(`${url}/api/ask?id=ask-2`)).json();
     ok("ask: `inbox answer` answers it, and the page reads it with where it came from", /answered ask-2/.test(ans) && after.answered && after.answer === "The file the page writes when you press Send." && after.from === "the plan, step 3", JSON.stringify(after));
     await until(async () => !(await (await fetch(api)).json()).sessionWaiting);

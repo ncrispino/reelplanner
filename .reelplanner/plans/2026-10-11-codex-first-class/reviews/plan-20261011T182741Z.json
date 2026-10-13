@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "src": "2026-10-11-codex-first-class/index.html",
+  "project": "video",
+  "exportedAt": "2026-10-11T18:27:41.015Z",
+  "watch": {
+    "firstPlayAt": "2026-10-11T18:21:05.652Z",
+    "maxTimeReached": 340.73,
+    "durationSeconds": 340.73,
+    "completion": 1,
+    "chapters": [
+      {
+        "id": "ch1",
+        "completion": 1
+      },
+      {
+        "id": "ch2",
+        "completion": 1
+      },
+      {
+        "id": "ch3",
+        "completion": 1
+      },
+      {
+        "id": "ch4",
+        "completion": 1
+      },
+      {
+        "id": "ch5",
+        "completion": 1
+      },
+      {
+        "id": "ch6",
+        "completion": 1
+      }
+    ],
+    "moments": [],
+    "details": []
+  },
+  "decisions": [
+    {
+      "id": "q1",
+      "option": "a",
+      "label": "Local loop + portable exports",
+      "recommended": true,
+      "planStep": 5,
+      "question": "How far should remote reviews go?",
+      "t": 70.781,
+      "decidedAt": "2026-10-11T18:22:02.620Z"
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "k1",
+      "answer": "a",
+      "correct": true,
+      "t": 181.253,
+      "answeredAt": "2026-10-11T18:24:19.483Z"
+    },
+    {
+      "id": "k2",
+      "answer": "a",
+      "correct": false,
+      "t": 213.213,
+      "answeredAt": "2026-10-11T18:24:49.785Z",
+      "walked": true
+    },
+    {
+      "id": "k3",
+      "answer": "c",
+      "correct": true,
+      "t": 241.397,
+      "answeredAt": "2026-10-11T18:25:29.966Z"
+    }
+  ],
+  "checks": "on",
+  "autonomy": [],
+  "knowledgeLevel": "new",
+  "watched": [
+    {
+      "video": "2026-10-11-codex-first-class",
+      "seen": "2026-10-11T18:27:20.180Z"
+    }
+  ],
+  "confusion": {
+    "wrongChecks": 1,
+    "walked": 1,
+    "termsOpened": 0,
+    "termsLookedUp": [],
+    "rewinds": 0,
+    "watchedPct": 100
+  },
+  "questions": [],
+  "verdict": "changes",
+  "annotations": [
+    {
+      "id": "amv45hhx2k6e3",
+      "kind": "note",
+      "comment": "wait i have to download annotations it wont just tell codex its ready??",
+      "about": "",
+      "t": 79.97,
+      "frame": {
+        "index": 4,
+        "compositionId": "04-remote-a",
+        "title": "A · Transfer the review file"
+      },
+      "plan": {
+        "step": null,
+        "questions": [],
+        "component": null
+      }
+    },
+    {
+      "id": "amv45in4k0kmj",
+      "kind": "note",
+      "comment": "also i mean we should just be clear that we need the coding to be good. there should be clear about the interface so we dont create a whole bunch of unnecessary repetitive code, make it really easy to add if there are special harness support needed.",
+      "about": "",
+      "t": 113.4,
+      "frame": {
+        "index": 6,
+        "compositionId": "06-recap",
+        "title": "Rules this proposal keeps"
+      },
+      "plan": {
+        "step": null,
+        "questions": [],
+        "component": null
+      }
+    },
+    {
+      "id": "amv45o0dsb6ek",
+      "kind": "note",
+      "comment": "this is also a gneeral thing, i think we need to just be sure the language i clear, like claude seems to have provided clearer language that makes sense, there is a bit too much domain specific technical langugae",
+      "about": "",
+      "t": 273.8,
+      "frame": {
+        "index": 14,
+        "compositionId": "14-remote-proof",
+        "title": "Step 5 · Match terminal review and choose remote path"
+      },
+      "plan": {
+        "step": 5,
+        "questions": [],
+        "component": null
+      }
+    }
+  ],
+  "recorded": {
+    "reviewer": "ncrispino@wustl.edu",
+    "via": "git user.email",
+    "reelplanner": "0.2.0"
+  }
+}

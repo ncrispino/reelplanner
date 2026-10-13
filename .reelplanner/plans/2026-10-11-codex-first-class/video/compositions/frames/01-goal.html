@@ -1,0 +1,32 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="01-goal"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f01-goal-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f01-goal-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f01-goal-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f01-goal-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f01-goal-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f01-goal-small{font-size:36px;padding:24px 20px}
+.f01-goal-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f01-goal-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f01-goal-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f01-goal-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f01-goal-table{position:absolute;left:90px;top:285px;width:1740px}
+.f01-goal-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f01-goal-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f01-goal-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f01-goal-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f01-goal-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f01-goal-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f01-goal-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f01-goal-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f01-goal-mini-command code{font:inherit}
+
+</style>
+<div id="f01-goal-root" data-composition-id="01-goal" data-width="1920" data-height="1080" data-duration="16.139" data-band="bottom"><div class="clip f01-goal-ground" id="f01-goal-ground" data-start="0" data-duration="16.139" data-track-index="0"></div><div class="f01-goal-status">Proposed</div><h1 class="f01-goal-title">A complete alternative</h1><div class="f01-goal-node" id="f01-goal-node0" style="left:100px;top:290px;width:790px;height:135px">Install</div><div class="f01-goal-node" id="f01-goal-node1" style="left:1030px;top:290px;width:790px;height:135px">Review follow-up</div><div class="f01-goal-node" id="f01-goal-node2" style="left:100px;top:465px;width:790px;height:135px">This conversation</div><div class="f01-goal-node" id="f01-goal-node3" style="left:1030px;top:465px;width:790px;height:135px">Lifecycle proof</div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="01-goal";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=14.5;gsap.set(q(".f01-goal-title"),{opacity:0,y:10});tl.to(q(".f01-goal-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);gsap.set(q("#f01-goal-node0"),{opacity:0});tl.to(q("#f01-goal-node0"),{opacity:1,duration:0.12,ease:"none"},5.29);gsap.set(q("#f01-goal-node1"),{opacity:0});tl.to(q("#f01-goal-node1"),{opacity:1,duration:0.12,ease:"none"},1.34);gsap.set(q("#f01-goal-node2"),{opacity:0});tl.to(q("#f01-goal-node2"),{opacity:1,duration:0.12,ease:"none"},7.32);gsap.set(q("#f01-goal-node3"),{opacity:0});tl.to(q("#f01-goal-node3"),{opacity:1,duration:0.12,ease:"none"},9.55);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

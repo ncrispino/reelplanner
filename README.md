@@ -7,7 +7,7 @@ You answer on the video, and the agent updates the plan.
 
 <img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
-**Works with:** Claude Code (tested) · Codex (basic support) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
+**Works with:** Claude Code (tested) · Codex CLI (tested on macOS; [features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
 (untested: [what each needs](./docs/agents.md))
 
 ## Before you try
@@ -33,7 +33,17 @@ In Claude Code, the skill can come as a plugin instead of the third line, kept u
 /plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill only: the first two lines are still what install the `reelplanner` command and its tools
+Codex has a native plugin route too, using the package installed by the first line:
+
+```bash
+codex plugin marketplace add "$(npm root -g)/reelplanner"
+codex plugin add reelplanner@reelplanner
+```
+
+In Codex, start with `$plan-to-video <plan.md>`, or ask it to make a plan with reelplanner.
+See [Codex setup and tested features](./docs/agents.md#codex) for details.
+
+Both plugins install the skill: the first two lines are still what install the `reelplanner` command and its tools
 (the skill installs them itself when they are missing, but running them first is quicker).
 
 The narration needs a voice. Choose one before you run `reelplanner setup`:
@@ -92,7 +102,8 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
 - Comment on any moment, then press **Finish review** and **Send**: the review goes to the agent, which updates
-  the plan.
+  the plan. The local page saves directly; you do not need to download a file. A disconnected portable
+  copy exports a review file to return to the agent.
   - For a quick video, nothing is added to the repo: the review waits on your machine, in `~/.reelplanner/inbox/`,
     until the agent picks it up. If no agent session is waiting, tell it the review is sent.
   - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
@@ -110,6 +121,23 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 Ways 2 and 3 add a `.reelplanner/` folder to the repo (commit it). The first time in a repo, the agent asks
 which way you want, unless you said "quick". To move to a fuller way later, ask the agent. [How it fits together](./docs/lifecycle.md).
 
+## Review beside your agent in the terminal
+
+Watch the video and answer its questions beside Codex, Claude Code, or another coding agent.
+Install [terminal-browser](https://github.com/zenbu-labs/terminal-browser), then run this from your
+terminal. On macOS:
+
+```sh
+brew install --cask terminal-browser
+reelplanner review videos/<name> --detach --workspace terminal-browser
+```
+
+Replace `videos/<name>` with the video folder your agent built. The player opens in a pane beside
+your agent; **Send** saves your review for the agent, with no file to download.
+Use any terminal supported by terminal-browser; we've tested playback and review controls in Ghostty.
+See [terminal setup and testing status](./docs/terminal-review.md) for details. The ordinary browser
+remains the default.
+
 ## Case studies
 
 Real projects built with reelplanner, each with its videos, reviews and session:
@@ -122,6 +150,7 @@ Real projects built with reelplanner, each with its videos, reviews and session:
 ## Why, and how it compares
 
 Agents write plans faster than people can read them. A long plan gets skimmed, and the choices in it go unseen.
+The original name, reelplanning, sounded like “real planning”: watching a plan makes long proposals easier to understand.
 
 > "The output format I am most bullish on is fully custom / bespoke explainer videos generated on any arbitrary
 > topic." — Andrej Karpathy, [on X](https://x.com/karpathy/status/2105819303471976479), October 2026

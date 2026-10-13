@@ -8,10 +8,11 @@
 // while the package is not on npm (installed from GitHub), `npx -y reelplanner@<version>` once it is. The
 // player's after-export lines keep a copy (they run in a browser); sync-version.mjs carries it there.
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, copyFileSync, writeFileSync, realpathSync, rmSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { VERSION, PINNED_FILES, RP_FILES, MARKETPLACE, stale } from "../release/sync-version.mjs";
+import { VERSION, PINNED_FILES, RP_FILES, MARKETPLACE, CODEX_MANIFEST, stale } from "../release/sync-version.mjs";
 import { ROOT, ON_NPM, RP_COMMAND, RP_INSTALL, rpCommand } from "../lib/env.mjs";
 import { describe } from "../hyperframes-skills.mjs";
 import { agentBlock } from "../lib/agents.mjs";
@@ -28,6 +29,22 @@ test("the files that pin the version were all found (the curl installer among th
 test("every pinned version and the plugin's entry in marketplace.json match package.json", () => {
   const s = stale();
   assert.deepEqual(s, [], s.map((x) => `${x.file}: ${x.found}`).join("; ") + " — run: node scripts/release/sync-version.mjs");
+});
+test("a stale Codex version fails in an isolated checkout and sync repairs both plugin formats", () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), "rp-version-")));
+  try {
+    const needed = new Set([...PINNED_FILES, ...RP_FILES, MARKETPLACE, CODEX_MANIFEST, "package.json", "scripts/lib/env.mjs", "scripts/lib/old-names.mjs", "scripts/release/sync-version.mjs"]);
+    for (const f of needed) { mkdirSync(dirname(join(dir, f)), { recursive: true }); copyFileSync(join(ROOT, f), join(dir, f)); }
+    const read = (f) => JSON.parse(readFileSync(join(dir, f), "utf8"));
+    const manifest = read(CODEX_MANIFEST); manifest.version = "0.0.1"; writeFileSync(join(dir, CODEX_MANIFEST), JSON.stringify(manifest));
+    const market = read(MARKETPLACE); market.plugins.find((p) => p.name === "reelplanner").version = "0.0.2"; writeFileSync(join(dir, MARKETPLACE), JSON.stringify(market));
+    const run = (...args) => spawnSync(process.execPath, [join(dir, "scripts/release/sync-version.mjs"), ...args], { cwd: dir, encoding: "utf8" });
+    const old = run("--check"); assert.equal(old.status, 1); assert.match(old.stderr, /plugin.json: 0.0.1/); assert.ok(old.stderr.includes(`${MARKETPLACE}: 0.0.2`), old.stderr);
+    const fixed = run(); assert.equal(fixed.status, 0, fixed.stderr);
+    assert.equal(read(CODEX_MANIFEST).version, VERSION);
+    const claude = read(MARKETPLACE).plugins.find((p) => p.name === "reelplanner"); assert.equal(claude.version, VERSION); assert.equal(claude.source, "./skills/plan-to-video");
+    assert.equal(run("--check").status, 0);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 // Claude Code copies a plugin's folder into its cache whole, and npm-installs a package.json with a lockfile there:
 // the plugin is the skill's folder alone, with no plugin.json (its entry in marketplace.json is its manifest)

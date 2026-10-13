@@ -1,0 +1,45 @@
+<template>
+<style>
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;src:url("assets/fonts/EBGaramond-400.woff2") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;src:url("assets/fonts/Inter-400.woff2") format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400;src:url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");}
+
+[data-composition-id="14-remote-proof"]{width:100%;height:100%;position:absolute;color:var(--rp-ink)}
+.f14-remote-proof-ground{position:absolute;inset:0;background:var(--rp-paper)}
+.f14-remote-proof-status{position:absolute;left:90px;top:55px;font:400 28px/1.2 "JetBrains Mono";color:rgba(var(--rp-ink-rgb),0.7)}
+.f14-remote-proof-title{position:absolute;left:90px;top:114px;width:1740px;margin:0;font:400 74px/1.05 "EB Garamond";letter-spacing:-1.3px}
+.f14-remote-proof-title code{font:400 64px/1.05 "JetBrains Mono"}
+.f14-remote-proof-node{position:absolute;box-sizing:border-box;border-top:2px solid var(--rp-ink);padding:35px 22px;background:var(--rp-tile);font:400 40px/1.2 "Inter";display:flex;align-items:center}
+.f14-remote-proof-small{font-size:36px;padding:24px 20px}
+.f14-remote-proof-arrow{position:absolute;font:400 40px/1 "Inter"}
+.f14-remote-proof-option{position:absolute;box-sizing:border-box;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.25);border-radius:8px;display:flex;align-items:center;padding:45px;gap:38px}
+.f14-remote-proof-letter{font:400 40px/1 "JetBrains Mono";color:var(--rp-coral-deep)}
+.f14-remote-proof-option-label{font:400 40px/1.25 "Inter";max-width:1450px}
+.f14-remote-proof-table{position:absolute;left:90px;top:285px;width:1740px}
+.f14-remote-proof-row{display:grid;grid-template-columns:560px 1fr;gap:35px;height:87px;align-items:center;border-bottom:1px solid rgba(var(--rp-ink-rgb),0.25);font:400 36px/1.15 "Inter"}
+.f14-remote-proof-win{position:absolute;left:90px;top:305px;width:1740px;height:535px;border:1px solid rgba(var(--rp-slab-ink-rgb),0.25);border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink);overflow:hidden}
+.f14-remote-proof-bar{position:absolute;left:0;top:0;width:100%;height:64px;background:var(--rp-slab-bar);padding:20px 38px;box-sizing:border-box;font:400 28px/1 "JetBrains Mono";color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f14-remote-proof-command{position:absolute;left:40px;right:40px;min-height:50px;font:400 28px/1.4 "JetBrains Mono";display:flex;gap:22px;align-items:flex-start}
+.f14-remote-proof-command code{white-space:normal;overflow-wrap:break-word;font:inherit}
+.f14-remote-proof-prompt{color:rgba(var(--rp-slab-ink-rgb),0.8)}
+.f14-remote-proof-delivery{position:absolute;left:90px;top:300px;width:1740px;height:240px;padding:35px 40px;box-sizing:border-box;border-radius:8px;background:var(--rp-slab);color:var(--rp-slab-ink)}
+.f14-remote-proof-mini-command{font:400 28px/1.4 "JetBrains Mono";margin-bottom:38px}
+.f14-remote-proof-mini-command code{font:inherit}
+
+.f14-remote-proof-mock{position:absolute;left:90px;top:310px;width:1740px;height:580px}
+.f14-remote-proof-agent{position:absolute;left:0;top:0;width:400px;height:430px;background:var(--rp-slab);color:var(--rp-slab-ink);border:1px solid rgba(var(--rp-slab-ink-rgb),0.2)}
+.f14-remote-proof-head{padding:13px 28px;font:400 28px/1.2 "JetBrains Mono";border-bottom:1px solid rgba(var(--rp-ink-rgb),0.2)}
+.f14-remote-proof-agent-line{padding:28px;font:400 34px/1.3 "Inter"}
+.f14-remote-proof-player{position:absolute;left:440px;top:0;width:1300px;height:560px;background:var(--rp-tile);border:1px solid rgba(var(--rp-ink-rgb),0.2);overflow:hidden}
+.f14-remote-proof-player img{display:block;width:1300px;height:auto;margin-top:-60px}
+.f14-remote-proof-controls{position:absolute;left:0;right:0;bottom:0;background:var(--rp-tile);padding:18px 28px;font:400 30px/1.2 "Inter"}
+.f14-remote-proof-url{position:absolute;left:0;top:455px;width:680px;display:flex;flex-direction:column;gap:6px;font:400 28px/1.1 "JetBrains Mono"}
+.f14-remote-proof-url code{font:inherit}
+.f14-remote-proof-picture{height:400px;overflow:hidden}
+</style>
+<div id="f14-remote-proof-root" data-composition-id="14-remote-proof" data-width="1920" data-height="1080" data-duration="27.031" data-band="bottom"><div class="clip f14-remote-proof-ground" id="f14-remote-proof-ground" data-start="0" data-duration="27.031" data-track-index="0"></div><div class="f14-remote-proof-status">Existing player · proposed workflow test</div><h1 class="f14-remote-proof-title">Step 5 · Send here; transfer only elsewhere</h1><div class="f14-remote-proof-mock" data-artifact="Proposed adjacent-pane workflow">
+<div class="f14-remote-proof-agent"><div class="f14-remote-proof-head"><code>codex</code> · this session</div><div class="f14-remote-proof-agent-line">Review saved</div><div class="f14-remote-proof-agent-line">Fix + commit</div><div class="f14-remote-proof-agent-line">Scenes rebuilt</div></div>
+<div class="f14-remote-proof-player" data-detail="step-5"><div class="f14-remote-proof-head" data-gloss="pane">Proposed browser beside the agent</div><div class="f14-remote-proof-picture"><img data-layout-allow-overflow src="assets/pane-review-preview.png" width="1300" height="731" alt="Readable crop of the existing player inside a proposed browser beside Codex"/></div><div class="f14-remote-proof-controls">Sound · Pause · Seek · Notes · Send</div></div>
+<div class="f14-remote-proof-url" style="width:400px">Local Send<br>No download</div></div></div>
+<script src="assets/vendor/gsap.min.js"></script><script>(function(){var ID="14-remote-proof";var root=document.querySelector('[data-composition-id="'+ID+'"]');var q=function(s){if(s.charAt(0)==="#")s='[id="'+s.slice(1)+'"]';return root.querySelector(s)};window.__timelines=window.__timelines||{};var tl=gsap.timeline({paused:true});window.__timelines[ID]=tl;var DUR=21.6;gsap.set(q(".f14-remote-proof-title"),{opacity:0,y:10});tl.to(q(".f14-remote-proof-title"),{opacity:1,y:0,duration:0.45,ease:"power2.out"},0.1);tl.to({},{duration:0.001},DUR-0.001);})();</script>
+</template>

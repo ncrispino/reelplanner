@@ -1,0 +1,22 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' 'bin/reelplanner.mjs' 'reel' 'stops' '.reelplanner/plans/2026-10-11-codex-first-class'
+A1   step 1   pauses  you'd notice it: its scene shows it running  [visible]
+A2   step 3   pauses  you'd notice it: its scene shows it running  [visible]
+A3   step 3   pauses  a late fix: A13 of explain-first accepted, then changed (label close)  [close]
+A4   step 2   pauses  a late fix: A13 of explain-first accepted, then changed (label close)  [close]
+A5   step 4   pauses  you'd notice it: its scene shows it running  [visible]
+A6   step 5   pauses  you'd notice it: its scene shows it running  [visible]
+A7   step 3   pauses  you'd notice it: its scene shows it running  [visible]
+A8   step 4   pauses  a late fix: A13 of explain-first accepted, then changed (label close)  [close]
+A9   step 5   pauses  a late fix: A13 of explain-first accepted, then changed (label close)  [close]
+A10  step 4   pauses  a late fix: A13 of explain-first accepted, then changed (label close)  [close]
+A11  step 5   pauses  you'd notice it: its scene shows it running  [visible]
+
+The beats, by step (each line is one pause, in the scene that shows it running):
+  step 1    - autonomy: a1
+  step 2    - autonomy: a4
+  step 3    - autonomy: a2, a3, a7   (3 calls share this pause)
+  step 4    - autonomy: a5, a8, a10   (3 calls share this pause)
+  step 5    - autonomy: a6, a9, a11   (3 calls share this pause)
+
+11 call(s) pause, in 5 stop beat(s) (one per step); 0 off-plan change(s), each on its own beat; 0 on the list. The video pauses 5 time(s) for what you'd notice or can't easily undo. An off-plan change said only in prose still pauses.
+exit 0
