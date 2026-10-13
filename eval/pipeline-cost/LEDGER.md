@@ -49,3 +49,4 @@ They are kept separate from request-to-showing times above.
 | Date | Probe | Separate mean | Batch mean | Quality evidence | Report |
 | --- | --- | ---: | ---: | --- | --- |
 | 2026-10-12 | Three assembled frame checks, `d5818bc` | 41.918 s | 17.175 s | Same samples; six PNG equality comparisons; defective-scene differential regressions | [report](2026-10-12-frame-check-batching.md) |
+| 2026-10-12 | All 19 assembled frame checks, `d5818bc`, counterbalanced | 259.710 s | 38.689 s | 38 PNG/sample pairs match; empty own-finding sets; unrelated globals differ; recorded scratch-only repair | [report](2026-10-12-frame-check-all-scenes.md) |

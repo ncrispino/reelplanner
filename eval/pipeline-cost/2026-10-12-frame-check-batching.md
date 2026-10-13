@@ -7,6 +7,9 @@ content. It does not demonstrate faster end-to-end video authoring.
 The implementation is `d5818bc`. The two strategies use that same implementation, including its
 new failure guards; the comparison isolates batching rather than comparing a weaker checker.
 
+A later [counterbalanced all-19-scene probe](2026-10-12-frame-check-all-scenes.md) retains full
+logs and PNG digests, with a larger measured saving and explicit fixture/finding-parity limits.
+
 | Serial round | Three separate calls | One batch call | Saved |
 | --- | ---: | ---: | ---: |
 | A | 42.271 s | 17.274 s | 24.997 s |

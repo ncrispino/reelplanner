@@ -1,0 +1,3348 @@
+{
+  "scope": "Mechanical frame-check CLI measurement; not model authoring or end-to-end video latency",
+  "implementation": "d5818bc",
+  "fixture": "videos/l2-upload-resume, scratch-only frame14 repair recorded below",
+  "manifest": {
+    "node": "v22.19.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "hyperframes": "0.8.52",
+    "method": "Unmodified frame-check CLI: all 19 separate calls versus one all-19 batch; two rounds, counterbalanced order; no NODE_OPTIONS injection or cache",
+    "frames": [
+      {
+        "frame": 1,
+        "src": "compositions/frames/01-hook.html"
+      },
+      {
+        "frame": 2,
+        "src": "compositions/frames/02-tension.html"
+      },
+      {
+        "frame": 3,
+        "src": "compositions/frames/03-pretrain.html"
+      },
+      {
+        "frame": 4,
+        "src": "compositions/frames/04-step-1.html"
+      },
+      {
+        "frame": 5,
+        "src": "compositions/frames/05-decision-1.html"
+      },
+      {
+        "frame": 6,
+        "src": "compositions/frames/06-branch-1a.html"
+      },
+      {
+        "frame": 7,
+        "src": "compositions/frames/07-branch-1b.html"
+      },
+      {
+        "frame": 8,
+        "src": "compositions/frames/08-step-2.html"
+      },
+      {
+        "frame": 9,
+        "src": "compositions/frames/09-step-3.html"
+      },
+      {
+        "frame": 10,
+        "src": "compositions/frames/10-step-4.html"
+      },
+      {
+        "frame": 11,
+        "src": "compositions/frames/11-decision-2.html"
+      },
+      {
+        "frame": 12,
+        "src": "compositions/frames/12-branch-2a.html"
+      },
+      {
+        "frame": 13,
+        "src": "compositions/frames/13-branch-2b.html"
+      },
+      {
+        "frame": 14,
+        "src": "compositions/frames/14-step-5.html"
+      },
+      {
+        "frame": 15,
+        "src": "compositions/frames/15-decision-3.html"
+      },
+      {
+        "frame": 16,
+        "src": "compositions/frames/16-branch-3a.html"
+      },
+      {
+        "frame": 17,
+        "src": "compositions/frames/17-branch-3b.html"
+      },
+      {
+        "frame": 18,
+        "src": "compositions/frames/18-step-6.html"
+      },
+      {
+        "frame": 19,
+        "src": "compositions/frames/19-resolved.html"
+      }
+    ],
+    "sourceHashes": {
+      "bin/reelplanner.mjs": "8cb2e4b53881eb5303daf0a3c75b03310eaebad889db9c84254daf623d185ac2",
+      "scripts/frame-check.mjs": "fc3e89fa2d93476b378525b343adda6c182c0d2f12fe4190b87671052236ce15",
+      "scripts/lib/frame-layout.mjs": "e0f4922d2f0f80b739550b8087a78257f3d8dec4feb9250d3e063463172f78d2",
+      "scripts/frame-lint.mjs": "be9694be1c16fa38f088f394074ef275497dc698cbb878af840558145f9a8c01",
+      "scripts/lib/frame-html.mjs": "f18f6bc9f8e70673ab3d9068af3449371476f5a859100d2d4864797677e84cf2",
+      "scripts/lib/timeline.mjs": "02bae5d741f6cd7f2e05b56df74c95755e2bb6a11ed6d6b98d5125582d489c4a",
+      "scripts/lib/env.mjs": "f4a472a94d8081ecb846143ee351b4177fb8ff2e2440e8ddd8340b56806f55c1",
+      "package.json": "08da7c55addfb8b418914e185721b3b14453d300dc485d1731df72c7c89c6368",
+      "package-lock.json": "4778da08944ac94cdd6a4c2d78707904eb5b4011746d185f1f9cd0319c437834"
+    },
+    "fixtureHashes": {
+      "AGENTS.md": "6361e5d1b78020e6a17a9c31685104d78cb538a080907ca21fd6f88ec21b7fd3",
+      "BRIEF.md": "fef0a7f9b53c5fe0b207d1c4ead073435999072e4f0d0d9b2b067d5464dca77c",
+      "CLAUDE.md": "6361e5d1b78020e6a17a9c31685104d78cb538a080907ca21fd6f88ec21b7fd3",
+      "DESIGN-REVIEW.md": "ccd6deb858fde75b476629c71ed9ef0a382b279badd2a0f8fd7ddc7484d7cd89",
+      "SCRIPT.md": "21d67230b87e4496c7bfb89200a4d22d552269b1f0478bb13088e87f4bce1738",
+      "STORYBOARD.md": "447f7aac7d882b393f1a67892dddd6046ce28233f1f6a0da7e0a707b47bc8d18",
+      "assets/fonts/EBGaramond-400.woff2": "b63448e2680a0dbde70ebb2f3de78f6c515122835491f938e8a8595b46f29210",
+      "assets/fonts/EBGaramond-700.woff2": "5d0f8a497a48fd2a3611d07acc844f65c9fbb35419eafa4e1295f5f0f95f86e4",
+      "assets/fonts/Inter-400.woff2": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+      "assets/fonts/Inter-700.woff2": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491",
+      "assets/fonts/JetBrainsMono-400.woff2": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb",
+      "assets/fonts/JetBrainsMono-700.woff2": "d0d4e818808f2a0ba39b2b09d1989366f63494e295f003c7ef436697378507e8",
+      "assets/fonts/OFL-eb-garamond.txt": "f03c8eda63076cd52317dcd40aa04db8472d4cb592dfaafa385129dfdafc7f9c",
+      "assets/fonts/OFL-inter.txt": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+      "assets/fonts/OFL-jetbrains-mono.txt": "403581b69dac5cff4079205e01c6b467e56af449ecbd7247693ddb1baafa005b",
+      "assets/vendor/gsap.min.js": "c174bfce53a729418d57a8ad8625e7247c793a22fef8e2851e3cfa3de9cd8280",
+      "assets/voice/01.mp3": "c099c3db4227ba33120b4af2e9c8b87c1e87f25c4611abd71cfab354fd5d4aec",
+      "assets/voice/02.mp3": "9472ab06fab16eb07b90807df069dd8db29045e32859ffdc83684c517c953841",
+      "assets/voice/03.mp3": "7e1ecdba336c52782a0c43b33a84bf040d7c856df6b0e7575572c6feea890ca6",
+      "assets/voice/04.mp3": "16c79f3cd77b16c2dd4f9863e497d07f03f7cbba8370e0da8675f348daec4a24",
+      "assets/voice/05.mp3": "17f2c8330956fb2fde4a710ed999a1df1c8f60577b410c2e27a5afc5ca7c81fc",
+      "assets/voice/06.mp3": "b350eba05d03e0b092a6e0adb19cbf0f50fe88a32899c5428263444972473750",
+      "assets/voice/07.mp3": "dc61a9e9fd75af87bd9164d7be606355c14622b126efeb381b49f5cd2018d5c6",
+      "assets/voice/08.mp3": "c1b6312833c97b40d06eefa3bf1c6fb45e21560d3670b6a4eea49afb64612531",
+      "assets/voice/09.mp3": "182256dcee1f015b1739885e8723ecb84c94c4de2b5b1c1f036cda0001cb02cb",
+      "assets/voice/10.mp3": "c0b45e4a1b89285c16c4cadc68995224fc115038c7a3877a2b1de0896131e38d",
+      "assets/voice/11.mp3": "16b3b4befd4906450095a6ce56ff9baada2fb9946a3eefdc613495a0bc0c9a0a",
+      "assets/voice/12.mp3": "b9b014c76c830eace4444535dd49ef1e154acb02d8c97cd9d953a47359587831",
+      "assets/voice/13.mp3": "9870a78dee6ed238575c685deeab38542b08a69e063c18729dab85e86c352d3d",
+      "assets/voice/14.mp3": "668b4636c7bc2f193a3a34f4fd9afe88ca57806f5e244e420d68bc8a769ed3de",
+      "assets/voice/15.mp3": "4dfc26c1d61f283c2fd351d31f7dab083ee846261abe92c33125ba4180048c20",
+      "assets/voice/16.mp3": "1e84bdf0cbfdfcd255c5a699574b8ddf4295015831917d1efc11f1fd3113ec35",
+      "assets/voice/17.mp3": "7634cdafa7c8aa9bf8169d27d845b96426c6e8eb6bbcd658e7861f0f2d251d1d",
+      "assets/voice/18.mp3": "730140012d3c21386f7ef0962ed0bef633094f0f191ceef640b224f833ea43a1",
+      "assets/voice/19.mp3": "c187b58ae50dde234d9e5db003f86ae9316877fa861ccd5fa9ddba1fe2d93c8b",
+      "audio_engine_meta.json": "919ddca770422bb76ddfd7dc7a71e1832fb1071e41a5c60838ebbcabf8a2074d",
+      "audio_meta.json": "1fa37f74d33a6dfb9e3b7d81241d7985408d7a94bca0ac54df44663de7d90769",
+      "audio_request.json": "7350dae2f9744ccf894c5ff2f0615aec4ecd067b491486bf87082f3f8edf673f",
+      "caption-overrides.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "caption_groups.json": "dceff497ae82183af814c8afd218dc231a8ffabcf58407c3a8a0b772490854c8",
+      "capture/extracted/tokens.json": "a510a2e1682c7e0d4ca909066012d60ef70346072f4955540f1b90a3328969dc",
+      "capture/extracted/visible-text.txt": "c40a7d16ff0cd1b382107da3638965f0313676ee8957283300560833bf7e5bf5",
+      "compositions/captions.html": "2b27d8d5448e3e0b29ca24d22a63c64601c241746810a19fdc381ae02a10cff8",
+      "compositions/frames/01-hook.html": "d5fc4f94570ce0f13cfa4b7478a1be45c76a2d202ec5e874bae90e731e6d81dc",
+      "compositions/frames/02-tension.html": "7abd480f4cff75ceda4cb0b473559e6bd79caf2421a8cc54ebe32ea349facc32",
+      "compositions/frames/03-pretrain.html": "5f8d4ce40a350a29d565e0c842b2bf3446d76174f821893222e304e082d7800a",
+      "compositions/frames/04-step-1.html": "dedd411bc82a54186fa935a41c9102663ec814793f6149f04323fe19a11352ef",
+      "compositions/frames/05-decision-1.html": "22961bffe87be563f02989159de5b69c13939ecb5c9059e0969b988de354efd7",
+      "compositions/frames/06-branch-1a.html": "d2f413eea39796549cfb8379f32124e86a88f3a91d93c3438292b4e8e120e986",
+      "compositions/frames/07-branch-1b.html": "11768bc2d6092a83fc8f2c059b01fbcb78471b01c183a17114840bb310e09759",
+      "compositions/frames/08-step-2.html": "c6112a423443730075b59c25b506f3db78ee591664831831246352ed8222480e",
+      "compositions/frames/09-step-3.html": "548db412c2bbb9f4365379e096d6bcae72db4d77d34098d2a261c64795f3f706",
+      "compositions/frames/10-step-4.html": "9714f363388097b389a8910ef760e36d4b596673342fb9af185eb010c9319611",
+      "compositions/frames/11-decision-2.html": "bb30e8cb3a6b849663e4a6c3be4858e5c3a78e42113b9a4ffb13fd4271157691",
+      "compositions/frames/12-branch-2a.html": "b8933983ad42bc4b436c6f1ec296b0d5c7876c047a1036809b5b9762717bae7c",
+      "compositions/frames/13-branch-2b.html": "d19d859e944fee3c045646913bf664b85c549e0c1b468c5ff40d91a6fc675a40",
+      "compositions/frames/14-step-5.html": "3a8a768102ecac0afcd1d038d962e26698440cc77d73d3a6d4dab5b443819fe0",
+      "compositions/frames/15-decision-3.html": "85816f4dac8213b6528e2c157ba288772c20a34be2476f05110c0264e66a233c",
+      "compositions/frames/16-branch-3a.html": "c1917f89083ea1a8f9d7da0ff21b302d58f9a1e8c953f58edac1163b7c6793d7",
+      "compositions/frames/17-branch-3b.html": "698e01bb78a3f90deec28eb3e8db397e76ff6746986ffff29a52a10b7eeaf598",
+      "compositions/frames/18-step-6.html": "8c4c41ccb18a5a573973285c23aa78a3fade2c2665e72ebe14b3b6a227eaa690",
+      "compositions/frames/19-resolved.html": "718121afa0a4b5afc03e7e7125da2584690ddf83b06934cb12d99b93b01ee0ea",
+      "frame.md": "b1c123526634e31a3e36cff9856e3b4322f2f778d2c7f573aa35a9ee1e90deb7",
+      "hyperframes.json": "9313260261b6e431830877ee35083331270bc6b9a32d50650abe2bd58bdf558d",
+      "index.html": "aee898b88957b75e961fc2cfddedbfbeed8d31eb1c28b750f642444fdd66b3b8",
+      "meta.json": "bdcc26c0993df73774dbe13ee4c7f52bec409be7f4f63d2d4a652e0e23ae5160",
+      "package.json": "5de1954f291aba8c7b0b284a034d700ad4497ed56d8f762abb3745dd659f493d",
+      "plan-map.json": "606ac063bf49abb5457f99c3e6fa8cc0bb6c09cc9c7a3e421d6bcb1f23a6e1f5"
+    },
+    "limitations": [
+      "CLI advice does not expose severity; exact own-frame printed findings and sample counts compared, plus one untimed structured batch library pass.",
+      "Global findings from unrequested scenes in singleton calls are recorded separately; a full batch attributes those scenes to their own frames.",
+      "This measures tool calls on assembled fixture scenes, not model authoring or production end-to-end latency."
+    ]
+  },
+  "result": {
+    "ok": true,
+    "frames": 19,
+    "rounds": [
+      {
+        "round": 0,
+        "separateMs": 261813.65333100004,
+        "batchMs": 38706.59820799998,
+        "pngMatches": 19,
+        "sampleMatches": 19,
+        "ownFindingMatches": 19
+      },
+      {
+        "round": 1,
+        "separateMs": 257606.0082489999,
+        "batchMs": 38671.076,
+        "pngMatches": 19,
+        "sampleMatches": 19,
+        "ownFindingMatches": 19
+      }
+    ],
+    "structuredRan": true,
+    "recordCount": 40,
+    "manifestSha256": "56fec5a75bd1c15dae9a7f2093b351e29b1577ae0cab06e3bdf9d2c532f27ef3",
+    "scriptSha256": "f102e513e90326169575c8955bf15ba5f8a6e01438559eb70ce259ca9bd179b4",
+    "rawSha256": "69044cd8cf16f26271d76fabfe5314021242545a173cde35637b747e08f8ba69"
+  },
+  "analysis": {
+    "method": "Same new code and guards; two counterbalanced rounds of actual unmodified CLI calls, all 19 slots; frozen scratch input with recorded frame14-only repair",
+    "means": {
+      "separateMs": 259709.83078999998,
+      "batchMs": 38688.83710399999,
+      "savedMs": 221020.993686,
+      "reductionPercent": 85.10305251583505,
+      "ratio": 6.7127846229099735
+    },
+    "totalTimedCommands": 40,
+    "allExitZero": true,
+    "allOwnSamplesThree": true,
+    "pngPairsCompared": 38,
+    "pngPairsMatched": 38,
+    "retainedPNGs": 76,
+    "ownFrameFindingSetsMatch": true,
+    "positiveOwnFindingCounts": 0,
+    "structuredPerFrameCounts": [
+      {
+        "frame": 1,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 2,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 3,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 4,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 5,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 6,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 7,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 8,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 9,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 10,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 11,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 12,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 13,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 14,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 15,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 16,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 17,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 18,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "frame": 19,
+        "errors": 0,
+        "warnings": 0
+      }
+    ],
+    "structuredGlobalCounts": {
+      "errors": 0,
+      "warnings": 18
+    },
+    "globalComparisons": [
+      {
+        "round": 0,
+        "separateGlobalObservations": 363,
+        "separateUniqueGlobalCount": 20,
+        "batchGlobalCount": 18,
+        "missingFromBatchGlobal": [
+          "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c0`, “0”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.",
+          "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c1`, “1”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap."
+        ],
+        "extraInBatchGlobal": [],
+        "globalSetsEqual": false
+      },
+      {
+        "round": 1,
+        "separateGlobalObservations": 363,
+        "separateUniqueGlobalCount": 20,
+        "batchGlobalCount": 18,
+        "missingFromBatchGlobal": [
+          "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c0`, “0”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.",
+          "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c1`, “1”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap."
+        ],
+        "extraInBatchGlobal": [],
+        "globalSetsEqual": false
+      }
+    ],
+    "frame8Reference": {
+      "samples": [
+        74.221,
+        79.72,
+        85.604
+      ],
+      "rawOwnOverlapRecords": [
+        {
+          "severity": "warning",
+          "time": 74.221,
+          "selector": "span.c0",
+          "text": "0"
+        },
+        {
+          "severity": "warning",
+          "time": 74.221,
+          "selector": "span.c0",
+          "text": "0"
+        },
+        {
+          "severity": "warning",
+          "time": 74.221,
+          "selector": "span.c1",
+          "text": "1"
+        }
+      ],
+      "interpretation": "All raw own-frame overlaps occur at one sampled time. Pinned persistence demotes one-hit cases to info; empty own advice is therefore consistent. Global advice is seek-sequence-dependent. Shared-node fromTo swaps without explicit stable baselines are a likely fixture explanation, not isolated by another experiment."
+    },
+    "repair": {
+      "ownerSource": "videos/l2-upload-resume/compositions/frames/14-step-5.html",
+      "reason": "Both current and frozen 1866c4c static lint reject two one-pixel strikethrough divs as text stand-ins.",
+      "changes": 2,
+      "originalSha256": "63e8e8d022474094e39dfced7c4249b92dff1b254a7e74b9e2e74f6073bb2dae",
+      "patchedSha256": "3a8a768102ecac0afcd1d038d962e26698440cc77d73d3a6d4dab5b443819fe0",
+      "patchSha256": "82e75217acbb97f03fe08f10f1bf31e465b89d3bbedec23099373c23dddbd08c",
+      "scope": "Two divs changed to SVG only in the private frozen input; committed fixture and checks unchanged.",
+      "pixelValidation": "At-rest171.002s original/repaired PNG SHA256 identical:53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8",
+      "staticValidation": "All19scratchframespasssamecurrentframe-lint",
+      "patch": "--- videos/l2-upload-resume/compositions/frames/14-step-5.html\n+++ scratch-input/compositions/frames/14-step-5.html\n@@ -80,11 +80,11 @@\n \n     <!-- the record's parts, one chip under Blob (bottom 700): `2c91 · 3 parts`, struck level on \"deletes\" (frame 15 inherits it struck) -->\n     <div class=\"f14-step-5-chip\" id=\"f14-step-5-chip-parts\" style=\"left:1360px; top:716px; opacity:0\">2c91 · 3 parts</div>\n-    <div class=\"f14-step-5-strike\" id=\"f14-step-5-strike-parts\" style=\"left:1372px; top:735px; width:218px\"></div>\n+    <svg class=\"f14-step-5-strike\" id=\"f14-step-5-strike-parts\" style=\"left:1372px; top:735px; width:218px\" viewBox=\"0 0 218 1\" aria-hidden=\"true\"><rect width=\"218\" height=\"1\" fill=\"var(--rp-ink)\"></rect></svg>\n \n     <!-- why-not ghost under Blob, below the parts chip -->\n     <div class=\"f14-step-5-ghost\" id=\"f14-step-5-ghost\">lifecycle</div>\n-    <div class=\"f14-step-5-strike\" id=\"f14-step-5-strike-ghost\" style=\"left:1372px; top:789px; width:141px\"></div>\n+    <svg class=\"f14-step-5-strike\" id=\"f14-step-5-strike-ghost\" style=\"left:1372px; top:789px; width:141px\" viewBox=\"0 0 141 1\" aria-hidden=\"true\"><rect width=\"141\" height=\"1\" fill=\"var(--rp-ink)\"></rect></svg>\n \n     <svg class=\"f14-step-5-edges\" id=\"f14-step-5-edges\" viewBox=\"0 0 1920 1080\">\n       <!-- inherited: the three brownfield edges plus step 1's api → manifest, dim from t=0 -->\n"
+    },
+    "originalOwnerFixtureUnchanged": true,
+    "limits": [
+      "Not a whole-video authoring speedup or production latency result.",
+      "All 19 own-frame warning/error sets are empty; this does not expand positive severity coverage beyond the committed defect regressions.",
+      "CLI prints both error and warning advice as triangle lines; supporting structured batch severity is recorded, not a per-singleton severity differential.",
+      "Global finding sets differ and are reported separately, not counted as equal.",
+      "A preexisting frame14 static lint failure was reproduced with frozen1866, retained, and excluded from timing results; only private frozen input was repaired."
+    ]
+  },
+  "records": [
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        1
+      ],
+      "startedAt": "2026-10-13T02:51:07.200Z",
+      "ms": 14463.332,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-01.stdout.log",
+      "stderrPath": "logs/r0-separate-01.stderr.log",
+      "own": {
+        "1": {
+          "samples": [
+            2.216,
+            5.318,
+            8.463
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "1": {
+          "path": "pngs/r0/separate/01-01-hook.png",
+          "sha256": "9c396cecca83f76863b32c390c4614db7479ec56eac851148c58aafc0ec711fa"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "1"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        2
+      ],
+      "startedAt": "2026-10-13T02:51:21.681Z",
+      "ms": 14073.119541,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-02.stdout.log",
+      "stderrPath": "logs/r0-separate-02.stderr.log",
+      "own": {
+        "2": {
+          "samples": [
+            10.813,
+            14.244,
+            17.764
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "2": {
+          "path": "pngs/r0/separate/02-02-tension.png",
+          "sha256": "fe8a61e380c560a1e7637b465a5fa58ae825713a1c5182d1b7ffa4375b2160e3"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "2"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        3
+      ],
+      "startedAt": "2026-10-13T02:51:35.771Z",
+      "ms": 13595.893124999999,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-03.stdout.log",
+      "stderrPath": "logs/r0-separate-03.stderr.log",
+      "own": {
+        "3": {
+          "samples": [
+            19.709,
+            22.572,
+            25.444
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "3": {
+          "path": "pngs/r0/separate/03-03-pretrain.png",
+          "sha256": "ab33d81419e6a7bb9cdeb6ff244caa3a02f560c2971c574d578808ca1f4e7b39"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "3"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        4
+      ],
+      "startedAt": "2026-10-13T02:51:49.372Z",
+      "ms": 14385.659333000003,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-04.stdout.log",
+      "stderrPath": "logs/r0-separate-04.stderr.log",
+      "own": {
+        "4": {
+          "samples": [
+            29.32,
+            34.886,
+            40.847
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "4": {
+          "path": "pngs/r0/separate/04-04-step-1.png",
+          "sha256": "a3ae9067ee09b8203860ee193afad903e4c2a9ce61648fa45edf1c8cecfda76d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "4"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        5
+      ],
+      "startedAt": "2026-10-13T02:52:03.774Z",
+      "ms": 14005.387416000005,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-05.stdout.log",
+      "stderrPath": "logs/r0-separate-05.stderr.log",
+      "own": {
+        "5": {
+          "samples": [
+            45.309,
+            51.696,
+            58.596
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "5": {
+          "path": "pngs/r0/separate/05-05-decision-1.png",
+          "sha256": "8fd8fea430469515c4a803fe4f3faae87b3d079685c4d8591d764821592bbad2"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "5"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        6
+      ],
+      "startedAt": "2026-10-13T02:52:17.786Z",
+      "ms": 13609.936124999993,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-06.stdout.log",
+      "stderrPath": "logs/r0-separate-06.stderr.log",
+      "own": {
+        "6": {
+          "samples": [
+            60.13,
+            62.418,
+            64.633
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "6": {
+          "path": "pngs/r0/separate/06-06-branch-1a.png",
+          "sha256": "28b95148bb26124680087cb50691acfbbd78afdccb2f75425a38dfddd5f75a26"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "6"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        7
+      ],
+      "startedAt": "2026-10-13T02:52:31.412Z",
+      "ms": 13476.113750000004,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-07.stdout.log",
+      "stderrPath": "logs/r0-separate-07.stderr.log",
+      "own": {
+        "7": {
+          "samples": [
+            66.098,
+            68.289,
+            70.393
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "7": {
+          "path": "pngs/r0/separate/07-07-branch-1b.png",
+          "sha256": "140f1a77ab1ffac415fdc5577357b184ae96b803a61976c4fb5b6af841e7bcb8"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "7"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        8
+      ],
+      "startedAt": "2026-10-13T02:52:44.903Z",
+      "ms": 13816.568874999997,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-08.stdout.log",
+      "stderrPath": "logs/r0-separate-08.stderr.log",
+      "own": {
+        "8": {
+          "samples": [
+            74.221,
+            79.72,
+            85.604
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "8": {
+          "path": "pngs/r0/separate/08-08-step-2.png",
+          "sha256": "cd036d6d2d11d5c831fbe4ea87d839393fd9f87b8ab02dfbe7415511fa973d76"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "8"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        9
+      ],
+      "startedAt": "2026-10-13T02:52:58.726Z",
+      "ms": 13656.252875000006,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-09.stdout.log",
+      "stderrPath": "logs/r0-separate-09.stderr.log",
+      "own": {
+        "9": {
+          "samples": [
+            89.608,
+            95.353,
+            101.519
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "9": {
+          "path": "pngs/r0/separate/09-09-step-3.png",
+          "sha256": "ecfef028d4c21ceed182271cc0fef67ed81f90094474eb472dd4372e243dead4"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "9"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        10
+      ],
+      "startedAt": "2026-10-13T02:53:12.398Z",
+      "ms": 13447.836249999993,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-10.stdout.log",
+      "stderrPath": "logs/r0-separate-10.stderr.log",
+      "own": {
+        "10": {
+          "samples": [
+            105.267,
+            110.654,
+            116.41
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "10": {
+          "path": "pngs/r0/separate/10-10-step-4.png",
+          "sha256": "b226cf3a5356bb66775fae91951fa234aec4ae5bee79791c210f6efeccad8765"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "10"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        11
+      ],
+      "startedAt": "2026-10-13T02:53:25.852Z",
+      "ms": 13723.847999999998,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-11.stdout.log",
+      "stderrPath": "logs/r0-separate-11.stderr.log",
+      "own": {
+        "11": {
+          "samples": [
+            122.243,
+            130.549,
+            139.642
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "11": {
+          "path": "pngs/r0/separate/11-11-decision-2.png",
+          "sha256": "951f813a6d1a16b37dcdb1429ba1525e5962b38a3cb67568312e8a445a6b95d7"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "11"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        12
+      ],
+      "startedAt": "2026-10-13T02:53:39.591Z",
+      "ms": 13515.625790999999,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-12.stdout.log",
+      "stderrPath": "logs/r0-separate-12.stderr.log",
+      "own": {
+        "12": {
+          "samples": [
+            141.011,
+            143.068,
+            145.018
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "12": {
+          "path": "pngs/r0/separate/12-12-branch-2a.png",
+          "sha256": "8de341cca42932c5d835dc46fe149e1fe26a586a9fdb3ad7a1f18fc4600bf280"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "12"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        13
+      ],
+      "startedAt": "2026-10-13T02:53:53.114Z",
+      "ms": 13923.036459000024,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-13.stdout.log",
+      "stderrPath": "logs/r0-separate-13.stderr.log",
+      "own": {
+        "13": {
+          "samples": [
+            147.182,
+            150.351,
+            153.573
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "13": {
+          "path": "pngs/r0/separate/13-13-branch-2b.png",
+          "sha256": "50a2fe80a4fabf766a5dc7228599c409d593aec2054f23a38a1f1e1d0ce46a4e"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "13"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        14
+      ],
+      "startedAt": "2026-10-13T02:54:07.053Z",
+      "ms": 13590.036250000005,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-14.stdout.log",
+      "stderrPath": "logs/r0-separate-14.stderr.log",
+      "own": {
+        "14": {
+          "samples": [
+            157.955,
+            164.23,
+            171.002
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "14": {
+          "path": "pngs/r0/separate/14-14-step-5.png",
+          "sha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "14"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        15
+      ],
+      "startedAt": "2026-10-13T02:54:20.649Z",
+      "ms": 15073.485375000018,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-15.stdout.log",
+      "stderrPath": "logs/r0-separate-15.stderr.log",
+      "own": {
+        "15": {
+          "samples": [
+            176.264,
+            183.771,
+            191.951
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "15": {
+          "path": "pngs/r0/separate/15-15-decision-3.png",
+          "sha256": "108e70bd1058619440af39f2aea7043ab0fb25fb320fdd49f836409f5f6f67ff"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "15"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        16
+      ],
+      "startedAt": "2026-10-13T02:54:35.738Z",
+      "ms": 13638.515042000014,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-16.stdout.log",
+      "stderrPath": "logs/r0-separate-16.stderr.log",
+      "own": {
+        "16": {
+          "samples": [
+            193.363,
+            195.479,
+            197.498
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "16": {
+          "path": "pngs/r0/separate/16-16-branch-3a.png",
+          "sha256": "89c3147b376d180f8bf6c516d3e2ddd31bd6aebc02ac62ac5e8e1443e82e4123"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "16"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        17
+      ],
+      "startedAt": "2026-10-13T02:54:49.383Z",
+      "ms": 13171.595207999984,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-17.stdout.log",
+      "stderrPath": "logs/r0-separate-17.stderr.log",
+      "own": {
+        "17": {
+          "samples": [
+            198.803,
+            200.77,
+            202.618
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "17": {
+          "path": "pngs/r0/separate/17-17-branch-3b.png",
+          "sha256": "718713586ea3ad22db0cad224ce7805eb344cdca981f6e037b937f1d087fd6cd"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "17"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        18
+      ],
+      "startedAt": "2026-10-13T02:55:02.562Z",
+      "ms": 13314.264082999987,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-18.stdout.log",
+      "stderrPath": "logs/r0-separate-18.stderr.log",
+      "own": {
+        "18": {
+          "samples": [
+            204.755,
+            207.887,
+            211.066
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "18": {
+          "path": "pngs/r0/separate/18-18-step-6.png",
+          "sha256": "b3ff02237b2cbbe48c23b6b68ee560cff1566b60a1645b9663106fbb96f1422d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "18"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "separate",
+      "asked": [
+        19
+      ],
+      "startedAt": "2026-10-13T02:55:15.884Z",
+      "ms": 13333.147832999995,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-separate-19.stdout.log",
+      "stderrPath": "logs/r0-separate-19.stderr.log",
+      "own": {
+        "19": {
+          "samples": [
+            212.347,
+            214.281,
+            216.091
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "19": {
+          "path": "pngs/r0/separate/19-19-resolved.png",
+          "sha256": "80cff82eba698b5f9fe53c55795042b54619128cb9f7aa2759c552331c50964d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-separate",
+        "19"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 0,
+      "strategy": "batch",
+      "asked": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "startedAt": "2026-10-13T02:55:29.236Z",
+      "ms": 38706.59820799998,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r0-batch-all.stdout.log",
+      "stderrPath": "logs/r0-batch-all.stderr.log",
+      "own": {
+        "1": {
+          "samples": [
+            2.216,
+            5.318,
+            8.463
+          ],
+          "findings": []
+        },
+        "2": {
+          "samples": [
+            10.813,
+            14.244,
+            17.764
+          ],
+          "findings": []
+        },
+        "3": {
+          "samples": [
+            19.709,
+            22.572,
+            25.444
+          ],
+          "findings": []
+        },
+        "4": {
+          "samples": [
+            29.32,
+            34.886,
+            40.847
+          ],
+          "findings": []
+        },
+        "5": {
+          "samples": [
+            45.309,
+            51.696,
+            58.596
+          ],
+          "findings": []
+        },
+        "6": {
+          "samples": [
+            60.13,
+            62.418,
+            64.633
+          ],
+          "findings": []
+        },
+        "7": {
+          "samples": [
+            66.098,
+            68.289,
+            70.393
+          ],
+          "findings": []
+        },
+        "8": {
+          "samples": [
+            74.221,
+            79.72,
+            85.604
+          ],
+          "findings": []
+        },
+        "9": {
+          "samples": [
+            89.608,
+            95.353,
+            101.519
+          ],
+          "findings": []
+        },
+        "10": {
+          "samples": [
+            105.267,
+            110.654,
+            116.41
+          ],
+          "findings": []
+        },
+        "11": {
+          "samples": [
+            122.243,
+            130.549,
+            139.642
+          ],
+          "findings": []
+        },
+        "12": {
+          "samples": [
+            141.011,
+            143.068,
+            145.018
+          ],
+          "findings": []
+        },
+        "13": {
+          "samples": [
+            147.182,
+            150.351,
+            153.573
+          ],
+          "findings": []
+        },
+        "14": {
+          "samples": [
+            157.955,
+            164.23,
+            171.002
+          ],
+          "findings": []
+        },
+        "15": {
+          "samples": [
+            176.264,
+            183.771,
+            191.951
+          ],
+          "findings": []
+        },
+        "16": {
+          "samples": [
+            193.363,
+            195.479,
+            197.498
+          ],
+          "findings": []
+        },
+        "17": {
+          "samples": [
+            198.803,
+            200.77,
+            202.618
+          ],
+          "findings": []
+        },
+        "18": {
+          "samples": [
+            204.755,
+            207.887,
+            211.066
+          ],
+          "findings": []
+        },
+        "19": {
+          "samples": [
+            212.347,
+            214.281,
+            216.091
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "1": {
+          "path": "pngs/r0/batch/01-01-hook.png",
+          "sha256": "9c396cecca83f76863b32c390c4614db7479ec56eac851148c58aafc0ec711fa"
+        },
+        "2": {
+          "path": "pngs/r0/batch/02-02-tension.png",
+          "sha256": "fe8a61e380c560a1e7637b465a5fa58ae825713a1c5182d1b7ffa4375b2160e3"
+        },
+        "3": {
+          "path": "pngs/r0/batch/03-03-pretrain.png",
+          "sha256": "ab33d81419e6a7bb9cdeb6ff244caa3a02f560c2971c574d578808ca1f4e7b39"
+        },
+        "4": {
+          "path": "pngs/r0/batch/04-04-step-1.png",
+          "sha256": "a3ae9067ee09b8203860ee193afad903e4c2a9ce61648fa45edf1c8cecfda76d"
+        },
+        "5": {
+          "path": "pngs/r0/batch/05-05-decision-1.png",
+          "sha256": "8fd8fea430469515c4a803fe4f3faae87b3d079685c4d8591d764821592bbad2"
+        },
+        "6": {
+          "path": "pngs/r0/batch/06-06-branch-1a.png",
+          "sha256": "28b95148bb26124680087cb50691acfbbd78afdccb2f75425a38dfddd5f75a26"
+        },
+        "7": {
+          "path": "pngs/r0/batch/07-07-branch-1b.png",
+          "sha256": "140f1a77ab1ffac415fdc5577357b184ae96b803a61976c4fb5b6af841e7bcb8"
+        },
+        "8": {
+          "path": "pngs/r0/batch/08-08-step-2.png",
+          "sha256": "cd036d6d2d11d5c831fbe4ea87d839393fd9f87b8ab02dfbe7415511fa973d76"
+        },
+        "9": {
+          "path": "pngs/r0/batch/09-09-step-3.png",
+          "sha256": "ecfef028d4c21ceed182271cc0fef67ed81f90094474eb472dd4372e243dead4"
+        },
+        "10": {
+          "path": "pngs/r0/batch/10-10-step-4.png",
+          "sha256": "b226cf3a5356bb66775fae91951fa234aec4ae5bee79791c210f6efeccad8765"
+        },
+        "11": {
+          "path": "pngs/r0/batch/11-11-decision-2.png",
+          "sha256": "951f813a6d1a16b37dcdb1429ba1525e5962b38a3cb67568312e8a445a6b95d7"
+        },
+        "12": {
+          "path": "pngs/r0/batch/12-12-branch-2a.png",
+          "sha256": "8de341cca42932c5d835dc46fe149e1fe26a586a9fdb3ad7a1f18fc4600bf280"
+        },
+        "13": {
+          "path": "pngs/r0/batch/13-13-branch-2b.png",
+          "sha256": "50a2fe80a4fabf766a5dc7228599c409d593aec2054f23a38a1f1e1d0ce46a4e"
+        },
+        "14": {
+          "path": "pngs/r0/batch/14-14-step-5.png",
+          "sha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8"
+        },
+        "15": {
+          "path": "pngs/r0/batch/15-15-decision-3.png",
+          "sha256": "108e70bd1058619440af39f2aea7043ab0fb25fb320fdd49f836409f5f6f67ff"
+        },
+        "16": {
+          "path": "pngs/r0/batch/16-16-branch-3a.png",
+          "sha256": "89c3147b376d180f8bf6c516d3e2ddd31bd6aebc02ac62ac5e8e1443e82e4123"
+        },
+        "17": {
+          "path": "pngs/r0/batch/17-17-branch-3b.png",
+          "sha256": "718713586ea3ad22db0cad224ce7805eb344cdca981f6e037b937f1d087fd6cd"
+        },
+        "18": {
+          "path": "pngs/r0/batch/18-18-step-6.png",
+          "sha256": "b3ff02237b2cbbe48c23b6b68ee560cff1566b60a1645b9663106fbb96f1422d"
+        },
+        "19": {
+          "path": "pngs/r0/batch/19-19-resolved.png",
+          "sha256": "80cff82eba698b5f9fe53c55795042b54619128cb9f7aa2759c552331c50964d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r0-batch",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "batch",
+      "asked": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "startedAt": "2026-10-13T02:56:07.971Z",
+      "ms": 38671.076,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-batch-all.stdout.log",
+      "stderrPath": "logs/r1-batch-all.stderr.log",
+      "own": {
+        "1": {
+          "samples": [
+            2.216,
+            5.318,
+            8.463
+          ],
+          "findings": []
+        },
+        "2": {
+          "samples": [
+            10.813,
+            14.244,
+            17.764
+          ],
+          "findings": []
+        },
+        "3": {
+          "samples": [
+            19.709,
+            22.572,
+            25.444
+          ],
+          "findings": []
+        },
+        "4": {
+          "samples": [
+            29.32,
+            34.886,
+            40.847
+          ],
+          "findings": []
+        },
+        "5": {
+          "samples": [
+            45.309,
+            51.696,
+            58.596
+          ],
+          "findings": []
+        },
+        "6": {
+          "samples": [
+            60.13,
+            62.418,
+            64.633
+          ],
+          "findings": []
+        },
+        "7": {
+          "samples": [
+            66.098,
+            68.289,
+            70.393
+          ],
+          "findings": []
+        },
+        "8": {
+          "samples": [
+            74.221,
+            79.72,
+            85.604
+          ],
+          "findings": []
+        },
+        "9": {
+          "samples": [
+            89.608,
+            95.353,
+            101.519
+          ],
+          "findings": []
+        },
+        "10": {
+          "samples": [
+            105.267,
+            110.654,
+            116.41
+          ],
+          "findings": []
+        },
+        "11": {
+          "samples": [
+            122.243,
+            130.549,
+            139.642
+          ],
+          "findings": []
+        },
+        "12": {
+          "samples": [
+            141.011,
+            143.068,
+            145.018
+          ],
+          "findings": []
+        },
+        "13": {
+          "samples": [
+            147.182,
+            150.351,
+            153.573
+          ],
+          "findings": []
+        },
+        "14": {
+          "samples": [
+            157.955,
+            164.23,
+            171.002
+          ],
+          "findings": []
+        },
+        "15": {
+          "samples": [
+            176.264,
+            183.771,
+            191.951
+          ],
+          "findings": []
+        },
+        "16": {
+          "samples": [
+            193.363,
+            195.479,
+            197.498
+          ],
+          "findings": []
+        },
+        "17": {
+          "samples": [
+            198.803,
+            200.77,
+            202.618
+          ],
+          "findings": []
+        },
+        "18": {
+          "samples": [
+            204.755,
+            207.887,
+            211.066
+          ],
+          "findings": []
+        },
+        "19": {
+          "samples": [
+            212.347,
+            214.281,
+            216.091
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "1": {
+          "path": "pngs/r1/batch/01-01-hook.png",
+          "sha256": "9c396cecca83f76863b32c390c4614db7479ec56eac851148c58aafc0ec711fa"
+        },
+        "2": {
+          "path": "pngs/r1/batch/02-02-tension.png",
+          "sha256": "fe8a61e380c560a1e7637b465a5fa58ae825713a1c5182d1b7ffa4375b2160e3"
+        },
+        "3": {
+          "path": "pngs/r1/batch/03-03-pretrain.png",
+          "sha256": "ab33d81419e6a7bb9cdeb6ff244caa3a02f560c2971c574d578808ca1f4e7b39"
+        },
+        "4": {
+          "path": "pngs/r1/batch/04-04-step-1.png",
+          "sha256": "a3ae9067ee09b8203860ee193afad903e4c2a9ce61648fa45edf1c8cecfda76d"
+        },
+        "5": {
+          "path": "pngs/r1/batch/05-05-decision-1.png",
+          "sha256": "8fd8fea430469515c4a803fe4f3faae87b3d079685c4d8591d764821592bbad2"
+        },
+        "6": {
+          "path": "pngs/r1/batch/06-06-branch-1a.png",
+          "sha256": "28b95148bb26124680087cb50691acfbbd78afdccb2f75425a38dfddd5f75a26"
+        },
+        "7": {
+          "path": "pngs/r1/batch/07-07-branch-1b.png",
+          "sha256": "140f1a77ab1ffac415fdc5577357b184ae96b803a61976c4fb5b6af841e7bcb8"
+        },
+        "8": {
+          "path": "pngs/r1/batch/08-08-step-2.png",
+          "sha256": "cd036d6d2d11d5c831fbe4ea87d839393fd9f87b8ab02dfbe7415511fa973d76"
+        },
+        "9": {
+          "path": "pngs/r1/batch/09-09-step-3.png",
+          "sha256": "ecfef028d4c21ceed182271cc0fef67ed81f90094474eb472dd4372e243dead4"
+        },
+        "10": {
+          "path": "pngs/r1/batch/10-10-step-4.png",
+          "sha256": "b226cf3a5356bb66775fae91951fa234aec4ae5bee79791c210f6efeccad8765"
+        },
+        "11": {
+          "path": "pngs/r1/batch/11-11-decision-2.png",
+          "sha256": "951f813a6d1a16b37dcdb1429ba1525e5962b38a3cb67568312e8a445a6b95d7"
+        },
+        "12": {
+          "path": "pngs/r1/batch/12-12-branch-2a.png",
+          "sha256": "8de341cca42932c5d835dc46fe149e1fe26a586a9fdb3ad7a1f18fc4600bf280"
+        },
+        "13": {
+          "path": "pngs/r1/batch/13-13-branch-2b.png",
+          "sha256": "50a2fe80a4fabf766a5dc7228599c409d593aec2054f23a38a1f1e1d0ce46a4e"
+        },
+        "14": {
+          "path": "pngs/r1/batch/14-14-step-5.png",
+          "sha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8"
+        },
+        "15": {
+          "path": "pngs/r1/batch/15-15-decision-3.png",
+          "sha256": "108e70bd1058619440af39f2aea7043ab0fb25fb320fdd49f836409f5f6f67ff"
+        },
+        "16": {
+          "path": "pngs/r1/batch/16-16-branch-3a.png",
+          "sha256": "89c3147b376d180f8bf6c516d3e2ddd31bd6aebc02ac62ac5e8e1443e82e4123"
+        },
+        "17": {
+          "path": "pngs/r1/batch/17-17-branch-3b.png",
+          "sha256": "718713586ea3ad22db0cad224ce7805eb344cdca981f6e037b937f1d087fd6cd"
+        },
+        "18": {
+          "path": "pngs/r1/batch/18-18-step-6.png",
+          "sha256": "b3ff02237b2cbbe48c23b6b68ee560cff1566b60a1645b9663106fbb96f1422d"
+        },
+        "19": {
+          "path": "pngs/r1/batch/19-19-resolved.png",
+          "sha256": "80cff82eba698b5f9fe53c55795042b54619128cb9f7aa2759c552331c50964d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-batch",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        1
+      ],
+      "startedAt": "2026-10-13T02:56:46.674Z",
+      "ms": 13710.415125,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-01.stdout.log",
+      "stderrPath": "logs/r1-separate-01.stderr.log",
+      "own": {
+        "1": {
+          "samples": [
+            2.216,
+            5.318,
+            8.463
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "1": {
+          "path": "pngs/r1/separate/01-01-hook.png",
+          "sha256": "9c396cecca83f76863b32c390c4614db7479ec56eac851148c58aafc0ec711fa"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "1"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        2
+      ],
+      "startedAt": "2026-10-13T02:57:00.392Z",
+      "ms": 13811.551124999998,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-02.stdout.log",
+      "stderrPath": "logs/r1-separate-02.stderr.log",
+      "own": {
+        "2": {
+          "samples": [
+            10.813,
+            14.244,
+            17.764
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "2": {
+          "path": "pngs/r1/separate/02-02-tension.png",
+          "sha256": "fe8a61e380c560a1e7637b465a5fa58ae825713a1c5182d1b7ffa4375b2160e3"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "2"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        3
+      ],
+      "startedAt": "2026-10-13T02:57:14.209Z",
+      "ms": 13319.738332999987,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-03.stdout.log",
+      "stderrPath": "logs/r1-separate-03.stderr.log",
+      "own": {
+        "3": {
+          "samples": [
+            19.709,
+            22.572,
+            25.444
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "3": {
+          "path": "pngs/r1/separate/03-03-pretrain.png",
+          "sha256": "ab33d81419e6a7bb9cdeb6ff244caa3a02f560c2971c574d578808ca1f4e7b39"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "3"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        4
+      ],
+      "startedAt": "2026-10-13T02:57:27.536Z",
+      "ms": 13557.613542000006,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-04.stdout.log",
+      "stderrPath": "logs/r1-separate-04.stderr.log",
+      "own": {
+        "4": {
+          "samples": [
+            29.32,
+            34.886,
+            40.847
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "4": {
+          "path": "pngs/r1/separate/04-04-step-1.png",
+          "sha256": "a3ae9067ee09b8203860ee193afad903e4c2a9ce61648fa45edf1c8cecfda76d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "4"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        5
+      ],
+      "startedAt": "2026-10-13T02:57:41.099Z",
+      "ms": 13981.49658399995,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-05.stdout.log",
+      "stderrPath": "logs/r1-separate-05.stderr.log",
+      "own": {
+        "5": {
+          "samples": [
+            45.309,
+            51.696,
+            58.596
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "5": {
+          "path": "pngs/r1/separate/05-05-decision-1.png",
+          "sha256": "8fd8fea430469515c4a803fe4f3faae87b3d079685c4d8591d764821592bbad2"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "5"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        6
+      ],
+      "startedAt": "2026-10-13T02:57:55.086Z",
+      "ms": 13586.802833000023,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-06.stdout.log",
+      "stderrPath": "logs/r1-separate-06.stderr.log",
+      "own": {
+        "6": {
+          "samples": [
+            60.13,
+            62.418,
+            64.633
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "6": {
+          "path": "pngs/r1/separate/06-06-branch-1a.png",
+          "sha256": "28b95148bb26124680087cb50691acfbbd78afdccb2f75425a38dfddd5f75a26"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "6"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        7
+      ],
+      "startedAt": "2026-10-13T02:58:08.680Z",
+      "ms": 13461.923083000001,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-07.stdout.log",
+      "stderrPath": "logs/r1-separate-07.stderr.log",
+      "own": {
+        "7": {
+          "samples": [
+            66.098,
+            68.289,
+            70.393
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "7": {
+          "path": "pngs/r1/separate/07-07-branch-1b.png",
+          "sha256": "140f1a77ab1ffac415fdc5577357b184ae96b803a61976c4fb5b6af841e7bcb8"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "7"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 21
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        8
+      ],
+      "startedAt": "2026-10-13T02:58:22.147Z",
+      "ms": 13729.069125000038,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-08.stdout.log",
+      "stderrPath": "logs/r1-separate-08.stderr.log",
+      "own": {
+        "8": {
+          "samples": [
+            74.221,
+            79.72,
+            85.604
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "8": {
+          "path": "pngs/r1/separate/08-08-step-2.png",
+          "sha256": "cd036d6d2d11d5c831fbe4ea87d839393fd9f87b8ab02dfbe7415511fa973d76"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "8"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        9
+      ],
+      "startedAt": "2026-10-13T02:58:35.884Z",
+      "ms": 13466.361875000002,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-09.stdout.log",
+      "stderrPath": "logs/r1-separate-09.stderr.log",
+      "own": {
+        "9": {
+          "samples": [
+            89.608,
+            95.353,
+            101.519
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "9": {
+          "path": "pngs/r1/separate/09-09-step-3.png",
+          "sha256": "ecfef028d4c21ceed182271cc0fef67ed81f90094474eb472dd4372e243dead4"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "9"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        10
+      ],
+      "startedAt": "2026-10-13T02:58:49.357Z",
+      "ms": 13368.820624999993,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-10.stdout.log",
+      "stderrPath": "logs/r1-separate-10.stderr.log",
+      "own": {
+        "10": {
+          "samples": [
+            105.267,
+            110.654,
+            116.41
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "10": {
+          "path": "pngs/r1/separate/10-10-step-4.png",
+          "sha256": "b226cf3a5356bb66775fae91951fa234aec4ae5bee79791c210f6efeccad8765"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "10"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        11
+      ],
+      "startedAt": "2026-10-13T02:59:02.733Z",
+      "ms": 13485.331707999983,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-11.stdout.log",
+      "stderrPath": "logs/r1-separate-11.stderr.log",
+      "own": {
+        "11": {
+          "samples": [
+            122.243,
+            130.549,
+            139.642
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "11": {
+          "path": "pngs/r1/separate/11-11-decision-2.png",
+          "sha256": "951f813a6d1a16b37dcdb1429ba1525e5962b38a3cb67568312e8a445a6b95d7"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "11"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        12
+      ],
+      "startedAt": "2026-10-13T02:59:16.224Z",
+      "ms": 13411.358667000022,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-12.stdout.log",
+      "stderrPath": "logs/r1-separate-12.stderr.log",
+      "own": {
+        "12": {
+          "samples": [
+            141.011,
+            143.068,
+            145.018
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "12": {
+          "path": "pngs/r1/separate/12-12-branch-2a.png",
+          "sha256": "8de341cca42932c5d835dc46fe149e1fe26a586a9fdb3ad7a1f18fc4600bf280"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "12"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        13
+      ],
+      "startedAt": "2026-10-13T02:59:29.642Z",
+      "ms": 13490.10495800001,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-13.stdout.log",
+      "stderrPath": "logs/r1-separate-13.stderr.log",
+      "own": {
+        "13": {
+          "samples": [
+            147.182,
+            150.351,
+            153.573
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "13": {
+          "path": "pngs/r1/separate/13-13-branch-2b.png",
+          "sha256": "50a2fe80a4fabf766a5dc7228599c409d593aec2054f23a38a1f1e1d0ce46a4e"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "13"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        14
+      ],
+      "startedAt": "2026-10-13T02:59:43.138Z",
+      "ms": 13622.966665999964,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-14.stdout.log",
+      "stderrPath": "logs/r1-separate-14.stderr.log",
+      "own": {
+        "14": {
+          "samples": [
+            157.955,
+            164.23,
+            171.002
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "14": {
+          "path": "pngs/r1/separate/14-14-step-5.png",
+          "sha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "14"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        15
+      ],
+      "startedAt": "2026-10-13T02:59:56.767Z",
+      "ms": 13397.610916999984,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-15.stdout.log",
+      "stderrPath": "logs/r1-separate-15.stderr.log",
+      "own": {
+        "15": {
+          "samples": [
+            176.264,
+            183.771,
+            191.951
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "15": {
+          "path": "pngs/r1/separate/15-15-decision-3.png",
+          "sha256": "108e70bd1058619440af39f2aea7043ab0fb25fb320fdd49f836409f5f6f67ff"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "15"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        16
+      ],
+      "startedAt": "2026-10-13T03:00:10.172Z",
+      "ms": 13232.183416999993,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-16.stdout.log",
+      "stderrPath": "logs/r1-separate-16.stderr.log",
+      "own": {
+        "16": {
+          "samples": [
+            193.363,
+            195.479,
+            197.498
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "16": {
+          "path": "pngs/r1/separate/16-16-branch-3a.png",
+          "sha256": "89c3147b376d180f8bf6c516d3e2ddd31bd6aebc02ac62ac5e8e1443e82e4123"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "16"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        17
+      ],
+      "startedAt": "2026-10-13T03:00:23.411Z",
+      "ms": 13139.075582999969,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-17.stdout.log",
+      "stderrPath": "logs/r1-separate-17.stderr.log",
+      "own": {
+        "17": {
+          "samples": [
+            198.803,
+            200.77,
+            202.618
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "17": {
+          "path": "pngs/r1/separate/17-17-branch-3b.png",
+          "sha256": "718713586ea3ad22db0cad224ce7805eb344cdca981f6e037b937f1d087fd6cd"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "17"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        18
+      ],
+      "startedAt": "2026-10-13T03:00:36.557Z",
+      "ms": 13404.488582999911,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-18.stdout.log",
+      "stderrPath": "logs/r1-separate-18.stderr.log",
+      "own": {
+        "18": {
+          "samples": [
+            204.755,
+            207.887,
+            211.066
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "18": {
+          "path": "pngs/r1/separate/18-18-step-6.png",
+          "sha256": "b3ff02237b2cbbe48c23b6b68ee560cff1566b60a1645b9663106fbb96f1422d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "18"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    },
+    {
+      "round": 1,
+      "strategy": "separate",
+      "asked": [
+        19
+      ],
+      "startedAt": "2026-10-13T03:00:49.979Z",
+      "ms": 14429.095500000054,
+      "status": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "logs/r1-separate-19.stdout.log",
+      "stderrPath": "logs/r1-separate-19.stderr.log",
+      "own": {
+        "19": {
+          "samples": [
+            212.347,
+            214.281,
+            216.091
+          ],
+          "findings": []
+        }
+      },
+      "pngs": {
+        "19": {
+          "path": "pngs/r1/separate/19-19-resolved.png",
+          "sha256": "80cff82eba698b5f9fe53c55795042b54619128cb9f7aa2759c552331c50964d"
+        }
+      },
+      "command": [
+        "<node>",
+        "<checkout>/bin/reelplanner.mjs",
+        "frame-check",
+        "<probe>/scratch/r1-separate",
+        "19"
+      ],
+      "unassigned": [],
+      "globalFindingIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "globalObservationCount": 18
+    }
+  ],
+  "private_artifact_sha256": {
+    "bench.mjs": "f102e513e90326169575c8955bf15ba5f8a6e01438559eb70ce259ca9bd179b4",
+    "manifest.json": "56fec5a75bd1c15dae9a7f2093b351e29b1577ae0cab06e3bdf9d2c532f27ef3",
+    "raw.jsonl": "69044cd8cf16f26271d76fabfe5314021242545a173cde35637b747e08f8ba69",
+    "comparison.json": "efa116ffd7c23c6ebd2275fb7dfd074d2a0aeabf3cf0ea36b8b0cfe4c8fd147b",
+    "result.json": "83637457cec58c807daa8f02bd87dff0a2c2a0204eaf4bbd2484c271fd62dc38",
+    "analysis.json": "9597c1f6919e6f9c2528f6ad41b1a663b1efc217242a3acb0972548d176a5f25",
+    "batch-structured.json": "b2717670ec2c863dff1ce61815c18c48545e84e07b38e8c689144b3862e07335",
+    "investigation-frame8-raw.stdout.json": "85a52fe700e6f317681e00b6337b4e1ecb3906d6d1c3c10291469918e991ea71",
+    "investigation-frame8-raw.stderr.log": "14be124497d4d59eeeabfc9533ff61bf13ae99d2ef407c69a7a1ac0cf2d7c453",
+    "repair.json": "922bb8af50456e0fc029540d1f834ef7f575b21f2f085de3f263a2916b97773a",
+    "scratch-only-source.patch": "82e75217acbb97f03fe08f10f1bf31e465b89d3bbedec23099373c23dddbd08c",
+    "repair-png-parity.json": "44bbff4ba8d942025abf74f793ce1be86f3a39fb13c3474814f40223b1276a06"
+  },
+  "repair_png_parity": {
+    "originalSha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8",
+    "repairedSha256": "53db9d5891918ad2e23359f72f2b34884344ef1a98cae3ac3662a1fdf3d1dbc8",
+    "byteIdentical": true
+  },
+  "globalFindingCatalog": [
+    "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c0`, “0”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.",
+    "△ the video: compositions/frames/08-step-2.html: layout: Two text blocks overlap and may render unreadable (content_overlap, `span.c1`, “1”, 71.923s) — Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.",
+    "△ the video: <video>/index.html: lint: This HTML composition file has 446 lines. Smaller sub-compositions are easier to read, iterate on, and diff (composition_file_too_large, `[data-composition-id]`, 0s) — Split coherent scenes or layers into separate .html files under compositions/, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.",
+    "△ the video: <video>/index.html: lint: <div id=\"el-captions\"> looks like captions but is not marked as such, so the timeline cannot group it on the caption track (caption_track_kind_missing, `#el-captions`, 0s) — Add data-track-kind=\"captions\" to <div id=\"el-captions\">.",
+    "△ the video: <video>/compositions/frames/01-hook.html: lint: <div class=\"f01-hook-ground\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/01-hook.html: lint: <div class=\"f01-hook-layer\" data-start=\"0\" data-track-index=\"1\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/01-hook.html: lint: 2 tl.fromTo() calls target \"#f01-hook-bar-1\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position (gsap_repeated_fromto_without_baseline, `#f01-hook-bar-1`, 0s) — Add `immediateRender: false` to the destination vars of each future fromTo, or set a safe resting state with an earlier `tl.set(\"#f01-hook-bar-1\", { ... }, 0)`. Pre-first-tween seeks must not inherit whichever fromTo call happened to author last.",
+    "△ the video: <video>/compositions/frames/01-hook.html: lint: 2 tl.fromTo() calls target \"#f01-hook-fill-1\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position (gsap_repeated_fromto_without_baseline, `#f01-hook-fill-1`, 0s) — Add `immediateRender: false` to the destination vars of each future fromTo, or set a safe resting state with an earlier `tl.set(\"#f01-hook-fill-1\", { ... }, 0)`. Pre-first-tween seeks must not inherit whichever fromTo call happened to author last.",
+    "△ the video: <video>/compositions/frames/01-hook.html: lint: 3 tl.fromTo() calls target \"dwell/hold\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position (gsap_repeated_fromto_without_baseline, `dwell/hold`, 0s) — Add `immediateRender: false` to the destination vars of each future fromTo, or set a safe resting state with an earlier `tl.set(\"dwell/hold\", { ... }, 0)`. Pre-first-tween seeks must not inherit whichever fromTo call happened to author last.",
+    "△ the video: <video>/compositions/frames/06-branch-1a.html: lint: <div class=\"f06-branch-1a-ground\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/07-branch-1b.html: lint: <div class=\"f07-branch-1b-ground\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/08-step-2.html: lint: <div class=\"f08-step-2-bg\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/08-step-2.html: lint: <div class=\"f08-step-2-stage\" data-start=\"0\" data-track-index=\"1\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/10-step-4.html: lint: <div class=\"f10-step-4-bg\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/10-step-4.html: lint: <div class=\"f10-step-4-stage\" data-start=\"0\" data-track-index=\"1\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/13-branch-2b.html: lint: <div class=\"f13-branch-2b-ground\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/14-step-5.html: lint: <div class=\"f14-step-5-bg\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/14-step-5.html: lint: <div class=\"f14-step-5-stage\" data-start=\"0\" data-track-index=\"1\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/15-decision-3.html: lint: <div class=\"f15-decision-3-bg\" data-start=\"0\" data-track-index=\"0\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit.",
+    "△ the video: <video>/compositions/frames/15-decision-3.html: lint: <div class=\"f15-decision-3-stage\" data-start=\"0\" data-track-index=\"1\"> has no id, so Studio cannot use a stable edit target for its timeline and canvas controls (studio_missing_editable_id, `[data-composition-id]`, 0s) — Add a stable, human-readable id such as id=\"hero-title\" or id=\"scene-1-card\" to every timeline-visible element you want agents or Studio to edit."
+  ],
+  "globalCatalogNote": "Each command lists zero-based global finding IDs, preserving duplicates and order. Scratch copy prefixes normalize to <video>; all other finding text is unchanged.",
+  "cache_note": "No check-result cache reuse. The same machine shares normal OS and library caches; fresh CLI processes and browser passes run every time."
+}
