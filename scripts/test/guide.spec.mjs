@@ -47,7 +47,7 @@ import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasE
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
 import { paragraphsOf, checkGuide } from "../lib/guide/check.mjs";
 import { canLine, youPhrase, canOf, thinOf, wroteOf, whereRan, choicesOf, choiceCounts, firstSentence } from "../lib/guide/reader.mjs";
-import { guideTarget, buildModel, supersedesLine } from "../lib/guide/model.mjs";
+import { guideTarget, guideParts, buildModel, supersedesLine } from "../lib/guide/model.mjs";
 import { webpEncoder } from "../lib/guide/pictures.mjs";
 import { parseDiagram, drawDiagram, stepsDiagram, importsAmong, wrap, balance, textWidth, diagramGeometry, diagramBlocks, segHitsBox } from "../lib/guide/diagram.mjs";
 import { forGuideOf, parseExample, parseChunk, withoutForGuide, scratchOf, sinceOf, plainOf, inScratch } from "../lib/guide/depth.mjs";
@@ -132,6 +132,40 @@ I recommend A: nothing breaks.
 `;
 
 try {
+  // Evidence manifests can belong to a plan video too; they do not change its owner.
+  for (const evidenceAt of ["video", "plan"]) {
+    const owner = join(tmp, "guide-targets", ".reelplanner", "plans", evidenceAt);
+    write(join(owner, "plan.md"), PLAN(true));
+    if (evidenceAt === "plan") write(join(owner, "sources.json"), '{"sources":[]}\n');
+    for (const name of ["video", "walkthrough-video"]) {
+      const dir = join(owner, name);
+      write(join(dir, "STORYBOARD.md"), `---\nkind: ${name === "video" ? "plan" : "walkthrough"}\n---\n`);
+      if (evidenceAt === "video") write(join(dir, "sources.json"), '{"sources":[]}\n');
+      const target = guideTarget(dir), parts = guideParts(dir);
+      ok(`guide target: ${name} keeps its plan and step parts with ${evidenceAt}-local sources`,
+        target.kind === (name === "video" ? "plan-video" : "walkthrough") && target.planDir === owner &&
+        parts.some((p) => p.name === "step-1") && parts.some((p) => p.name === "decisions"), JSON.stringify({ target, parts }));
+    }
+    const explicit = join(owner, "video");
+    write(join(explicit, "STORYBOARD.md"), "---\nkind: explainer\n---\n");
+    ok(`guide target: explicit explainer kind survives ${evidenceAt}-local sources`, guideTarget(explicit).kind === "explainer");
+    write(join(explicit, "STORYBOARD.md"), "---\nkind: system\n---\n");
+    ok(`guide target: system kind keeps its guide suppressed with ${evidenceAt}-local sources`,
+      guideTarget(explicit).kind === "none" && /system video/.test(guideTarget(explicit).why));
+    const child = join(owner, "other");
+    write(join(child, "sources.json"), '{"sources":[]}\n');
+    ok(`guide target: an arbitrary sourced child remains an unbuilt explainer with ${evidenceAt}-local sources`,
+      guideTarget(child).kind === "none" && /explainer with no video/.test(guideTarget(child).why));
+  }
+  {
+    const explainer = join(tmp, "guide-targets", "explainer");
+    write(join(explainer, "sources.json"), '{"sources":[]}\n');
+    ok("guide target: an explainer root without video still has no guide", guideTarget(explainer).kind === "none");
+    write(join(explainer, "video", "STORYBOARD.md"), "---\nkind: explainer\n---\n");
+    const target = guideTarget(explainer);
+    ok("guide target: a true explainer root resolves its video and source parts", target.kind === "explainer" &&
+      target.videoDir === join(explainer, "video") && guideParts(explainer).some((p) => p.name === "sources"), JSON.stringify(target));
+  }
   mkdirSync(repo, { recursive: true });
   git("init", "-q", "-b", "main"); git("config", "user.email", "sam@example.com"); git("config", "user.name", "Sam"); git("config", "commit.gpgsign", "false");
   reel("init", repo, "--name", "demo", "--kind", "greenfield");
@@ -277,6 +311,7 @@ try {
     { index: 3, title: "Step 2: the help", compositionId: "03-step-2", durationSeconds: 8, start: 22, planStep: 2, narration: "Step two says it in the help." },
   ];
   write(join(vd, "STORYBOARD.md"), `---\nplan_dir: .reelplanner/plans/2026-10-01-flag\ndetails_check: strict\n---\n\n## Frame 1 — The flag\n\n- voiceover: "x"\n\n## Frame 2 — Step 1: the new flag\n\n- plan_step: 1\n- guide: step-1#cases\n\n## Frame 3 — Step 2: the help\n\n- plan_step: 2\n- guide: step-2\n`);
+  write(join(vd, "sources.json"), '{"sources":[]}\n');
   write(join(vd, "compositions/frames/02-step-1.html"), `<div data-band="bottom"><table data-detail="step-1"><tr><td>--to</td></tr></table></div>\n`);
   write(join(vd, "compositions/frames/03-step-2.html"), `<div data-band="bottom"><p>the help</p></div>\n`);
   write(join(vd, "plan-map.json"), JSON.stringify({ project: "video", title: "Rename the flag", planDir: ".reelplanner/plans/2026-10-01-flag", totalSeconds: 30, frames, decisions: [{ id: "q1", question: "Keep --out working?", planStep: 1, options: [{ id: "a", label: "Keep it, with a warning", recommended: true }, { id: "b", label: "Drop it" }] }], details: [] }, null, 2));
