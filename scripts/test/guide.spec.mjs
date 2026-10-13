@@ -43,7 +43,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, launchOpts, chromiumEnv } from "../lib/env.mjs";
 import { pathToFileURL } from "node:url";
-import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample, parseQuestions } from "../lib/plan-md.mjs";
+import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, planBlocksOf, blockFindings, hasExample, parseQuestions } from "../lib/plan-md.mjs";
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
 import { paragraphsOf, checkGuide } from "../lib/guide/check.mjs";
 import { canLine, youPhrase, canOf, thinOf, wroteOf, whereRan, choicesOf, choiceCounts, firstSentence } from "../lib/guide/reader.mjs";
@@ -132,6 +132,37 @@ I recommend A: nothing breaks.
 `;
 
 try {
+  // Source appendices quote Markdown headings; they must remain code, rather than become plan boundaries.
+  for (const [name, open, middle, close] of [
+    ["backticks with language", "```text", "", "```"],
+    ["tilde with backticks in its info", "~~~text `literal`", "", "~~~"],
+    ["long backticks", "````text", "```\n~~~\n````not-a-closer\n", "`````"],
+    ["long tilde", "~~~~text", "~~~\n```\n~~~~not-a-closer\n", "~~~~~"],
+    ["indented fence", "   ```text", "", "   ```"],
+  ]) {
+    const quoted = `${open}\n# Task\n## The problem\nA quoted problem.\n### Step 99 — Quoted step\n#### Worked examples\n${middle}A quoted ending.\n${close}`;
+    const parsed = planBlocksOf(`# Real plan\n## The problem\nReal problem.\n## Steps\n### Step 1 — Real step\n${quoted}\n#### Cases\n| Case | What happens |\n|---|---|\n| one | kept |\n## Source appendix\n${quoted}\n## After appendix\nReal ending.\n`);
+    const step = parsed.steps[0];
+    ok(`plan headings: ${name} preserves quoted headings and resumes after a valid closer`,
+      parsed.title === "Real plan" && parsed.problem === "Real problem." && parsed.steps.length === 1 && step.n === 1 &&
+      step.prose === quoted.trim() && step.cases?.rows.length === 1 && step.other.length === 0 &&
+      parsed.sections.map((s) => s.title).join("|") === "The problem|Steps|Source appendix|After appendix" &&
+      parsed.sections.find((s) => s.title === "Source appendix")?.text === quoted.trim() &&
+      blockFindings(parsed).gaps.some((g) => g.where === "step 1" && g.what === "no Example"), JSON.stringify(parsed));
+  }
+  {
+    const parsed = planBlocksOf("# Real plan\n## Source appendix\n```text\n# Task\n## Not a section\n### Step 99 — Not a step\n");
+    ok("plan headings: an unclosed fence retains its code through EOF", parsed.title === "Real plan" && parsed.sections.length === 1 && parsed.steps.length === 0 && parsed.sections[0].text.includes("## Not a section"));
+    const invalid = planBlocksOf("# Real plan\n```text `invalid`\n## Real section\nReal prose.\n");
+    ok("plan headings: a backtick in a backtick info string does not open a fence", invalid.sections[0]?.title === "Real section");
+  }
+  {
+    const raw = "Step prose.\r\n```text\r\n#### Worked examples\r\nQuoted content.\r\n```\r\n#### Cases\r\n| Case | What happens |\r\n|---|---|\r\n| one | kept |\r\n";
+    const blocks = stepBlocks(raw);
+    ok("plan blocks: direct CRLF input keeps fenced block headings in the original prose", blocks.prose === raw.slice(0, raw.indexOf("#### Cases")).trim() && blocks.cases?.rows.length === 1 && blocks.example === null && blocks.other.length === 0);
+    const questions = parseQuestions("```text\r\n## Open questions\r\n1. **Fake?** (step 1)\r\n```\r\n## Open questions\r\n1. **Real?** (step 1)\r\n- **A · Keep.** Keep value 1.\r\n- **B · Drop.** Drop value 1.\r\n");
+    ok("plan questions: direct CRLF input ignores a quoted question section", questions.length === 1 && questions[0].title === "Real?", JSON.stringify(questions));
+  }
   // Evidence manifests can belong to a plan video too; they do not change its owner.
   for (const evidenceAt of ["video", "plan"]) {
     const owner = join(tmp, "guide-targets", ".reelplanner", "plans", evidenceAt);
@@ -329,11 +360,14 @@ try {
     details: [{ name: "step-1", src: "guide/step-1.html#step-1-cases", guide: true, kind: "guide", frameIndex: 2, planStep: 1, start: 10, end: 22 }, { name: "step-2", src: "guide/step-2.html", guide: true, kind: "guide", frameIndex: 3, planStep: 2, start: 22, end: 30 }] }, null, 2));
 
   // ── the guide ──
+  const sourceAppendix = "### Source task.md\n\n```text\n# Task\nThree coding agents must preserve the source evidence.\n## Nested source heading\nA quoted source paragraph stays in this appendix.\n```\n\n### Source record.jsonl\n\n```jsonl\n{\"id\":\"e1\",\"result\":\"blocked\"}\n```";
+  writeFileSync(join(pd, "plan.md"), readFileSync(join(pd, "plan.md"), "utf8") + `\n## Companion guide sources — verbatim appendices\n\n${sourceAppendix}\n`);
   const g = run("guide.mjs", pd, "--no-thumbs");
   const gd = join(vd, "guide"), parts = existsSync(join(gd, "parts.json")) ? json(join(gd, "parts.json")) : null;
   ok("guide: a plan folder builds its video's guide: the full page and each part", g.code === 0 && existsSync(join(gd, "index.html")) && ["step-1", "step-2", "decisions", "what-changed", "flag", "help", "choices"].every((p) => existsSync(join(gd, `${p}.html`))), `${g.out}\n${JSON.stringify(parts?.parts)}`);
   const html = readFileSync(join(gd, "index.html"), "utf8"), data = JSON.parse(html.match(/<script type="application\/json" id="guide-data">([\s\S]*?)<\/script>/)[1]);
   const s1 = data.steps[0];
+  ok("guide: verbatim fenced source headings and JSON remain together in their appendix", data.rest.some((s) => s.md?.includes(sourceAppendix)), JSON.stringify(data.rest));
   ok("guide: a step's cases with their traces, its interface parts, its example, its question, from plan.md", s1.cases.rows.length === 3 && s1.cases.rows[0].trace.length === 3 && s1.iface.parts[0].subs.length === 1 && /writes a\.html/.test(s1.example) && s1.questions[0]?.options.length === 2, JSON.stringify(s1).slice(0, 800));
   ok("guide: the Built side from git: each category's files and diffs, the run as it ran, the step's calls", data.built.cats.find((c) => c.id === "flag")?.files[0]?.path === "src/build.mjs" && data.built.cats.find((c) => c.id === "flag").files[0].commits[0].hunks.length > 0 && data.built.cats.find((c) => c.id === "flag").files[0].whole?.mark.length > 0 && data.built.runs["runs/build.txt"]?.exit === 0 && s1.choices[0] === "A1", JSON.stringify(data.built.cats).slice(0, 600));
   ok("guide: a decision in force goes under its step; one with no step is a gap on the page", data.steps[1].inForce[0]?.ids[0] === "D-001" && data.gaps.some((x) => x.where === "D-002" && x.what === "no step") && data.gaps.some((x) => /step 2 · case 1/.test(x.where)), JSON.stringify(data.gaps));
