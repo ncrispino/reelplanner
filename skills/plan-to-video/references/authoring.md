@@ -99,3 +99,16 @@ authoring context. Answer every required finding and rerun the checks affected b
 The scene target and stage guidance are preferences, not runtime enforcement or a measured latency
 guarantee. Keep the same model effort, permission policy, reviewer requirements and quality gates for
 the next comparable timed audit.
+
+
+### Intended visible content
+
+Use the canonical [`### Visible content` convention](frames.md#intended-visible-content) in each
+storyboard frame for exact inputs, results, reasoning, qualifications and relationships intended on screen.
+`fresh-eyes --script` and `frame-packet` share that section, scene summary and narration. Keep private notes
+and guide-only text outside it. Repair missing reasoning and obtain an independent rereview after meaning
+changes; the versioned script stamp detects stale reviewer-visible input. Preserve the final independent
+screenshot reviews and count brief preparation, extra tokens and repairs in measured authoring cost.
+
+For an optional populated frame with bounded header, body and conclusion regions, see
+[`frame-scaffold.md`](frame-scaffold.md). Keep custom HTML when none of its forms fits the explanation.

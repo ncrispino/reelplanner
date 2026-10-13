@@ -17,6 +17,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./env.mjs";
 import { storyboardFrames } from "./terms.mjs";
+import { parseHtml, elements } from "./frame-html.mjs";
 
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const srcOf = (f) => String(f.meta.src || "").replace(/^\.\//, "");
@@ -117,6 +118,7 @@ export function layoutCheck(dir, frames) {
   const byFrame = new Map(placed.map((s) => [s.f.index, { errors: [], warnings: [] }]));
   const bySrc = new Map(placed.map((s) => [s.src, s.f.index]));
   const global = { errors: [], warnings: [] }, blockers = [];
+  const regionAdvisors = new Map(placed.map(({src, f}) => [src, regionAdvisor(read(join(dir, src)), f.index)]));
   const duration = j.layout?.duration || 0, overlapCount = Math.min(600, Math.max(2, Math.ceil(duration * 8) + 1));
   const overlapTimes = new Set(Array.from({ length: overlapCount }, (_, i) => +(i * duration / (overlapCount - 1)).toFixed(3)));
   for (const part of ["lint", "runtime", "layout", "motion", "contrast"]) {
@@ -129,7 +131,7 @@ export function layoutCheck(dir, frames) {
     for (const x of findings) {
       const n = bySrc.get(String(x.sourceFile || "").replace(/^\.\//, ""));
       if (!["error", "warning"].includes(x.severity)) continue;
-      const finding = { part, ...x };
+      const finding = { part, ...x, ...(part === "layout" && n !== undefined ? regionAdvisors.get(String(x.sourceFile).replace(/^\.\//, ""))?.(x) : {}) };
       (n === undefined ? global : byFrame.get(n))[x.severity === "error" ? "errors" : "warnings"].push(finding);
       if (["lint", "runtime"].includes(part) && x.severity === "error") blockers.push(finding);
     }
@@ -167,4 +169,37 @@ export function videoCheck(dir) {
 }
 
 /** One line a finding: what, where in the frame, when. */
-export const findingLine = (x) => `${x.part}: ${String(x.message || x.code).replace(/\.$/, "")} (${[x.code, x.selector && `\`${x.selector}\``, x.text && `“${String(x.text).slice(0, 40)}”`, Number.isFinite(x.time) && `${x.time}s`].filter(Boolean).join(", ")})${x.fixHint ? ` — ${x.fixHint}` : ""}`;
+export const findingLine = (x) => `${x.part}: ${String(x.message || x.code).replace(/\.$/, "")} (${[x.code, x.selector && `\`${x.selector}\``, x.text && `“${String(x.text).slice(0, 40)}”`, Number.isFinite(x.time) && `${x.time}s`].filter(Boolean).join(", ")})${x.fixHint ? ` — ${x.fixHint}` : ""}${x.fitAdvice ? ` — ${x.fitAdvice}` : ""}`;
+
+/** Add advice only when the source identifies exactly one node. Never use the approximate
+ * frame-html CSS matcher: a descendant selector or reused class can name another region.
+ * No browser pass is added, and none of the original finding fields is overwritten. */
+export function regionAdvice(html, finding, frame) { return regionAdvisor(html, frame)(finding); }
+function regionAdvisor(html, frame) {
+  const nodes = html.includes('data-rp-region') ? [...elements(parseHtml(html))] : [];
+  const lookup = selector => {
+    // HyperFrames emits IDs and direct-child nth-of-type paths. Match only this exact
+    // grammar and its full ancestry; unsupported CSS and ambiguous matches get no advice.
+    const parts = String(selector || '').split(/\s*>\s*/).map(p => /^([a-z][\w-]*)?(?:#([a-zA-Z][\w-]*))?((?:\.[a-zA-Z][\w-]*)*)(?::nth-of-type\(([1-9]\d*)\))?$/.exec(p));
+    if (!parts.length || parts.some(p => !p || !(p[1] || p[2] || p[3]))) return null;
+    const matches = (n,p) => n?.tag && (!p[1] || n.tag === p[1]) && (!p[2] || n.attrs.id === p[2]) &&
+      p[3].split('.').filter(Boolean).every(c => (n.attrs.class || '').split(/\s+/).includes(c)) &&
+      (!p[4] || n.parent.children.filter(c=>c.tag===n.tag).indexOf(n)+1 === Number(p[4]));
+    const found = nodes.filter(node => {
+      let n=node;
+      for (let i=parts.length-1;i>=0;i--,n=n.parent) if (!matches(n,parts[i])) return false;
+      return true;
+    });
+    return found.length === 1 ? found[0] : null;
+  };
+  return finding => {
+    if (!/overflow|clipped_text|escaped_container/.test(finding.code || '') || !nodes.length) return {};
+    // The actual overflowing element takes precedence; a unique reported container is also evidence.
+    const node = lookup(finding.selector) || lookup(finding.containerSelector);
+    let region = node;
+    while (region && !region.attrs?.['data-rp-region']) region = region.parent;
+    if (!region) return {};
+    const name = region.attrs['data-rp-region'];
+    return { region: name, fitAdvice: `frame ${frame}, ${name} region (${finding.sourceFile}): overflow; redistribute the populated explanation while preserving values and qualifiers, then frame-check again. Do not clip or shrink below 1.4cqw` };
+  };
+}

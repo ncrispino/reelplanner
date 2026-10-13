@@ -48,6 +48,23 @@ test("the real tarball ships Codex's root manifest/catalog and Claude's unchange
   assert.equal(read(".claude-plugin/marketplace.json").plugins.find((p) => p.name === plugin.name).source, "./skills/plan-to-video");
 });
 
+test("frame scaffold command, bounded resource and author contract ship together", () => {
+  for (const f of ["scripts/frame-scaffold.mjs", "scripts/lib/frame-scaffold.mjs", "templates/reelplanner/theme/scaffolds/flow.css", "skills/plan-to-video/references/frame-scaffold.md"])
+    assert.ok(shipped.has(f), `${f} is not shipped`);
+  const dir = join(packed, "scaffold-video"); mkdirSync(join(dir, "assets", "vendor"), { recursive: true });
+  mkdirSync(join(dir, "assets", "fonts"), { recursive: true });
+  writeFileSync(join(dir, "assets", "fonts", "Local.woff2"), "fixture");
+  writeFileSync(join(dir, "assets", "vendor", "gsap.min.js"), "// fixture");
+  writeFileSync(join(dir, "frame.md"), '@font-face {font-family:"Local";src:url("assets/fonts/Local.woff2");}');
+  writeFileSync(join(dir, "STORYBOARD.md"), '# Storyboard\n\n## Frame 1 — Actual evidence\n- src: compositions/frames/01-evidence.html\n- duration: 7\n');
+  const input = join(packed, "content.json");
+  writeFileSync(input, JSON.stringify({layout:"custom",header:"Actual evidence",groups:[{label:"Record",html:"<p>X / X / Y</p>"}],conclusionHtml:"<p>Three occurrences, two actors.</p>"}));
+  const out = execFileSync(process.execPath, [join(packed,"package","bin","reelplanner.mjs"), "frame-scaffold", dir, "1", "--content", input], {cwd:packed,encoding:"utf8"});
+  assert.match(out, /composition ID: 01-evidence; duration: 7s/);
+  const html = readFileSync(join(dir,"compositions","frames","01-evidence.html"),"utf8");
+  assert.match(html, /data-rp-region="body"/); assert.match(html, /Three occurrences, two actors/);
+});
+
 // Every shipped script's relative imports, and every repo path it names in quotes, are shipped too.
 const code = files.filter((f) => /\.(mjs|js|sh)$/.test(f));
 test(`every relative import in the ${code.length} shipped scripts is shipped`, () => {

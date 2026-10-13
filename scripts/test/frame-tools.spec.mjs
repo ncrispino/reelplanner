@@ -48,6 +48,12 @@ try {
   const r3 = rp("frame-packet", V, "99");
   ok("a frame the storyboard lacks is refused, naming the ones it has", r3.status === 1 && /no frame 99 in the storyboard \(it has 1–\d+\)/.test(r3.stderr), r3.stderr);
 
+  const storyPath = join(V, "STORYBOARD.md"), originalStory = readFileSync(storyPath, "utf8");
+  writeFileSync(storyPath, originalStory.replace(/(?=## Frame 4 )/, "### Visible content\nX/X/Y → three occurrences, two actors.\n- scene: example text only\n~~~md\n## Frame 99 — Example heading\n~~~\n### Author notes\nPrivate layout advice.\n\n"));
+  const visiblePacket = rp("frame-packet", V, "3"), visibleText = readFileSync(pk, "utf8");
+  ok("packet separates shared visible evidence from private notes, preserving the original block", visiblePacket.status === 0 && visibleText.includes("**Intended visible content**\n\nX/X/Y → three occurrences, two actors.") && visibleText.includes("Private layout advice.") && rp("frame-packet", V, "99").status === 1);
+  writeFileSync(storyPath, originalStory);
+
   // ── frame-check ──
   const c = rp("frame-check", V, "3"), shots = join(V, ".hyperframes", "shots");
   ok("frame-check: frame-lint on that frame, its layout on its slot, and one picture of it at rest", c.status === 0 && /03-pretrain\.html/.test(c.stdout) && /✓ layout at [\d.]+, [\d.]+, [\d.]+s/.test(c.stdout) && /✓ picture at [\d.]+s/.test(c.stdout) && existsSync(shots) && readdirSync(shots).some((f) => /^03-03-pretrain\.png$/.test(f)), c.stdout + c.stderr);

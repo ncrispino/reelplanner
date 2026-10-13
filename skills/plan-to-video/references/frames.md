@@ -82,3 +82,37 @@ Layout, motion, and contrast findings remain advice; the full assembled `build` 
 Batch layout findings are grouped per source using the pinned HyperFrames persistence rules, so shared classes in
 different scenes cannot hide one scene's finding. Updating the HyperFrames pin requires rerunning the differential
 checks before updating those rules.
+
+
+### Intended visible content
+
+In each `## Frame N` block of `STORYBOARD.md`, keep the `- scene:` summary and add
+`### Visible content` when the scene needs concrete evidence beyond that summary. Put only intended
+screen content here: exact input/output values, intermediate reasoning, qualifications and relationships.
+The section ends at the next heading of level 3 or above outside a fenced block. Fenced examples remain
+content. Keep private author notes and guide-only text in another section. Legacy scenes need no migration.
+
+```markdown
+## Frame 25 — Count actors
+- scene: count actors
+- src: compositions/frames/25-counts.html
+### Visible content
+Input X/X/Y. Repeated X retains one actor identity.
+Result: three occurrences, two actors. One versus three episodes changes neither count.
+### Author notes
+Layout and implementation notes go here.
+```
+
+`fresh-eyes --script` and `frame-packet` share this parsed scene summary, visible section and narration.
+The packet also retains its original block, metadata, marks and word timing. This contract describes
+intended evidence; final independent screenshot review still checks what actually reached the screen.
+A missing explanation still needs a real repair and independent rereview, even if its intended labels exist.
+
+New script stamps version and hash reviewer-visible scene content, narration, asks, terms, glossary and
+latest review. `--script --check` fails stale input and mismatched findings headers. Timing and private-note
+edits do not stale the review. Regenerating identical input preserves its stamp, timestamp, plan hash and
+findings. Changed input archives the answered brief, stamp and findings under `fresh-eyes/script/review-N/`
+and requires new independent findings; unanswered findings block regeneration. Legacy stamps remain
+readable with a warning that they did not certify this contract. Do not copy old findings into a new review.
+Count the larger brief's tokens, rereviews and repair time in the experiment cost; a clean intended-content
+review never replaces the final newcomer and designer screenshot reviews.

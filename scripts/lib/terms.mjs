@@ -1,3 +1,4 @@
+import { headingSource } from "./markdown-source.mjs";
 // What a viewer needs to follow a video (plan: accessible videos), read from its storyboard and the
 // project record. plan-map puts it in plan-map.json for the player; check-terms reads the same things
 // to hold the script to them.
@@ -26,7 +27,7 @@ const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } ca
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const unquote = (s) => String(s ?? "").trim().replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1").trim();
 
-export const frontMatter = (sb) => (String(sb).match(/^---\n([\s\S]*?)\n---/) || ["", ""])[1];
+export const frontMatter = (sb) => (String(sb).match(/^---\r?\n([\s\S]*?)\r?\n---/) || ["", ""])[1];
 export const fmValue = (fm, k) => { const m = String(fm).match(new RegExp(`^${k}:\\s*(.+?)\\s*$`, "m")); return m ? unquote(m[1]) : null; };
 export const listOf = (s) => String(s || "").split(",").map((x) => x.trim()).filter(Boolean);
 /**
@@ -50,13 +51,24 @@ export const termNames = (fm) => termsOf(fm).map((t) => t.term);
 export const plainOf = (fm) => [...String(fm).matchAll(/^plain:\s*(.+?)\s*$/gm)].flatMap((m) => listOf(unquote(m[1]))).map((x) => x.toLowerCase());
 const clip = (s, n = 80) => { s = String(s || "").replace(/\s+/g, " ").trim(); if (s.length <= n) return s; const cut = s.slice(0, n - 1); return `${cut.slice(0, Math.max(cut.lastIndexOf(" "), n - 20)).replace(/[,;:.\s]+$/, "")}…`; };
 
-/** The storyboard's frames: index, title, meta (every `- key: value` line), in order. */
+/** Frames in source order; metadata excludes fences and visible evidence. Keep the original block too. */
 export function storyboardFrames(sb) {
-  return String(sb).split(/\n(?=## Frame )/).slice(1).map((b) => {
-    const head = b.match(/^## Frame (\d+) — (.+)$/m) || [];
-    const meta = {}; for (const m of b.matchAll(/^- ([a-z_]+):\s*(.*)$/gm)) meta[m[1]] = m[2].trim();
-    return { index: Number(head[1]), title: (head[2] || "").trim(), meta };
-  }).filter((f) => Number.isFinite(f.index));
+  sb = String(sb);
+  const source = headingSource(sb), headings = [...source.matchAll(/^## Frame (\d+)(?: [—–:-] (.*))?[ \t\r]*$/gm)];
+  return headings.map((h, i) => {
+    const end = headings[i + 1]?.index ?? sb.length, block = sb.slice(h.index, end).trim();
+    const masked = source.slice(h.index, end);
+    const visible = [...masked.matchAll(/^### Visible content[ \t\r]*$/gm)].map((m) => {
+      const start = m.index + m[0].length;
+      const next = masked.slice(start).search(/^#{1,3} /m);
+      return { start: m.index, end: next < 0 ? masked.length : start + next, text: sb.slice(h.index + start, h.index + (next < 0 ? masked.length : start + next)).trim() };
+    });
+    const meta = {};
+    for (const m of masked.matchAll(/^- ([a-z_]+):[ \t]*(.*)$/gm)) {
+      if (!visible.some((v) => m.index >= v.start && m.index < v.end)) meta[m[1]] = m[2].trim();
+    }
+    return { index: Number(h[1]), title: (h[2] || "").trim(), meta, block, visible: visible.map((v) => v.text).join("\n\n") };
+  });
 }
 
 /** `before:` lines → [{ video, part, gives }]; the default (the system video) when there are none. */

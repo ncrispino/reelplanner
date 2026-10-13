@@ -1,3 +1,4 @@
+import { headingSource } from "./markdown-source.mjs";
 // A plan's own text, read from its plan.md: the title, the problem and each step's body as Markdown.
 // plan-map puts it in plan-map.json, where the player and the guide read it.
 import { existsSync, readFileSync } from "node:fs";
@@ -14,24 +15,6 @@ export function planMdFor(videoDir, planDir) {
   return [join(resolve(repoRoot(v), planDir), "plan.md"), join(dirname(v), "plan.md")].find((p) => existsSync(p)) || null;
 }
 
-// Ignore fenced code when finding headings, but preserve offsets so every body is sliced from the original text.
-// A closer must use the opener's marker, at least its length, and only trailing whitespace.
-function headingSource(md) {
-  let fence = null;
-  return String(md).split("\n").map((line) => {
-    if (fence) {
-      const close = /^ {0,3}(`+|~+)[ \t\r]*$/.exec(line);
-      if (close && close[1][0] === fence.marker && close[1].length >= fence.length) fence = null;
-      return line.replace(/[^\r]/g, " ");
-    }
-    const open = /^ {0,3}(`{3,}|~{3,})([^\r]*)\r?$/.exec(line);
-    if (open && (open[1][0] === "~" || !open[2].includes("`"))) {
-      fence = { marker: open[1][0], length: open[1].length };
-      return line.replace(/[^\r]/g, " ");
-    }
-    return line;
-  }).join("\n");
-}
 // a section runs to the next heading of its own level or above
 const upTo = (rest, levels) => { const end = headingSource(rest).search(new RegExp(`^#{1,${levels}} `, "m")); return (end < 0 ? rest : rest.slice(0, end)).trim(); };
 

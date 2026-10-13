@@ -350,6 +350,54 @@ const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileS
   ok("a frame round is refused while the script's findings have no answer", fr.status !== 0 && /the script's fresh eyes still have findings with no answer \(N1\)/.test(fr.stderr), fr.stderr);
   writeFileSync(fp, readFileSync(fp, "utf8").replace("  - Answer: kept: the form is simple\n", "  - Answer: ask: should step 5 draw the order form as a prototype?\n"));
   ok("…answered (ask:), --check passes and the frame round starts", sr("--check").status === 0 && spawnSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), S, "--no-shots"], { cwd: tmp, encoding: "utf8" }).status === 0);
+  const stampP = join(S, "fresh-eyes", "script", "stamp.json"), stampBefore = readFileSync(stampP, "utf8");
+  writeFileSync(join(PS, "plan.md"), readFileSync(join(PS, "plan.md"), "utf8") + "\nPrivate implementation clarification.\n");
+  ok("unchanged review regeneration keeps the original plan hash as answer evidence", sr().status === 0 && readFileSync(stampP, "utf8") === stampBefore);
+  for (const [file, addition] of [
+    [join(RP, "glossary.md"), "\n| Reviewer sentinel | — | A newly visible meaning | | |\n"],
+    [join(PS, "reviews", "plan-20261010T060220Z.md"), "\nAlso show the input values.\n"],
+  ]) {
+    const before = readFileSync(file, "utf8"); writeFileSync(file, before + addition);
+    ok(`glossary/review context change invalidates script review: ${file}`, sr("--check").status === 1);
+    writeFileSync(file, before);
+  }
+  const storyP = join(S, "STORYBOARD.md"), storyBefore = readFileSync(storyP, "utf8");
+  writeFileSync(storyP, storyBefore.replace('title: "Bakery plan"', 'title: "Bakery plan"\nterms: proof = visible evidence'));
+  ok("own terms are part of the versioned review input", sr("--check").status === 1);
+  writeFileSync(storyP, storyBefore);
+
+}
+
+// The intended evidence is shared with authors; only reviewer-visible changes invalidate it.
+{
+  const S = join(tmp, "scene-contract"); mkdirSync(S);
+  const sb = join(S, "STORYBOARD.md"), script = join(S, "SCRIPT.md"), sd = join(S, "fresh-eyes", "script");
+  const text = "## Frame 1 — Counts\n- scene: count actors\n- duration: 4s\n- src: compositions/frames/counts.html\n### Visible content\nX/X/Y → 3 occurrences, 2 actors; repeated X retains one identity.\n### Author notes\nPRIVATE reasoning\n";
+  writeFileSync(sb, text); writeFileSync(script, "## Line 1 — Count (Frame 1)\n\n    We count actors.\n~~~md\n## Line 99 — Fake (Frame 1)\n    PRIVATE example narration.\n~~~\n");
+  writeFileSync(join(S, "BRIEF.md"), "- Ask: Show the count\n");
+  const sr = (...a) => run(S, "--script", ...a), readS = (f) => readFileSync(join(sd, f), "utf8");
+  ok("visible evidence generates a versioned script brief", sr().status === 0 && JSON.parse(readS("stamp.json")).version === 1 && readS("newcomer-brief.md").includes("X/X/Y → 3 occurrences") && !readS("newcomer-brief.md").includes("PRIVATE"));
+  const stamp = readS("stamp.json"), id = JSON.parse(stamp).id, findings = `# Fresh eyes: newcomer · script · stamp ${id}\n\n- none\n`;
+  writeFileSync(join(sd, "newcomer.md"), findings);
+  const packet = spawnSync(process.execPath, [join(ROOT, "scripts", "frame-packet.mjs"), S, "1"], { cwd: tmp, encoding: "utf8" });
+  const packetText = readFileSync(join(S, ".hyperframes", "packets", "01.md"), "utf8");
+  ok("frame packet receives identical normalized evidence plus original author block", packet.status === 0 && packetText.includes("**Intended visible content**\n\nX/X/Y → 3 occurrences, 2 actors; repeated X retains one identity.") && packetText.includes("PRIVATE reasoning"), packet.stderr);
+  writeFileSync(sb, text.replace("4s", "7s").replace("PRIVATE reasoning", "OTHER private notes"));
+  ok("timing/private notes preserve current review and regeneration preserves timestamp and findings", sr("--check").status === 0 && sr().status === 0 && readS("stamp.json") === stamp && readS("newcomer.md") === findings);
+  writeFileSync(join(sd, "newcomer.md"), findings.replace(id, "badstamp"));
+  ok("findings header must match exactly", sr("--check").status === 1 && sr().status === 1);
+  writeFileSync(join(sd, "newcomer.md"), findings.replace("- none", '- N1 · scene 1 · "actors": missing precedence'));
+  writeFileSync(sb, text.replace("repeated X", "Hypothetical; excluded from observed counts. Repeated X"));
+  ok("visible-only change is stale and unanswered findings prevent regeneration", /stale/.test(sr("--check").stdout) && sr().status === 1 && readS("stamp.json") === stamp);
+  writeFileSync(join(sd, "newcomer.md"), readS("newcomer.md") + "  - Answer: fixed: added the missing qualification\n");
+  ok("changed evidence archives answered review and requires fresh findings", sr().status === 0 && existsSync(join(sd, "review-1", "newcomer.md")) && !existsSync(join(sd, "newcomer.md")) && readS("stamp.json") !== stamp);
+  const current = readS("stamp.json");
+  for (const [file, addition] of [[script, "    A new qualifier.\n"], [join(S, "BRIEF.md"), "- Ask: Explain repeated identity\n"]]) {
+    const before = readFileSync(file, "utf8"); writeFileSync(file, before + addition);
+    ok(`review input change is stale: ${file}`, sr("--check").status === 1); writeFileSync(file, before);
+  }
+  const legacy = JSON.parse(current); delete legacy.version; writeFileSync(join(sd, "stamp.json"), JSON.stringify(legacy));
+  ok("legacy stamps warn without claiming the new contract", sr("--check").status === 0 && /legacy script stamp/.test(sr("--check").stdout));
 }
 
 // An explainer answers source-scope findings in explain.md, with the same change

@@ -21,7 +21,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "nod
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
-import { parseGlossary, rowFor, splitMeaning, termsOf, plainOf } from "../lib/terms.mjs";
+import { storyboardFrames, parseGlossary, rowFor, splitMeaning, termsOf, plainOf } from "../lib/terms.mjs";
 import { findJargon, saysForm } from "../lib/jargon.mjs";
 import { valueClashes, clashLine } from "../lib/consistency.mjs";
 
@@ -39,6 +39,12 @@ const video = (dir, fm, frames, script = null) => {
   frames.forEach((f, i) => w(join(dir, "compositions", "frames", `f${i + 1}.html`), `<div data-composition-id="f${i + 1}"><div class="k">${f.screen || ""}</div><script>/* D-999 */</script></div>`));
   if (script) w(join(dir, "SCRIPT.md"), `# SCRIPT\n\n---\n\n${script.map((t, i) => `## Line ${i + 1} — beat (Frame ${i + 1})\n\n    ${t}\n`).join("\n")}`);
 };
+
+{
+  const sb = "## Frame 1 — 🔎 Counts\r\n- scene: count actors\r\n### Legacy metadata\r\n- defines: actor\r\n### Visible content\r\nX/X/Y → 3 occurrences, 2 actors.\r\n- scene: an example, not metadata\r\n````md\r\n## Frame 88 — 🔎 Fake\r\n```\r\n### Notes\r\n````\r\n### Author notes\r\nprivate\r\n## Frame 2 — Result\r\n- scene: totals\r\n";
+  const frames = storyboardFrames(sb);
+  ok("storyboard parser: fenced headings and metadata examples stay evidence, Unicode/CRLF preserve slices", frames.length === 2 && frames[0].meta.scene === "count actors" && frames[0].meta.defines === "actor" && frames[0].visible.includes("## Frame 88") && !frames[0].visible.includes("private") && frames[1].title === "Result", JSON.stringify(frames));
+}
 
 try {
   // the project record: a glossary, a decision, the system video, and an earlier plan with its walkthrough video
