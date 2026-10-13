@@ -10,6 +10,7 @@ cheaper video that looks more alike shows here. Capped episodes are lower bounds
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-12 | Codex batched pilot, before-1 | first look; capped, not shown | frozen 1866c4c | ≥60.005 | — | — | — | — | ≥40.804 observed | ≥192.687 observed | 1 frame round; round 2 required | 25 reported; material total unclassified; repairs unfinished | Unknown | [report](2026-10-12-codex-batched-pilot.md) |
 | 2026-10-12 | Codex follow-up, before-1 | first look; required branches omitted | frozen 45f64f2 + guidance | 29.51 | — | — | — | — | 12.027 | 50.0 | 2 script + 2 frame | 19 first-frame + 1 second; see scope limit | 10 / 19 | [report](2026-10-12-codex-speed-followup.md) |
 | 2026-10-12 | Codex follow-up, before-1 | scripted revision | frozen 45f64f2 + guidance | 19.60 | — | — | — | — | 6.387 | 31.3 | — | see report | — | [report](2026-10-12-codex-speed-followup.md) |
 | 2026-10-12 | Codex follow-up, after-1 | first look; capped, not shown | 4851416 | ≥40.01 | — | — | — | — | 24.955 | 132.2 | partial | material source/readability repairs | — | [report](2026-10-12-codex-speed-followup.md) |
