@@ -61,6 +61,10 @@ The skill starts the review with `--no-open`, then runs the separate absolute `r
 printed by the server launcher. This lets Codex match the permission to the opener itself. The
 opener accepts only local review-page URLs, checks the server, and asks terminal-browser to split
 right. It never starts a server, controls the page, sends a review, or falls back to another browser.
+This explicit command uses `terminal-browser` from the invoking shell's `PATH`; it does not need
+the launcher's `REELPLANNER_HOME` or saved workspace preference to survive into the agent shell.
+Changing the default workspace to `browser` does not revoke this command's permission; use
+`--codex-disable-open` for that. If opening fails, report the failure before waiting for a review.
 Server startup can still require approval; when policy prohibits it, run the review command yourself
 from a local shell. Opener permission does not override a managed prohibition or the screen-capture
 permissions of your recording tools.

@@ -15,8 +15,8 @@ const env = { ...process.env, REELPLANNER_HOME: join(scratch, "machine"), CODEX_
 const prefs = preferencesFile(env), rules = ruleFile(env);
 const cli = join(ROOT, "bin/reelplanner.mjs");
 const run = (args) => spawnSync(process.execPath, [cli, ...args], { cwd: scratch, env, encoding: "utf8", timeout: 20000 });
-const runAsync = (args) => new Promise((resolve, reject) => {
-  const child = spawn(process.execPath, [cli, ...args], { cwd: scratch, env });
+const runAsync = (args, childEnv = env) => new Promise((resolve, reject) => {
+  const child = spawn(process.execPath, [cli, ...args], { cwd: scratch, env: childEnv });
   let stdout = "", stderr = "";
   const timer = setTimeout(() => { child.kill(); reject(new Error("CLI timeout")); }, 20000);
   child.stdout.on("data", (b) => { stdout += b; }); child.stderr.on("data", (b) => { stderr += b; });
@@ -84,7 +84,7 @@ try {
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const url = `http://127.0.0.1:${server.address().port}/?project=demo`;
-  await test("a healthy local review opens exactly its URL in the pinned terminal launcher", async () => {
+  await test("a healthy local review opens exactly its URL in the terminal launcher", async () => {
     ok(await runAsync(["review-open", url]));
     assert.deepEqual(opened(), [["open", "--split", "right", url]]);
   });
@@ -96,9 +96,26 @@ try {
     redirect = false; response = { ok: true, inbox: 0, where: "repo" };
     assert.equal(opened().length, 1);
   });
-  await test("changing to browser prevents the terminal-only helper from opening", async () => {
+  await test("explicit opening survives missing, invalid, and browser-default workspace settings", async () => {
+    const before = opened().length;
+    const otherHome = join(scratch, "fresh-agent");
+    const childEnv = { ...env, REELPLANNER_HOME: otherHome };
+    ok(await runAsync(["review-open", url], childEnv));
+    assert.equal(existsSync(otherHome), false, "opening must not create settings");
+    mkdirSync(otherHome);
+    writeFileSync(join(otherHome, "review.json"), "invalid JSON");
+    ok(await runAsync(["review-open", url], childEnv));
     ok(run(["review-setup", "--workspace", "browser"]));
-    assert.equal((await runAsync(["review-open", url])).status, 1); assert.equal(opened().length, 1);
+    ok(await runAsync(["review-open", url]));
+    assert.equal(opened().length, before + 3);
+    assert.equal(JSON.parse(readFileSync(prefs)).workspace, "browser");
+  });
+  await test("missing terminal-browser reports the dependency without opening another browser", async () => {
+    const before = opened().length;
+    const result = await runAsync(["review-open", url], { ...env, PATH: bin + "/absent" });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /terminal-browser.*(not installed|PATH)/);
+    assert.equal(opened().length, before);
   });
   await test("review inherits the saved workspace, prints the standalone opener, and honors --no-open and overrides", () => {
     ok(run(["review-setup", "--workspace", "terminal-browser", "--codex-allow-open"]));

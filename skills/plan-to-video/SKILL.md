@@ -78,6 +78,9 @@ startup still needs its normal permissions. If the session forbids that operatio
 boundary and hand off the printed URL/command; don't change policy or try another opening route.
 The opener rule does not authorize clicking controls or submitting a review. An explicit
 `--workspace` overrides the saved choice; `--no-open` alone never opens a pane.
+If opening fails, report the error once and stop that review handoff; do not start or repeatedly
+poll a review waiter unless the person confirms they opened it themselves. Keep a running server
+available for recovery, and never imply the review is visible just because its server is healthy.
 
 **In Claude Code,** each `$RP` command asks for permission, or in auto mode is judged and may be refused (most
 often one that writes into the repo). Never edit permission settings yourself, and never rerun a refused command
