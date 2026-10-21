@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Narration that plays on after a seek or a speed change** (#30). The review server sent every file as one `200`
+  with no byte ranges, so Chrome could not seek its narration: after a seek, a start in the middle of a scene, or a
+  speed change, the scene went silent until the next one. Files are now sent with byte ranges (`206`, `416`,
+  `If-Range`; `scripts/lib/http-file.mjs`), by the review server and by the specs' static server alike, and
+  `media-seek.spec` checks that the playing clip keeps step with the video through a seek, 1× to 1.5×, a pause and
+  a rewind.
 - **Cheaper, faster videos** (plans/2026-10-10-cheaper-videos, from the first pipeline-cost audits: making and checking
   a video was 80–90% of the time before the person saw it).
   - **One round of fresh eyes**, and a second only on the scenes whose words the first's answers changed: rounds 2

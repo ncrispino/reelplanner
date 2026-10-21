@@ -83,6 +83,7 @@ import { sandboxProblem, unsandboxedNote } from "./lib/sandbox.mjs";
 import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath } from "./lib/inbox.mjs";
 import { readYou, youKnows, pendingPath, repoName } from "./lib/memory.mjs";
 import { keepVersion, keepLines } from "./lib/versions.mjs";
+import { sendFile } from "./lib/http-file.mjs";
 
 const args = process.argv.slice(2);
 // the waiting half: no server, no bundle — wait on the inbox and exit with the review's path
@@ -436,12 +437,14 @@ const server = createServer((req, res) => {
   if (!file.startsWith(out)) { res.writeHead(403).end(); return; }
   if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
   if (!existsSync(file)) { res.writeHead(404).end("not found"); return; }
-  res.writeHead(200, { "content-type": TYPES[extname(file).toLowerCase()] || "application/octet-stream", "cache-control": "no-store" });
   // the top page says it is served here, so the player asks /api/review only when there is one (a
   // plain static server would answer that probe with a 404 in the console)
   // (a video's guide page too: its questions go to the waiting session the same way)
-  if (file === join(out, "index.html") || /[\\/]guide[\\/]index\.html$/.test(file)) { res.end(readFileSync(file, "utf8").replace(/<head>/i, '<head>\n<meta name="reelplanning-review-server" content="1">')); return; }
-  res.end(readFileSync(file));
+  const body = file === join(out, "index.html") || /[\\/]guide[\\/]index\.html$/.test(file)
+    ? readFileSync(file, "utf8").replace(/<head>/i, '<head>\n<meta name="reelplanning-review-server" content="1">') : null;
+  // byte ranges, so the narration can be seeked (issue #30); no-store still, since a rebuilt video is bundled again
+  // under the same names, and with ranges a seek fetches only the part it needs
+  sendFile(req, res, file, { contentType: TYPES[extname(file).toLowerCase()] || "application/octet-stream", headers: { "cache-control": "no-store" }, body });
 });
 
 const listen = (port, tries = 20) => new Promise((ok, fail) => {
