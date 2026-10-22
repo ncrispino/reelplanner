@@ -8,7 +8,7 @@
 // HyperFrames reset and dropped the queued Play, so a reviewer on a slow link got a still, silent frame.
 // usage: node packages/player/test/sound.spec.mjs [videos/<project>]
 import { chromium } from "playwright-core"; import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
-import { until } from "./wait.mjs";
+import { until, when } from "./wait.mjs";
 const project = process.argv[2] || "videos/l2-upload-resume";
 const port = testPort(8793);
 const srv = staticServer(port);
@@ -33,11 +33,16 @@ try {
     await p.waitForFunction(() => { const hp = document.querySelector("#rp").shadowRoot.querySelector("hyperframes-player"); return [...hp.iframeElement.contentDocument.querySelectorAll("audio")].some((a) => !a.paused); }, null, { timeout: 20000 }).catch(() => {});
     await until(p, () => { const hp = document.querySelector("#rp").shadowRoot.querySelector("hyperframes-player"); return [...hp.iframeElement.contentDocument.querySelectorAll("audio")].some((a) => !a.paused && a.currentTime > 0.1); });
     const s = () => p.evaluate(() => { const el = document.querySelector("#rp"), hp = el.shadowRoot.querySelector("hyperframes-player"); const au = [...hp.iframeElement.contentDocument.querySelectorAll("audio")].filter((a) => !a.paused); return { muted: el.muted, hpMuted: hp.muted, audible: au.some((a) => !a.muted), playing: au.length }; });
-    let st = await s();
+    // the sound as it is at the moment a check holds, in one look (or, if it never does in 20 s, as it is then): between
+    // two lines no <audio> plays for some 40 ms, one ended and the next not started, and the runtime putting a clip back
+    // in step pauses it some 20 ms; a second look a moment after a first landed in such a gap on CI ("playing": 0)
+    const look = async (want) => (await when(p, (want) => { const el = document.querySelector("#rp"), hp = el.shadowRoot.querySelector("hyperframes-player"), au = [...hp.iframeElement.contentDocument.querySelectorAll("audio")].filter((a) => !a.paused);
+      const st = { muted: el.muted, hpMuted: hp.muted, audible: au.some((a) => !a.muted), playing: au.length }; return (want === "muted" ? st.muted && st.hpMuted && !st.audible : !st.muted && !st.hpMuted && st.audible) && st; }, want)) || await s();
+    let st = await look("sound");
     ok(!st.muted && !st.hpMuted && st.playing > 0 && st.audible, `in ${name}, the narration plays with sound — ${JSON.stringify(st)}`);
-    await p.keyboard.press("m"); await until(p, () => { const el = document.querySelector("#rp"), hp = el.shadowRoot.querySelector("hyperframes-player"); return el.muted && hp.muted && ![...hp.iframeElement.contentDocument.querySelectorAll("audio")].some((a) => !a.paused && !a.muted); }); st = await s();
+    await p.keyboard.press("m"); st = await look("muted");
     ok(st.muted && st.hpMuted && !st.audible, `M mutes it — ${JSON.stringify(st)}`);
-    await p.keyboard.press("m"); await until(p, () => { const el = document.querySelector("#rp"), hp = el.shadowRoot.querySelector("hyperframes-player"); return !el.muted && !hp.muted && [...hp.iframeElement.contentDocument.querySelectorAll("audio")].some((a) => !a.paused && !a.muted); }); st = await s();
+    await p.keyboard.press("m"); st = await look("sound");
     ok(!st.muted && !st.hpMuted && st.audible, `M again brings the sound back — ${JSON.stringify(st)}`);
     await ctx.close();
   }
