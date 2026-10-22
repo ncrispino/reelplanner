@@ -25,7 +25,8 @@ while [ $# -gt 0 ]; do case "$1" in
 esac; done
 [[ "$RUNS" =~ ^[a-z0-9-]+(,[a-z0-9-]+)*$ ]] || { echo "✗ --runs: names of lowercase letters, digits and dashes, comma-separated" >&2; exit 2; }
 [ -n "$OUT" ] || { echo "✗ --out <dir> is needed" >&2; exit 2; }
-[[ "$DEPTH" =~ ^(|low|medium|high)$ ]] || { echo "✗ --depth: low, medium or high" >&2; exit 2; }
+# (no empty alternative in the pattern: macOS's bash refuses one, and every depth failed there)
+[ -z "$DEPTH" ] || [[ "$DEPTH" =~ ^(low|medium|high)$ ]] || { echo "✗ --depth: low, medium or high" >&2; exit 2; }
 B="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$B/../../../.." && pwd)"
 mkdir -p "$OUT"; OUT="$(cd "$OUT" && pwd)"; LOG="$OUT/bench-${RUNS//,/_}.log"
 say() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*" | tee -a "$LOG" >&2; }
