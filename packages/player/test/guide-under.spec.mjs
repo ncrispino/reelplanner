@@ -214,7 +214,20 @@ try {
   await settledMini(p, true).catch(() => null);
   if (!(await p.evaluate(() => !!document.querySelector("#rp")._mini))) { await p.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('[data-act="guide"]').click()); await settledMini(p, true); }
   await until(p, () => document.querySelector("#rp-guide")._scrollOn === true);
-  await p.evaluate(() => document.querySelector("#rp").player.play()); await movedOn(p, await now(p));
+  // (what the player does from this play to the check after the picture closes, kept in the page: each play and pause
+  // and what called it, a change with no event (a state from the video's frame), the small player on or off, the
+  // picture opened or closed. A failed check says it: issue #32, where CI's fast suite saw it stay paused)
+  await p.evaluate(() => { const el = document.querySelector("#rp"), pl = el.player, t0 = performance.now(), log = (window.__rpPicLog = []); let was = pl.paused;
+    const say = (window.__rpPicSay = (what) => { if (window.__rpPicLog !== log) return; was = pl.paused; log.push(`${Math.round(performance.now() - t0)} ms ${what}: ${pl.paused ? "paused" : "playing"} at ${pl.currentTime.toFixed(2)} s${el._mini ? ", small" : ""}${el._overlay ? `, picture open (was ${el._overlay.playing ? "playing" : "paused"})` : ""}`); });
+    const by = () => (new Error().stack.split("\n")[4] || "").trim().replace(/^at /, "").replace(/ \(.*$/, "");
+    for (const ev of ["play", "pause"]) pl.addEventListener(ev, () => say(`${ev} (${by()})`));
+    const mini = el.setMini, over = el.overlayMini;
+    el.setMini = function (on) { say(`small player ${on ? "on" : "off"}, the page at ${Math.round(scrollY)} px`); return mini.call(this, on); };
+    el.overlayMini = function (on) { say(`picture ${on ? "opened" : "closed"}`); return over.call(this, on); };
+    const look = () => { if (window.__rpPicLog !== log) return; if (pl.paused !== was) say("no event"); requestAnimationFrame(look); }; requestAnimationFrame(look); });
+  const picSay = (what) => p.evaluate((w) => window.__rpPicSay(w), what);
+  await picSay("the spec plays it");
+  await p.evaluate(() => document.querySelector("#rp").player.play()); await picSay((await movedOn(p, await now(p))) ? "its time moved" : "its time did not move in 20 s");
   const zoomId = await gf.evaluate(() => { const a = [...document.querySelectorAll("a.zoom")].find((x) => x.querySelector("img")); if (!a) return null; a.id ||= "rp-test-zoom"; a.scrollIntoView({ block: "center" }); return a.id; });
   if (!PICS) { console.log(`· a picture opened full size in the guide not checked: ${NO_PICS}`); await p.evaluate(() => document.querySelector("#rp").player.pause()); }
   else if (!zoomId) check("a picture in the guide to open full size", false);
@@ -226,12 +239,16 @@ try {
     const room = await gf.evaluate(() => { const r = document.querySelector(".lb-img").getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(innerWidth - r.right), b: Math.round(innerHeight - r.bottom) }; });
     check("a picture opened full size in the guide: the small player steps out of its way (hidden) and pauses", lb.overlay && lb.bar === "hidden" && lb.pic === "hidden" && lb.paused, JSON.stringify(lb));
     check("…the picture fitted with room round it (48 px a side or more, 72 px above and below or more)", Math.min(room.l, room.r) >= 47 && Math.min(room.t, room.b) >= 71, JSON.stringify(room));
+    await picSay("the spec presses Escape");
     await gf.press("body", "Escape");
     await until(p, () => !document.querySelector("#rp").hasAttribute("overlay") && !document.querySelector("#rp").player.paused);
     const back = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini }; });
-    check("…and closed, the small player is back as it was, playing again", !back.overlay && back.bar === "visible" && back.playing && back.mini, JSON.stringify(back));
+    const picLog = await p.evaluate(() => window.__rpPicLog || []);
+    const resumed = !back.overlay && back.bar === "visible" && back.playing && back.mini;
+    check("…and closed, the small player is back as it was, playing again", resumed, JSON.stringify(back) + (resumed ? "" : `; from the play before the picture: ${picLog.join("; ")}`));
     await p.evaluate(() => document.querySelector("#rp").player.pause());
   }
+  await p.evaluate(() => { const el = document.querySelector("#rp"); delete window.__rpPicLog; delete el.setMini; delete el.overlayMini; });
 
   // ---- every link in the guide keeps the frame where it is (round 1, A1): none ever loads a page into the frame
   {
