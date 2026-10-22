@@ -11,18 +11,21 @@
 #   --runs <a,b>       the runs' names, run one after another: in their telemetry (bench.run) and results, <out>/<name>.tgz
 #   --out <dir>        where the results go; outside the repo (they hold transcripts)
 #   --minutes <n>      a run stops after n minutes, revised video shown or not (default 150)
+#   --depth <d>        low, medium or high: the request asks for a video of that depth (#34); without it the
+#                      request is the baseline's, word for word
 #   --type <type>      default c7i.4xlarge, as the baseline
 #   --profile <name>   the AWS CLI profile
 set -uo pipefail
-REF=local; RUNS=""; OUT=""; MINUTES=150; TYPE=c7i.4xlarge; PROFILE="${AWS_PROFILE:-}"
+REF=local; RUNS=""; OUT=""; MINUTES=150; DEPTH=""; TYPE=c7i.4xlarge; PROFILE="${AWS_PROFILE:-}"
 while [ $# -gt 0 ]; do case "$1" in
   --ref) REF="$2"; shift 2 ;; --runs) RUNS="$2"; shift 2 ;; --out) OUT="$2"; shift 2 ;;
-  --minutes) MINUTES="$2"; shift 2 ;; --type) TYPE="$2"; shift 2 ;; --profile) PROFILE="$2"; shift 2 ;;
+  --minutes) MINUTES="$2"; shift 2 ;; --depth) DEPTH="$2"; shift 2 ;; --type) TYPE="$2"; shift 2 ;; --profile) PROFILE="$2"; shift 2 ;;
   -h|--help) awk 'NR > 1 && !/^#/ {exit} NR > 1' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   *) echo "✗ unknown option: $1" >&2; exit 2 ;;
 esac; done
 [[ "$RUNS" =~ ^[a-z0-9-]+(,[a-z0-9-]+)*$ ]] || { echo "✗ --runs: names of lowercase letters, digits and dashes, comma-separated" >&2; exit 2; }
 [ -n "$OUT" ] || { echo "✗ --out <dir> is needed" >&2; exit 2; }
+[[ "$DEPTH" =~ ^(|low|medium|high)$ ]] || { echo "✗ --depth: low, medium or high" >&2; exit 2; }
 B="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$B/../../../.." && pwd)"
 mkdir -p "$OUT"; OUT="$(cd "$OUT" && pwd)"; LOG="$OUT/bench-${RUNS//,/_}.log"
 say() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*" | tee -a "$LOG" >&2; }
@@ -79,8 +82,8 @@ say "✓ logged in"
 
 IFS=, read -ra LABELS <<<"$RUNS"
 for label in "${LABELS[@]}"; do
-  say "▶ $label (up to $MINUTES min)"
-  "${SSH[@]}" "nohup bash /opt/rp/bench/machine.sh run $label $MINUTES > ~/bench-run-$label.log 2>&1 &" </dev/null
+  say "▶ $label (up to $MINUTES min${DEPTH:+, $DEPTH depth})"
+  "${SSH[@]}" "nohup bash /opt/rp/bench/machine.sh run $label $MINUTES $DEPTH > ~/bench-run-$label.log 2>&1 &" </dev/null
   end=$((SECONDS + (MINUTES + 15) * 60))
   until "${SSH[@]}" "grep -q '^✓ $label' ~/bench-run-$label.log" </dev/null 2>/dev/null; do
     [ $SECONDS -ge $end ] && { say "✗ $label: no results after $((MINUTES + 15)) min"; break; }

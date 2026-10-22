@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **A depth for a video: low, medium or high** (#34). Every video got the checks a plan video needs; an explainer
+  measured at 3.5 h and about $128 spent most of it on 26 scenes and two whole redraws after fresh eyes
+  (`eval/pipeline-cost/2026-10-21-research-explainer.md`). `depth:` in BRIEF.md (`scripts/lib/depth.mjs`) now sets it.
+  - **low:** about two minutes and at most 8 scenes, with nothing taking it past them. No fresh eyes but the fact
+    check of an explainer with a long source, and no strict checks.
+  - **medium,** what the skill writes when the person names none: its kind's budget and at most 15 scenes, past them
+    only on the person's words, quoted. The script's newcomer, then one round of the newcomer and the fact checker,
+    whose second round looks at what the answers rewrote. A cosmetic finding is kept with its fix, not redrawn.
+  - **high:** as before. A brief with no depth line reads as high, so videos made before keep their checks.
+
+  `build`'s length stage and `fresh-eyes` hold to it, and `reelplanner explain --depth` starts an explainer at one.
+  The bench takes `--depth`, so a depth is measured against the same request.
 - **Narration that plays on after a seek or a speed change** (#30). The review server sent every file as one `200`
   with no byte ranges, so Chrome could not seek its narration: after a seek, a start in the middle of a scene, or a
   speed change, the scene went silent until the next one. Files are now sent with byte ranges (`206`, `416`,

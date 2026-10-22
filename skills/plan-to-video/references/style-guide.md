@@ -25,7 +25,9 @@ the plan needs it; past 7 is long, and past 10 is too long: cut or split the pla
 shows the change running in about two minutes (§8): past 3 is long, past 5 too long. The system video may
 run 5–8 minutes, never past 12. Before anything is voiced, `$RP build` estimates the length from the script and
 stops past 1.5 times the top of the budget (7:30 for a plan video), unless BRIEF.md says why the video needs more
-(`- Length: <why>`); at its end it gives the watched length against the budget, a warning. Long videos go unwatched:
+(`- Length: <why>`); at its end it gives the watched length against the budget, a warning. The video's depth
+(SKILL.md, **Depth**) tightens it: at low about two minutes and at most 8 scenes, with nothing taking it past; at
+medium at most 15 scenes, past the budget only on the person's words, quoted. Long videos go unwatched:
 first videos of 15–17 minutes were watched 1–4% of the way. To stay inside it:
 
 - Say the whole before the steps: what the plan changes and why, in a scene or two, then the steps; the questions

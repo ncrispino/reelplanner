@@ -9,7 +9,8 @@
 //                       assembled to look at, and leaves it to verify
 //   check-terms         no id said alone, no word used before it is defined (check-terms.mjs; warnings go on)
 //   length              the length the script will run, before the voice: past 1.5× the budget it stops (lib/length.mjs),
-//                       unless BRIEF.md says why it needs more (`- Length:`)
+//                       unless BRIEF.md says why it needs more (`- Length:`); its depth sets the budget and the most
+//                       scenes (lib/depth.mjs: at low nothing takes it past, at medium only the person's words)
 //   check-sources       an explainer's quoted lines word for word in their pinned sources, no secret or home path in
 //                       its text, no decision beat (check-sources.mjs; skipped for a video that names no source)
 //   narrate             only the lines whose text, voice, speed or model changed (narrate.mjs)
@@ -58,6 +59,7 @@ import { reviewWayLine } from "./lib/inbox.mjs";
 import { skillsDir } from "./hyperframes-skills.mjs";
 import { recordPath } from "./lib/narration.mjs";
 import { videoLength, lengthLine, scriptLength, scriptLengthLine } from "./lib/length.mjs";
+import { depthProblem } from "./lib/depth.mjs";
 import { videoVariety, varietyLines } from "./lib/variety.mjs";
 import { changedFrames, sourcesChanged, videoCheck, findingLine, recordFrames } from "./lib/frame-layout.mjs";
 
@@ -155,8 +157,9 @@ const STAGES = [
   // or a home path in its text, a `- decision:` in it. A video that is no explainer and names no source skips it.
   ["check-sources", () => { const r = run(["node", [join(SCRIPTS, "check-sources.mjs"), "."]]); if (r.status === 0 && /^·/.test(last(r.out))) return { skip: last(r.out).replace(/^·\s*check-sources:\s*/, "") }; if (r.status === 0 && /^△/.test(last(r.out))) r.warn = true; return r; }],
   // the length the script will run, before anything is voiced (cheaper-videos step 7): past 1.5× the budget it stops,
-  // naming the longest parts, unless BRIEF.md says why the video needs more (`- Length:`)
-  ["length", () => { const l = scriptLength(dir); if (!l) return { skip: "no storyboard" }; return { status: l.stop ? 1 : 0, out: `${l.stop ? "✗" : "✓"} ${scriptLengthLine(l)}\n`, ...(l.seconds > l.budget.aim[1] * 60 && !l.stop ? { warn: true } : {}) }; }],
+  // naming the longest parts, unless BRIEF.md says why the video needs more (`- Length:`). Its depth (#34) sets the
+  // budget, the most scenes, and what takes it past them; a depth that is none of the three is a △, read as high
+  ["length", () => { const l = scriptLength(dir); if (!l) return { skip: "no storyboard" }; const bad = depthProblem(dir); return { status: l.stop ? 1 : 0, out: `${bad ? `△ ${bad}\n` : ""}${l.stop ? "✗" : "✓"} ${scriptLengthLine(l)}\n`, ...((l.seconds > l.budget.aim[1] * 60 || bad) && !l.stop ? { warn: true } : {}) }; }],
   ["narrate", () => run(["node", [join(SCRIPTS, "narrate.mjs"), ".", ...narrateArgs]])],
   ["fetch-sfx", () => run(["node", [join(S, "audio.mjs"), "fetch-sfx", "--storyboard", "./STORYBOARD.md", "--hyperframes", "."]])],
   ["transcribe-missing", () => run(["node", [join(SCRIPTS, "transcribe-missing.mjs"), "."]])],

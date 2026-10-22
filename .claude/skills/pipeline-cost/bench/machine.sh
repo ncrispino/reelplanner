@@ -8,9 +8,12 @@
 #                             claude on the machine has them, fresh eyes' `claude -p` too (telemetry records each request's
 #                             effort, so the report can check it), and rp-shim.sh first on PATH as `reelplanner` and `reel`.
 #   machine.sh ready          exit 0 once Claude Code answers (the person has logged in)
-#   machine.sh run <label>    the README's bakery request in an empty ~/bakery-site, headless, with the reviewer
+#   machine.sh run <label> [minutes] [depth]
+#                             the README's bakery request in an empty ~/bakery-site, headless, with the reviewer
 #                             (reviewer.mjs) sending the same review once the video is shown; stopped once the revised
 #                             video is shown, or after --minutes. Everything measured ends in ~/bench-<label>.tgz.
+#                             With a depth (low, medium, high), the request asks for a video of that depth in the
+#                             person's words; without one it is the baseline's, word for word.
 #
 # Claude Code is logged in by the person, by hand, once per machine (bench.sh says how); no credential is copied
 # here. The machine is deleted after its runs.
@@ -54,7 +57,8 @@ JSON
 }
 
 run() {
-  local label="$1" minutes="${2:-150}"
+  local label="$1" minutes="${2:-150}" depth="${3:-}" prompt="$PROMPT"
+  [ -n "$depth" ] && prompt="Use reelplanner to plan a small website for a neighborhood bakery. Make it a ${depth}-depth video.${PROMPT#Use reelplanner to plan a small website for a neighborhood bakery.}"
   nvm_; local version; version="$(reelplanner --version)"   # before the shim is on PATH: no timing line for it
   export PATH="$HOME/bench/bin:$HOME/.local/bin:$PATH"
   export BENCH_TIMING="$OUT/timing.jsonl" OTEL_RESOURCE_ATTRIBUTES="bench.run=$label"
@@ -64,8 +68,8 @@ run() {
   node "$B/otel-sink.mjs" "$OUT/otel.jsonl" 4318 > "$OUT/sink.log" 2>&1 & local sink=$!
   node "$B/reviewer.mjs" "$HOME/bakery-site" "$BENCH_TIMING" "$OUT/reviewer.jsonl" "$OUT/done.json" > "$OUT/reviewer.log" 2>&1 & local rev=$!
   sleep 1
-  printf '{"ev":"run-start","at":%s,"label":"%s","reelplanner":"%s"}\n' "$(date +%s%3N)" "$label" "$version" >> "$OUT/run.jsonl"
-  ( cd "$HOME/bakery-site" && claude -p "$PROMPT" --effort medium --permission-mode auto --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
+  printf '{"ev":"run-start","at":%s,"label":"%s","reelplanner":"%s","depth":"%s"}\n' "$(date +%s%3N)" "$label" "$version" "$depth" >> "$OUT/run.jsonl"
+  ( cd "$HOME/bakery-site" && claude -p "$prompt" --effort medium --permission-mode auto --output-format stream-json --verbose < /dev/null > "$OUT/claude.jsonl" 2> "$OUT/claude.err" ) & local agent=$!
   local deadline=$((SECONDS + minutes * 60)) why="the agent ended"
   while kill -0 "$agent" 2>/dev/null; do
     if [ -f "$OUT/done.json" ]; then why="the revised video was shown"; sleep 20; break; fi
@@ -87,5 +91,5 @@ case "${1:-}" in
   setup) setup ;;
   ready) ready ;;
   run) shift; run "$@" ;;
-  *) echo "usage: machine.sh setup | ready | run <label> [minutes]"; exit 2 ;;
+  *) echo "usage: machine.sh setup | ready | run <label> [minutes] [low|medium|high]"; exit 2 ;;
 esac

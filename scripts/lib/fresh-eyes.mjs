@@ -41,6 +41,7 @@ import { join, resolve, relative, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parseScript } from "./narration.mjs";
 import { storyboardFrames, frontMatter, termsOf, glossaryFor } from "./terms.mjs";
+import { depthOf } from "./depth.mjs";
 
 export const DIR = "fresh-eyes";
 // One round a build, and a second only on what the first's answers changed in what a scene says (its narration, or
@@ -57,8 +58,20 @@ export function factChecked(videoDir) {
   for (const d of [join(dir, ".."), dir]) { const s = readJson(join(d, "sources.json")); if (s) return (s.sources || []).some((x) => x.guide); }
   return false;
 }
-/** The fresh agents a video gets: the newcomer and the designer, and the checker for a fact-checked explainer. */
-export const rolesFor = (videoDir) => (factChecked(videoDir) ? { ...ROLES, ...CHECKER } : ROLES);
+export const ALL_ROLES = { ...ROLES, ...CHECKER };
+/**
+ * The fresh agents a round gets, at the video's depth (lib/depth.mjs, #34): at high the newcomer and the designer,
+ * and the checker for a fact-checked explainer; at medium the newcomer and the checker, and in a second round the
+ * checker alone; at low the checker alone, or no one. round: the stamp's, by default.
+ */
+export function rolesFor(videoDir, round = readStamp(videoDir)?.round || 1) {
+  const depth = depthOf(videoDir), checked = factChecked(videoDir);
+  if (depth === "low") return checked ? CHECKER : {};
+  if (depth === "medium") return round > 1 ? (checked ? CHECKER : {}) : checked ? { newcomer: ROLES.newcomer, ...CHECKER } : { newcomer: ROLES.newcomer };
+  return checked ? ALL_ROLES : ROLES;
+}
+/** How many rounds a build gets: two at high; at medium one, and a second for the checker where there is one; one at low. */
+export const roundsFor = (videoDir) => { const depth = depthOf(videoDir); return depth === "high" || (depth === "medium" && factChecked(videoDir)) ? ROUNDS : 1; };
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const hash = (s) => createHash("sha256").update(String(s)).digest("hex").slice(0, 12);
@@ -268,6 +281,9 @@ export function freshEyesState(videoDir) {
   const said = (stamp) => saidSince(videoDir, stamp);
   const stamp = readStamp(videoDir), cur = buildOf(videoDir);
   const build = { id: cur.id, scope: cur.scope };
+  // a low-depth video that is not a fact-checked explainer has no fresh eyes at all (#34)
+  if (!Object.keys(rolesFor(videoDir, 1)).length) return { state: "done", round: 0, lines: [{ level: "ok", text: `fresh eyes: none at ${depthOf(videoDir)} depth (BRIEF.md's depth:)` }], unanswered: [], changed: [], said: [], outOfScope: [], stray: [], build };
+  const R = roundsFor(videoDir);
   if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanner fresh-eyes\` on it, launch the newcomer and the designer (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
   const round = stamp.round || 1, f = findingsOf(videoDir), lines = [], unanswered = [], outOfScope = [];
   const sameBuild = buildOfStamp(stamp) === cur.id, nothingNew = !sameBuild && cur.scope && !cur.scope.length;
@@ -292,16 +308,16 @@ export function freshEyesState(videoDir) {
   if (!sameBuild) {
     // the set on disk is an earlier build's: the rebuild has not had its look yet (or changed nothing a viewer sees)
     if (nothingNew) lines.push({ level: "ok", text: `fresh eyes: nothing a viewer sees changed since the last build (plan-diff): its rounds stand` });
-    else lines.push({ level: "warn", text: `fresh eyes: this build has not had fresh eyes yet (${cur.scope ? `scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed since the last build` : "every scene"}): run \`reelplanner fresh-eyes\` (round 1 of ${ROUNDS} of this build; the last build's rounds go to fresh-eyes/build-${(buildsKept(videoDir).at(-1) || 0) + 1}/)` });
+    else lines.push({ level: "warn", text: `fresh eyes: this build has not had fresh eyes yet (${cur.scope ? `scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed since the last build` : "every scene"}): run \`reelplanner fresh-eyes\` (round 1 of ${R} of this build; the last build's rounds go to fresh-eyes/build-${(buildsKept(videoDir).at(-1) || 0) + 1}/)` });
   } else if (!unanswered.length && !missing.length && !stray.length) {
     const by = (k) => all.filter((x) => x.answer?.kind === k).length;
     const tally = all.length ? `${all.length} finding${all.length === 1 ? "" : "s"} answered (${by("fixed")} fixed, ${by("meaning")} a meaning, ${by("kept")} kept${by("plan") ? `, ${by("plan")} into the plan` : ""}${by("ask") ? `, ${by("ask")} asked of you` : ""})` : "no findings";
     // a second round only on scenes whose words changed; a frame redrawn as the answers said needs no new look
-    if (saidNow.length && round < ROUNDS) lines.push({ level: "warn", text: `fresh eyes, round ${round}${scopeWord}: ${tally}; scene${saidNow.length === 1 ? "" : "s"} ${saidNow.join(", ")} say${saidNow.length === 1 ? "s" : ""} something new since they looked: one more round, on ${saidNow.length === 1 ? "it" : "those"} (round ${round + 1} of ${ROUNDS})` });
-    else if (round >= ROUNDS && changed.length) lines.push({ level: "ok", text: `fresh eyes: ${ROUNDS} rounds done on this build, round ${round}'s ${tally}; what is left is said on the page ("Before you watch") and in the notification` });
+    if (saidNow.length && round < R) lines.push({ level: "warn", text: `fresh eyes, round ${round}${scopeWord}: ${tally}; scene${saidNow.length === 1 ? "" : "s"} ${saidNow.join(", ")} say${saidNow.length === 1 ? "s" : ""} something new since they looked: one more round, on ${saidNow.length === 1 ? "it" : "those"} (round ${round + 1} of ${R})` });
+    else if (round >= R && changed.length) lines.push({ level: "ok", text: `fresh eyes: ${R} round${R === 1 ? "" : "s"} done on this build, round ${round}'s ${tally}; what is left is said on the page ("Before you watch") and in the notification` });
     else lines.push({ level: "ok", text: `fresh eyes, round ${round}${scopeWord}: ${tally}${changed.length ? ` (scene${changed.length === 1 ? "" : "s"} ${changed.join(", ")} redrawn, ${changed.length === 1 ? "its" : "their"} words as they were: no further round)` : ""}` });
   }
-  const state = unanswered.length || stray.length || lines.some((l) => l.level === "fail") ? "open" : !sameBuild ? (nothingNew ? "done" : "none") : missing.length ? "waiting" : saidNow.length && round < ROUNDS ? "stale" : "done";
+  const state = unanswered.length || stray.length || lines.some((l) => l.level === "fail") ? "open" : !sameBuild ? (nothingNew ? "done" : "none") : missing.length ? "waiting" : saidNow.length && round < R ? "stale" : "done";
   return { state, round, lines, unanswered, changed, said: saidNow, outOfScope, stray, build };
 }
 
@@ -321,7 +337,7 @@ export function leftAfter(videoDir, { build } = {}) {
   const cur = build ? { id: build.id, scope: build.scope } : buildOf(videoDir);
   if (buildOfStamp(stamp) !== cur.id && !(cur.scope && !cur.scope.length)) return null;
   const round = stamp.round || 1, f = findingsOf(videoDir);
-  const done = round >= ROUNDS || !saidSince(videoDir, stamp).length;
+  const done = round >= roundsFor(videoDir) || !saidSince(videoDir, stamp).length;
   // a question the author put to the person (ask:) is shown first, whatever the round (step 3)
   const asks = Object.entries(f).filter(([, xs]) => xs).flatMap(([role, xs]) => xs.filter((x) => x.answer?.kind === "ask" && inScope(stamp, x)).map((x) => ({ id: x.id, role, scene: x.scene, what: x.text, ask: x.answer.text })));
   const kept = done ? Object.entries(f).filter(([, xs]) => xs).flatMap(([role, xs]) => xs.filter((x) => x.answer?.kind === "kept" && inScope(stamp, x)).map((x) => ({ id: x.id, role, scene: x.scene, what: x.text, why: x.answer.text }))) : [];
@@ -368,7 +384,7 @@ export function keptEarlier(videoDir, stamp = readStamp(videoDir)) {
   for (const r of roundsKept(videoDir)) {
     const d = join(feDir(videoDir), `round-${r}`), st = readJson(join(d, "stamp.json"));
     if (!st || buildOfStamp(st) !== buildOfStamp(stamp) || r >= (stamp?.round || 1)) continue;
-    for (const role of Object.keys(rolesFor(videoDir))) {
+    for (const role of Object.keys(ALL_ROLES)) {
       const p = join(d, `${role}.md`); if (!existsSync(p)) continue;
       for (const x of parseFindings(read(p))) if (x.answer?.kind === "kept" && inScope(st, x)) out.push({ round: r, id: x.id, role, scene: x.scene, what: x.text, why: x.answer.text });
     }

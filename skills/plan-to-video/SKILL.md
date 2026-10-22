@@ -30,6 +30,24 @@ Three levels; the person chooses, and can move up at any time:
 
 A level-3 repo can still skip one plan's walkthrough (**Skipping the walkthrough video**).
 
+**Depth**, apart from the level: how deep a video's checks go, `depth: low | medium | high` in its BRIEF.md's front
+matter (#34). Take it from their words: "quick", "rough", "a first look" or "low depth" is low; "thorough",
+"polished" or "high depth" is high; anything else, medium. Write it before the storyboard. A brief with none reads
+as high: a video made before depths keeps the checks it was built with.
+
+| | low | medium (the default) | high |
+|---|---|---|---|
+| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"` | its kind's budget; past it with any `- Length: <why>` |
+| The script's fresh eyes | none | the newcomer | the newcomer |
+| Fresh eyes on the video | none, but the checker for an explainer with a long source | one round: the newcomer, and the checker where there is one, who looks again at what the answers rewrote | the newcomer and the designer, and the checker; two rounds |
+| Findings fixed | — | what would mislead or lose a viewer: a wrong fact, a missing step, a word never defined. A cosmetic one is `kept: cosmetic, medium depth`, with the fix it would take, not redrawn | all |
+| Strict checks | none on the storyboard | `terms_check` and `details_check` (and an explainer's `sources_check`) | the same |
+
+The tools hold to it: `build` stops past the depth's length and scenes, and `fresh-eyes` briefs only the depth's
+agents (on a low plan video, none). At low the point is the first look soon: draw the frames side by side (two to
+four workers of 2–4 frames, each with its packet) while narration runs, and `frame-check` each as it lands, so the
+first build passes.
+
 ## Commands
 
 `$RP` means `reelplanner` when `reelplanner --version` works (the README's install; check that first,
@@ -85,7 +103,7 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
    With no `.reelplanner/theme/frame.md` in the repo, run faceless-explainer's `build-frame.mjs --preset
    code-editorial` (it brings the caption skin), then copy reelplanner's `templates/reelplanner/theme/frame.md` over its
    `frame.md` (`$RP --help` ends with the folder reelplanner is installed in). BRIEF.md, from that
-   folder's `templates/video/BRIEF.md`, says `flow: automation` and `storyboard: no`.
+   folder's `templates/video/BRIEF.md`, says `flow: automation`, `storyboard: no` and `depth: low` (**Depth**).
 2. **Write `STORYBOARD.md` and `SCRIPT.md`**: the problem, each step, each open question as a decision beat
    (the tags in **Build a video** step 2: `plan_step`, `chapter_start`, `decision`, `plan_questions`), 1–3
    minutes in all. No `plan_dir`, and no `terms_check: strict` or `details_check: strict` (a word with no
@@ -196,7 +214,7 @@ An explainer is a video of something already there. It asks nothing to decide an
 written. What it can be of is open, so there is no list of kinds: the same principles make any of them.
 
 1. **Find the sources that hold the answer, and pin them:** `$RP explain "<their question, in their words>"
-   <source> …`. A source is a path (a file or a folder, in the repo or outside it: a transcript, a log, an
+   <source> …`, with `--depth low` or `--depth high` when they asked for one (**Depth**; medium otherwise). A source is a path (a file or a folder, in the repo or outside it: a transcript, a log, an
    experiment's output), a commit or a range (`main..HEAD`), `worktree`, `since:<date>`, `pr:<n>`, `ci:<run-id>`,
    `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
@@ -266,8 +284,10 @@ explainer (`<explainer-dir>/video/`).
    thing, `- Real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures`;
    it is optional and nothing warns about the scenes it leaves out. Put the person's request in their own
    words first under Customizations, `- Ask: "<what they asked, quoted>"` (on a revise, their review's words are
-   read from `reviews/`): the script's fresh eyes hold the video to it. A video that needs more than 1.5 times its
-   length budget says why, `- Length: <why>`; without it `build` stops before voicing a script that long. With
+   read from `reviews/`): the script's fresh eyes hold the video to it. Its front matter says its depth, `depth: low
+   | medium | high` (**Depth**). A video that needs more than 1.5 times its length budget, or more scenes than its
+   depth takes, says why, `- Length: <why>`: at medium their words, quoted; at low nothing takes it past. Without it
+   `build` stops before voicing a script that long. With
    `.reelplanner/`, `$RP reel stage <plan-dir>` writes the shared stage.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`** (Step 3) as the style guide says: a series of parts of
    about a minute, 3–5 minutes in all (the system video 5–8), decisions after their steps, a quick
@@ -287,11 +307,11 @@ explainer (`<explainer-dir>/video/`).
    none (`terms: branch = a line of work kept apart until it is merged; merge = …`; a phrase fresh eyes
    flagged and you kept goes here too, or under the glossary's "Other words" when other videos say it), `plain: flag`
    for a word the build would take for jargon that this video uses plainly, and `terms_check: strict` and
-   `details_check: strict` on every new storyboard. Don't explain what the
+   `details_check: strict` on every new storyboard but a low-depth one. Don't explain what the
    reviewer knows: when `$RP reel memory --you` shows they know a word (they watched the video that
    defines it, or looked it up and later answered a quick check on it right), this video drops its
    definition card for that word (the recap line, the defining clause); the word stays in the Terms panel.
-   **Then read it against the ask, before any frame**: `$RP fresh-eyes <video-dir> --script` writes a brief from the
+   **Then read it against the ask, before any frame** (not at low depth): `$RP fresh-eyes <video-dir> --script` writes a brief from the
    storyboard, the script and the person's words; launch one fresh agent with exactly the prompt from `--script
    --prompt newcomer` (as for fresh eyes, step 5), and answer each finding under it (`--script --check`) before
    drawing: here a fix is a line of the script. It asks whether the video does what they asked (a thing they wanted
@@ -377,13 +397,14 @@ explainer (`<explainer-dir>/video/`).
    repeats the brief's `- Real things:` when there is one, and never warns without it). Add `--render` only when someone asks for an MP4; the review page
    plays the HTML.
 5. **Fresh eyes before you open it**: every video you build, plan, walkthrough or system, and every
-   rebuild of an older one (a rebuild is a new build). Start them in the background as soon as the build is done,
+   rebuild of an older one (a rebuild is a new build), as its depth says (**Depth**; a low plan video has none:
+   `fresh-eyes` says so, and you go on to step 6). Start them in the background as soon as the build is done,
    and get the rest ready while they read (the contact sheet, each part's length, what you will say). You know what every phrase means, so you cannot judge
    whether a newcomer follows it; two fresh agents can. `$RP fresh-eyes <video-dir>` writes their briefs, with a
-   picture of each scene at rest taken through the review page. Launch two fresh agents with no context of this
-   conversation, one with exactly the prompt from `$RP fresh-eyes <video-dir> --prompt newcomer`, one with `--prompt
-   designer`, and nothing else, so neither knows what you meant, each from a scratch folder of its own outside the
-   repo. In Claude Code: a subagent, or `claude -p` with that folder as its working directory. In Codex:
+   picture of each scene at rest taken through the review page. Launch the fresh agents it names (at high, the
+   newcomer and the designer; at medium, the newcomer; and the checker for an explainer with a long source) with no
+   context of this conversation, each with exactly the prompt from `$RP fresh-eyes <video-dir> --prompt <role>`, and
+   nothing else, so none knows what you meant, each from a scratch folder of its own outside the repo. In Claude Code: a subagent, or `claude -p` with that folder as its working directory. In Codex:
    `spawn_agent` with `fork_turns: "none"` (its default, "all", hands it this whole conversation), or `codex exec -C
    <scratch> --skip-git-repo-check -s workspace-write --add-dir <video-dir>/fresh-eyes "<the prompt>"`. The
    prompt names one absolute path, `fresh-eyes/<role>.md`; that is
@@ -398,13 +419,15 @@ explainer (`<explainer-dir>/video/`).
    - `- Answer: meaning: …`: the phrase kept, with a meaning a viewer can click: a row under the glossary's "Other
      words" when other videos will say it, else the storyboard's `terms: <phrase> = <meaning>`;
    - `- Answer: kept: <the reason>`: the finding is wrong about something the video says plainly, say, two scenes
-     later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer.
+     later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer. At medium
+     depth, a finding that would neither mislead nor lose a viewer (a chip's place, a margin, a fade) is
+     `kept: cosmetic, medium depth: <the fix it would take>`, and no frame is redrawn for it.
    - `- Answer: plan: <what plan.md now says>`: the plan changed to settle it (plan.md must differ from when the
      agents looked); or `- Answer: ask: <the question for the person>`, shown first on the page's Before you watch.
      A `[plan]` finding takes only these two: you made the video, and are the wrong one to set aside what it lacks.
    Then `$RP build <video-dir>` again (it stops on a finding with no answer). **One round a build**: a second only
    when your answers changed what a scene says (its narration, or the scenes' order), on those scenes alone (`build`
-   asks for it by name); never a third. What is left after the last round, the findings you kept, is said on the
+   asks for it by name; at medium, the checker's alone); never a third. What is left after the last round, the findings you kept, is said on the
    page's "Before you watch" and in the notification: only the new
    ones, since a finding an earlier round of the build already kept for the same reason (the same scene and agent,
    the same thing, the reason much the same) folds into one line with its count. Then open it.
