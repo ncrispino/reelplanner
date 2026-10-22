@@ -13,7 +13,7 @@
 import { chromium } from "playwright-core"; import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs"; import { join } from "node:path"; import { tmpdir } from "node:os";
 import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
-import { until, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } from "./wait.mjs";
+import { until, when, loaded, movedOn, now, frames, nodeUntil, pageHold, laidOut } from "./wait.mjs";
 import { planGuideRepo } from "./plan-guide-repo.mjs";
 import { webpEncoder } from "../../../scripts/lib/guide/pictures.mjs";
 
@@ -235,16 +235,24 @@ try {
     await gf.evaluate((id) => document.getElementById(id).click(), zoomId);
     await until(p, () => document.querySelector("#rp").hasAttribute("overlay"));
     await gf.waitForFunction(() => { const i = document.querySelector(".lb-img"); return i && i.complete && i.getBoundingClientRect().width > 0; }, null, { timeout: 10000 }).catch(() => null);
-    const lb = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: el.player.paused }; });
+    // (paused at the moment it holds: a state the video's frame sent before it took the pause can show "playing" a
+    // moment after it, as below)
+    const lb = await when(p, () => { const el = document.querySelector("#rp"), R = el.shadowRoot; return el.hasAttribute("overlay") && el.player.paused && { overlay: true, bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: true }; })
+      || await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: el.player.paused }; });
     const room = await gf.evaluate(() => { const r = document.querySelector(".lb-img").getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(innerWidth - r.right), b: Math.round(innerHeight - r.bottom) }; });
     check("a picture opened full size in the guide: the small player steps out of its way (hidden) and pauses", lb.overlay && lb.bar === "hidden" && lb.pic === "hidden" && lb.paused, JSON.stringify(lb));
     check("…the picture fitted with room round it (48 px a side or more, 72 px above and below or more)", Math.min(room.l, room.r) >= 47 && Math.min(room.t, room.b) >= 71, JSON.stringify(room));
     await picSay("the spec presses Escape");
+    const shut = await now(p);
     await gf.press("body", "Escape");
-    await until(p, () => !document.querySelector("#rp").hasAttribute("overlay") && !document.querySelector("#rp").player.paused);
-    const back = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini }; });
+    // (one look, at the moment it holds: the picture gone, and the video playing on past where it was. Just after a play
+    // or a pause, the player's paused can show the old state a moment: HyperFrames takes it from the video's frame, and
+    // a state the frame sent before it took the play lands after it, until the frame sends its next. On CI a second
+    // look, just after a first, caught that and saw "paused": issue #32)
+    const back = (await when(p, (from) => { const el = document.querySelector("#rp"), R = el.shadowRoot; return !el.hasAttribute("overlay") && !el.player.paused && el.player.currentTime > from + 0.05 && { overlay: false, bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: true, mini: !!el._mini, from, t: el.player.currentTime }; }, shut))
+      || await p.evaluate((from) => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini, from, t: el.player.currentTime }; }, shut);
     const picLog = await p.evaluate(() => window.__rpPicLog || []);
-    const resumed = !back.overlay && back.bar === "visible" && back.playing && back.mini;
+    const resumed = !back.overlay && back.bar === "visible" && back.playing && back.mini && back.t > back.from + 0.05;
     check("…and closed, the small player is back as it was, playing again", resumed, JSON.stringify(back) + (resumed ? "" : `; from the play before the picture: ${picLog.join("; ")}`));
     await p.evaluate(() => document.querySelector("#rp").player.pause());
   }
