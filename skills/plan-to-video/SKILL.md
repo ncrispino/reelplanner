@@ -348,7 +348,9 @@ explainer (`<explainer-dir>/video/`).
    | a system-video frame | `- spec_section: <heading>` and/or `- components: <id>, <id>` |
    | every scene (optional) | `- layout: <word>` (code, table, terminal, before-after, wall…) |
 
-3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step.
+3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step. Once the script's
+   findings are answered, narrate again at once, before drawing: it voices only the lines the answers changed (a
+   medium bench run started it after drawing, 9 of 15 lines, and waited 1.6 minutes for it).
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
@@ -452,7 +454,8 @@ explainer (`<explainer-dir>/video/`).
    before and after it marked context only, so a finding on an unchanged scene cannot come up (one on a context
    scene is out of scope: not counted, no answer). Before you watch lists only this build's kept findings. A first
    build covers every scene; `--all` makes a rebuild do so too.
-6. **Open it:** `$RP review <video-dir> --detach` serves the page past this session, sends a
+6. **Commit it, then open it:** commit the video with its fresh eyes done, since the revision's build is compared
+   with it (a medium bench run left it uncommitted, and its revision had no fresh eyes). `$RP review <video-dir> --detach` serves the page past this session, sends a
    notification with what is waiting, and prints the URL (**Running the loop**; `build`'s last line names this
    command). Give the person that URL, the contact sheet, and each part's length. **Then wait for their review**:
    no more rounds, redraws or second videos on your own once a video is shown, unless they ask.

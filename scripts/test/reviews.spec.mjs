@@ -102,6 +102,21 @@ try {
     /^# Plan review · 2026-09-23 10:00 UTC · changes requested$/m.test(md1) && /\*\*Q1\*\* \(step 1\) Where do drafts live\?: \*\*Postgres\*\* \(the recommendation\) → D-001/.test(md1)
     && /- \*\*Step 2\*\*\n  - comment at 0:12 \(Export\): "say which formats"/.test(md1) && /^> start with step 2$/m.test(md1) && md1.split("\n").length < 25, md1);
   ok("…and intake says to revise from it", new RegExp(`next: revise the plan from \\.reelplanner/plans/2026-09-23-drafts/reviews/${id1}\\.md`).test(i1.out), i1.out);
+  // the video as reviewed, not committed: intake says to commit it first, since the next build is compared with it (a
+  // medium bench run's revision was the same build to plan-diff, and had no fresh eyes of its own). In a repo under git
+  {
+    const repo3 = join(tmp, "repo3"), g = (...a) => execFileSync("git", ["-C", repo3, "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    mkdirSync(repo3, { recursive: true }); reel("init", repo3, "--name", "drafts", "--kind", "greenfield");
+    reel("new-plan", repo3, "drafts", "--plan", join(tmp, "plan.md"), "--date", "2026-09-23");
+    const v3 = join(repo3, ".reelplanner", "plans", "2026-09-23-drafts", "video"); mkdirSync(v3, { recursive: true }); writeFileSync(join(v3, "plan-map.json"), JSON.stringify(map));
+    g("init", "-q"); g("add", "-A", "--", ".", ":!.reelplanner/plans/2026-09-23-drafts/video"); g("commit", "-q", "-m", "the plan");
+    const intake = (n, at) => { const r = review(at, { verdict: "changes" }); writeFileSync(join(tmp, `row3-${n}.json`), JSON.stringify({ status: "submitted", submittedAt: r.exportedAt, project: "video", planDir: ".reelplanner/plans/2026-09-23-drafts", title: "Drafts", review: r })); return run("reel-intake.mjs", join(tmp, `row3-${n}.json`), "--repo", repo3).out; };
+    const before = intake(1, "2026-09-23T10:00:00.000Z");
+    g("add", "-A"); g("commit", "-q", "-m", "the video and its review");
+    const after = intake(2, "2026-09-23T11:00:00.000Z");
+    ok("reel-intake: changes asked of a video not committed: commit it first (the next build is compared with it); committed, straight to the revision",
+      /next: commit the video as reviewed \(`git add \.reelplanner\/plans\/2026-09-23-drafts\/video && git commit`\)/.test(before) && /Then revise the plan from/.test(before) && /next: revise the plan from/.test(after), `${before}\n---\n${after}`);
+  }
   ok("reel status: changes requested", /\| changes requested: revise \| 1 plan \| D-001 \|/.test(status()), status());
 
   // the revise keeps the question under "Open questions for the reviewer" and cites nothing: its own decision is not asked for
