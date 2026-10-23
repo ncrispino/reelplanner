@@ -5,7 +5,8 @@
 //                 option cards), the theme by path and one finished sibling frame, and how to check a frame;
 //                 "narration not ready" with the line's text before the voice exists; a frame the storyboard lacks
 //                 is refused, naming the ones it has
-//   frame-check   frame-lint on that frame, HyperFrames' layout check on its slot as advice (step 11: text overflowing
+//   frame-check   frame-lint and HyperFrames' own lint on that frame (an error in either exits 1: the build stops on
+//                 HyperFrames' lint), HyperFrames' layout check on its slot as advice (step 11: text overflowing
 //                 its box is said in seconds, with HyperFrames' fix, and never fails it: verify judges the whole
 //                 video), and one picture of it at rest from the assembled video; a frame-lint failure exits 1, the
 //                 picture is taken all the same; a frame not in index.html yet gets no picture, and says how to put it
@@ -53,6 +54,15 @@ try {
   writeFileSync(f3, readFileSync(f3, "utf8").replace(/(<div id="root"[^>]*>)/, '$1<div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div>'));
   const c2 = rp("frame-check", V, "3", "--no-shot", "--no-layout");
   ok("…a frame-lint failure exits 1", c2.status === 1, c2.stdout + c2.stderr);
+  writeFileSync(f3, f3was);
+  // the frame's root styled by its class: HyperFrames' own lint stops the build on it, so frame-check fails it, with
+  // nothing assembled (a bench run's workers did this on every frame, and frame-check passed them)
+  writeFileSync(f3, f3was.replace(/<div id="root"/, '<div id="root" class="f03-root"').replace("<style>", "<style>\n    .f03-root { opacity: 1; }"));
+  const cl = rp("frame-check", V, "3", "--no-shot", "--no-layout");
+  ok("…HyperFrames' lint on that frame: a root styled by its class fails it (exit 1), said in its words", cl.status === 1 && /✗ lint: Root element has class="f03-root"/.test(cl.stdout), cl.stdout + cl.stderr);
+  writeFileSync(f3, f3was);
+  const cc = rp("frame-check", V, "3", "--no-shot", "--no-layout");
+  ok("…and passes it again once the root is not", cc.status === 0 && !/✗ lint/.test(cc.stdout), cc.stdout + cc.stderr);
   const html = join(V, "index.html");
   writeFileSync(html, readFileSync(html, "utf8").replace('data-composition-src="compositions/frames/04-step-1.html"', 'data-composition-src="compositions/frames/04-elsewhere.html"'));
   const c3 = rp("frame-check", V, "4");

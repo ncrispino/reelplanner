@@ -11,15 +11,19 @@
 //
 // HyperFrames samples the whole video's motion too, so a finding can come from another frame: each finding names its
 // file (sourceFile).
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./env.mjs";
 import { storyboardFrames } from "./terms.mjs";
 
 const read = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const srcOf = (f) => String(f.meta.src || "").replace(/^\.\//, "");
+// the file a finding is in, relative to the video: layout's findings name it (sourceFile), lint's by its full path (file)
+// (by their real paths: on macOS a temporary folder's /var is /private/var to HyperFrames)
+const real = (p) => { try { return realpathSync(p); } catch { return p; } };
+const fileOf = (dir, x) => (x.sourceFile ? String(x.sourceFile) : x.file ? relative(real(dir), real(String(x.file))) : "").replace(/^\.\//, "");
 
 /** A frame's slot in the assembled video: { start, duration } from index.html, or null when it is not there. */
 export function slotOf(dir, src) {
@@ -82,7 +86,7 @@ export function layoutCheck(dir, frames) {
   const bySrc = new Map(placed.map((s) => [s.src, s.f.index]));
   for (const part of ["lint", "runtime", "layout", "motion", "contrast"]) {
     for (const x of j[part]?.findings || []) {
-      const n = bySrc.get(String(x.sourceFile || "").replace(/^\.\//, ""));
+      const n = bySrc.get(fileOf(dir, x));
       if (n === undefined || !["error", "warning"].includes(x.severity)) continue;
       byFrame.get(n)[x.severity === "error" ? "errors" : "warnings"].push({ part, ...x });
     }
@@ -107,11 +111,25 @@ export function videoCheck(dir) {
   for (const part of ["lint", "runtime", "layout", "motion", "contrast"]) {
     for (const x of j[part]?.findings || []) {
       if (!["error", "warning"].includes(x.severity)) continue;
-      const frame = bySrc.get(String(x.sourceFile || "").replace(/^\.\//, "")) ?? null;
+      const frame = bySrc.get(fileOf(dir, x)) ?? null;
       (x.severity === "error" ? errors : warnings).push({ part, frame, ...x });
     }
   }
   return { ran: true, errors, warnings };
+}
+
+/**
+ * HyperFrames' lint (static: nothing assembled needed), what one frame's file holds of it. f: a storyboard frame. →
+ * { ran: true, errors: [...], warnings: [...] } or { ran: false, why }.
+ */
+export function hfLint(dir, f) {
+  const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "lint", ".", "--json"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
+  const out = r.stdout || "", i = out.indexOf("{");
+  let j = null;
+  try { j = i >= 0 ? JSON.parse(out.slice(i)) : null; } catch { j = null; }
+  if (!j || !Array.isArray(j.findings)) return { ran: false, why: `hyperframes lint said ${((r.stderr || out).trim().split("\n").at(-1)) || "nothing"}` };
+  const mine = j.findings.filter((x) => fileOf(dir, x) === srcOf(f)).map((x) => ({ part: "lint", ...x }));
+  return { ran: true, errors: mine.filter((x) => x.severity === "error"), warnings: mine.filter((x) => x.severity === "warning") };
 }
 
 /** One line a finding: what, where in the frame, when. */

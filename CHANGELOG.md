@@ -15,6 +15,10 @@
   `build`'s length stage and `fresh-eyes` hold to it, and `reelplanner explain --depth` starts an explainer at one.
   The bench takes `--depth`, so a depth is measured against the same request. The bakery at low depth: the first
   video in 13.2 minutes and $3.29, against 35.9 and $9.53 (`eval/pipeline-cost/2026-10-22-bench-low.md`).
+- **`frame-check` runs HyperFrames' own lint on the frame,** and fails it on an error there: the build stops on that
+  lint, and `frame-check` never ran it. Lint findings name their file by its full path, so the layout check dropped
+  them too. In a bench run, two frame workers styled every frame's root by its class, `frame-check` passed all seven
+  frames, and the build stopped on them.
 - **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
   headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
   plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from

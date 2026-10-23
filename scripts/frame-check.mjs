@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Check one frame as it lands (plans/2026-10-10-cheaper-videos, steps 1 and 11): the frame rules a program can see
-// (frame-lint, on this frame's file); HyperFrames' layout and contrast check on its slot of the assembled video, as
+// (frame-lint, and HyperFrames' own lint, on this frame's file); HyperFrames' layout and contrast check on its slot of the assembled video, as
 // advice (lib/frame-layout.mjs layoutCheck: text overflowing or overlapping, in seconds; looked at three times in one
 // frame it is stricter than verify, so it never fails the frame: build's first stage runs verify's own check); and
 // one picture of it at rest, taken near the end of the frame's slot (index.html's data-start and data-duration), at
@@ -8,7 +8,8 @@
 // them filled a disk.
 //
 // usage: reelplanner frame-check <video-dir> <frame> [--no-shot] [--no-layout]
-//   the frame is its number (4, 04) as the storyboard numbers it. Exit 1 when frame-lint fails; the layout's findings
+//   the frame is its number (4, 04) as the storyboard numbers it. Exit 1 when frame-lint fails or HyperFrames' lint
+//   finds an error in this frame's file; the layout's findings
 //   are △ lines; the picture is taken either way, when the frame is in index.html (else it says how to put it there).
 import { existsSync, readFileSync, mkdirSync, mkdtempSync, readdirSync, renameSync, rmSync } from "node:fs";
 import { join, resolve, relative, basename } from "node:path";
@@ -16,7 +17,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { ROOT } from "./lib/env.mjs";
 import { storyboardFrames } from "./lib/terms.mjs";
-import { layoutCheck, findingLine } from "./lib/frame-layout.mjs";
+import { layoutCheck, hfLint, findingLine } from "./lib/frame-layout.mjs";
 
 const args = process.argv.slice(2);
 const die = (m, code = 1) => { console.error(`✗ frame-check: ${m}`); process.exit(code); };
@@ -34,13 +35,21 @@ const rel = (p) => relative(process.cwd(), p) || p;
 // the rules a program can see, on this frame alone
 const lint = spawnSync(process.execPath, [join(ROOT, "scripts", "frame-lint.mjs"), src], { cwd: dir, encoding: "utf8" });
 process.stdout.write(lint.stdout || ""); process.stderr.write(lint.stderr || "");
+// HyperFrames' own lint, what this frame's file holds of it: an error there stops the build (finish-project's and
+// verify's `check` run it), so it fails the frame now. A second, nothing assembled needed. (A bench run's workers
+// styled each frame's root by its class, frame-check passed every frame, and the build stopped on all seven.)
+const hl = hfLint(dir, f);
+if (!hl.ran) console.log(`△ no HyperFrames lint: ${hl.why}`);
+else for (const x of [...hl.errors, ...hl.warnings]) console.log(`${x.severity === "error" ? "✗" : "△"} ${findingLine(x)}`);
+const failedLint = lint.status !== 0 || (hl.ran && hl.errors.length > 0);
 
 // the layout: HyperFrames' check, on this frame's slot, keeping what it finds in this frame's file
 if (!args.includes("--no-layout")) {
   const l = layoutCheck(dir, [f]);
   if (!l.ran) console.log(`△ no layout check: ${l.missing.length ? `frame ${f.index} is not in index.html yet (build assembles it)` : l.why}`);
   else {
-    const { errors, warnings } = l.byFrame.get(f.index);
+    // its lint is said above
+    const [errors, warnings] = ["errors", "warnings"].map((k) => l.byFrame.get(f.index)[k].filter((x) => x.part !== "lint"));
     for (const x of [...errors, ...warnings]) console.log(`△ ${findingLine(x)}`);
     console.log(`${errors.length + warnings.length ? "△" : "✓"} layout at ${l.at.join(", ")}s${errors.length + warnings.length ? `: ${errors.length + warnings.length} to look at (advice: verify judges the whole video at its own moments)` : ""}`);
   }
@@ -67,4 +76,4 @@ if (!args.includes("--no-shot")) {
     rmSync(tmp, { recursive: true, force: true });
   }
 }
-process.exit(lint.status === 0 ? 0 : 1);
+process.exit(failedLint ? 1 : 0);
