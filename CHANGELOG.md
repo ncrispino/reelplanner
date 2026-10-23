@@ -23,6 +23,12 @@
   check and one picture call for them all, each frame's findings and picture under its name. In a bench run, eight
   frames checked one by one took two minutes; all eight at once take 18 seconds here. It leaves out HyperFrames'
   wish for an id on every element, which is for editing in HyperFrames' Studio: an agent added the ids and built again.
+- **`build` stops on frame-lint in a frame changed since the last build**, in its first stage, before anything is
+  voiced, also when the storyboard or script changed. `frame-check` fails a frame on it, but the build only said it,
+  and not at all once the script had changed: in a bench run at medium, a build passed such a frame, and the agent
+  built again once `frame-check` showed it. The skill now says to look at every frame while fresh eyes read, and to
+  check the frames you changed before building: that run built 9 times, 5 of them again for what a check before the
+  build would have shown.
 - **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
   headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
   plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from

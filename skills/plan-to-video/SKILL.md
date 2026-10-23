@@ -409,7 +409,10 @@ explainer (`<explainer-dir>/video/`).
 5. **Fresh eyes before you open it**: every video you build, plan, walkthrough or system, and every
    rebuild of an older one (a rebuild is a new build), as its depth says (**Depth**; a low plan video has none:
    `fresh-eyes` says so, and you go on to step 6). Start them in the background as soon as the build is done,
-   and get the rest ready while they read (the contact sheet, each part's length, what you will say). You know what every phrase means, so you cannot judge
+   and while they read, look at every frame (`$RP frame-check <video-dir> all`: a picture of each, in seconds) and get
+   the rest ready (each part's length, what you will say). Fix what you saw with your answers to their findings, in
+   one build, and before it, `frame-check` the frames you changed and look again: a fix seen after a build is another
+   build (a medium bench run's first video was built four times, two of them again for that). You know what every phrase means, so you cannot judge
    whether a newcomer follows it; two fresh agents can. `$RP fresh-eyes <video-dir>` writes their briefs, with a
    picture of each scene at rest taken through the review page. Launch the fresh agents it names (at high, the
    newcomer and the designer; at medium, the newcomer; and the checker for an explainer with a long source) with no
@@ -492,7 +495,9 @@ For changes requested:
   frames, patch it where the change is, never write it whole again), and check them as they land with `$RP
   frame-check <video-dir> <frame>…` (their layout and lint in seconds, and a picture of each), never with a build. With several
   frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: when frames
-  changed, its first stage runs verify's layout check before anything is voiced.
+  changed, its first stage runs frame-lint on them and verify's layout check before anything is voiced. A fix seen
+  in a picture after a build is another build: a medium bench run's revision built five times, three of them again
+  for what `frame-check` would have shown first.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review
   watched is marked "Changed since your review", with the old and new words and the review's own words that asked
   for it (`guide --check` fails one left unmarked). Don't hand-edit `reviews/`: the comparison is read from them.

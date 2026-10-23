@@ -67,8 +67,8 @@ name without `.html` (`03-pretrain`). One `<template>` holding the frame's `<sty
 
 `frame-check` runs HyperFrames' layout and contrast check on the frame's slot of the assembled video and says what
 it finds in that frame (text overflowing its box or hidden under another element, overlapping text, contrast under
-WCAG AA), as advice. On a rebuild, `build`'s first stage runs verify's own check on the whole video before anything
-is voiced, and stops on what verify would. And `frame-lint` stops: a camera or zoom that could reach y 900 outside a view clipped at 900 px;
+WCAG AA), as advice. On a rebuild, `build`'s first stage runs `frame-lint` on the frames that changed, and verify's own
+check on the whole video, before anything is voiced, and stops on either. And `frame-lint` stops: a camera or zoom that could reach y 900 outside a view clipped at 900 px;
 a question's heading or card inside something that moves, unless at rest at scale 1 when the scene ends; a
 `data-detail` mark in the bottom band, under 120 × 44 px, still moving in the scene's last 3 s, or twice with one
 name; empty bars where words go; anything within 40 px above a `data-detail` mark. An image drawn wider than half its

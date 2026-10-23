@@ -106,7 +106,7 @@ try {
   let rb; try { rb = execFileSync("node", [join(ROOT, "scripts", "reel.mjs"), "build", P], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { rb = `${e.stdout}${e.stderr}`; }
   ok("reel build runs the same build", /^build /m.test(rb) && /✓ narrate +\d+\.\d s/.test(rb) && /✗ finish-project/.test(rb), rb);
   // the frames stage (cheaper-videos step 11): on a rebuild with frames changed since a build last passed (their hashes),
-  // verify's own layout check before anything is voiced; frame-lint's findings said, never a stop on their own. The
+  // frame-lint on those frames and verify's own layout check, before anything is voiced, stopping on either. The
   // index.html here is a stand-in HyperFrames' lint fails, as verify would: the stage stops on it (the layout half on
   // a real video is frame-tools.spec's)
   writeFileSync(join(P, "index.html"), "<!doctype html><title>built</title>");
@@ -118,11 +118,16 @@ try {
   const sb = read("STORYBOARD.md");
   writeFileSync(join(P, "STORYBOARD.md"), sb + "\n");
   const bf3 = build("--ignore", "wiggle");
-  ok("…the storyboard changed too: the assembly is stale, so the stage is skipped and says why (verify judges the new one)", /^· frames +\d+\.\d s +skipped: the storyboard or script changed since the last build/m.test(bf3.out), bf3.out);
+  ok("…the storyboard changed too: no layout check on the stale assembly, but frame-lint on the changed frame stops the build, nothing voiced (a medium bench run's build passed such a frame)", bf3.code === 1 && bf3.stages.join() === "✗frames" && !bf3.voiced.length
+    && /✗ frame-lint on the frames changed \(01\)/.test(bf3.out) && /bottom band|data-detail/.test(bf3.out) && !/verify's layout check/.test(bf3.out), bf3.out);
+  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), f1b.replace("<script>", '<div id="a"></div><div id="b"></div><script>'));
+  const bf4 = build("--ignore", "wiggle");
+  ok("…and with the frame clean again, the build goes on, the layout left to verify", /^✓ frames +\d+\.\d s /m.test(bf4.out) && /frame-lint clean; the storyboard or script changed: verify checks the layout/.test(bf4.out) && /^[✓△] check-terms/m.test(bf4.out), bf4.out);
+  writeFileSync(join(P, "compositions", "frames", "01-beat.html"), '<div id="root" data-composition-id="f-01-beat" data-width="1920" data-height="1080"><div data-detail="the-nodes" style="position:absolute;left:200px;top:990px;width:400px;height:60px">the nodes</div></div>');
   writeFileSync(join(P, "STORYBOARD.md"), sb);
   const bf2 = build("--ignore", "wiggle");
-  ok("…a frame edited since: verify's own check runs before any voice and stops on what verify would stop on, nothing voiced; the frame's frame-lint findings are said", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length
-    && /✗ the video: lint: .*root_missing/.test(bf2.out) && /verify's layout check would stop here/.test(bf2.out) && /△ 1 changed \(01\): \d+ with frame-lint findings/.test(bf2.out), bf2.out);
+  ok("…a frame edited since: verify's own check and frame-lint run before any voice, and one stop says both, nothing voiced", bf2.code === 1 && bf2.stages.join() === "✗frames" && !bf2.voiced.length
+    && /✗ the video: lint: .*root_missing/.test(bf2.out) && /verify's layout check would stop here/.test(bf2.out) && /✗ frame-lint on the frames changed \(01\)/.test(bf2.out), bf2.out);
   writeFileSync(join(P, "compositions", "frames", "01-beat.html"), f1b); rmSync(join(P, "index.html")); rmSync(join(P, ".hyperframes", "frames-built.json"));
   // check-terms (accessible videos): a word said before it is defined is a △ line and the build goes on;
   // an id said alone, on a storyboard with `terms_check: strict`, stops the build before any voice
