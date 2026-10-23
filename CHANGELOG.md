@@ -19,6 +19,10 @@
   lint, and `frame-check` never ran it. Lint findings name their file by its full path, so the layout check dropped
   them too. In a bench run, two frame workers styled every frame's root by its class, `frame-check` passed all seven
   frames, and the build stopped on them.
+- **`frame-check` checks several frames in one go** (`frame-check <video-dir> 3 5`, or `all`): one lint, one layout
+  check and one picture call for them all, each frame's findings and picture under its name. In a bench run, eight
+  frames checked one by one took two minutes; all eight at once take 18 seconds here. It leaves out HyperFrames'
+  wish for an id on every element, which is for editing in HyperFrames' Studio: an agent added the ids and built again.
 - **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
   headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
   plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from

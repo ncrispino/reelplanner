@@ -3,7 +3,8 @@
 The formats the build reads, written down so no one learns them from reelplanner's source. How a frame looks is
 the theme's (`theme/frame.md`, `theme/motion-language.md`) and the style guide's; this is only what the tools need.
 A worker drawing frames gets its frames' part of this, with their words and timings, from
-`reelplanner frame-packet <video-dir> <frame>…`, and checks each with `reelplanner frame-check <video-dir> <frame>`.
+`reelplanner frame-packet <video-dir> <frame>…`, and checks each with `reelplanner frame-check <video-dir> <frame>…` (several frames, or `all`,
+in one go).
 
 ## The file
 

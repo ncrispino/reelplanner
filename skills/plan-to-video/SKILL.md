@@ -49,9 +49,14 @@ agents (on a low plan video, none). At low the point is the first look soon:
   is cut and narrated again.
 - While narration runs, draw the frames yourself, not with workers, from one set of styles; one script that writes
   every frame is quickest. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
-  the tokens. `frame-check` each.
-- Before the build, run `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70%
-  of the scenes): a warning fixed after a build that passed is another whole build.
+  the tokens.
+- Before the build, run `$RP frame-check <video-dir> all` (its lint, in seconds; the layout and pictures need the
+  video assembled), `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70% of the
+  scenes): a warning fixed after a build that passed is another whole build.
+- After a build that passed, look once, `$RP frame-check <video-dir> all` (a picture of each frame, in seconds), and
+  show it. Build again only for what a viewer would misread, words cut off or over each other; a contrast a shade
+  under, or any other warning, waits for the review. In a bench run, checking 8 frames one by one, and building again
+  for two warnings, took 4 of the first look's 11 minutes.
 
 ## Commands
 
@@ -366,7 +371,7 @@ explainer (`<explainer-dir>/video/`).
    where the thing is hard to read, a picture that explains it (style guide §5). A camera sits inside a
    view clipped at y 900, and a question's heading and cards sit outside it (or the camera is at rest at
    scale 1 when the scene ends): `$RP frame-lint` fails either. Check each frame as it lands with `$RP frame-check
-   <video-dir> <frame>`: frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
+   <video-dir> <frame>` (several frames, or `all`, in one go): frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
    overflowing its box, overlaps, contrast; advice), and one picture of it at rest to look at (no screenshot scripts of your
    own). Put the
    holds for branch beats, assembling beats and the final frame in `.hyperframes/holds.json`. Details
@@ -484,8 +489,8 @@ For changes requested:
 - **Gather every fix first, then build once.** A build takes a minute or more whatever it changes; fixing one thing,
   building, failing and fixing the next is most of a slow revision. List every fix (the review's, fresh eyes')
   before touching a frame. Patch only the frames they touch, each in its own file (where one script writes the
-  frames, patch it where the change is, never write it whole again), and check each as it lands with `$RP
-  frame-check <video-dir> <frame>` (its layout and lint in seconds, and a picture), never with a build. With several
+  frames, patch it where the change is, never write it whole again), and check them as they land with `$RP
+  frame-check <video-dir> <frame>…` (their layout and lint in seconds, and a picture of each), never with a build. With several
   frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: when frames
   changed, its first stage runs verify's layout check before anything is voiced.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review

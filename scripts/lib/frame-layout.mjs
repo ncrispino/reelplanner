@@ -70,13 +70,15 @@ export function changedFrames(dir) {
 /**
  * HyperFrames' check on the frames' slots: three moments in each (a quarter in, past the middle, at rest near its
  * end). frames: storyboard frames (storyboardFrames). →
- * { ran: true, byFrame: Map(index → { errors: [...], warnings: [...] }), missing: [index…] } or { ran: false, why }.
+ * { ran: true, byFrame: Map(index → { errors: [...], warnings: [...] }), missing: [index…], at: [t…], atOf: Map(index → its
+ * three [t…]) } or { ran: false, why }.
  */
 export function layoutCheck(dir, frames) {
   const slots = frames.map((f) => ({ f, src: srcOf(f), slot: slotOf(dir, srcOf(f)) }));
   const missing = slots.filter((s) => !s.slot).map((s) => s.f.index), placed = slots.filter((s) => s.slot);
   if (!placed.length) return { ran: false, why: "not in index.html yet", missing };
-  const at = [...new Set(placed.flatMap(({ slot: { start, duration: d } }) => [start + d * 0.25, start + d * 0.6, start + Math.max(0, d - 0.4)].map((t) => +t.toFixed(3))))].sort((a, b) => a - b);
+  const atOf = new Map(placed.map(({ f, slot: { start, duration: d } }) => [f.index, [start + d * 0.25, start + d * 0.6, start + Math.max(0, d - 0.4)].map((t) => +t.toFixed(3))]));
+  const at = [...new Set([...atOf.values()].flat())].sort((a, b) => a - b);
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "check", "--at", at.join(","), "--json"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
   const out = r.stdout || "", i = out.indexOf("\n{") >= 0 ? out.indexOf("\n{") + 1 : out.startsWith("{") ? 0 : -1;
   let j = null;
@@ -91,7 +93,7 @@ export function layoutCheck(dir, frames) {
       byFrame.get(n)[x.severity === "error" ? "errors" : "warnings"].push({ part, ...x });
     }
   }
-  return { ran: true, byFrame, missing, at };
+  return { ran: true, byFrame, missing, at, atOf };
 }
 
 /**
@@ -118,18 +120,28 @@ export function videoCheck(dir) {
   return { ran: true, errors, warnings };
 }
 
+// Studio's wish for an id on every element it shows (studio_missing_editable_id): for editing in HyperFrames' Studio,
+// which a reelplanner video never is. A bench run's agent added ids to every frame for it, and built again.
+const STUDIO_ONLY = new Set(["studio_missing_editable_id"]);
+
 /**
- * HyperFrames' lint (static: nothing assembled needed), what one frame's file holds of it. f: a storyboard frame. →
- * { ran: true, errors: [...], warnings: [...] } or { ran: false, why }.
+ * HyperFrames' lint (static: nothing assembled needed), what the frames' files hold of it. frames: storyboard frames. →
+ * { ran: true, byFrame: Map(index → { errors: [...], warnings: [...] }) } or { ran: false, why }.
  */
-export function hfLint(dir, f) {
+export function hfLint(dir, frames) {
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "lint", ".", "--json"], { cwd: dir, encoding: "utf8", maxBuffer: 64 << 20 });
   const out = r.stdout || "", i = out.indexOf("{");
   let j = null;
   try { j = i >= 0 ? JSON.parse(out.slice(i)) : null; } catch { j = null; }
   if (!j || !Array.isArray(j.findings)) return { ran: false, why: `hyperframes lint said ${((r.stderr || out).trim().split("\n").at(-1)) || "nothing"}` };
-  const mine = j.findings.filter((x) => fileOf(dir, x) === srcOf(f)).map((x) => ({ part: "lint", ...x }));
-  return { ran: true, errors: mine.filter((x) => x.severity === "error"), warnings: mine.filter((x) => x.severity === "warning") };
+  const byFrame = new Map(frames.map((f) => [f.index, { errors: [], warnings: [] }]));
+  const bySrc = new Map(frames.map((f) => [srcOf(f), f.index]));
+  for (const x of j.findings) {
+    const n = bySrc.get(fileOf(dir, x));
+    if (n === undefined || STUDIO_ONLY.has(x.code) || !["error", "warning"].includes(x.severity)) continue;
+    byFrame.get(n)[x.severity === "error" ? "errors" : "warnings"].push({ part: "lint", ...x });
+  }
+  return { ran: true, byFrame };
 }
 
 /** One line a finding: what, where in the frame, when. */

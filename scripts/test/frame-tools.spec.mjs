@@ -10,7 +10,8 @@
 //                 its box is said in seconds, with HyperFrames' fix, and never fails it: verify judges the whole
 //                 video), and one picture of it at rest from the assembled video; a frame-lint failure exits 1, the
 //                 picture is taken all the same; a frame not in index.html yet gets no picture, and says how to put it
-//                 there
+//                 there; several frames (or `all`) in one go, each under its name; HyperFrames Studio's wish for
+//                 an id on every element left out
 //   the packet names fonts by family, which HyperFrames loads, and this video's font files (step 13)
 // usage: node scripts/test/frame-tools.spec.mjs
 import { spawnSync } from "node:child_process";
@@ -63,6 +64,19 @@ try {
   writeFileSync(f3, f3was);
   const cc = rp("frame-check", V, "3", "--no-shot", "--no-layout");
   ok("…and passes it again once the root is not", cc.status === 0 && !/✗ lint/.test(cc.stdout), cc.stdout + cc.stderr);
+  // Studio's wish for an id on every element it shows: HyperFrames' lint says it, and frame-check leaves it out (a
+  // reelplanner video is never edited in Studio; a bench run's agent built again for it)
+  writeFileSync(f3, f3was.replace(/(<div id="root"[^>]*>)/, '$1<div class="noid clip" data-start="0" data-duration="2" data-track-index="0"></div>'));
+  const hl = spawnSync(process.execPath, [join(ROOT, "bin", "reelplanner.mjs"), "hyperframes", "lint", ".", "--json"], { cwd: V, encoding: "utf8", maxBuffer: 64 << 20 });
+  const cs = rp("frame-check", V, "3", "--no-shot", "--no-layout");
+  let said = []; try { said = JSON.parse(hl.stdout.slice(hl.stdout.indexOf("{"))).findings; } catch { said = []; }
+  ok("…Studio's wish for an id: in HyperFrames' lint, not in frame-check", said.some((x) => x.code === "studio_missing_editable_id" && /03-pretrain\.html$/.test(x.file)) && cs.status === 0 && !/studio_missing_editable_id/.test(cs.stdout), cs.stdout + cs.stderr + hl.stdout.slice(0, 2000));
+  writeFileSync(f3, f3was);
+  // several frames in one go: each under its name, each with its layout and picture
+  const cm = rp("frame-check", V, "3", "5");
+  ok("several frames: each under its name, with its own layout and picture", cm.status === 0 && /^frame 3 \(03-pretrain\.html\)$/m.test(cm.stdout) && /^frame 5 \(05-[^)]+\.html\)$/m.test(cm.stdout) && (cm.stdout.match(/✓ layout at [\d.]+, [\d.]+, [\d.]+s/g) || []).length === 2 && (cm.stdout.match(/✓ picture at [\d.]+s/g) || []).length === 2 && readdirSync(shots).some((f) => /^05-05-.*\.png$/.test(f)), cm.stdout + cm.stderr);
+  const ca = rp("frame-check", V, "all", "--no-shot", "--no-layout"), nFrames = (readFileSync(join(V, "STORYBOARD.md"), "utf8").match(/^## Frame \d+/gm) || []).length;
+  ok("…`all`: every frame of the storyboard", nFrames > 5 && (ca.stdout.match(/^[✓✗] \d+-[\w-]+\.html$/gm) || []).length === nFrames, `${nFrames} frames\n${ca.stdout}${ca.stderr}`);
   const html = join(V, "index.html");
   writeFileSync(html, readFileSync(html, "utf8").replace('data-composition-src="compositions/frames/04-step-1.html"', 'data-composition-src="compositions/frames/04-elsewhere.html"'));
   const c3 = rp("frame-check", V, "4");
