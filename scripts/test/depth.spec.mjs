@@ -72,6 +72,9 @@ try {
   ok("fresh eyes, low explainer: the checker alone where a source is long, no one where none is", roles(le) === "checker" && roles(ls) === "none" && roundsFor(le) === 1, `${roles(le)} / ${roles(ls)}`);
   const st = freshEyesState(lp);
   ok("fresh eyes, low: verify's check is done, saying none at low depth", st.state === "done" && /fresh eyes: none at low depth/.test(st.lines[0]?.text || ""), JSON.stringify(st.lines));
+  // not run yet: the build names the agents to launch, the depth's (a bench run's build said the designer at medium)
+  const [sm, sh] = [freshEyesState(mp), freshEyesState(hp)].map((x) => x.lines[0]?.text || "");
+  ok("fresh eyes not run yet: medium names the newcomer alone, high the newcomer and the designer", /launch the newcomer \(/.test(sm) && !/designer/.test(sm) && /launch the newcomer and the designer \(/.test(sh), `${sm}\n${sh}`);
 
   // ---- the command, at low ----
   const fe = (...a) => { try { return { code: 0, out: execFileSync(process.execPath, [join(ROOT, "scripts", "fresh-eyes.mjs"), ...a], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };

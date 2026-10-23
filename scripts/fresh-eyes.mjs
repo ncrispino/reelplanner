@@ -175,7 +175,7 @@ if (args.includes("--prompt")) {
   const role = flag("prompt");
   const roles = rolesFor(dir);
   if (!roles[role] && ALL_ROLES[role] && (role !== "checker" || factChecked(dir))) die(`the ${role} has no part in this round at ${depthOf(dir)} depth (BRIEF.md's depth:): this round's ${Object.keys(roles).join(" and ") || "none"}`);
-  if (!roles[role]) die(role === "checker" ? "the fact check is for an explainer with a source far longer than the video can show (a source in sources.json with guide: true); this video has the newcomer and the designer" : `--prompt newcomer, or --prompt designer${roles.checker ? ", or --prompt checker" : ""}`);
+  if (!roles[role]) die(role === "checker" ? `the fact check is for an explainer with a source far longer than the video can show (a source in sources.json with guide: true); this video has ${Object.keys(roles).map((r) => `the ${r}`).join(" and ") || "none"}` : `--prompt newcomer, or --prompt designer${roles.checker ? ", or --prompt checker" : ""}`);
   const brief = join(fe, `${role}-brief.md`), out = join(fe, `${role}.md`);
   if (!existsSync(brief)) die(`no brief yet: run \`reelplanner fresh-eyes ${rel(dir)}\` first`);
   // absolute paths: the agent runs from a scratch folder of its own, so a path relative to here would land there

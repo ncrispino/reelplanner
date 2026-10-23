@@ -284,7 +284,7 @@ export function freshEyesState(videoDir) {
   // a low-depth video that is not a fact-checked explainer has no fresh eyes at all (#34)
   if (!Object.keys(rolesFor(videoDir, 1)).length) return { state: "done", round: 0, lines: [{ level: "ok", text: `fresh eyes: none at ${depthOf(videoDir)} depth (BRIEF.md's depth:)` }], unanswered: [], changed: [], said: [], outOfScope: [], stray: [], build };
   const R = roundsFor(videoDir);
-  if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanner fresh-eyes\` on it, launch the newcomer and the designer (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
+  if (!stamp) return { state: "none", round: 0, lines: [{ level: "warn", text: `fresh eyes: not run yet${cur.scope ? ` on this build (scene${cur.scope.length === 1 ? "" : "s"} ${cur.scope.join(", ")} changed)` : ""}: run \`reelplanner fresh-eyes\` on it, launch ${Object.keys(rolesFor(videoDir, 1)).map((r) => `the ${r}`).join(" and ")} (each a fresh agent with no context of this conversation: the command prints how, per agent), and answer each finding` }], unanswered: [], changed: [], outOfScope: [], stray: [], build };
   const round = stamp.round || 1, f = findingsOf(videoDir), lines = [], unanswered = [], outOfScope = [];
   const sameBuild = buildOfStamp(stamp) === cur.id, nothingNew = !sameBuild && cur.scope && !cur.scope.length;
   const missing = Object.keys(rolesFor(videoDir)).filter((r) => !f[r]);
