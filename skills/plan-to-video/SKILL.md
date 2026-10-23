@@ -412,7 +412,7 @@ explainer (`<explainer-dir>/video/`).
    and while they read, look at every frame (`$RP frame-check <video-dir> all`: a picture of each, in seconds) and get
    the rest ready (each part's length, what you will say). Fix what you saw with your answers to their findings, in
    one build, and before it, `frame-check` the frames you changed and look again: a fix seen after a build is another
-   build (a medium bench run's first video was built four times, two of them again for that). You know what every phrase means, so you cannot judge
+   build (a medium bench run's first video was built five times, two of them again for that). You know what every phrase means, so you cannot judge
    whether a newcomer follows it; two fresh agents can. `$RP fresh-eyes <video-dir>` writes their briefs, with a
    picture of each scene at rest taken through the review page. Launch the fresh agents it names (at high, the
    newcomer and the designer; at medium, the newcomer; and the checker for an explainer with a long source) with no
@@ -496,7 +496,7 @@ For changes requested:
   frame-check <video-dir> <frame>…` (their layout and lint in seconds, and a picture of each), never with a build. With several
   frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: when frames
   changed, its first stage runs frame-lint on them and verify's layout check before anything is voiced. A fix seen
-  in a picture after a build is another build: a medium bench run's revision built five times, three of them again
+  in a picture after a build is another build: a medium bench run's revision built six times, three of them again
   for what `frame-check` would have shown first.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review
   watched is marked "Changed since your review", with the old and new words and the review's own words that asked

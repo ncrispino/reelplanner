@@ -27,7 +27,7 @@
   voiced, also when the storyboard or script changed. `frame-check` fails a frame on it, but the build only said it,
   and not at all once the script had changed: in a bench run at medium, a build passed such a frame, and the agent
   built again once `frame-check` showed it. The skill now says to look at every frame while fresh eyes read, and to
-  check the frames you changed before building: that run built 9 times, 5 of them again for what a check before the
+  check the frames you changed before building: that run built 11 times, 5 of them again for what a check before the
   build would have shown.
 - **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
   headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
