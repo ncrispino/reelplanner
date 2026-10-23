@@ -23,6 +23,9 @@
   headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
   plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from
   plan.md. The page now shows the section under its heading, with its words.
+- **The review link named a port another server held.** With its port taken, `review` moves to the next one, but the
+  first try's listener fired when the next one listened, so the link kept the taken port. That link opened the other
+  server's page, or one that refused this video. The link now names the port the page is on.
 - **Narration that plays on after a seek or a speed change** (#30). The review server sent every file as one `200`
   with no byte ranges, so Chrome could not seek its narration: after a seek, a start in the middle of a scene, or a
   speed change, the scene went silent until the next one. Files are now sent with byte ranges (`206`, `416`,

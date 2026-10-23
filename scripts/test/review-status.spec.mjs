@@ -17,6 +17,7 @@
 // video still says the repo is not set up. Once `reel init` sets the repo up, a review left in the machine's inbox is
 // named by `inbox` and finished by `inbox done`, and `--wait` never takes it: nothing is lost or handled twice.
 import { spawn, execFileSync } from "node:child_process";
+import { createServer } from "node:http";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync, existsSync, realpathSync } from "node:fs";
 import { join, dirname, basename, sep } from "node:path";
 import { tmpdir, hostname, homedir } from "node:os";
@@ -51,13 +52,19 @@ const row = (at, extra = {}) => ({ status: "submitted", submittedAt: at, project
 
 const procs = [];
 try {
-  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(testPort(20000 + Math.floor(Math.random() * 10000))), "--out", join(tmp, "bundle")],
+  // its port taken by another server: it moves to the next, and says that one
+  const port = testPort(20000 + Math.floor(Math.random() * 10000));
+  const other = createServer((q, r) => { r.writeHead(418); r.end(); });
+  await new Promise((done) => other.listen(port, "127.0.0.1", done));
+  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(port), "--out", join(tmp, "bundle")],
     { cwd: tmp, env: { ...process.env, REELPLANNER_HOME: join(tmp, "home"), REELPLANNER_RECHECK_MS: "1500" } });
   procs.push(srv);
   let log = ""; srv.stdout.on("data", (d) => (log += d)); srv.stderr.on("data", (d) => (log += d));
   const url = await until(() => log.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   ok("server: starts", !!url, log);
   if (!url) throw new Error("no server");
+  other.close();
+  ok("a port taken: the page is on the next one, and the link says so", url.endsWith(`:${port + 1}`), url);
   const status = async (id, headers = {}) => { const r = await fetch(`${url}/api/review/status?id=${encodeURIComponent(id)}`, { headers }); return { code: r.status, body: await r.json() }; };
   const post = (body) => fetch(`${url}/api/review`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json());
 

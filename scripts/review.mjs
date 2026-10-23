@@ -447,9 +447,13 @@ const server = createServer((req, res) => {
   sendFile(req, res, file, { contentType: TYPES[extname(file).toLowerCase()] || "application/octet-stream", headers: { "cache-control": "no-store" }, body });
 });
 
+// the next free port from this one. A port taken leaves no listener behind: the first try's would fire when a later one
+// listens, and say the port taken (its link then opened another server's page, and the host check refused this page).
 const listen = (port, tries = 20) => new Promise((ok, fail) => {
-  server.once("error", (e) => (e.code === "EADDRINUSE" && tries > 0 ? listen(port + 1, tries - 1).then(ok, fail) : fail(e)));
-  server.listen(port, "127.0.0.1", () => ok(port));
+  const listening = () => { server.off("error", taken); ok(server.address().port); };
+  const taken = (e) => { server.off("listening", listening); e.code === "EADDRINUSE" && tries > 0 ? listen(port + 1, tries - 1).then(ok, fail) : fail(e); };
+  server.once("error", taken); server.once("listening", listening);
+  server.listen(port, "127.0.0.1");
 });
 const port = await listen(Number(flag("port", 8787)));
 const base = `http://127.0.0.1:${port}/`, url = pageUrl(base, out);
