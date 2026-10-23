@@ -79,9 +79,10 @@ run() {
   printf '{"ev":"run-end","at":%s,"why":"%s"}\n' "$(date +%s%3N)" "$why" >> "$OUT/run.jsonl"
   pkill -TERM -P "$agent" 2>/dev/null; kill -TERM "$agent" 2>/dev/null; sleep 5; pkill -f "claude -p" 2>/dev/null
   sleep 3; kill "$sink" "$rev" 2>/dev/null
-  # what the report reads: the transcripts, the timing, the telemetry, the reviewer, and the repo's record and video text
+  # what the report reads: the transcripts, the timing, the telemetry, the reviewer, and the repo's record and video
+  # text; and the narration (a few MB), so the video comes back playable on the review page
   tar -czf "$HOME/bench-$label.tgz" -C "$HOME" .claude/projects bench-out \
-    --exclude='*/node_modules' --exclude='*/renders' --exclude='*.wav' --exclude='*.mp3' --exclude='*.mp4' bakery-site 2>/dev/null
+    --exclude='*/node_modules' --exclude='*/renders' --exclude='*.mp3' --exclude='*.mp4' bakery-site 2>/dev/null
   echo "✓ $label: $why · $(du -h "$HOME/bench-$label.tgz" | cut -f1)"
 }
 

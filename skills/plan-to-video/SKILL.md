@@ -44,11 +44,14 @@ as high: a video made before depths keeps the checks it was built with.
 | Strict checks | none on the storyboard | `terms_check` and `details_check` (and an explainer's `sources_check`) | the same |
 
 The tools hold to it: `build` stops past the depth's length and scenes, and `fresh-eyes` briefs only the depth's
-agents (on a low plan video, none). At low the point is the first look soon: draw the frames side by side (two to
-four workers of 2–4 frames, each with its packet) while narration runs, and `frame-check` each as it lands, so the
-first build passes. Before narrating, hold the script to about 330 words (two minutes at the voice's 3.1 words a
-second): a longer one is cut and narrated again. Vary the transitions in the storyboard, no one kind on over 70% of
-the scenes (`$RP variety <video-dir>` says before the build): changing one after it is another whole build.
+agents (on a low plan video, none). At low the point is the first look soon:
+- Before narrating, hold the script to about 330 words (two minutes at the voice's 3.1 words a second): a longer one
+  is cut and narrated again.
+- While narration runs, draw the frames yourself, not with workers, from one set of styles; one script that writes
+  every frame is quickest. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
+  the tokens. `frame-check` each.
+- Before the build, run `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70%
+  of the scenes): a warning fixed after a build that passed is another whole build.
 
 ## Commands
 
