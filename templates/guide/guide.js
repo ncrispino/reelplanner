@@ -124,11 +124,14 @@ document.addEventListener("click", (e) => {
 });
 
 /* ── Markdown, as plan.md writes it: every heading and paragraph in the page; each block noted on by its place ─ */
+// an HTML comment is a note to whoever edits the file, left out; one in code (a fence, a `span`) is the code's own text,
+// shown as written (a bench run's plan gave a page's first line, `<!-- title: Visit -->`). check.mjs reads it the same way
+const noComments = (s) => s.replace(/^[ \t]*```[^\n]*\n[\s\S]*?(?:^[ \t]*```[ \t]*$|(?![\s\S]))|`[^`\n]+`|<!--[\s\S]*?-->/gm, (m) => (m.startsWith("<!--") ? "" : m));
 function md(text, { anchor = null, editable = false, gloss = false } = {}) {
   // `gloss`: words written for the reader (walkthrough.md's, never plan.md's own, which the page shows as written):
   // a bare number of the record in them says what it is (glossIds)
   const inl = gloss ? (x) => glossIds(inlRaw(x)) : inlRaw;
-  const out = [], rows = String(text || "").replace(/\r\n/g, "\n").replace(/<!--[\s\S]*?-->/g, "").split("\n"); let k = 0;
+  const out = [], rows = noComments(String(text || "").replace(/\r\n/g, "\n")).split("\n"); let k = 0;
   const a = () => (anchor ? ` data-anchor="${esc(anchor)} · ¶${++k}"${editable ? " data-editable" : ""}` : "");
   let i = 0;
   const para = []; const flush = () => { if (para.length) { out.push(`<p${a()}>${inl(para.join(" "))}</p>`); para.length = 0; } };

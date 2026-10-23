@@ -12,12 +12,14 @@ import { withoutForGuide } from "./depth.mjs";
 import { planBaseline, compareParts } from "./revised.mjs";
 
 const alnum = (s) => String(s).toLowerCase().replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/[^a-z0-9]+/g, "");
+// an HTML comment outside code, a note to whoever edits plan.md, is left out of the page (guide.js, noComments)
+const noComments = (s) => s.replace(/^[ \t]*```[^\n]*\n[\s\S]*?(?:^[ \t]*```[ \t]*$|(?![\s\S]))|`[^`\n]+`|<!--[\s\S]*?-->/gm, (m) => (m.startsWith("<!--") ? "" : m));
 // every heading and paragraph of plan.md, one entry each (a list item, a table row, a quote, a code block's lines)
 export function paragraphsOf(md) {
   const out = []; let para = [];
   const flush = () => { if (para.length) out.push(para.join(" ")); para = []; };
   let code = false, diagram = false;
-  for (const raw of withoutForGuide(String(md).replace(/\r\n/g, "\n")).split("\n")) {
+  for (const raw of noComments(withoutForGuide(String(md).replace(/\r\n/g, "\n"))).split("\n")) {
     // a diagram's text is drawn, not shown: its words are the diagram's labels and its "in words" list
     if (/^\s*```diagram/.test(raw) && !code) { flush(); diagram = true; continue; }
     if (diagram) { if (/^\s*```/.test(raw)) diagram = false; continue; }

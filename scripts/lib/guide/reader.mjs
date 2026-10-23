@@ -64,7 +64,8 @@ export function askedOf(problem) {
 
 /** The first plain sentence of a step's prose: past its "*Needs step 1.*" line and a "Decided: …" note. */
 export function firstSentence(md) {
-  let s = String(md || "").replace(/\r\n/g, "\n").replace(/```[\s\S]*?```/g, "");
+  // (an HTML comment outside code is a note to whoever edits plan.md, never its lead: guide.js, noComments)
+  let s = String(md || "").replace(/\r\n/g, "\n").replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]+`|<!--[\s\S]*?-->/g, (m) => (m.startsWith("<!--") ? "" : m));
   // past the step's "*Needs step 1.*" line, one line or several ("*Stands alone; … Decided: …\n… (D-202).*")
   s = s.split(/\n\s*\n/).map((p) => p.trim().replace(/^\*[^*\s][^*]*\*(?:\s+|$)/, "").trim()).filter((p) => p && !/^#/.test(p) && !/^\|/.test(p))[0] || "";
   s = clean(s.replace(/^[-*] /, ""));
