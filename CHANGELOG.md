@@ -13,7 +13,12 @@
   - **high:** as before. A brief with no depth line reads as high, so videos made before keep their checks.
 
   `build`'s length stage and `fresh-eyes` hold to it, and `reelplanner explain --depth` starts an explainer at one.
-  The bench takes `--depth`, so a depth is measured against the same request.
+  The bench takes `--depth`, so a depth is measured against the same request. The bakery at low depth: the first
+  video in 13.2 minutes and $3.29, against 35.9 and $9.53 (`eval/pipeline-cost/2026-10-22-bench-low.md`).
+- **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
+  headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
+  plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from
+  plan.md. The page now shows the section under its heading, with its words.
 - **Narration that plays on after a seek or a speed change** (#30). The review server sent every file as one `200`
   with no byte ranges, so Chrome could not seek its narration: after a seek, a start in the middle of a scene, or a
   speed change, the scene went silent until the next one. Files are now sent with byte ranges (`206`, `416`,
