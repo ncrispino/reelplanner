@@ -13,8 +13,8 @@
   - **high:** as before. A brief with no depth line reads as high, so videos made before keep their checks.
 
   `build`'s length stage and `fresh-eyes` hold to it, and `reelplanner explain --depth` starts an explainer at one.
-  The bench takes `--depth`, so a depth is measured against the same request. The bakery at low depth: the first
-  video in 13.2 minutes and $3.29, against 35.9 and $9.53 (`eval/pipeline-cost/2026-10-22-bench-low.md`).
+  The bench takes `--depth`, so a depth is measured against the same request. The bakery at low depth, its third run: the
+  first video in 10.8 minutes and $2.78, against 35.9 and $9.53 (`eval/pipeline-cost/2026-10-22-bench-low.md`).
 - **`frame-check` runs HyperFrames' own lint on the frame,** and fails it on an error there: the build stops on that
   lint, and `frame-check` never ran it. Lint findings name their file by its full path, so the layout check dropped
   them too. In a bench run, two frame workers styled every frame's root by its class, `frame-check` passed all seven
