@@ -51,7 +51,7 @@ function reviewRow(videoDir) {
   const steps = (map.frames || []).map((f) => f.planStep).filter(Number.isFinite);
   const last = steps.length ? Math.max(...steps) : null;
   const now = new Date().toISOString();
-  return {
+  const review = {
     version: 1, src: `${map.project || "video"}/index.html`, project: map.project || "video", exportedAt: now,
     watch: { firstPlayAt: now, maxTimeReached: map.totalSeconds || 0, durationSeconds: map.totalSeconds || 0, completion: 1, chapters: (map.chapters || []).map((c) => ({ id: c.id, completion: 1 })), moments: [], details: [] },
     decisions, quizzes: [], checks: "on", autonomy: [], knowledgeLevel: null, watched: [], questions: [],
@@ -59,6 +59,10 @@ function reviewRow(videoDir) {
     verdict: "changes",
     annotations: [{ id: "bench-web-address", kind: "note", comment: COMMENT, about: "", t: map.totalSeconds || 0, plan: { step: last, questions: [], component: null } }],
   };
+  // the row the page's Send posts (reelplanner-player.js, reviewRow): the review inside it, and the plan it is for,
+  // which `reel-intake` records it against
+  const id = `${map.project || "review"}-${now.replace(/[-:]/g, "").replace(/\.\d+/, "")}`;
+  return { id, status: "submitted", submittedAt: now, project: map.project || null, planDir: map.planDir || null, title: map.title || null, verdict: review.verdict, note: "", review };
 }
 
 // the running review server's record: the repo's inbox, or (a repo with no .reelplanner/) the machine folder's inbox for it
@@ -82,7 +86,7 @@ for (;;) {
     const base = server.base || `http://127.0.0.1:${server.port}/`;
     const row = reviewRow(dir);
     const r = await fetch(new URL("api/review", base), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(row) }).then(async (x) => ({ status: x.status, body: await x.json().catch(() => null) })).catch((e) => ({ status: 0, body: String(e) }));
-    say("review-sent", { status: r.status, response: r.body, decisions: row.decisions.length, server: server.file });
+    say("review-sent", { status: r.status, response: r.body, decisions: row.review.decisions.length, server: server.file });
     if (r.status === 200) sent = Date.now(); else { await sleep(5000); continue; }
   }
   const after = sent ? s.filter((x) => x.at > sent) : [];
