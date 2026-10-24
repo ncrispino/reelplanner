@@ -81,10 +81,13 @@ codex plugin add reelplanner@reelplanner
 Codex keeps its own copy of an installed plugin and does not refresh it from the package: after
 updating reelplanner, run `codex plugin add reelplanner@reelplanner` again.
 
-On Linux, Codex's sandbox runs commands under bubblewrap. On Ubuntu 24.04 it would not start
-(`bwrap: loopback: Failed RTM_NEWADDR`) until unprivileged user namespaces were allowed;
-[Codex's sandboxing page](https://developers.openai.com/codex/sandboxing) gives the AppArmor profile
-to load, or the `kernel.apparmor_restrict_unprivileged_userns` setting as a fallback.
+On Linux, Codex's sandbox runs commands under bubblewrap, which needs unprivileged user namespaces.
+Ubuntu 24.04 restricts those, and the sandbox would not start (`bwrap: loopback: Failed RTM_NEWADDR`).
+The narrow fix is an AppArmor profile that lets only the sandbox's program use them; see
+[Codex's sandboxing page](https://developers.openai.com/codex/sandboxing). Don't set
+`kernel.apparmor_restrict_unprivileged_userns=0` on a machine you use: it turns that protection off
+for every program on the machine, not only Codex. (The [Linux trial](./terminal-review.md#ghostty-trial)
+sets it only on the throwaway machine it deletes afterwards.)
 
 The existing `npx skills add` route also works. Core installation does not need hooks; optional hooks
 require explicit local trust. Codex supports plugins, skills and MCP integrations; these are not proof

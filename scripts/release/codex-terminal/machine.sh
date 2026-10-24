@@ -32,8 +32,9 @@ setup() {
   step "codex"
   npm i -g @openai/codex > /tmp/codex-install.log 2>&1 || { tail -5 /tmp/codex-install.log; return 1; }
   codex plugin marketplace add "$(npm root -g)/reelplanner" > /dev/null && codex plugin add reelplanner@reelplanner > /dev/null || return 1
-  # Codex's Linux sandbox (bubblewrap) needs unprivileged user namespaces, which Ubuntu 24.04's AppArmor restricts;
-  # Codex's sandboxing page gives this as the fallback (the bwrap profile it prefers is not in 24.04's packages)
+  # Codex's Linux sandbox (bubblewrap) needs unprivileged user namespaces, which Ubuntu 24.04's AppArmor restricts.
+  # This turns that protection off for every program, which is acceptable only because this machine is deleted
+  # after the trial; never on a machine anyone keeps (docs/agents.md gives the narrow fix)
   sudo sysctl -qw kernel.apparmor_restrict_unprivileged_userns=0
   step "ghostty, terminal-browser"
   sudo snap install ghostty --classic > /tmp/ghostty.log 2>&1 || { tail -3 /tmp/ghostty.log; return 1; }
