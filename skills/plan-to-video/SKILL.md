@@ -62,7 +62,7 @@ agents (on a low plan video, none). At low the point is the first look soon:
 ## Commands
 
 `$RP` means `reelplanner` when `reelplanner --version` works (the README's install; check that first,
-before any `npx` or install), else `npx -y reelplanner@0.2.0`, this skill's tooling pinned to the version
+before any `npx` or install), else `npx -y reelplanner@0.3.0`, this skill's tooling pinned to the version
 it was written for. Write it out in full in every command (a shell variable does not survive between tool
 calls), and run each in a tool call of its own, not chained to another with `&&` or `;`: one command a call is
 what a permission rule matches and what auto mode judges. Before one that writes into the repo (`reel init`,

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (2026-10-24)
 
 - **Scenes to start a frame from** (`templates/reelplanner/theme/scenes/`, `reelplanner scene`). A frame drawn from a
   blank page tends to come out as cards of words, as the bakery bench's low-depth videos did. Eight scenes, each
