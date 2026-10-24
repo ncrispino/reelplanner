@@ -1,0 +1,73 @@
+{
+  "id": "crawler-worker-split-merge",
+  "title": "Crawler: one Worker split in two, then two boxes merged into Indexer",
+  "persona": "A backend engineer on a search team, about to ask the agent to plan PDF support in the crawler, sketching how they think a page gets ingested.",
+  "topic": "how the crawler ingests a page",
+  "realism": "People start with one box for 'the thing that does the work' and only discover while drawing that it is two deployments, then notice two of their boxes are one service. The split and the merge are the actual knowledge; the final picture alone hides that 'Store' was ever a candidate step.",
+  "steps": [
+    {"t": 2.5, "say": "Okay so this is how I think the crawler ingests a page."},
+    {"t": 4.0, "add": [{"id": "q", "type": "rectangle", "x": 60, "y": 270, "width": 150, "height": 70, "label": "URL queue"}]},
+    {"t": 7.0, "say": "Jobs come off the URL queue, it's SQS I think."},
+    {"t": 9.0, "add": [{"id": "worker", "type": "rectangle", "x": 310, "y": 250, "width": 200, "height": 110, "label": "Worker"}]},
+    {"t": 11.0, "add": [{"id": "a1", "type": "arrow", "from": "q", "to": "worker"}]},
+    {"t": 14.0, "say": "And one worker picks the job up and does basically everything."},
+    {"t": 16.0, "add": [{"id": "store", "type": "rectangle", "x": 640, "y": 270, "width": 150, "height": 70, "label": "Store"}]},
+    {"t": 18.0, "add": [{"id": "a2", "type": "arrow", "from": "worker", "to": "store"}]},
+    {"t": 22.0, "say": "Then whatever it produces gets written to the store."},
+    {"t": 26.5, "say": "Hmm, actually no, the worker is really two things, it fetches the page and then it parses it."},
+    {"t": 28.0, "relabel": {"id": "worker", "label": "Fetcher"}},
+    {"t": 30.0, "resize": {"id": "worker", "width": 150, "height": 70}},
+    {"t": 32.0, "move": {"id": "worker", "x": 310, "y": 180}},
+    {"t": 35.0, "say": "So the top half is the fetcher, it does the HTTP and the robots check."},
+    {"t": 37.0, "add": [{"id": "parser", "type": "rectangle", "x": 310, "y": 360, "width": 150, "height": 70, "label": "Parser"}]},
+    {"t": 40.0, "say": "And the parser is a separate deployment, it pulls out the links and the text."},
+    {"t": 42.0, "reroute": {"id": "a2", "from": "parser"}},
+    {"t": 44.0, "add": [{"id": "a3", "type": "arrow", "from": "worker", "to": "parser", "label": "raw HTML"}]},
+    {"t": 48.0, "say": "The fetcher hands the raw HTML to the parser, through S3 I believe, not directly."},
+    {"t": 50.0, "restyle": {"id": "a3", "strokeStyle": "dashed"}},
+    {"t": 53.0, "add": [{"id": "a4", "type": "arrow", "from": "parser", "to": "q", "label": "new URLs"}]},
+    {"t": 56.5, "say": "And any new links the parser finds go back on the queue."},
+    {"t": 59.0, "pause": 5},
+    {"t": 66.0, "say": "Wait, actually the parser and the store are the same thing."},
+    {"t": 70.5, "say": "The indexer service parses and writes in one go, there's no separate store step."},
+    {"t": 72.0, "delete": ["a2"]},
+    {"t": 73.5, "delete": ["store"]},
+    {"t": 75.0, "relabel": {"id": "parser", "label": "Indexer"}},
+    {"t": 77.0, "move": {"id": "parser", "x": 600, "y": 360}},
+    {"t": 80.0, "say": "Let me move it over here so it's clearer that it's the end of the line."},
+    {"t": 82.0, "add": [{"id": "pg", "type": "rectangle", "x": 600, "y": 520, "width": 170, "height": 70, "label": "Postgres (pages)"}]},
+    {"t": 84.0, "add": [{"id": "a5", "type": "arrow", "from": "parser", "to": "pg", "label": "upsert"}]},
+    {"t": 89.0, "say": "The indexer upserts into the pages table, and I think it also pushes to the search index, but I'm not sure."},
+    {"t": 91.0, "add": [{"id": "a6", "type": "arrow", "from": "parser", "x": 750, "y": 395, "points": [[0, 0], [110, 0]], "label": "search index?", "strokeStyle": "dashed"}]},
+    {"t": 94.0, "add": [{"id": "a7", "type": "arrow", "from": "worker", "to": "q", "label": "retry", "strokeStyle": "dashed", "strokeColor": "#e03131"}]},
+    {"t": 97.5, "say": "Oh and failed fetches go back on the queue with a retry count."},
+    {"t": 100.0, "note": "Fetcher and Indexer are separate deployments; there is no separate Store service"},
+    {"t": 105.0, "say": "So that's it, queue, fetcher, indexer, Postgres."}
+  ],
+  "expect": {
+    "final_labels": ["URL queue", "Fetcher", "Indexer", "Postgres (pages)", "raw HTML", "new URLs", "upsert", "retry", "search index?"],
+    "absent_labels": ["Worker", "Parser", "Store"],
+    "arrows": [
+      ["URL queue", "Fetcher"],
+      ["Fetcher", "Indexer", "raw HTML"],
+      ["Indexer", "URL queue", "new URLs"],
+      ["Indexer", "Postgres (pages)", "upsert"],
+      ["Fetcher", "URL queue", "retry"]
+    ],
+    "story": [
+      "For the first ~25 s the picture was URL queue -> Worker -> Store, with a single Worker doing everything.",
+      "At about 0:26-0:44 they split Worker in two: the Worker box itself was renamed Fetcher, shrunk and moved up, a new Parser box was drawn under it, and the arrow into Store was moved from Worker to Parser; their reason: fetching and parsing are separate deployments.",
+      "Fetcher is the same element that used to be Worker (renamed), not a new box.",
+      "After a ~5 s pause (around 1:00-1:10) they decided Parser and Store are one thing: the Parser->Store arrow and the Store box were deleted and Parser was renamed Indexer, because the indexer service parses and writes in one go.",
+      "Indexer is the old Parser element, moved right; Postgres (pages) was added after the merge as where Indexer upserts.",
+      "The 'raw HTML' hand-off from Fetcher to Indexer is dashed because they think it goes through S3 rather than directly (they restyled it without saying 'dashed').",
+      "'search index?' is a dashed arrow from Indexer to nothing: they are unsure Indexer writes to a search index.",
+      "There are two loops back to URL queue: 'new URLs' from Indexer and a dashed red 'retry' from Fetcher."
+    ],
+    "partner_should_ask_about": [
+      "whether Indexer also writes to a search index (the arrow to nowhere)",
+      "how raw HTML gets from Fetcher to Indexer: S3 or directly",
+      "what happens when a fetch keeps failing (retry limit, dead letters)"
+    ]
+  }
+}

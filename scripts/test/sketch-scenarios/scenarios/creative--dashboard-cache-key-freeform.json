@@ -1,0 +1,600 @@
+{
+  "id": "dashboard-cache-key-freeform",
+  "title": "Cached dashboard route: code, numbered steps and a legend",
+  "persona": "A product engineer looking into reports that users who switch organisations see the old organisation's dashboard numbers, sketching the route handler and its cache from memory.",
+  "topic": "why the dashboard shows the wrong org's numbers after switching org",
+  "realism": "When the suspect is one line of code, people write the snippet on the board and draw an arrow at the line; execution order goes into numbered circles next to a rough architecture sketch, emphasis is a pen underline, and colours get a small legend in a corner because the colours carry the argument.",
+  "steps": [
+    {
+      "t": 3.0,
+      "say": "Let me write the handler down roughly as I remember it, it's short."
+    },
+    {
+      "t": 7.5,
+      "add": [
+        {
+          "id": "code",
+          "type": "text",
+          "x": 50,
+          "y": 110,
+          "text": "export async function GET(req) {\n  const user = await auth(req)\n  const hit = await kv.get(key(user))\n  if (hit) return Response.json(hit)\n  const data = await loadDashboard(user)\n  await kv.set(key(user), data, { ex: 60 })\n  return Response.json(data)\n}",
+          "fontSize": 16
+        }
+      ]
+    },
+    {
+      "t": 11.0,
+      "say": "Auth, look in the cache, return if it's there, otherwise load and set it for sixty seconds."
+    },
+    {
+      "t": 13.5,
+      "add": [
+        {
+          "id": "browser",
+          "type": "rectangle",
+          "x": 490,
+          "y": 130,
+          "width": 120,
+          "height": 50,
+          "label": "Browser"
+        }
+      ]
+    },
+    {
+      "t": 15.0,
+      "add": [
+        {
+          "id": "handler",
+          "type": "rectangle",
+          "x": 680,
+          "y": 130,
+          "width": 190,
+          "height": 50,
+          "label": "GET /api/dashboard"
+        }
+      ]
+    },
+    {
+      "t": 16.0,
+      "add": [
+        {
+          "id": "a1",
+          "type": "arrow",
+          "from": "browser",
+          "to": "handler"
+        }
+      ]
+    },
+    {
+      "t": 17.0,
+      "say": "Browser calls the route."
+    },
+    {
+      "t": 18.5,
+      "add": [
+        {
+          "id": "kv",
+          "type": "rectangle",
+          "x": 700,
+          "y": 260,
+          "width": 150,
+          "height": 50,
+          "label": "Redis"
+        }
+      ]
+    },
+    {
+      "t": 19.5,
+      "add": [
+        {
+          "id": "a2",
+          "type": "arrow",
+          "from": "handler",
+          "to": "kv",
+          "label": "get key(user)"
+        }
+      ]
+    },
+    {
+      "t": 22.5,
+      "say": "The cache is Redis, well, the Upstash KV thing, same idea."
+    },
+    {
+      "t": 24.0,
+      "relabel": {
+        "id": "kv",
+        "label": "KV (Upstash)"
+      }
+    },
+    {
+      "t": 25.5,
+      "say": "On a miss it goes to Postgres."
+    },
+    {
+      "t": 26.5,
+      "add": [
+        {
+          "id": "pg",
+          "type": "rectangle",
+          "x": 490,
+          "y": 410,
+          "width": 150,
+          "height": 50,
+          "label": "Postgres"
+        }
+      ]
+    },
+    {
+      "t": 27.5,
+      "add": [
+        {
+          "id": "a3",
+          "type": "arrow",
+          "from": "handler",
+          "to": "pg",
+          "label": "miss"
+        }
+      ]
+    },
+    {
+      "t": 29.0,
+      "add": [
+        {
+          "id": "a4",
+          "type": "arrow",
+          "from": "pg",
+          "to": "kv",
+          "label": "set"
+        }
+      ]
+    },
+    {
+      "t": 32.5,
+      "say": "Let me number the order, because the arrows don't say it."
+    },
+    {
+      "t": 34.0,
+      "add": [
+        {
+          "id": "n1",
+          "type": "ellipse",
+          "x": 627,
+          "y": 92,
+          "width": 36,
+          "height": 36,
+          "label": "1"
+        }
+      ]
+    },
+    {
+      "t": 35.5,
+      "add": [
+        {
+          "id": "n2",
+          "type": "ellipse",
+          "x": 660,
+          "y": 202,
+          "width": 36,
+          "height": 36,
+          "label": "2"
+        }
+      ]
+    },
+    {
+      "t": 37.0,
+      "add": [
+        {
+          "id": "n3",
+          "type": "ellipse",
+          "x": 520,
+          "y": 345,
+          "width": 36,
+          "height": 36,
+          "label": "3"
+        }
+      ]
+    },
+    {
+      "t": 38.5,
+      "add": [
+        {
+          "id": "n4",
+          "type": "ellipse",
+          "x": 700,
+          "y": 400,
+          "width": 36,
+          "height": 36,
+          "label": "4"
+        }
+      ]
+    },
+    {
+      "t": 41.5,
+      "say": "One the request comes in, two the cache get, three on a miss we hit Postgres, four we set it back."
+    },
+    {
+      "t": 43.0,
+      "move": {
+        "id": "n3",
+        "x": 602,
+        "y": 300
+      }
+    },
+    {
+      "t": 47.0,
+      "say": "There might also be a CDN cache in front, I'm honestly not sure that exists for API routes."
+    },
+    {
+      "t": 48.5,
+      "add": [
+        {
+          "id": "cdn",
+          "type": "rectangle",
+          "x": 480,
+          "y": 260,
+          "width": 110,
+          "height": 50,
+          "label": "CDN cache?"
+        }
+      ]
+    },
+    {
+      "t": 49.5,
+      "add": [
+        {
+          "id": "a5",
+          "type": "arrow",
+          "from": "browser",
+          "to": "cdn",
+          "strokeStyle": "dashed"
+        }
+      ]
+    },
+    {
+      "t": 50.5,
+      "restyle": {
+        "id": "cdn",
+        "strokeStyle": "dashed"
+      }
+    },
+    {
+      "t": 56.0,
+      "say": "Now the thing I suspect is this line, the key is built from the user, and I don't think the org is in it."
+    },
+    {
+      "t": 58.0,
+      "pen": {
+        "points": [
+          [
+            470,
+            320
+          ],
+          [
+            466,
+            295
+          ],
+          [
+            460,
+            268
+          ],
+          [
+            452,
+            240
+          ],
+          [
+            440,
+            212
+          ],
+          [
+            424,
+            188
+          ],
+          [
+            408,
+            172
+          ],
+          [
+            396,
+            162
+          ],
+          [
+            399,
+            177
+          ],
+          [
+            396,
+            162
+          ],
+          [
+            411,
+            165
+          ]
+        ]
+      }
+    },
+    {
+      "t": 60.0,
+      "add": [
+        {
+          "id": "suspect",
+          "type": "text",
+          "x": 330,
+          "y": 330,
+          "text": "no orgId in key?",
+          "fontSize": 16,
+          "strokeColor": "#e03131"
+        }
+      ]
+    },
+    {
+      "t": 62.0,
+      "restyle": {
+        "id": "a2",
+        "strokeColor": "#e03131"
+      }
+    },
+    {
+      "t": 63.5,
+      "say": "Red for the bug."
+    },
+    {
+      "t": 66.5,
+      "say": "So if you switch org, same user, same key, you get the old org's dashboard for up to a minute."
+    },
+    {
+      "t": 68.0,
+      "pen": {
+        "points": [
+          [
+            334,
+            233
+          ],
+          [
+            348,
+            235
+          ],
+          [
+            362,
+            233
+          ],
+          [
+            376,
+            232
+          ],
+          [
+            390,
+            235
+          ],
+          [
+            404,
+            235
+          ],
+          [
+            418,
+            232
+          ],
+          [
+            432,
+            233
+          ]
+        ]
+      }
+    },
+    {
+      "t": 71.0,
+      "say": "The cached path I'll do in blue."
+    },
+    {
+      "t": 72.5,
+      "restyle": {
+        "id": "kv",
+        "strokeColor": "#1971c2",
+        "backgroundColor": "#a5d8ff"
+      }
+    },
+    {
+      "t": 73.5,
+      "restyle": {
+        "id": "a4",
+        "strokeColor": "#1971c2"
+      }
+    },
+    {
+      "t": 77.0,
+      "say": "And a little legend so the colours make sense later."
+    },
+    {
+      "t": 79.0,
+      "add": [
+        {
+          "id": "leg_title",
+          "type": "text",
+          "x": 55,
+          "y": 500,
+          "text": "legend",
+          "fontSize": 18
+        },
+        {
+          "id": "leg_blue",
+          "type": "line",
+          "x": 60,
+          "y": 545,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              40,
+              0
+            ]
+          ],
+          "strokeColor": "#1971c2"
+        },
+        {
+          "id": "leg_blue_t",
+          "type": "text",
+          "x": 110,
+          "y": 535,
+          "text": "cached path",
+          "fontSize": 16
+        }
+      ]
+    },
+    {
+      "t": 81.0,
+      "add": [
+        {
+          "id": "leg_red",
+          "type": "line",
+          "x": 60,
+          "y": 575,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              40,
+              0
+            ]
+          ],
+          "strokeColor": "#e03131"
+        },
+        {
+          "id": "leg_red_t",
+          "type": "text",
+          "x": 110,
+          "y": 565,
+          "text": "where I think the bug is",
+          "fontSize": 16
+        }
+      ]
+    },
+    {
+      "t": 83.0,
+      "add": [
+        {
+          "id": "leg_dash",
+          "type": "line",
+          "x": 60,
+          "y": 605,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              40,
+              0
+            ]
+          ],
+          "strokeStyle": "dashed"
+        },
+        {
+          "id": "leg_dash_t",
+          "type": "text",
+          "x": 110,
+          "y": 595,
+          "text": "not sure it exists",
+          "fontSize": 16
+        }
+      ]
+    },
+    {
+      "t": 84.5,
+      "add": [
+        {
+          "id": "leg_box",
+          "type": "rectangle",
+          "x": 45,
+          "y": 492,
+          "width": 300,
+          "height": 130
+        }
+      ]
+    },
+    {
+      "t": 86.0,
+      "pause": 3
+    },
+    {
+      "t": 89.5,
+      "note": "cache key is per user but the dashboard is per org: switching org shows the old org's numbers for up to 60s?"
+    },
+    {
+      "t": 94.0,
+      "say": "If there is a CDN in front it could be longer than sixty seconds, so that's the other thing I'd want checked."
+    },
+    {
+      "t": 96.5,
+      "say": "Okay, done."
+    }
+  ],
+  "expect": {
+    "final_labels": [
+      "Browser",
+      "GET /api/dashboard",
+      "KV (Upstash)",
+      "Postgres",
+      "CDN cache?",
+      "get key(user)",
+      "miss",
+      "set",
+      "1",
+      "2",
+      "3",
+      "4",
+      "no orgId in key?",
+      "legend",
+      "cached path",
+      "where I think the bug is",
+      "not sure it exists",
+      "export async function GET(req) {\n  const user = await auth(req)\n  const hit = await kv.get(key(user))\n  if (hit) return Response.json(hit)\n  const data = await loadDashboard(user)\n  await kv.set(key(user), data, { ex: 60 })\n  return Response.json(data)\n}"
+    ],
+    "absent_labels": [
+      "Redis"
+    ],
+    "arrows": [
+      [
+        "Browser",
+        "GET /api/dashboard"
+      ],
+      [
+        "GET /api/dashboard",
+        "KV (Upstash)",
+        "get key(user)"
+      ],
+      [
+        "GET /api/dashboard",
+        "Postgres",
+        "miss"
+      ],
+      [
+        "Postgres",
+        "KV (Upstash)",
+        "set"
+      ],
+      [
+        "Browser",
+        "CDN cache?"
+      ]
+    ],
+    "story": [
+      "the multi-line text on the left is code: the route handler as they remember it, kept line for line",
+      "the hand-drawn arrow points into the line `const hit = await kv.get(key(user))`: that line is the suspect, and the red text 'no orgId in key?' at the arrow's tail says why",
+      "the number in each circle is the order things happen: 1 the request reaches GET /api/dashboard, 2 the cache get, 3 on a miss Postgres is queried, 4 the result is set back into the cache; the circles are placed next to the arrow they number, not joined to it",
+      "they moved circle 3 next to the 'miss' arrow after first putting it in the wrong place",
+      "the legend in the bottom-left corner says what the colours mean: blue = cached path, red = where they think the bug is, dashed = not sure it exists",
+      "so the red 'get key(user)' arrow is the suspected bug, blue KV and the blue 'set' arrow are the cached path, and the dashed 'CDN cache?' box is something they are not sure exists",
+      "the pen underline is under `{ ex: 60 }` in the code: the 60-second expiry, which bounds how long the wrong org's numbers show",
+      "their theory: the cache key is per user while the dashboard is per org, so after switching org the same user gets the old org's cached dashboard for up to 60 s, longer if a CDN caches it too",
+      "the cache was first called Redis, then renamed KV (Upstash): same thing, they said"
+    ],
+    "partner_should_ask_about": [
+      "is the org part of key(user), or only the user id",
+      "is there a CDN or edge cache in front of API routes (the dashed box)",
+      "does switching org clear or change anything in the cache"
+    ]
+  }
+}

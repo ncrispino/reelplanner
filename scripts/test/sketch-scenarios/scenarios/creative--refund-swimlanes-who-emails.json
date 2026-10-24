@@ -1,0 +1,587 @@
+{
+  "id": "refund-swimlanes-who-emails",
+  "title": "Refund flow as swimlanes, with one step nobody owns",
+  "persona": "A backend engineer new to the billing team, drawing the refund process across teams as they understand it from two weeks of tickets.",
+  "topic": "how a refund goes from a support ticket to the ledger",
+  "realism": "Cross-team processes get drawn as swimlanes because 'who does this step' is the whole question; ownership is the band a box sits in, handoffs are arrows that cross a band, and a step nobody can place gets parked between bands with a question mark.",
+  "steps": [
+    {
+      "t": 2.5,
+      "say": "Right, refunds, let me do this as lanes, because half the problem is who does what."
+    },
+    {
+      "t": 4.5,
+      "add": [
+        {
+          "id": "f_support",
+          "type": "frame",
+          "x": 40,
+          "y": 110,
+          "width": 840,
+          "height": 100,
+          "name": "Support"
+        }
+      ]
+    },
+    {
+      "t": 6.0,
+      "add": [
+        {
+          "id": "f_billing",
+          "type": "frame",
+          "x": 40,
+          "y": 250,
+          "width": 840,
+          "height": 100,
+          "name": "Billing service"
+        }
+      ]
+    },
+    {
+      "t": 7.0,
+      "say": "Four lanes, I think that covers it."
+    },
+    {
+      "t": 7.5,
+      "add": [
+        {
+          "id": "f_pay",
+          "type": "frame",
+          "x": 40,
+          "y": 390,
+          "width": 840,
+          "height": 100,
+          "name": "Payments (Stripe)"
+        }
+      ]
+    },
+    {
+      "t": 9.0,
+      "add": [
+        {
+          "id": "f_ledger",
+          "type": "frame",
+          "x": 40,
+          "y": 530,
+          "width": 840,
+          "height": 100,
+          "name": "Ledger"
+        }
+      ]
+    },
+    {
+      "t": 12.5,
+      "say": "Support on top, then the billing service, then Stripe, and the ledger at the bottom."
+    },
+    {
+      "t": 15.0,
+      "add": [
+        {
+          "id": "ticket",
+          "type": "rectangle",
+          "x": 60,
+          "y": 130,
+          "width": 170,
+          "height": 60,
+          "label": "refund request ticket"
+        }
+      ]
+    },
+    {
+      "t": 16.0,
+      "say": "Customer side first."
+    },
+    {
+      "t": 17.0,
+      "add": [
+        {
+          "id": "approve",
+          "type": "rectangle",
+          "x": 260,
+          "y": 130,
+          "width": 140,
+          "height": 60,
+          "label": "agent approves"
+        }
+      ]
+    },
+    {
+      "t": 18.0,
+      "add": [
+        {
+          "id": "ar1",
+          "type": "arrow",
+          "from": "ticket",
+          "to": "approve"
+        }
+      ]
+    },
+    {
+      "t": 22.0,
+      "say": "A customer opens a ticket, an agent approves it, and then somebody checks the thirty day window."
+    },
+    {
+      "t": 24.5,
+      "add": [
+        {
+          "id": "check",
+          "type": "rectangle",
+          "x": 430,
+          "y": 130,
+          "width": 170,
+          "height": 60,
+          "label": "check 30-day window"
+        }
+      ]
+    },
+    {
+      "t": 25.5,
+      "add": [
+        {
+          "id": "ar2",
+          "type": "arrow",
+          "from": "approve",
+          "to": "check"
+        }
+      ]
+    },
+    {
+      "t": 30.0,
+      "say": "Actually no, support doesn't check that, the billing service rejects it if it's too old, so that goes down a lane."
+    },
+    {
+      "t": 31.5,
+      "move": {
+        "id": "check",
+        "x": 260,
+        "y": 270
+      }
+    },
+    {
+      "t": 34.0,
+      "add": [
+        {
+          "id": "create",
+          "type": "rectangle",
+          "x": 460,
+          "y": 270,
+          "width": 140,
+          "height": 60,
+          "label": "create refund"
+        }
+      ]
+    },
+    {
+      "t": 35.0,
+      "add": [
+        {
+          "id": "ar3",
+          "type": "arrow",
+          "from": "check",
+          "to": "create",
+          "label": "ok"
+        }
+      ]
+    },
+    {
+      "t": 37.0,
+      "say": "Then billing creates the refund."
+    },
+    {
+      "t": 38.5,
+      "add": [
+        {
+          "id": "stripe",
+          "type": "rectangle",
+          "x": 460,
+          "y": 410,
+          "width": 150,
+          "height": 60,
+          "label": "refund API call"
+        }
+      ]
+    },
+    {
+      "t": 39.5,
+      "add": [
+        {
+          "id": "ar4",
+          "type": "arrow",
+          "from": "create",
+          "to": "stripe"
+        }
+      ]
+    },
+    {
+      "t": 43.5,
+      "say": "Billing creates the refund and calls Stripe, that's the refunds endpoint."
+    },
+    {
+      "t": 45.0,
+      "relabel": {
+        "id": "stripe",
+        "label": "POST /v1/refunds"
+      }
+    },
+    {
+      "t": 48.0,
+      "add": [
+        {
+          "id": "webhook",
+          "type": "rectangle",
+          "x": 640,
+          "y": 410,
+          "width": 220,
+          "height": 60,
+          "label": "charge.refunded webhook"
+        }
+      ]
+    },
+    {
+      "t": 49.0,
+      "add": [
+        {
+          "id": "ar5",
+          "type": "arrow",
+          "from": "stripe",
+          "to": "webhook",
+          "label": "async"
+        }
+      ]
+    },
+    {
+      "t": 51.0,
+      "say": "That comes back async, Stripe calls us."
+    },
+    {
+      "t": 54.5,
+      "say": "And I think the webhook is what actually marks the order refunded, not the API response, but I'm maybe seventy percent on that."
+    },
+    {
+      "t": 56.5,
+      "add": [
+        {
+          "id": "mark",
+          "type": "rectangle",
+          "x": 660,
+          "y": 270,
+          "width": 200,
+          "height": 60,
+          "label": "mark order refunded"
+        }
+      ]
+    },
+    {
+      "t": 57.5,
+      "add": [
+        {
+          "id": "ar6",
+          "type": "arrow",
+          "from": "webhook",
+          "to": "mark"
+        }
+      ]
+    },
+    {
+      "t": 59.0,
+      "say": "Then billing marks it."
+    },
+    {
+      "t": 60.5,
+      "add": [
+        {
+          "id": "credit",
+          "type": "rectangle",
+          "x": 700,
+          "y": 550,
+          "width": 150,
+          "height": 60,
+          "label": "credit note"
+        }
+      ]
+    },
+    {
+      "t": 61.5,
+      "add": [
+        {
+          "id": "ar7",
+          "type": "arrow",
+          "from": "mark",
+          "to": "credit"
+        }
+      ]
+    },
+    {
+      "t": 65.0,
+      "say": "Then the ledger writes a credit note, that part I'm sure of, I've seen the rows."
+    },
+    {
+      "t": 67.0,
+      "restyle": {
+        "id": "stripe",
+        "strokeColor": "#f08c00",
+        "backgroundColor": "#ffec99"
+      }
+    },
+    {
+      "t": 68.0,
+      "restyle": {
+        "id": "webhook",
+        "strokeColor": "#f08c00",
+        "backgroundColor": "#ffec99"
+      }
+    },
+    {
+      "t": 71.5,
+      "say": "Orange is the external stuff, Stripe's side, we don't control those."
+    },
+    {
+      "t": 76.5,
+      "say": "And then the customer gets an email, and I genuinely don't know whose that is, it's somewhere between billing and Stripe."
+    },
+    {
+      "t": 78.5,
+      "add": [
+        {
+          "id": "email",
+          "type": "rectangle",
+          "x": 60,
+          "y": 340,
+          "width": 160,
+          "height": 60,
+          "label": "email customer",
+          "strokeStyle": "dashed"
+        },
+        {
+          "id": "email_q",
+          "type": "text",
+          "x": 232,
+          "y": 348,
+          "text": "?",
+          "fontSize": 36
+        }
+      ]
+    },
+    {
+      "t": 81.0,
+      "pen": {
+        "points": [
+          [
+            259,
+            356
+          ],
+          [
+            267,
+            371
+          ],
+          [
+            264,
+            386
+          ],
+          [
+            248,
+            400
+          ],
+          [
+            220,
+            410
+          ],
+          [
+            186,
+            415
+          ],
+          [
+            152,
+            416
+          ],
+          [
+            118,
+            414
+          ],
+          [
+            86,
+            409
+          ],
+          [
+            59,
+            398
+          ],
+          [
+            44,
+            384
+          ],
+          [
+            44,
+            368
+          ],
+          [
+            53,
+            354
+          ],
+          [
+            70,
+            341
+          ],
+          [
+            93,
+            330
+          ],
+          [
+            124,
+            323
+          ],
+          [
+            160,
+            320
+          ],
+          [
+            195,
+            324
+          ],
+          [
+            224,
+            333
+          ],
+          [
+            245,
+            345
+          ],
+          [
+            260,
+            358
+          ],
+          [
+            268,
+            372
+          ]
+        ]
+      }
+    },
+    {
+      "t": 85.5,
+      "say": "Could be a support macro, could be billing on the webhook, could even be Stripe's own receipt email."
+    },
+    {
+      "t": 88.0,
+      "pen": {
+        "points": [
+          [
+            268,
+            333
+          ],
+          [
+            291,
+            335
+          ],
+          [
+            315,
+            332
+          ],
+          [
+            338,
+            331
+          ],
+          [
+            362,
+            334
+          ],
+          [
+            385,
+            335
+          ],
+          [
+            409,
+            332
+          ],
+          [
+            432,
+            332
+          ]
+        ]
+      }
+    },
+    {
+      "t": 90.5,
+      "note": "who sends the refund email? support macro, billing on the webhook, or Stripe's receipt?"
+    },
+    {
+      "t": 94.0,
+      "say": "Oh and the thirty day bit, I underlined it, I'm not sure it's thirty for annual plans."
+    },
+    {
+      "t": 97.0,
+      "say": "Okay, that's it."
+    }
+  ],
+  "expect": {
+    "final_labels": [
+      "Support",
+      "Billing service",
+      "Payments (Stripe)",
+      "Ledger",
+      "refund request ticket",
+      "agent approves",
+      "check 30-day window",
+      "create refund",
+      "ok",
+      "POST /v1/refunds",
+      "charge.refunded webhook",
+      "async",
+      "mark order refunded",
+      "credit note",
+      "email customer",
+      "?"
+    ],
+    "absent_labels": [
+      "refund API call"
+    ],
+    "arrows": [
+      [
+        "refund request ticket",
+        "agent approves"
+      ],
+      [
+        "agent approves",
+        "check 30-day window"
+      ],
+      [
+        "check 30-day window",
+        "create refund",
+        "ok"
+      ],
+      [
+        "create refund",
+        "POST /v1/refunds"
+      ],
+      [
+        "POST /v1/refunds",
+        "charge.refunded webhook",
+        "async"
+      ],
+      [
+        "charge.refunded webhook",
+        "mark order refunded"
+      ],
+      [
+        "mark order refunded",
+        "credit note"
+      ]
+    ],
+    "story": [
+      "the four frames are swimlanes, one per owner: Support, Billing service, Payments (Stripe), Ledger; the lane a step sits in is who does it, even if the step was drawn into the lane rather than attached to it",
+      "Support owns 'refund request ticket' and 'agent approves'; Billing service owns 'check 30-day window', 'create refund' and 'mark order refunded'; Stripe owns 'POST /v1/refunds' and 'charge.refunded webhook'; Ledger owns 'credit note'",
+      "they first put 'check 30-day window' in the Support lane, then moved it down to Billing service: billing rejects old refunds, support does not check",
+      "arrows that cross a lane are handoffs between teams: Support to Billing, Billing to Stripe, Stripe back to Billing (the webhook), Billing to Ledger",
+      "they believe the webhook, not the API response, marks the order refunded, but are only about 70% sure",
+      "orange means external (Stripe's side), said aloud; there is no drawn legend",
+      "'email customer' is dashed, sits across the gap between the Billing service and Payments lanes, in neither, with a '?' beside it and circled: they do not know who sends the refund email",
+      "the pen underline is under 'check 30-day window' (said aloud: unsure it is 30 days for annual plans)"
+    ],
+    "partner_should_ask_about": [
+      "who sends the refund email: a support macro, billing on the webhook, or Stripe's receipt",
+      "does the webhook or the API response mark the order refunded",
+      "is the window 30 days for every plan (annual plans)",
+      "what happens when the 30-day check fails (no arrow for rejection)"
+    ]
+  }
+}

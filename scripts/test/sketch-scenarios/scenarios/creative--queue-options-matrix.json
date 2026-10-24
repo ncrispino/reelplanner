@@ -1,0 +1,769 @@
+{
+  "id": "queue-options-matrix",
+  "title": "Job queue options as a hand-drawn comparison grid",
+  "persona": "A tech lead deciding whether email sending should move off BullMQ, laying out what they believe each option does before asking an agent to plan the migration.",
+  "topic": "which queue the email jobs should move to",
+  "realism": "Option comparisons are drawn as a grid with a few lines and short words in cells; what a cell means comes only from which column and row it sits in, and the decision is shown by circling one cell and striking out a row, never by arrows.",
+  "steps": [
+    {
+      "t": 2.5,
+      "say": "So I want to compare where the email jobs could live, let me just do a grid."
+    },
+    {
+      "t": 5.0,
+      "add": [
+        {
+          "id": "vl0",
+          "type": "line",
+          "x": 280,
+          "y": 120,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              430
+            ]
+          ]
+        },
+        {
+          "id": "vl1",
+          "type": "line",
+          "x": 470,
+          "y": 120,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              430
+            ]
+          ]
+        },
+        {
+          "id": "vl2",
+          "type": "line",
+          "x": 660,
+          "y": 120,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              430
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "t": 7.0,
+      "add": [
+        {
+          "id": "hl0",
+          "type": "line",
+          "x": 60,
+          "y": 190,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "hl1",
+          "type": "line",
+          "x": 60,
+          "y": 250,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "hl2",
+          "type": "line",
+          "x": 60,
+          "y": 310,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "hl3",
+          "type": "line",
+          "x": 60,
+          "y": 370,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "hl4",
+          "type": "line",
+          "x": 60,
+          "y": 430,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "hl5",
+          "type": "line",
+          "x": 60,
+          "y": 490,
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              790,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "t": 10.5,
+      "say": "Three options across the top: what we have today, BullMQ, then Postgres with skip locked, then SQS."
+    },
+    {
+      "t": 12.5,
+      "add": [
+        {
+          "id": "h_bull",
+          "type": "text",
+          "x": 300,
+          "y": 140,
+          "text": "BullMQ (today)",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 14.0,
+      "add": [
+        {
+          "id": "h_pg",
+          "type": "text",
+          "x": 490,
+          "y": 132,
+          "text": "Postgres\nSKIP LOCKED",
+          "fontSize": 18
+        }
+      ]
+    },
+    {
+      "t": 15.5,
+      "add": [
+        {
+          "id": "h_sqs",
+          "type": "text",
+          "x": 680,
+          "y": 140,
+          "text": "SQS",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 16.5,
+      "say": "And SQS, let me center that a bit."
+    },
+    {
+      "t": 17.0,
+      "move": {
+        "id": "h_sqs",
+        "x": 735,
+        "y": 140
+      }
+    },
+    {
+      "t": 20.5,
+      "say": "And the things I care about down the side."
+    },
+    {
+      "t": 22.5,
+      "add": [
+        {
+          "id": "c_once",
+          "type": "text",
+          "x": 66,
+          "y": 207,
+          "text": "exactly once",
+          "fontSize": 20
+        },
+        {
+          "id": "c_crash",
+          "type": "text",
+          "x": 66,
+          "y": 267,
+          "text": "survives crash",
+          "fontSize": 20
+        },
+        {
+          "id": "c_delay",
+          "type": "text",
+          "x": 66,
+          "y": 327,
+          "text": "delayed jobs",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 24.5,
+      "add": [
+        {
+          "id": "c_ops",
+          "type": "text",
+          "x": 66,
+          "y": 387,
+          "text": "ops cost",
+          "fontSize": 20
+        },
+        {
+          "id": "c_stuck",
+          "type": "text",
+          "x": 66,
+          "y": 447,
+          "text": "see stuck jobs",
+          "fontSize": 20
+        },
+        {
+          "id": "c_dev",
+          "type": "text",
+          "x": 66,
+          "y": 507,
+          "text": "local dev",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 28.5,
+      "say": "Exactly once, none of them really, it's no, no, no."
+    },
+    {
+      "t": 30.0,
+      "add": [
+        {
+          "id": "x_once_b",
+          "type": "text",
+          "x": 300,
+          "y": 207,
+          "text": "no",
+          "fontSize": 20
+        },
+        {
+          "id": "x_once_p",
+          "type": "text",
+          "x": 490,
+          "y": 207,
+          "text": "no",
+          "fontSize": 20
+        },
+        {
+          "id": "x_once_s",
+          "type": "text",
+          "x": 680,
+          "y": 207,
+          "text": "no",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 34.5,
+      "say": "Survives a worker crash: yes for all three, Bull has the stalled job check, Postgres the lock drops, SQS visibility timeout."
+    },
+    {
+      "t": 36.0,
+      "add": [
+        {
+          "id": "x_crash_b",
+          "type": "text",
+          "x": 300,
+          "y": 267,
+          "text": "yes",
+          "fontSize": 20
+        },
+        {
+          "id": "x_crash_p",
+          "type": "text",
+          "x": 490,
+          "y": 267,
+          "text": "yes",
+          "fontSize": 20
+        },
+        {
+          "id": "x_crash_s",
+          "type": "text",
+          "x": 680,
+          "y": 267,
+          "text": "yes",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 41.0,
+      "say": "Delayed jobs, Bull yes, Postgres, hmm, I think we'd need a run at column, so question mark, and SQS I don't remember."
+    },
+    {
+      "t": 43.0,
+      "add": [
+        {
+          "id": "x_delay_b",
+          "type": "text",
+          "x": 300,
+          "y": 327,
+          "text": "yes",
+          "fontSize": 20
+        },
+        {
+          "id": "x_delay_p",
+          "type": "text",
+          "x": 490,
+          "y": 327,
+          "text": "?",
+          "fontSize": 20
+        },
+        {
+          "id": "x_delay_s",
+          "type": "text",
+          "x": 680,
+          "y": 327,
+          "text": "?",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 47.0,
+      "say": "Oh wait, SQS is delay seconds, it caps at fifteen minutes."
+    },
+    {
+      "t": 48.5,
+      "relabel": {
+        "id": "x_delay_s",
+        "label": "15 min max"
+      }
+    },
+    {
+      "t": 53.5,
+      "say": "Ops cost: Bull means we keep running a Redis box, Postgres is free because we already run it, SQS is money plus IAM setup."
+    },
+    {
+      "t": 55.5,
+      "add": [
+        {
+          "id": "x_ops_b",
+          "type": "text",
+          "x": 300,
+          "y": 387,
+          "text": "extra Redis",
+          "fontSize": 20
+        },
+        {
+          "id": "x_ops_p",
+          "type": "text",
+          "x": 490,
+          "y": 387,
+          "text": "none",
+          "fontSize": 20
+        },
+        {
+          "id": "x_ops_s",
+          "type": "text",
+          "x": 680,
+          "y": 387,
+          "text": "$ + IAM",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 59.5,
+      "say": "Seeing stuck jobs: Bull Board, a SQL query, and for SQS I'm not sure what we'd use."
+    },
+    {
+      "t": 61.0,
+      "add": [
+        {
+          "id": "x_stuck_b",
+          "type": "text",
+          "x": 300,
+          "y": 447,
+          "text": "Bull Board",
+          "fontSize": 20
+        },
+        {
+          "id": "x_stuck_p",
+          "type": "text",
+          "x": 490,
+          "y": 447,
+          "text": "SQL",
+          "fontSize": 20
+        },
+        {
+          "id": "x_stuck_s",
+          "type": "text",
+          "x": 680,
+          "y": 447,
+          "text": "?",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 63.0,
+      "add": [
+        {
+          "id": "x_dev_b",
+          "type": "text",
+          "x": 300,
+          "y": 507,
+          "text": "docker",
+          "fontSize": 20
+        },
+        {
+          "id": "x_dev_p",
+          "type": "text",
+          "x": 490,
+          "y": 507,
+          "text": "already",
+          "fontSize": 20
+        },
+        {
+          "id": "x_dev_s",
+          "type": "text",
+          "x": 680,
+          "y": 507,
+          "text": "localstack :(",
+          "fontSize": 20
+        }
+      ]
+    },
+    {
+      "t": 67.5,
+      "say": "Blue for today's column so it's clear that's the baseline."
+    },
+    {
+      "t": 69.0,
+      "restyle": {
+        "id": "h_bull",
+        "strokeColor": "#1971c2"
+      }
+    },
+    {
+      "t": 70.0,
+      "relabel": {
+        "id": "c_crash",
+        "label": "survives worker crash"
+      }
+    },
+    {
+      "t": 74.5,
+      "say": "Exactly once doesn't separate them at all, we need idempotent handlers either way, so scratch that row."
+    },
+    {
+      "t": 76.0,
+      "pen": {
+        "points": [
+          [
+            58,
+            219
+          ],
+          [
+            119,
+            222
+          ],
+          [
+            179,
+            219
+          ],
+          [
+            240,
+            217
+          ],
+          [
+            300,
+            221
+          ],
+          [
+            361,
+            223
+          ],
+          [
+            422,
+            218
+          ],
+          [
+            482,
+            219
+          ],
+          [
+            543,
+            223
+          ],
+          [
+            604,
+            222
+          ],
+          [
+            664,
+            218
+          ],
+          [
+            725,
+            221
+          ],
+          [
+            785,
+            225
+          ],
+          [
+            846,
+            222
+          ]
+        ]
+      }
+    },
+    {
+      "t": 81.5,
+      "say": "Honestly the deciding one is ops cost: Postgres, nothing new to run and nothing new to get paged for."
+    },
+    {
+      "t": 83.0,
+      "pen": {
+        "points": [
+          [
+            644,
+            390
+          ],
+          [
+            650,
+            401
+          ],
+          [
+            648,
+            411
+          ],
+          [
+            635,
+            421
+          ],
+          [
+            614,
+            428
+          ],
+          [
+            589,
+            432
+          ],
+          [
+            563,
+            433
+          ],
+          [
+            537,
+            431
+          ],
+          [
+            512,
+            427
+          ],
+          [
+            492,
+            420
+          ],
+          [
+            481,
+            410
+          ],
+          [
+            480,
+            399
+          ],
+          [
+            488,
+            389
+          ],
+          [
+            501,
+            380
+          ],
+          [
+            518,
+            372
+          ],
+          [
+            541,
+            366
+          ],
+          [
+            569,
+            365
+          ],
+          [
+            595,
+            368
+          ],
+          [
+            617,
+            374
+          ],
+          [
+            633,
+            382
+          ],
+          [
+            645,
+            391
+          ],
+          [
+            650,
+            402
+          ]
+        ]
+      }
+    },
+    {
+      "t": 86.0,
+      "pause": 3
+    },
+    {
+      "t": 89.5,
+      "note": "deciding: ops cost. Postgres = no new box to page on. Open: delayed jobs on Postgres?"
+    },
+    {
+      "t": 93.5,
+      "say": "So I'm leaning Postgres, if the delayed jobs question mark turns out fine."
+    },
+    {
+      "t": 95.0,
+      "pen": {
+        "points": [
+          [
+            486,
+            182
+          ],
+          [
+            505,
+            184
+          ],
+          [
+            524,
+            182
+          ],
+          [
+            543,
+            181
+          ],
+          [
+            563,
+            184
+          ],
+          [
+            582,
+            184
+          ],
+          [
+            601,
+            181
+          ],
+          [
+            620,
+            182
+          ]
+        ]
+      }
+    },
+    {
+      "t": 98.0,
+      "say": "That's the table."
+    }
+  ],
+  "expect": {
+    "final_labels": [
+      "BullMQ (today)",
+      "Postgres\nSKIP LOCKED",
+      "SQS",
+      "exactly once",
+      "survives worker crash",
+      "delayed jobs",
+      "ops cost",
+      "see stuck jobs",
+      "local dev",
+      "15 min max",
+      "extra Redis",
+      "none",
+      "$ + IAM",
+      "Bull Board",
+      "SQL",
+      "docker",
+      "already",
+      "localstack :("
+    ],
+    "absent_labels": [
+      "survives crash"
+    ],
+    "arrows": [],
+    "story": [
+      "the lines form a grid: the three header words are options (columns: BullMQ (today), Postgres SKIP LOCKED, SQS) and the words down the left are criteria (rows); each short word in a cell is that option's answer for that row, known only from where it sits",
+      "for example 'none' is Postgres's ops cost, 'extra Redis' is BullMQ's, '$ + IAM' is SQS's; '15 min max' is SQS's delayed jobs",
+      "SQS's delayed-jobs cell was '?' and became '15 min max' when they remembered the delay cap",
+      "the '?' cells are what they do not know: delayed jobs on Postgres (they think it needs a run_at column) and how to see stuck jobs on SQS",
+      "the 'exactly once' row is struck through with a pen line: dropped as a criterion because none of the options give it and handlers must be idempotent anyway",
+      "the circled cell is ops cost × Postgres ('none'): the deciding criterion, said aloud and typed in the note",
+      "the underline under the Postgres header means they are leaning towards Postgres, conditional on the delayed-jobs '?'",
+      "the BullMQ header is blue because it is today's setup, the baseline (said aloud)"
+    ],
+    "partner_should_ask_about": [
+      "how delayed jobs would work on Postgres (the '?' in that cell)",
+      "how stuck jobs would be seen on SQS",
+      "whether any job today relies on delays longer than 15 minutes"
+    ]
+  }
+}
