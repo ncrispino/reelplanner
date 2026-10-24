@@ -296,6 +296,9 @@ try {
   ok("frame-lint: a page mock may write the product's own colours (its CSS and its markup)", r.code === 0, r.out);
   r = lint(frame("mock-out", { css: `${mockCss} .v-cap { position:absolute; left:200px; top:700px; color:#7D2B27; }`, body: `<div class="v-pg" data-plan-component="page" data-artifact="album page"><div class="t">Highway 61 Revisited</div></div><div class="v-cap">a caption</div>` }));
   ok("…the same colour outside a mock still fails, and says where they may go", r.code === 1 && /1 hex literal\(s\): #7D2B27 \(a page or option mock may use its own colours/.test(r.out), r.out);
+  // a bench run's bread photo, an SVG in the mock: its fill="#C99A63" was read as a tween at a missing id #C99A63
+  r = lint(frame("mock-svg", { css: mockCss, body: `<div class="v-pg" data-plan-component="page" data-artifact="home page"><svg width="400" height="200" viewBox="0 0 400 200"><rect width="400" height="200" fill="#C99A63"/><ellipse cx="150" cy="120" rx="90" ry="50" fill="#A0622D"/></svg></div>`, tl: `tl.to("#v-gone", { opacity: 1, duration: 0.4 }, 0.5);` }));
+  ok("…a picture's colours in a mock are not tween targets; a tween at an id not in the markup still fails", r.code === 1 && /tween targets missing id #v-gone/.test(r.out) && !/#C99A63|#A0622D/.test(r.out), r.out);
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

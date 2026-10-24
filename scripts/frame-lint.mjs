@@ -269,10 +269,13 @@ for (const f of files) {
   const ids = new Set([...s.matchAll(/id="([^"]+)"/g)].map((m) => m[1]));
   const cls = new Set([...s.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)));
   // A literal followed by + is a prefix being concatenated ("#f08-step-2-" + id), and a literal with
-  // a space is a descendant selector — neither is a whole id, so neither can be checked here.
-  for (const m of body.matchAll(/["'`]#([a-zA-Z][\w-]*)["'`](\s*\+)?/g)) {
+  // a space is a descendant selector — neither is a whole id, so neither can be checked here. Only a script aims
+  // at an element: in the markup, "#C99A63" is a picture's fill (a mock's, in the product's own colours), and a
+  // colour in a script is rule 1's.
+  const scripts = (body.match(/<script\b[^>]*>[\s\S]*?<\/script>/g) || []).join("\n");
+  for (const m of scripts.matchAll(/["'`]#([a-zA-Z][\w-]*)["'`](\s*\+)?/g)) {
     if (m[2] || m[1].endsWith("-")) continue;
-    if (!ids.has(m[1])) findings.push(`tween targets missing id #${m[1]}`);
+    if (!ids.has(m[1]) && !/^([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(m[1])) findings.push(`tween targets missing id #${m[1]}`);
   }
   for (const m of body.matchAll(/querySelector(?:All)?\(\s*["'`]\.([\w-]+)/g)) if (!cls.has(m[1])) findings.push(`selector targets missing class .${m[1]}`);
 

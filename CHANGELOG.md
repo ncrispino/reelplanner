@@ -17,7 +17,8 @@
   palette, type, imagery and the one thing that makes it recognisable. A page or option mock in a video
   (`data-plan-component="page"`) may write the product's own colours, where `frame-lint` failed any colour but the
   theme's: a bench run's bakery site was drawn in the video's own cream, ink and coral, its plan said nothing of its
-  look, and every product the videos showed looked the same.
+  look, and every product the videos showed looked the same. Only a frame's script is read for a tween's target, so
+  a picture's `fill="#C99A63"` in a mock is no longer a missing id (the next bench run hit it).
 - **A depth for a video: low, medium or high** (#34). Every video got the checks a plan video needs; an explainer
   measured at 3.5 h and about $128 spent most of it on 26 scenes and two whole redraws after fresh eyes
   (`eval/pipeline-cost/2026-10-21-research-explainer.md`). `depth:` in BRIEF.md (`scripts/lib/depth.mjs`) now sets it.
