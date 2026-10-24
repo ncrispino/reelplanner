@@ -40,6 +40,7 @@ codex plugin marketplace add "$(npm root -g)/reelplanner"
 codex plugin add reelplanner@reelplanner
 ```
 
+Codex keeps its own copy of the plugin: after updating reelplanner, run the second line again.
 In Codex, start with `$plan-to-video <plan.md>`, or ask it to make a plan with reelplanner.
 See [Codex setup and tested features](./docs/agents.md#codex) for details.
 

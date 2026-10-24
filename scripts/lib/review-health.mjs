@@ -7,7 +7,7 @@ export async function checkReviewServer(url, fetchStatus = fetch) {
   } catch (error) {
     const code = error.cause?.code || error.code;
     if (["EPERM", "EACCES"].includes(code)) {
-      throw new Error(`Local review connection blocked (${code}). This process cannot access localhost; a saved opener rule does not prove this session loaded or applied it. Stop this handoff and check the session's permissions; do not bypass a denial.`);
+      throw new Error(`Local review connection blocked (${code}). This process cannot access localhost. Codex applies a saved opener rule only to the opener run by itself, exactly as \`review\` printed it; if something else ran, run the printed opener instead. Otherwise a saved rule does not prove this session loaded or applied it: stop this handoff and check the session's permissions; do not bypass a denial.`);
     }
     if (code === "ECONNREFUSED") {
       throw new Error("Local review connection refused (ECONNREFUSED). No server accepted the connection at this URL; check the scratch launcher's server status before opening again.");

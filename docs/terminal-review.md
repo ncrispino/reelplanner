@@ -58,7 +58,9 @@ the machine's reelplanner folder (`~/.reelplanner/review.json`, or `REELPLANNER_
 Codex rules or approval settings change. Plain setup and plugin installation never grant this access.
 
 The skill starts the review with `--no-open`, then runs the separate absolute `review-open` command
-printed by the server launcher. This lets Codex match the permission to the opener itself. The
+printed by the server launcher. This lets Codex match the permission to the opener itself. Codex
+applies the rule only to that line run by itself, exactly as printed: a `cd … &&` before it, the
+`reelplanner review-open …` form, or quotes around its first word run it inside the sandbox. The
 opener accepts only local review-page URLs, checks the server, and asks terminal-browser to split
 right. It never starts a server, controls the page, sends a review, or falls back to another browser.
 This explicit command uses `terminal-browser` from the invoking shell's `PATH`; it does not need
@@ -76,8 +78,9 @@ run setup again if the check reports a stale path.
 
 If opening fails, use the reported health-check error to distinguish the next step:
 
-- `EPERM` or `EACCES`: the process cannot connect to localhost. A matching saved rule is not
-  evidence that the current session loaded or applied it. Check that session's effective permissions;
+- `EPERM` or `EACCES`: the process cannot connect to localhost. First check that the command was the
+  printed opener, alone and unchanged; anything else runs in the sandbox. Beyond that, a matching saved
+  rule is not evidence that the current session loaded or applied it. Check that session's effective permissions;
   do not restart a healthy server or retry through another route after a denial.
 - `ECONNREFUSED`: no server accepted the connection at the supplied URL. Check the launcher's
   server status and URL before attempting another open.
@@ -117,6 +120,13 @@ removed the flagged panel and rebuilt four of five scenes, the changed-scenes vi
 unchanged scene. A second review accepted both choices; its verified note survived Send, intake,
 commit and completion. These were synthetic acceptance trials, separate from the owner’s review of
 this change. See the [saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json).
+
+On Linux, terminal-browser splits tmux rather than Ghostty itself (its Ghostty split uses macOS
+scripting), so run tmux in Ghostty. `bash scripts/release/codex-terminal.sh --profile <aws-profile>
+--out <dir> [--record]` repeats the Codex review on a fresh Ubuntu 24.04 machine: Ghostty on a virtual
+screen with tmux in it, Codex with the plugin and the saved opener rule, a scripted reviewer that answers
+and presses Send in the split, and Codex taking the review in. You log Codex in on the machine once;
+the script deletes the machine afterwards.
 
 After updating reelplanner, restart an older review server with `review --stop`, then open it again.
 Refresh an existing page so its audio loads from the updated server. That matters because an already

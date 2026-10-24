@@ -101,8 +101,8 @@ terminal opening, offer the explicit one-time setup in
 [references/harnesses.md#automatic-terminal-opening](references/harnesses.md#automatic-terminal-opening).
 Installing the plugin alone grants no permissions. With Codex automatic opening enabled, every
 "Open it" step below uses `$RP review <video-dir> --detach --no-open` first, then runs the exact
-absolute `review-open` command it prints, as a separate tool call. Use normal execution so the saved
-allow rule can match; don't force an escalation request or wrap it in another command. Server
+absolute `review-open` command it prints, unchanged, as a separate tool call. Use normal execution so the saved
+allow rule can match; don't force an escalation request, add a `cd … &&`, re-quote it, or wrap it in another command. Server
 startup still needs its normal permissions. If the session forbids that operation, report the
 boundary and hand off the printed URL/command; don't change policy or try another opening route.
 The opener rule does not authorize clicking controls or submitting a review. An explicit

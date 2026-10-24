@@ -10,7 +10,7 @@ The other agents are untested.
 | Agent | Status | What it needs from you |
 |---|---|---|
 | Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
-| Codex CLI (0.162.1) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. Automatic session wake remains unverified. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
+| Codex CLI (0.162.1) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. The terminal review also on Linux (0.164.0). Automatic session wake remains unverified. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
 | Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
@@ -78,6 +78,14 @@ codex plugin marketplace add <package-or-checkout>
 codex plugin add reelplanner@reelplanner
 ```
 
+Codex keeps its own copy of an installed plugin and does not refresh it from the package: after
+updating reelplanner, run `codex plugin add reelplanner@reelplanner` again.
+
+On Linux, Codex's sandbox runs commands under bubblewrap. On Ubuntu 24.04 it would not start
+(`bwrap: loopback: Failed RTM_NEWADDR`) until unprivileged user namespaces were allowed;
+[Codex's sandboxing page](https://developers.openai.com/codex/sandboxing) gives the AppArmor profile
+to load, or the `kernel.apparmor_restrict_unprivileged_userns` setting as a fallback.
+
 The existing `npx skills add` route also works. Core installation does not need hooks; optional hooks
 require explicit local trust. Codex supports plugins, skills and MCP integrations; these are not proof
 of a Claude Mods pane or Artifact bridge. See the [official plugin documentation](https://developers.openai.com/plugins/build/plugins).
@@ -136,7 +144,14 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
 - Disconnected download/intake preserved answers and comments. Provided viewer fixtures survived export; unauthenticated browser intake kept the Git identity fallback. This proves preservation, not hosted authentication.
 - A real narrated scratch plan was reviewed, recorded, implemented and independently checked. A walkthrough flag led to a code fix, rebuilt narration and four changed scenes; the subsequent approval was recorded, committed and completed. [Saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json) distinguishes synthetic trial reviews from owner acceptance.
 - A real unattended Codex review rebuilt one narrated scene, preserved six others, and completed with source-only commits. The initial ignored-audio mistake and completion-guard rejection are retained in the [headless trial](../eval/agents/codex-2026-10-11/headless-video.md).
-- These trials cover Codex CLI 0.162.1 on this macOS machine. Automatic wake, the Codex app, cloud, Linux, Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
+- On Ubuntu 24.04 (a cloud machine with a virtual display), Codex CLI 0.164.0 in Ghostty 1.3.1 with tmux, following
+  the skill: it started the review server (one approval), ran the printed opener with no prompt under the saved
+  rule, and the player opened in a tmux split. A scripted reviewer answered the questions and pressed Send in that
+  split; told it was sent, Codex took the review in with `reel-intake`. In a repo with no `.reelplanner/`, the
+  waiter needed an approval too: it registers in `~/.reelplanner`. terminal-browser 0.13.4 splits Ghostty itself
+  only on macOS; on Linux it splits tmux. The opener first ran in the sandbox there: reelplanner quoted the
+  program's path, and Codex applies a rule only to a command whose first word is unquoted (now fixed).
+- Apart from that Linux review, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake, the Codex app, cloud, the rest of the loop on Linux, Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
 
 ## Open work
 

@@ -36,7 +36,8 @@ codex plugin marketplace add <checkout>
 codex plugin add reelplanner@reelplanner
 ```
 
-Invoke `$plan-to-video <plan.md>`, or let the installed skill apply when writing a plan. The existing
+After updating reelplanner, run `codex plugin add reelplanner@reelplanner` again: Codex keeps its own
+copy of the plugin. Invoke `$plan-to-video <plan.md>`, or let the installed skill apply when writing a plan. The existing
 `npx skills add <checkout> --skill plan-to-video -g -y` route remains available. Core installation
 does not require lifecycle hooks. Hooks are optional local configuration and require explicit trust.
 
@@ -64,7 +65,9 @@ check`, without a model call. It does not change Codex's approval policy, sandbo
 Claude permissions. Restart Codex after enabling/disabling; rerun setup if Node or reelplanner moves.
 
 When enabled, start the server with `review <video-dir> --detach --no-open`, then run its printed
-absolute opener command separately with normal execution. An allow rule runs that command without
+opener command by itself, exactly as printed, with normal execution. Codex applies the rule only to
+that line: a `cd … &&` before it, the `reelplanner review-open` form, or quotes added around its first
+word run it inside the sandbox, where localhost is refused (`EPERM`). An allow rule runs that command without
 a fresh approval prompt; don't request escalation explicitly when the rule already permits it.
 An unavailable escalation prompt (`sandbox_approval: false`) is not itself proof that an existing
 allow rule is ineffective. Conversely, `--check` proves only this saved rule's match, not what a

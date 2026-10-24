@@ -269,7 +269,8 @@ if (args.includes("--detach")) {
     process.exit(0);
   }
   // start it on its own: its own process group, no terminal, its output in the inbox
-  mkdirSync(INBOX, { recursive: true });
+  try { mkdirSync(INBOX, { recursive: true }); }
+  catch (e) { console.error(`✗ cannot write ${shownPath(INBOX)} (${e.code}): the review server keeps its state there. An agent's sandbox can make it read-only: run this outside the sandbox`); process.exit(1); }
   try { unlinkSync(serverFile(BOX)); } catch {}
   const log = join(INBOX, "server.log"), fd = openSync(log, "a");
   const child = spawn(process.execPath, [fileURLToPath(import.meta.url), ...args.filter((a) => a !== "--detach")], { cwd: process.cwd(), detached: true, stdio: ["ignore", fd, fd], env: { ...process.env, REELPLANNER_REVIEW_DETACHED: "1" } });

@@ -17,7 +17,7 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, renameSync, unlinkSync,
 import { dirname, isAbsolute } from "node:path";
 import { spawnSync } from "node:child_process";
 import { REVIEW_WORKSPACES } from "./lib/presentation.mjs";
-import { preferencesFile, ruleFile, ruleDigest, openerPrefix, openerRule, openerCommand, readReviewPreferences, findExecutable } from "./lib/review-preferences.mjs";
+import { preferencesFile, ruleFile, ruleDigest, bareWord, openerPrefix, openerRule, openerCommand, readReviewPreferences, findExecutable } from "./lib/review-preferences.mjs";
 
 function write(file, content) {
   if (existsSync(file) && lstatSync(file).isSymbolicLink()) throw new Error(`Refusing to replace symlink: ${file}`);
@@ -30,7 +30,8 @@ function checkRule(file) {
   const codex = findExecutable("codex");
   if (!codex) throw new Error("Codex is not installed; install it before enabling or checking its rule");
   const result = spawnSync(codex, ["execpolicy", "check", "--rules", file, "--", ...openerPrefix(), "http://127.0.0.1:8787/"], { encoding: "utf8", timeout: 10000 });
-  if (result.error || result.status !== 0) throw new Error("Codex could not check the opener rule; inspect codex execpolicy check --help");
+  // (its exit status decides: in Codex's Linux sandbox every child that ran also reports EPERM)
+  if (result.status !== 0) throw new Error("Codex could not check the opener rule; inspect codex execpolicy check --help");
   let checked;
   try { checked = JSON.parse(result.stdout); } catch { throw new Error("Codex returned an unrecognized rule-check result"); }
   if (checked.decision !== "allow") throw new Error("Codex did not allow the opener under the saved rule");
@@ -68,7 +69,10 @@ try {
     const cli = findExecutable("terminal-browser");
     if (!cli) throw new Error("terminal-browser is not installed; install it first (on macOS: brew install --cask terminal-browser)");
     const help = spawnSync(cli, ["open", "--help"], { encoding: "utf8", timeout: 5000 });
-    if (help.error || help.status !== 0 || !/--split\b/.test(help.stdout)) throw new Error("terminal-browser does not report split support");
+    // In Codex's Linux sandbox every child reports EPERM and terminal-browser prints nothing: a check run there
+    // cannot ask it, which is not the same as an answer without --split (setup itself runs in your own terminal)
+    if (check && !help.stdout?.trim()) console.log(`△ terminal-browser's options could not be read here${help.error ? ` (${help.error.code})` : ""}, as inside an agent's sandbox: run --check in your own terminal to confirm its split support`);
+    else if (help.status !== 0 || !/--split\b/.test(help.stdout || "")) throw new Error("terminal-browser does not report split support");
     if (check && preferences.terminalBrowser !== cli) throw new Error("terminal-browser moved; rerun review-setup --workspace terminal-browser");
     preferences.terminalBrowser = cli;
   }
@@ -93,6 +97,7 @@ try {
     }
     if (allow) {
       if (!isAbsolute(preferences.terminalBrowser)) throw new Error("Expected a pinned terminal-browser executable");
+      if (!bareWord(openerPrefix()[0])) throw new Error(`Node's path needs shell quoting (${openerPrefix()[0]}), and Codex applies a rule only to a command whose first word is unquoted; run reelplanner with a Node installed at a plain path`);
       console.log(`${dry ? "· would authorize" : "▶ authorize"} only: ${openerCommand("http://127.0.0.1:8787/")}`);
       console.log(openerRule().trimEnd());
       if (!dry) {

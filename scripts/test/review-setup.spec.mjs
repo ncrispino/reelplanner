@@ -58,6 +58,16 @@ try {
     ok(run(["review-setup", "--check"]));
     assert.equal(opened().length, 0);
   });
+  await test("a check that cannot read terminal-browser's options (as in Codex's Linux sandbox) says so; setup still refuses", () => {
+    const fake = join(bin, "terminal-browser"), kept = readFileSync(fake, "utf8");
+    writeFileSync(fake, `#!${process.execPath}\n`, { mode: 0o755 });
+    try {
+      const check = run(["review-setup", "--check"]); ok(check);
+      assert.match(check.stdout, /could not be read here.*run --check in your own terminal/);
+      const setup = run(["review-setup", "--workspace", "terminal-browser"]);
+      assert.equal(setup.status, 1); assert.match(setup.stderr, /does not report split support/);
+    } finally { writeFileSync(fake, kept, { mode: 0o755 }); }
+  });
   await test("saved rule checks detect edited rules, and disable refuses to delete edits", () => {
     writeFileSync(rules, openerRule() + "# user edit\n");
     assert.equal(run(["review-setup", "--check"]).status, 1);
@@ -152,6 +162,8 @@ try {
     if (start.status !== 0) console.error(readFileSync(join(repo, ".reelplanner/inbox/server.log"), "utf8"));
     ok(start);
     assert.match(start.stdout, /'review-open' 'http:\/\/127\.0\.0\.1:/);
+    // Codex applies the rule only when the program, the first word, is unquoted
+    assert.ok(start.stdout.includes(`\n  ${openerPrefix()[0]} '${openerPrefix()[1]}' 'review-open' `), start.stdout);
     assert.equal(opened().length, before);
     ok(run(args)); assert.equal(opened().length, before + 1);
     ok(run([...args, "--no-open"])); assert.equal(opened().length, before + 1);
