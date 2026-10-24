@@ -248,8 +248,8 @@ try {
     && /reelplanner verify <video-dir>/.test(prompt) && /reelplanner inbox done video-20260103T093000Z/.test(prompt) && /review server that started it/.test(prompt), prompt);
   ok("server: the command runs in the repo", !!run?.cwd && samePlace(run.cwd, tmp), run?.cwd);
   // any agent reads it (codex exec, opencode run): no Claude Code tool names in it
-  // (the skill's own path is left out: a checkout can sit under a folder named .claude)
-  ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt.replace(SKILL_PATH, "<the skill>")), prompt);
+  // (the skill's own path and the package's command are left out: a checkout can sit under a folder named .claude)
+  ok("server: the prompt names no Claude-only tool", !/\b(claude|Bash tool|Write tool|Edit tool|NotebookEdit|TodoWrite|Agent tool|subagent)\b/i.test(prompt.replace(SKILL_PATH, "<the skill>").replaceAll(ROOT, "<the checkout>")), prompt);
   ok("server: where the sandbox can run, it says nothing about running without it", !/without Claude Code's sandbox/.test(log), log);
   let runSet = {}; try { runSet = JSON.parse(run.args[run.args.indexOf("--settings") + 1]); } catch { /* not there */ }
   ok("sandbox: where the probe passes, the command runs as configured, the sandbox on", JSON.stringify(runSet) === SANDBOX && !/without Claude Code's sandbox/.test(r2.body.message), JSON.stringify(runSet));
