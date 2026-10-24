@@ -48,7 +48,8 @@ agents (on a low plan video, none). At low the point is the first look soon:
 - Before narrating, hold the script to about 330 words (two minutes at the voice's 3.1 words a second): a longer one
   is cut and narrated again.
 - While narration runs, draw the frames yourself, not with workers, from one set of styles; one script that writes
-  every frame is quickest. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
+  every frame is quickest. Start it with one `$RP scene <video-dir> <frame>=<scene> …` for the frames a scene fits,
+  then put the plan in. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
   the tokens.
 - Before the build, run `$RP frame-check <video-dir> all` (its lint, in seconds; the layout and pictures need the
   video assembled), `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70% of the
@@ -188,8 +189,13 @@ The plan goes into the repo, and the person gets a review page, not text in the 
      a fenced block, one part a line (a command and its flags, a file's fields, a function's arguments, a
      storyboard tag, what a page shows), each with its meaning after `#` (`--check   # also check the
      page`), what it prints indented under it, or one line "No interface: wording only"; **Example**, one
-     worked example with real values, start to end. The fourth block, Decisions, is generated from the
-     ledger, never written. Each open question's options say what happens in its example
+     worked example with real values, start to end; and on a step that makes something people see (a page, a
+     screen, a printout, an email), **Look**: its own palette (each colour named, with its hex), its type (the
+     families, the sizes of a heading and of body text), its imagery, and the one thing that makes it recognisable,
+     each with why it fits the people who will use it. A plan that leaves the look to "the same header and
+     footer" asks the reviewer to approve something bland, and its video can only show a generic page. Where
+     there is a real choice of looks, it is an open question, its options two looks the video draws side by side.
+     The fourth block, Decisions, is generated from the ledger, never written. Each open question's options say what happens in its example
      (a value, a quote, a command or a number). Beside the blocks, each step draws **how it works** as a
      fenced ` ```diagram ` block (the guide draws it as a diagram you can step through and click; `reel check`
      warns on a new plan's step without one): a flow, a sequence or a state, one short line an edge, e.g.
@@ -354,7 +360,15 @@ explainer (`<explainer-dir>/video/`).
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
-   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
+   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene, and start each from one of
+   the theme's scenes where one fits what the beat is about: `$RP scene` lists them (a count drawn to scale, one
+   record labelled part by part, who does what in lanes, a rule's verdicts, someone's own words, a decision's two
+   futures, a choice of looks, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …`
+   writes those frames, every word in them a `{{slot}}` for the plan's own (`frame-lint` fails one left unfilled),
+   for you to fill and make this beat's own. A frame drawn from a blank page tends to come out as cards of
+   words; one copied as it is makes every video look alike, so at most half the frames start from scenes, each
+   scene once (`variety` warns past either). A page or screen the plan makes is drawn in its own Look, never the
+   video's cream and coral (style guide §5). A video of up to
    about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
    `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
    each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).
