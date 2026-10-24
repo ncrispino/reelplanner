@@ -25,7 +25,9 @@ the plan needs it; past 7 is long, and past 10 is too long: cut or split the pla
 shows the change running in about two minutes (§8): past 3 is long, past 5 too long. The system video may
 run 5–8 minutes, never past 12. Before anything is voiced, `$RP build` estimates the length from the script and
 stops past 1.5 times the top of the budget (7:30 for a plan video), unless BRIEF.md says why the video needs more
-(`- Length: <why>`); at its end it gives the watched length against the budget, a warning. Long videos go unwatched:
+(`- Length: <why>`); at its end it gives the watched length against the budget, a warning. The video's depth
+(SKILL.md, **Depth**) tightens it: at low about two minutes and at most 8 scenes, with nothing taking it past; at
+medium at most 15 scenes, past the budget only on the person's words, quoted. Long videos go unwatched:
 first videos of 15–17 minutes were watched 1–4% of the way. To stay inside it:
 
 - Say the whole before the steps: what the plan changes and why, in a scene or two, then the steps; the questions
@@ -235,10 +237,20 @@ before and after diagram or a flow. A scene the brief picks shows its thing like
 | a code change | the diff: the real lines, the removed ones struck, the new ones wiped in (the theme's `blocks/code-diff.html`) |
 | a command | its run: the command typed, its real output printed (`blocks/terminal-run.html`) |
 | a screen change | the screen before and after, a wipe between them |
-| how something looks | a prototype: a real HTML mock of the page or screen, with real words in it; two looks side by side |
+| how something looks | a prototype: a real HTML mock of the page or screen, with real words in it, in the product's own look (the plan's **Look**: its palette, type and imagery, never the video's cream and coral); two looks side by side |
 | a mechanism | a worked example with real values stepping across the real thing |
 | scope | the two scopes as two states of the same thing |
 | a risk | the state that goes wrong, marked, then the guard |
+
+**Start from a scene.** The theme's scenes draw what plan videos keep needing, taken from the two that showed the
+most (the Dylan plan video and a long explainer): a count with its part drawn to scale, one record labelled part by
+part, who does what in lanes, a rule run over many things with its tally, someone's own words at size, a decision
+as two futures of the same thing, a choice of looks as two pages, a person's path through the real pages. `$RP
+scene` lists them, and `templates/reelplanner/theme/scenes/README.md` says when each fits; `$RP scene <video-dir>
+<frame>=<scene>` writes a frame from one. Every word in a scene is a `{{slot}}` its header lists: fill each with your
+plan's own (`frame-lint` fails one left unfilled). A scene is a start, not a form to fill: keep its idea, and change
+its layout and moves wherever this beat needs. At most half a video's frames start from scenes, each scene once: every video would otherwise look
+like every other (`variety` warns past either). A beat no scene fits is drawn fresh, by this section.
 
 In a scene that shows the real thing, a card about it (a "means" card, a "chose / instead" card) is only
 for what has no surface: a rule, a count, a decision's two sides. Put the real thing in a container marked `data-artifact="<what it is>"`
@@ -262,6 +274,12 @@ glossary's on-screen word: `<em data-gloss="misses">late fixes</em>` on the `mis
 
 A prototype decision frame may drop the diagram, so the two mocks have room. Both mocks are complete and
 on screen together for at least 4 s.
+
+**The product in its own look.** A page, screen or option mock is the thing the plan makes, so it wears the
+plan's Look: its colours, its type and imagery, at a size you can judge. Mark it `data-plan-component="page"`
+(an option card's mock too) and its colours may be written as they are (`frame-lint` holds the rest of the frame
+to the theme's tokens). Drawn in the video's own cream, ink and coral, every product looked the same: a bench
+run's bakery site was the video's own paper. The theme's two-looks and journey scenes start from this.
 
 ### A frame a newcomer can read
 

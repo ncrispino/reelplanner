@@ -11,8 +11,9 @@ with — not "it is the default".
 | `pipeline.html` | `pipeline` | how artefacts get produced | drawing a build as a runtime graph. Ends in the REAL output (pages, files), not a box named after it |
 | `layout.html` | `layout` | where things sit on one screen, and how much room each gets | describing a layout in words over a still picture. The artefact IS the screen, as a wireframe; a step beat is its regions travelling to where the step puts them, so the motion and the sentence are the same event |
 
-Still to build when a plan needs them: `record` (a row or document whose fields move) and `sequence`
-(two or three actors and the messages between them).
+A `record` (a row or document whose fields move) and a `sequence` (two or three actors and the messages between
+them) are scenes instead, `../scenes/anatomy.html` and `../scenes/lanes.html`: a stage is what a whole video comes
+back to, and those are what one beat is about.
 
 **Every box holds its words** (the style guide's §5, "A frame a newcomer can read", rule 1): a page, region or
 card shows a line or two of its real words, never grey bars standing for them; where the words don't matter to the

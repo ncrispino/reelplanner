@@ -29,6 +29,7 @@ request on a fresh EC2 machine, headless, with a scripted reviewer, and records:
 B=.claude/skills/pipeline-cost/bench; OUT=<a folder outside the repo>
 bash $B/bench.sh --ref origin/main --runs main-1,main-2 --profile <aws> --out $OUT &   # the version before
 bash $B/bench.sh --ref local --runs new-1,new-2 --profile <aws> --out $OUT &            # the version after
+bash $B/bench.sh --ref local --runs low-1,low-2 --depth low --profile <aws> --out $OUT &  # one depth (#34)
 python3 $B/report.py $OUT/new-1.tgz --json $OUT/new-1.json
 ```
 

@@ -53,8 +53,9 @@ export function createStaticServer(dir) {
     const hit = servedFile(dir, path);
     if (!hit) { res.writeHead(404, { "content-type": "text/plain" }).end("not found"); return; }
     if (hit.redirect) { res.writeHead(301, { location: hit.redirect.split("/").map(encodeURIComponent).join("/") + url.search }).end(); return; }
-    // Keep the checkout's existing conditional caching; share seekable media
-    // response framing with the production review server.
+    // the headers python's server sent (a Last-Modified, and a 304 to a request that has it), and byte ranges as the
+    // review server sends them (issue #30), so the specs play narration the way a review does; no no-store (the
+    // specs' timings were measured without it: a no-store audio file is fetched again on every seek)
     const st = statSync(hit), modified = new Date(Math.floor(st.mtimeMs / 1000) * 1000);
     const since = Date.parse(req.headers["if-modified-since"] || "");
     if (!req.headers["if-none-match"] && since >= modified.getTime()) { res.writeHead(304).end(); return; }

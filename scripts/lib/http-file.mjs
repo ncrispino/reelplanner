@@ -1,4 +1,14 @@
-// Seekable static responses shared by the review server and checkout previews.
+// A file as a response a browser can seek in: the review server (scripts/review.mjs) and the specs' static server
+// (static-server.mjs) both send files through it (issue #30). Served as one 200 with no byte ranges, an <audio>
+// reports nothing seekable past 0, and every time the HyperFrames runtime sets its currentTime (a seek, a start in
+// the middle of a scene, a speed change, a drift fix) the narration drops to 0 and stalls, silent, until the next
+// scene's clip starts.
+//
+//   sendFile(req, res, file, { contentType, headers, body, stat })
+//     200 with the whole file, its length, Last-Modified and Accept-Ranges; a single byte range as 206 with
+//     Content-Range; a range wholly past the end as 416; HEAD with the headers and no body. Several ranges, another
+//     unit or a malformed header get the whole file, as does an If-Range that is not the file's Last-Modified (these
+//     servers send no ETag). `body` stands in for the file's bytes (a page rewritten as it is sent).
 import { createReadStream, statSync } from "node:fs";
 
 // A single byte range is enough for browser media seeking. Unknown units,

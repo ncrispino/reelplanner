@@ -1,0 +1,107 @@
+<!-- TWO FUTURES: a decision drawn as the same thing in each future (scenes/README.md). Both options start from one
+     picture (a list, a page, a file, a timeline) and each plays out in its own card: one stops here, the other goes on,
+     and what it costs is underlined. A viewer compares two pictures of one thing far faster than two paragraphs; use
+     it for any choice whose options change something you can draw.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=two-futures` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Fill each slot with the plan's question and options, in its words
+     (`frame-lint` fails a slot left as it is):
+       {{question}}    the question, as the plan asks it         {{list-of}}   what the list is, as its source names it
+       {{a-option}} {{b-option}}   each option, in the plan's words
+       {{a-count}} {{b-count}}     each future's count, a number and its unit ("12 pages"); B's counts up from A's
+       {{row-1}} … {{row-10}}      the shared picture's rows (each with a {{row-n-note}}: a year, a size; may be empty)
+       {{more-1}} … {{more-10}}    what B adds after them, with notes
+       {{a-then}}      what happens when A stops          {{b-then}} {{b-cost}}   when B stops, and what that costs
+     Fewer rows: delete them (B starts from however many A has). The marks are the player's: the heading
+     `data-question`, each card `data-option`; both cards are complete and on screen together for at least 4 s, and at
+     rest when the scene ends (nothing moves them; what moves is inside them). A third option is a third card.
+
+     HOW IT MOVES (motion-language.md): the shared picture is PRINTED in both cards at once; then each future plays out
+     in its own card on the word that says it: A's line DRAWN where it stops, B's list scrolled on while its count runs,
+     its line drawn only then. What B costs is underlined (the one coral). Replace the times with your cues. -->
+<style>
+  .FID-q { position:absolute; left:128px; top:104px; width:1664px; font:400 60px/1.15 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .FID-opt { position:absolute; top:230px; width:800px; height:560px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .FID-tag { position:absolute; left:36px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-n { position:absolute; right:36px; top:30px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); font-variant-numeric:tabular-nums; }
+  .FID-say { position:absolute; left:36px; top:70px; width:728px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); }
+  .FID-win { position:absolute; left:36px; top:134px; width:728px; height:336px; overflow:hidden; }
+  .FID-list { position:absolute; left:0; top:0; width:728px; }
+  .FID-row { height:33.6px; font:400 28px/33.6px "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-row .y { float:right; font:500 26px/33.6px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-launch { position:absolute; left:36px; top:486px; width:728px; height:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .FID-when { position:absolute; left:36px; top:500px; width:728px; font:400 28px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-cost { position:relative; display:inline-block; }
+  .FID-u { position:absolute; left:0; right:0; bottom:-6px; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+</style>
+
+<div class="FID-q" id="FID-q" data-question>{{question}}</div>
+
+<div class="FID-opt" id="FID-a" data-option="a" style="left:128px">
+  <div class="FID-tag">A · recommended</div>
+  <div class="FID-n" id="FID-na">{{a-count}}</div>
+  <div class="FID-say">{{a-option}}</div>
+  <div class="FID-win" data-artifact="{{list-of}}"><div class="FID-list" id="FID-la">
+    <div class="FID-row">{{row-1}}<span class="y">{{row-1-note}}</span></div>
+    <div class="FID-row">{{row-2}}<span class="y">{{row-2-note}}</span></div>
+    <div class="FID-row">{{row-3}}<span class="y">{{row-3-note}}</span></div>
+    <div class="FID-row">{{row-4}}<span class="y">{{row-4-note}}</span></div>
+    <div class="FID-row">{{row-5}}<span class="y">{{row-5-note}}</span></div>
+    <div class="FID-row">{{row-6}}<span class="y">{{row-6-note}}</span></div>
+    <div class="FID-row">{{row-7}}<span class="y">{{row-7-note}}</span></div>
+    <div class="FID-row">{{row-8}}<span class="y">{{row-8-note}}</span></div>
+    <div class="FID-row">{{row-9}}<span class="y">{{row-9-note}}</span></div>
+    <div class="FID-row">{{row-10}}<span class="y">{{row-10-note}}</span></div>
+  </div></div>
+  <i class="FID-launch" id="FID-ra"></i>
+  <div class="FID-when" id="FID-wa">{{a-then}}</div>
+</div>
+
+<div class="FID-opt" id="FID-b" data-option="b" style="left:992px">
+  <div class="FID-tag">B</div>
+  <div class="FID-n" id="FID-nb">{{b-count}}</div>
+  <div class="FID-say">{{b-option}}</div>
+  <div class="FID-win" data-artifact="{{list-of}}" data-layout-allow-overflow><div class="FID-list" id="FID-lb">
+    <div class="FID-row">{{more-1}}<span class="y">{{more-1-note}}</span></div>
+    <div class="FID-row">{{more-2}}<span class="y">{{more-2-note}}</span></div>
+    <div class="FID-row">{{more-3}}<span class="y">{{more-3-note}}</span></div>
+    <div class="FID-row">{{more-4}}<span class="y">{{more-4-note}}</span></div>
+    <div class="FID-row">{{more-5}}<span class="y">{{more-5-note}}</span></div>
+    <div class="FID-row">{{more-6}}<span class="y">{{more-6-note}}</span></div>
+    <div class="FID-row">{{more-7}}<span class="y">{{more-7-note}}</span></div>
+    <div class="FID-row">{{more-8}}<span class="y">{{more-8-note}}</span></div>
+    <div class="FID-row">{{more-9}}<span class="y">{{more-9-note}}</span></div>
+    <div class="FID-row">{{more-10}}<span class="y">{{more-10-note}}</span></div>
+  </div></div>
+  <i class="FID-launch" id="FID-rb"></i>
+  <div class="FID-when" id="FID-wb">{{b-then}} <span class="FID-cost">{{b-cost}}<i class="FID-u" id="FID-u"></i></span></div>
+</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`: B starts from A's picture (A's rows copied in
+  // first), and its count runs from A's figure to its own
+  var la = document.getElementById("FID-la"), lb = document.getElementById("FID-lb"), rowsA = [].slice.call(la.children);
+  rowsA.slice().reverse().forEach(function (r) { lb.insertBefore(r.cloneNode(true), lb.firstChild); });
+  var rowsB = [].slice.call(lb.children);
+  var nb = document.getElementById("FID-nb"), FROM = parseInt(document.getElementById("FID-na").textContent, 10) || 0;
+  var TO = parseInt(nb.textContent, 10) || 0, UNIT = nb.textContent.replace(/^\s*\d+/, ""), count = { v: FROM };
+  function showCount() { nb.textContent = Math.round(count.v) + UNIT; }
+  showCount();
+  // after `var tl = gsap.timeline({ paused: true });`
+  var ROW = 33.6, SHOWN = rowsA.length, MORE = rowsB.length - SHOWN;            // rows the window shows; rows B scrolls on
+  gsap.set(["#FID-q", "#FID-a", "#FID-b"], { opacity: 0 });
+  gsap.set(rowsA.concat(rowsB), { opacity: 0 });
+  gsap.set(["#FID-ra", "#FID-rb", "#FID-u"], { scaleX: 0 });
+  gsap.set(["#FID-wa", "#FID-wb"], { opacity: 0, y: 6 });
+  tl.to("#FID-q", { opacity: 1, duration: 0.5 }, 0.2);
+  tl.to(["#FID-a", "#FID-b"], { opacity: 1, duration: 0.5 }, 0.6);
+  for (var i = 0; i < SHOWN; i++) tl.to([rowsA[i], rowsB[i]], { opacity: 1, duration: 0.1, ease: "none" }, 1.0 + i * 0.09);   // printed, in both
+  tl.to("#FID-ra", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 2.6);                         // A: it stops here
+  tl.to("#FID-wa", { opacity: 1, y: 0, duration: 0.4 }, 2.9);
+  tl.to(rowsB.slice(SHOWN), { opacity: 1, duration: 0.1, ease: "none" }, 3.8);
+  tl.to("#FID-lb", { y: -MORE * ROW, duration: 2.4, ease: "power1.inOut" }, 3.8);                     // B: the list goes on
+  tl.to(count, { v: TO, duration: 2.4, ease: "power1.inOut", onUpdate: showCount }, 3.8);            // counted to its own figure
+  tl.to("#FID-rb", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.4);                         // and stops only then
+  tl.to("#FID-wb", { opacity: 1, y: 0, duration: 0.4 }, 6.7);
+  tl.to("#FID-u", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 7.2);                          // what it costs
+</script>

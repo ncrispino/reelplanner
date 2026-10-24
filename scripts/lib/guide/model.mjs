@@ -315,9 +315,11 @@ export async function buildModel(t, { thumbs = true, whole = true, outside = fal
   const side = t.kind === "walkthrough" ? "built" : "plan";
   // every open question, with where it sits (a question naming no step of this plan is shown whole here)
   const questions = plan.questions.map((q) => { const placed = (q.steps || []).find((n) => steps.some((s) => s.n === n)); return { n: q.n, title: q.title, step: placed ?? null, answered: !!answeredIn(q, ledgerAll, planName), text: placed == null ? q.text : null }; });
-  const data = { v: 1, kind: "plan", title: plan.title, planName, own: t.own, side, slug: t.slug, videos, steps, rest, questions, inForce: plan.inForce.map((x) => ({ text: x.text, ids: x.ids, steps: x.steps })),
-    // Decision bullets have their own editable rows; preserve the ordinary paragraphs around them too.
-    inForceProse: (plan.sections.find((x) => /^decisions in force/i.test(x.title))?.text || "").replace(/^- [^\n]*(?:\n[ \t]+\S[^\n]*)*/gm, "").trim(),
+  // the "Decisions in force" section is drawn with the decisions, not in the rest: its heading, and its words that are
+  // no line of it ("None yet: this is the first plan."), go with it
+  const inForceSec = plan.sections.find((x) => /^decisions in force/i.test(x.title));
+  const inForceSaid = inForceSec ? inForceSec.text.split("\n").filter((l) => l.trim() && !/^(?:- |\s+\S)/.test(l)).join(" ").trim() || null : null;
+  const data = { v: 1, kind: "plan", title: plan.title, planName, own: t.own, side, slug: t.slug, videos, steps, rest, questions, inForce: plan.inForce.map((x) => ({ text: x.text, ids: x.ids, steps: x.steps })), inForceTitle: inForceSec?.title || null, inForceSaid,
     ledger, parts: plan.parts, allParts: (sys?.components || []).map((c) => c.name), touchedAll: plan.touched.map((c) => ({ name: c.name, steps: c.steps === "all" ? plan.steps.map((s) => s.n) : c.steps })),
     built: built && { commits: built.commits, started: built.started, cats: built.cats, runs: built.runs, looseRuns: built.looseRuns, totals: built.totals, calls: built.calls, texts: built.texts, from: built.from },
     gaps, made, reader, overview, auto, exRuns };

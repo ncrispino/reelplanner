@@ -8,6 +8,7 @@ aspect: 1920x1080
 language: en
 audience: <who reviews it, and what they already know (the videos before it)>
 length: about four minutes, <n> chapters (style guide §1: 3–5 minutes; a walkthrough video about two, §8)
+depth: medium
 angle: how-to-process
 narration: yes
 style_preset: .reelplanner/theme/frame.md (the project theme)
@@ -23,7 +24,7 @@ idea>
 ## Customizations
 
 - Ask: "<the person's request, in their own words, quoted: what the video must do for them>"
-- Length: <optional: why this video needs more than 1.5 times its budget; without it, build stops past that>
+- Length: <optional, at medium the person's words quoted (at high, any reason): why this video needs more than 1.5 times its budget or its depth's scenes; without it, build stops past that. At low, nothing takes it past>
 - Medium: <screen, code, document or diagram: what this video mostly shows>
 - Layouts: <the few layouts its scenes take: a diff on the slab, a table, a terminal run, a before and after wipe, a wall of screens…>
 - Main transition: <one, e.g. push-slide LEFT for the next scene; cut for a chapter or a quick check; push-slide UP for a question; crossfade for the same place later>

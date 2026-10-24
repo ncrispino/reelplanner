@@ -43,7 +43,7 @@ Size on disk is not the problem. These are:
   `lib/terms.mjs`, `lib/explainer.mjs`, `lib/guide/model.mjs`, `migrate-reviews` and `lib/call-lines.mjs`. The specs
   build their own logs, and the eval projects ship theirs. All of them would move in one change, with a spec for
   each reading at an old commit.
-- **The pinned skill.** The skill runs `npx -y reelplanner@0.2.0`, which reads `decisions.json`. A repo split by
+- **The pinned skill.** The skill runs `npx -y reelplanner@0.3.0`, which reads `decisions.json`. A repo split by
   a newer version breaks for anyone still on the old one. The split has to ship with a version bump of the
   skill's pin, and `reel` should refuse to write the old layout once the folder exists.
 - **Work in flight.** Other branches are changing `decisions.json` right now. A reformat of a 540 KB file makes

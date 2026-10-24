@@ -487,20 +487,18 @@ const server = createServer((req, res) => {
   // (a video's guide page too: its questions go to the waiting session the same way)
   const body = file === join(out, "index.html") || /[\\/]guide[\\/]index\.html$/.test(file)
     ? readFileSync(file, "utf8").replace(/<head>/i, '<head>\n<meta name="reelplanning-review-server" content="1">') : null;
+  // byte ranges, so the narration can be seeked (issue #30); no-store still, since a rebuilt video is bundled again
+  // under the same names, and with ranges a seek fetches only the part it needs
   sendFile(req, res, file, { contentType: TYPES[extname(file).toLowerCase()] || "application/octet-stream", headers: { "cache-control": "no-store" }, body });
 });
 
-// Remove the occupied attempt's listening callback before retrying: callbacks otherwise accumulate
-// and the first attempt can resolve the promise with its old port even after a later port binds.
-const listen = (candidate, tries = 20) => new Promise((ok, fail) => {
-  const ready = () => { server.off("error", error); ok(server.address().port); };
-  const error = (e) => {
-    server.off("listening", ready);
-    if (e.code === "EADDRINUSE" && tries > 0) listen(candidate + 1, tries - 1).then(ok, fail);
-    else fail(e);
-  };
-  server.once("error", error); server.once("listening", ready);
-  server.listen(candidate, "127.0.0.1");
+// the next free port from this one. A port taken leaves no listener behind: the first try's would fire when a later one
+// listens, and say the port taken (its link then opened another server's page, and the host check refused this page).
+const listen = (port, tries = 20) => new Promise((ok, fail) => {
+  const listening = () => { server.off("error", taken); ok(server.address().port); };
+  const taken = (e) => { server.off("listening", listening); e.code === "EADDRINUSE" && tries > 0 ? listen(port + 1, tries - 1).then(ok, fail) : fail(e); };
+  server.once("error", taken); server.once("listening", listening);
+  server.listen(port, "127.0.0.1");
 });
 const port = await listen(Number(flag("port", 8787)));
 const base = `http://127.0.0.1:${port}/`, url = pageUrl(base, out);

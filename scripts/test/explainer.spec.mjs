@@ -93,6 +93,13 @@ try {
   ok("explain: a folder outside the repo is pinned file by file, each with its own shape", folder.code === 0 && F.sources.map((x) => `${x.shape}:${x.id.split("/").pop()}`).join() === "text:config.yaml,table:results.csv", `${folder.out}\n${JSON.stringify(F.sources)}`);
   const again = run("explain.mjs", "what did the experiment show?", csv, "--date", "2026-09-29", "--slug", "experiment");
   ok("explain: asked again, a new folder beside the first (a snapshot)", again.code === 0 && existsSync(join(rp, "explainers", "2026-09-29-experiment-2", "sources.json")), again.out);
+  // its depth (#34): medium unless asked; at low, about two minutes and no strict checks on the storyboard
+  ok("explain: with no --depth, the brief says depth: medium", /^depth: medium$/m.test(readFileSync(join(ed, "video", "BRIEF.md"), "utf8")) && / · medium depth$/m.test(ex.out), ex.out);
+  const low = run("explain.mjs", "what did the experiment show?", csv, "--depth", "low", "--date", "2026-09-29", "--slug", "low");
+  const lowD = join(rp, "explainers", "2026-09-29-low", "video"), lowB = existsSync(join(lowD, "BRIEF.md")) ? readFileSync(join(lowD, "BRIEF.md"), "utf8") : "", lowS = existsSync(join(lowD, "STORYBOARD.md")) ? readFileSync(join(lowD, "STORYBOARD.md"), "utf8") : "";
+  ok("explain --depth low: the brief says depth: low and about 2 minutes, and the storyboard has no strict checks", low.code === 0 && /^depth: low$/m.test(lowB) && /^length: about 2 minutes, at most 8 scenes/m.test(lowB) && /^kind: explainer$/m.test(lowS) && !/_check: strict/.test(lowS), `${low.out}\n${lowB.slice(0, 500)}\n${lowS.slice(0, 400)}`);
+  const deep = run("explain.mjs", "x", csv, "--depth", "deep");
+  ok("explain --depth deep: refused, naming the three", deep.code === 1 && /--depth deep: low, medium or high/.test(deep.out), deep.out);
   // a repo with no commit yet: said plainly, never a git stack trace
   const bare = join(tmp, "bare"); mkdirSync(join(bare, ".reelplanner"), { recursive: true }); writeFileSync(join(bare, "notes.md"), "# notes\n");
   writeFileSync(join(bare, ".reelplanner", "decisions.json"), JSON.stringify({ decisions: [] }));   // set up: `reel init` ran here
@@ -164,10 +171,13 @@ try {
   const L = videoLength(vd);
   ok("length: an explainer with a long source aims at 2–5 minutes", L.kind === "explainer-long" && L.verdict === "ok" && /an explainer with a long source: aim 2–5 min/.test(lengthLine(L)), lengthLine(L));
 
-  // ---- fresh eyes: the fact check where the video sums up more than it quotes ----
-  ok("fresh eyes: an explainer with a source that needs a guide part gets the checker too", Object.keys(rolesFor(vd)).join() === "newcomer,designer,checker");
+  // ---- fresh eyes: the fact check where the video sums up more than it quotes (at high depth: medium and low,
+  // depth.spec) ----
+  const deepen = (d) => writeFileSync(join(d, "BRIEF.md"), readFileSync(join(d, "BRIEF.md"), "utf8").replace(/^depth: .*$/m, "depth: high"));
+  deepen(vd);
+  ok("fresh eyes: at high depth, an explainer with a source that needs a guide part gets the checker too", Object.keys(rolesFor(vd)).join() === "newcomer,designer,checker");
   const ed2 = join(rp, "explainers", "2026-09-29-experiment-2");
-  write(join(ed2, "video", "STORYBOARD.md"), "---\nkind: explainer\n---\n");
+  write(join(ed2, "video", "STORYBOARD.md"), "---\nkind: explainer\n---\n"); deepen(join(ed2, "video"));
   ok("fresh eyes: one whose sources are all short gets the newcomer and the designer only", Object.keys(rolesFor(join(ed2, "video"))).join() === "newcomer,designer");
   ok("fresh eyes: a fact check's finding reads as F1", parseFindings("- F1 · scene 3 · \"passed first time\": the transcript shows two runs\n  - Answer: fixed: scene 3 says the second run\n")[0]?.id === "F1");
   write(join(vd, "fresh-eyes", "stamp.json"), JSON.stringify({ id: "abc123abc123", round: 1, build: "first", scenes: [] }));

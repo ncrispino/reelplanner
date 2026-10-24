@@ -214,7 +214,20 @@ try {
   await settledMini(p, true).catch(() => null);
   if (!(await p.evaluate(() => !!document.querySelector("#rp")._mini))) { await p.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('[data-act="guide"]').click()); await settledMini(p, true); }
   await until(p, () => document.querySelector("#rp-guide")._scrollOn === true);
-  await p.evaluate(() => document.querySelector("#rp").player.play()); await movedOn(p, await now(p));
+  // (what the player does from this play to the check after the picture closes, kept in the page: each play and pause
+  // and what called it, a change with no event (a state from the video's frame), the small player on or off, the
+  // picture opened or closed. A failed check says it: issue #32, where CI's fast suite saw it stay paused)
+  await p.evaluate(() => { const el = document.querySelector("#rp"), pl = el.player, t0 = performance.now(), log = (window.__rpPicLog = []); let was = pl.paused;
+    const say = (window.__rpPicSay = (what) => { if (window.__rpPicLog !== log) return; was = pl.paused; log.push(`${Math.round(performance.now() - t0)} ms ${what}: ${pl.paused ? "paused" : "playing"} at ${pl.currentTime.toFixed(2)} s${el._mini ? ", small" : ""}${el._overlay ? `, picture open (was ${el._overlay.playing ? "playing" : "paused"})` : ""}`); });
+    const by = () => (new Error().stack.split("\n")[4] || "").trim().replace(/^at /, "").replace(/ \(.*$/, "");
+    for (const ev of ["play", "pause"]) pl.addEventListener(ev, () => say(`${ev} (${by()})`));
+    const mini = el.setMini, over = el.overlayMini;
+    el.setMini = function (on) { say(`small player ${on ? "on" : "off"}, the page at ${Math.round(scrollY)} px`); return mini.call(this, on); };
+    el.overlayMini = function (on) { say(`picture ${on ? "opened" : "closed"}`); return over.call(this, on); };
+    const look = () => { if (window.__rpPicLog !== log) return; if (pl.paused !== was) say("no event"); requestAnimationFrame(look); }; requestAnimationFrame(look); });
+  const picSay = (what) => p.evaluate((w) => window.__rpPicSay(w), what);
+  await picSay("the spec plays it");
+  await p.evaluate(() => document.querySelector("#rp").player.play()); await picSay((await movedOn(p, await now(p))) ? "its time moved" : "its time did not move in 20 s");
   const zoomId = await gf.evaluate(() => { const a = [...document.querySelectorAll("a.zoom")].find((x) => x.querySelector("img")); if (!a) return null; a.id ||= "rp-test-zoom"; a.scrollIntoView({ block: "center" }); return a.id; });
   if (!PICS) { console.log(`· a picture opened full size in the guide not checked: ${NO_PICS}`); await p.evaluate(() => document.querySelector("#rp").player.pause()); }
   else if (!zoomId) check("a picture in the guide to open full size", false);
@@ -222,27 +235,28 @@ try {
     await gf.evaluate((id) => document.getElementById(id).click(), zoomId);
     await until(p, () => document.querySelector("#rp").hasAttribute("overlay"));
     await gf.waitForFunction(() => { const i = document.querySelector(".lb-img"); return i && i.complete && i.getBoundingClientRect().width > 0; }, null, { timeout: 10000 }).catch(() => null);
-    const lb = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: el.player.paused }; });
+    // (paused at the moment it holds: a state the video's frame sent before it took the pause can show "playing" a
+    // moment after it, as below)
+    const lb = await when(p, () => { const el = document.querySelector("#rp"), R = el.shadowRoot; return el.hasAttribute("overlay") && el.player.paused && { overlay: true, bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: true }; })
+      || await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, pic: getComputedStyle(R.querySelector(".stage")).visibility, paused: el.player.paused }; });
     const room = await gf.evaluate(() => { const r = document.querySelector(".lb-img").getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(innerWidth - r.right), b: Math.round(innerHeight - r.bottom) }; });
     check("a picture opened full size in the guide: the small player steps out of its way (hidden) and pauses", lb.overlay && lb.bar === "hidden" && lb.pic === "hidden" && lb.paused, JSON.stringify(lb));
     check("…the picture fitted with room round it (48 px a side or more, 72 px above and below or more)", Math.min(room.l, room.r) >= 47 && Math.min(room.t, room.b) >= 71, JSON.stringify(room));
-    // Keep the actual resumed runtime state in the page. A later node-side look can arrive after
-    // a legitimate review stop; observing play() alone could also precede a queued pause response.
-    await p.evaluate(() => {
-      const el = document.querySelector("#rp"), R = el.shadowRoot, t0 = el.player.currentTime;
-      window.__rpPictureResumed = null;
-      const resumed = (e) => { const t = e.detail?.currentTime ?? el.player.currentTime;
-        if (!el.hasAttribute("overlay") && !el.player.paused && t > t0 + 0.05) {
-          window.__rpPictureResumed = { overlay: false, bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: true, mini: !!el._mini, from: t0, t };
-          el.player.removeEventListener("timeupdate", resumed);
-        } };
-      el.player.addEventListener("timeupdate", resumed);
-    });
+    await picSay("the spec presses Escape");
+    const shut = await now(p);
     await gf.press("body", "Escape");
-    const back = (await when(p, () => window.__rpPictureResumed)) || await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini }; });
-    check("…and closed, the small player is back as it was, playing again", !back.overlay && back.bar === "visible" && back.playing && back.mini && back.t > back.from + 0.05, JSON.stringify(back));
+    // (one look, at the moment it holds: the picture gone, and the video playing on past where it was. Just after a play
+    // or a pause, the player's paused can show the old state a moment: HyperFrames takes it from the video's frame, and
+    // a state the frame sent before it took the play lands after it, until the frame sends its next. On CI a second
+    // look, just after a first, caught that and saw "paused": issue #32)
+    const back = (await when(p, (from) => { const el = document.querySelector("#rp"), R = el.shadowRoot; return !el.hasAttribute("overlay") && !el.player.paused && el.player.currentTime > from + 0.05 && { overlay: false, bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: true, mini: !!el._mini, from, t: el.player.currentTime }; }, shut))
+      || await p.evaluate((from) => { const el = document.querySelector("#rp"), R = el.shadowRoot; return { overlay: el.hasAttribute("overlay"), bar: getComputedStyle(R.querySelector(".minibar")).visibility, playing: !el.player.paused, mini: !!el._mini, from, t: el.player.currentTime }; }, shut);
+    const picLog = await p.evaluate(() => window.__rpPicLog || []);
+    const resumed = !back.overlay && back.bar === "visible" && back.playing && back.mini && back.t > back.from + 0.05;
+    check("…and closed, the small player is back as it was, playing again", resumed, JSON.stringify(back) + (resumed ? "" : `; from the play before the picture: ${picLog.join("; ")}`));
     await p.evaluate(() => document.querySelector("#rp").player.pause());
   }
+  await p.evaluate(() => { const el = document.querySelector("#rp"); delete window.__rpPicLog; delete el.setMini; delete el.overlayMini; });
 
   // ---- every link in the guide keeps the frame where it is (round 1, A1): none ever loads a page into the frame
   {

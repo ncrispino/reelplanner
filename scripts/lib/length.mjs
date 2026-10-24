@@ -5,6 +5,7 @@
 // the pauses where the player waits for an answer.
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { depthOf, DEPTH } from "./depth.mjs";
 
 export const BUDGET = {
   plan:        { aim: [3, 5], warn: 7, over: 10 },
@@ -26,12 +27,15 @@ export function kindOf(dir, board) {
   return /walkthrough-video\/?$/.test(dir.replace(/\\/g, "/")) ? "walkthrough" : "plan";
 }
 
+/** The budget a video is held to: its depth's (low: about two minutes), else its kind's. */
+export const budgetFor = (dir, kind) => DEPTH[depthOf(dir)].budget || BUDGET[kind];
+
 export function videoLength(dir) {
   const path = join(dir, "STORYBOARD.md");
   if (!existsSync(path)) return null;
   const board = readFileSync(path, "utf8");
   const seconds = [...board.matchAll(/^- duration:\s*([\d.]+)\s*s?\s*$/gm)].reduce((s, m) => s + Number(m[1]), 0);
-  const kind = kindOf(dir, board), b = BUDGET[kind], min = seconds / 60;
+  const kind = kindOf(dir, board), b = budgetFor(dir, kind), min = seconds / 60;
   const verdict = min > b.over ? "over" : min > b.warn ? "long" : "ok";
   return { seconds, minutes: min, kind, budget: b, verdict };
 }
@@ -54,7 +58,9 @@ export function lengthLine(l) {
 // First videos ran 15–17 minutes and were watched 1–4%; building one that long costs the most and is seen the least.
 // Before narration, the length is estimated from the script's words (the voice says about 3.1 words a second at the
 // 1.25× the skill narrates at) plus the holds; past 1.5 times the top of the budget, the build stops before it
-// voices anything, naming the longest parts, unless BRIEF.md says why it needs more (`- Length: <why>`).
+// voices anything, naming the longest parts, unless BRIEF.md says why it needs more (`- Length: <why>`). The video's
+// depth (lib/depth.mjs, #34) sets the budget, a cap on its scenes, and what takes it past them: at high any
+// `- Length:` line, at medium only one that quotes the person ("…"), at low nothing.
 export const WORDS_PER_SECOND = 3.1;
 export function scriptLength(dir) {
   const sb = existsSync(join(dir, "STORYBOARD.md")) ? readFileSync(join(dir, "STORYBOARD.md"), "utf8") : "";
@@ -72,15 +78,23 @@ export function scriptLength(dir) {
     cur.seconds += Math.max(words / WORDS_PER_SECOND + (holds.tail || 0), Number(holds[n]) || 0);
   }
   if (cur.seconds) parts.push(cur);
-  const seconds = parts.reduce((s, p) => s + p.seconds, 0), kind = kindOf(dir, sb), b = BUDGET[kind];
+  const seconds = parts.reduce((s, p) => s + p.seconds, 0), kind = kindOf(dir, sb), b = budgetFor(dir, kind);
   const brief = existsSync(join(dir, "BRIEF.md")) ? readFileSync(join(dir, "BRIEF.md"), "utf8") : "";
+  const depth = depthOf(dir), d = DEPTH[depth], scenes = (sb.match(/^## Frame \d+/gm) || []).length;
   const why = (/^- Length:\s*(.+)$/m.exec(brief) || [])[1]?.trim() || null;
-  const limit = b.aim[1] * 1.5 * 60;
-  return { seconds, kind, budget: b, parts, why, limit, stop: seconds > limit && !why };
+  // what takes it past: the person's own words, quoted, at medium; nothing at low
+  const lifts = !!why && (d.longer === "any" || (d.longer === "quoted" && /["“][^"”]{3,}["”]/.test(why)));
+  const limit = b.aim[1] * 1.5 * 60, past = seconds > limit || (d.scenes != null && scenes > d.scenes);
+  return { seconds, kind, budget: b, parts, why: lifts ? why : null, said: why, limit, depth, scenes, cap: d.scenes, stop: past && !lifts };
 }
 export function scriptLengthLine(l) {
   const longest = [...l.parts].sort((a, b) => b.seconds - a.seconds).slice(0, 2).map((p) => `"${p.title}" ${mmss(p.seconds)}`).join(", ");
-  if (l.stop) return `about ${mmss(l.seconds)} from the script, past 1.5× ${named(l.kind)}'s ${l.budget.aim[1]} min (${mmss(l.limit)}): longest ${longest}. Shorten it before it is voiced, or say why it needs more in BRIEF.md (- Length: <why>)`;
-  if (l.seconds > l.limit) return `about ${mmss(l.seconds)} from the script, long for ${named(l.kind)}, and BRIEF.md says why: ${l.why}`;
-  return `about ${mmss(l.seconds)} from the script (${named(l.kind)}: aim ${l.budget.aim[0]}–${l.budget.aim[1]} min)`;
+  const at = l.depth === "high" ? "" : ` at ${l.depth} depth`, over = l.seconds > l.limit, many = l.cap != null && l.scenes > l.cap;
+  // what would take it past, at its depth: any reason (high), the person's words (medium), or a deeper video (low)
+  const how = l.depth === "low" ? "or, if the person asked for more, make it a medium- or high-depth video (BRIEF.md, depth:)"
+    : l.depth === "medium" ? `or quote the person asking for more in BRIEF.md (- Length: "<their words>")${l.said ? `: its - Length: line quotes no one` : ""}`
+    : "or say why it needs more in BRIEF.md (- Length: <why>)";
+  if (l.stop) return `about ${mmss(l.seconds)} from the script${many ? `, ${l.scenes} scenes` : ""}, past ${[over && `1.5× ${named(l.kind)}'s ${l.budget.aim[1]} min${at} (${mmss(l.limit)})`, many && `the ${l.cap} scenes of ${l.depth} depth`].filter(Boolean).join(" and ")}: longest ${longest}. Shorten it before it is voiced, ${how}`;
+  if (over || many) return `about ${mmss(l.seconds)} from the script${many ? `, ${l.scenes} scenes` : ""}, long for ${named(l.kind)}${at}, and BRIEF.md says why: ${l.why}`;
+  return `about ${mmss(l.seconds)} from the script (${named(l.kind)}${at}: aim ${l.budget.aim[0]}–${l.budget.aim[1]} min${l.cap != null ? `, at most ${l.cap} scenes` : ""})`;
 }

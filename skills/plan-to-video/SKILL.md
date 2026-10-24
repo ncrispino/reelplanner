@@ -30,10 +30,39 @@ Three levels; the person chooses, and can move up at any time:
 
 A level-3 repo can still skip one plan's walkthrough (**Skipping the walkthrough video**).
 
+**Depth**, apart from the level: how deep a video's checks go, `depth: low | medium | high` in its BRIEF.md's front
+matter (#34). Take it from their words: "quick", "rough", "a first look" or "low depth" is low; "thorough",
+"polished" or "high depth" is high; anything else, medium. Write it before the storyboard. A brief with none reads
+as high: a video made before depths keeps the checks it was built with.
+
+| | low | medium (the default) | high |
+|---|---|---|---|
+| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"` | its kind's budget; past it with any `- Length: <why>` |
+| The script's fresh eyes | none | the newcomer | the newcomer |
+| Fresh eyes on the video | none, but the checker for an explainer with a long source | one round: the newcomer, and the checker where there is one, who looks again at what the answers rewrote | the newcomer and the designer, and the checker; two rounds |
+| Findings fixed | — | what would mislead or lose a viewer: a wrong fact, a missing step, a word never defined. A cosmetic one is `kept: cosmetic, medium depth`, with the fix it would take, not redrawn | all |
+| Strict checks | none on the storyboard | `terms_check` and `details_check` (and an explainer's `sources_check`) | the same |
+
+The tools hold to it: `build` stops past the depth's length and scenes, and `fresh-eyes` briefs only the depth's
+agents (on a low plan video, none). At low the point is the first look soon:
+- Before narrating, hold the script to about 330 words (two minutes at the voice's 3.1 words a second): a longer one
+  is cut and narrated again.
+- While narration runs, draw the frames yourself, not with workers, from one set of styles; one script that writes
+  every frame is quickest. Start it with one `$RP scene <video-dir> <frame>=<scene> …` for the frames a scene fits,
+  then put the plan in. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
+  the tokens.
+- Before the build, run `$RP frame-check <video-dir> all` (its lint, in seconds; the layout and pictures need the
+  video assembled), `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70% of the
+  scenes): a warning fixed after a build that passed is another whole build.
+- After a build that passed, look once, `$RP frame-check <video-dir> all` (a picture of each frame, in seconds), and
+  show it. Build again only for what a viewer would misread, words cut off or over each other; a contrast a shade
+  under, or any other warning, waits for the review. In a bench run, checking 8 frames one by one, and building again
+  for two warnings, took 4 of the first look's 11 minutes.
+
 ## Commands
 
 `$RP` means `reelplanner` when `reelplanner --version` works (the README's install; check that first,
-before any `npx` or install), else `npx -y reelplanner@0.2.0`, this skill's tooling pinned to the version
+before any `npx` or install), else `npx -y reelplanner@0.3.0`, this skill's tooling pinned to the version
 it was written for. Write it out in full in every command (a shell variable does not survive between tool
 calls), and run each in a tool call of its own, not chained to another with `&&` or `;`: one command a call is
 what a permission rule matches and what auto mode judges. Before one that writes into the repo (`reel init`,
@@ -102,7 +131,7 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
    With no `.reelplanner/theme/frame.md` in the repo, run faceless-explainer's `build-frame.mjs --preset
    code-editorial` (it brings the caption skin), then copy reelplanner's `templates/reelplanner/theme/frame.md` over its
    `frame.md` (`$RP --help` ends with the folder reelplanner is installed in). BRIEF.md, from that
-   folder's `templates/video/BRIEF.md`, says `flow: automation` and `storyboard: no`.
+   folder's `templates/video/BRIEF.md`, says `flow: automation`, `storyboard: no` and `depth: low` (**Depth**).
 2. **Write `STORYBOARD.md` and `SCRIPT.md`**: the problem, each step, each open question as a decision beat
    (the tags in **Build a video** step 2: `plan_step`, `chapter_start`, `decision`, `plan_questions`), 1–3
    minutes in all. No `plan_dir`, and no `terms_check: strict` or `details_check: strict` (a word with no
@@ -177,8 +206,13 @@ The plan goes into the repo, and the person gets a review page, not text in the 
      a fenced block, one part a line (a command and its flags, a file's fields, a function's arguments, a
      storyboard tag, what a page shows), each with its meaning after `#` (`--check   # also check the
      page`), what it prints indented under it, or one line "No interface: wording only"; **Example**, one
-     worked example with real values, start to end. The fourth block, Decisions, is generated from the
-     ledger, never written. Each open question's options say what happens in its example
+     worked example with real values, start to end; and on a step that makes something people see (a page, a
+     screen, a printout, an email), **Look**: its own palette (each colour named, with its hex), its type (the
+     families, the sizes of a heading and of body text), its imagery, and the one thing that makes it recognisable,
+     each with why it fits the people who will use it. A plan that leaves the look to "the same header and
+     footer" asks the reviewer to approve something bland, and its video can only show a generic page. Where
+     there is a real choice of looks, it is an open question, its options two looks the video draws side by side.
+     The fourth block, Decisions, is generated from the ledger, never written. Each open question's options say what happens in its example
      (a value, a quote, a command or a number). Beside the blocks, each step draws **how it works** as a
      fenced ` ```diagram ` block (the guide draws it as a diagram you can step through and click; `reel check`
      warns on a new plan's step without one): a flow, a sequence or a state, one short line an edge, e.g.
@@ -213,7 +247,7 @@ An explainer is a video of something already there. It asks nothing to decide an
 written. What it can be of is open, so there is no list of kinds: the same principles make any of them.
 
 1. **Find the sources that hold the answer, and pin them:** `$RP explain "<their question, in their words>"
-   <source> …`. A source is a path (a file or a folder, in the repo or outside it: a transcript, a log, an
+   <source> …`, with `--depth low` or `--depth high` when they asked for one (**Depth**; medium otherwise). A source is a path (a file or a folder, in the repo or outside it: a transcript, a log, an
    experiment's output), a commit or a range (`main..HEAD`), `worktree`, `since:<date>`, `pr:<n>`, `ci:<run-id>`,
    `this-session` or a decision (`D-233`). It makes `.reelplanner/explainers/<date>-<slug>/`: `explain.md`,
    `sources.json` (each source's shape: a sequence, files, a table or text; its size and hash; a file outside the
@@ -283,8 +317,10 @@ explainer (`<explainer-dir>/video/`).
    thing, `- Real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures`;
    it is optional and nothing warns about the scenes it leaves out. Put the person's request in their own
    words first under Customizations, `- Ask: "<what they asked, quoted>"` (on a revise, their review's words are
-   read from `reviews/`): the script's fresh eyes hold the video to it. A video that needs more than 1.5 times its
-   length budget says why, `- Length: <why>`; without it `build` stops before voicing a script that long. With
+   read from `reviews/`): the script's fresh eyes hold the video to it. Its front matter says its depth, `depth: low
+   | medium | high` (**Depth**). A video that needs more than 1.5 times its length budget, or more scenes than its
+   depth takes, says why, `- Length: <why>`: at medium their words, quoted; at low nothing takes it past. Without it
+   `build` stops before voicing a script that long. With
    `.reelplanner/`, `$RP reel stage <plan-dir>` writes the shared stage.
 2. **Write `STORYBOARD.md` and `SCRIPT.md`** (Step 3) as the style guide says: a series of parts of
    about a minute, 3–5 minutes in all (the system video 5–8), decisions after their steps, a quick
@@ -304,11 +340,11 @@ explainer (`<explainer-dir>/video/`).
    none (`terms: branch = a line of work kept apart until it is merged; merge = …`; a phrase fresh eyes
    flagged and you kept goes here too, or under the glossary's "Other words" when other videos say it), `plain: flag`
    for a word the build would take for jargon that this video uses plainly, and `terms_check: strict` and
-   `details_check: strict` on every new storyboard. Don't explain what the
+   `details_check: strict` on every new storyboard but a low-depth one. Don't explain what the
    reviewer knows: when `$RP reel memory --you` shows they know a word (they watched the video that
    defines it, or looked it up and later answered a quick check on it right), this video drops its
    definition card for that word (the recap line, the defining clause); the word stays in the Terms panel.
-   **Then read it against the ask, before any frame**: `$RP fresh-eyes <video-dir> --script` writes a brief from the
+   **Then read it against the ask, before any frame** (not at low depth): `$RP fresh-eyes <video-dir> --script` writes a brief from the
    storyboard, the script and the person's words; launch one fresh agent with exactly the prompt from `--script
    --prompt newcomer` (as for fresh eyes, step 5), and answer each finding under it (`--script --check`) before
    drawing: here a fix is a line of the script. It asks whether the video does what they asked (a thing they wanted
@@ -335,11 +371,22 @@ explainer (`<explainer-dir>/video/`).
    | a system-video frame | `- spec_section: <heading>` and/or `- components: <id>, <id>` |
    | every scene (optional) | `- layout: <word>` (code, table, terminal, before-after, wall…) |
 
-3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step.
+3. **Narrate in the background as soon as `SCRIPT.md` exists**: it is the slowest step. Once the script's
+   findings are answered, narrate again at once, before drawing: it voices only the lines the answers changed (a
+   medium bench run started it after drawing, 9 of 15 lines, and waited 1.6 minutes for it).
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json`;
-   leave generated voice files, renders and player bundles ignored. Never force-add them. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
+   leave generated voice files, renders and player bundles ignored. Never force-add them. Meanwhile draw the frames
+   (Steps 4–5), each designed for its own scene, and start each from one of
+   the theme's scenes where one fits what the beat is about: `$RP scene` lists them (a count drawn to scale, one
+   record labelled part by part, who does what in lanes, a rule's verdicts, someone's own words, a decision's two
+   futures, a choice of looks, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …`
+   writes those frames, every word in them a `{{slot}}` for the plan's own (`frame-lint` fails one left unfilled),
+   for you to fill and make this beat's own. A frame drawn from a blank page tends to come out as cards of
+   words; one copied as it is makes every video look alike, so at most half the frames start from scenes, each
+   scene once (`variety` warns past either). A page or screen the plan makes is drawn in its own Look, never the
+   video's cream and coral (style guide §5). A video of up to
    about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
    `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
    each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).
@@ -358,7 +405,7 @@ explainer (`<explainer-dir>/video/`).
    where the thing is hard to read, a picture that explains it (style guide §5). A camera sits inside a
    view clipped at y 900, and a question's heading and cards sit outside it (or the camera is at rest at
    scale 1 when the scene ends): `$RP frame-lint` fails either. Check each frame as it lands with `$RP frame-check
-   <video-dir> <frame>`: frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
+   <video-dir> <frame>` (several frames, or `all`, in one go): frame-lint on it, HyperFrames' layout check on its slot once the video is assembled (text
    overflowing its box, overlaps, contrast; advice), and one picture of it at rest to look at (no screenshot scripts of your
    own). Put the
    holds for branch beats, assembling beats and the final frame in `.hyperframes/holds.json`. Details
@@ -394,15 +441,20 @@ explainer (`<explainer-dir>/video/`).
    repeats the brief's `- Real things:` when there is one, and never warns without it). Add `--render` only when someone asks for an MP4; the review page
    plays the HTML.
 5. **Fresh eyes before you open it**: every video you build, plan, walkthrough or system, and every
-   rebuild of an older one (a rebuild is a new build). Start them in the background as soon as the build is done,
-   and get the rest ready while they read (the contact sheet, each part's length, what you will say). You know what every phrase means, so you cannot judge
+   rebuild of an older one (a rebuild is a new build), as its depth says (**Depth**; a low plan video has none:
+   `fresh-eyes` says so, and you go on to step 6). Start them in the background as soon as the build is done,
+   and while they read, look at every frame (`$RP frame-check <video-dir> all`: a picture of each, in seconds) and get
+   the rest ready (each part's length, what you will say). Fix what you saw with your answers to their findings, in
+   one build, and before it, `frame-check` the frames you changed and look again: a fix seen after a build is another
+   build (a medium bench run's first video was built five times, two of them again for that). You know what every phrase means, so you cannot judge
    whether a newcomer follows it; two fresh agents can. `$RP fresh-eyes <video-dir>` writes their briefs, with a
-   picture of each scene at rest taken through the review page. Launch two fresh agents with no context of this
-   conversation, one with exactly the prompt from `$RP fresh-eyes <video-dir> --prompt newcomer`, one with `--prompt
-   designer`, and nothing else, so neither knows what you meant, each from a scratch folder of its own outside the
-   repo. Use the agent's fresh-session route in
-   [references/harnesses.md#independent-reviewers](references/harnesses.md#independent-reviewers).
-   Never inherit this conversation or add implementation guidance to the exact generated prompt. The
+   picture of each scene at rest taken through the review page. Launch the fresh agents it names (at high, the
+   newcomer and the designer; at medium, the newcomer; and the checker for an explainer with a long source) with no
+   context of this conversation, each with exactly the prompt from `$RP fresh-eyes <video-dir> --prompt <role>`, and
+   nothing else, so none knows what you meant, each from a scratch folder of its own outside the repo. Use the agent's
+   fresh-session route in [references/harnesses.md#independent-reviewers](references/harnesses.md#independent-reviewers)
+   (in Codex, `spawn_agent` with `fork_turns: "none"`: its default, "all", hands it this whole conversation). Never
+   inherit this conversation or add implementation guidance to the exact generated prompt. The
    prompt names one absolute path, `fresh-eyes/<role>.md`; that is
    the only file the agent writes. `--check` fails on this round's findings found anywhere else in the repo (a copy
    in the repo's root, a notes file under `fresh-eyes/`) and never reads them there: move the file to its path, or
@@ -415,13 +467,15 @@ explainer (`<explainer-dir>/video/`).
    - `- Answer: meaning: …`: the phrase kept, with a meaning a viewer can click: a row under the glossary's "Other
      words" when other videos will say it, else the storyboard's `terms: <phrase> = <meaning>`;
    - `- Answer: kept: <the reason>`: the finding is wrong about something the video says plainly, say, two scenes
-     later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer.
+     later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer. At medium
+     depth, a finding that would neither mislead nor lose a viewer (a chip's place, a margin, a fade) is
+     `kept: cosmetic, medium depth: <the fix it would take>`, and no frame is redrawn for it.
    - `- Answer: plan: <what plan.md now says>`: the plan changed to settle it (plan.md must differ from when the
      agents looked); or `- Answer: ask: <the question for the person>`, shown first on the page's Before you watch.
      A `[plan]` finding takes only these two: you made the video, and are the wrong one to set aside what it lacks.
    Then `$RP build <video-dir>` again (it stops on a finding with no answer). **One round a build**: a second only
    when your answers changed what a scene says (its narration, or the scenes' order), on those scenes alone (`build`
-   asks for it by name); never a third. What is left after the last round, the findings you kept, is said on the
+   asks for it by name; at medium, the checker's alone); never a third. What is left after the last round, the findings you kept, is said on the
    page's "Before you watch" and in the notification: only the new
    ones, since a finding an earlier round of the build already kept for the same reason (the same scene and agent,
    the same thing, the reason much the same) folds into one line with its count. Then open it.
@@ -433,7 +487,8 @@ explainer (`<explainer-dir>/video/`).
    before and after it marked context only, so a finding on an unchanged scene cannot come up (one on a context
    scene is out of scope: not counted, no answer). Before you watch lists only this build's kept findings. A first
    build covers every scene; `--all` makes a rebuild do so too.
-6. **Open it:** `$RP review <video-dir> --detach` serves the page past this session, sends a
+6. **Commit it, then open it:** commit the video with its fresh eyes done, since the revision's build is compared
+   with it (a medium bench run left it uncommitted, and its revision had no fresh eyes). `$RP review <video-dir> --detach` serves the page past this session, sends a
    notification with what is waiting, and prints the URL (**Running the loop**; `build`'s last line names this
    command). Give the person that URL, the contact sheet, and each part's length. **Then wait for their review**:
    no more rounds, redraws or second videos on your own once a video is shown, unless they ask.
@@ -473,10 +528,12 @@ For changes requested:
 - **Gather every fix first, then build once.** A build takes a minute or more whatever it changes; fixing one thing,
   building, failing and fixing the next is most of a slow revision. List every fix (the review's, fresh eyes')
   before touching a frame. Patch only the frames they touch, each in its own file (where one script writes the
-  frames, patch it where the change is, never write it whole again), and check each as it lands with `$RP
-  frame-check <video-dir> <frame>` (its layout and lint in seconds, and a picture), never with a build. With several
+  frames, patch it where the change is, never write it whole again), and check them as they land with `$RP
+  frame-check <video-dir> <frame>…` (their layout and lint in seconds, and a picture of each), never with a build. With several
   frames to change, hand independent ones to workers with packets (step 3). Then one `$RP build`: when frames
-  changed, its first stage runs verify's layout check before anything is voiced.
+  changed, its first stage runs frame-lint on them and verify's layout check before anything is voiced. A fix seen
+  in a picture after a build is another build: a medium bench run's revision built six times, three of them again
+  for what `frame-check` would have shown first.
 - The guide marks what you changed by itself: each part of `plan.md` whose words differ from the version the review
   watched is marked "Changed since your review", with the old and new words and the review's own words that asked
   for it (`guide --check` fails one left unmarked). Don't hand-edit `reviews/`: the comparison is read from them.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Start an explainer (explain-first, step 2; D-250): a video of something already there, before any plan.
 //
-//   reelplanner explain "<what you asked>" <source> … [--slug <slug>] [--date <yyyy-mm-dd>] [--dry-run]
+//   reelplanner explain "<what you asked>" <source> … [--depth low|medium|high] [--slug <slug>] [--date <yyyy-mm-dd>] [--dry-run]
 //
 // It takes your question and the sources that hold the answer, and nothing that names a kind of explainer: what an
 // explainer can be of is open, so the command knows only how to pin each source (lib/explainer.mjs). A source is a
@@ -13,7 +13,9 @@
 //   explain.md     your words; what it will cover and leave out (the agent fills those two in from the sources)
 //   sources.json   the commit it starts from, and each source pinned: its form, shape, size, hash, and whether it
 //                  needs a guide part; a file outside the repo by its path (~/…), hash and line count, never its text
-//   video/         BRIEF.md and STORYBOARD.md started (kind: explainer, sources_check: strict), to write and build
+//   video/         BRIEF.md and STORYBOARD.md started (kind: explainer, its depth, and at medium or high the strict
+//                  checks: sources_check, terms_check, details_check), to write and build
+// --depth: how deep its checks go (lib/depth.mjs, #34): medium unless the person asked for low or high.
 // A second ask makes a new folder: an explainer is a snapshot, never rebuilt on its own.
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve, relative } from "node:path";
@@ -21,20 +23,23 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { pinAll, sourceLine, slugOf, repoTop, GUIDE_LINES } from "./lib/explainer.mjs";
 import { sourcePart } from "./lib/guide/model.mjs";
 import { hyperframesBin, rpInitialized, rpDirOf } from "./lib/env.mjs";
+import { DEPTHS } from "./lib/depth.mjs";
 
 const args = process.argv.slice(2);
-const VALUED = new Set(["--slug", "--date", "--repo", "--session-source"]);
+const VALUED = new Set(["--slug", "--date", "--repo", "--depth", "--session-source"]);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
 const die = (m) => { console.error(`✗ explain: ${m}`); process.exit(1); };
 const plain = args.filter((a, i) => !a.startsWith("--") && !VALUED.has(args[i - 1]));
 const [question, ...specs] = plain;
-if (!question || !specs.length) die(`usage: reelplanner explain "<what you asked>" <source> … [--slug <slug>]
+if (!question || !specs.length) die(`usage: reelplanner explain "<what you asked>" <source> … [--depth low|medium|high] [--slug <slug>]
   a source: a path (file or folder, in the repo or outside it), a commit or a range (a..b), worktree,
             since:<yyyy-mm-dd>, pr:<n>, ci:<run-id>, this-session, or a decision (D-233)
   --session-source <path>: an external copy of the requested Codex conversation; ID and repo are checked`);
 const repo = repoTop(resolve(flag("repo") || process.cwd())) || die("not inside a git repo");
 const rp = rpDirOf(repo);
 if (!rpInitialized(rp)) die(`${existsSync(rp) ? `${rp} is not set up yet (no decisions.json, only setup files)` : `no .reelplanner/ in ${repo}`} (reel init first; without it, the skill's one-off video under videos/ stays as it is)`);
+const depth = flag("depth") || "medium";
+if (!DEPTHS.includes(depth)) die(`--depth ${depth}: low, medium or high`);
 const date = flag("date") || new Date().toISOString().slice(0, 10);
 if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) die(`--date ${date}: a day as yyyy-mm-dd`);
 const slug = (flag("slug") || slugOf(question)).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "explainer";
@@ -103,7 +108,8 @@ destination: embed
 aspect: 1920x1080
 language: en
 audience: whoever asked, in their words: "${question.replace(/"/g, "'")}"
-length: 2–4 minutes${guided.length ? " (up to 5: a source here is far longer than a video can show)" : ""}
+length: ${depth === "low" ? "about 2 minutes, at most 8 scenes (low depth)" : `2–4 minutes${guided.length ? " (up to 5: a source here is far longer than a video can show)" : ""}${depth === "medium" ? ", at most 15 scenes" : ""}`}
+depth: ${depth}
 angle: explainer
 narration: yes
 style_preset: .reelplanner/theme/frame.md (the project theme)
@@ -132,10 +138,7 @@ plan_dir: ${planDir}
 message: "<the answer, in one sentence>"
 audience: whoever asked: "${question.replace(/"/g, "'")}"
 music: none
-sources_check: strict
-terms_check: strict
-details_check: strict
----
+${depth === "low" ? "" : "sources_check: strict\nterms_check: strict\ndetails_check: strict\n"}---
 
 ## Video direction
 
@@ -161,7 +164,7 @@ details_check: strict
 - voiceover: "<…>"
 `);
 
-console.log(`✓ ${rel(dir)}/ · ${summary}`);
+console.log(`✓ ${rel(dir)}/ · ${summary} · ${depth} depth`);
 for (const s of sources) console.log(`  ${sourceLine(s)}`);
 console.log(started ? "  video/: a HyperFrames project (hyperframes init), BRIEF.md and STORYBOARD.md started in it"
   : `△ video/: \`hyperframes init\` did not run (${String(hf.stderr || hf.stdout || "").trim().split("\n").at(-1) || `exit ${hf.status}`}): init one in a scratch folder and copy its hyperframes.json, index.html, meta.json and package.json in`);

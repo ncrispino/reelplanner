@@ -399,7 +399,7 @@ try {
           const result = run("guide.mjs", vd, "--check", "--no-thumbs");
           const made = JSON.parse(readFileSync(join(gd, "index.html"), "utf8").match(/<script type="application\/json" id="guide-data">([\s\S]*?)<\/script>/)[1]);
           ok(`guide --check: ${mixed ? "mixed decision prose and citations" : "empty-ledger prose"}, all-step components and alternate question formatting render at desktop and mobile widths`,
-            result.code === 0 && made.inForceProse.includes(prose) && made.touchedAll[0].steps.join() === "1,2" && made.steps[0].questions[0]?.recommend === "Recommendation: A: nothing breaks." && (!mixed || made.inForce[0]?.ids[0] === "D-001"), result.out);
+            result.code === 0 && (made.inForceSaid || "").includes(prose) && made.touchedAll[0].steps.join() === "1,2" && made.steps[0].questions[0]?.recommend === "Recommendation: A: nothing breaks." && (!mixed || made.inForce[0]?.ids[0] === "D-001"), result.out);
           const browser = await chromium.launch(launchOpts());
           try {
             const page = await browser.newPage();
@@ -444,6 +444,29 @@ try {
         run("guide.mjs", pd, "--no-thumbs");
       }
     }
+    // "Decisions in force" drawn under its own heading, with its words that are no line of it: a first plan's "None yet",
+    // and a lead line over lines that each name a step (no gap on the page to say the heading's words by chance)
+    // On a plan with no video and nothing built yet: a walkthrough's guide shows plan.md's changes since the review,
+    // which would say these words whether the section did or not.
+    { const head = PLAN(true).split("## Decisions in force\n")[0];
+      const said = (name, sec) => { write(join(tmp, `plan-${name}.md`), `${head}## Decisions in force\n\n${sec}\n`); reel("new-plan", repo, name, "--plan", join(tmp, `plan-${name}.md`), "--date", "2026-10-01");
+        const dir = join(rp, "plans", `2026-10-01-${name}`), out = run("guide.mjs", dir, "--check", "--no-thumbs").out; rmSync(dir, { recursive: true, force: true }); return out; };
+      const none = said("first", "None yet: this is the first plan."), lead = said("lead", "Both still hold:\n\n- **D-001** Reviews go to the inbox: kept. (step 2)\n- **D-002** Plain words. (step 1)");
+      ok("guide --check: plan.md's Decisions in force is in the page, its heading and its own words, a first plan's \"None yet\" too", [none, lead].every((o) => /every heading and paragraph of plan\.md in the page/.test(o) && !/headings and paragraphs are not in the page/.test(o)), `${none}\n---\n${lead}`);
+      // an HTML comment in code is the code's own text, shown as written (a bench run's plan gave a page's first line as
+      // `<!-- title: Visit -->`, the page dropped it and the check stopped the build); one outside code is a note, left out
+      const name = "comments", dir = join(rp, "plans", `2026-10-01-${name}`);
+      write(join(tmp, `plan-${name}.md`), PLAN(true).replace("*Independent.*\n", "*Independent.*\n\n<!-- a note for whoever edits this plan -->\n")
+        .replace("with a warning.\n", "with a warning.\n\n```\n<!-- title: Menu -->\n<h1>Menu</h1>\n```\n")
+        .replace("| Both |", "| No title | `order.html` with no `<!-- title: -->` line | refused | you type: build; it says: order.html: no title |\n| Both |")
+        .replace("and writes a.html.\n", "and writes a.html. Its first line, `<!-- title: Visit -->`, names the page.\n"));
+      reel("new-plan", repo, name, "--plan", join(tmp, `plan-${name}.md`), "--date", "2026-10-01");
+      const c2 = run("guide.mjs", dir, "--check", "--no-thumbs");
+      const b = await chromium.launch(launchOpts()); let text = "";
+      try { const pg = await b.newPage(); await pg.route(/^(https?|wss?):/, (r) => r.abort()); await pg.goto(pathToFileURL(join(dir, "guide", "index.html")).href); await pg.waitForTimeout(150);
+        await pg.evaluate(() => document.querySelectorAll("details").forEach((d) => { d.open = true; })); await pg.waitForTimeout(150); text = await pg.evaluate(() => document.body.innerText); } finally { await b.close(); }
+      rmSync(dir, { recursive: true, force: true });
+      ok("guide: an HTML comment in code (a span, a table cell's span, a fence) is shown as written, and --check finds it; one outside code is left out", c2.code === 0 && /every heading and paragraph of plan\.md in the page/.test(c2.out) && ["first line, <!-- title: Visit -->, names", "with no <!-- title: --> line", "<!-- title: Menu -->"].every((t) => text.includes(t)) && !text.includes("a note for whoever edits"), `${c2.out}\n${text.slice(0, 1500)}`); }
     // the page reads in the order a person asks, in plain words: no stat line first, the questions as its headings
     { const b = await chromium.launch(launchOpts()); try { const pg = await b.newPage({ viewport: { width: 900, height: 900 } }); await pg.route(/^(https?|wss?):/, (r) => r.abort());
       await pg.goto(pathToFileURL(join(gd, "index.html")).href); await pg.waitForTimeout(150);

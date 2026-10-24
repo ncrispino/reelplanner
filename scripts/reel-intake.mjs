@@ -98,10 +98,18 @@ execFileSync(process.execPath, [join(ROOT, "scripts", "reel.mjs"), "record", pd,
 const act = relative(REPO, join(pd, "reviews", `${filed.id}.md`));
 // the verdict says whether the reviewer sees a video again (SKILL.md): approved/accepted, no new video
 const approved = verdictOf(review) === "approve";
+// the video as reviewed is what the next build is compared with (plan-diff: the last committed plan-map.json); left
+// uncommitted, that build is the same one to it, every scene new and no fresh eyes of its own (a medium bench run's
+// revision had none)
+const vidRel = relative(REPO, join(pd, kind === "walkthrough" ? "walkthrough-video" : "video"));
+const uncommitted = !approved && existsSync(join(REPO, vidRel, "plan-map.json")) && (() => {
+  try { return execFileSync("git", ["status", "--porcelain", "--", join(vidRel, "plan-map.json")], { cwd: REPO, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim() !== ""; } catch { return false; }
+})();
+const first = uncommitted ? `commit the video as reviewed (\`git add ${vidRel} && git commit\`), so the next build is compared with it: only the scenes you change are new, and they get fresh eyes of their own. Then ` : "";
 console.log(kind === "walkthrough"
-  ? `\nnext: fix what ${act} lists (SKILL.md "Implement, check, walk through, fix", or hand it to a worker), then commit ${rel}. Acting on a flagged call is a code change, not a plan rewrite.${approved ? " Accepted: no new walkthrough video." : " Changes requested: rebuild the beats the fixes touch and show it again."}`
+  ? `\nnext: ${first}fix what ${act} lists (SKILL.md "Implement, check, walk through, fix", or hand it to a worker), then commit ${rel}. Acting on a flagged call is a code change, not a plan rewrite.${approved ? " Accepted: no new walkthrough video." : " Changes requested: rebuild the beats the fixes touch and show it again."}`
   : approved ? `\nnext: the plan is approved: fold any comments in ${act} into plan.md's steps as text (SKILL.md "After a plan review"; no new plan video), commit ${rel}, then implement. Whoever ran this acts on it: the main session, or the agent run the review server started. A push starts nothing.`
-  : `\nnext: revise the plan from ${act} (SKILL.md "After a plan review", or hand it to a worker), then commit ${rel}. Whoever ran this acts on it: the main session, or the agent run the review server started. A push starts nothing.`);
+  : `\nnext: ${first}revise the plan from ${act} (SKILL.md "After a plan review", or hand it to a worker), then commit ${rel}. Whoever ran this acts on it: the main session, or the agent run the review server started. A push starts nothing.`);
 
 // ---- a review of the system video ----
 function intakeSystem(dir) {

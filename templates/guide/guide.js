@@ -124,11 +124,14 @@ document.addEventListener("click", (e) => {
 });
 
 /* ── Markdown, as plan.md writes it: every heading and paragraph in the page; each block noted on by its place ─ */
+// an HTML comment is a note to whoever edits the file, left out; one in code (a fence, a `span`) is the code's own text,
+// shown as written (a bench run's plan gave a page's first line, `<!-- title: Visit -->`). check.mjs reads it the same way
+const noComments = (s) => s.replace(/^[ \t]*```[^\n]*\n[\s\S]*?(?:^[ \t]*```[ \t]*$|(?![\s\S]))|`[^`\n]+`|<!--[\s\S]*?-->/gm, (m) => (m.startsWith("<!--") ? "" : m));
 function md(text, { anchor = null, editable = false, gloss = false } = {}) {
   // `gloss`: words written for the reader (walkthrough.md's, never plan.md's own, which the page shows as written):
   // a bare number of the record in them says what it is (glossIds)
   const inl = gloss ? (x) => glossIds(inlRaw(x)) : inlRaw;
-  const out = [], rows = String(text || "").replace(/\r\n/g, "\n").replace(/<!--[\s\S]*?-->/g, "").split("\n"); let k = 0;
+  const out = [], rows = noComments(String(text || "").replace(/\r\n/g, "\n")).split("\n"); let k = 0;
   const a = () => (anchor ? ` data-anchor="${esc(anchor)} · ¶${++k}"${editable ? " data-editable" : ""}` : "");
   let i = 0;
   const para = []; const flush = () => { if (para.length) { out.push(`<p${a()}>${inl(para.join(" "))}</p>`); para.length = 0; } };
@@ -957,8 +960,10 @@ function decidedSection({ asQuestion }) {
     : `The decisions this change was built on: those made for this plan, then the earlier ones it keeps.`;
   const inForceBody = inForce.map((x, i) => { const ids = x.ids.filter((id) => kept.includes(id)); if (!ids.length && x.ids.length) return `<p class="ifl" data-anchor="decisions in force · ${esc(x.ids.join(", ") || String(i + 1))}" data-editable>${inl(x.text)}</p>`;
     return `<div class="ifl" data-anchor="decisions in force · ${esc(x.ids.join(", ") || String(i + 1))}" data-editable><p>${inl(x.text)}</p>${ids.map((id) => decisionRow(id)).join("")}${x.steps ? "" : `<p class="q3">The plan doesn't say which step this applies to.</p>`}</div>`; }).join("");
+  // plan.md's section under its own heading, and its words that are no line of it ("None yet: this is the first plan.")
+  const head = esc(G.inForceTitle || "Decisions in force"), said = G.inForceSaid ? `<p class="ifl">${inl(G.inForceSaid)}</p>` : "";
   const body = `${own.length ? `<div class="decs">${own.map((id) => decisionRow(id)).join("")}</div>` : ""}
-    ${inForce.length || G.inForceProse ? fold(`Decisions in force${inForce.length ? `: earlier decisions it keeps <span class="n">${kept.length || inForce.length}</span>` : ""}${chgMark("decisions-in-force")}`, chgWhat("decisions-in-force") + md(G.inForceProse || "", { anchor: "decisions in force", editable: true }) + inForceBody, { cls: "grp" }) : ""}`;
+    ${inForce.length ? fold(`${head} <span class="n">${kept.length || inForce.length}</span>${chgMark("decisions-in-force")}`, chgWhat("decisions-in-force") + said + inForceBody, { cls: "grp" }) : said ? `<p class="lab">${head}</p>${said}` : ""}`;
   // once built, the reference it rests on: one line, folded, and left out of "Open everything" (a part shows it open)
   if (!asQuestion && FULL) return `<section data-flow class="q ref" id="decisions" data-part="decisions"><h2>The decisions it was built on</h2>${fold(`<span>${cap(count(own.length + kept.length, "decision"))}: ${own.length ? `${NUM[own.length] || own.length} made for this plan` : "none made for this plan"}${kept.length ? `, ${NUM[kept.length] || kept.length} earlier ${kept.length === 1 ? "one" : "ones"} it keeps` : ""}, each with why.</span>`, `<p class="say">${say}</p>${body}`, { id: "decisions-all", cls: "ref-fold", attrs: " data-noexpand" })}</section>`;
   return `<section data-flow class="q" id="decisions" data-part="decisions"><h2>${asQuestion ? "What's already decided, and why" : "The decisions it was built on"}</h2><p class="say">${say}</p>

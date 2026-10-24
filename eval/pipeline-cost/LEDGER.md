@@ -10,6 +10,19 @@ cheaper video that looks more alike shows here.
 
 | Date | Run | Episode | reelplanner | Wall min | Plan | Build | Verify | Other | In tok (M) | Out tok (k) | Rounds | Findings (material) | Variety | Report |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| 2026-10-22 | bakery bench, low depth, run 1 (fresh EC2, headless, scripted review) | plan video, first look: 8 scenes | depth (#35, be0a1b2) | 13.2 | 2.4 | 10.8 | — | — | 5.7 | 47 | 0 | — | 7 / 8 | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, low depth, run 1 | revise after review: 7 scenes | depth (#35, be0a1b2) | 7.1 | 1.5 | 5.6 | — | — | 3.9 | 22 | 0 | — | — | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, low depth, run 2 | plan video, first look: 7 scenes | depth (#35, 44489b3) | 12.8 | 1.8 | 16.5 | — | — | 10.1 | 89 | 0 | — | 5 / 7 | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, low depth, run 2 | revise after review: 7 scenes | depth (#35, 44489b3) | 10.1 | 1.3 | 10.3 | — | — | 4.7 | 46 | 0 | — | 6 / 7 | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, low depth, run 3 | plan video, first look: 8 scenes | depth (#35, 6377616) | 10.8 | 1.8 | 9.0 | — | — | 5.5 | 32 | 0 | — | 6 / 8 | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, low depth, run 3 | revise after review: 8 scenes | depth (#35, 6377616) | 5.3 | 1.3 | 3.9 | — | — | 3.3 | 19 | 0 | — | 7 / 8 | [report](2026-10-22-bench-low.md) |
+| 2026-10-22 | bakery bench, medium depth, run 1 (fresh EC2, headless, scripted review) | plan video, first look: 15 scenes | depth (#35, ac473fd) | 23.8 | 2.8 | 14.5 | 4.7 | 3.6 | 10.3 | 81 | 2 | script 16; video 21 (5 fixed, 11 into the plan) | 8 / 15 | [report](2026-10-22-bench-medium.md) |
+| 2026-10-22 | bakery bench, medium depth, run 1 | revise after review: 11 scenes | depth (#35, ac473fd) | 15.5 | 2.9 | 6.6 | 2.9 | 4.0 | 6.7 | 35 | 1 | 29 on the changed scenes (9 fixed, 5 into the plan) | — | [report](2026-10-22-bench-medium.md) |
+| 2026-10-22 | bakery bench, medium depth, run 2 | plan video, first look: 15 scenes | depth (#35, 685c666) | 27.1 | 3.5 | 17.3 | 6.9 | 1.7 | 13.3 | 94 | 2 | script 18; video 25 (13 fixed, 4 into the plan) | 6 / 15 | [report](2026-10-22-bench-medium.md) |
+| 2026-10-22 | bakery bench, medium depth, run 2 | revise after review: 14 scenes (no fresh eyes: the first video was not committed) | depth (#35, 685c666) | 8.9 | 2.4 | 6.4 | 0.1 | — | 5.4 | 20 | 0 | — | — | [report](2026-10-22-bench-medium.md) |
+| 2026-10-24 | bakery bench, low depth, with scenes, run 1 (fresh EC2, headless, scripted review) | plan video, first look: 8 scenes | scene-patterns (847997d) | 11.0 | 2.0 | 9.0 | — | — | 5.2 | 41 | 0 | — | 8 / 8 | [report](2026-10-24-bench-scenes.md) |
+| 2026-10-24 | bakery bench, low depth, with scenes, run 1 | revise after review: 8 scenes | scene-patterns (847997d) | 8.0 | 1.3 | 6.7 | — | — | 4.2 | 15 | 0 | — | 8 / 8 | [report](2026-10-24-bench-scenes.md) |
+| 2026-10-21 | research repo (owner's laptop) | explainer, first look: 26 scenes, 7 frame workers × 3 rounds | 0.2.0 (main) | 211 | 40 | 206 | 331 | — | 374.9 | 653 | 2 | 235 over both rounds (the fact checker's 24, all fixed) | 15 / 26 | [report](2026-10-21-research-explainer.md) |
 | 2026-10-11 | bakery bench, main (fresh EC2, headless, scripted review) | plan video, first look | main (0.2.0 + #21) | 47.8 | 2.3 | 35.4 | 55.5 | — | 34.3 | 374 | — | — | 9 / 18 | [report](2026-10-11-bench.md) |
 | 2026-10-11 | bakery bench, main | revise after review | main | 30.2 | 2.1 | 16.5 | 19.0 | — | 18.3 | 129 | — | — | — | [report](2026-10-11-bench.md) |
 | 2026-10-11 | bakery bench, cheaper-videos as first built | plan video, first look | cost-audit (frames stage v1) | 78.4 | 2.7 | 70.1 | 37.8 | — | 44.0 | 398 | — | — | 10 / 18 | [report](2026-10-11-bench.md) |

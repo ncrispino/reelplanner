@@ -52,20 +52,22 @@ const row = (at, extra = {}) => ({ status: "submitted", submittedAt: at, project
 
 const procs = [];
 try {
-  const occupied = createServer((req, res) => res.end("occupied"));
-  await new Promise((done) => occupied.listen(0, "127.0.0.1", done));
-  procs.push({ kill: () => occupied.close() });
-  const firstPort = occupied.address().port;
-  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(firstPort), "--out", join(tmp, "bundle")],
+  // its port taken by another server: it moves to the next, and says that one
+  const port = testPort(20000 + Math.floor(Math.random() * 10000));
+  const other = createServer((q, r) => { r.writeHead(418); r.end(); });
+  await new Promise((done) => other.listen(port, "127.0.0.1", done));
+  const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--no-notify", "--port", String(port), "--out", join(tmp, "bundle")],
     { cwd: tmp, env: { ...process.env, REELPLANNER_HOME: join(tmp, "home"), REELPLANNER_RECHECK_MS: "1500" } });
   procs.push(srv);
   let log = ""; srv.stdout.on("data", (d) => (log += d)); srv.stderr.on("data", (d) => (log += d));
   const url = await until(() => log.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   ok("server: starts", !!url, log);
   if (!url) throw new Error("no server");
-  ok("occupied first port: printed address is the actual free port", Number(new URL(url).port) > firstPort && (await (await fetch(`${url}/api/review`)).json()).ok);
-  const wrongHost = await new Promise((done, fail) => { const req = request(`${url}/api/review`, { headers: { host: `127.0.0.1:${firstPort}` } }, (res) => { res.resume(); done(res.statusCode); }); req.on("error", fail); req.end(); });
-  ok("occupied first port: API Host validation uses the actual listening port", wrongHost === 403);
+  other.close();
+  ok("a port taken: the page is on the next one, and the link says so", url.endsWith(`:${port + 1}`), url);
+  // its API checks the Host against the port it listens on, not the one it was asked for
+  const wrongHost = await new Promise((done, fail) => { const req = request(`${url}/api/review`, { headers: { host: `127.0.0.1:${port}` } }, (res) => { res.resume(); done(res.statusCode); }); req.on("error", fail); req.end(); });
+  ok("…and its API refuses a Host naming the taken port", wrongHost === 403, String(wrongHost));
   const status = async (id, headers = {}) => { const r = await fetch(`${url}/api/review/status?id=${encodeURIComponent(id)}`, { headers }); return { code: r.status, body: await r.json() }; };
   const post = (body) => fetch(`${url}/api/review`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json());
 
@@ -169,8 +171,8 @@ try {
   const srv2 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), pv, "--no-open", "--no-notify", "--port", String(testPort(20000 + Math.floor(Math.random() * 10000), 1)), "--out", join(tmp, "bundle2")], { cwd: plain, env: env2 });
   procs.push(srv2);
   let log2 = ""; srv2.stdout.on("data", (d) => (log2 += d)); srv2.stderr.on("data", (d) => (log2 += d));
-  const url2 = await until(() => log2.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
-  if (url2) await until(() => log2.includes("files the review in"));
+  // the link's line and the inbox line after it can come in two pieces: wait for the one checked
+  const url2 = await until(() => /POST \/api\/review\)/.test(log2) && log2.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   ok("level 1: the page is served, and Send files the review in this machine's inbox for the repo", !!url2 && log2.includes(`files the review in ${tilde(box)}/ (this machine's folder: the repo has no set-up .reelplanner/, and nothing is added to it)`), log2);
   if (!url2) throw new Error("no level-1 server");
   const api2 = `${url2}/api/review`, post2 = (body) => fetch(api2, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then(async (r) => ({ code: r.status, body: await r.json() }));
@@ -211,7 +213,7 @@ try {
   const srv3 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), bv, "--no-open", "--no-notify", "--port", String(testPort(20000 + Math.floor(Math.random() * 10000), 2)), "--out", join(tmp, "bundle3")], { cwd: bare, env: env2 });
   procs.push(srv3);
   let log3 = ""; srv3.stdout.on("data", (d) => (log3 += d)); srv3.stderr.on("data", (d) => (log3 += d));
-  const url3 = await until(() => log3.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
+  const url3 = await until(() => /POST \/api\/review\)/.test(log3) && log3.match(/review page: (http:\/\/127\.0\.0\.1:\d+)\//)?.[1], 120000);
   const bbox = machine(bare);
   ok("setup files only: Send files the review in this machine's inbox for the repo", !!url3 && log3.includes(`files the review in ${tilde(bbox)}/`), log3);
   const p3 = url3 && await fetch(`${url3}/api/review`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(row("2026-01-08T00:00:00Z", { project: "demo", planDir: null })) }).then((r) => r.json());
