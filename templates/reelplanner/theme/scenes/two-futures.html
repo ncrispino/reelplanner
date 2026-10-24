@@ -1,0 +1,108 @@
+<!-- TWO FUTURES: a decision drawn as the same thing in each future (scenes/README.md). From the Dylan plan video's
+     first choice: "10 albums" and "all 40" as the same album list, one that stops and launches, one that keeps
+     going for a month first. A viewer compares two pictures of one thing far faster than two paragraphs; use it
+     for any choice whose options change something you can draw (a list, a page, a file, a timeline, a screen).
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=two-futures` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the plan's question and options
+     in, in its words (the example is the Dylan plan's open question 1, its two options and their costs, with the
+     album list from step 1). Both futures start from the same picture and differ only where the option does.
+     The marks are the player's: the heading `data-question`, each card `data-option`; both cards are complete
+     and on screen together for at least 4 s, and at rest when the scene ends (nothing moves them; what moves
+     is inside them). A third option is a third card at 560 px wide.
+
+     HOW IT MOVES (motion-language.md): the shared picture is PRINTED in both cards at once; then each future
+     plays out in its own card on the word that says it: A's launch line DRAWN after ten, B's list scrolled on
+     while its count runs to forty, its launch line drawn only then. What B costs is underlined (the one coral).
+     Replace the times with your cues. -->
+<style>
+  .FID-q { position:absolute; left:128px; top:104px; width:1664px; font:400 60px/1.15 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .FID-opt { position:absolute; top:230px; width:800px; height:560px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .FID-tag { position:absolute; left:36px; top:30px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-n { position:absolute; right:36px; top:30px; font:500 26px/1 "JetBrains Mono"; color:var(--rp-ink); font-variant-numeric:tabular-nums; }
+  .FID-say { position:absolute; left:36px; top:70px; width:728px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); }
+  .FID-win { position:absolute; left:36px; top:134px; width:728px; height:336px; overflow:hidden; }
+  .FID-list { position:absolute; left:0; top:0; width:728px; }
+  .FID-row { height:33.6px; font:400 28px/33.6px "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-row .y { float:right; font:500 26px/33.6px "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-launch { position:absolute; left:36px; top:486px; width:728px; height:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .FID-when { position:absolute; left:36px; top:500px; width:728px; font:400 28px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-cost { position:relative; display:inline-block; }
+  .FID-u { position:absolute; left:0; right:0; bottom:-6px; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+</style>
+
+<div class="FID-q" id="FID-q" data-question>How much do we write before launch?</div>
+
+<div class="FID-opt" id="FID-a" data-option="a" style="left:128px">
+  <div class="FID-tag">A · recommended</div>
+  <div class="FID-n" id="FID-na">10 albums</div>
+  <div class="FID-say">Ten albums and forty songs, then launch</div>
+  <div class="FID-win" data-artifact="content/albums/"><div class="FID-list" id="FID-la">
+    <div class="FID-row">Bob Dylan<span class="y">1962</span></div>
+    <div class="FID-row">The Freewheelin' Bob Dylan<span class="y">1963</span></div>
+    <div class="FID-row">The Times They Are a-Changin'<span class="y">1964</span></div>
+    <div class="FID-row">Another Side of Bob Dylan<span class="y">1964</span></div>
+    <div class="FID-row">Bringing It All Back Home<span class="y">1965</span></div>
+    <div class="FID-row">Highway 61 Revisited<span class="y">1965</span></div>
+    <div class="FID-row">Blonde on Blonde<span class="y">1966</span></div>
+    <div class="FID-row">John Wesley Harding<span class="y">1967</span></div>
+    <div class="FID-row">Nashville Skyline<span class="y">1969</span></div>
+    <div class="FID-row">Self Portrait<span class="y">1970</span></div>
+  </div></div>
+  <i class="FID-launch" id="FID-ra"></i>
+  <div class="FID-when" id="FID-wa">launch: readers say what they want next</div>
+</div>
+
+<div class="FID-opt" id="FID-b" data-option="b" style="left:992px">
+  <div class="FID-tag">B</div>
+  <div class="FID-n" id="FID-nb">10 albums</div>
+  <div class="FID-say">All studio albums first</div>
+  <div class="FID-win" data-artifact="content/albums/" data-layout-allow-overflow><div class="FID-list" id="FID-lb">
+    <div class="FID-row">Bob Dylan<span class="y">1962</span></div>
+    <div class="FID-row">The Freewheelin' Bob Dylan<span class="y">1963</span></div>
+    <div class="FID-row">The Times They Are a-Changin'<span class="y">1964</span></div>
+    <div class="FID-row">Another Side of Bob Dylan<span class="y">1964</span></div>
+    <div class="FID-row">Bringing It All Back Home<span class="y">1965</span></div>
+    <div class="FID-row">Highway 61 Revisited<span class="y">1965</span></div>
+    <div class="FID-row">Blonde on Blonde<span class="y">1966</span></div>
+    <div class="FID-row">John Wesley Harding<span class="y">1967</span></div>
+    <div class="FID-row">Nashville Skyline<span class="y">1969</span></div>
+    <div class="FID-row">Self Portrait<span class="y">1970</span></div>
+    <div class="FID-row">New Morning<span class="y">1970</span></div>
+    <div class="FID-row">Pat Garrett &amp; Billy the Kid<span class="y">1973</span></div>
+    <div class="FID-row">Dylan<span class="y">1973</span></div>
+    <div class="FID-row">Planet Waves<span class="y">1974</span></div>
+    <div class="FID-row">Blood on the Tracks<span class="y">1975</span></div>
+    <div class="FID-row">The Basement Tapes<span class="y">1975</span></div>
+    <div class="FID-row">Desire<span class="y">1976</span></div>
+    <div class="FID-row">Street-Legal<span class="y">1978</span></div>
+    <div class="FID-row">Slow Train Coming<span class="y">1979</span></div>
+    <div class="FID-row">Saved<span class="y">1980</span></div>
+  </div></div>
+  <i class="FID-launch" id="FID-rb"></i>
+  <div class="FID-when" id="FID-wb">launch, after <span class="FID-cost">a month of data entry<i class="FID-u" id="FID-u"></i></span></div>
+</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`
+  var rowsA = [].slice.call(document.getElementById("FID-la").children), rowsB = [].slice.call(document.getElementById("FID-lb").children);
+  var nb = document.getElementById("FID-nb"), count = { v: 10 };
+  function showCount() { nb.textContent = Math.round(count.v) + " albums"; }
+  // after `var tl = gsap.timeline({ paused: true });`
+  var ROW = 33.6, SHOWN = 10, MORE = rowsB.length - SHOWN;                       // rows the window shows; rows B scrolls on
+  gsap.set(["#FID-q", "#FID-a", "#FID-b"], { opacity: 0 });
+  gsap.set(rowsA.concat(rowsB), { opacity: 0 });
+  gsap.set(["#FID-ra", "#FID-rb", "#FID-u"], { scaleX: 0 });
+  gsap.set(["#FID-wa", "#FID-wb"], { opacity: 0, y: 6 });
+  tl.to("#FID-q", { opacity: 1, duration: 0.5 }, 0.2);
+  tl.to(["#FID-a", "#FID-b"], { opacity: 1, duration: 0.5 }, 0.6);
+  for (var i = 0; i < SHOWN; i++) tl.to([rowsA[i], rowsB[i]], { opacity: 1, duration: 0.1, ease: "none" }, 1.0 + i * 0.09);   // printed, in both
+  tl.to("#FID-ra", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 2.6);                         // A: launch after ten
+  tl.to("#FID-wa", { opacity: 1, y: 0, duration: 0.4 }, 2.9);
+  tl.to(rowsB.slice(SHOWN), { opacity: 1, duration: 0.1, ease: "none" }, 3.8);
+  tl.to("#FID-lb", { y: -MORE * ROW, duration: 2.4, ease: "power1.inOut" }, 3.8);                     // B: the list goes on
+  tl.to(count, { v: 40, duration: 2.4, ease: "power1.inOut", onUpdate: showCount }, 3.8);            // counted to the plan's forty
+  tl.to("#FID-rb", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.4);                         // and launches only then
+  tl.to("#FID-wb", { opacity: 1, y: 0, duration: 0.4 }, 6.7);
+  tl.to("#FID-u", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 7.2);                          // what it costs
+</script>

@@ -1,0 +1,88 @@
+<!-- VERDICTS: each one checked, the tally, then the one that fails up close (scenes/README.md). From a long
+     explainer's sentence check: every sentence of a summary as a bar, the ones its source does not support marked,
+     the tally, and beside them the one sentence read closely, the word that failed it ringed. Use it for whatever a step checks
+     over many things (a validator over records, a test over pages, a rule over files): the viewer sees the rule
+     run, how many pass, and what failing looks like, in one picture.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=verdicts` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the plan's own things and rule
+     in (the example is the Dylan plan's ten sample albums and its rule "every record carries sources[]; the
+     validator warns when a record has none", with one record that has none, as the narration's worked example
+     says: "say one has no sources"). At most twelve rows; past that, the rows are a sample and the place label
+     says so.
+
+     HOW IT MOVES (motion-language.md): the rows are PRINTED; a scan band steps down them, each row's verdict
+     pinned as it passes and the tally COUNTED with each pass; then the rest dims and the failing one opens beside
+     the list, as its file writes it. The failing row's mark is the one coral. Replace the times with your cues. -->
+<style>
+  .FID-place { position:absolute; left:128px; top:96px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .FID-list { position:absolute; left:104px; top:166px; width:860px; height:640px; }
+  .FID-scan { position:absolute; left:0; top:0; width:860px; height:56px; border-radius:6px; background:var(--rp-tile); }
+  .FID-row { position:absolute; left:24px; width:812px; height:56px; font:400 28px/56px "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; font-variant-ligatures:none; }
+  .FID-ok, .FID-bad { position:absolute; right:0; top:0; font:500 30px/56px "Inter"; }
+  .FID-ok { color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-bad { color:var(--rp-coral); }
+  .FID-tally { position:absolute; left:1100px; top:150px; font:400 220px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); font-variant-numeric:tabular-nums; }
+  .FID-of { position:absolute; left:1110px; top:390px; font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
+  .FID-card { position:absolute; left:1100px; top:470px; width:700px; height:250px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .FID-ln { position:absolute; left:40px; font:400 32px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-ln .k { color:rgba(var(--rp-ink-rgb),0.6); }
+  .FID-u { position:absolute; left:40px; top:226px; width:236px; height:3px; background:var(--rp-ink); transform-origin:0 50%; }
+  .FID-says { position:absolute; left:1100px; top:752px; width:720px; font:400 32px/1.3 "Inter"; color:var(--rp-ink); }
+</style>
+
+<div class="FID-place" id="FID-place">plan.md · step 1 · the validator, on the ten sample albums</div>
+<div class="FID-list" id="FID-list" data-artifact="content/albums/">
+  <i class="FID-scan" id="FID-scan"></i>
+  <div class="FID-row" style="top:0px">bob-dylan.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:64px">the-freewheelin-bob-dylan.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:128px">the-times-they-are-a-changin.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:192px">another-side-of-bob-dylan.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:256px">bringing-it-all-back-home.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:320px">highway-61-revisited.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:384px">blonde-on-blonde.yaml<span class="FID-bad">△ no sources</span></div>
+  <div class="FID-row" style="top:448px">john-wesley-harding.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:512px">nashville-skyline.yaml<span class="FID-ok">✓</span></div>
+  <div class="FID-row" style="top:576px">self-portrait.yaml<span class="FID-ok">✓</span></div>
+</div>
+<div class="FID-tally" id="FID-tally">0</div>
+<div class="FID-of" id="FID-of">of 10 carry sources[]</div>
+<div class="FID-card" id="FID-card" data-artifact="content/albums/blonde-on-blonde.yaml">
+  <div class="FID-ln" style="top:36px"><span class="k">title:</span> Blonde on Blonde</div>
+  <div class="FID-ln" style="top:86px"><span class="k">year:</span> 1966</div>
+  <div class="FID-ln" style="top:136px"><span class="k">label:</span> Columbia</div>
+  <div class="FID-ln" style="top:186px"><span class="k">sources:</span> []</div>
+  <i class="FID-u" id="FID-u"></i>
+</div>
+<div class="FID-says" id="FID-says">The validator warns, and the build goes on.</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`
+  var list = document.getElementById("FID-list"), rows = [].slice.call(list.children, 1);
+  var tallyEl = document.getElementById("FID-tally"), tally = { v: 0 };
+  function showTally() { tallyEl.textContent = String(Math.round(tally.v)); }
+  showTally();
+  // after `var tl = gsap.timeline({ paused: true });`
+  var SCAN0 = 1.8, STEP = 0.42;                                                     // the scan's first row and its pace
+  gsap.set(["#FID-place", "#FID-tally", "#FID-of", "#FID-says", "#FID-scan"], { opacity: 0 });
+  gsap.set(rows, { opacity: 0 });
+  rows.forEach(function (r) { gsap.set(r.lastElementChild, { opacity: 0, x: -6 }); });
+  gsap.set("#FID-card", { opacity: 0, y: 14 });
+  gsap.set("#FID-u", { scaleX: 0 });
+  tl.to("#FID-place", { opacity: 1, duration: 0.4 }, 0.2);
+  tl.to(rows, { opacity: 1, duration: 0.1, ease: "none", stagger: 0.09 }, 0.5);                       // printed
+  tl.to(["#FID-tally", "#FID-of", "#FID-scan"], { opacity: 1, duration: 0.3 }, SCAN0 - 0.3);
+  var passed = 0;
+  rows.forEach(function (r, i) {
+    var t = SCAN0 + i * STEP, ok = !!r.querySelector(".FID-ok");
+    if (i) tl.to("#FID-scan", { y: i * 64, duration: 0.24, ease: "power1.inOut" }, t - 0.24);     // the scan steps down
+    tl.to(r.lastElementChild, { opacity: 1, x: 0, duration: 0.2, ease: "power2.out" }, t);            // its verdict, pinned
+    if (ok) { passed++; tl.to(tally, { v: passed, duration: 0.12, ease: "none", onUpdate: showTally }, t); }   // counted
+  });
+  var END = SCAN0 + rows.length * STEP;
+  tl.to("#FID-scan", { opacity: 0, duration: 0.3 }, END);
+  tl.to(rows.filter(function (r) { return r.querySelector(".FID-ok"); }), { opacity: 0.4, duration: 0.5 }, END + 0.3);   // the rest steps back
+  tl.to("#FID-card", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, END + 0.5);         // the failing one, up close
+  tl.to("#FID-u", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, END + 1.1);                   // drawn under sources: []
+  tl.to("#FID-says", { opacity: 1, duration: 0.4 }, END + 1.5);
+</script>

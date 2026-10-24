@@ -48,7 +48,8 @@ agents (on a low plan video, none). At low the point is the first look soon:
 - Before narrating, hold the script to about 330 words (two minutes at the voice's 3.1 words a second): a longer one
   is cut and narrated again.
 - While narration runs, draw the frames yourself, not with workers, from one set of styles; one script that writes
-  every frame is quickest. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
+  every frame is quickest. Start it with one `$RP scene <video-dir> <frame>=<scene> …` for the frames a scene fits,
+  then put the plan in. In two bench runs, that took 3 minutes for 8 frames; two workers took 5 minutes and twice
   the tokens.
 - Before the build, run `$RP frame-check <video-dir> all` (its lint, in seconds; the layout and pictures need the
   video assembled), `$RP check-terms <video-dir>` and `$RP variety <video-dir>` (no one transition on over 70% of the
@@ -354,7 +355,12 @@ explainer (`<explainer-dir>/video/`).
    `$RP patch-tts-speed --check` first, then `$RP narrate <video-dir>` (at 1.25×, one line at a time;
    several at once with a hosted engine, which `REELPLANNER_TTS` (`~/.reelplanner/.env`) or `.reelplanner/config.json`'s `narration` names and
    `$RP setup --dry-run` reports; on a rebuild it voices only the lines that changed). Commit `.hyperframes/narration.json` with the
-   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene: a video of up to
+   voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene, and start each from one of
+   the theme's scenes where one fits what the beat is about: `$RP scene` lists them (a count drawn to scale, one
+   record labelled part by part, who does what in lanes, a rule's verdicts, someone's own words, a decision's two
+   futures, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …` writes those frames,
+   for you to put the plan's own words, numbers and things in (every one in a scene is its Dylan example's). A frame
+   drawn from a blank page tends to come out as cards of words. A video of up to
    about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
    `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
    each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).

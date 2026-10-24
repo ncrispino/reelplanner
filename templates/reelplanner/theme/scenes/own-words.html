@@ -1,0 +1,50 @@
+<!-- OWN WORDS: what someone wrote, at size, its turn marked (scenes/README.md). From a long explainer's agent
+     reasoning, quoted whole and large, with the clause where it changed course drawn out: the viewer reads the
+     words themselves instead of a summary of them. Use it for the sentence a plan rests on, the person's ask, an
+     issue, an error message, a reviewer's note: anything whose exact words carry the point.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=own-words` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the words in exactly as their
+     source writes them (the example is the Dylan plan's "Why not the obvious approach", and the sentence after
+     it). The turn, the few words the scene is about, goes in the FID-hot span. Two sentences at most.
+
+     HOW IT MOVES (motion-language.md): the quote is PRINTED word by word at reading pace, its turn's underline
+     DRAWN on the word the narration lands on (the one coral), then what follows from it, set apart by a rule.
+     Replace the times with your cues. -->
+<style>
+  .FID-place { position:absolute; left:220px; top:150px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .FID-q { position:absolute; left:212px; top:220px; width:1500px; font:italic 400 100px/1.16 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .FID-q .w { display:inline-block; white-space:pre; }
+  .FID-hot { position:relative; display:inline-block; }
+  .FID-u { position:absolute; left:0; right:14px; bottom:4px; height:5px; background:var(--rp-coral); transform-origin:0 50%; }
+  .FID-rule { position:absolute; left:220px; top:640px; width:3px; height:118px; background:rgba(var(--rp-ink-rgb),0.3); transform-origin:50% 0; }
+  .FID-so { position:absolute; left:262px; top:644px; width:1300px; font:400 38px/1.4 "Inter"; color:var(--rp-ink); }
+</style>
+
+<div class="FID-place" id="FID-place">plan.md · why not the obvious approach</div>
+<div class="FID-q" id="FID-q" data-artifact="plan.md">A single long biography page is where most fan sites fail: <span class="FID-hot" id="FID-hot">it reads as a wall of text.<i class="FID-u" id="FID-u"></i></span></div>
+<i class="FID-rule" id="FID-rule"></i>
+<div class="FID-so" id="FID-so" data-artifact="plan.md">The site should be organised by era, with the discography and the timeline as the spine.</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`: each word its own span, so it can be printed
+  var words = [];
+  function split(el) {
+    [].slice.call(el.childNodes).forEach(function (n) {
+      if (n.nodeType !== 3) { if (n.id === "FID-hot") split(n); return; }
+      n.textContent.split(/(?<=\s)/).forEach(function (w) { var s = document.createElement("span"); s.className = "w"; s.textContent = w; el.insertBefore(s, n); words.push(s); });
+      el.removeChild(n);
+    });
+  }
+  split(document.getElementById("FID-q"));
+  // after `var tl = gsap.timeline({ paused: true });`
+  gsap.set(["#FID-place", "#FID-so"], { opacity: 0 });
+  gsap.set(words, { opacity: 0 });
+  gsap.set("#FID-u", { scaleX: 0 });
+  gsap.set("#FID-rule", { scaleY: 0 });
+  tl.to("#FID-place", { opacity: 1, duration: 0.4 }, 0.2);
+  tl.to(words, { opacity: 1, duration: 0.18, ease: "none", stagger: 0.16 }, 0.6);                      // printed, at reading pace
+  tl.to("#FID-u", { scaleX: 1, duration: 0.7, ease: "power1.inOut" }, 3.6);                            // drawn under the turn
+  tl.to("#FID-rule", { scaleY: 1, duration: 0.4, ease: "power1.inOut" }, 5.0);
+  tl.to("#FID-so", { opacity: 1, duration: 0.5, ease: "power1.out" }, 5.2);
+</script>

@@ -11,7 +11,11 @@
 //     or moving (it, or its camera) in the last 3 s; two of one name fail; unsized, or over a card, is a note
 //   - frame-lint (videos-that-make-sense step 4): empty bars stacked where words go fail (rule 1), one bar or two
 //     underlines pass, the theme's stages hold words; anything within 40 px above a data-detail mark fails (rule 5)
-//   - the theme's code-diff and terminal-run blocks, pasted into a frame, pass frame-lint
+//   - the theme's code-diff and terminal-run blocks, and each of its scenes, pasted into a frame, pass frame-lint;
+//     the scenes' README names every scene
+//   - scene: writes each frame named from its scene (the storyboard's src, the frame's prefix, id, length and band),
+//     and the frames pass frame-lint; it lists the scenes; it writes nothing over a frame there already, or when one
+//     pair is wrong (no such scene or frame, a frame with no src)
 //   - frame-lint: a frames folder, or a video project's folder, lints the frames in it; a folder with none,
 //     or a missing path, is a clear error (exit 2)
 //   - motion-static: a helper's pops are read (a drip of pops shows its still stretches); a hold on a
@@ -20,7 +24,7 @@
 //   - variety: over 70% of scenes on one layout or one transition warns; a BRIEF.md without its medium,
 //     layouts and main transition warns; an optional `- Real things:` line is repeated, never warned on
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
@@ -141,12 +145,42 @@ try {
   ok("…with 40 px of room it passes, and a background behind the thing is not in the way", r.code === 0, r.out);
 
   // ── the theme's blocks pass as they ship ─────────────────────────────────────────────────────────────
-  for (const b of ["code-diff", "terminal-run"]) {
-    const src = readFileSync(join(ROOT, "templates", "reelplanner", "theme", "blocks", `${b}.html`), "utf8").replaceAll("FID", `f01-${b}`);
+  const SCENES = join(ROOT, "templates", "reelplanner", "theme", "scenes"), scenes = readdirSync(SCENES).filter((f) => f.endsWith(".html")).map((f) => f.slice(0, -5));
+  for (const b of ["code-diff", "terminal-run", ...scenes.map((n) => `scene:${n}`)]) {
+    const [folder, n] = b.startsWith("scene:") ? ["scenes", b.slice(6)] : ["blocks", b];
+    const src = readFileSync(join(ROOT, "templates", "reelplanner", "theme", folder, `${n}.html`), "utf8").replaceAll("FID", `f01-${n}`);
     const style = (src.match(/<style>([\s\S]*?)<\/style>/) || [])[1], script = (src.match(/<script>([\s\S]*?)<\/script>/) || [])[1];
     const markup = src.replace(/<!--[\s\S]*?-->/g, "").replace(/<style>[\s\S]*?<\/style>/, "").replace(/<script>[\s\S]*?<\/script>/, "");
-    r = lint(frame(`block-${b}`, { css: style, body: markup, tl: script }));
-    ok(`the theme's ${b} block, pasted into a frame, passes frame-lint (tokens only, camera in a clipped view)`, r.code === 0, r.out);
+    r = lint(frame(`block-${n}`, { css: style, body: markup, tl: script }));
+    ok(`the theme's ${folder === "scenes" ? `${n} scene` : `${n} block`}, pasted into a frame, passes frame-lint (tokens only, camera in a clipped view)`, r.code === 0, r.out);
+  }
+  const readme = readFileSync(join(SCENES, "README.md"), "utf8");
+  ok(`…and the scenes' README names every scene (${scenes.length})`, scenes.length >= 7 && scenes.every((n) => readme.includes(`\`${n}.html\``)), scenes.filter((n) => !readme.includes(`\`${n}.html\``)).join(", "));
+
+  // ── scene: a frame started from a scene ──────────────────────────────────────────────────────────────────
+  {
+    const V = join(tmp, "scene-video"), F = join(V, "compositions", "frames");
+    mkdirSync(V, { recursive: true });
+    writeFileSync(join(V, "STORYBOARD.md"), "# Storyboard\n\n## Frame 3 — Before launch\n\n- duration: 7.5s\n- src: compositions/frames/03-before-launch.html\n\n## Frame 4 — No file\n\n- duration: 5s\n\n## Frame 5 — The path\n\n- src: compositions/frames/05-the-path.html\n");
+    writeFileSync(join(V, "audio_meta.json"), JSON.stringify({ voices: [{ frame: 5, path: "x.wav", duration_s: 11.25, words: [] }] }));
+    const scene = (...a) => node("scene.mjs", a);
+    let s1 = scene();
+    ok("scene: with no video, it lists the scenes, each with what it is for", s1.code === 0 && scenes.every((n) => new RegExp(`^  ${n} +\\S`, "m").test(s1.out)), s1.out);
+    s1 = scene(V, "3=count", "5=x");
+    ok("…a scene that is not there fails, and nothing is written", s1.code === 1 && /no scene "x"/.test(s1.out) && !existsSync(F), s1.out);
+    s1 = scene(V, "4=count");
+    ok("…so does a frame with no src line", s1.code === 1 && /frame 4 has no `- src:` line/.test(s1.out), s1.out);
+    s1 = scene(V, "3=count", "5=journey");
+    const f3 = existsSync(join(F, "03-before-launch.html")) ? readFileSync(join(F, "03-before-launch.html"), "utf8") : "", f5 = existsSync(join(F, "05-the-path.html")) ? readFileSync(join(F, "05-the-path.html"), "utf8") : "";
+    ok("…it writes each frame named, at its storyboard src, from its scene", s1.code === 0 && /f03-before-launch-field/.test(f3) && /f05-the-path-cam/.test(f5) && !/FID/.test(f3 + f5), s1.out);
+    ok("…its root carries the frame's id, its length (its voice's, else the storyboard's) and the bottom band",
+      /data-composition-id="03-before-launch"[^>]*data-duration="7.50"[^>]*data-band="bottom"/.test(f3) && /data-duration="11.25"/.test(f5) && /var DUR = 11.25;/.test(f5) && /DUR - 0\.001/.test(f5), f3.slice(0, 400));
+    r = lint(F);
+    ok("…and the frames it writes pass frame-lint", r.code === 0, r.out);
+    writeFileSync(join(F, "03-before-launch.html"), "mine");
+    s1 = scene(V, "3=lanes");
+    ok("…a frame already there is left alone, unless --force", s1.code === 1 && /is there already/.test(s1.out) && readFileSync(join(F, "03-before-launch.html"), "utf8") === "mine"
+      && scene(V, "3=lanes", "--force").code === 0 && /f03-before-launch-now/.test(readFileSync(join(F, "03-before-launch.html"), "utf8")), s1.out);
   }
 
   // ── a folder stands for the frames in it ─────────────────────────────────────────────────────────────

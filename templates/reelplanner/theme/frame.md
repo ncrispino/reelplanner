@@ -224,6 +224,7 @@ to emit; it reads by warmth and hairline.
 - **place-label** — optional, a quiet mono "where": the file, the page, the chapter. **coral-callout** — the one voltage moment (CTA / inline link / full-bleed band).
 - **artifact** — the real thing in a `data-artifact` container; **pinned-word** — a `data-gloss` label on the part of it a word names; **detail-mark** — `data-detail` on the thing a scene's detail page explains (the player's button goes over it).
 - **number-lockup** — EB Garamond figure + mono unit (the PR `+N / −M`, `200K`, file counts). **pull-quote** — EB Garamond italic + cite (a commit message / reviewer line).
+- **scenes** — whole scenes to start a frame from, in the theme's tokens and motion (`scenes/`; `reelplanner scene` writes a frame from one): a count drawn to scale, a record's anatomy, lanes, verdicts, someone's own words, a decision's two futures, a person's journey through the pages.
 - **code-surface** — the warm-navy code / terminal surface; the code itself comes from the theme's **`blocks/code-diff.html`** and **`blocks/terminal-run.html`** (forks of HyperFrames' blocks, tokens only).
 - **spike-mark** — the ✱ brand glyph, always coral, optional.
 

@@ -1,0 +1,116 @@
+<!-- JOURNEY: one person's path through the real pages (scenes/README.md). From the Dylan plan's "After this lands"
+     ("a visitor opens an era, clicks an album, sees its tracks, clicks a song, and lands on the timeline where it
+     was first performed") drawn as the pages themselves, with real words in them, and the camera following each
+     click. Use it for what the plan makes, seen by the person who will use it: the pages or screens, in the order
+     they meet them. It shows the cross-links a step builds better than any diagram of them.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=journey` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the plan's own pages and words
+     in (every fact on these four pages is Bob Dylan's record as the plan's content would hold it). Two to four
+     pages; each page a prototype (`data-plan-component="page"`), its words real and short, the link that is
+     clicked marked FID-link. The camera's poses put a page's centre (x, 440) at the view's centre at scale 1.7:
+     x = 960 − 1.7·x, y = 450 − 1.7·440.
+
+     HOW IT MOVES (motion-language.md): the camera starts close on the first page; each page's lines are PRINTED as
+     the camera arrives; a click is a ring on the link and its underline DRAWN; the camera pans to the page it opens;
+     at the end it pulls back to the whole path, the hops between pages drawn. The destination's line is the one
+     coral. The camera is inside a view clipped at y 900. Replace the times with your cues. -->
+<style>
+  .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .FID-pg { position:absolute; top:200px; width:400px; height:480px; box-sizing:border-box; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .FID-pg > div { position:absolute; left:26px; width:348px; }
+  .FID-pg > .FID-bar { left:0; top:0; width:348px; height:44px; padding:0 26px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:400 19px/44px "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-bar .nav { float:right; font:400 13px/44px "Inter"; color:rgba(var(--rp-ink-rgb),0.62); word-spacing:6px; }
+  .FID-h { font:400 34px/1.1 "EB Garamond"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
+  .FID-sub { font:500 14px/1.4 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-p { font:400 17px/1.45 "Inter"; color:var(--rp-ink); }
+  .FID-k { font:500 14px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-li { font:400 18px/30px "Inter"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .FID-li.wrap { white-space:normal; padding-left:26px; text-indent:-26px; }   /* a long line takes two, as the page would */
+  .FID-li.on { overflow:visible; }                                    /* the clicked link's row: its ring may reach past it */
+  .FID-li .n { display:inline-block; width:26px; font:500 14px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-li .d { display:inline-block; width:70px; font:500 14px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-link { position:relative; display:inline-block; }
+  .FID-link i { position:absolute; left:0; right:0; bottom:3px; height:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .FID-ring { position:absolute; right:-40px; top:-6px; width:42px; height:42px; border-radius:50%; border:3px solid var(--rp-ink); box-sizing:border-box; }
+  .FID-hot b { position:absolute; left:-12px; top:5px; width:4px; height:20px; background:var(--rp-coral); transform-origin:50% 0; }
+  .FID-hop { position:absolute; width:40px; height:2px; background:rgba(var(--rp-ink-rgb),0.5); transform-origin:0 50%; }
+  .FID-place { position:absolute; left:100px; top:120px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+</style>
+
+<div class="FID-view" id="FID-view"><div class="FID-cam" id="FID-cam" data-camera>
+  <div class="FID-pg" id="FID-p1" data-plan-component="page" data-artifact="era page" style="left:100px">
+    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
+    <div class="FID-h" style="top:64px">Going electric</div>
+    <div class="FID-sub" style="top:106px">1965–1966</div>
+    <div class="FID-p" style="top:138px">In 1965 Dylan plugged in. Bringing It All Back Home had one electric side; that summer he played Newport with a band.</div>
+    <div class="FID-k" style="top:236px">ALBUMS</div>
+    <div class="FID-li" style="top:258px">Bringing It All Back Home</div>
+    <div class="FID-li on" style="top:288px"><span class="FID-link">Highway 61 Revisited<i id="FID-u1"></i><b class="FID-ring" id="FID-r1"></b></span></div>
+    <div class="FID-li" style="top:318px">Blonde on Blonde</div>
+  </div>
+  <div class="FID-pg" id="FID-p2" data-plan-component="page" data-artifact="album page" style="left:540px">
+    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
+    <div class="FID-h" style="top:64px">Highway 61 Revisited</div>
+    <div class="FID-sub" style="top:106px">1965 · Columbia · going electric</div>
+    <div class="FID-k" style="top:140px">TRACKS</div>
+    <div class="FID-li on" style="top:162px"><span class="n">1</span><span class="FID-link">Like a Rolling Stone<i id="FID-u2"></i><b class="FID-ring" id="FID-r2"></b></span></div>
+    <div class="FID-li" style="top:192px"><span class="n">2</span>Tombstone Blues</div>
+    <div class="FID-li wrap" style="top:222px"><span class="n">3</span>It Takes a Lot to Laugh, It Takes a Train to Cry</div>
+    <div class="FID-li" style="top:282px"><span class="n">4</span>From a Buick 6</div>
+    <div class="FID-li" style="top:312px"><span class="n">5</span>Ballad of a Thin Man</div>
+    <div class="FID-li" style="top:342px"><span class="n">6</span>Queen Jane Approximately</div>
+    <div class="FID-li" style="top:372px"><span class="n">7</span>Highway 61 Revisited</div>
+    <div class="FID-li" style="top:402px"><span class="n">8</span>Just Like Tom Thumb's Blues</div>
+    <div class="FID-li" style="top:432px"><span class="n">9</span>Desolation Row</div>
+  </div>
+  <div class="FID-pg" id="FID-p3" data-plan-component="page" data-artifact="song page" style="left:980px">
+    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
+    <div class="FID-h" style="top:64px">Like a Rolling Stone</div>
+    <div class="FID-sub" style="top:106px">written 1965 · first on Highway 61 Revisited</div>
+    <div class="FID-k" style="top:160px">COVERED BY</div>
+    <div class="FID-li" style="top:182px">The Rolling Stones</div>
+    <div class="FID-li" style="top:212px">Jimi Hendrix</div>
+    <div class="FID-k" style="top:262px">FIRST PLAYED LIVE</div>
+    <div class="FID-li on" style="top:284px"><span class="FID-link">Newport Folk Festival, 25 July 1965<i id="FID-u3"></i><b class="FID-ring" id="FID-r3"></b></span></div>
+  </div>
+  <div class="FID-pg" id="FID-p4" data-plan-component="page" data-artifact="timeline page" style="left:1420px">
+    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
+    <div class="FID-h" style="top:64px">Timeline</div>
+    <div class="FID-sub" style="top:106px">1965</div>
+    <div class="FID-li" style="top:144px"><span class="d">22 Mar</span>Bringing It All Back Home</div>
+    <div class="FID-li" style="top:174px"><span class="d">20 Jul</span>Like a Rolling Stone, the single</div>
+    <div class="FID-li on FID-hot" style="top:204px"><b id="FID-hot"></b><span class="d">25 Jul</span>Newport: plays electric</div>
+    <div class="FID-li" style="top:234px"><span class="d">30 Aug</span>Highway 61 Revisited</div>
+  </div>
+  <i class="FID-hop" id="FID-h1" style="left:500px; top:503px"></i>
+  <i class="FID-hop" id="FID-h2" style="left:940px; top:377px"></i>
+  <i class="FID-hop" id="FID-h3" style="left:1380px; top:499px"></i>
+</div></div>
+<div class="FID-place" id="FID-place">plan.md · after this lands · one visitor's path</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`
+  function lines(id) { var p = document.getElementById(id); return [].slice.call(p.children, 1); }   // a page's lines, under its bar
+  // after `var tl = gsap.timeline({ paused: true });`
+  var S = 1.7, Y = 450 - S * 440, POSE = [300, 740, 1180, 1620].map(function (cx) { return 960 - S * cx; });   // a page's centre, (x, 440)
+  gsap.set("#FID-cam", { x: POSE[0], y: Y, scale: S });                                                   // close on the first page
+  gsap.set([].concat(lines("FID-p1"), lines("FID-p2"), lines("FID-p3"), lines("FID-p4")), { opacity: 0 });
+  gsap.set(["#FID-u1", "#FID-u2", "#FID-u3", "#FID-h1", "#FID-h2", "#FID-h3"], { scaleX: 0 });
+  gsap.set(["#FID-r1", "#FID-r2", "#FID-r3"], { opacity: 0, scale: 1.6 });
+  gsap.set("#FID-hot", { scaleY: 0 });
+  gsap.set("#FID-place", { opacity: 0 });
+  var ARRIVE = [0.3, 2.6, 4.4, 6.2], CLICK = [1.8, 3.6, 5.4];
+  ARRIVE.forEach(function (t, i) { tl.to(lines("FID-p" + (i + 1)), { opacity: 1, duration: 0.12, ease: "none", stagger: 0.07 }, t); });   // printed
+  CLICK.forEach(function (t, i) {
+    tl.to("#FID-r" + (i + 1), { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, t);              // the click
+    tl.to("#FID-r" + (i + 1), { opacity: 0, duration: 0.3 }, t + 0.5);
+    tl.to("#FID-u" + (i + 1), { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, t + 0.05);               // its link, drawn
+    tl.to("#FID-cam", { x: POSE[i + 1], duration: 0.9, ease: "power1.inOut" }, t + 0.5);                    // to the page it opens
+  });
+  tl.to("#FID-hot", { scaleY: 1, duration: 0.35, ease: "power2.out" }, 6.9);                                // where it lands: the one coral
+  tl.to("#FID-cam", { x: 0, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, 7.9);                   // the whole path
+  tl.to(["#FID-h1", "#FID-h2", "#FID-h3"], { scaleX: 1, duration: 0.35, ease: "power1.inOut", stagger: 0.2 }, 9.0);
+  tl.to("#FID-place", { opacity: 1, duration: 0.4 }, 9.0);
+</script>

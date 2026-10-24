@@ -1,0 +1,70 @@
+<!-- COUNT: a number, then the part of it that matters, drawn to scale (scenes/README.md). From a long
+     explainer's field of tens of thousands of records with the few dozen it cited marked in it: the whole drawn,
+     the part marked, so the viewer sees how much "ten of forty" is before the narration says it.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=count` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put your plan's figures in.
+     The example's figures are the Dylan plan's own (eval/plans/bob-dylan-site/plan.md: 40 studio albums, ten
+     written before launch, "a month of data entry"): never a figure the plan or its sources do not give.
+     One cell a unit while the whole is under about 200 (set N, PART and COLS); past that a cell is a group,
+     and the unit line says so ("one square · 1,000 acts").
+
+     HOW IT MOVES (motion-language.md): the whole is COUNTED, the figure and the cells together on the word
+     that says the number; the part FILLS, its own figure counted; what is left dims, with what it costs
+     beside it. Coral is the part, and nothing else. Replace the times with your cues. -->
+<style>
+  .FID-place { position:absolute; left:128px; top:96px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .FID-fig { position:absolute; left:116px; font:400 240px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); font-variant-numeric:tabular-nums; }
+  .FID-fig.small { font-size:120px; left:122px; }
+  .FID-unit { position:absolute; left:128px; font:400 34px/1.25 "Inter"; color:var(--rp-ink); max-width:640px; }
+  .FID-unit .m { font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
+  .FID-rule { position:absolute; left:128px; top:532px; width:600px; height:1px; background:rgba(var(--rp-ink-rgb),0.24); transform-origin:0 50%; }
+  .FID-field { position:absolute; left:900px; top:170px; width:894px; height:552px; }
+  .FID-c { position:absolute; width:96px; height:96px; border-radius:6px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-sizing:border-box; }
+  .FID-c i { position:absolute; inset:-1px; border-radius:6px; background:var(--rp-coral); opacity:0; }
+  .FID-rest { position:absolute; left:900px; top:756px; font:400 32px/1.3 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-rest .m { font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
+</style>
+
+<div class="FID-place" id="FID-place">plan.md · step 1 · before launch</div>
+<div class="FID-fig" id="FID-all" style="top:172px">40</div>
+<div class="FID-unit" id="FID-all-u" style="top:458px"><span class="m">studio albums</span></div>
+<div class="FID-rule" id="FID-rule"></div>
+<div class="FID-fig small" id="FID-part" style="top:570px">10</div>
+<div class="FID-unit" id="FID-part-u" style="top:716px">written before launch, with forty songs</div>
+<div class="FID-field" id="FID-field" data-artifact="content/albums/"></div>
+<div class="FID-rest" id="FID-rest">the other 30 · <span class="m">a month of data entry</span></div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`: the field, one cell a unit
+  var N = 40, PART = 10, COLS = 8, CELL = 96, GAP = 18;
+  var field = document.getElementById("FID-field");
+  for (var i = 0; i < N; i++) {
+    var c = document.createElement("div"); c.className = "FID-c";
+    c.style.left = (i % COLS) * (CELL + GAP) + "px"; c.style.top = Math.floor(i / COLS) * (CELL + GAP) + "px";
+    c.appendChild(document.createElement("i")); field.appendChild(c);
+  }
+  var cells = [].slice.call(field.children), part = [], rest = [];
+  for (var j = 0; j < N; j++) { if (j < PART) part.push(cells[j].firstChild); else rest.push(cells[j]); }
+  function counter(el, to) { var o = { v: 0 }; return { o: o, up: function () { el.textContent = String(Math.round(o.v)); } }; }
+  var all = counter(document.getElementById("FID-all"), N), pt = counter(document.getElementById("FID-part"), PART);
+  all.up(); pt.up();
+  // after `var tl = gsap.timeline({ paused: true });`
+  gsap.set(["#FID-place", "#FID-all-u", "#FID-part-u", "#FID-rest"], { opacity: 0 });
+  gsap.set(["#FID-all", "#FID-part"], { opacity: 0 });
+  gsap.set(cells, { opacity: 0, scale: 0.6 });
+  gsap.set("#FID-rule", { scaleX: 0 });
+  gsap.set("#FID-rest", { y: 8 });
+  tl.to("#FID-place", { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.2);
+  tl.set("#FID-all", { opacity: 1 }, 0.5);
+  tl.to(all.o, { v: N, duration: 1.4, ease: "power2.out", onUpdate: all.up }, 0.5);                      // counted: "forty"
+  tl.to(cells, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", stagger: 0.028 }, 0.5);        // the field, with it
+  tl.to("#FID-all-u", { opacity: 1, duration: 0.4 }, 1.9);
+  tl.to("#FID-rule", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 2.6);                         // drawn
+  tl.set("#FID-part", { opacity: 1 }, 3.0);
+  tl.to(pt.o, { v: PART, duration: 0.6, ease: "power1.out", onUpdate: pt.up }, 3.0);                    // counted: "ten"
+  tl.to(part, { opacity: 1, duration: 0.25, ease: "none", stagger: 0.06 }, 3.0);                        // the part fills
+  tl.to("#FID-part-u", { opacity: 1, duration: 0.4 }, 3.5);
+  tl.to(rest, { opacity: 0.42, duration: 0.6, ease: "power1.inOut" }, 4.4);                             // what is left dims
+  tl.to("#FID-rest", { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 4.6);
+</script>

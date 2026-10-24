@@ -1,0 +1,63 @@
+<!-- ANATOMY: one real thing, each part named where it sits (scenes/README.md). From a long explainer's one
+     log row, shown whole with "the id, when, who, what, on what" under its fields: after it, every other row in
+     the video read itself. Use it for the record, file,
+     form, URL or command the plan's other scenes keep coming back to: show one, whole, before any summary of it.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=anatomy` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the REAL thing in, as its
+     file writes it (the example is the song record the Dylan plan's step 1 defines: title, written, first_album,
+     covers). Each label is plain words for what the part is FOR, on the part's own row, never in a legend.
+
+     HOW IT MOVES (motion-language.md): the thing is PRINTED line by line; each label is PINNED on its line as the
+     narration names it, its connector DRAWN; then the camera pushes in on the one part the step is about, and an
+     underline is drawn under it (the one coral) with what the plan does with it. The camera is inside a view
+     clipped at y 900. Replace the times with your cues. -->
+<style>
+  .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
+  .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
+  .FID-place { position:absolute; left:128px; top:96px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
+  .FID-file { position:absolute; left:128px; top:170px; width:1130px; height:420px; border-radius:8px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.12); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .FID-ln { position:absolute; left:56px; font:400 40px/1 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; font-variant-ligatures:none; }
+  .FID-ln .k { color:rgba(var(--rp-ink-rgb),0.6); }
+  .FID-v { position:relative; display:inline-block; }
+  .FID-u { position:absolute; left:0; right:0; bottom:-10px; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .FID-wire { position:absolute; left:1258px; width:80px; height:1px; background:rgba(var(--rp-ink-rgb),0.3); transform-origin:0 50%; }
+  .FID-lbl { position:absolute; left:1356px; font:400 34px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .FID-so { position:absolute; left:128px; top:650px; width:1130px; font:400 36px/1.35 "Inter"; color:var(--rp-ink); }
+</style>
+
+<div class="FID-view" id="FID-view"><div class="FID-cam" id="FID-cam" data-camera>
+  <div class="FID-place" id="FID-place">content/songs/like-a-rolling-stone.yaml</div>
+  <div class="FID-file" id="FID-file" data-artifact="content/songs/like-a-rolling-stone.yaml">
+    <div class="FID-ln" id="FID-l1" style="top:62px"><span class="k">title:</span> Like a Rolling Stone</div>
+    <div class="FID-ln" id="FID-l2" style="top:150px"><span class="k">written:</span> 1965</div>
+    <div class="FID-ln" id="FID-l3" style="top:238px"><span class="k">first_album:</span> <span class="FID-v">highway-61-revisited<i class="FID-u" id="FID-u"></i></span></div>
+    <div class="FID-ln" id="FID-l4" style="top:326px"><span class="k">covers:</span> [the-rolling-stones, jimi-hendrix]</div>
+  </div>
+  <i class="FID-wire" id="FID-w1" style="top:252px"></i><div class="FID-lbl" id="FID-b1" style="top:232px">the song page's name</div>
+  <i class="FID-wire" id="FID-w2" style="top:340px"></i><div class="FID-lbl" id="FID-b2" style="top:320px">its year on the timeline</div>
+  <i class="FID-wire" id="FID-w3" style="top:428px"></i><div class="FID-lbl" id="FID-b3" style="top:408px">the album page it links to</div>
+  <i class="FID-wire" id="FID-w4" style="top:516px"></i><div class="FID-lbl" id="FID-b4" style="top:496px">who else recorded it</div>
+  <div class="FID-so" id="FID-so">The validator fails the build when a song names an album that does not exist.</div>
+</div></div>
+
+<script>
+  // after `var tl = gsap.timeline({ paused: true });`
+  var lines = ["#FID-l1", "#FID-l2", "#FID-l3", "#FID-l4"];
+  gsap.set(["#FID-place", "#FID-file", "#FID-so"].concat(lines), { opacity: 0 });
+  gsap.set("#FID-file", { y: 12 });
+  gsap.set(["#FID-w1", "#FID-w2", "#FID-w3", "#FID-w4", "#FID-u"], { scaleX: 0 });
+  gsap.set(["#FID-b1", "#FID-b2", "#FID-b3", "#FID-b4"], { opacity: 0, y: 8 });
+  tl.to("#FID-place", { opacity: 1, duration: 0.4 }, 0.2);
+  tl.to("#FID-file", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.4);
+  tl.to(lines, { opacity: 1, duration: 0.1, ease: "none", stagger: 0.35 }, 0.9);                      // printed
+  [2.4, 3.1, 3.8, 4.5].forEach(function (t, i) {                                                      // pinned, each on its word
+    tl.to("#FID-w" + (i + 1), { scaleX: 1, duration: 0.35, ease: "power1.inOut" }, t);
+    tl.to("#FID-b" + (i + 1), { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t + 0.15);
+  });
+  tl.to("#FID-cam", { x: -100, y: -30, scale: 1.12, duration: 1.1, ease: "power1.inOut" }, 5.3);    // push in on first_album
+  tl.to(["#FID-l1", "#FID-l2", "#FID-l4", "#FID-b1", "#FID-b2", "#FID-b4"], { opacity: 0.4, duration: 0.6 }, 5.4);   // the rest steps back
+  tl.to("#FID-u", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.0);                           // drawn: the one coral
+  tl.to("#FID-so", { opacity: 1, duration: 0.45, ease: "power1.out" }, 6.3);
+  tl.to("#FID-cam", { x: 0, y: 0, scale: 1, duration: 0.8, ease: "power2.inOut" }, 8.4);             // at rest
+</script>

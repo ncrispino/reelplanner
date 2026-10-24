@@ -216,6 +216,14 @@ before and after diagram or a flow. A scene the brief picks shows its thing like
 | scope | the two scopes as two states of the same thing |
 | a risk | the state that goes wrong, marked, then the guard |
 
+**Start from a scene.** The theme's scenes draw what plan videos keep needing, taken from the two that showed the
+most (the Dylan plan video and a long explainer): a count with its part drawn to scale, one record labelled part by
+part, who does what in lanes, a rule run over many things with its tally, someone's own words at size, a decision
+as two futures of the same thing, a person's path through the real pages. `$RP scene` lists them, and
+`templates/reelplanner/theme/scenes/README.md` says when each fits; `$RP scene <video-dir> <frame>=<scene>` writes a
+frame from one. Each carries the Dylan plan as its worked example: keep its structure and moves, and replace every
+word, number and thing with your plan's. A beat no scene fits is drawn fresh, by this section.
+
 In a scene that shows the real thing, a card about it (a "means" card, a "chose / instead" card) is only
 for what has no surface: a rule, a count, a decision's two sides. Put the real thing in a container marked `data-artifact="<what it is>"`
 (the file or command it comes from). Its own words stay as the files write them: `check-terms` reads them
