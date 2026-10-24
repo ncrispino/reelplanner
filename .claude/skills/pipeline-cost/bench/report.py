@@ -136,7 +136,7 @@ def phase_at(ph, t):
         if a <= t < b: return p
     return None
 
-report = {"run": start.get("label"), "reelplanner": start.get("reelplanner"), "ended": end and end.get("why"), "episodes": []}
+report = {"run": start.get("label"), "reelplanner": start.get("reelplanner"), "depth": start.get("depth") or None, "ended": end and end.get("why"), "episodes": []}
 for ename, a, b in episodes:
     ph = phases(a, b)
     row = {"episode": ename, "wall_min": round((b - a) / 60000, 1), "phases": {}}
@@ -186,7 +186,7 @@ checks.append(("one model and one effort for every request", len(mix) == 1, ", "
 report["mix"] = {f"{m}@{e}": n for (m, e), n in mix.items()}
 report["checks"] = [dict(name=n, ok=o, detail=d) for n, o, d in checks]
 
-print(f"# {report['run']} · reelplanner {report['reelplanner']} · ended: {report['ended']}\n")
+print(f"# {report['run']} · reelplanner {report['reelplanner']}{' · ' + report['depth'] + ' depth' if report['depth'] else ''} · ended: {report['ended']}\n")
 for e in report["episodes"]:
     print(f"## {e['episode']}: {e['wall_min']} min wall · {e['builds']['n']} builds ({e['builds']['failed']} failed, {e['builds']['minutes']} min) · {e['fresh_eyes_rounds']} fresh-eyes run(s) · {e['sessions']} session(s)\n")
     print("| Phase | Wall min | Agent min | Requests | Tool calls | In tok (with cache) | Out tok | Cost $ |\n|---|---:|---:|---:|---:|---:|---:|---:|")

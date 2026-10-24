@@ -55,7 +55,8 @@ import { tmpdir } from "node:os";
 import { createServer } from "node:http";
 import { spawnSync } from "node:child_process";
 import { ROOT, launchOpts } from "./lib/env.mjs";
-import { feDir, readStamp, stampOf, scenesOf, saidSince, freshEyesState, findingsOf, parseFindings, planOf, answerProblem, buildOf, buildOfStamp, buildsKept, contextOf, inScope, ROUNDS, rolesFor, factChecked } from "./lib/fresh-eyes.mjs";
+import { feDir, readStamp, stampOf, scenesOf, saidSince, freshEyesState, findingsOf, parseFindings, planOf, answerProblem, buildOf, buildOfStamp, buildsKept, contextOf, inScope, rolesFor, roundsFor, ALL_ROLES, factChecked } from "./lib/fresh-eyes.mjs";
+import { depthOf } from "./lib/depth.mjs";
 import { explainerDirOf, readSources, sourceLine } from "./lib/explainer.mjs";
 import { frontMatter, fmValue, glossaryFor, termsOf, rpDirFor, slugOf, storyboardFrames } from "./lib/terms.mjs";
 import { lostBefore } from "./lib/memory.mjs";
@@ -77,6 +78,8 @@ const rel = (p) => relative(process.cwd(), p) || ".";
 // from the storyboard, the script and the person's words (BRIEF.md's `- Ask:` lines, and the last review's comments),
 // writes fresh-eyes/script/newcomer.md; its findings are answered like any round's, before frames are drawn.
 if (args.includes("--script")) {
+  // a low-depth video skips the script's look (#34): its brief says depth: low
+  if (depthOf(dir) === "low") { console.log("✓ fresh eyes on the script: none at low depth (BRIEF.md's depth:)"); process.exit(0); }
   const sd = join(fe, "script"), briefP = join(sd, "newcomer-brief.md"), outP = join(sd, "newcomer.md"), stampP = join(sd, "stamp.json");
   const stampS = (() => { try { return JSON.parse(read(stampP)); } catch { return null; } })();
   if (args.includes("--check")) {
@@ -171,7 +174,8 @@ if (args.includes("--check")) {
 if (args.includes("--prompt")) {
   const role = flag("prompt");
   const roles = rolesFor(dir);
-  if (!roles[role]) die(role === "checker" ? "the fact check is for an explainer with a source far longer than the video can show (a source in sources.json with guide: true); this video has the newcomer and the designer" : `--prompt newcomer, or --prompt designer${roles.checker ? ", or --prompt checker" : ""}`);
+  if (!roles[role] && ALL_ROLES[role] && (role !== "checker" || factChecked(dir))) die(`the ${role} has no part in this round at ${depthOf(dir)} depth (BRIEF.md's depth:): this round's ${Object.keys(roles).join(" and ") || "none"}`);
+  if (!roles[role]) die(role === "checker" ? `the fact check is for an explainer with a source far longer than the video can show (a source in sources.json with guide: true); this video has ${Object.keys(roles).map((r) => `the ${r}`).join(" and ") || "none"}` : `--prompt newcomer, or --prompt designer${roles.checker ? ", or --prompt checker" : ""}`);
   const brief = join(fe, `${role}-brief.md`), out = join(fe, `${role}.md`);
   if (!existsSync(brief)) die(`no brief yet: run \`reelplanner fresh-eyes ${rel(dir)}\` first`);
   // absolute paths: the agent runs from a scratch folder of its own, so a path relative to here would land there
@@ -204,6 +208,7 @@ findings you wrote and the path.`);
 }
 
 // ── a new round ────────────────────────────────────────────────────────────────────────────────────────
+if (!Object.keys(rolesFor(dir, 1)).length) { console.log(`✓ fresh eyes: none at ${depthOf(dir)} depth (BRIEF.md's depth:): nothing to launch`); process.exit(0); }
 const map = (() => { try { return JSON.parse(readFileSync(join(dir, "plan-map.json"), "utf8")); } catch { return null; } })();
 if (!map?.frames?.length || !existsSync(join(dir, "index.html"))) die(`${target} is not built yet (no plan-map.json or index.html): run \`reelplanner build ${target}\` first`);
 const was = readStamp(dir), build = buildOf(dir, map), sameBuild = was && buildOfStamp(was) === build.id;
@@ -227,7 +232,7 @@ if (scope && !scope.length) {
 let round = 1, archived = null;
 const moveRound = (from, to) => {   // the round's files: its briefs, findings and stamp
   mkdirSync(to, { recursive: true });
-  for (const r of Object.keys(rolesFor(dir))) for (const n of [`${r}.md`, `${r}-brief.md`]) if (existsSync(join(from, n))) renameSync(join(from, n), join(to, n));
+  for (const r of Object.keys(ALL_ROLES)) for (const n of [`${r}.md`, `${r}-brief.md`]) if (existsSync(join(from, n))) renameSync(join(from, n), join(to, n));
   if (existsSync(join(from, "stamp.json"))) renameSync(join(from, "stamp.json"), join(to, "stamp.json"));
 };
 if (was) {
@@ -246,7 +251,7 @@ if (was) {
       archived = keep;
     }
   } else {
-    if (any && (was.round || 1) >= ROUNDS) die(`${ROUNDS} rounds done on this build: what is left is said on the page ("Before you watch") and in the notification; no further look (a rebuild, once this build is committed, starts a new set)`);
+    if (any && (was.round || 1) >= roundsFor(dir)) die(`${roundsFor(dir)} round${roundsFor(dir) === 1 ? "" : "s"} done on this build${depthOf(dir) === "high" ? "" : ` at ${depthOf(dir)} depth`}: what is left is said on the page ("Before you watch") and in the notification; no further look (a rebuild, once this build is committed, starts a new set)`);
     if (any) {
       // the second round looks only at the scenes whose words the first's answers changed (step 2): a frame
       // redrawn with its words as they were needs no new look
@@ -349,7 +354,7 @@ the scene just before or after a changed one: ${context.length === 1 ? "it has" 
 other scenes are not here: they have not changed since their own look. A finding on a scene not marked "look at
 this one" is out of scope and is not counted.
 `;
-const findingsShape = (role) => { const k = rolesFor(dir)[role]; return `## The shape of ${role}.md (keep it exactly)
+const findingsShape = (role) => { const k = ALL_ROLES[role]; return `## The shape of ${role}.md (keep it exactly)
 
 \`\`\`
 # Fresh eyes: ${role} · round ${round} · stamp ${stamp.id}
@@ -445,11 +450,12 @@ ${findingsShape("designer")}
 
 ${sceneList(true)}`;
 
-writeFileSync(join(fe, "newcomer-brief.md"), newcomer);
-writeFileSync(join(fe, "designer-brief.md"), designer);
+const roles = rolesFor(dir, round);   // this round's agents, at the video's depth (#34)
+if (roles.newcomer) writeFileSync(join(fe, "newcomer-brief.md"), newcomer);
+if (roles.designer) writeFileSync(join(fe, "designer-brief.md"), designer);
 // the fact check (explain-first step 5): an explainer that sums up more than it quotes gets a third agent, who reads
 // the narration against the sources, never the author's account
-const checked = factChecked(dir);
+const checked = !!roles.checker;
 if (checked) {
   const edir = explainerDirOf(dir), pinned = (edir && readSources(edir)) || readSources(dir) || { sources: [] };
   const how = (x) => x.form === "path" ? (x.shape === "files" && x.files?.length > 1 ? `the files under \`${x.id}/\` as they were at ${x.commit}: \`git ls-tree -r --name-only ${x.commit} -- ${x.id}\`, then \`git show ${x.commit}:<file>\`` : `\`git show ${x.commit}:${x.id}\``)
@@ -487,5 +493,6 @@ ${scenes.map((x) => `### Scene ${x.scene}${role(x)}\n\nSources named: ${said[x.s
 writeFileSync(join(fe, "stamp.json"), JSON.stringify(stamp, null, 2) + "\n");
 const n = Object.keys(shots).length;
 if (archived) console.log(`✓ a new build: the last build's rounds are kept in ${rel(archived)}/`);
-console.log(`✓ fresh eyes, round ${round} of ${ROUNDS}${scope ? ` of this build, on scene${scope.length === 1 ? "" : "s"} ${scope.join(", ")} (what it changed${context.length ? `; ${context.join(", ")} for context` : ""})` : build.scope ? " of this build, every scene (--all)" : ""}: ${rel(join(fe, "newcomer-brief.md"))} and ${rel(join(fe, "designer-brief.md"))}; ${n} of ${scenes.length} scene picture${n === 1 ? "" : "s"}${shotNote ? ` (${shotNote})` : ""}; ${lost.length} thing${lost.length === 1 ? "" : "s"} viewers were lost on before`);
-console.log(`next: launch ${checked ? "three" : "two"} fresh agents, each ${freshAgentHow({ writes: fe })}: one with the prompt from \`fresh-eyes ${rel(dir)} --prompt newcomer\`, one with \`--prompt designer\`${checked ? ", one with `--prompt checker` (the fact check: a source here is far longer than the video)" : ""}, and nothing else; each writes only ${rel(join(fe, "<role>.md"))}; answer every finding under it in ${rel(join(fe, "newcomer.md"))}${checked ? `, ${rel(join(fe, "designer.md"))} and ${rel(join(fe, "checker.md"))}` : ` and ${rel(join(fe, "designer.md"))}`}`);
+const names = Object.keys(roles), N = ["no", "one", "two", "three"][names.length] || String(names.length), briefs = names.map((r) => rel(join(fe, `${r}-brief.md`)));
+console.log(`✓ fresh eyes, round ${round} of ${roundsFor(dir)}${depthOf(dir) === "high" ? "" : ` at ${depthOf(dir)} depth`}${scope ? ` of this build, on scene${scope.length === 1 ? "" : "s"} ${scope.join(", ")} (what it changed${context.length ? `; ${context.join(", ")} for context` : ""})` : build.scope ? " of this build, every scene (--all)" : ""}: ${briefs.join(" and ")}; ${n} of ${scenes.length} scene picture${n === 1 ? "" : "s"}${shotNote ? ` (${shotNote})` : ""}; ${lost.length} thing${lost.length === 1 ? "" : "s"} viewers were lost on before`);
+console.log(`next: launch ${N} fresh agent${names.length === 1 ? "" : "s"}, each ${freshAgentHow({ writes: fe })}: ${names.map((r, i) => `${i ? "one with" : "one with the prompt from"} \`${i ? `--prompt ${r}` : `fresh-eyes ${rel(dir)} --prompt ${r}`}\`${r === "checker" ? " (the fact check: a source here is far longer than the video)" : ""}`).join(", ")}, and nothing else; each writes only ${rel(join(fe, "<role>.md"))}; answer every finding under it in ${names.map((r) => rel(join(fe, `${r}.md`))).join(", ").replace(/, ([^,]*)$/, " and $1")}`);

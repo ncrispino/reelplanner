@@ -2,6 +2,51 @@
 
 ## Unreleased
 
+- **A depth for a video: low, medium or high** (#34). Every video got the checks a plan video needs; an explainer
+  measured at 3.5 h and about $128 spent most of it on 26 scenes and two whole redraws after fresh eyes
+  (`eval/pipeline-cost/2026-10-21-research-explainer.md`). `depth:` in BRIEF.md (`scripts/lib/depth.mjs`) now sets it.
+  - **low:** about two minutes and at most 8 scenes, with nothing taking it past them. No fresh eyes but the fact
+    check of an explainer with a long source, and no strict checks.
+  - **medium,** what the skill writes when the person names none: its kind's budget and at most 15 scenes, past them
+    only on the person's words, quoted. The script's newcomer, then one round of the newcomer and the fact checker,
+    whose second round looks at what the answers rewrote. A cosmetic finding is kept with its fix, not redrawn.
+  - **high:** as before. A brief with no depth line reads as high, so videos made before keep their checks.
+
+  `build`'s length stage and `fresh-eyes` hold to it, and `reelplanner explain --depth` starts an explainer at one.
+  The bench takes `--depth`, so a depth is measured against the same request. The bakery at low depth, its third run: the
+  first video in 10.8 minutes and $2.78, against 35.9 and $9.53 (`eval/pipeline-cost/2026-10-22-bench-low.md`). At
+  medium, two runs: 23.8 and 27.1 minutes, $5.90 and $6.97 (`eval/pipeline-cost/2026-10-22-bench-medium.md`).
+- **`frame-check` runs HyperFrames' own lint on the frame,** and fails it on an error there: the build stops on that
+  lint, and `frame-check` never ran it. Lint findings name their file by its full path, so the layout check dropped
+  them too. In a bench run, two frame workers styled every frame's root by its class, `frame-check` passed all seven
+  frames, and the build stopped on them.
+- **`frame-check` checks several frames in one go** (`frame-check <video-dir> 3 5`, or `all`): one lint, one layout
+  check and one picture call for them all, each frame's findings and picture under its name. In a bench run, eight
+  frames checked one by one took two minutes; all eight at once take 18 seconds here. It leaves out HyperFrames'
+  wish for an id on every element, which is for editing in HyperFrames' Studio: an agent added the ids and built again.
+- **`build` stops on frame-lint in a frame changed since the last build**, in its first stage, before anything is
+  voiced, also when the storyboard or script changed. `frame-check` fails a frame on it, but the build only said it,
+  and not at all once the script had changed: in a bench run at medium, a build passed such a frame, and the agent
+  built again once `frame-check` showed it. The skill now says to look at every frame while fresh eyes read, and to
+  check the frames you changed before building: that run built 11 times, 5 of them again for what a check before the
+  build would have shown.
+- **The guide dropped words written in code that looked like an HTML comment.** A bench run's plan said a page's
+  first line is `<!-- title: Visit -->`. The page took every comment out before drawing the text, the ones in a code
+  span or a code block too, so `guide --check` found the paragraph missing and stopped the build, 1.5 minutes in.
+  The agent rewrote the plan's file format to get past it. A comment in code is now shown as written; one outside
+  code is still left out, and the check and a step's lead read plan.md the same way.
+- **A revision's build had no fresh eyes when the video it revised was not committed.** A build's fresh eyes belong
+  to it, and `plan-diff` tells builds apart against the last committed video: with none, the revision was the first
+  build again, and its round was "done". In a medium bench run, the agent opened the first video without committing
+  it. `reel-intake` now says to commit the video as reviewed before revising it when it is not, and the skill says to
+  commit it before opening it.
+- **The guide's check failed a plan whose "Decisions in force" says none.** The page drew the section under its own
+  headings and left out its words that are no line of it. So a first plan's "None yet", or a section citing the
+  plan's own decision, failed `guide --check`, and the build stopped. Agents got past it by deleting the section from
+  plan.md. The page now shows the section under its heading, with its words.
+- **The review link named a port another server held.** With its port taken, `review` moves to the next one, but the
+  first try's listener fired when the next one listened, so the link kept the taken port. That link opened the other
+  server's page, or one that refused this video. The link now names the port the page is on.
 - **Narration that plays on after a seek or a speed change** (#30). The review server sent every file as one `200`
   with no byte ranges, so Chrome could not seek its narration: after a seek, a start in the middle of a scene, or a
   speed change, the scene went silent until the next one. Files are now sent with byte ranges (`206`, `416`,
