@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- **Scenes to start a frame from** (`templates/reelplanner/theme/scenes/`, `reelplanner scene`). A frame drawn from a
+  blank page tends to come out as cards of words, as the bakery bench's low-depth videos did. Eight scenes, each
+  taken from the two videos that showed the most, the Dylan plan video and a long explainer, rebuilt in the theme's
+  tokens and motion: a count with its part drawn to scale, one record labelled part by part, who does what in lanes, a
+  rule's verdicts with the tally, someone's own words at size, a decision as two futures of the same thing, a choice
+  of two looks, and a person's path through the real pages. Each passes `frame-lint` as it ships and carries the
+  Dylan plan as its worked example. `reelplanner scene <video-dir> 3=count 7=two-futures` writes those frames from
+  them, with each frame's id, length and marks; the skill, the style guide and the frame packet point to them. So
+  that videos do not all look alike, `variety` (and `build`) warn when over half a video's frames start from scenes,
+  or one scene starts two.
+- **The product in its own look.** A plan's step that makes something people see now has a **Look** block: its
+  palette, type, imagery and the one thing that makes it recognisable. A page or option mock in a video
+  (`data-plan-component="page"`) may write the product's own colours, where `frame-lint` failed any colour but the
+  theme's: a bench run's bakery site was drawn in the video's own cream, ink and coral, its plan said nothing of its
+  look, and every product the videos showed looked the same.
 - **A depth for a video: low, medium or high** (#34). Every video got the checks a plan video needs; an explainer
   measured at 3.5 h and about $128 spent most of it on 26 scenes and two whole redraws after fresh eyes
   (`eval/pipeline-cost/2026-10-21-research-explainer.md`). `depth:` in BRIEF.md (`scripts/lib/depth.mjs`) now sets it.

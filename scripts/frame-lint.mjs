@@ -40,6 +40,22 @@ function glossaryFor(file) {
   return null;
 }
 // a frame's length: its root's data-duration, else its storyboard's `- duration:` for it
+// A depicted screen: an element carrying data-plan-component="page" (the layout stage's artefact, a card, a phone) or
+// data-plan-option (a decision's option mock, which the guide calls a prototype). Each one's slice of the markup, walked
+// to its matching </div> so only what it contains is in it, and the classes used inside them.
+function mockParts(body) {
+  const slices = [], classes = new Set();
+  for (const open of body.matchAll(/<div[^>]*(?:data-plan-component="page"|data-plan-option=)[^>]*>/g)) {
+    let i = open.index + open[0].length, depth = 1;
+    const tag = /<\/?div\b/g; tag.lastIndex = i;
+    for (let m; depth > 0 && (m = tag.exec(body)); ) depth += m[0] === "</div" ? -1 : 1, i = m.index + m[0].length;
+    if (slices.length && open.index < slices.at(-1)[1]) continue;   // inside the one before
+    slices.push([open.index, i]);
+    for (const c of body.slice(open.index, i).matchAll(/class="([^"]+)"/g)) for (const n of c[1].split(/\s+/)) classes.add(n);
+  }
+  return { slices, classes };
+}
+
 function durationOf(file, src) {
   const d = src.match(/data-composition-id="[^"]*"[^>]*\bdata-duration="([\d.]+)"|data-duration="([\d.]+)"[^>]*\bdata-composition-id=/);
   if (d) return Number(d[1] ?? d[2]);
@@ -234,9 +250,15 @@ for (const f of files) {
     if (near.length) findings.push(`the marked thing data-detail="${m.attrs["data-detail"]}" has ${near.map((e) => (e.attrs.id ? `#${e.attrs.id}` : `.${classes(e)[0] || e.tag}`)).slice(0, 3).join(", ")} within 40 px above it, where the player's label goes (rule 5: nothing covers content) — give it 40 px of room above`);
   }
 
-  // 1. a hex literal breaks dark mode: the theme can no longer recolour it
-  const hex = [...body.matchAll(/#[0-9a-fA-F]{6}\b/g)].map((m) => m[0]);
-  if (hex.length) findings.push(`${hex.length} hex literal(s): ${[...new Set(hex)].slice(0, 4).join(" ")}`);
+  // 1. a hex literal breaks dark mode: the theme can no longer recolour it. But a depicted screen (a page mock,
+  //    `data-plan-component="page"`, or a decision's option mock) is the product, in the product's own colours: a site
+  //    the plan makes does not turn cream and ink because the video does, and drawn in the theme's tokens every
+  //    product looked the same (a bench run's bakery site was the video's own paper and coral). Its markup, and the
+  //    CSS rules for classes only inside it, may name their colours.
+  const mocks = mockParts(body), ownLook = (sel) => sel.split(",").every((one) => (one.match(/\.([\w-]+)/g) || []).some((c) => mocks.classes.has(c.slice(1))));
+  const outside = mocks.slices.reduceRight((t, [a, b]) => t.slice(0, a) + t.slice(b), body).replace(/([^{}]+)\{([^{}]*)\}/g, (r, sel) => (ownLook(sel) ? "" : r));
+  const hex = [...outside.matchAll(/#[0-9a-fA-F]{6}\b/g)].map((m) => m[0]);
+  if (hex.length) findings.push(`${hex.length} hex literal(s): ${[...new Set(hex)].slice(0, 4).join(" ")}${mocks.slices.length ? " (a page or option mock may use its own colours; these are outside one)" : ""}`);
 
   // 2. a tween pointing at an element that is no longer in the markup
   const ids = new Set([...s.matchAll(/id="([^"]+)"/g)].map((m) => m[1]));
@@ -265,14 +287,7 @@ for (const f of files) {
   //    (a decision beat's option mock, which the guide already calls a prototype). A chrome tag outside
   //    one of those is still held to the floor.
   const proto = /page|proto|mock|site-?map|spread|tile|photo|cover|art\b/i;
-  const inArtifact = new Set();
-  for (const open of body.matchAll(/<div[^>]*(?:data-plan-component="page"|data-plan-option=)[^>]*>/g)) {
-    // walk to the matching </div> so we collect only what the card actually contains
-    let i = open.index + open[0].length, depth = 1;
-    const tag = /<\/?div\b/g; tag.lastIndex = i;
-    for (let m; depth > 0 && (m = tag.exec(body)); ) depth += m[0] === "</div" ? -1 : 1, i = m.index + m[0].length;
-    for (const c of body.slice(open.index, i).matchAll(/class="([^"]+)"/g)) for (const n of c[1].split(/\s+/)) inArtifact.add(n);
-  }
+  const inArtifact = mockParts(body).classes;
   const depicted = (sel) => sel.split(",").every((one) => (one.match(/\.([\w-]+)/g) || []).some((c) => inArtifact.has(c.slice(1))));
   //    Under a camera the floor is read in SCREEN pixels: a 20 px label inside a camera that never goes
   //    below scale 1.4 shows at 28 px, and a 30 px label in a camera pulled back to 0.6 shows at 18. The

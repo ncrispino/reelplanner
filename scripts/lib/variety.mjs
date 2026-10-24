@@ -14,6 +14,9 @@
 //   real things  an optional fourth line, `- Real things: scene 3 (the table), scene 8 (the diff)`, picks
 //                the scenes that show the real thing (D-166, the brief picks). It is repeated as a ✓ line
 //                when there; nothing warns when it is not, or about the scenes it leaves out.
+//   scenes       the frames started from the theme's scenes (`reelplanner scene` heads each "Started from the
+//                theme's <name> scene"). Over half the frames, or one scene starting two, is a warning: copied
+//                as they are, every video would look like every other.
 //
 // Never a failure: `build` prints it after the length. A video of fewer than five scenes is too short to judge.
 import { readFileSync, existsSync } from "node:fs";
@@ -43,8 +46,11 @@ export function videoVariety(dir) {
     !says(/^\s*[-*]\s*\**layouts?\**\s*:/im) && "layouts",
     !says(/^\s*[-*]\s*\**main transition\**\s*:/im) && "main transition",
   ].filter(Boolean);
+  // the frames `reelplanner scene` started, by the line it heads each with
+  const fromScenes = frames.map((f) => ({ frame: f.index, name: (/Started from the theme's ([\w-]+) scene/.exec(f.meta.src ? read(join(dir, f.meta.src)) : "") || [])[1] })).filter((x) => x.name);
   return {
     scenes: frames.length,
+    fromScenes,
     layout: { ...most(layouts), from: frames.some((f) => f.meta.layout) ? "layout" : "blueprint" },
     transition: most(transitions),
     brief: { exists: !!brief, missing, realThings: (brief.match(/^\s*[-*]\s*\**real things\**\s*:\s*(.+)$/im) || [])[1]?.trim() || null },
@@ -63,6 +69,15 @@ export function varietyLines(v) {
     out.push(bits.length
       ? { warn: true, text: `${bits.join("; ")}: over ${pct(SHARE)}. Vary them by what each scene shows and what each move means (motion-language.md)` }
       : { warn: false, text: `${v.layout.of >= MIN_SCENES ? `${v.layout.kinds} layout(s)` : "layouts not judged (no `- layout:` on most scenes)"}, ${v.transition.kinds} kind(s) of transition, none on over ${pct(SHARE)} of scenes` });
+  }
+  const used = v.fromScenes || [];
+  if (used.length) {
+    const twice = [...new Set(used.map((u) => u.name))].map((n) => ({ n, frames: used.filter((u) => u.name === n).map((u) => u.frame) })).filter((x) => x.frames.length > 1);
+    const bits = [used.length > v.scenes / 2 && `${used.length} of ${v.scenes} frames start from the theme's scenes (over half)`,
+      ...twice.map((x) => `the ${x.n} scene starts frames ${x.frames.join(" and ")}`)].filter(Boolean);
+    out.push(bits.length
+      ? { warn: true, text: `${bits.join("; ")}: at most half the frames from scenes, each scene once, or this video looks like every other. Draw the rest for their own beats (style guide §5)` }
+      : { warn: false, text: `${used.length} of ${v.scenes} frames start from the theme's scenes (${used.map((u) => `${u.frame} ${u.name}`).join(", ")})` });
   }
   if (v.brief.realThings) out.push({ warn: false, text: `BRIEF.md picks the real things: ${v.brief.realThings}` });
   if (v.brief.missing.length) out.push({ warn: true, text: `BRIEF.md ${v.brief.exists ? "does not say" : "is missing, so nothing says"} its ${v.brief.missing.join(", ")} (\`- Medium:\`, \`- Layouts:\`, \`- Main transition:\` under Customizations)` });

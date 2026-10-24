@@ -8,7 +8,8 @@
      replace every FID with "f" + the frame id). Put the plan's own pages and words
      in (every fact on these four pages is Bob Dylan's record as the plan's content would hold it). Two to four
      pages; each page a prototype (`data-plan-component="page"`), its words real and short, the link that is
-     clicked marked FID-link. The camera's poses put a page's centre (x, 440) at the view's centre at scale 1.7:
+     clicked marked FID-link. The pages wear the product's own look, the plan's Look block (palette, type,
+     imagery), written as it is: never the video's cream and coral, or every product looks the same. The camera's poses put a page's centre (x, 440) at the view's centre at scale 1.7:
      x = 960 − 1.7·x, y = 450 − 1.7·440.
 
      HOW IT MOVES (motion-language.md): the camera starts close on the first page; each page's lines are PRINTED as
@@ -18,21 +19,24 @@
 <style>
   .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
   .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
-  .FID-pg { position:absolute; top:200px; width:400px; height:480px; box-sizing:border-box; border-radius:8px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.22); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
-  .FID-pg > div { position:absolute; left:26px; width:348px; }
-  .FID-pg > .FID-bar { left:0; top:0; width:348px; height:44px; padding:0 26px; border-bottom:1px solid rgba(var(--rp-ink-rgb),0.12); font:400 19px/44px "EB Garamond"; color:var(--rp-ink); white-space:nowrap; }
-  .FID-bar .nav { float:right; font:400 13px/44px "Inter"; color:rgba(var(--rp-ink-rgb),0.62); word-spacing:6px; }
-  .FID-h { font:400 34px/1.1 "EB Garamond"; letter-spacing:-0.01em; color:var(--rp-ink); white-space:nowrap; }
-  .FID-sub { font:500 14px/1.4 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
-  .FID-p { font:400 17px/1.45 "Inter"; color:var(--rp-ink); }
-  .FID-k { font:500 14px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); }
-  .FID-li { font:400 18px/30px "Inter"; color:var(--rp-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .FID-li.wrap { white-space:normal; padding-left:26px; text-indent:-26px; }   /* a long line takes two, as the page would */
+  /* the site, in its own look (the plan's Look, step 4's "Book-like: serif, generous margins, few images"; the colours
+     are this example's own): its paper, ink and oxblood are the product's, written as they are, never the theme's */
+  .FID-pg { position:absolute; top:200px; width:400px; height:480px; box-sizing:border-box; border-radius:4px; background:#F4ECDD; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 6px 20px rgba(var(--rp-shadow-rgb),0.08); overflow:hidden; }
+  .FID-pg > div { position:absolute; left:30px; width:340px; }
+  .FID-pg > .FID-bar { left:0; top:0; width:340px; height:44px; padding:0 30px; background:#7D2B27; font:400 20px/44px "EB Garamond"; letter-spacing:0.02em; color:#F4ECDD; white-space:nowrap; }
+  .FID-bar .nav { position:absolute; right:22px; top:0; font:400 11px/44px "Inter"; letter-spacing:0.08em; text-transform:uppercase; color:#F1E6D6; word-spacing:2px; }
+  .FID-h { font:400 36px/1.1 "EB Garamond"; letter-spacing:-0.01em; color:#2B2118; white-space:nowrap; }
+  .FID-sub { font:italic 400 16px/1.4 "EB Garamond"; color:#655446; }
+  .FID-p { font:400 18px/1.5 "EB Garamond"; color:#2B2118; }
+  .FID-k { font:600 11px/1 "Inter"; letter-spacing:0.14em; color:#7D2B27; }
+  .FID-li { font:400 16px/30px "Inter"; color:#2B2118; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-bottom:1px solid #E3D6C2; }
+  .FID-li.wrap { white-space:normal; padding-left:26px; width:314px; }   /* a long line takes two, as the page would */
+  .FID-li.wrap .n { position:absolute; left:0; top:9px; }
   .FID-li.on { overflow:visible; }                                    /* the clicked link's row: its ring may reach past it */
-  .FID-li .n { display:inline-block; width:26px; font:500 14px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
-  .FID-li .d { display:inline-block; width:70px; font:500 14px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.62); }
-  .FID-link { position:relative; display:inline-block; }
-  .FID-link i { position:absolute; left:0; right:0; bottom:3px; height:2px; background:var(--rp-ink); transform-origin:0 50%; }
+  .FID-li .n { display:inline-block; width:26px; font:500 12px/1 "Inter"; color:#655446; }
+  .FID-li .d { display:inline-block; width:66px; font:600 12px/1 "Inter"; letter-spacing:0.06em; color:#7D2B27; }
+  .FID-link { position:relative; display:inline-block; color:#7D2B27; }
+  .FID-link i { position:absolute; left:0; right:0; bottom:5px; height:1px; background:#7D2B27; transform-origin:0 50%; }
   .FID-ring { position:absolute; right:-40px; top:-6px; width:42px; height:42px; border-radius:50%; border:3px solid var(--rp-ink); box-sizing:border-box; }
   .FID-hot b { position:absolute; left:-12px; top:5px; width:4px; height:20px; background:var(--rp-coral); transform-origin:50% 0; }
   .FID-hop { position:absolute; width:40px; height:2px; background:rgba(var(--rp-ink-rgb),0.5); transform-origin:0 50%; }

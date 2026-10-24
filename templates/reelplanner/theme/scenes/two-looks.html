@@ -1,0 +1,104 @@
+<!-- TWO LOOKS: a choice of looks, as the same page drawn in each (scenes/README.md). From the Dylan plan video's third
+     choice, "Book-like" against "Magazine", drawn as two page mocks side by side. Use it for any decision about how
+     something the plan makes looks or reads: the reviewer judges two real pages, with the same words in them, in
+     their own colours and type, instead of two adjectives.
+
+     Start a frame from it with `reelplanner scene <video-dir> <frame>=two-looks` (or paste it into a frame's <template> and
+     replace every FID with "f" + the frame id). Put the plan's question, its options and its own page in (the example
+     is the Dylan plan's open question 3 and its album page; each look's palette and type are this example's own,
+     from the option's words: "serif, generous margins, few images" and "large photography, bold headings"). Both
+     mocks hold the same content, so only the look differs; each is a prototype (`data-plan-component="page"`) whose
+     colours are written as they are, never the theme's. Each option says under its page what the look costs, in
+     the plan's words. The marks are the player's: the heading `data-question`, each card `data-option`.
+
+     HOW IT MOVES (motion-language.md): both pages are PRINTED together; then each look's own mark arrives on the word
+     that names it (A's rule DRAWN under its title, B's photograph WIPED in); then what each costs, and B's risk
+     underlined (the one coral). Both cards are at rest from then to the end. Replace the times with your cues. -->
+<style>
+  .FID-q { position:absolute; left:128px; top:96px; width:1664px; font:400 60px/1.15 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .FID-opt { position:absolute; top:206px; width:800px; height:664px; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .FID-tag { position:absolute; left:32px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); }
+  .FID-name { position:absolute; left:32px; top:58px; font:500 34px/1.2 "Inter"; color:var(--rp-ink); }
+  .FID-cost { position:absolute; left:32px; top:556px; width:736px; font:400 28px/1.25 "Inter"; color:var(--rp-ink); }
+  .FID-risk { position:relative; display:inline-block; }
+  .FID-u { position:absolute; left:0; right:0; bottom:-6px; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
+  .FID-pg { position:absolute; left:32px; top:116px; width:736px; height:420px; overflow:hidden; border-radius:4px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 6px 20px rgba(var(--rp-shadow-rgb),0.08); }
+
+  /* A · Book-like: warm paper, an oxblood band and rule, a serif for reading, a small sans for the reference list */
+  .FID-book { background:#F4ECDD; color:#2B2118; }
+  .FID-book .bar { position:absolute; left:0; top:0; width:736px; height:40px; background:#7D2B27; }
+  .FID-book .site { position:absolute; left:40px; top:0; font:400 19px/40px "EB Garamond"; letter-spacing:0.04em; color:#F4ECDD; }
+  .FID-book .t { position:absolute; left:64px; top:74px; font:400 50px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:#2B2118; }
+  .FID-book .s { position:absolute; left:66px; top:138px; font:italic 400 20px/1.3 "EB Garamond"; color:#655446; }
+  .FID-book .rule { position:absolute; left:66px; top:176px; width:120px; height:2px; background:#7D2B27; transform-origin:0 50%; }
+  .FID-book .p { position:absolute; left:66px; top:198px; width:380px; font:400 19px/1.55 "EB Garamond"; color:#2B2118; }
+  .FID-book .k { position:absolute; left:500px; top:198px; font:600 11px/1 "Inter"; letter-spacing:0.14em; color:#7D2B27; }
+  .FID-book .li { position:absolute; left:500px; width:190px; font:400 14px/28px "Inter"; color:#2B2118; border-bottom:1px solid #E3D6C2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* B · Magazine: a near-black page, a photograph across half of it, a heavy sans in capitals, one yellow */
+  .FID-mag { background:#141216; color:#F1EEE8; }
+  .FID-mag .photo { position:absolute; left:0; top:0; width:330px; height:420px; background:#3A3236; transform-origin:0 50%; }
+  .FID-mag .cap { position:absolute; left:22px; bottom:20px; width:286px; font:500 13px/1.4 "Inter"; letter-spacing:0.04em; color:#D8CFC6; }
+  .FID-mag .kick { position:absolute; left:362px; top:44px; font:700 13px/1 "Inter"; letter-spacing:0.18em; color:#F2C230; }
+  .FID-mag .t { position:absolute; left:360px; top:70px; width:350px; font:800 46px/0.98 "Inter"; letter-spacing:-0.02em; text-transform:uppercase; color:#F1EEE8; }
+  .FID-mag .p { position:absolute; left:362px; top:200px; width:340px; font:400 16px/1.5 "Inter"; color:#BDB5AD; }
+  .FID-mag .li { position:absolute; left:362px; width:340px; font:600 14px/26px "Inter"; color:#F1EEE8; border-top:1px solid #3A3439; white-space:nowrap; }
+</style>
+
+<div class="FID-q" id="FID-q" data-question>Which look for the reading pages?</div>
+
+<div class="FID-opt" id="FID-a" data-option="a" style="left:128px">
+  <div class="FID-tag">A · recommended</div>
+  <div class="FID-name">Book-like</div>
+  <div class="FID-pg FID-book" id="FID-pa" data-plan-component="page" data-artifact="album page, book-like">
+    <div class="bar"></div><div class="site">Bob Dylan</div>
+    <div class="t">Highway 61 Revisited</div>
+    <div class="s">1965 · Columbia · going electric</div>
+    <i class="rule" id="FID-rule"></i>
+    <div class="p">Recorded in six days that summer, with a band behind him from the first take: the record that made the electric turn for good.</div>
+    <div class="k">TRACKS</div>
+    <div class="li" style="top:216px">1 · Like a Rolling Stone</div>
+    <div class="li" style="top:244px">2 · Tombstone Blues</div>
+    <div class="li" style="top:272px">5 · Ballad of a Thin Man</div>
+    <div class="li" style="top:300px">9 · Desolation Row</div>
+  </div>
+  <div class="FID-cost" id="FID-ca">Matches the biography half, and is cheap<br>to make good</div>
+</div>
+
+<div class="FID-opt" id="FID-b" data-option="b" style="left:992px">
+  <div class="FID-tag">B</div>
+  <div class="FID-name">Magazine</div>
+  <div class="FID-pg FID-mag" id="FID-pb" data-plan-component="page" data-artifact="album page, magazine">
+    <div class="photo" id="FID-photo"><div class="cap">Photograph: Newport Folk Festival, 25 July 1965</div></div>
+    <div class="kick">1965 · THE ELECTRIC TURN</div>
+    <div class="t">Highway 61 Revisited</div>
+    <div class="p">Recorded in six days that summer, with a band behind him from the first take: the record that made the electric turn for good.</div>
+    <div class="li" style="top:300px">1 · Like a Rolling Stone</div>
+    <div class="li" style="top:326px">2 · Tombstone Blues</div>
+    <div class="li" style="top:352px">5 · Ballad of a Thin Man</div>
+    <div class="li" style="top:378px">9 · Desolation Row</div>
+  </div>
+  <div class="FID-cost" id="FID-cb">More striking, but<br><span class="FID-risk">depends on images we may not be allowed to use<i class="FID-u" id="FID-u"></i></span></div>
+</div>
+
+<script>
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`
+  function lines(id) { return [].slice.call(document.getElementById(id).children); }
+  // after `var tl = gsap.timeline({ paused: true });`
+  var pa = lines("FID-pa").filter(function (e) { return e.id !== "FID-rule"; }), pb = lines("FID-pb").filter(function (e) { return e.id !== "FID-photo"; });
+  gsap.set(["#FID-q", "#FID-a", "#FID-b"], { opacity: 0 });
+  gsap.set(pa.concat(pb), { opacity: 0 });
+  gsap.set("#FID-rule", { scaleX: 0 });
+  gsap.set("#FID-photo", { scaleX: 0 });
+  gsap.set(["#FID-ca", "#FID-cb"], { opacity: 0, y: 6 });
+  gsap.set("#FID-u", { scaleX: 0 });
+  tl.to("#FID-q", { opacity: 1, duration: 0.5 }, 0.2);
+  tl.to(["#FID-a", "#FID-b"], { opacity: 1, duration: 0.5 }, 0.6);
+  tl.to(pa, { opacity: 1, duration: 0.12, ease: "none", stagger: 0.08 }, 1.0);                    // printed, both at once
+  tl.to(pb, { opacity: 1, duration: 0.12, ease: "none", stagger: 0.08 }, 1.0);
+  tl.to("#FID-rule", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 2.6);                     // A's own mark: drawn
+  tl.to("#FID-photo", { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, 3.6);                    // B's own mark: wiped in
+  tl.to("#FID-ca", { opacity: 1, y: 0, duration: 0.4 }, 4.8);
+  tl.to("#FID-cb", { opacity: 1, y: 0, duration: 0.4 }, 5.6);
+  tl.to("#FID-u", { scaleX: 1, duration: 0.5, ease: "power1.inOut" }, 6.2);                        // what it risks
+</script>

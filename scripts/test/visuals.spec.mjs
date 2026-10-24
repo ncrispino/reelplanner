@@ -21,6 +21,8 @@
 //   - motion-static: a helper's pops are read (a drip of pops shows its still stretches); a hold on a
 //     plain object is not motion; a camera's share is reported
 //   - scale-only-zoom: a zoom-through loses its blur, nothing else changes, twice is the same as once
+//   - frame-lint: a hex colour in a page or option mock (the product's own look) passes; the same outside one fails
+//   - variety: over half the frames started from the theme's scenes, or one scene starting two, warns; fewer passes
 //   - variety: over 70% of scenes on one layout or one transition warns; a BRIEF.md without its medium,
 //     layouts and main transition warns; an optional `- Real things:` line is repeated, never warned on
 import { spawnSync } from "node:child_process";
@@ -260,6 +262,23 @@ try {
   writeFileSync(join(VV, "BRIEF.md"), readFileSync(join(VV, "BRIEF.md"), "utf8") + "- Real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures\n");
   lines = varietyLines(videoVariety(VV));
   ok("…a brief's optional `- Real things:` is repeated as a ✓ line, and its absence above warned nothing (D-166)", lines.length === 2 && lines.every((l) => !l.warn) && lines[1].text === "BRIEF.md picks the real things: scene 3 (the table), scene 8 (the diff); the rest explain with pictures", JSON.stringify(lines));
+
+  // ── variety: frames started from the theme's scenes ──────────────────────────────────────────────────
+  mkdirSync(join(VV, "compositions", "frames"), { recursive: true });
+  const started = (n, name) => writeFileSync(join(VV, "compositions", "frames", `s${n}.html`), `<template>\n<!-- Started from the theme's ${name} scene (reelplanner scene). -->\n</template>\n`);
+  started(1, "count"); started(4, "lanes");
+  lines = varietyLines(videoVariety(VV));
+  ok("variety: 2 of 6 frames from the theme's scenes, each once, is a ✓ line naming them", lines.some((l) => !l.warn && /2 of 6 frames start from the theme's scenes \(1 count, 4 lanes\)/.test(l.text)), JSON.stringify(lines));
+  started(2, "anatomy"); started(5, "count");
+  lines = varietyLines(videoVariety(VV));
+  ok("…4 of 6, the count scene twice, warns of both", lines.some((l) => l.warn && /4 of 6 frames start from the theme's scenes \(over half\); the count scene starts frames 1 and 5/.test(l.text)), JSON.stringify(lines));
+
+  // ── frame-lint: a mock wears the product's own colours ───────────────────────────────────────────────
+  const mockCss = ".v-pg { position:absolute; left:200px; top:200px; width:600px; height:400px; background:#F4ECDD; } .v-pg .t { color:#7D2B27; }";
+  r = lint(frame("mock-own", { css: mockCss, body: `<div class="v-pg" data-plan-component="page" data-artifact="album page"><div class="t" style="border-bottom:1px solid #E3D6C2">Highway 61 Revisited</div></div>` }));
+  ok("frame-lint: a page mock may write the product's own colours (its CSS and its markup)", r.code === 0, r.out);
+  r = lint(frame("mock-out", { css: `${mockCss} .v-cap { position:absolute; left:200px; top:700px; color:#7D2B27; }`, body: `<div class="v-pg" data-plan-component="page" data-artifact="album page"><div class="t">Highway 61 Revisited</div></div><div class="v-cap">a caption</div>` }));
+  ok("…the same colour outside a mock still fails, and says where they may go", r.code === 1 && /1 hex literal\(s\): #7D2B27 \(a page or option mock may use its own colours/.test(r.out), r.out);
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

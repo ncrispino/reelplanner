@@ -189,8 +189,13 @@ The plan goes into the repo, and the person gets a review page, not text in the 
      a fenced block, one part a line (a command and its flags, a file's fields, a function's arguments, a
      storyboard tag, what a page shows), each with its meaning after `#` (`--check   # also check the
      page`), what it prints indented under it, or one line "No interface: wording only"; **Example**, one
-     worked example with real values, start to end. The fourth block, Decisions, is generated from the
-     ledger, never written. Each open question's options say what happens in its example
+     worked example with real values, start to end; and on a step that makes something people see (a page, a
+     screen, a printout, an email), **Look**: its own palette (each colour named, with its hex), its type (the
+     families, the sizes of a heading and of body text), its imagery, and the one thing that makes it recognisable,
+     each with why it fits the people who will use it. A plan that leaves the look to "the same header and
+     footer" asks the reviewer to approve something bland, and its video can only show a generic page. Where
+     there is a real choice of looks, it is an open question, its options two looks the video draws side by side.
+     The fourth block, Decisions, is generated from the ledger, never written. Each open question's options say what happens in its example
      (a value, a quote, a command or a number). Beside the blocks, each step draws **how it works** as a
      fenced ` ```diagram ` block (the guide draws it as a diagram you can step through and click; `reel check`
      warns on a new plan's step without one): a flow, a sequence or a state, one short line an edge, e.g.
@@ -358,9 +363,12 @@ explainer (`<explainer-dir>/video/`).
    voice files. Meanwhile draw the frames (Steps 4–5), each designed for its own scene, and start each from one of
    the theme's scenes where one fits what the beat is about: `$RP scene` lists them (a count drawn to scale, one
    record labelled part by part, who does what in lanes, a rule's verdicts, someone's own words, a decision's two
-   futures, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …` writes those frames,
-   for you to put the plan's own words, numbers and things in (every one in a scene is its Dylan example's). A frame
-   drawn from a blank page tends to come out as cards of words. A video of up to
+   futures, a choice of looks, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …`
+   writes those frames, for you to put the plan's own words, numbers and things in (every one in a scene is its
+   Dylan example's) and make them this beat's own. A frame drawn from a blank page tends to come out as cards of
+   words; one copied as it is makes every video look alike, so at most half the frames start from scenes, each
+   scene once (`variety` warns past either). A page or screen the plan makes is drawn in its own Look, never the
+   video's cream and coral (style guide §5). A video of up to
    about 20 scenes by one builder; a longer one by workers of 3–5 frames each, each handed only its packet,
    `$RP frame-packet <video-dir> <frame> …` (each frame's storyboard block, its line word by word with when
    each word is said, the marks it needs, the theme by path and one finished frame to keep consistent with).
