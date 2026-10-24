@@ -260,6 +260,11 @@ for (const f of files) {
   const hex = [...outside.matchAll(/#[0-9a-fA-F]{6}\b/g)].map((m) => m[0]);
   if (hex.length) findings.push(`${hex.length} hex literal(s): ${[...new Set(hex)].slice(0, 4).join(" ")}${mocks.slices.length ? " (a page or option mock may use its own colours; these are outside one)" : ""}`);
 
+  // 1b. a scene's slot left as it is: `reelplanner scene` writes every word of a scene as a {{slot}} for the plan's own,
+  //     and one left would show its name on screen
+  const slots = [...new Set([...body.replace(/<script[\s\S]*?<\/script>/g, "").matchAll(/\{\{([\w-]+)\}\}/g)].map((m) => m[1]))];
+  if (slots.length) findings.push(`${slots.length} slot(s) left unfilled: ${slots.slice(0, 5).map((x) => `{{${x}}}`).join(" ")}${slots.length > 5 ? " …" : ""} (fill each with the plan's own words, or delete it)`);
+
   // 2. a tween pointing at an element that is no longer in the markup
   const ids = new Set([...s.matchAll(/id="([^"]+)"/g)].map((m) => m[1]));
   const cls = new Set([...s.matchAll(/class="([^"]+)"/g)].flatMap((m) => m[1].split(/\s+/)));

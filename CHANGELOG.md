@@ -7,8 +7,9 @@
   taken from the two videos that showed the most, the Dylan plan video and a long explainer, rebuilt in the theme's
   tokens and motion: a count with its part drawn to scale, one record labelled part by part, who does what in lanes, a
   rule's verdicts with the tally, someone's own words at size, a decision as two futures of the same thing, a choice
-  of two looks, and a person's path through the real pages. Each passes `frame-lint` as it ships and carries the
-  Dylan plan as its worked example. `reelplanner scene <video-dir> 3=count 7=two-futures` writes those frames from
+  of two looks, and a person's path through the real pages. Each is a template: every word in it is a `{{slot}}` for
+  the plan's own, so a frame starts with no one else's content, and `frame-lint` fails a slot left unfilled; the
+  spec fills each with a worked example and checks that it passes. `reelplanner scene <video-dir> 3=count 7=two-futures` writes those frames from
   them, with each frame's id, length and marks; the skill, the style guide and the frame packet point to them. So
   that videos do not all look alike, `variety` (and `build`) warn when over half a video's frames start from scenes,
   or one scene starts two.

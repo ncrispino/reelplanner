@@ -364,8 +364,8 @@ explainer (`<explainer-dir>/video/`).
    the theme's scenes where one fits what the beat is about: `$RP scene` lists them (a count drawn to scale, one
    record labelled part by part, who does what in lanes, a rule's verdicts, someone's own words, a decision's two
    futures, a choice of looks, a person's path through the pages), and `$RP scene <video-dir> <frame>=<scene> …`
-   writes those frames, for you to put the plan's own words, numbers and things in (every one in a scene is its
-   Dylan example's) and make them this beat's own. A frame drawn from a blank page tends to come out as cards of
+   writes those frames, every word in them a `{{slot}}` for the plan's own (`frame-lint` fails one left unfilled),
+   for you to fill and make this beat's own. A frame drawn from a blank page tends to come out as cards of
    words; one copied as it is makes every video look alike, so at most half the frames start from scenes, each
    scene once (`variety` warns past either). A page or screen the plan makes is drawn in its own Look, never the
    video's cream and coral (style guide §5). A video of up to

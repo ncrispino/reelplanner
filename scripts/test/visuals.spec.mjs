@@ -11,11 +11,12 @@
 //     or moving (it, or its camera) in the last 3 s; two of one name fail; unsized, or over a card, is a note
 //   - frame-lint (videos-that-make-sense step 4): empty bars stacked where words go fail (rule 1), one bar or two
 //     underlines pass, the theme's stages hold words; anything within 40 px above a data-detail mark fails (rule 5)
-//   - the theme's code-diff and terminal-run blocks, and each of its scenes, pasted into a frame, pass frame-lint;
-//     the scenes' README names every scene
+//   - the theme's code-diff and terminal-run blocks pass frame-lint; each of its scenes holds no example's words
+//     (each is a {{slot}}), fails frame-lint on its unfilled slots alone, and, filled with its worked example
+//     (scene-examples.json, every slot and no other), passes; the scenes' README names every scene
 //   - scene: writes each frame named from its scene (the storyboard's src, the frame's prefix, id, length and band),
-//     and the frames pass frame-lint; it lists the scenes; it writes nothing over a frame there already, or when one
-//     pair is wrong (no such scene or frame, a frame with no src)
+//     and the frames pass frame-lint once their slots are filled; it lists the scenes; it writes nothing over a frame
+//     there already, or when one pair is wrong (no such scene or frame, a frame with no src)
 //   - frame-lint: a frames folder, or a video project's folder, lints the frames in it; a folder with none,
 //     or a missing path, is a clear error (exit 2)
 //   - motion-static: a helper's pops are read (a drip of pops shows its still stretches); a hold on a
@@ -148,13 +149,25 @@ try {
 
   // ── the theme's blocks pass as they ship ─────────────────────────────────────────────────────────────
   const SCENES = join(ROOT, "templates", "reelplanner", "theme", "scenes"), scenes = readdirSync(SCENES).filter((f) => f.endsWith(".html")).map((f) => f.slice(0, -5));
-  for (const b of ["code-diff", "terminal-run", ...scenes.map((n) => `scene:${n}`)]) {
-    const [folder, n] = b.startsWith("scene:") ? ["scenes", b.slice(6)] : ["blocks", b];
+  const EXAMPLES = JSON.parse(readFileSync(join(ROOT, "scripts", "test", "scene-examples.json"), "utf8"));
+  const fill = (text, ex) => text.replace(/\{\{([\w-]+)\}\}/g, (m, k) => (k in ex ? ex[k] : m));
+  const pasted = (folder, n, ex) => {
     const src = readFileSync(join(ROOT, "templates", "reelplanner", "theme", folder, `${n}.html`), "utf8").replaceAll("FID", `f01-${n}`);
     const style = (src.match(/<style>([\s\S]*?)<\/style>/) || [])[1], script = (src.match(/<script>([\s\S]*?)<\/script>/) || [])[1];
     const markup = src.replace(/<!--[\s\S]*?-->/g, "").replace(/<style>[\s\S]*?<\/style>/, "").replace(/<script>[\s\S]*?<\/script>/, "");
-    r = lint(frame(`block-${n}`, { css: style, body: markup, tl: script }));
-    ok(`the theme's ${folder === "scenes" ? `${n} scene` : `${n} block`}, pasted into a frame, passes frame-lint (tokens only, camera in a clipped view)`, r.code === 0, r.out);
+    return lint(frame(`${folder}-${n}${ex ? "-filled" : ""}`, { css: style, body: ex ? fill(markup, ex) : markup, tl: script }));
+  };
+  for (const n of ["code-diff", "terminal-run"]) { r = pasted("blocks", n); ok(`the theme's ${n} block, pasted into a frame, passes frame-lint (tokens only, camera in a clipped view)`, r.code === 0, r.out); }
+  for (const n of scenes) {
+    const src = readFileSync(join(SCENES, `${n}.html`), "utf8"), ex = EXAMPLES[n] || {};
+    const slots = [...new Set([...src.replace(/<!--[\s\S]*?-->/g, "").matchAll(/\{\{([\w-]+)\}\}/g)].map((m) => m[1]))].sort();
+    const leaked = Object.values(ex).filter((v) => String(v).length > 8 && src.includes(v));
+    ok(`the theme's ${n} scene holds no example's words: each is a slot ({{…}}, ${slots.length}), and its worked example fills every one and no other`,
+      slots.length > 0 && !leaked.length && JSON.stringify(slots) === JSON.stringify(Object.keys(ex).sort()), `leaked: ${leaked.join(" | ")}; slots without an example: ${slots.filter((k) => !(k in ex)).join(" ")}; examples without a slot: ${Object.keys(ex).filter((k) => !slots.includes(k)).join(" ")}`);
+    r = pasted("scenes", n);
+    ok(`…as it ships, frame-lint fails it on its unfilled slots alone`, r.code === 1 && new RegExp(`${slots.length} slot\\(s\\) left unfilled`).test(r.out) && (r.out.match(/^    /gm) || []).length === 1, r.out);
+    r = pasted("scenes", n, ex);
+    ok(`…filled with its worked example, it passes frame-lint (tokens only, camera in a clipped view)`, r.code === 0, r.out);
   }
   const readme = readFileSync(join(SCENES, "README.md"), "utf8");
   ok(`…and the scenes' README names every scene (${scenes.length})`, scenes.length >= 7 && scenes.every((n) => readme.includes(`\`${n}.html\``)), scenes.filter((n) => !readme.includes(`\`${n}.html\``)).join(", "));
@@ -178,7 +191,11 @@ try {
     ok("…its root carries the frame's id, its length (its voice's, else the storyboard's) and the bottom band",
       /data-composition-id="03-before-launch"[^>]*data-duration="7.50"[^>]*data-band="bottom"/.test(f3) && /data-duration="11.25"/.test(f5) && /var DUR = 11.25;/.test(f5) && /DUR - 0\.001/.test(f5), f3.slice(0, 400));
     r = lint(F);
-    ok("…and the frames it writes pass frame-lint", r.code === 0, r.out);
+    ok("…the frames it writes fail frame-lint on their unfilled slots", r.code === 1 && /slot\(s\) left unfilled/.test(r.out), r.out);
+    writeFileSync(join(F, "03-before-launch.html"), fill(readFileSync(join(F, "03-before-launch.html"), "utf8"), EXAMPLES.count));
+    writeFileSync(join(F, "05-the-path.html"), fill(readFileSync(join(F, "05-the-path.html"), "utf8"), EXAMPLES.journey));
+    r = lint(F);
+    ok("…and pass it once filled", r.code === 0, r.out);
     writeFileSync(join(F, "03-before-launch.html"), "mine");
     s1 = scene(V, "3=lanes");
     ok("…a frame already there is left alone, unless --force", s1.code === 1 && /is there already/.test(s1.out) && readFileSync(join(F, "03-before-launch.html"), "utf8") === "mine"

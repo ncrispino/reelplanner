@@ -1,16 +1,19 @@
-<!-- OWN WORDS: what someone wrote, at size, its turn marked (scenes/README.md). From a long explainer's agent
-     reasoning, quoted whole and large, with the clause where it changed course drawn out: the viewer reads the
-     words themselves instead of a summary of them. Use it for the sentence a plan rests on, the person's ask, an
-     issue, an error message, a reviewer's note: anything whose exact words carry the point.
+<!-- OWN WORDS: what someone wrote, at size, its turn marked (scenes/README.md). The words are printed whole and large,
+     and the clause where they turn is drawn out: the viewer reads the words themselves instead of a summary of them.
+     Use it for the sentence a plan rests on, the person's ask, an issue, an error message, a reviewer's note: anything
+     whose exact words carry the point.
 
      Start a frame from it with `reelplanner scene <video-dir> <frame>=own-words` (or paste it into a frame's <template> and
-     replace every FID with "f" + the frame id). Put the words in exactly as their
-     source writes them (the example is the Dylan plan's "Why not the obvious approach", and the sentence after
-     it). The turn, the few words the scene is about, goes in the FID-hot span. Two sentences at most.
+     replace every FID with "f" + the frame id). Fill each slot with the words exactly as their source writes them
+     (`frame-lint` fails a slot left as it is):
+       {{place}}       a quiet place label: where the words are from      {{source}}   that source (a file, an issue)
+       {{words}}       the words up to their turn                         {{turn}}     the few words the scene is about
+       {{then}}        what follows from them, one sentence
+     Two sentences at most.
 
-     HOW IT MOVES (motion-language.md): the quote is PRINTED word by word at reading pace, its turn's underline
-     DRAWN on the word the narration lands on (the one coral), then what follows from it, set apart by a rule.
-     Replace the times with your cues. -->
+     HOW IT MOVES (motion-language.md): the quote is PRINTED word by word at reading pace, its turn's underline DRAWN on
+     the word the narration lands on (the one coral), then what follows from it, set apart by a rule. Replace the
+     times with your cues. -->
 <style>
   .FID-place { position:absolute; left:220px; top:150px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
   .FID-q { position:absolute; left:212px; top:220px; width:1500px; font:italic 400 100px/1.16 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
@@ -21,10 +24,10 @@
   .FID-so { position:absolute; left:262px; top:644px; width:1300px; font:400 38px/1.4 "Inter"; color:var(--rp-ink); }
 </style>
 
-<div class="FID-place" id="FID-place">plan.md · why not the obvious approach</div>
-<div class="FID-q" id="FID-q" data-artifact="plan.md">A single long biography page is where most fan sites fail: <span class="FID-hot" id="FID-hot">it reads as a wall of text.<i class="FID-u" id="FID-u"></i></span></div>
+<div class="FID-place" id="FID-place">{{place}}</div>
+<div class="FID-q" id="FID-q" data-artifact="{{source}}">{{words}} <span class="FID-hot" id="FID-hot">{{turn}}<i class="FID-u" id="FID-u"></i></span></div>
 <i class="FID-rule" id="FID-rule"></i>
-<div class="FID-so" id="FID-so" data-artifact="plan.md">The site should be organised by era, with the discography and the timeline as the spine.</div>
+<div class="FID-so" id="FID-so" data-artifact="{{source}}">{{then}}</div>
 
 <script>
   // inside the frame's (function () { … })(), BEFORE `var tl = …`: each word its own span, so it can be printed

@@ -1,18 +1,25 @@
-<!-- TWO LOOKS: a choice of looks, as the same page drawn in each (scenes/README.md). From the Dylan plan video's third
-     choice, "Book-like" against "Magazine", drawn as two page mocks side by side. Use it for any decision about how
-     something the plan makes looks or reads: the reviewer judges two real pages, with the same words in them, in
-     their own colours and type, instead of two adjectives.
+<!-- TWO LOOKS: a choice of looks, as the same page drawn in each (scenes/README.md). Two page mocks side by side hold
+     the same words, each in its own colours and type, and each look's own mark arrives in turn: the reviewer judges
+     two real pages instead of two adjectives. Use it for any decision about how something the plan makes looks or
+     reads.
 
      Start a frame from it with `reelplanner scene <video-dir> <frame>=two-looks` (or paste it into a frame's <template> and
-     replace every FID with "f" + the frame id). Put the plan's question, its options and its own page in (the example
-     is the Dylan plan's open question 3 and its album page; each look's palette and type are this example's own,
-     from the option's words: "serif, generous margins, few images" and "large photography, bold headings"). Both
-     mocks hold the same content, so only the look differs; each is a prototype (`data-plan-component="page"`) whose
-     colours are written as they are, never the theme's. Each option says under its page what the look costs, in
-     the plan's words. The marks are the player's: the heading `data-question`, each card `data-option`.
+     replace every FID with "f" + the frame id). Fill each slot with the plan's question, its options and its own page;
+     the same slot in both pages takes the same words, so only the look differs (`frame-lint` fails a slot left as it
+     is):
+       {{question}}    the question, as the plan asks it      {{a-look}} {{b-look}}   each look's name
+       {{page}}        which page this is                     {{site}}                the product's name
+       {{page-title}} {{page-sub}} {{page-text}}               the page's heading, its line under it, a sentence of its text
+       {{list-head}} {{item-1}} … {{item-4}}                  a short list on the page
+       {{b-kicker}}    B's kicker over its heading             {{b-image}}            what B's picture would be
+       {{a-cost}} {{b-cost}} {{b-risk}}                        what each look costs, in the plan's words; B's risk
+     Each page's look is its palette (the custom properties at the top of .FID-book and .FID-mag: replace them with
+     each option's own colours, as the plan's Look gives them), its type and its layout. Each page is a prototype
+     (`data-plan-component="page"`), so its colours are written as they are, never the theme's. The marks are the
+     player's: the heading `data-question`, each card `data-option`.
 
      HOW IT MOVES (motion-language.md): both pages are PRINTED together; then each look's own mark arrives on the word
-     that names it (A's rule DRAWN under its title, B's photograph WIPED in); then what each costs, and B's risk
+     that names it (A's rule DRAWN under its title, B's picture WIPED in); then what each costs, and B's risk
      underlined (the one coral). Both cards are at rest from then to the end. Replace the times with your cues. -->
 <style>
   .FID-q { position:absolute; left:128px; top:96px; width:1664px; font:400 60px/1.15 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
@@ -24,61 +31,61 @@
   .FID-u { position:absolute; left:0; right:0; bottom:-6px; height:4px; background:var(--rp-coral); transform-origin:0 50%; }
   .FID-pg { position:absolute; left:32px; top:116px; width:736px; height:420px; overflow:hidden; border-radius:4px; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 6px 20px rgba(var(--rp-shadow-rgb),0.08); }
 
-  /* A · Book-like: warm paper, an oxblood band and rule, a serif for reading, a small sans for the reference list */
-  .FID-book { background:#F4ECDD; color:#2B2118; }
-  .FID-book .bar { position:absolute; left:0; top:0; width:736px; height:40px; background:#7D2B27; }
-  .FID-book .site { position:absolute; left:40px; top:0; font:400 19px/40px "EB Garamond"; letter-spacing:0.04em; color:#F4ECDD; }
-  .FID-book .t { position:absolute; left:64px; top:74px; font:400 50px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:#2B2118; }
-  .FID-book .s { position:absolute; left:66px; top:138px; font:italic 400 20px/1.3 "EB Garamond"; color:#655446; }
-  .FID-book .rule { position:absolute; left:66px; top:176px; width:120px; height:2px; background:#7D2B27; transform-origin:0 50%; }
-  .FID-book .p { position:absolute; left:66px; top:198px; width:380px; font:400 19px/1.55 "EB Garamond"; color:#2B2118; }
-  .FID-book .k { position:absolute; left:500px; top:198px; font:600 11px/1 "Inter"; letter-spacing:0.14em; color:#7D2B27; }
-  .FID-book .li { position:absolute; left:500px; width:190px; font:400 14px/28px "Inter"; color:#2B2118; border-bottom:1px solid #E3D6C2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* A's look: its palette here, then its type and layout (the example's: a warm paper, one dark accent, a serif to read) */
+  .FID-book { --ground:#F4ECDD; --ink:#2B2118; --accent:#7D2B27; --muted:#655446; --line:#E3D6C2; background:var(--ground); color:var(--ink); }
+  .FID-book .bar { position:absolute; left:0; top:0; width:736px; height:40px; background:var(--accent); }
+  .FID-book .site { position:absolute; left:40px; top:0; font:400 19px/40px "EB Garamond"; letter-spacing:0.04em; color:var(--ground); }
+  .FID-book .t { position:absolute; left:64px; top:74px; font:400 50px/1.05 "EB Garamond"; letter-spacing:-0.012em; color:var(--ink); }
+  .FID-book .s { position:absolute; left:66px; top:138px; font:italic 400 20px/1.3 "EB Garamond"; color:var(--muted); }
+  .FID-book .rule { position:absolute; left:66px; top:176px; width:120px; height:2px; background:var(--accent); transform-origin:0 50%; }
+  .FID-book .p { position:absolute; left:66px; top:198px; width:380px; font:400 19px/1.55 "EB Garamond"; color:var(--ink); }
+  .FID-book .k { position:absolute; left:500px; top:198px; font:600 11px/1 "Inter"; letter-spacing:0.14em; color:var(--accent); }
+  .FID-book .li { position:absolute; left:500px; width:190px; font:400 14px/28px "Inter"; color:var(--ink); border-bottom:1px solid var(--line); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* B · Magazine: a near-black page, a photograph across half of it, a heavy sans in capitals, one yellow */
-  .FID-mag { background:#141216; color:#F1EEE8; }
-  .FID-mag .photo { position:absolute; left:0; top:0; width:330px; height:420px; background:#3A3236; transform-origin:0 50%; }
-  .FID-mag .cap { position:absolute; left:22px; bottom:20px; width:286px; font:500 13px/1.4 "Inter"; letter-spacing:0.04em; color:#D8CFC6; }
-  .FID-mag .kick { position:absolute; left:362px; top:44px; font:700 13px/1 "Inter"; letter-spacing:0.18em; color:#F2C230; }
-  .FID-mag .t { position:absolute; left:360px; top:70px; width:350px; font:800 46px/0.98 "Inter"; letter-spacing:-0.02em; text-transform:uppercase; color:#F1EEE8; }
-  .FID-mag .p { position:absolute; left:362px; top:200px; width:340px; font:400 16px/1.5 "Inter"; color:#BDB5AD; }
-  .FID-mag .li { position:absolute; left:362px; width:340px; font:600 14px/26px "Inter"; color:#F1EEE8; border-top:1px solid #3A3439; white-space:nowrap; }
+  /* B's look: its palette here, then its type and layout (the example's: a dark page, a picture across half, a heavy sans) */
+  .FID-mag { --ground:#141216; --ink:#F1EEE8; --accent:#F2C230; --muted:#BDB5AD; --line:#3A3439; --image:#3A3236; --caption:#D8CFC6; background:var(--ground); color:var(--ink); }
+  .FID-mag .photo { position:absolute; left:0; top:0; width:330px; height:420px; background:var(--image); transform-origin:0 50%; }
+  .FID-mag .cap { position:absolute; left:22px; bottom:20px; width:286px; font:500 13px/1.4 "Inter"; letter-spacing:0.04em; color:var(--caption); }
+  .FID-mag .kick { position:absolute; left:362px; top:44px; font:700 13px/1 "Inter"; letter-spacing:0.18em; color:var(--accent); }
+  .FID-mag .t { position:absolute; left:360px; top:70px; width:350px; font:800 46px/0.98 "Inter"; letter-spacing:-0.02em; text-transform:uppercase; color:var(--ink); }
+  .FID-mag .p { position:absolute; left:362px; top:200px; width:340px; font:400 16px/1.5 "Inter"; color:var(--muted); }
+  .FID-mag .li { position:absolute; left:362px; width:340px; font:600 14px/26px "Inter"; color:var(--ink); border-top:1px solid var(--line); white-space:nowrap; }
 </style>
 
-<div class="FID-q" id="FID-q" data-question>Which look for the reading pages?</div>
+<div class="FID-q" id="FID-q" data-question>{{question}}</div>
 
 <div class="FID-opt" id="FID-a" data-option="a" style="left:128px">
   <div class="FID-tag">A · recommended</div>
-  <div class="FID-name">Book-like</div>
-  <div class="FID-pg FID-book" id="FID-pa" data-plan-component="page" data-artifact="album page, book-like">
-    <div class="bar"></div><div class="site">Bob Dylan</div>
-    <div class="t">Highway 61 Revisited</div>
-    <div class="s">1965 · Columbia · going electric</div>
+  <div class="FID-name">{{a-look}}</div>
+  <div class="FID-pg FID-book" id="FID-pa" data-plan-component="page" data-artifact="{{page}}">
+    <div class="bar"></div><div class="site">{{site}}</div>
+    <div class="t">{{page-title}}</div>
+    <div class="s">{{page-sub}}</div>
     <i class="rule" id="FID-rule"></i>
-    <div class="p">Recorded in six days that summer, with a band behind him from the first take: the record that made the electric turn for good.</div>
-    <div class="k">TRACKS</div>
-    <div class="li" style="top:216px">1 · Like a Rolling Stone</div>
-    <div class="li" style="top:244px">2 · Tombstone Blues</div>
-    <div class="li" style="top:272px">5 · Ballad of a Thin Man</div>
-    <div class="li" style="top:300px">9 · Desolation Row</div>
+    <div class="p">{{page-text}}</div>
+    <div class="k">{{list-head}}</div>
+    <div class="li" style="top:216px">{{item-1}}</div>
+    <div class="li" style="top:244px">{{item-2}}</div>
+    <div class="li" style="top:272px">{{item-3}}</div>
+    <div class="li" style="top:300px">{{item-4}}</div>
   </div>
-  <div class="FID-cost" id="FID-ca">Matches the biography half, and is cheap<br>to make good</div>
+  <div class="FID-cost" id="FID-ca">{{a-cost}}</div>
 </div>
 
 <div class="FID-opt" id="FID-b" data-option="b" style="left:992px">
   <div class="FID-tag">B</div>
-  <div class="FID-name">Magazine</div>
-  <div class="FID-pg FID-mag" id="FID-pb" data-plan-component="page" data-artifact="album page, magazine">
-    <div class="photo" id="FID-photo"><div class="cap">Photograph: Newport Folk Festival, 25 July 1965</div></div>
-    <div class="kick">1965 · THE ELECTRIC TURN</div>
-    <div class="t">Highway 61 Revisited</div>
-    <div class="p">Recorded in six days that summer, with a band behind him from the first take: the record that made the electric turn for good.</div>
-    <div class="li" style="top:300px">1 · Like a Rolling Stone</div>
-    <div class="li" style="top:326px">2 · Tombstone Blues</div>
-    <div class="li" style="top:352px">5 · Ballad of a Thin Man</div>
-    <div class="li" style="top:378px">9 · Desolation Row</div>
+  <div class="FID-name">{{b-look}}</div>
+  <div class="FID-pg FID-mag" id="FID-pb" data-plan-component="page" data-artifact="{{page}}">
+    <div class="photo" id="FID-photo"><div class="cap">{{b-image}}</div></div>
+    <div class="kick">{{b-kicker}}</div>
+    <div class="t">{{page-title}}</div>
+    <div class="p">{{page-text}}</div>
+    <div class="li" style="top:300px">{{item-1}}</div>
+    <div class="li" style="top:326px">{{item-2}}</div>
+    <div class="li" style="top:352px">{{item-3}}</div>
+    <div class="li" style="top:378px">{{item-4}}</div>
   </div>
-  <div class="FID-cost" id="FID-cb">More striking, but<br><span class="FID-risk">depends on images we may not be allowed to use<i class="FID-u" id="FID-u"></i></span></div>
+  <div class="FID-cost" id="FID-cb">{{b-cost}}<br><span class="FID-risk">{{b-risk}}<i class="FID-u" id="FID-u"></i></span></div>
 </div>
 
 <script>

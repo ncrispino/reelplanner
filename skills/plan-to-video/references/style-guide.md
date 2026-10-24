@@ -221,9 +221,9 @@ most (the Dylan plan video and a long explainer): a count with its part drawn to
 part, who does what in lanes, a rule run over many things with its tally, someone's own words at size, a decision
 as two futures of the same thing, a choice of looks as two pages, a person's path through the real pages. `$RP
 scene` lists them, and `templates/reelplanner/theme/scenes/README.md` says when each fits; `$RP scene <video-dir>
-<frame>=<scene>` writes a frame from one. A scene is a start, not a form to fill: keep its idea, replace every word,
-number and thing with your plan's (its own are the Dylan plan's), and change its layout and moves wherever this
-beat needs. At most half a video's frames start from scenes, each scene once: every video would otherwise look
+<frame>=<scene>` writes a frame from one. Every word in a scene is a `{{slot}}` its header lists: fill each with your
+plan's own (`frame-lint` fails one left unfilled). A scene is a start, not a form to fill: keep its idea, and change
+its layout and moves wherever this beat needs. At most half a video's frames start from scenes, each scene once: every video would otherwise look
 like every other (`variety` warns past either). A beat no scene fits is drawn fresh, by this section.
 
 In a scene that shows the real thing, a card about it (a "means" card, a "chose / instead" card) is only

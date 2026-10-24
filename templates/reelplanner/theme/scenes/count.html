@@ -1,17 +1,21 @@
-<!-- COUNT: a number, then the part of it that matters, drawn to scale (scenes/README.md). From a long
-     explainer's field of tens of thousands of records with the few dozen it cited marked in it: the whole drawn,
-     the part marked, so the viewer sees how much "ten of forty" is before the narration says it.
+<!-- COUNT: a number, then the part of it that matters, drawn to scale (scenes/README.md). The whole is a field of
+     cells and the part is marked in it, so the viewer sees how much "ten of forty" is before the narration says it.
+     Use it wherever a step is about how many, and how much of them it means: records, pages, users, files, steps.
 
      Start a frame from it with `reelplanner scene <video-dir> <frame>=count` (or paste it into a frame's <template> and
-     replace every FID with "f" + the frame id). Put your plan's figures in.
-     The example's figures are the Dylan plan's own (eval/plans/bob-dylan-site/plan.md: 40 studio albums, ten
-     written before launch, "a month of data entry"): never a figure the plan or its sources do not give.
-     One cell a unit while the whole is under about 200 (set N, PART and COLS); past that a cell is a group,
-     and the unit line says so ("one square · 1,000 acts").
+     replace every FID with "f" + the frame id). Fill each slot with the plan's own words and figures, never a figure
+     the plan or its sources do not give (`frame-lint` fails a slot left as it is):
+       {{place}}       a quiet place label: the file or step this is from
+       {{whole}}       the whole, a number                  {{whole-unit}}  what it counts
+       {{part}}        the part the step means, a number    {{part-unit}}   what the part is, in a few words
+       {{counted}}     the thing counted, as its source names it (a folder, a table)
+       {{rest}}        the rest, in words                   {{rest-cost}}   what the rest costs, or waits for
+     The field is drawn from the two figures: one cell a unit while the whole is under about 200; past that a cell is
+     a group, and {{whole-unit}} says so.
 
-     HOW IT MOVES (motion-language.md): the whole is COUNTED, the figure and the cells together on the word
-     that says the number; the part FILLS, its own figure counted; what is left dims, with what it costs
-     beside it. Coral is the part, and nothing else. Replace the times with your cues. -->
+     HOW IT MOVES (motion-language.md): the whole is COUNTED, the figure and the cells together on the word that says
+     the number; the part FILLS, its own figure counted; what is left dims, with what it costs beside it. Coral is the
+     part, and nothing else. Replace the times with your cues. -->
 <style>
   .FID-place { position:absolute; left:128px; top:96px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.62); white-space:nowrap; }
   .FID-fig { position:absolute; left:116px; font:400 240px/1 "EB Garamond"; letter-spacing:-0.02em; color:var(--rp-ink); font-variant-numeric:tabular-nums; }
@@ -26,22 +30,24 @@
   .FID-rest .m { font:500 30px/1 "JetBrains Mono"; color:rgba(var(--rp-ink-rgb),0.7); }
 </style>
 
-<div class="FID-place" id="FID-place">plan.md · step 1 · before launch</div>
-<div class="FID-fig" id="FID-all" style="top:172px">40</div>
-<div class="FID-unit" id="FID-all-u" style="top:458px"><span class="m">studio albums</span></div>
+<div class="FID-place" id="FID-place">{{place}}</div>
+<div class="FID-fig" id="FID-all" style="top:172px">{{whole}}</div>
+<div class="FID-unit" id="FID-all-u" style="top:458px"><span class="m">{{whole-unit}}</span></div>
 <div class="FID-rule" id="FID-rule"></div>
-<div class="FID-fig small" id="FID-part" style="top:570px">10</div>
-<div class="FID-unit" id="FID-part-u" style="top:716px">written before launch, with forty songs</div>
-<div class="FID-field" id="FID-field" data-artifact="content/albums/"></div>
-<div class="FID-rest" id="FID-rest">the other 30 · <span class="m">a month of data entry</span></div>
+<div class="FID-fig small" id="FID-part" style="top:570px">{{part}}</div>
+<div class="FID-unit" id="FID-part-u" style="top:716px">{{part-unit}}</div>
+<div class="FID-field" id="FID-field" data-artifact="{{counted}}"></div>
+<div class="FID-rest" id="FID-rest">{{rest}} · <span class="m">{{rest-cost}}</span></div>
 
 <script>
-  // inside the frame's (function () { … })(), BEFORE `var tl = …`: the field, one cell a unit
-  var N = 40, PART = 10, COLS = 8, CELL = 96, GAP = 18;
+  // inside the frame's (function () { … })(), BEFORE `var tl = …`: the field, from the frame's two figures
+  var N = parseInt(document.getElementById("FID-all").textContent, 10) || 0, PART = parseInt(document.getElementById("FID-part").textContent, 10) || 0;
+  var W = 894, H = 552, COLS = Math.max(1, Math.ceil(Math.sqrt(N * W / H))), STEP = Math.min(W / COLS, H / Math.max(1, Math.ceil(N / COLS)));
+  var GAP = Math.round(STEP * 0.16), CELL = Math.floor(STEP - GAP);   // as many cells as the whole, as large as the field allows
   var field = document.getElementById("FID-field");
   for (var i = 0; i < N; i++) {
     var c = document.createElement("div"); c.className = "FID-c";
-    c.style.left = (i % COLS) * (CELL + GAP) + "px"; c.style.top = Math.floor(i / COLS) * (CELL + GAP) + "px";
+    c.style.left = Math.round((i % COLS) * STEP) + "px"; c.style.top = Math.round(Math.floor(i / COLS) * STEP) + "px"; c.style.width = c.style.height = CELL + "px";
     c.appendChild(document.createElement("i")); field.appendChild(c);
   }
   var cells = [].slice.call(field.children), part = [], rest = [];

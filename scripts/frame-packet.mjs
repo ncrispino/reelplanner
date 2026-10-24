@@ -86,7 +86,7 @@ source, other frames' files or the timing files: what they hold is below, and th
 - The frame rules and the look: \`${theme ? rel(theme) : "theme/frame.md"}\`
 - How frames move: \`${motion ? rel(motion) : "theme/motion-language.md"}\`
 - Scenes to start from, where one fits the beat: \`${rel(join(ROOT, "templates", "reelplanner", "theme", "scenes", "README.md"))}\` says when each fits, and
-  \`reelplanner scene ${rel(dir)} <frame>=<scene>\` writes the frame from one (put the plan's words in: its own are an example)
+  \`reelplanner scene ${rel(dir)} <frame>=<scene>\` writes the frame from one (fill its {{slots}} with the plan's own words)
 ${brief ? `- The brief's choices: ${["Medium", "Layouts", "Main transition"].map((k) => (new RegExp(`^- ${k}:\\s*(.+)$`, "m").exec(brief) || [])[1]).filter(Boolean).map((v, i) => `${["medium", "layouts", "main transition"][i]}: ${v}`).join("; ") || "BRIEF.md"}` : ""}
 ${realThings ? `- Real things (shown as themselves, in a \`data-artifact\` container with their words pinned on, \`data-gloss\`): ${realThings}` : ""}
 - Fonts: by family name in the frame's CSS (\`font: 400 46px/1.1 "EB Garamond"\`; the theme's are "EB Garamond",

@@ -8,10 +8,11 @@ row labelled field by field, its actors as lanes over time, a field of tens of t
 marked, a sentence check with its tally, an agent's own words at size. These scenes are those, rebuilt in the theme's tokens and motion
 language so a plan video can start from them.
 
-Each is a whole scene: it passes `frame-lint` as it ships (visuals spec), moves by `../motion-language.md`, keeps
-coral to its one moment, and carries a worked example from the Dylan plan (`eval/plans/bob-dylan-site/plan.md`),
-so you can see it working before your plan goes in. Its header says what it is for, how many things fit, and how
-it moves.
+Each is a whole scene, moving by `../motion-language.md` and keeping coral to its one moment, and a template: every
+word in it is a `{{slot}}` for the plan's own, which its header lists with what goes in each, how many things fit,
+and how it moves. A frame starts with no one else's content, and `frame-lint` fails a slot left unfilled. The visuals
+spec fills each scene with a worked example (from the Dylan plan, in `scripts/test/scene-examples.json`, which is not
+shipped) and checks that a real fill passes `frame-lint`.
 
 | scene | use it when the beat is about… | it shows | its verbs |
 |---|---|---|---|
@@ -37,10 +38,10 @@ these scenes leave to it. The Dylan video's rail, where each answer lands on its
    frame's file (its storyboard `- src:`) from its scene: in the frame's `<template>`, every `FID` made the frame's
    prefix, its root marked with its id, length and bottom band, its timeline registered and run to the frame's end.
    `reelplanner scene` lists them.
-3. **Put your plan in, and make it this beat's.** Every word, number and thing in the scene is the Dylan example's:
-   replace each with your plan's own, from the plan or its sources, never a figure they do not give. Keep the
-   scene's idea (the part drawn to scale, the two futures); change its layout, sizes and moves wherever this beat
-   needs. Each header says how many items fit.
+3. **Fill its slots, and make it this beat's.** Every word in the scene is a `{{slot}}`, and its header says what goes
+   in each: fill each from the plan or its sources, never a figure they do not give, and delete one (with its
+   element) the beat does not need. Keep the scene's idea (the part drawn to scale, the two futures); change its
+   layout, sizes and moves wherever this beat needs. Each header says how many items fit.
 4. **The product in its own look.** A page, screen or option mock (`data-plan-component="page"`) wears the plan's
    **Look** block: its palette, type and imagery, its colours written as they are (`frame-lint` allows them there,
    and holds the rest of the frame to the theme's tokens). Drawn in the video's cream and coral, every product the
@@ -52,9 +53,10 @@ these scenes leave to it. The Dylan video's rail, where each answer lands on its
 ## Adding one
 
 The set grows from videos that showed something: when a reviewer's answers say a scene worked, make it a scene here.
-Take the idea, not the video's content: rebuild it in the theme's tokens and moves, give it a worked example from a
-plan in this repo (`eval/plans/`), a header like the others (what it is for and where it came from, how many items
-fit, how it moves), and a row above and under **Taken from**. The visuals spec checks that it passes `frame-lint`.
+Take the idea, not the video's content: rebuild it in the theme's tokens and moves, its words as `{{slots}}`, with a
+header like the others (what it is for, its slots, how many items fit, how it moves), a row above and under **Taken
+from**, and a worked example for its slots in `scripts/test/scene-examples.json` from a plan in this repo
+(`eval/plans/`). The visuals spec checks that the example fills every slot and passes `frame-lint`.
 
 ## Taken from
 

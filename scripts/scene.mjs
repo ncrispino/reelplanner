@@ -2,16 +2,16 @@
 // Frames started from the theme's scenes (templates/reelplanner/theme/scenes/; its README says which is for what):
 // whole scenes taken from the plan and explainer videos that showed the most, each passing frame-lint as it ships, so
 // a frame starts from a picture that works instead of a blank page (a bench run's frames drawn from nothing came out
-// as cards of words).
+// as cards of words). A scene holds no example's words: each is a {{slot}}, so a frame cannot keep one by mistake.
 //
 // usage: reelplanner scene                                                  the scenes: each one's name and what it is for
 //        reelplanner scene <video-dir> <frame>=<scene> [<frame>=<scene>…] [--force]     each frame's file, from its scene
 //   <frame> is its number as the storyboard numbers it (`3=count 7=two-futures`). Its file is the storyboard block's
 //   `- src:`, written whole: the scene in the frame's <template>, every FID made the frame's own prefix, its root with
 //   the composition id, the frame's length (its voice's, else the storyboard's `- duration:`) and data-band, its
-//   timeline registered and run to the frame's end (references/frames.md). The words, numbers and things in it are
-//   the scene's worked example (the Dylan plan's): replace every one with your plan's, then put the times on your
-//   cues. A file already there is left alone unless --force; nothing is written unless every pair is good.
+//   timeline registered and run to the frame's end (references/frames.md). Its words are {{slots}}, listed in its
+//   header: fill each with your plan's own (frame-lint fails one left as it is), then put the times on your cues. A
+//   file already there is left alone unless --force; nothing is written unless every pair is good.
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { join, resolve, dirname, relative, basename } from "node:path";
 import { ROOT } from "./lib/env.mjs";
@@ -30,7 +30,7 @@ const about = (n) => (/<!--\s*[A-Z ]+:\s*([^.(]+)/.exec(read(join(SCENES, `${n}.
 if (!target) {
   console.log(`The theme's scenes (${shown(SCENES)}/README.md says when each fits):\n`);
   for (const n of all) console.log(`  ${n.padEnd(12)} ${about(n)}`);
-  console.log(`\nreelplanner scene <video-dir> <frame>=<scene> … writes each frame's file from its scene; replace the example with your plan's.`);
+  console.log(`\nreelplanner scene <video-dir> <frame>=<scene> … writes each frame's file from its scene, its words {{slots}} for your plan's own.`);
   process.exit(0);
 }
 if (!pairs.length) die(usage);
@@ -65,8 +65,8 @@ function frameFrom({ name, file, dur }) {
   // the scene's header, without how to start a frame from it (this is that frame): what it is for, how it moves
   const head = ((/<!--([\s\S]*?)-->/.exec(src) || [])[1] || "").replace(/Start a frame from it with[\s\S]*?\)\.\s*/, "").replace(/^\s+|\s+$/g, "");
   return `<template>
-<!-- Started from the theme's ${name} scene (reelplanner scene). Its words, numbers and things are the scene's worked
-     example: replace every one with this plan's, and put the times on this frame's cues.
+<!-- Started from the theme's ${name} scene (reelplanner scene). Fill each {{slot}} with this plan's own words (frame-lint
+     fails one left as it is), make the scene this beat's own, and put the times on this frame's cues.
 
      ${head} -->
 <style>
@@ -97,5 +97,5 @@ for (const j of jobs) {
   writeFileSync(j.file, frameFrom(j));
   console.log(`✓ frame ${j.n}: ${shown(j.file)}, the ${j.name} scene, ${j.dur.toFixed(2)} s (${j.from})`);
 }
-console.log(`next: replace each example (the Dylan plan's) with this plan's words and things, put the times on the cues, then
+console.log(`next: fill each {{slot}} with this plan's own words, put the times on the cues, then
   reelplanner frame-check ${dir === process.cwd() ? "." : shown(dir)} ${jobs.map((j) => j.n).join(" ")}`);

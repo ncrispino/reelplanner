@@ -1,16 +1,22 @@
-<!-- JOURNEY: one person's path through the real pages (scenes/README.md). From the Dylan plan's "After this lands"
-     ("a visitor opens an era, clicks an album, sees its tracks, clicks a song, and lands on the timeline where it
-     was first performed") drawn as the pages themselves, with real words in them, and the camera following each
-     click. Use it for what the plan makes, seen by the person who will use it: the pages or screens, in the order
-     they meet them. It shows the cross-links a step builds better than any diagram of them.
+<!-- JOURNEY: one person's path through the real pages (scenes/README.md). The pages the plan makes, with real words in
+     them and in the product's own look, and the camera following each click from page to page; at the end it pulls
+     back to the whole path. Use it for what the plan makes, seen by the person who will use it: the pages or screens,
+     in the order they meet them. It shows the links a step builds better than any diagram of them.
 
      Start a frame from it with `reelplanner scene <video-dir> <frame>=journey` (or paste it into a frame's <template> and
-     replace every FID with "f" + the frame id). Put the plan's own pages and words
-     in (every fact on these four pages is Bob Dylan's record as the plan's content would hold it). Two to four
-     pages; each page a prototype (`data-plan-component="page"`), its words real and short, the link that is
-     clicked marked FID-link. The pages wear the product's own look, the plan's Look block (palette, type,
-     imagery), written as it is: never the video's cream and coral, or every product looks the same. The camera's poses put a page's centre (x, 440) at the view's centre at scale 1.7:
-     x = 960 − 1.7·x, y = 450 − 1.7·440.
+     replace every FID with "f" + the frame id). Fill each slot with the plan's own pages and words (`frame-lint` fails
+     a slot left as it is):
+       {{place}}       a quiet place label: where this path is in the plan
+       {{site}} {{nav}}             the product's name and its navigation, as every page's header shows them
+       {{page-1}} … {{page-4}}      which page each is
+       {{pN-title}} {{pN-sub}}      each page's heading and the line under it
+       {{p1-text}}                  a sentence of the first page's text
+       {{pN-list}} {{pN-item-n}}    each page's short list; {{p4-when-n}} the fourth page's dates or times
+       {{p1-link}} {{p2-link}} {{p3-link}}   the link clicked on each page, which opens the next
+     Two to four pages, each a prototype (`data-plan-component="page"`). The pages wear the product's own look, the
+     plan's Look block: replace the palette (the custom properties at the top of .FID-pg) with its colours, and its
+     type if it names any; never the video's cream and coral, or every product looks the same. The camera's poses
+     put a page's centre (x, 440) at the view's centre at scale 1.7: x = 960 − 1.7·x, y = 450 − 1.7·440.
 
      HOW IT MOVES (motion-language.md): the camera starts close on the first page; each page's lines are PRINTED as
      the camera arrives; a click is a ring on the link and its underline DRAWN; the camera pans to the page it opens;
@@ -19,24 +25,24 @@
 <style>
   .FID-view { position:absolute; left:0; top:0; width:1920px; height:900px; overflow:hidden; }
   .FID-cam { position:absolute; left:0; top:0; width:1920px; height:900px; transform-origin:0 0; }
-  /* the site, in its own look (the plan's Look, step 4's "Book-like: serif, generous margins, few images"; the colours
-     are this example's own): its paper, ink and oxblood are the product's, written as they are, never the theme's */
-  .FID-pg { position:absolute; top:200px; width:400px; height:480px; box-sizing:border-box; border-radius:4px; background:#F4ECDD; box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 6px 20px rgba(var(--rp-shadow-rgb),0.08); overflow:hidden; }
+  /* the product, in its own look (the plan's Look block): its palette in the custom properties on .FID-pg, written as
+     they are, never the theme's; then its type and layout */
+  .FID-pg { position:absolute; top:200px; width:400px; height:480px; box-sizing:border-box; border-radius:4px; --ground:#F4ECDD; --ink:#2B2118; --accent:#7D2B27; --muted:#655446; --line:#E3D6C2; --nav:#F1E6D6; background:var(--ground); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.12),0 6px 20px rgba(var(--rp-shadow-rgb),0.08); overflow:hidden; }
   .FID-pg > div { position:absolute; left:30px; width:340px; }
-  .FID-pg > .FID-bar { left:0; top:0; width:340px; height:44px; padding:0 30px; background:#7D2B27; font:400 20px/44px "EB Garamond"; letter-spacing:0.02em; color:#F4ECDD; white-space:nowrap; }
-  .FID-bar .nav { position:absolute; right:22px; top:0; font:400 11px/44px "Inter"; letter-spacing:0.08em; text-transform:uppercase; color:#F1E6D6; word-spacing:2px; }
-  .FID-h { font:400 36px/1.1 "EB Garamond"; letter-spacing:-0.01em; color:#2B2118; white-space:nowrap; }
-  .FID-sub { font:italic 400 16px/1.4 "EB Garamond"; color:#655446; }
-  .FID-p { font:400 18px/1.5 "EB Garamond"; color:#2B2118; }
-  .FID-k { font:600 11px/1 "Inter"; letter-spacing:0.14em; color:#7D2B27; }
-  .FID-li { font:400 16px/30px "Inter"; color:#2B2118; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-bottom:1px solid #E3D6C2; }
+  .FID-pg > .FID-bar { left:0; top:0; width:340px; height:44px; padding:0 30px; background:var(--accent); font:400 20px/44px "EB Garamond"; letter-spacing:0.02em; color:var(--ground); white-space:nowrap; }
+  .FID-bar .nav { position:absolute; right:22px; top:0; font:400 11px/44px "Inter"; letter-spacing:0.08em; text-transform:uppercase; color:var(--nav); word-spacing:2px; }
+  .FID-h { font:400 36px/1.1 "EB Garamond"; letter-spacing:-0.01em; color:var(--ink); white-space:nowrap; }
+  .FID-sub { font:italic 400 16px/1.4 "EB Garamond"; color:var(--muted); }
+  .FID-p { font:400 18px/1.5 "EB Garamond"; color:var(--ink); }
+  .FID-k { font:600 11px/1 "Inter"; letter-spacing:0.14em; color:var(--accent); }
+  .FID-li { font:400 16px/30px "Inter"; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-bottom:1px solid var(--line); }
   .FID-li.wrap { white-space:normal; padding-left:26px; width:314px; }   /* a long line takes two, as the page would */
   .FID-li.wrap .n { position:absolute; left:0; top:9px; }
   .FID-li.on { overflow:visible; }                                    /* the clicked link's row: its ring may reach past it */
-  .FID-li .n { display:inline-block; width:26px; font:500 12px/1 "Inter"; color:#655446; }
-  .FID-li .d { display:inline-block; width:66px; font:600 12px/1 "Inter"; letter-spacing:0.06em; color:#7D2B27; }
-  .FID-link { position:relative; display:inline-block; color:#7D2B27; }
-  .FID-link i { position:absolute; left:0; right:0; bottom:5px; height:1px; background:#7D2B27; transform-origin:0 50%; }
+  .FID-li .n { display:inline-block; width:26px; font:500 12px/1 "Inter"; color:var(--muted); }
+  .FID-li .d { display:inline-block; width:66px; font:600 12px/1 "Inter"; letter-spacing:0.06em; color:var(--accent); }
+  .FID-link { position:relative; display:inline-block; color:var(--accent); }
+  .FID-link i { position:absolute; left:0; right:0; bottom:5px; height:1px; background:var(--accent); transform-origin:0 50%; }
   .FID-ring { position:absolute; right:-40px; top:-6px; width:42px; height:42px; border-radius:50%; border:3px solid var(--rp-ink); box-sizing:border-box; }
   .FID-hot b { position:absolute; left:-12px; top:5px; width:4px; height:20px; background:var(--rp-coral); transform-origin:50% 0; }
   .FID-hop { position:absolute; width:40px; height:2px; background:rgba(var(--rp-ink-rgb),0.5); transform-origin:0 50%; }
@@ -44,55 +50,55 @@
 </style>
 
 <div class="FID-view" id="FID-view"><div class="FID-cam" id="FID-cam" data-camera>
-  <div class="FID-pg" id="FID-p1" data-plan-component="page" data-artifact="era page" style="left:100px">
-    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
-    <div class="FID-h" style="top:64px">Going electric</div>
-    <div class="FID-sub" style="top:106px">1965–1966</div>
-    <div class="FID-p" style="top:138px">In 1965 Dylan plugged in. Bringing It All Back Home had one electric side; that summer he played Newport with a band.</div>
-    <div class="FID-k" style="top:236px">ALBUMS</div>
-    <div class="FID-li" style="top:258px">Bringing It All Back Home</div>
-    <div class="FID-li on" style="top:288px"><span class="FID-link">Highway 61 Revisited<i id="FID-u1"></i><b class="FID-ring" id="FID-r1"></b></span></div>
-    <div class="FID-li" style="top:318px">Blonde on Blonde</div>
+  <div class="FID-pg" id="FID-p1" data-plan-component="page" data-artifact="{{page-1}}" style="left:100px">
+    <div class="FID-bar">{{site}}<span class="nav">{{nav}}</span></div>
+    <div class="FID-h" style="top:64px">{{p1-title}}</div>
+    <div class="FID-sub" style="top:106px">{{p1-sub}}</div>
+    <div class="FID-p" style="top:138px">{{p1-text}}</div>
+    <div class="FID-k" style="top:236px">{{p1-list}}</div>
+    <div class="FID-li" style="top:258px">{{p1-item-1}}</div>
+    <div class="FID-li on" style="top:288px"><span class="FID-link">{{p1-link}}<i id="FID-u1"></i><b class="FID-ring" id="FID-r1"></b></span></div>
+    <div class="FID-li" style="top:318px">{{p1-item-3}}</div>
   </div>
-  <div class="FID-pg" id="FID-p2" data-plan-component="page" data-artifact="album page" style="left:540px">
-    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
-    <div class="FID-h" style="top:64px">Highway 61 Revisited</div>
-    <div class="FID-sub" style="top:106px">1965 · Columbia · going electric</div>
-    <div class="FID-k" style="top:140px">TRACKS</div>
-    <div class="FID-li on" style="top:162px"><span class="n">1</span><span class="FID-link">Like a Rolling Stone<i id="FID-u2"></i><b class="FID-ring" id="FID-r2"></b></span></div>
-    <div class="FID-li" style="top:192px"><span class="n">2</span>Tombstone Blues</div>
-    <div class="FID-li wrap" style="top:222px"><span class="n">3</span>It Takes a Lot to Laugh, It Takes a Train to Cry</div>
-    <div class="FID-li" style="top:282px"><span class="n">4</span>From a Buick 6</div>
-    <div class="FID-li" style="top:312px"><span class="n">5</span>Ballad of a Thin Man</div>
-    <div class="FID-li" style="top:342px"><span class="n">6</span>Queen Jane Approximately</div>
-    <div class="FID-li" style="top:372px"><span class="n">7</span>Highway 61 Revisited</div>
-    <div class="FID-li" style="top:402px"><span class="n">8</span>Just Like Tom Thumb's Blues</div>
-    <div class="FID-li" style="top:432px"><span class="n">9</span>Desolation Row</div>
+  <div class="FID-pg" id="FID-p2" data-plan-component="page" data-artifact="{{page-2}}" style="left:540px">
+    <div class="FID-bar">{{site}}<span class="nav">{{nav}}</span></div>
+    <div class="FID-h" style="top:64px">{{p2-title}}</div>
+    <div class="FID-sub" style="top:106px">{{p2-sub}}</div>
+    <div class="FID-k" style="top:140px">{{p2-list}}</div>
+    <div class="FID-li on" style="top:162px"><span class="n">1</span><span class="FID-link">{{p2-link}}<i id="FID-u2"></i><b class="FID-ring" id="FID-r2"></b></span></div>
+    <div class="FID-li" style="top:192px"><span class="n">2</span>{{p2-item-2}}</div>
+    <div class="FID-li wrap" style="top:222px"><span class="n">3</span>{{p2-item-3}}</div>
+    <div class="FID-li" style="top:282px"><span class="n">4</span>{{p2-item-4}}</div>
+    <div class="FID-li" style="top:312px"><span class="n">5</span>{{p2-item-5}}</div>
+    <div class="FID-li" style="top:342px"><span class="n">6</span>{{p2-item-6}}</div>
+    <div class="FID-li" style="top:372px"><span class="n">7</span>{{p2-item-7}}</div>
+    <div class="FID-li" style="top:402px"><span class="n">8</span>{{p2-item-8}}</div>
+    <div class="FID-li" style="top:432px"><span class="n">9</span>{{p2-item-9}}</div>
   </div>
-  <div class="FID-pg" id="FID-p3" data-plan-component="page" data-artifact="song page" style="left:980px">
-    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
-    <div class="FID-h" style="top:64px">Like a Rolling Stone</div>
-    <div class="FID-sub" style="top:106px">written 1965 · first on Highway 61 Revisited</div>
-    <div class="FID-k" style="top:160px">COVERED BY</div>
-    <div class="FID-li" style="top:182px">The Rolling Stones</div>
-    <div class="FID-li" style="top:212px">Jimi Hendrix</div>
-    <div class="FID-k" style="top:262px">FIRST PLAYED LIVE</div>
-    <div class="FID-li on" style="top:284px"><span class="FID-link">Newport Folk Festival, 25 July 1965<i id="FID-u3"></i><b class="FID-ring" id="FID-r3"></b></span></div>
+  <div class="FID-pg" id="FID-p3" data-plan-component="page" data-artifact="{{page-3}}" style="left:980px">
+    <div class="FID-bar">{{site}}<span class="nav">{{nav}}</span></div>
+    <div class="FID-h" style="top:64px">{{p3-title}}</div>
+    <div class="FID-sub" style="top:106px">{{p3-sub}}</div>
+    <div class="FID-k" style="top:160px">{{p3-list}}</div>
+    <div class="FID-li" style="top:182px">{{p3-item-1}}</div>
+    <div class="FID-li" style="top:212px">{{p3-item-2}}</div>
+    <div class="FID-k" style="top:262px">{{p3-list-2}}</div>
+    <div class="FID-li on" style="top:284px"><span class="FID-link">{{p3-link}}<i id="FID-u3"></i><b class="FID-ring" id="FID-r3"></b></span></div>
   </div>
-  <div class="FID-pg" id="FID-p4" data-plan-component="page" data-artifact="timeline page" style="left:1420px">
-    <div class="FID-bar">Bob Dylan<span class="nav">Eras Albums Songs Timeline</span></div>
-    <div class="FID-h" style="top:64px">Timeline</div>
-    <div class="FID-sub" style="top:106px">1965</div>
-    <div class="FID-li" style="top:144px"><span class="d">22 Mar</span>Bringing It All Back Home</div>
-    <div class="FID-li" style="top:174px"><span class="d">20 Jul</span>Like a Rolling Stone, the single</div>
-    <div class="FID-li on FID-hot" style="top:204px"><b id="FID-hot"></b><span class="d">25 Jul</span>Newport: plays electric</div>
-    <div class="FID-li" style="top:234px"><span class="d">30 Aug</span>Highway 61 Revisited</div>
+  <div class="FID-pg" id="FID-p4" data-plan-component="page" data-artifact="{{page-4}}" style="left:1420px">
+    <div class="FID-bar">{{site}}<span class="nav">{{nav}}</span></div>
+    <div class="FID-h" style="top:64px">{{p4-title}}</div>
+    <div class="FID-sub" style="top:106px">{{p4-sub}}</div>
+    <div class="FID-li" style="top:144px"><span class="d">{{p4-when-1}}</span>{{p4-item-1}}</div>
+    <div class="FID-li" style="top:174px"><span class="d">{{p4-when-2}}</span>{{p4-item-2}}</div>
+    <div class="FID-li on FID-hot" style="top:204px"><b id="FID-hot"></b><span class="d">{{p4-when-3}}</span>{{p4-item-3}}</div>
+    <div class="FID-li" style="top:234px"><span class="d">{{p4-when-4}}</span>{{p4-item-4}}</div>
   </div>
   <i class="FID-hop" id="FID-h1" style="left:500px; top:503px"></i>
   <i class="FID-hop" id="FID-h2" style="left:940px; top:377px"></i>
   <i class="FID-hop" id="FID-h3" style="left:1380px; top:499px"></i>
 </div></div>
-<div class="FID-place" id="FID-place">plan.md · after this lands · one visitor's path</div>
+<div class="FID-place" id="FID-place">{{place}}</div>
 
 <script>
   // inside the frame's (function () { … })(), BEFORE `var tl = …`
