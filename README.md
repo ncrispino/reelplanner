@@ -124,29 +124,47 @@ which way you want, unless you said "quick". To move to a fuller way later, ask 
 
 ## Review beside your agent in the terminal
 
-Watch the video and answer its questions beside Codex, Claude Code, or another coding agent.
-Install [terminal-browser](https://github.com/zenbu-labs/terminal-browser), then run this from your
-terminal. On macOS:
+<img src="docs/media/terminal-review.gif" alt="Codex in a terminal opens a plan video's review in a split beside it; the reviewer answers the questions and presses Send; the split closes, Codex wakes with the review, rebuilds the video and opens the new version beside it." width="100%">
+
+Ask your agent to open a video's review "beside me in the terminal". It opens in a split next to the agent. Watch,
+answer, comment and press **Send**: the split closes, the agent wakes with your review and gets to work, and when
+the new version is built it opens beside you again. You never leave the terminal or tell the agent it was sent.
+
+Your agent's own permissions still apply while it works. In our Linux trial, Codex on its default settings asked
+you to approve 15 of its commands between Send and the new version (where it keeps the review, the build and its
+checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the repo.
+Codex's "Approve for me" setting decides them for you instead. Claude Code in auto mode, with reelplanner's commands
+allowed ([Claude Code](./docs/agents.md#claude-code)), asked none.
+
+Set it up once, from your own terminal (not inside an agent). Install
+[terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
 
 ```sh
-brew install --cask terminal-browser
-reelplanner review videos/<name> --detach --workspace terminal-browser
+brew install --cask terminal-browser          # macOS (Linux: curl -fsSL https://terminal-browser.sh/install | bash)
+reelplanner review-setup --workspace terminal-browser                       # Claude Code and other agents
+reelplanner review-setup --workspace terminal-browser --codex-allow-open    # Codex: it also opens reviews with no prompt
 ```
 
-Replace `videos/<name>` with the video folder your agent built. The player opens in a pane beside
-your agent; **Send** saves your review for the agent, with no file to download.
-Use any terminal supported by terminal-browser; we've tested playback and review controls in Ghostty.
-To remember this workspace and let Codex open ready reviews without a prompt each time, opt in once
-from your local shell, then restart Codex:
+Restart Codex afterwards. Tested in Ghostty on macOS with Codex, and in tmux (in Ghostty) on Linux with Codex and
+Claude Code, where the split is a new tmux pane beside the agent's. `reelplanner review-setup --check` checks the
+setup; `--codex-disable-open` removes Codex's rule; `--workspace browser` goes back to your ordinary browser, the
+default. With Codex, start the session with a model Codex does not mark as cyber (`codex -m <model>`): for those,
+Codex ignores the saved rule, and you open the link yourself. Details: [terminal review](./docs/terminal-review.md).
 
-```sh
-reelplanner review-setup --workspace terminal-browser --codex-allow-open
-```
+**Security: what you allow.** Read this before you set it up.
 
-This grants only the local review opener; starting the server keeps its existing permission checks.
-`reelplanner review-setup --check` checks the saved setup; `--codex-disable-open` removes its rule.
-See [terminal setup and testing status](./docs/terminal-review.md) for details. The ordinary browser
-remains the default until you choose a workspace.
+- **Codex runs the opener outside its sandbox, without asking.** `--codex-allow-open` saves a Codex rule for one
+  command, reelplanner's `review-open`. It reads your process list to find the Codex window, reads that window's
+  terminal settings, and opens a local review page beside it. It starts no server and sends nothing.
+- **Your terminal may be scripted.** On macOS, the first split asks you to let Codex (or your terminal) control
+  Ghostty. That permission is broad: a program run with it can type into any Ghostty window. reelplanner uses it only
+  to split, and to close its own split with Ctrl+Q after Send, but the permission is not limited to that.
+- **Send wakes your agent.** The review server listens on 127.0.0.1 only, but any program running as you on this
+  machine can post a "review" to it, and a waiting agent will start working on it with nobody typing. The review is
+  passed as data, not as instructions, yet it still reaches your agent. Use it on a machine you trust, and stop the
+  server when you are not reviewing: `reelplanner review --stop`.
+- **The server runs outside the sandbox.** Starting it needs one approval in Codex: it writes its log and your
+  review outside the workspace.
 
 ## Case studies
 

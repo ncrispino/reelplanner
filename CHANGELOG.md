@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.4.0 (unreleased)
+
+- **Codex CLI, as Claude Code is** (#29, [docs/agents.md](docs/agents.md#codex)). reelplanner's native Codex plugin
+  (`codex plugin marketplace add "$(npm root -g)/reelplanner"`, then `codex plugin add reelplanner@reelplanner`;
+  run the second again after updating reelplanner, as Codex keeps its own copy). Codex plans, reviews, takes saved
+  reviews in, recovers interrupted work and exports its own conversation through the same workflow, with a Codex
+  conversation profile for the skill's teaching style.
+- **Review beside your agent in the terminal, end to end** ([README](README.md#review-beside-your-agent-in-the-terminal),
+  [docs/terminal-review.md](docs/terminal-review.md)). The video opens in a terminal-browser split next to the agent;
+  Send wakes the agent with the review; the split closes; the new version opens beside it once it is built.
+  - `review-setup --workspace terminal-browser` remembers the workspace; `--codex-allow-open` saves a Codex rule for
+    the one opener command, so opening a ready review asks nothing. Codex applies a rule only to a command whose
+    first word is unquoted, so the opener is printed with the program bare (the quoted form ran in the sandbox and
+    was refused localhost, `EPERM`), and `--check` no longer fails falsely inside Codex's Linux sandbox.
+  - Codex 0.164 runs commands in a background server no terminal is attached to: the opener finds the Codex window
+    in the folder and runs terminal-browser on that window's terminal, so the split lands beside it (under tmux, the
+    window's own pane). terminal-browser's own error line is shown when it cannot open.
+  - `review` run by Codex connects that session, so Send queues it a message (`codex queue`) that starts its next
+    turn; Claude Code wakes as before, when its background `review --wait` ends.
+  - The opener tells the review server which split it opened; after a Send a session took, the server closes that
+    split a few seconds later, the way you would: Ctrl+Q typed into it, then the terminal closes the emptied split.
+    Only that split, and only while it still shows the server's page.
+  - The README says what this setup allows: a command outside Codex's sandbox, macOS's broad permission to script
+    Ghostty, and a local server any program on the machine can post a review to, which now wakes your agent.
+  - Codex ignores saved allow rules for models it marks as cyber; the docs and the `EPERM` message say so.
+- **A repeatable trial of it on Linux:** `scripts/release/terminal-review.sh` starts a fresh EC2 machine, runs the
+  loop for Codex and Claude Code with a scripted reviewer (`--record` records the screen), and deletes the machine.
+- **On Ubuntu 24.04,** Codex's sandbox needs unprivileged user namespaces, which AppArmor restricts. The docs point to
+  the narrower fix Codex documents (an AppArmor profile; not tried here, and 24.04 does not ship the one it names) and
+  say not to turn the protection off on a machine you keep.
+
 ## 0.3.0 (2026-10-24)
 
 - **Scenes to start a frame from** (`templates/reelplanner/theme/scenes/`, `reelplanner scene`). A frame drawn from a

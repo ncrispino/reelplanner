@@ -147,11 +147,13 @@ commit and completion. These were synthetic acceptance trials, separate from the
 this change. See the [saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json).
 
 On Linux, terminal-browser splits tmux rather than Ghostty itself (its Ghostty split uses macOS
-scripting), so run tmux in Ghostty; the opener gives it the Codex window's tmux pane. `bash scripts/release/codex-terminal.sh --profile <aws-profile>
---out <dir> [--record]` repeats the Codex review on a fresh Ubuntu 24.04 machine: Ghostty on a virtual
-screen with tmux in it, Codex with the plugin and the saved opener rule, a scripted reviewer that answers
-and presses Send in the split, and Codex taking the review in. You log Codex in on the machine once;
-the script deletes the machine afterwards.
+scripting), so run tmux in Ghostty: the split is a new tmux pane beside the agent's, in the same window. The
+opener gives it the Codex window's own pane. `bash scripts/release/terminal-review.sh --profile <aws-profile>
+--out <dir> [--agents codex,claude] [--record]` repeats the whole loop on a fresh Ubuntu 24.04 machine, for
+Codex and for Claude Code: Ghostty on a virtual screen with tmux in it, the agent asked to open a built
+video's review beside it, a scripted reviewer that answers, asks for a change and presses Send in the split,
+then nobody typing: the split closes, Send wakes the agent, and it takes the review in, rebuilds the video and
+opens the new version. You log each agent in on the machine once; the script deletes the machine afterwards.
 
 After updating reelplanner, restart an older review server with `review --stop`, then open it again.
 Refresh an existing page so its audio loads from the updated server. That matters because an already

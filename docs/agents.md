@@ -9,8 +9,8 @@ The other agents are untested.
 
 | Agent | Status | What it needs from you |
 |---|---|---|
-| Claude Code | **Tested.** Every part of the loop and the hosted review page. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
-| Codex CLI (0.162.1) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. The terminal review also on Linux (0.164.0). Automatic session wake remains unverified. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
+| Claude Code | **Tested.** Every part of the loop and the hosted review page; the terminal review on Linux (tmux), from opening beside it to the new version. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
+| Codex CLI (0.162.1; 0.164.0 for the terminal review) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. The terminal review on macOS (Ghostty) and Linux (tmux): it opens beside Codex, Send wakes the session (`codex queue`), the split closes, and the new version reopens. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
 | Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
@@ -155,8 +155,22 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
   only on macOS; on Linux it splits tmux. The opener first ran in the sandbox there: reelplanner quoted the
   program's path, and Codex applies a rule only to a command whose first word is unquoted (now fixed). Codex
   runs commands in a background server, and terminal-browser split the tmux pane that server was started from,
-  which there was Codex's own; the opener now gives it the Codex window's pane (not yet run again on Linux).
-- Apart from that Linux review, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake, the Codex app, cloud, the rest of the loop on Linux, Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
+  which there was Codex's own; the opener now gives it the Codex window's pane (run again below).
+- On macOS (the owner's machine: Ghostty 1.3.1, terminal-browser 0.13.4, Codex CLI 0.164.0's background server), with
+  the saved opener rule: the opener ran with no prompt, found the Codex window and opened the review in a split
+  beside it. Send queued a message that started the session's next turn with nobody typing; it claimed the review,
+  took it in, revised the video and opened the new version beside it. Twice, the split closed a few seconds after
+  Send (Ctrl+Q typed into it, then Ghostty closed the emptied split), and other terminal-browser windows stayed. With
+  Daybreak Blue (`gpt-daybreak-blue-latest`), which Codex marks as cyber, Codex ignored the saved rule and the
+  opener was refused localhost (`EPERM`); with GPT-6.1-Sol it applied.
+- The whole loop on that Ubuntu setup, repeated with [`scripts/release/terminal-review.sh`](../scripts/release/terminal-review.sh)
+  (a scripted reviewer; nobody typed after Send), passed for Codex CLI 0.164.0 and for Claude Code 2.1.310: the
+  review opened in a new tmux pane beside the agent, the split closed after Send, Send woke the agent (Codex through
+  `codex queue`, Claude Code when its background waiter ended), it took the review in, rebuilt the frame the comment
+  named, committed, and opened the new version in a new split. Codex, on its default approval settings, asked 15
+  approvals between Send and the new version, and 9 in a repo set up with `reel init`; Claude Code in auto mode, with
+  reelplanner's commands allowed, asked none.
+- Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake outside a terminal review, the Codex app, cloud, the rest of the loop on Linux (planning, implementing, the walkthrough), Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
 
 ## Open work
 
