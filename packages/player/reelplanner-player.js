@@ -2483,8 +2483,14 @@ export class ReelplannerPlayer extends HTMLElement {
     // where this run of play began, and when, and the playhead at its last tick (tickDecisions: a question the video
     // played across is reached however long the page went between ticks); a seek pauses the video, so every run starts
     // with a play. A new speed starts the clock's count again from there.
-    const runFrom = () => { const t = this.player.currentTime; this._run = { t, at: performance.now(), last: this._run?.last ?? t }; };
-    this.player.addEventListener("play", () => { this._run = null; runFrom(); if (!this._firstPlayAt) this._firstPlayAt = new Date().toISOString(); this.stage.dataset.started = "1"; this.hideCaptions("before", false); this.deselect(); this.syncPlay(); });   // a selection belongs to a paused frame
+    const runFrom = (t = this.player.currentTime) => { this._run = { t, at: performance.now(), last: this._run?.last ?? t }; };
+    // A run begins where the video was last sent, not at currentTime: a state packet from before the seek, still on
+    // its way, can set currentTime back to the old place before a Play queued until the assets are ready begins (seen
+    // on a loaded CI runner). Begun there, the run's fence would turn away every tick of the real one, and a question
+    // at its end would go by. The runtime says nothing when it seeks, so its seek is wrapped to remember where.
+    const seek = this.player.seek.bind(this.player);
+    this.player.seek = (t) => { this._sentTo = t; return seek(t); };
+    this.player.addEventListener("play", () => { this._run = null; runFrom(this._sentTo ?? this.player.currentTime); this._sentTo = null; if (!this._firstPlayAt) this._firstPlayAt = new Date().toISOString(); this.stage.dataset.started = "1"; this.hideCaptions("before", false); this.deselect(); this.syncPlay(); });   // a selection belongs to a paused frame
     this.player.addEventListener("pause", () => { this._run = null; this.syncPlay(); });
     this.player.addEventListener("ratechange", () => { if (this._run) runFrom(); });
     this.player.addEventListener("ended", () => { this.syncPlay(false); this.markWatched("seen"); });   // ended arrives before the runtime's final paused state is committed
