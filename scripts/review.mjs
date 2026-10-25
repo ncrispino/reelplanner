@@ -201,10 +201,14 @@ if (flag("session")) {
 } else if (process.env.CODEX_THREAD_ID && !process.env.REELPLANNER_REVIEW && !process.env.REELPLANNER_REVIEW_DETACHED) {
   // Run by Codex: connect the session that ran this, so Send queues it a message (`codex queue`), which starts its
   // next turn (seen with Codex 0.164 on macOS); a Codex turn that has ended sees nothing else. Not connected, Send
-  // still saves the review.
+  // still saves the review. Inside Codex's sandbox, where the inbox cannot be written, nothing is tried: the server
+  // cannot start there either, and says so below.
   const session = `codex:${process.env.CODEX_THREAD_ID}`;
-  try { await connectSession(BOX, { repo: REPO, session }); console.log(`· Send wakes this Codex session (${session}): end your turn once the review is open, with no \`review --wait\` left running`); }
-  catch (e) { console.log(`△ this Codex session is not connected (${e.message}): Send saves the review; ask the person to say when it is sent`); }
+  let writable = true; try { mkdirSync(INBOX, { recursive: true }); } catch { writable = false; }
+  if (writable) {
+    try { await connectSession(BOX, { repo: REPO, session }); console.log(`· Send wakes this Codex session (${session}): end your turn once the review is open, with no \`review --wait\` left running`); }
+    catch (e) { console.log(`△ this Codex session is not connected (${e.message}): Send saves the review; ask the person to say when it is sent`); }
+  }
 }
 // a path in a response or a line: from the repo for its own inbox, from ~ for the machine's
 const shown = (p) => RP ? relative(REPO, p).split("\\").join("/") : shownPath(p);
@@ -235,7 +239,8 @@ const bundle = (dir) => packedDir ? undefined : execFileSync(process.execPath, [
 // one video: open it; the whole repo: open on the library
 const pageUrl = (base, dir) => rp ? base : `${base}?project=${encodeURIComponent(JSON.parse(readFileSync(join(dir, "library.json"), "utf8")).slugs[0])}`;
 const printOpener = (url) => {
-  if (workspace === "terminal-browser" && reviewPreferences.codexAutoOpen) {
+  // only for Codex: the saved preference is the machine's, and another agent shown the line runs it too
+  if (workspace === "terminal-browser" && reviewPreferences.codexAutoOpen && process.env.CODEX_THREAD_ID) {
     console.log(`· Codex: run this separately to use the saved opener permission:\n  ${openerCommand(url)}`);
   }
 };

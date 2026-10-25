@@ -15,7 +15,7 @@ mkdirSync(bin);
 const env = { ...process.env, REELPLANNER_HOME: join(scratch, "machine"), CODEX_HOME: join(scratch, "codex"), PATH: `${bin}:${process.env.PATH}` };
 const prefs = preferencesFile(env), rules = ruleFile(env);
 const cli = join(ROOT, "bin/reelplanner.mjs");
-const run = (args) => spawnSync(process.execPath, [cli, ...args], { cwd: scratch, env, encoding: "utf8", timeout: 20000 });
+const run = (args, runEnv = env) => spawnSync(process.execPath, [cli, ...args], { cwd: scratch, env: runEnv, encoding: "utf8", timeout: 20000 });
 const runAsync = (args, childEnv = env) => new Promise((resolve, reject) => {
   const child = spawn(process.execPath, [cli, ...args], { cwd: scratch, env: childEnv });
   let stdout = "", stderr = "";
@@ -158,7 +158,10 @@ try {
     writeFileSync(join(liveVideo, "plan-map.json"), JSON.stringify({ project: "video", title: "Scratch", frames: [] }));
     const args = ["review", liveVideo, "--detach", "--no-notify"];
     const before = opened().length;
-    const start = run([...args, "--no-open"]);
+    // run by Codex (its CODEX_THREAD_ID; a stand-in codex that verifies no session, so no real daemon is asked)
+    const noDaemon = join(scratch, "no-daemon"); mkdirSync(noDaemon, { recursive: true });
+    writeFileSync(join(noDaemon, "codex"), "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+    const start = run([...args, "--no-open"], { ...env, CODEX_THREAD_ID: "spec-thread", PATH: `${noDaemon}:${env.PATH}` });
     if (start.status !== 0) console.error(readFileSync(join(repo, ".reelplanner/inbox/server.log"), "utf8"));
     ok(start);
     assert.match(start.stdout, /'review-open' 'http:\/\/127\.0\.0\.1:/);
@@ -166,7 +169,9 @@ try {
     assert.ok(start.stdout.includes(`\n  ${openerPrefix()[0]} '${openerPrefix()[1]}' 'review-open' `), start.stdout);
     assert.equal(opened().length, before);
     ok(run(args)); assert.equal(opened().length, before + 1);
-    ok(run([...args, "--no-open"])); assert.equal(opened().length, before + 1);
+    const other = run([...args, "--no-open"]); ok(other); assert.equal(opened().length, before + 1);
+    // another agent is never shown Codex's opener line (Claude Code ran it once it was)
+    assert.doesNotMatch(other.stdout, /run this separately/, other.stdout);
     const browser = platform() === "darwin" ? "open" : platform() === "win32" ? "cmd" : "xdg-open";
     const browserLog = join(scratch, "browser.json");
     writeFileSync(join(bin, browser), `#!${process.execPath}\nrequire('node:fs').writeFileSync(${JSON.stringify(browserLog)},JSON.stringify(process.argv.slice(2)));\n`, { mode: 0o755 });
