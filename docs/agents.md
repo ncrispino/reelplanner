@@ -153,7 +153,9 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
   split; told it was sent, Codex took the review in with `reel-intake`. In a repo with no `.reelplanner/`, the
   waiter needed an approval too: it registers in `~/.reelplanner`. terminal-browser 0.13.4 splits Ghostty itself
   only on macOS; on Linux it splits tmux. The opener first ran in the sandbox there: reelplanner quoted the
-  program's path, and Codex applies a rule only to a command whose first word is unquoted (now fixed).
+  program's path, and Codex applies a rule only to a command whose first word is unquoted (now fixed). Codex
+  runs commands in a background server, and terminal-browser split the tmux pane that server was started from,
+  which there was Codex's own; the opener now gives it the Codex window's pane (not yet run again on Linux).
 - Apart from that Linux review, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake, the Codex app, cloud, the rest of the loop on Linux, Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
 
 ## Open work

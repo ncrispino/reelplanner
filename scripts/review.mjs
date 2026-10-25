@@ -86,6 +86,8 @@ import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs
 import { unsandboxedNote } from "./lib/sandbox.mjs";
 import { harnessForCommand } from "./lib/agents.mjs";
 import { openReview, REVIEW_WORKSPACES } from "./lib/presentation.mjs";
+import { paneOf, registerPane, closePane } from "./lib/review-pane.mjs";
+import { findExecutable } from "./lib/review-preferences.mjs";
 import { readReviewPreferences, openerCommand } from "./lib/review-preferences.mjs";
 import { discoverReviewProjects } from "./lib/review-projects.mjs";
 import { sendFile } from "./lib/http-file.mjs";
@@ -196,6 +198,13 @@ const BOX = RP || machineInbox(REPO), INBOX = inboxDir(BOX);
 if (flag("session")) {
   try { await connectSession(BOX, { repo: REPO, session: flag("session"), endpoint: flag("session-endpoint") || null }); }
   catch (e) { console.error(`✗ cannot connect review session: ${e.message}`); process.exit(1); }
+} else if (process.env.CODEX_THREAD_ID && !process.env.REELPLANNER_REVIEW && !process.env.REELPLANNER_REVIEW_DETACHED) {
+  // Run by Codex: connect the session that ran this, so Send queues it a message (`codex queue`), which starts its
+  // next turn (seen with Codex 0.164 on macOS); a Codex turn that has ended sees nothing else. Not connected, Send
+  // still saves the review.
+  const session = `codex:${process.env.CODEX_THREAD_ID}`;
+  try { await connectSession(BOX, { repo: REPO, session }); console.log(`· Send wakes this Codex session (${session}): end your turn once the review is open, with no \`review --wait\` left running`); }
+  catch (e) { console.log(`△ this Codex session is not connected (${e.message}): Send saves the review; ask the person to say when it is sent`); }
 }
 // a path in a response or a line: from the repo for its own inbox, from ~ for the machine's
 const shown = (p) => RP ? relative(REPO, p).split("\\").join("/") : shownPath(p);
@@ -245,6 +254,7 @@ const announce = async (url) => {
       opened = await openReview({ url, workspace: "browser" });
     }
     if (opened.status !== "opened") console.log(`  (${opened.reason} — open the URL yourself)`);
+    if (opened.pane) await registerPane(url, opened.pane).catch((e) => console.log(`  (${e.message}: the split stays open after Send)`));
   }
 };
 
@@ -393,6 +403,11 @@ async function startRun(id) {
   return r;
 }
 
+// The terminal-browser splits showing this page, as their openers reported them (scripts/lib/review-pane.mjs), and
+// how long after Send one closes: long enough to read that it was sent.
+const panes = new Map();
+const PANE_CLOSE_MS = Number(process.env.REELPLANNER_PANE_CLOSE_MS) || 4000;
+
 // Durable intake is shared by all harnesses: waiter, verified connection, configured run, inbox.
 const deliver = (id) => deliverInbox(BOX, id, { repo: REPO, start: () => startRun(id), recheckMs: RECHECK_MS });
 
@@ -416,13 +431,20 @@ function readBody(req, limit = 5e6) {
 }
 
 async function handleApi(req, res, path) {
-  if (path !== "api/review" && path !== "api/ask" && path !== "api/review/status") return json(res, 404, { ok: false, error: "no such endpoint" });
+  if (path !== "api/review" && path !== "api/ask" && path !== "api/review/status" && path !== "api/pane") return json(res, 404, { ok: false, error: "no such endpoint" });
   // This endpoint can start an agent run, so only this page may call it: no other site's Origin
   // (a plain form post skips CORS preflight), and a Host that is us (a rebinding DNS name is not).
   const hosts = [`127.0.0.1:${port}`, `localhost:${port}`];
   if (!hosts.includes(String(req.headers.host))) return json(res, 403, { ok: false, error: "wrong host" });
   if (req.headers.origin && !hosts.some((h) => req.headers.origin === `http://${h}`)) return json(res, 403, { ok: false, error: "cross-origin" });
   if (path === "api/ask") return handleAsk(req, res);
+  if (path === "api/pane") {
+    if (req.method !== "POST") return json(res, 405, { ok: false, error: "POST the split's key and terminal" });
+    let pane; try { pane = paneOf(JSON.parse(await readBody(req, 4e3))); } catch {}
+    if (!pane) return json(res, 400, { ok: false, error: "a pane is { key, tty, project }" });
+    panes.set(pane.key, pane);
+    return json(res, 200, { ok: true });
+  }
   if (path === "api/review/status") {
     if (req.method !== "GET") return json(res, 405, { ok: false, error: "GET it, with ?id=" });
     const id = new URL(req.url, "http://x").searchParams.get("id") || "";
@@ -449,6 +471,17 @@ async function handleApi(req, res, path) {
   let d;
   if (w.duplicate) { const c = claimOf(BOX, w.id); d = { handledBy: c ? (c.by === "agent" ? "agent" : "session") : liveWaiters(BOX).length ? "session" : "inbox", message: "already received" }; }
   else d = await deliver(w.id);
+  // a session took it: the split it was sent from closes once the page has said so, and the session opens the new
+  // version when it is built (a headless run, or none, leaves it open: nobody would open it again)
+  const closing = !w.duplicate && d.handledBy === "session" ? [...panes.values()].filter((p) => !p.project || p.project === row.project) : [];
+  for (const pane of closing) {
+    panes.delete(pane.key);
+    setTimeout(async () => {
+      const c = await closePane(pane, `http://127.0.0.1:${port}/`, { terminalBrowser: findExecutable("terminal-browser") || "terminal-browser" }).catch((e) => ({ reason: e.message }));
+      console.log(`  split ${pane.key}: ${c.closed ? "closed" : `left open (${c.reason})`}`);
+    }, PANE_CLOSE_MS).unref();
+  }
+  if (closing.length) d = { ...d, message: `${d.message}; this split closes in a moment, and opens again with the new version` };
   console.log(`📥 review ${w.id}${w.duplicate ? " (again)" : ""} → ${rel}: ${d.message}`);
   return json(res, 200, { ok: true, id: w.id, path: rel, duplicate: w.duplicate, ...d });
 }

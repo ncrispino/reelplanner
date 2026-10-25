@@ -108,7 +108,14 @@ boundary and hand off the printed URL/command; don't change policy or try anothe
 The opener rule does not authorize clicking controls or submitting a review. An explicit
 `--workspace` overrides the saved choice; `--no-open` alone never opens a pane.
 If opening fails, report the error once and stop that review handoff; do not start or repeatedly
-poll a review waiter unless the person confirms they opened it themselves. Keep a running server
+poll a review waiter unless the person confirms they opened it themselves.
+Open only a video in this repo. If the one asked for isn't here, say so and ask: never open a copy from
+another checkout, whose Send goes to that repo's inbox and can start its headless run.
+In Codex, `review` connects this session: when it prints `Send wakes this Codex session`, end your turn once
+the review is open, with no `review --wait` left running; Send queues you a message that starts your next
+turn, and you claim the review as it says. If it prints that the session is not connected, ask the person to
+say when they have sent it. The split closes a few seconds after Send (the opener told the server which split it
+opened); once the review's changes are built, open the new version the same way, which opens a new split. Keep a running server
 available for recovery, and never imply the review is visible just because its server is healthy.
 
 **In Claude Code,** each `$RP` command asks for permission, or in auto mode is judged and may be refused (most

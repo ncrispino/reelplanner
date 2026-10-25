@@ -167,7 +167,10 @@ try {
   // your file across repos (D-106), in a scratch home: a word you looked up and a video you watched (D-218)
   const youHome = join(tmp, "you-home"); mkdirSync(youHome, { recursive: true });
   writeFileSync(join(youHome, "you.jsonl"), JSON.stringify({ repo: "elsewhere", plan: "2026-01-01-x", review: "walkthrough-1", at: "2026-01-01T00:00:00Z", lost: { looked: ["streak", "merge"] }, watched: [{ video: "system", at: "2026-01-01T00:00:00Z" }] }) + "\n");
-  const env = { ...process.env, REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
+  // a stand-in terminal-browser that shows no windows: a split registered with the server is left open after Send, and said so
+  const fakeBin = join(tmp, "fake-bin"); mkdirSync(fakeBin, { recursive: true });
+  writeFileSync(join(fakeBin, "terminal-browser"), `#!/bin/sh\necho '{"browsers":[]}'\n`, { mode: 0o755 });
+  const env = { ...process.env, PATH: `${fakeBin}:${process.env.PATH}`, REELPLANNER_PANE_CLOSE_MS: "300", REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
   rmSync(notified, { force: true });
   const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 0)), "--out", join(tmp, "bundle")], { cwd: tmp, env });
   procs.push(srv);
@@ -200,8 +203,14 @@ try {
   const waited = new Promise((r) => waiter.on("exit", (c) => r(c)));
   const seen = await until(async () => (await (await fetch(api)).json()).sessionWaiting);
   ok("server: sees the waiting session", !!seen);
+  // the split the opener opened the page in (scripts/lib/review-pane.mjs): the server takes only a key and a terminal
+  const pane = (body) => fetch(`${url}/api/pane`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.status);
+  ok("server: a split is registered by its key and terminal, and nothing else is taken", await pane({ key: "../x", tty: "/dev/ttys010" }) === 400
+    && await pane({ key: "spec-1", tty: "/etc/passwd" }) === 400 && await pane({ key: "spec-1", tty: "/dev/ttys999", project: "video" }) === 200);
   const r1 = await post(row("2026-01-02T10:00:00.123Z"));
   ok("server: a posted review is written into the inbox and left for the session", r1.status === 200 && r1.body.handledBy === "session" && r1.body.path === ".reelplanner/inbox/video-20260102T100000Z.json", JSON.stringify(r1.body));
+  ok("server: a session took it, so the page says its split closes and opens again with the new version", /this split closes in a moment, and opens again with the new version/.test(r1.body.message), r1.body.message);
+  ok("server: a split terminal-browser no longer shows with this page is left open, and the log says why", !!await until(() => /split spec-1: left open \(the split no longer shows this review\)/.test(log), 4000), log);
   const inboxFile = join(tmp, r1.body.path);
   ok("server: the file is the row as posted", existsSync(inboxFile) && JSON.parse(readFileSync(inboxFile, "utf8")).review.annotations[0].text === "clearer, please");
   const wcode = await Promise.race([waited, sleep(8000).then(() => "timeout")]);
@@ -363,6 +372,13 @@ try {
   const d2 = cli(vd, "--detach", "--no-open", "--no-notify");
   const sj2 = JSON.parse(readFileSync(sfile, "utf8"));
   ok("--detach again: reuses the running server, starts no other", sj2.pid === sj.pid && d2.includes(`review page: ${sj.url}`) && /already running/.test(d2), d2);
+  // run by Codex (its CODEX_THREAD_ID), --detach connects that session; one it cannot verify leaves Send saving the review
+  const noCodex = join(tmp, "no-codex-bin");
+  mkdirSync(noCodex, { recursive: true });
+  writeFileSync(join(noCodex, "codex"), "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+  const dCodex = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify"], { cwd: tmp, env: { ...env, CODEX_THREAD_ID: "spec-thread", PATH: `${noCodex}:${env.PATH}` }, encoding: "utf8", timeout: 90000 });
+  ok("--detach run by Codex: tries to connect its session, and with none verified says Send still saves, and goes on", /this Codex session is not connected \(.+\): Send saves the review/.test(dCodex)
+    && dCodex.includes(`review page: ${sj.url}`) && !existsSync(join(rp, "inbox/.connection.json")), dCodex);
   const stop = cli("--stop");
   const after = await fetch(new URL("api/review", sj.base)).then(() => "answered", () => "refused");
   ok("--stop: stops it and forgets it", /stopped the review server/.test(stop) && !isAlive(sj.pid) && !existsSync(sfile) && after === "refused", `${stop} · ${after}`);

@@ -1,18 +1,32 @@
 // Presentation only: open the existing review URL. Review storage and session delivery
 // belong to the server/inbox; an opener cannot claim that a review was received.
-import { execFile } from "node:child_process";
+import { spawn } from "node:child_process";
+import { closeSync, constants, openSync } from "node:fs";
 import { platform } from "node:os";
+import { findCodexWindow, underTerminal, withWindowTerminal } from "./codex-window.mjs";
+import { openedPane } from "./review-pane.mjs";
 
 export const REVIEW_WORKSPACES = Object.freeze(["browser", "terminal-browser", "cmux"]);
 
-function run(command, args, env, timeout = 30000) {
+function run(command, args, env, timeout = 30000, { stdin = "ignore", detail = false } = {}) {
   return new Promise((resolve) => {
-    execFile(command, args, { env, timeout, maxBuffer: 256 * 1024, windowsHide: true }, (error, stdout, stderr) => {
-      if (!error) return resolve({ status: "opened", output: stdout });
-      const missing = error.code === "ENOENT";
+    let stdout = "", stderr = "", killed = false;
+    const child = spawn(command, args, { env, stdio: [stdin, "pipe", "pipe"], windowsHide: true });
+    const timer = setTimeout(() => { killed = true; child.kill(); }, timeout);
+    child.stdout.on("data", (chunk) => { stdout = (stdout + chunk).slice(-256 * 1024); });
+    child.stderr.on("data", (chunk) => { stderr = (stderr + chunk).slice(-4096); });
+    child.on("error", (error) => {
+      clearTimeout(timer);
+      resolve(error.code === "ENOENT" ? { status: "unavailable", reason: `${command} is not installed` } : { status: "error", reason: `${command} failed (${error.code || "unknown error"})` });
+    });
+    child.on("close", (code, signal) => {
+      clearTimeout(timer);
+      if (code === 0 && !killed) return resolve({ status: "opened", output: stdout });
       // Do not echo a command's output: it may contain URLs, workspace contents or
-      // authentication details. The exit/timeout is enough to explain the fallback.
-      resolve({ status: missing ? "unavailable" : "error", reason: missing ? `${command} is not installed` : error.killed ? `${command} did not finish within ${timeout / 1000}s` : `${command} failed (${error.code || error.signal || "unknown error"})` });
+      // authentication details. The exit/timeout is enough to explain the fallback,
+      // except terminal-browser's last error line, which names the pane or terminal it could not use.
+      const why = detail && stderr.trim().split("\n").at(-1).trim().slice(0, 300);
+      resolve({ status: "error", reason: killed ? `${command} did not finish within ${timeout / 1000}s` : `${command} failed (${code ?? signal ?? "unknown error"})${why ? `: ${why}` : ""}` });
     });
   });
 }
@@ -21,7 +35,7 @@ function run(command, args, env, timeout = 30000) {
  * the launcher accepted the request, not that playback, sound or Send was verified.
  * Callers may fall back to workspace:"browser" after reporting an optional failure.
  */
-export async function openReview({ url, workspace = "browser", env = process.env, terminalBrowser = "terminal-browser" }) {
+export async function openReview({ url, workspace = "browser", env = process.env, terminalBrowser = "terminal-browser", codexWindow = findCodexWindow }) {
   if (!REVIEW_WORKSPACES.includes(workspace)) return { status: "error", reason: `unknown review workspace: ${workspace}` };
   let parsed;
   try { parsed = new URL(url); } catch { return { status: "error", reason: "review URL must be an HTTP or HTTPS address" }; }
@@ -52,5 +66,21 @@ export async function openReview({ url, workspace = "browser", env = process.env
   const help = await run(terminalBrowser, ["open", "--help"], env, 5000);
   if (help.status !== "opened") return { status: help.status, reason: help.reason };
   if (!/--split\b/.test(help.output)) return { status: "unavailable", reason: "installed terminal-browser has no --split option" };
-  return result(terminalBrowser, ["open", "--split", "right", url]);
+  const open = ["open", "--split", "right", url];
+  // Run by Codex's background server, this command is on no terminal: terminal-browser runs on the Codex window's
+  // (its terminal as input, which is how it tells which pane it is in), so the split lands beside that window.
+  if (env.CODEX_THREAD_ID && underTerminal(env) === false) {
+    const found = codexWindow({ env });
+    if (!found.window) return { status: "unavailable", reason: `Codex ran this away from its window, and ${found.reason}: open the review yourself` };
+    let input;
+    try { input = openSync(found.window.tty, constants.O_RDONLY | constants.O_NOCTTY); }
+    catch (error) { return { status: "unavailable", reason: `the Codex window's terminal ${found.window.tty} could not be opened (${error.code})` }; }
+    try {
+      const { output, ...r } = await run(terminalBrowser, open, withWindowTerminal(env, found.window.env), 30000, { stdin: input, detail: true });
+      return { ...r, beside: found.window.tty, pane: r.status === "opened" ? openedPane(output) : null };
+    } finally { closeSync(input); }
+  }
+  const { output, ...r } = await run(terminalBrowser, open, env, 30000, { detail: true });
+  // the split it opened (its key and terminal), so the review server can close it after Send
+  return { ...r, pane: r.status === "opened" ? openedPane(output) : null };
 }

@@ -67,6 +67,29 @@ This explicit command uses `terminal-browser` from the invoking shell's `PATH`; 
 the launcher's `REELPLANNER_HOME` or saved workspace preference to survive into the agent shell.
 Changing the default workspace to `browser` does not revoke this command's permission; use
 `--codex-disable-open` for that. If opening fails, report the failure before waiting for a review.
+
+Codex 0.164 runs an agent's commands in a shared background server that no terminal is attached to,
+so the opener cannot split "the pane it runs in". Run that way (`CODEX_THREAD_ID` set, and no terminal
+above it), it looks for the Codex window instead: a `codex` process on a terminal, in the command's folder or
+the closest folder above it. It runs terminal-browser with that window's terminal as its input and
+the window's terminal settings (`TERM_PROGRAM`, `TMUX_PANE` and the like), so the split opens beside that
+window. With no such window, or two in that folder, it opens nothing and says so: give the person the
+link. It reads the process list, those processes' folders and the chosen window's terminal settings,
+nothing else. macOS may ask once whether Codex may control Ghostty.
+
+The opener tells the review server which split it opened (terminal-browser's key and terminal for it). After a
+Send that a session took, the server closes that split a few seconds later, once the page has said so, and the
+session opens the new version beside you when it is built. It closes only that split, and only while
+terminal-browser still shows the server's page in it, the way you would: it types terminal-browser's quit key
+(Ctrl+Q) into that split, then has the terminal close the emptied split (Ghostty's scripting, or tmux), since
+Ghostty otherwise keeps it with "Process exited". Other terminal-browser windows stay open. A Send that no session
+took (a headless run, or none) leaves the split open, and so does a terminal other than Ghostty or tmux.
+terminal-browser's quit link is not used: it ends every terminal-browser window at once.
+
+Codex ignores saved allow rules, this one included, for models it marks as cyber (seen with Codex
+0.164.0 and Daybreak Blue, `gpt-daybreak-blue-latest`), and for a model a managed `auto_review.ignore_rules`
+names. The opener then runs in the sandbox and reports `EPERM`. Start the session with another model
+(`codex -m <model>`: a session does not switch between the two kinds), or open the printed link yourself.
 Server startup can still require approval; when policy prohibits it, run the review command yourself
 from a local shell. Opener permission does not override a managed prohibition or the screen-capture
 permissions of your recording tools.
@@ -79,7 +102,8 @@ run setup again if the check reports a stale path.
 If opening fails, use the reported health-check error to distinguish the next step:
 
 - `EPERM` or `EACCES`: the process cannot connect to localhost. First check that the command was the
-  printed opener, alone and unchanged; anything else runs in the sandbox. Beyond that, a matching saved
+  printed opener, alone and unchanged; anything else runs in the sandbox. Then the session's model: Codex
+  ignores the rule for one it marks as cyber (above). Beyond that, a matching saved
   rule is not evidence that the current session loaded or applied it. Check that session's effective permissions;
   do not restart a healthy server or retry through another route after a denial.
 - `ECONNREFUSED`: no server accepted the connection at the supplied URL. Check the launcher's
@@ -98,7 +122,8 @@ Use `reelplanner review-setup --workspace browser` to restore the ordinary brows
 On macOS, terminal-browser's Ghostty split support requires Ghostty 1.3.0 or newer, according to its
 [Ghostty integration](https://github.com/zenbu-labs/terminal-browser/blob/main/terminals/src/terminals/ghostty.ts).
 Start from a normal Ghostty shell so it can identify the invoking pane. An agent's background shell
-or an unrecognized multiplexer may not expose that pane even when Ghostty itself supports graphics.
+or an unrecognized multiplexer may not expose that pane even when Ghostty itself supports graphics
+(Codex's background server is one; the opener finds the Codex window for it, as above).
 
 For the trial, check:
 
@@ -122,7 +147,7 @@ commit and completion. These were synthetic acceptance trials, separate from the
 this change. See the [saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json).
 
 On Linux, terminal-browser splits tmux rather than Ghostty itself (its Ghostty split uses macOS
-scripting), so run tmux in Ghostty. `bash scripts/release/codex-terminal.sh --profile <aws-profile>
+scripting), so run tmux in Ghostty; the opener gives it the Codex window's tmux pane. `bash scripts/release/codex-terminal.sh --profile <aws-profile>
 --out <dir> [--record]` repeats the Codex review on a fresh Ubuntu 24.04 machine: Ghostty on a virtual
 screen with tmux in it, Codex with the plugin and the saved opener rule, a scripted reviewer that answers
 and presses Send in the split, and Codex taking the review in. You log Codex in on the machine once;

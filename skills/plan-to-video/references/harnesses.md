@@ -69,6 +69,10 @@ opener command by itself, exactly as printed, with normal execution. Codex appli
 that line: a `cd … &&` before it, the `reelplanner review-open` form, or quotes added around its first
 word run it inside the sandbox, where localhost is refused (`EPERM`). An allow rule runs that command without
 a fresh approval prompt; don't request escalation explicitly when the rule already permits it.
+Codex runs commands in a background server on no terminal; the opener then finds the Codex window in
+this folder and splits beside it. If it says it found none, or two, give the person the printed URL.
+Codex ignores saved allow rules for a model it marks as cyber: the opener then reports `EPERM`, and
+the person opens the URL or starts a session with another model.
 An unavailable escalation prompt (`sandbox_approval: false`) is not itself proof that an existing
 allow rule is ineffective. Conversely, `--check` proves only this saved rule's match, not what a
 running session loaded: managed forbids or other stricter rules still win. Respect an actual denial.
@@ -90,6 +94,13 @@ reelplanner review <video-dir> --detach
 **Send on the local page needs no download.** It saves the review in the project inbox. A waiting
 task claims it and prints the path. Codex clients do not all wake the conversation when a background
 process exits: check `reelplanner inbox` at the start of each turn and poll the waiting task.
+
+In Codex, `review` run by the session connects it (`--session codex:$CODEX_THREAD_ID`, verified against the
+running daemon and this repo). Then Send queues the session a message with `codex queue`, which starts its next
+turn (seen with Codex 0.164 on macOS). When `review` prints `Send wakes this Codex session`, end the turn once
+the review is open and leave no waiter running: a live waiter claims the review first, and a turn that has
+ended never reads it. The split closes a few seconds after a Send a session took; open the new version with
+`review <video-dir> --detach --no-open` and the printed opener once it is built.
 
 When neither `REELPLANNER_OWNER`, `CODEX_THREAD_ID` nor `CLAUDE_SESSION_ID` identifies the caller
 (including a Claude Code client with only `CLAUDECODE`), `--wait` prints an `owner handle:` line on
