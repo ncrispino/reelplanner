@@ -145,8 +145,8 @@ reelplanner review-setup --workspace terminal-browser                       # Cl
 reelplanner review-setup --workspace terminal-browser --codex-allow-open    # Codex: it also opens reviews with no prompt
 ```
 
-Restart Codex afterwards. Tested in Ghostty on macOS with Codex, and in tmux (in Ghostty) on Linux with Codex and
-Claude Code, where the split is a new tmux pane beside the agent's. `reelplanner review-setup --check` checks the
+Restart Codex afterwards. Tested with Codex and Claude Code, in Ghostty on macOS and in tmux (in Ghostty) on Linux,
+where the split is a new tmux pane beside the agent's. `reelplanner review-setup --check` checks the
 setup; `--codex-disable-open` removes Codex's rule; `--workspace browser` goes back to your ordinary browser, the
 default. With Codex, start the session with a model Codex does not mark as cyber (`codex -m <model>`): for those,
 Codex ignores the saved rule, and you open the link yourself. Details: [terminal review](./docs/terminal-review.md).

@@ -9,7 +9,7 @@ The other agents are untested.
 
 | Agent | Status | What it needs from you |
 |---|---|---|
-| Claude Code | **Tested.** Every part of the loop and the hosted review page; the terminal review on Linux (tmux), from opening beside it to the new version. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
+| Claude Code | **Tested.** Every part of the loop and the hosted review page; the terminal review on macOS (Ghostty) and Linux (tmux), from opening beside it to the new version. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
 | Codex CLI (0.162.1; 0.164.0 for the terminal review) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. The terminal review on macOS (Ghostty) and Linux (tmux): it opens beside Codex, Send wakes the session (`codex queue`), the split closes, and the new version reopens. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
 | Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
@@ -170,6 +170,12 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
   named, committed, and opened the new version in a new split. Codex, on its default approval settings, asked 15
   approvals between Send and the new version, and 9 in a repo set up with `reel init`; Claude Code in auto mode, with
   reelplanner's commands allowed, asked none.
+- On macOS (the owner's machine: Ghostty 1.3.1, terminal-browser 0.13.4), Claude Code 2.1.310: the review opened in
+  a split beside it, the split closed after Send, Send woke it, it took the review in, revised the plan and the
+  video, committed and opened the new version in a new split. The first try opened the review in the browser: a
+  server that `review --detach` starts has no terminal, and terminal-browser finds the Ghostty pane to split by the
+  terminal, so the command that starts the server now opens the page (on Linux, tmux names the pane in the
+  environment, which is why it had worked there).
 - Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake outside a terminal review, the Codex app, cloud, the rest of the loop on Linux (planning, implementing, the walkthrough), Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
 
 ## Open work

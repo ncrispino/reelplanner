@@ -10,7 +10,7 @@ import { localReviewUrl, openerPrefix, openerRule, preferencesFile, ruleFile } f
 import { checkReviewServer } from "../lib/review-health.mjs";
 
 const scratch = realpathSync(mkdtempSync(join(tmpdir(), "rp-review-setup-")));
-const bin = join(scratch, "bin"), log = join(scratch, "opened.jsonl");
+const bin = join(scratch, "bin"), log = join(scratch, "opened.jsonl"), fromServer = join(scratch, "opened-by-server");
 mkdirSync(bin);
 const env = { ...process.env, REELPLANNER_HOME: join(scratch, "machine"), CODEX_HOME: join(scratch, "codex"), PATH: `${bin}:${process.env.PATH}` };
 const prefs = preferencesFile(env), rules = ruleFile(env);
@@ -35,7 +35,8 @@ const server = createServer((req, res) => {
   else { res.setHeader("Content-Type", "application/json"); res.end(JSON.stringify(response)); }
 });
 try {
-  writeFileSync(join(bin, "terminal-browser"), `#!${process.execPath}\nimport {appendFileSync} from 'node:fs';\nconst args=process.argv.slice(2);\nif(args.includes('--help')) console.log('--split'); else appendFileSync(${JSON.stringify(log)},JSON.stringify(args)+'\\n');\n`, { mode: 0o755 });
+  // an open the detached review server made itself is marked too: it has no terminal to find the agent's pane by
+  writeFileSync(join(bin, "terminal-browser"), `#!${process.execPath}\nimport {appendFileSync} from 'node:fs';\nconst args=process.argv.slice(2);\nif(args.includes('--help')) console.log('--split'); else { appendFileSync(${JSON.stringify(log)},JSON.stringify(args)+'\\n'); if(process.env.REELPLANNER_REVIEW_DETACHED) appendFileSync(${JSON.stringify(fromServer)},'1\\n'); }\n`, { mode: 0o755 });
   // Only the real Codex parser integration below uses the installed CLI; no model.
   writeFileSync(join(bin, "codex"), `#!${process.execPath}\nconsole.log(JSON.stringify({decision:'allow'}));\n`, { mode: 0o755 });
   await test("default/check is read-only and plugin installation grants nothing", () => {
@@ -178,6 +179,11 @@ try {
     const override = run([...args, "--workspace", "browser"]); ok(override);
     assert.equal(existsSync(browserLog), true); assert.equal(opened().length, before + 1);
     assert.doesNotMatch(override.stdout, /run this separately/);
+    // a --detach that starts the server opens the page itself, from the agent's terminal: the server has none, and
+    // terminal-browser in Ghostty on macOS could not tell which pane to split (Claude Code's review opened in the browser)
+    ok(run(["review", liveVideo, "--stop"]));
+    const first = run(args); ok(first);
+    assert.equal(opened().length, before + 2); assert.equal(existsSync(fromServer), false, "the detached server opened the page itself");
     ok(run(["review", liveVideo, "--stop"])); liveVideo = null;
   });
   await test("disable removes only its dedicated rule and preserves workspace preference", () => {

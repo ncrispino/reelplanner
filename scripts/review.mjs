@@ -244,15 +244,17 @@ const printOpener = (url) => {
     console.log(`· Codex: run this separately to use the saved opener permission:\n  ${openerCommand(url)}`);
   }
 };
-const announce = async (url) => {
+// tell: the desktop notification; show: open the page (a server --detach started leaves that to the command that
+// started it: see the end of this file)
+const announce = async (url, { tell = true, show = true } = {}) => {
   printOpener(url);
   // A video was just built and its page is up: say so, with what is waiting. (The library, opened on
   // demand, is not news.) It never fails the page: a missing notifier is only a line on stdout.
-  if (!rp && !args.includes("--no-notify")) {
+  if (tell && !rp && !args.includes("--no-notify")) {
     const map = readPlanMap(projects[0]);
     notify({ title: map?.title || basename(projects[0]), line: map ? waitingLine(map) : "", url }).then((r) => { if (!r.shown) console.log(`  (no desktop notification: ${r.error || r.via})`); });
   }
-  if (!args.includes("--no-open")) {
+  if (show && !args.includes("--no-open")) {
     let opened = await openReview({ url, workspace });
     if (opened.status !== "opened" && workspace !== "browser") {
       console.log(`△ ${workspace}: ${opened.reason}; opening the same review in your browser`);
@@ -298,9 +300,11 @@ if (args.includes("--detach")) {
   }
   if (!s) { console.error(`✗ the review server did not start; its output is in ${shownPath(log)}`); process.exit(1); }
   console.log(`✓ review page: ${s.url}`);
-  printOpener(s.url);
   console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${shownPath(log)}; \`reelplanner review --stop\` stops it)`);
   if (s.unsandboxed) console.log(s.unsandboxed);
+  // opened from here, as when the server was running already: this command runs in the agent's terminal, the server
+  // in none, and terminal-browser in Ghostty on macOS finds the pane to split by its terminal
+  await announce(s.url, { tell: false });
   process.exit(0);
 }
 
@@ -555,4 +559,4 @@ if (process.env.REELPLANNER_REVIEW_DETACHED === "1") {
   for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => process.exit(0));
   process.on("SIGHUP", () => {});   // no terminal to hang up: it runs until --stop
 }
-await announce(url);
+await announce(url, { show: process.env.REELPLANNER_REVIEW_DETACHED !== "1" });

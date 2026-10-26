@@ -25,6 +25,9 @@
   - The README says what this setup allows: a command outside Codex's sandbox, macOS's broad permission to script
     Ghostty, and a local server any program on the machine can post a review to, which now wakes your agent.
   - Codex ignores saved allow rules for models it marks as cyber; the docs and the `EPERM` message say so.
+  - `review --detach` opens the page from the command itself, in the agent's terminal, not from the server it starts,
+    which has none: in Ghostty on macOS, terminal-browser finds the pane to split by the terminal, and Claude Code's
+    review had opened in the browser instead.
 - **A repeatable trial of it on Linux:** `scripts/release/terminal-review.sh` starts a fresh EC2 machine, runs the
   loop for Codex and Claude Code with a scripted reviewer (`--record` records the screen), and deletes the machine.
 - **On Ubuntu 24.04,** Codex's sandbox needs unprivileged user namespaces, which AppArmor restricts. The docs point to
