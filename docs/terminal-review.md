@@ -73,9 +73,13 @@ so the opener cannot split "the pane it runs in". Run that way (`CODEX_THREAD_ID
 above it), it looks for the Codex window instead: a `codex` process on a terminal, in the command's folder or
 the closest folder above it. It runs terminal-browser with that window's terminal as its input and
 the window's terminal settings (`TERM_PROGRAM`, `TMUX_PANE` and the like), so the split opens beside that
-window. With no such window, or two in that folder, it opens nothing and says so: give the person the
-link. It reads the process list, those processes' folders and the chosen window's terminal settings,
-nothing else. macOS may ask once whether Codex may control Ghostty.
+window. With several in that folder, it takes the one under tmux whose pane a tmux client is showing, or
+else the one in the tmux window a client is showing (a shell or the last review beside it), if only one is: the
+split opens where you are looking, and Send still reaches the session that asked, by its thread. Otherwise, or
+with no such window, it opens nothing and says so: the agent gives you the link, and the opener line to run in a
+terminal beside it, where it splits (seen with four Codex windows in one repo, tmux in Ghostty on macOS). It reads
+the process list, those processes' folders, the terminal settings of the windows it chooses between, and which
+panes tmux's clients show, nothing else. macOS may ask once whether Codex may control Ghostty.
 
 The opener tells the review server which split it opened (terminal-browser's key and terminal for it). After a
 Send that a session took, the server closes that split a few seconds later, once the page has said so, and the

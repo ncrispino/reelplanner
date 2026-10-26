@@ -175,8 +175,9 @@ Details: [terminal review](./docs/terminal-review.md).
 ### Security: what you allow
 
 - **Codex runs the opener outside its sandbox, without asking.** `--codex-allow-open` saves a Codex rule for one
-  command, reelplanner's `review-open`. It reads your process list to find the Codex window, reads that window's
-  terminal settings, and opens a local review page beside it. It starts no server and sends nothing.
+  command, reelplanner's `review-open`. It reads your process list to find the Codex window (with several in one
+  folder, it asks tmux which pane you are looking at), reads that window's terminal settings, and opens a local
+  review page beside it. It starts no server and sends nothing.
 - **Your terminal may be scripted.** On macOS, the first split asks you to let Codex (or your terminal) control
   Ghostty. That permission is broad: a program run with it can type into any Ghostty window. reelplanner uses it only
   to split, and to close its own split with Ctrl+Q after Send, but the permission is not limited to that.

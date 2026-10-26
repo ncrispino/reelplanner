@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync, statSync 
 import { join } from "node:path";
 import { tmpdir, platform } from "node:os";
 import { openReview } from "../lib/presentation.mjs";
-import { codexWindows, pickWindow, parseEnvironment, withWindowTerminal } from "../lib/codex-window.mjs";
+import { codexWindows, pickWindow, focusedWindow, parseEnvironment, withWindowTerminal } from "../lib/codex-window.mjs";
 import { openedPane, paneOf, shownBrowser, closeCommands } from "../lib/review-pane.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "rp-presentation-"));
@@ -59,6 +59,24 @@ try {
   check("two windows in that folder, or none, pick nothing and say why",
     /2 Codex windows are open in \/home\/u\/repo/.test(pickWindow([w("/dev/a", "/home/u/repo"), w("/dev/b", "/home/u/repo")], "/home/u/repo").reason)
     && /no Codex window is open in \/srv/.test(pickWindow([w("/dev/a", "/home/u")], "/srv").reason));
+  // four Codex windows in one repo, tmux in Ghostty on macOS: the opener gave up, and the agent tried to find the pane
+  // with computer use instead
+  const inTmux = (tty, pane, socket = "/tmp/tmux-1/default") => ({ tty, cwd: "/home/u/repo", env: { TMUX: `${socket},9,0`, TMUX_PANE: pane } });
+  const tied = pickWindow([inTmux("/dev/a", "%1"), inTmux("/dev/b", "%2"), inTmux("/dev/c", "%3", "/tmp/tmux-1/other")], "/home/u/repo").tied;
+  // what each tmux server's clients show ([pane, its window]); %1 and %2 are in @1, %3 in @2, %9 (a shell) in @1
+  const windowOf = { "%1": "@1", "%2": "@1", "%3": "@2", "%9": "@1", "%8": "@3" };
+  const showing = (bySocket) => (socket) => ({ panes: bySocket[socket] || [], windows: (bySocket[socket] || []).map((p) => windowOf[p]), windowOf });
+  check("of windows tied in one folder, the one in the tmux pane a client is showing is picked, asked of its own tmux server",
+    tied?.length === 3 && focusedWindow(tied, showing({ "/tmp/tmux-1/default": ["%2", "%8"] }))?.window.tty === "/dev/b"
+    && focusedWindow(tied, showing({ "/tmp/tmux-1/other": ["%3"] }))?.window.tty === "/dev/c"
+    && focusedWindow(tied, showing({ "/tmp/tmux-1/other": ["%2"] })) === null);
+  check("…else the one in the tmux window a client is showing (a shell, or the last review, beside it), if only one is",
+    focusedWindow([inTmux("/dev/a", "%1"), inTmux("/dev/c", "%3")], showing({ "/tmp/tmux-1/default": ["%9"] }))?.window.tty === "/dev/a"
+    && focusedWindow(tied, showing({ "/tmp/tmux-1/default": ["%9"] })) === null);
+  check("…and none when no client shows one, when two clients show two of them, or outside tmux",
+    focusedWindow(tied, showing({ "/tmp/tmux-1/default": ["%8"] })) === null
+    && focusedWindow(tied, showing({ "/tmp/tmux-1/default": ["%1", "%2"] })) === null
+    && focusedWindow([{ tty: "/dev/a", env: { TERM_PROGRAM: "ghostty" } }, { tty: "/dev/b", env: null }], showing({})) === null);
   check("a window's environment read from ps keeps a value's spaces",
     JSON.stringify(parseEnvironment(" TERM=xterm-ghostty TERM_PROGRAM=ghostty NAME=two words TMUX_PANE=%3")) === JSON.stringify({ TERM: "xterm-ghostty", TERM_PROGRAM: "ghostty", NAME: "two words", TMUX_PANE: "%3" }));
   const swapped = withWindowTerminal({ PATH: "/bin", TERM_PROGRAM: "ghostty", TMUX: "/tmp/tmux-1/default,9,0", TMUX_PANE: "%0", CODEX_THREAD_ID: "t" }, { TERM_PROGRAM: "tmux", TMUX: "/tmp/tmux-1/default,9,0", TMUX_PANE: "%7", HOME: "/elsewhere" });

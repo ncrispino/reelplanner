@@ -70,7 +70,10 @@ that line: a `cd … &&` before it, the `reelplanner review-open` form, or quote
 word run it inside the sandbox, where localhost is refused (`EPERM`). An allow rule runs that command without
 a fresh approval prompt; don't request escalation explicitly when the rule already permits it.
 Codex runs commands in a background server on no terminal; the opener then finds the Codex window in
-this folder and splits beside it. If it says it found none, or two, give the person the printed URL.
+this folder and splits beside it (of several there, under tmux, the one in the pane or tmux window the person is
+looking at). If it says it found none, or which one is unclear, give the person the printed URL, and the opener line
+to run in their own terminal beside you: it splits there, and the split still closes after Send. Don't look for the
+pane any other way (computer use, screenshots).
 Codex ignores saved allow rules for a model it marks as cyber: the opener then reports `EPERM`, and
 the person opens the URL or starts a session with another model.
 An unavailable escalation prompt (`sandbox_approval: false`) is not itself proof that an existing
