@@ -1,0 +1,9 @@
+$ '/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node' 'scripts/test/run.mjs' '--full' 'review-projects' 'review-status' 'media-seek'
+full run: 3 specs, 8 at a time
+
+✓ scripts/test/review-projects.spec.mjs     3.4 s  8 checks
+✓ scripts/test/media-seek.spec.mjs          5.6 s  27 checks
+✓ scripts/test/review-status.spec.mjs       8.6 s  46 checks
+
+✓ all 3 passed in 8.6 s (the slowest, scripts/test/review-status.spec.mjs, 8.6 s)
+exit 0

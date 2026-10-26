@@ -1,0 +1,25 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full delivery loop review-status ask > /private/tmp/reelplanner-codex-completion-fix/full-question-ownership.log 2>&1
+cwd: /Users/ncrispin/GitHubProjects/reelplanner
+shell: zsh (exec_command default login shell)
+environment: inherited tool environment; no explicit environment overrides
+argv: ["/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node", "scripts/test/run.mjs", "--full", "delivery", "loop", "review-status", "ask"]
+exact shell command:
+/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full delivery loop review-status ask > /private/tmp/reelplanner-codex-completion-fix/full-question-ownership.log 2>&1
+permissions: require_escalated (runner/server/browser local loopback sockets)
+exec session: 63891
+terminal exit: 0
+output: /private/tmp/reelplanner-codex-completion-fix/full-question-ownership.log
+counts: delivery 16; loop 96; review-status 49; player ask 21
+elapsed: 12.0 seconds
+metadata: /private/tmp/reelplanner-codex-completion-fix/test-results.json
+note: run.mjs supplies RP_FULL=1 and isolated scratch TMPDIR/TMP/TEMP/REELPLANNER_HOME/RP_TEST_PORT. Question CLI tests explicitly clear inherited CODEX_THREAD_ID and CLAUDE_SESSION_ID and supply stable REELPLANNER_OWNER.
+
+full run: 4 specs, 8 at a time
+
+✓ packages/player/test/ask.spec.mjs       9.0 s  21 checks
+✓ scripts/test/review-status.spec.mjs     9.7 s  49 checks
+✓ scripts/test/delivery.spec.mjs         11.6 s  16 checks
+✓ scripts/test/loop.spec.mjs             12.0 s  96 checks
+
+✓ all 4 passed in 12.0 s (the slowest, scripts/test/loop.spec.mjs, 12.0 s)
+exit 0

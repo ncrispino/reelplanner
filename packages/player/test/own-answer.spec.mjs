@@ -84,8 +84,35 @@ await loaded(p);
 const qz = await p.evaluate(() => document.querySelector("#rp").planMap.quizzes?.[0] || null);
 ok(!!qz, "the fixture map has a quick check to answer");
 if (qz) {
-  await p.evaluate((q) => { const el = document.querySelector("#rp"); el.start?.(); el.player.pause(); el.player.seek(q.at - 0.6); el.player.play(); }, qz);
-  await p.waitForFunction(() => document.querySelector("#rp").shadowRoot.querySelector(".decision").classList.contains("on"), null, { timeout: 20000 }); await settled(p);
+  // A state packet from before the seek (the poster's, paused there) can still arrive between the seek and Play, as
+  // it did on a loaded CI runner: the run of play begins where the video was sent all the same, and the check opens.
+  // With the assets ready, Play begins at once, right after that packet (queued, it would begin after newer ones).
+  await p.waitForFunction(() => document.querySelector("#rp").player._assetsReady, null, { timeout: 30000 });
+  await p.evaluate((q) => { const el = document.querySelector("#rp"), pl = el.player; el.start?.(); pl.pause(); pl.seek(q.at - 0.6);
+    pl._lastUpdateMs = 0;
+    window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+      data: { source: "hf-preview", type: "state", frame: Math.round((el._posterT || 1) * 30), isPlaying: false } }));
+    pl.play(); }, qz);
+  const asked = await p.waitForFunction(() => document.querySelector("#rp").shadowRoot.querySelector(".decision").classList.contains("on"), null, { timeout: 20000 }).then(() => true, () => false);
+  ok(asked, "the quick check stops the video at its moment, after a state packet from before the seek");
+  if (!asked) await p.evaluate((q) => document.querySelector("#rp").askQuiz(q), qz);   // the checks after it still run
+  await settled(p);
+  // The quick check must still be waiting when the reviewer starts their own answer, even if old
+  // playing-state packets arrive after it paused. Their mirrored play state is not a new Play run.
+  const waiting = await p.evaluate((q) => {
+    const el = document.querySelector("#rp"), pl = el.player;
+    el._askedAt -= 1000;
+    for (const t of [q.at + 1, q.at + 1.2]) {
+      pl._lastUpdateMs = 0;
+      window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,
+        data: { source: "hf-preview", type: "state", frame: t * 30, isPlaying: true } }));
+    }
+    const held = el.pendingId() === q.id && el.shadowRoot.querySelector(".decision").classList.contains("on");
+    pl.pause();
+    if (!held) el.askQuiz(q); // retain the remaining text-entry checks after reporting this failure
+    return held;
+  }, qz);
+  ok(waiting, "the quick check stays open for an own answer after delayed playback packets");
   await p.evaluate(() => document.querySelector("#rp").focus()); await p.keyboard.press("o"); await ownOpen();
   await typeLong(".own textarea"); await p.keyboard.type(` ${LONG} ${LONG}`); await frames(p);
   fx = await box(".own textarea", 4);

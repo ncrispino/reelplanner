@@ -1,0 +1,24 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full session-export explainer harnesses > /private/tmp/reelplanner-codex-completion-fix/full-session-recency.log 2>&1
+cwd: /Users/ncrispin/GitHubProjects/reelplanner
+shell: zsh (exec_command default login shell)
+environment: inherited tool environment; no explicit environment overrides
+argv: ["/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node", "scripts/test/run.mjs", "--full", "session-export", "explainer", "harnesses"]
+exact shell command:
+/private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full session-export explainer harnesses > /private/tmp/reelplanner-codex-completion-fix/full-session-recency.log 2>&1
+permissions: require_escalated (runner/synthetic transport local sockets)
+exec session: 99057
+terminal exit: 0
+output: /private/tmp/reelplanner-codex-completion-fix/full-session-recency.log
+counts: session-export 45; explainer 64; harnesses 11
+elapsed: 4.9 seconds
+metadata: /private/tmp/reelplanner-codex-completion-fix/test-results.json
+note: run.mjs supplies RP_FULL=1 and isolated scratch TMPDIR/TMP/TEMP/REELPLANNER_HOME/RP_TEST_PORT. All session ranking/history inputs are synthetic fake homes/App Server transports; no actual owner conversation export or private database was read.
+
+full run: 3 specs, 8 at a time
+
+✓ scripts/test/harnesses.spec.mjs          0.7 s  11 checks
+✓ scripts/test/session-export.spec.mjs     3.8 s  45 checks
+✓ scripts/test/explainer.spec.mjs          4.9 s  64 checks
+
+✓ all 3 passed in 4.9 s (the slowest, scripts/test/explainer.spec.mjs, 4.9 s)
+exit 0

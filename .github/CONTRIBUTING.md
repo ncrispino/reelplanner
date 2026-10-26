@@ -42,8 +42,8 @@ fails a spec that changes a committed file under `videos/`, `.reelplanner/` or `
 ## Find something to work on
 
 - An open [issue](https://github.com/ncrispino/reelplanner/issues), or a bug you hit yourself (open an issue for it).
-- **Other agents.** reelplanner is tested with Claude Code and has basic support for Codex. Support for
-  GitHub Copilot, Cursor, OpenCode and Antigravity CLI, and the rest of Codex, is open work: [`docs/agents.md`](../docs/agents.md)
+- **Other agents.** reelplanner is tested with Claude Code and Codex CLI on macOS. Support for
+  GitHub Copilot, Cursor, OpenCode and Antigravity CLI, and unverified Codex clients/platforms, is open work: [`docs/agents.md`](../docs/agents.md)
   lists each item with what to change, where, why and how to check it.
 - **Good first contributions**, each small and on its own:
   - `reel pr-check --help` (and `reel renumber`, `reel build`, `reel case-study`) prints one line, while
@@ -170,7 +170,8 @@ reelplanner review ../pr-42-video           # in the PR's checkout, so Send file
 ```
 
 A rebuild runs the same again: the forced push replaces the branch's one commit. When the PR closes, the
-branch is deleted (for a PR from a fork, delete it in your fork when you like).
+branch is deleted (for a PR from a fork, delete it in your fork when you like). A PR a maintainer labels
+`no-video` needs no such branch: nobody has to watch its video.
 
 ### Decision numbers
 

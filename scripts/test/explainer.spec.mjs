@@ -23,7 +23,7 @@ import { ROOT } from "../lib/env.mjs";
 import { videoDirFor, slugOf } from "../lib/terms.mjs";
 import { videoLength, lengthLine } from "../lib/length.mjs";
 import { rolesFor, parseFindings, freshEyesState } from "../lib/fresh-eyes.mjs";
-import { privateIn, resolveRefs, nextSuggestions, asPlan } from "../lib/explainer.mjs";
+import { privateIn, resolveRefs, nextSuggestions, asPlan, pinSource, thisSession, sessionDir } from "../lib/explainer.mjs";
 
 const tmp = mkdtempSync(join(tmpdir(), "reel-explainer-"));
 const home = join(tmp, "home"); mkdirSync(home, { recursive: true });
@@ -55,6 +55,19 @@ try {
   const tr = join(home, ".claude", "session.jsonl");
   write(tr, [{ turn: 1, text: "run the tests" }, { turn: 2, text: "the tests passed on the \"second\" run" }].map((x) => JSON.stringify(x)).join("\n") + "\n" + Array.from({ length: 230 }, (_, i) => JSON.stringify({ turn: i + 3, text: `step ${i}` })).join("\n") + "\n");
   const csv = join(tmp, "runs", "results.csv"); write(csv, "run,loss\na,0.83\nb,0.61\n");
+
+  // Both harnesses retain the same outside-file privacy contract. Explicit files keep their own identity.
+  const claudeSession = join(sessionDir(repo, { env }), "main.jsonl"); write(claudeSession, "{\"visible\":\"Claude transcript\"}\n");
+  ok("this-session: Claude transcript discovery survives Codex support and takes the explicit environment", thisSession(repo, { env, agent: "claude" }) === claudeSession);
+  const codexHome = join(home, "custom-codex"), codexSession = join(codexHome, "sessions", "2026", "rollout.jsonl");
+  write(codexSession, JSON.stringify({ type: "session_meta", payload: { id: "selected-thread", cwd: repo, source: "cli" } }) + "\n" + JSON.stringify({ type: "response_item", payload: { role: "user", content: "Codex transcript" } }) + "\n");
+  const codexEnv = { ...env, CODEX_HOME: codexHome, CODEX_THREAD_ID: "selected-thread", CLAUDECODE: "", CLAUDE_CODE_ENTRYPOINT: "" };
+  const cp = pinSource("this-session", { repo, env: codexEnv, agent: "codex" });
+  ok("this-session: verified Codex conversation pins only path, hash and line count outside the repo", cp.id === "this-session" && cp.form === "outside" && cp.size.lines === 2 && cp.hash && !JSON.stringify(cp).includes("Codex transcript"), JSON.stringify(cp));
+  const explicit = pinSource(codexSession, { repo, env: codexEnv });
+  ok("this-session: a generic explicit transcript path keeps its chosen identity", explicit.id !== "this-session" && explicit.form === "outside" && explicit.hash === cp.hash, JSON.stringify(explicit));
+  const ownerCopy = execFileSync(process.execPath, [join(ROOT, "scripts", "explain.mjs"), "what happened in this session?", "this-session", "--session-source", codexSession, "--slug", "owner-copy", "--dry-run"], { cwd: repo, env: codexEnv, encoding: "utf8" });
+  ok("explain: owner copy validates requested session and is one private pin", /1 source/.test(ownerCopy) && /`this-session`/.test(ownerCopy) && !ownerCopy.includes("Codex transcript"), ownerCopy);
 
   // ---- explain: sources pinned by form, described by shape; the guide by size ----
   const ex = run("explain.mjs", "what did the experiment show?", csv, "src", `${first}..HEAD`, "D-001", tr, "--date", "2026-09-29", "--slug", "experiment");

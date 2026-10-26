@@ -43,11 +43,11 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, launchOpts, chromiumEnv } from "../lib/env.mjs";
 import { pathToFileURL } from "node:url";
-import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, blockFindings, hasExample } from "../lib/plan-md.mjs";
+import { stepBlocks, traceBeats, stepsNamed, readPlanBlocks, planBlocksOf, blockFindings, hasExample, parseQuestions } from "../lib/plan-md.mjs";
 import { readWalkthrough, pathIn } from "../lib/guide/built.mjs";
 import { paragraphsOf, checkGuide } from "../lib/guide/check.mjs";
 import { canLine, youPhrase, canOf, thinOf, wroteOf, whereRan, choicesOf, choiceCounts, firstSentence } from "../lib/guide/reader.mjs";
-import { guideTarget, buildModel, supersedesLine } from "../lib/guide/model.mjs";
+import { guideTarget, guideParts, buildModel, supersedesLine } from "../lib/guide/model.mjs";
 import { webpEncoder } from "../lib/guide/pictures.mjs";
 import { parseDiagram, drawDiagram, stepsDiagram, importsAmong, wrap, balance, textWidth, diagramGeometry, diagramBlocks, segHitsBox } from "../lib/guide/diagram.mjs";
 import { forGuideOf, parseExample, parseChunk, withoutForGuide, scratchOf, sinceOf, plainOf, inScratch } from "../lib/guide/depth.mjs";
@@ -132,6 +132,71 @@ I recommend A: nothing breaks.
 `;
 
 try {
+  // Source appendices quote Markdown headings; they must remain code, rather than become plan boundaries.
+  for (const [name, open, middle, close] of [
+    ["backticks with language", "```text", "", "```"],
+    ["tilde with backticks in its info", "~~~text `literal`", "", "~~~"],
+    ["long backticks", "````text", "```\n~~~\n````not-a-closer\n", "`````"],
+    ["long tilde", "~~~~text", "~~~\n```\n~~~~not-a-closer\n", "~~~~~"],
+    ["indented fence", "   ```text", "", "   ```"],
+  ]) {
+    const quoted = `${open}\n# Task\n## The problem\nA quoted problem.\n### Step 99 — Quoted step\n#### Worked examples\n${middle}A quoted ending.\n${close}`;
+    const parsed = planBlocksOf(`# Real plan\n## The problem\nReal problem.\n## Steps\n### Step 1 — Real step\n${quoted}\n#### Cases\n| Case | What happens |\n|---|---|\n| one | kept |\n## Source appendix\n${quoted}\n## After appendix\nReal ending.\n`);
+    const step = parsed.steps[0];
+    ok(`plan headings: ${name} preserves quoted headings and resumes after a valid closer`,
+      parsed.title === "Real plan" && parsed.problem === "Real problem." && parsed.steps.length === 1 && step.n === 1 &&
+      step.prose === quoted.trim() && step.cases?.rows.length === 1 && step.other.length === 0 &&
+      parsed.sections.map((s) => s.title).join("|") === "The problem|Steps|Source appendix|After appendix" &&
+      parsed.sections.find((s) => s.title === "Source appendix")?.text === quoted.trim() &&
+      blockFindings(parsed).gaps.some((g) => g.where === "step 1" && g.what === "no Example"), JSON.stringify(parsed));
+  }
+  {
+    const parsed = planBlocksOf("# Real plan\n## Source appendix\n```text\n# Task\n## Not a section\n### Step 99 — Not a step\n");
+    ok("plan headings: an unclosed fence retains its code through EOF", parsed.title === "Real plan" && parsed.sections.length === 1 && parsed.steps.length === 0 && parsed.sections[0].text.includes("## Not a section"));
+    const invalid = planBlocksOf("# Real plan\n```text `invalid`\n## Real section\nReal prose.\n");
+    ok("plan headings: a backtick in a backtick info string does not open a fence", invalid.sections[0]?.title === "Real section");
+  }
+  {
+    const raw = "Step prose.\r\n```text\r\n#### Worked examples\r\nQuoted content.\r\n```\r\n#### Cases\r\n| Case | What happens |\r\n|---|---|\r\n| one | kept |\r\n";
+    const blocks = stepBlocks(raw);
+    ok("plan blocks: direct CRLF input keeps fenced block headings in the original prose", blocks.prose === raw.slice(0, raw.indexOf("#### Cases")).trim() && blocks.cases?.rows.length === 1 && blocks.example === null && blocks.other.length === 0);
+    const questions = parseQuestions("```text\r\n## Open questions\r\n1. **Fake?** (step 1)\r\n```\r\n## Open questions\r\n1. **Real?** (step 1)\r\n- **A · Keep.** Keep value 1.\r\n- **B · Drop.** Drop value 1.\r\n");
+    ok("plan questions: direct CRLF input ignores a quoted question section", questions.length === 1 && questions[0].title === "Real?", JSON.stringify(questions));
+  }
+  // Evidence manifests can belong to a plan video too; they do not change its owner.
+  for (const evidenceAt of ["video", "plan"]) {
+    const owner = join(tmp, "guide-targets", ".reelplanner", "plans", evidenceAt);
+    write(join(owner, "plan.md"), PLAN(true));
+    if (evidenceAt === "plan") write(join(owner, "sources.json"), '{"sources":[]}\n');
+    for (const name of ["video", "walkthrough-video"]) {
+      const dir = join(owner, name);
+      write(join(dir, "STORYBOARD.md"), `---\nkind: ${name === "video" ? "plan" : "walkthrough"}\n---\n`);
+      if (evidenceAt === "video") write(join(dir, "sources.json"), '{"sources":[]}\n');
+      const target = guideTarget(dir), parts = guideParts(dir);
+      ok(`guide target: ${name} keeps its plan and step parts with ${evidenceAt}-local sources`,
+        target.kind === (name === "video" ? "plan-video" : "walkthrough") && target.planDir === owner &&
+        parts.some((p) => p.name === "step-1") && parts.some((p) => p.name === "decisions"), JSON.stringify({ target, parts }));
+    }
+    const explicit = join(owner, "video");
+    write(join(explicit, "STORYBOARD.md"), "---\nkind: explainer\n---\n");
+    ok(`guide target: explicit explainer kind survives ${evidenceAt}-local sources`, guideTarget(explicit).kind === "explainer");
+    write(join(explicit, "STORYBOARD.md"), "---\nkind: system\n---\n");
+    ok(`guide target: system kind keeps its guide suppressed with ${evidenceAt}-local sources`,
+      guideTarget(explicit).kind === "none" && /system video/.test(guideTarget(explicit).why));
+    const child = join(owner, "other");
+    write(join(child, "sources.json"), '{"sources":[]}\n');
+    ok(`guide target: an arbitrary sourced child remains an unbuilt explainer with ${evidenceAt}-local sources`,
+      guideTarget(child).kind === "none" && /explainer with no video/.test(guideTarget(child).why));
+  }
+  {
+    const explainer = join(tmp, "guide-targets", "explainer");
+    write(join(explainer, "sources.json"), '{"sources":[]}\n');
+    ok("guide target: an explainer root without video still has no guide", guideTarget(explainer).kind === "none");
+    write(join(explainer, "video", "STORYBOARD.md"), "---\nkind: explainer\n---\n");
+    const target = guideTarget(explainer);
+    ok("guide target: a true explainer root resolves its video and source parts", target.kind === "explainer" &&
+      target.videoDir === join(explainer, "video") && guideParts(explainer).some((p) => p.name === "sources"), JSON.stringify(target));
+  }
   mkdirSync(repo, { recursive: true });
   git("init", "-q", "-b", "main"); git("config", "user.email", "sam@example.com"); git("config", "user.name", "Sam"); git("config", "commit.gpgsign", "false");
   reel("init", repo, "--name", "demo", "--kind", "greenfield");
@@ -151,6 +216,17 @@ try {
   ok("blocks: a trace cell split into beats, a label only where it is one", JSON.stringify(traceBeats("sent: the review; filed → you see it")) === JSON.stringify([{ label: "sent", text: "the review" }, { label: null, text: "filed" }, { label: null, text: "you see it" }]));
   ok("blocks: the steps a line keeps, at its end", JSON.stringify([stepsNamed("… kept. (step 4)"), stepsNamed("… (steps 1, 3)"), stepsNamed("… (steps 1 to 3)."), stepsNamed("… (all steps)"), stepsNamed("… nothing")]) === JSON.stringify([[4], [1, 3], [1, 2, 3], "all", null]));
   ok("blocks: an option gives an example when it has a value, a quote, a command or a number", hasExample("Your script still runs, and prints `one` warning") && !hasExample("It stops."));
+  {
+    const alternate = PLAN(true).replace("**Keep --out working?** (step 1)", "**Keep --out working? (step 1)**")
+      .replace("I recommend A: nothing breaks.", "  Recommendation: A: nothing breaks.");
+    const q = parseQuestions(alternate)[0];
+    ok("questions: step annotations inside bold headings and indented recommendations retain their meaning",
+      q.steps.join() === "1" && q.recommend === "Recommendation: A: nothing breaks." && q.options[1].text === "It stops.", JSON.stringify(q));
+    const ranged = parseQuestions(alternate.replace("(step 1)**", "(steps 1 to 2)**"))[0];
+    ok("questions: an inside-bold step range retains every step", ranged.steps.join() === "1,2", JSON.stringify(ranged));
+    const all = parseQuestions(alternate.replace("(step 1)**", "(all steps)**"))[0];
+    ok("questions: all-step annotations expand to the actual plan steps", all.steps.join() === "1,2", JSON.stringify(all));
+  }
 
   // ── diagrams: the format, drawn as SVG at build time ──
   { const g = parseDiagram("flow: How it builds\nplan.md (file) -> model: steps | the model reads every step\nmodel --> page: sometimes\nmodel -x git: never committed\nmodel = The model | scripts/lib/guide/model.mjs\n// a comment\n");
@@ -266,6 +342,7 @@ try {
     { index: 3, title: "Step 2: the help", compositionId: "03-step-2", durationSeconds: 8, start: 22, planStep: 2, narration: "Step two says it in the help." },
   ];
   write(join(vd, "STORYBOARD.md"), `---\nplan_dir: .reelplanner/plans/2026-10-01-flag\ndetails_check: strict\n---\n\n## Frame 1 — The flag\n\n- voiceover: "x"\n\n## Frame 2 — Step 1: the new flag\n\n- plan_step: 1\n- guide: step-1#cases\n\n## Frame 3 — Step 2: the help\n\n- plan_step: 2\n- guide: step-2\n`);
+  write(join(vd, "sources.json"), '{"sources":[]}\n');
   write(join(vd, "compositions/frames/02-step-1.html"), `<div data-band="bottom"><table data-detail="step-1"><tr><td>--to</td></tr></table></div>\n`);
   write(join(vd, "compositions/frames/03-step-2.html"), `<div data-band="bottom"><p>the help</p></div>\n`);
   write(join(vd, "plan-map.json"), JSON.stringify({ project: "video", title: "Rename the flag", planDir: ".reelplanner/plans/2026-10-01-flag", totalSeconds: 30, frames, decisions: [{ id: "q1", question: "Keep --out working?", planStep: 1, options: [{ id: "a", label: "Keep it, with a warning", recommended: true }, { id: "b", label: "Drop it" }] }], details: [] }, null, 2));
@@ -283,11 +360,14 @@ try {
     details: [{ name: "step-1", src: "guide/step-1.html#step-1-cases", guide: true, kind: "guide", frameIndex: 2, planStep: 1, start: 10, end: 22 }, { name: "step-2", src: "guide/step-2.html", guide: true, kind: "guide", frameIndex: 3, planStep: 2, start: 22, end: 30 }] }, null, 2));
 
   // ── the guide ──
+  const sourceAppendix = "### Source task.md\n\n```text\n# Task\nThree coding agents must preserve the source evidence.\n## Nested source heading\nA quoted source paragraph stays in this appendix.\n```\n\n### Source record.jsonl\n\n```jsonl\n{\"id\":\"e1\",\"result\":\"blocked\"}\n```";
+  writeFileSync(join(pd, "plan.md"), readFileSync(join(pd, "plan.md"), "utf8") + `\n## Companion guide sources — verbatim appendices\n\n${sourceAppendix}\n`);
   const g = run("guide.mjs", pd, "--no-thumbs");
   const gd = join(vd, "guide"), parts = existsSync(join(gd, "parts.json")) ? json(join(gd, "parts.json")) : null;
   ok("guide: a plan folder builds its video's guide: the full page and each part", g.code === 0 && existsSync(join(gd, "index.html")) && ["step-1", "step-2", "decisions", "what-changed", "flag", "help", "choices"].every((p) => existsSync(join(gd, `${p}.html`))), `${g.out}\n${JSON.stringify(parts?.parts)}`);
   const html = readFileSync(join(gd, "index.html"), "utf8"), data = JSON.parse(html.match(/<script type="application\/json" id="guide-data">([\s\S]*?)<\/script>/)[1]);
   const s1 = data.steps[0];
+  ok("guide: verbatim fenced source headings and JSON remain together in their appendix", data.rest.some((s) => s.md?.includes(sourceAppendix)), JSON.stringify(data.rest));
   ok("guide: a step's cases with their traces, its interface parts, its example, its question, from plan.md", s1.cases.rows.length === 3 && s1.cases.rows[0].trace.length === 3 && s1.iface.parts[0].subs.length === 1 && /writes a\.html/.test(s1.example) && s1.questions[0]?.options.length === 2, JSON.stringify(s1).slice(0, 800));
   ok("guide: the Built side from git: each category's files and diffs, the run as it ran, the step's calls", data.built.cats.find((c) => c.id === "flag")?.files[0]?.path === "src/build.mjs" && data.built.cats.find((c) => c.id === "flag").files[0].commits[0].hunks.length > 0 && data.built.cats.find((c) => c.id === "flag").files[0].whole?.mark.length > 0 && data.built.runs["runs/build.txt"]?.exit === 0 && s1.choices[0] === "A1", JSON.stringify(data.built.cats).slice(0, 600));
   ok("guide: a decision in force goes under its step; one with no step is a gap on the page", data.steps[1].inForce[0]?.ids[0] === "D-001" && data.gaps.some((x) => x.where === "D-002" && x.what === "no step") && data.gaps.some((x) => /step 2 · case 1/.test(x.where)), JSON.stringify(data.gaps));
@@ -306,6 +386,64 @@ try {
   if (chromium) {
     const c = run("guide.mjs", vd, "--check", "--no-thumbs");
     ok("guide --check: passes on a guide made from its sources", c.code === 0 && /every heading and paragraph of plan\.md in the page/.test(c.out) && /each opens its layer, each by a visible control/.test(c.out), c.out);
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      const prose = "No decisions have been recorded yet. All choices remain open.";
+      try {
+        for (const mixed of [false, true]) {
+          const changed = before.replace(/## Decisions in force[\s\S]*$/, `## Decisions in force\n\n${prose}\n\n${mixed ? "- **D-001** Reviews go to the inbox: kept. (step 2)\n\nKeep the earlier review rule while the new choice is open.\n" : ""}`)
+            .replace("(steps 1, 2)", "(all steps)")
+            .replace("**Keep --out working?** (step 1)", "**Keep --out working? (step 1)**")
+            .replace("I recommend A: nothing breaks.", "Recommendation: A: nothing breaks.");
+          writeFileSync(planPath, changed);
+          const result = run("guide.mjs", vd, "--check", "--no-thumbs");
+          const made = JSON.parse(readFileSync(join(gd, "index.html"), "utf8").match(/<script type="application\/json" id="guide-data">([\s\S]*?)<\/script>/)[1]);
+          ok(`guide --check: ${mixed ? "mixed decision prose and citations" : "empty-ledger prose"}, all-step components and alternate question formatting render at desktop and mobile widths`,
+            result.code === 0 && (made.inForceSaid || "").includes(prose) && made.touchedAll[0].steps.join() === "1,2" && made.steps[0].questions[0]?.recommend === "Recommendation: A: nothing breaks." && (!mixed || made.inForce[0]?.ids[0] === "D-001"), result.out);
+          const browser = await chromium.launch(launchOpts());
+          try {
+            const page = await browser.newPage();
+            await page.goto(pathToFileURL(join(gd, "index.html")).href);
+            ok(`guide page: Recommendation: A marks only option A as recommended (${mixed ? "mixed" : "empty"} ledger)`,
+              await page.locator('.qq .opt[data-l="A"] .rec').count() === 1 && await page.locator('.qq .opt[data-l="B"] .rec').count() === 0);
+          } finally { await browser.close(); }
+        }
+      } finally {
+        writeFileSync(planPath, before);
+        run("guide.mjs", vd, "--no-thumbs");
+      }
+    }
+    // Plain prose can contain an unbroken protocol or path; keep every word readable on a phone.
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      const phrase = "Git/package/skill/model/effort/browser/runtime";
+      try {
+        writeFileSync(planPath, before.replace("The flag says where, not what.", `The flag says where, not what. Freeze the same ${phrase} for both attempts.`));
+        const result = run("guide.mjs", vd, "--check", "--no-thumbs");
+        ok("guide --check: long plain-text protocol names wrap at mobile width without dropping source words", result.code === 0, result.out);
+        const browser = await chromium.launch(launchOpts());
+        try {
+          const page = await browser.newPage({ viewport: { width: 375, height: 844 } });
+          await page.goto(pathToFileURL(join(gd, "index.html")).href);
+          await page.evaluate(() => document.querySelectorAll("details").forEach(d => { d.open = true; }));
+          const got = await page.evaluate(phrase => ({ retained: document.body.innerText.includes(phrase), width: document.documentElement.scrollWidth }), phrase);
+          ok("guide page: the entire unbroken phrase remains readable without page-wide scrolling", got.retained && got.width <= 376, JSON.stringify(got));
+        } finally { await browser.close(); }
+      } finally { writeFileSync(planPath, before); run("guide.mjs", vd, "--no-thumbs"); }
+    }
+    // A missing-step warning used to supply the source heading by accident. With every citation assigned,
+    // the guide still needs to preserve the heading itself, without relying on a warning's text.
+    {
+      const planPath = join(pd, "plan.md"), before = readFileSync(planPath, "utf8");
+      try {
+        writeFileSync(planPath, before.replace("**D-002** Plain words.", "**D-002** Plain words. (step 1)"));
+        const assigned = run("guide.mjs", pd, "--check", "--no-thumbs");
+        ok("guide --check: preserves Decisions in force when every citation names its step", assigned.code === 0 && /every heading and paragraph of plan\.md in the page/.test(assigned.out) && !/D-002: no step/.test(assigned.out), assigned.out);
+      } finally {
+        writeFileSync(planPath, before);
+        run("guide.mjs", pd, "--no-thumbs");
+      }
+    }
     // "Decisions in force" drawn under its own heading, with its words that are no line of it: a first plan's "None yet",
     // and a lead line over lines that each name a step (no gap on the page to say the heading's words by chance)
     // On a plan with no video and nothing built yet: a walkthrough's guide shows plan.md's changes since the review,

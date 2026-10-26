@@ -13,7 +13,10 @@ let failed = 0;
 const test = (name, fn) => { try { fn(); console.log(`✓ ${name}`); } catch (e) { failed++; console.error(`✗ ${name}\n  ${e.message}`); } };
 
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-const [pack] = JSON.parse(execFileSync(npm, ["pack", "--dry-run", "--json", "--ignore-scripts"], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }));
+const packed = mkdtempSync(join(tmpdir(), "rp-package-"));
+const [pack] = JSON.parse(execFileSync(npm, ["pack", "--json", "--ignore-scripts", "--pack-destination", packed], {
+  cwd: ROOT, encoding: "utf8", env: { ...process.env, npm_config_cache: join(packed, "npm-cache") }, stdio: ["ignore", "pipe", "ignore"] }));
+execFileSync("tar", ["-xzf", join(packed, pack.filename), "-C", packed]);
 const files = pack.files.map((f) => f.path), shipped = new Set(files);
 const has = (p) => shipped.has(p) || files.some((f) => f.startsWith(p.replace(/\/$/, "") + "/"));
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
@@ -30,6 +33,19 @@ test("no media, tests, videos, plans or example projects", () => {
 test("both commands and the licence are in it", () => {
   for (const b of Object.values(pkg.bin)) assert.ok(shipped.has(b.replace(/^\.\//, "")), `bin ${b} is not shipped`);
   for (const f of ["LICENSE", "NOTICE", "README.md", "package.json"]) assert.ok(shipped.has(f), `${f} is not shipped`);
+});
+
+test("the real tarball ships Codex's root manifest/catalog and Claude's unchanged skill-folder source", () => {
+  for (const f of ["plugin.json", ".agents/plugins/marketplace.json", ".claude-plugin/marketplace.json", "skills/plan-to-video/SKILL.md", "skills/plan-to-video/references/harnesses.md"])
+    assert.ok(shipped.has(f), `${f} is not shipped`);
+  const read = (f) => JSON.parse(readFileSync(join(packed, "package", f), "utf8"));
+  const plugin = read("plugin.json");
+  assert.equal(plugin.version, pkg.version);
+  assert.equal(plugin.$schema, "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json");
+  const entry = read(".agents/plugins/marketplace.json").plugins.find((p) => p.name === plugin.name);
+  assert.deepEqual(entry.source, { source: "local", path: "./" });
+  assert.equal(entry.policy.installation, "AVAILABLE");
+  assert.equal(read(".claude-plugin/marketplace.json").plugins.find((p) => p.name === plugin.name).source, "./skills/plan-to-video");
 });
 
 // Every shipped script's relative imports, and every repo path it names in quotes, are shipped too.
@@ -92,4 +108,5 @@ test("hyperframesChrome: setup's Chrome headless shell, newest first; HYPERFRAME
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+rmSync(packed, { recursive: true, force: true });
 if (failed) process.exit(1);

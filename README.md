@@ -7,7 +7,7 @@ You answer on the video, and the agent updates the plan.
 
 <img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
-**Works with:** Claude Code (tested) · Codex (basic support) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
+**Works with:** Claude Code (tested) · Codex CLI (tested on macOS; [features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
 (untested: [what each needs](./docs/agents.md))
 
 ## Before you try
@@ -33,7 +33,18 @@ In Claude Code, the skill can come as a plugin instead of the third line, kept u
 /plugin install reelplanner@reelplanner
 ```
 
-The plugin is the skill only: the first two lines are still what install the `reelplanner` command and its tools
+Codex has a native plugin route too, using the package installed by the first line:
+
+```bash
+codex plugin marketplace add "$(npm root -g)/reelplanner"
+codex plugin add reelplanner@reelplanner
+```
+
+Codex keeps its own copy of the plugin: after updating reelplanner, run the second line again.
+In Codex, start with `$plan-to-video <plan.md>`, or ask it to make a plan with reelplanner.
+See [Codex setup and tested features](./docs/agents.md#codex) for details.
+
+Both plugins install the skill: the first two lines are still what install the `reelplanner` command and its tools
 (the skill installs them itself when they are missing, but running them first is quicker).
 
 The narration needs a voice. Choose one before you run `reelplanner setup`:
@@ -92,7 +103,8 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
 - Comment on any moment, then press **Finish review** and **Send**: the review goes to the agent, which updates
-  the plan.
+  the plan. The local page saves directly; you do not need to download a file. A disconnected portable
+  copy exports a review file to return to the agent.
   - For a quick video, nothing is added to the repo: the review waits on your machine, in `~/.reelplanner/inbox/`,
     until the agent picks it up. If no agent session is waiting, tell it the review is sent.
   - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
@@ -110,6 +122,50 @@ In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add 
 Ways 2 and 3 add a `.reelplanner/` folder to the repo (commit it). The first time in a repo, the agent asks
 which way you want, unless you said "quick". To move to a fuller way later, ask the agent. [How it fits together](./docs/lifecycle.md).
 
+## Review beside your agent in the terminal
+
+<img src="docs/media/terminal-review.gif" alt="Codex in a terminal opens a plan video's review in a split beside it; the reviewer answers the questions and presses Send; the split closes, Codex wakes with the review, rebuilds the video and opens the new version beside it." width="100%">
+
+Ask your agent to open a video's review "beside me in the terminal". It opens in a split next to the agent. Watch,
+answer, comment and press **Send**: the split closes, the agent wakes with your review and gets to work, and when
+the new version is built it opens beside you again. You never leave the terminal or tell the agent it was sent.
+
+Your agent's own permissions still apply while it works. In our Linux trial, Codex on its default settings asked
+you to approve 15 of its commands between Send and the new version (where it keeps the review, the build and its
+checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the repo.
+Codex's "Approve for me" setting decides them for you instead. Claude Code in auto mode, with reelplanner's commands
+allowed ([Claude Code](./docs/agents.md#claude-code)), asked none.
+
+Set it up once, from your own terminal (not inside an agent). Install
+[terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
+
+```sh
+brew install --cask terminal-browser          # macOS (Linux: curl -fsSL https://terminal-browser.sh/install | bash)
+reelplanner review-setup --workspace terminal-browser                       # Claude Code and other agents
+reelplanner review-setup --workspace terminal-browser --codex-allow-open    # Codex: it also opens reviews with no prompt
+```
+
+Restart Codex afterwards. Tested with Codex and Claude Code, in Ghostty on macOS and in tmux (in Ghostty) on Linux,
+where the split is a new tmux pane beside the agent's. `reelplanner review-setup --check` checks the
+setup; `--codex-disable-open` removes Codex's rule; `--workspace browser` goes back to your ordinary browser, the
+default. With Codex, start the session with a model Codex does not mark as cyber (`codex -m <model>`): for those,
+Codex ignores the saved rule, and you open the link yourself. Details: [terminal review](./docs/terminal-review.md).
+
+**Security: what you allow.** Read this before you set it up.
+
+- **Codex runs the opener outside its sandbox, without asking.** `--codex-allow-open` saves a Codex rule for one
+  command, reelplanner's `review-open`. It reads your process list to find the Codex window, reads that window's
+  terminal settings, and opens a local review page beside it. It starts no server and sends nothing.
+- **Your terminal may be scripted.** On macOS, the first split asks you to let Codex (or your terminal) control
+  Ghostty. That permission is broad: a program run with it can type into any Ghostty window. reelplanner uses it only
+  to split, and to close its own split with Ctrl+Q after Send, but the permission is not limited to that.
+- **Send wakes your agent.** The review server listens on 127.0.0.1 only, but any program running as you on this
+  machine can post a "review" to it, and a waiting agent will start working on it with nobody typing. The review is
+  passed as data, not as instructions, yet it still reaches your agent. Use it on a machine you trust, and stop the
+  server when you are not reviewing: `reelplanner review --stop`.
+- **The server runs outside the sandbox.** Starting it needs one approval in Codex: it writes its log and your
+  review outside the workspace.
+
 ## Case studies
 
 Real projects built with reelplanner, each with its videos, reviews and session:
@@ -122,6 +178,7 @@ Real projects built with reelplanner, each with its videos, reviews and session:
 ## Why, and how it compares
 
 Agents write plans faster than people can read them. A long plan gets skimmed, and the choices in it go unseen.
+The original name, reelplanning, sounded like “real planning”: watching a plan makes long proposals easier to understand.
 
 > "The output format I am most bullish on is fully custom / bespoke explainer videos generated on any arbitrary
 > topic." — Andrej Karpathy, [on X](https://x.com/karpathy/status/2105819303471976479), October 2026

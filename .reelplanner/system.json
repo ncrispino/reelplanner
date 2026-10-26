@@ -41,14 +41,14 @@
       "id": "server",
       "name": "The review server",
       "role": "automation",
-      "files": ["scripts/review.mjs", "scripts/inbox.mjs", "scripts/lib/inbox.mjs", "scripts/notify.mjs", "scripts/lib/notify.mjs", "scripts/reel-intake.mjs"],
+      "files": ["scripts/review.mjs", "scripts/inbox.mjs", "scripts/lib/inbox.mjs", "scripts/notify.mjs", "scripts/lib/notify.mjs", "scripts/reel-intake.mjs", "scripts/lib/agents.mjs", "scripts/lib/presentation.mjs", "scripts/lib/review-projects.mjs", "scripts/lib/http-file.mjs", "scripts/review-open.mjs", "scripts/review-setup.mjs", "scripts/lib/review-pane.mjs", "scripts/lib/review-health.mjs", "scripts/lib/review-preferences.mjs", "scripts/lib/codex-window.mjs"],
       "stage": { "x": 632, "y": 175, "w": 270, "h": 110 }
     },
     {
       "id": "headless",
       "name": "The headless run",
       "role": "automation",
-      "files": [".reelplanner/config.json", "templates/reelplanner/config.json", "scripts/lib/inbox.mjs", "scripts/lib/sandbox.mjs"],
+      "files": [".reelplanner/config.json", "templates/reelplanner/config.json", "scripts/lib/inbox.mjs", "scripts/lib/sandbox.mjs", "scripts/lib/agents.mjs"],
       "stage": { "x": 946, "y": 175, "w": 270, "h": 110 }
     },
     {
@@ -90,7 +90,7 @@
       "id": "explainer",
       "name": "The explainer",
       "role": "authoring",
-      "files": ["scripts/explain.mjs", "scripts/check-sources.mjs", "scripts/lib/explainer.mjs"]
+      "files": ["scripts/explain.mjs", "scripts/check-sources.mjs", "scripts/lib/explainer.mjs", "scripts/lib/codex-session.mjs", "scripts/session.mjs"]
     },
     {
       "id": "guide",
@@ -152,7 +152,7 @@
       "name": "The review loop",
       "steps": [
         "a reviewer marks, comments and decides in the player, then presses Finish: approve, or request changes",
-        "the review server keeps the review in the inbox and hands it to a waiting session, or starts the headless run",
+        "the review server saves the review in the inbox, hands it to a waiter or verified connected session, or starts an explicitly configured headless run",
         "reel record adds the answers to the decision log and files the review, with what to act on",
         "the revise step folds the comments into the plan, or rewrites only the steps they touched",
         "narrate voices only the changed lines, finish-project reassembles the video, and plan-diff flags what changed",

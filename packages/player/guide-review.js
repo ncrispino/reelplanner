@@ -489,16 +489,32 @@ ${step ? `### Step ${step.n} — ${step.title}\n${clip(step.text, 5000)}` : "(no
       }
       if (served()) {
         let j = null; try { const r = await fetch(new URL("/api/ask", location.origin), { method: "POST", headers: { "content-type": "application/json" }, cache: "no-store", body: JSON.stringify({ id: q.id, video: slug, planDir: planMap?.planDir || null, title: planMap?.title || null, question: q.question, t: q.t, frame: q.frame, planStep: q.planStep, narration: null, quote: q.quote }) }); j = await r.json(); } catch {}
-        if (j?.ok && j.handledBy === "session") {
-          Object.assign(q, { status: "waiting", via: "session", askId: j.id }); save(); show("Asked the agent session waiting on this page…");
-          for (let i = 0; i < 60; i++) { await new Promise((ok) => setTimeout(ok, 2000)); let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(j.id)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
-            if (a?.answered) { Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", answeredAt: a.answeredAt || new Date().toISOString() }); save(); show(esc(q.answer), `${q.from} · answered by the agent session`); return; } }
-          Object.assign(q, { status: "review", note: "No answer from the session in two minutes, so your question goes with your review." }); save(); show(esc(q.note)); return;
+        if (j?.ok && j.id) {
+          Object.assign(q, { status: "waiting", via: "session", askId: j.id, note: j.handledBy === "session" ? "Saved; waiting for the agent session to answer…" : "Saved; waiting for the next agent session to answer. Your question also goes with your review." }); save(); show(esc(q.note));
+          pollQuestion(q, (answered) => show(esc(answered.answer), `${answered.from} · answered by the agent session`)); return;
         }
-        Object.assign(q, { status: "review", via: "review", note: "No agent session is waiting on this page, so your question goes with your review and is answered in the next version." }); save(); show(esc(q.note)); return;
+        Object.assign(q, { status: "review", via: "review", note: "The review server did not take it, so your question goes with your review." }); save(); show(esc(q.note)); return;
       }
       Object.assign(q, { status: "review", via: "review", note: "Your question goes with your review, and is answered in the next version." }); save(); show(esc(q.note));
     }
+
+    const pollingQuestions = new Set();
+    async function pollQuestion(q, show = null) {
+      if (!q.askId || q.answer || pollingQuestions.has(q.id)) return;
+      pollingQuestions.add(q.id);
+      try {
+        while (!q.answer) {
+          let a = null; try { const r = await fetch(new URL(`/api/ask?id=${encodeURIComponent(q.askId)}`, location.origin), { cache: "no-store" }); a = r.ok ? await r.json() : null; } catch {}
+          if (a?.answered) {
+            Object.assign(q, { answer: String(a.answer || ""), from: a.from || "not said", status: "answered", note: null, answeredAt: a.answeredAt || new Date().toISOString() });
+            const all = read(QK, []), i = all.findIndex((x) => x.id === q.id); if (i < 0) return; all[i] = q; write(QK, all); count(); show?.(q); return;
+          }
+          await new Promise((ok) => setTimeout(ok, 2000));
+          if (!read(QK, []).some((x) => x.id === q.id)) return;
+        }
+      } finally { pollingQuestions.delete(q.id); }
+    }
+    if (served()) for (const q of read(QK, [])) if (q.askId && !q.answer) pollQuestion(q);
 
     // ── the ways in: a selection let go of, a labelled thing or a line's number clicked, a highlight clicked, N ──
     const inPage = (n) => { const el = n && (n.nodeType === 1 ? n : n.parentElement); return !!el && root.contains(el) && !box.contains(el) && !el.closest("input,textarea,select,[contenteditable]"); };

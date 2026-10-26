@@ -997,8 +997,8 @@ function needsSection() {
   return `<section data-flow class="q" id="needs-you"><h2>What needs you</h2>${parts.join("")}</section>`;
 }
 function questionHtml(s, q) {
-  return `<div class="qq" data-q="${q.n}" data-step="${s.n}"><div class="opts">${q.options.map((o) => `<button type="button" class="opt" data-l="${o.letter}" aria-pressed="false"><b>${o.letter}</b> ${inl(o.label)}${q.recommend && new RegExp(`^I recommend\\s+${o.letter}\\b`).test(q.recommend) ? ` <span class="rec">recommended</span>` : ""}</button>`).join("")}</div><div class="world" aria-live="polite"></div>
-    ${q.recommend ? `<p class="recw" data-anchor="question ${q.n} · recommendation" data-editable><span class="lab2">The plan recommends</span> ${inl(q.recommend.replace(/^I recommend\s+/, ""))}</p>` : ""}
+  return `<div class="qq" data-q="${q.n}" data-step="${s.n}"><div class="opts">${q.options.map((o) => `<button type="button" class="opt" data-l="${o.letter}" aria-pressed="false"><b>${o.letter}</b> ${inl(o.label)}${q.recommend && new RegExp(`^(?:I recommend\\s+|Recommendation\\s*:\\s*)${o.letter}\\b`, "i").test(q.recommend) ? ` <span class="rec">recommended</span>` : ""}</button>`).join("")}</div><div class="world" aria-live="polite"></div>
+    ${q.recommend ? `<p class="recw" data-anchor="question ${q.n} · recommendation" data-editable><span class="lab2">The plan recommends</span> ${inl(q.recommend.replace(/^(?:I recommend\s+|Recommendation\s*:\s*)/i, ""))}</p>` : ""}
     ${fold("The question as the plan wrote it", md(q.text, { anchor: `question ${q.n}`, editable: true }))}</div>`;
 }
 document.addEventListener("click", (e) => {

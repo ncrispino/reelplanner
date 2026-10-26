@@ -121,9 +121,10 @@ export function stampOf(videoDir) {
   return { id: hash(JSON.stringify(scenes)), scenes, ...(plan ? { plan: hash(read(plan)) } : {}) };
 }
 
-/** The plan.md a video is of: its plan folder's (a plan or walkthrough video sits in it), or null (system, explainer). */
+const sourceNameOf = (videoDir) => /^kind:\s*explainer\s*$/m.test(frontMatter(read(join(resolve(videoDir), "STORYBOARD.md")))) ? "explain.md" : "plan.md";
+/** The video's source document: explain.md for an explainer, plan.md for a plan/walkthrough, or null. */
 export function planOf(videoDir) {
-  const p = join(resolve(videoDir), "..", "plan.md");
+  const p = join(resolve(videoDir), "..", sourceNameOf(videoDir));
   return existsSync(p) ? p : null;
 }
 
@@ -198,13 +199,14 @@ export function hasMeaning(videoDir, phrase) {
 export function answerProblem(videoDir, f, stamp = readStamp(videoDir)) {
   if (!f.answer) return "no answer";
   const words = f.answer.text.split(/\s+/).filter(Boolean).length;
-  if (f.plan && !["plan", "ask"].includes(f.answer.kind)) return "is about the plan: answer `plan: <what plan.md now says>` or `ask: <the question for the person>`";
+  const sourceName = sourceNameOf(videoDir);
+  if (f.plan && !["plan", "ask"].includes(f.answer.kind)) return `is about the plan: answer \`plan: <what ${sourceName} now says>\` or \`ask: <the question for the person>\``;
   if (f.answer.kind === "ask" && words < 3) return "ask, with no question";
   if (f.answer.kind === "plan") {
     const plan = planOf(videoDir);
-    if (!plan) return "plan:, but this video has no plan.md: answer `ask: <the question for the person>`";
-    if (words < 2) return "plan:, but not what plan.md now says";
-    if (stamp?.plan && hash(read(plan)) === stamp.plan) return "plan:, but plan.md is unchanged since the agents looked";
+    if (!plan) return `plan:, but this video has no ${sourceName}: answer \`ask: <the question for the person>\``;
+    if (words < 2) return `plan:, but not what ${sourceName} now says`;
+    if (stamp?.plan && hash(read(plan)) === stamp.plan) return `plan:, but ${sourceName} is unchanged since the agents looked`;
   }
   if (f.answer.kind === "kept" && words < 3) return "kept, with no reason";
   if (f.answer.kind === "fixed" && words < 2) return "fixed, but not where";

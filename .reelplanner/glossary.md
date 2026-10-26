@@ -63,6 +63,8 @@ The words under **Other words**, at the end, are the trade's own (repo, branch, 
 | reel audit / audit | — | The check on a walkthrough (`reel audit`): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked | | |
 | The explainer | `explainer` | A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (`reelplanner explain "<what you asked>" <source> …`, in `.reelplanner/explainers/`; every fact from a named source, `check-sources`) | explainer video | |
 | The guide | `guide` | The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from `plan.md` by `reelplanner guide`, never committed; D-264). Select any words on it to comment, suggest an edit or ask | the plan guide, the full guide page | |
+| An agent adapter | — | The small boundary for an agent's feature checks, launch and permission advice, live notification and conversation sources. The review workflow, storage and completion stay shared | | |
+| A terminal review pane | — | The existing review player opened beside the coding agent through terminal-browser or cmux. The same questions, comments and Send use the same inbox; after a Send a session took, the server closes it, and the agent opens the new version in a new one | | |
 
 ## Other words
 

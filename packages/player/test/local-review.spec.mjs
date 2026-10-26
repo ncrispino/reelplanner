@@ -65,7 +65,7 @@ const A = serve(testPort(8881), true);
 const p = await open(testPort(8881));
 await comment(p, "16 MB parts change the retry cost on mobile");
 await finish(p);
-ok(A.posts.length === 0 && (await next(p)) === "Your open session picks this up.", `before sending, the Finish panel says what will happen — "${await next(p)}"`);
+ok(A.posts.length === 0 && (await next(p)) === "Your waiting session picks this up.", `before sending, the Finish panel says what will happen — "${await next(p)}"`);
 // asked again each time the panel opens: the session went away meanwhile, and the repo names its agent
 Object.assign(A.state, { sessionWaiting: false, agentCommand: "claude -p" });
 await p.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('[data-act="handoff-close"]').click());
@@ -133,7 +133,7 @@ ok((await next(m)) === "No agent session is waiting: it's saved on this machine,
 Object.assign(M.state, { sessionWaiting: true });
 await m.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector('[data-act="handoff-close"]').click());
 await finish(m);
-ok((await next(m)) === "Your open session picks this up.", `…or that the session waiting on it has it — "${await next(m)}"`);
+ok((await next(m)) === "Your waiting session picks this up.", `…or that the session waiting on it has it — "${await next(m)}"`);
 await send(m);
 const m2 = await mpanel();
 ok(M.posts.length === 1 && M.posts[0].row.planDir === null && Array.isArray(M.posts[0].row.review?.annotations), `…Send POSTs the review row (no plan directory) — ${M.posts.length} post(s)`);

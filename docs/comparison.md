@@ -91,8 +91,8 @@ walkthrough.
   locally. reelplanner's walkthrough is about the plan's decisions: what landed, and the choices the agent
   made on its own.
 - **Others are far ahead on adoption and agent coverage.** Spec Kit has about 140k stars, archify about 77k and
-  Plannotator about 9k; Plannotator names nine supported agents. reelplanner is tested with Claude Code, has
-  basic Codex support, and is untested elsewhere ([agents](./agents.md)).
+  Plannotator about 9k; Plannotator names nine supported agents. reelplanner is tested with Claude Code and
+  Codex CLI on macOS, and is untested elsewhere ([agents](./agents.md)).
 - **Text review is faster and cheaper.** Plannotator, CodeRabbit and Graphite give quick, searchable feedback
   where people already work, with team sharing. reelplanner needs ffmpeg, a headless Chrome, a local voice,
   whisper.cpp and a render step: a real cost for a small plan.

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "reelplanner",
+  "version": "0.3.0",
+  "description": "Review implementation plans as narrated videos, record your answers in the repo, and review a walkthrough of what the agent built.",
+  "author": {
+    "name": "ncrispino",
+    "url": "https://github.com/ncrispino"
+  },
+  "homepage": "https://github.com/ncrispino/reelplanner",
+  "repository": "https://github.com/ncrispino/reelplanner",
+  "license": "Apache-2.0",
+  "keywords": [
+    "plan-review",
+    "code-review",
+    "video",
+    "decision-log",
+    "agent-skill"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "reelplanner",
+        "shortDescription": "Review plans and walkthroughs as narrated videos",
+        "developerName": "ncrispino",
+        "category": "Productivity"
+      }
+    }
+  }
+}
