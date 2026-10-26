@@ -4,6 +4,9 @@ reelplanner is a skill plus a command-line tool, so any coding agent that loads 
 can in principle drive it. Claude Code and Codex CLI are tested, on macOS and Linux; the table says what was tried
 where, and [Codex](#codex) lists its evidence and limits. The other agents are untested.
 
+Use Claude Code if you can, for now. Codex runs the same loop with the same skill, but its videos tend to be more
+technical and harder to follow; making them clearer is [open work](./status.md#later-open-work-not-for-the-first-release).
+
 ## Support
 
 | Agent | Status | What it needs from you |

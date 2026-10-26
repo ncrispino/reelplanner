@@ -2,8 +2,9 @@
 // background server (`codex app-server --managed-daemon`) that no terminal is attached to, so terminal-browser, which
 // splits beside the pane its caller runs in, walks up from itself and finds no terminal (seen on macOS with Ghostty;
 // on Linux under tmux it split the pane the server was started from, whichever that was). The window the person
-// answers in is still a Codex process on a terminal, in the folder the command runs in: with exactly one there,
-// terminal-browser runs on that window's terminal, with its terminal settings, and the split lands beside it.
+// answers in is still a Codex process on a terminal, in the folder the command runs in: with exactly one there (or,
+// with several, the one in the tmux pane or tmux window a tmux client is showing), terminal-browser runs on that
+// window's terminal, with its terminal settings, and the split lands beside it.
 // Codex's processes and its server are its own and may change: anything unexpected finds no window, and the caller
 // gives the link instead.
 import { spawnSync } from "node:child_process";
@@ -47,13 +48,29 @@ export function codexWindows(listing) {
   return [...windows].map(([tty, pids]) => ({ tty, pids }));
 }
 
-/** Of windows with their folders, the one whose folder holds `cwd` most closely: { window } or { reason }. */
+/** Of windows with their folders, the one whose folder holds `cwd` most closely: { window } or { reason }, with the
+ * windows that tie (`tied`) when there are several. */
 export function pickWindow(windows, cwd) {
   const holds = windows.filter((w) => w.cwd && (cwd === w.cwd || cwd.startsWith(w.cwd.endsWith(sep) ? w.cwd : w.cwd + sep)));
   if (!holds.length) return { reason: `no Codex window is open in ${cwd} or a folder above it` };
   const closest = Math.max(...holds.map((w) => w.cwd.length));
   const found = holds.filter((w) => w.cwd.length === closest);
-  return found.length === 1 ? { window: found[0] } : { reason: `${found.length} Codex windows are open in ${found[0].cwd}, so which one asked is unclear` };
+  return found.length === 1 ? { window: found[0] } : { reason: `${found.length} Codex windows are open in ${found[0].cwd}, so which one asked is unclear`, tied: found };
+}
+
+/** Of windows tied in one folder, each with its terminal settings (`env`), the one where the person is looking: in
+ * the tmux pane a tmux client shows, else in the tmux window it shows (a shell or the last review beside Codex) (seen
+ * with four Codex windows in one repo, tmux in Ghostty on macOS). Send reaches the session by its thread, not its
+ * pane, so this decides only where the split opens. `viewing(socket)` says what that tmux server's clients show:
+ * { panes, windows, windowOf: { pane: window } }. { window } or null when not exactly one is shown. */
+export function focusedWindow(windows, viewing) {
+  const inTmux = windows.filter((w) => w.env?.TMUX && /^%\d+$/.test(w.env.TMUX_PANE || ""));
+  const seen = (w) => viewing(w.env.TMUX.split(",")[0]) || { panes: [], windows: [], windowOf: {} };
+  for (const shown of [(w) => seen(w).panes.includes(w.env.TMUX_PANE), (w) => seen(w).windows.includes(seen(w).windowOf[w.env.TMUX_PANE])]) {
+    const found = inTmux.filter(shown);
+    if (found.length) return found.length === 1 ? { window: found[0] } : null;
+  }
+  return null;
 }
 
 /** `ps eww` prints a process's environment after its arguments, words split on spaces: a word that is not NAME=
@@ -111,10 +128,24 @@ export function findCodexWindow({ cwd = process.cwd(), env = process.env } = {})
   const where = folders(windows.flatMap((w) => w.pids), env);
   for (const w of windows) w.cwd = real(w.pids.map((pid) => where.get(pid)).find(Boolean) || "") || null;
   const picked = pickWindow(windows, real(cwd));
+  const argsOf = (pid) => listing.split("\n").map((line) => line.trim().match(/^(\d+)\s+\S+\s+(.*)$/)).find((m) => Number(m?.[1]) === pid)?.[2];
+  const settingsOf = (w) => environment(w.pids.at(-1), argsOf(w.pids.at(-1)), env);
+  if (picked.tied) {
+    const servers = new Map();
+    const pairs = (args) => (read("tmux", args, env) || "").split("\n").map((line) => line.trim().split(" ")).filter(([pane, win]) => pane && win);
+    const viewing = (socket) => {
+      if (!servers.has(socket)) {
+        const shown = pairs(["-S", socket, "list-clients", "-F", "#{pane_id} #{window_id}"]);
+        servers.set(socket, { panes: shown.map(([pane]) => pane), windows: shown.map(([, win]) => win),
+          windowOf: Object.fromEntries(pairs(["-S", socket, "list-panes", "-a", "-F", "#{pane_id} #{window_id}"])) });
+      }
+      return servers.get(socket);
+    };
+    const shown = focusedWindow(picked.tied.map((w) => ({ ...w, env: settingsOf(w) })), viewing);
+    return shown ? { window: { tty: shown.window.tty, env: shown.window.env } } : { reason: picked.reason };
+  }
   if (!picked.window) return picked;
-  const pid = picked.window.pids.at(-1);
-  const args = listing.split("\n").map((line) => line.trim().match(/^(\d+)\s+\S+\s+(.*)$/)).find((m) => Number(m?.[1]) === pid)?.[2];
-  const windowEnv = environment(pid, args, env);
+  const windowEnv = settingsOf(picked.window);
   if (!windowEnv) return { reason: `the Codex window on ${picked.window.tty} did not show its terminal settings` };
   return { window: { tty: picked.window.tty, env: windowEnv } };
 }
