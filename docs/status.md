@@ -10,8 +10,10 @@ lists them, each with its stage, reviews and decisions.
 | An existing plan → video | ✅ load the plan-to-video skill: `/plan-to-video path/to/plan.md` in Claude Code, `$plan-to-video path/to/plan.md` in Codex. |
 | An explainer of what is already there | ✅ `reelplanner explain "<question>" <sources…>` pins the sources, and the video quotes them word for word; `check-sources` stops a line its source does not hold. |
 | The review page opens by itself | ✅ `reelplanner review <video-dir>` bundles the player with the video, serves it locally and opens the browser; the skill runs it when a video is ready. |
+| Review beside your agent in the terminal | ✅ With `review-setup --workspace terminal-browser`, the review opens in a terminal split beside the agent; Send wakes the agent with it, the split closes, and the new version opens beside it once it is built. Tested with Codex and Claude Code, in Ghostty on macOS and in tmux on Linux ([terminal review](./terminal-review.md)). |
 | First plan in an existing repo | 🟡 The skill maps the code into `.reelplanner/` and builds the system video from that map alongside the first plan video, so you can correct the map while you review the plan. Not yet run on an existing repo other than this one. |
 | Fresh eyes before you watch | ✅ `fresh-eyes` gives two fresh subagents, a newcomer and a designer, only what a viewer gets (each scene's narration and a picture of it at rest, through the review page); every finding is answered before the page opens, and `verify` stops on one that isn't. |
+| How thorough a video is | ✅ Each video has a depth, low, medium (the default) or high, taken from your words: how long it may run and how many fresh agents check it. `build` and `fresh-eyes` hold a video to it. |
 | Watch, comment, decide | ✅ Local player, hosted player, one-click handoff to Claude from a published Artifact. Questions take 2–4 options or "pick all that apply" and are answered on the frame itself, with a click or A–D; any answer can carry a note. Rewinds and slow-downs reach the agent in `reviews/<id>.md` as steps to say more plainly. A quick check you miss marks that step for the next video. |
 | The guide under the video | ✅ Each video's guide sits under it on the same page: the plan's cases, interface and worked examples, diagrams you can step through, saved runs, and after the build what changed and what the agent decided alone. Any words on it can be highlighted to leave a note. A scene can also open a detail page over the paused frame. |
 | Revise the plan, rebuild the changed scenes | ✅ Only the frames a review changed are rebuilt, and narration is cached per line. The player plays just the changes by default. Sending from the local page reaches the open session, or starts the repo's headless agent when none is open (tested with Claude Code, through a real headless `claude -p` run to the notification). |
@@ -24,7 +26,7 @@ lists them, each with its stage, reviews and decisions.
 
 The original milestones (M0–M4) and layers (L0–L4) are in the [original plan](./history/original-plan.md) §2.1 and §6.
 
-## Before going public
+## Going public
 
 Done:
 
@@ -32,17 +34,15 @@ Done:
   ([its pages](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/)): an interactive site from an empty
   folder through four plans, seven videos, each reviewed, with the project, the reviews and the session. The kit for
   it is [`eval/case-studies/`](../eval/case-studies/).
-- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. A real narrated plan, implementation, walkthrough flag/fix and rebuilt approval completed ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change.
+- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. A real narrated plan, implementation, walkthrough flag/fix and rebuilt approval completed ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change. The terminal review, end to end, with CLI 0.164.0 in Ghostty on macOS and in tmux on Linux: it opens beside Codex, Send wakes the session, the split closes, and the new version opens.
+- **The public repo:** `ncrispino/reelplanner`, since 2026-10-08, its About box set (the description and 18 topics); the development history stays private.
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 
-- **The switch:** rename this repo (e.g. `reelplanner-dev`), create the empty public `ncrispino/reelplanner`, run
-  `node scripts/release/make-public.mjs` and the push it prints, then check the install on a fresh machine.
+- **The first npm publish:** 0.4.0, by hand with your npm login ([`docs/releasing.md`](./releasing.md#publishing-the-first-version-by-hand));
+  0.2.0 and 0.3.0 were tagged and never published.
 - **Announce it:** the post and replies drafted in [`docs/releasing.md`](./releasing.md#announcing-it), once the
   install works from a fresh machine.
-- **The repo page's About box:** `sh scripts/release/github-about.sh` (`--dry-run` first) sets the description and
-  the 20 topics from `docs/github-topics.txt`, with your own `gh` login (setting topics needs admin rights on the
-  repo, so no session can do it).
 
 ## Later (open work, not for the first release)
 

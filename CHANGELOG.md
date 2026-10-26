@@ -37,6 +37,13 @@
   loaded machine): a run of play begins where the video was sent, not where the packet said it was.
 - **`no-video` waives the built video's branch too:** `reel pr-check` no longer asks a PR a maintainer labelled
   `no-video` for `video/pr-<n>`, since nobody has to watch its video.
+- **`retime-frames` moves a frame's cues once.** It measured from the last commit's words every time, so run again,
+  or after a build had already moved them, it moved them a second time (an agent revising a video ran into it). It
+  now keeps the line each frame was moved onto (`.hyperframes/frames-timed.json`) and moves a frame from there: run
+  again, nothing moves; voiced again before a commit, a frame moves from the line it is on. A frame put back from
+  git moves from the commit's words.
+- **The README says how thorough a video is:** low, medium (the default) or high, in your own words, and what each
+  one does; a quick video is the lightest.
 
 ## 0.3.0 (2026-10-24)
 

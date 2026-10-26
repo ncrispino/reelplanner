@@ -5,7 +5,7 @@ The skill pins the npm package (`npx -y reelplanner@<version>` in `SKILL.md`), s
 ```bash
 npm run test:full               # green first: every spec, exhaustive (headless Chromium, specs side by side)
 npm version 0.2.1               # or patch / minor; commits and tags v0.2.1
-npm pack --dry-run              # the file list (scripts/test/package.spec.mjs checks it): about 150 files, under 1 MB packed
+npm pack --dry-run              # the file list (scripts/test/package.spec.mjs checks it): about 200 files, about 1.2 MB packed
 git push origin main --follow-tags
 ```
 

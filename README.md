@@ -91,6 +91,18 @@ claude "Use reelplanner to plan a small website for a neighborhood bakery"
 The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
 Say "quick" in the request ("make a quick video plan for …") to skip the question and get just the video.
 
+**How thorough.** A quick video is the lightest: 1–3 minutes, and no second agent checks it. Any other video has a
+depth, set in your own words: low, medium (the default) or high.
+
+- "Rough", "a first look" or "low depth" gets low: about 2 minutes and at most 8 scenes, and no second agent
+  checks it, so you see it soonest.
+- "Thorough", "polished" or "high depth" gets high: two rounds of fresh agents (one new to the project, one a
+  designer) watch it, and everything they find is fixed.
+- Anything else is medium: a plan video's usual 3–5 minutes, and one round of checks by an agent new to the
+  project.
+
+The agent writes it as `depth:` in the video's `BRIEF.md`; ask for another depth and it changes it for the next build.
+
 In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add "with the plan-to-video skill" to the request ([what each needs](./docs/agents.md)).
 
 <img src="docs/media/review-page.gif" alt="The review page: the video plays, stops at a question, an answer is picked, a comment is drawn on the frame, and the review is finished." width="100%">
