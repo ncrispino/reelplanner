@@ -5,7 +5,8 @@
 //   the line (D-214, narrowed by D-223)  a PR gets the walkthrough video (the change running, pausing at
 //                      what you'd notice) when it changes over 300 lines outside tests, docs, videos and
 //                      generated files, when the contributor ticks "makes a choice you'd notice or can't easily
-//                      undo" in the PR template, or when a maintainer adds `needs-video`. `no-video` waives it.
+//                      undo" in the PR template, or when a maintainer adds `needs-video`. `no-video` waives it,
+//                      and the video's branch with it.
 //                      A new flag, command or dependency seen in the diff is only named: it never crosses the
 //                      line by itself (the plan review of 2026-09-27 08:31: "the flag here is simple enough").
 //   other choices      (D-223) any other choice is a line in the PR's text, under "## Other choices" (what it
@@ -185,8 +186,8 @@ if (bringsLine && !withVideo.length) fails.push("the PR's text says it brings a 
 if (needed && !withVideo.length) waits.push(`needs a video (${reasons.join(", ")}): the contributor brings one, or a maintainer's agent makes a walkthrough from the diff (the skill's "Several people"), or a maintainer adds \`no-video\``);
 else if (needed && !withVideo.some(accepted)) waits.push(`waiting for a maintainer to accept the walkthrough of ${withVideo.map((p) => p.name).join(", ")}`);
 
-// the video's branch (D-215): while a maintainer still has to watch it
-if (pr.number && withVideo.length && !withVideo.every(accepted)) {
+// the video's branch (D-215): while a maintainer still has to watch it (`no-video`: nobody has to)
+if (pr.number && withVideo.length && !waived && !withVideo.every(accepted)) {
   const url = pr.url || tryGit("remote", "get-url", "origin")?.trim();
   const branch = `video/pr-${pr.number}`;
   if (!url) notes.push(`no remote to look for ${branch} on`);

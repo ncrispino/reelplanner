@@ -202,6 +202,13 @@ try {
   writeFileSync(wtPath, wtText); commit("row back");
   r = checkJson(TICKED, "");
   ok("pr-check: back as built, nothing fails", r.code === 0 && !r.fails.length, JSON.stringify(r));
+  // the video's branch (D-215): with the PR's number known, its built video waits on video/pr-<n> until a maintainer accepts it
+  const ev = join(tmp, "event.json");
+  writeFileSync(ev, JSON.stringify({ pull_request: { number: 42, body: TICKED, labels: [], head: { repo: { clone_url: join(tmp, "origin.git") } } } }));
+  r = checkJson(TICKED, "", "--event", ev);
+  ok("pr-check (D-215): PR #42 with a video waits for it on video/pr-42", r.waits.some((w) => /^no video\/pr-42 branch on /.test(w)), JSON.stringify(r.waits));
+  r = checkJson(TICKED, "no-video", "--event", ev, "--merge");
+  ok("…`no-video` waives the branch too: nobody has to watch the video", r.code === 0 && !r.waits.length && !r.fails.length, JSON.stringify(r));
   // walkthroughs-that-help step 4: the stale check follows step 2's rule: A1 is labelled visible, so a video that
   // only lists it was built before its label said it pauses
   const wm0 = readFileSync(join(pd, "walkthrough-video", "plan-map.json"), "utf8"), wm = JSON.parse(wm0);

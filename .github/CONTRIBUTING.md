@@ -170,7 +170,8 @@ reelplanner review ../pr-42-video           # in the PR's checkout, so Send file
 ```
 
 A rebuild runs the same again: the forced push replaces the branch's one commit. When the PR closes, the
-branch is deleted (for a PR from a fork, delete it in your fork when you like).
+branch is deleted (for a PR from a fork, delete it in your fork when you like). A PR a maintainer labels
+`no-video` needs no such branch: nobody has to watch its video.
 
 ### Decision numbers
 
