@@ -154,6 +154,8 @@ Codex and for Claude Code: Ghostty on a virtual screen with tmux in it, the agen
 video's review beside it, a scripted reviewer that answers, asks for a change and presses Send in the split,
 then nobody typing: the split closes, Send wakes the agent, and it takes the review in, rebuilds the video and
 opens the new version. You log each agent in on the machine once; the script deletes the machine afterwards.
+`node scripts/release/terminal-review/gif.mjs` cuts the README's GIF from a run's recording (`--record`), each
+stretch's sentence in the caption card the videos use.
 
 After updating reelplanner, restart an older review server with `review --stop`, then open it again.
 Refresh an existing page so its audio loads from the updated server. That matters because an already
