@@ -103,9 +103,12 @@ try {
     await until(p, () => document.querySelector("#rp-guide").ready);
     const want = await p.evaluate(() => { const el = document.querySelector("#rp"), c = el.chapterAt(el.player.currentTime); return el._under.stillFor(c.start, c.end, el.player.currentTime, el.theme === "dark"); });
     await p.evaluate(() => document.querySelector("#rp").player.pause());
-    if (want) await until(p, () => { const i = document.querySelector("#rp").shadowRoot.querySelector(".mstill"); return !i.hidden && i.complete && i.naturalWidth > 0; });
-    const still = await p.evaluate(() => { const el = document.querySelector("#rp"), R = el.shadowRoot, i = R.querySelector(".mstill"), r = i.getBoundingClientRect(), st = R.querySelector(".stage").getBoundingClientRect();
-      return { shown: !i.hidden && getComputedStyle(i).display !== "none", src: i.src, over: Math.abs(r.left - st.left) <= 1 && Math.abs(r.width - st.width) <= 1 && Math.abs(r.height - st.height) <= 1 }; });
+    // looked at once, at the moment it holds (#33): a state the frame sent before the pause can show "playing" just
+    // after it, hiding the still until the frame's next state, and a second look could land there
+    const look = (hold) => { const el = document.querySelector("#rp"), R = el.shadowRoot, i = R.querySelector(".mstill"), r = i.getBoundingClientRect(), st = R.querySelector(".stage").getBoundingClientRect();
+      const s = { shown: !i.hidden && getComputedStyle(i).display !== "none", src: i.src, over: Math.abs(r.left - st.left) <= 1 && Math.abs(r.width - st.width) <= 1 && Math.abs(r.height - st.height) <= 1 };
+      return !hold || (s.shown && s.over && i.complete && i.naturalWidth > 0) ? s : null; };
+    const still = (want && await when(p, look, true)) || await p.evaluate(look, false);
     check("paused, the small player shows its chapter's settled still (the guide's picture), over the live frame", !!want && still.shown && still.src === want && /\/guide\/pics\//.test(still.src) && still.over, JSON.stringify({ want, ...still }));
     const t0 = await now(p); await p.evaluate(() => document.querySelector("#rp").player.play()); await movedOn(p, t0);
     await until(p, () => document.querySelector("#rp").shadowRoot.querySelector(".mstill").hidden);

@@ -189,7 +189,7 @@ Component kinds: `service`, `store`, `queue`, `job`, `client`, `external`, `page
 
 ## The tools
 
-`reel` (run as `reel <command>` once the tooling is installed ([Install](./reference.md#install)), as `npx -y reelplanner@0.3.0 reel <command>` once the package is on npm, or after `npm link` in a checkout; the code is `scripts/reel.mjs`):
+`reel` (run as `reel <command>` once the tooling is installed ([Install](./reference.md#install)), as `npx -y reelplanner@0.4.0 reel <command>` once the package is on npm, or after `npm link` in a checkout; the code is `scripts/reel.mjs`):
 
 | Command | Does |
 |---|---|

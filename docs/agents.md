@@ -176,7 +176,7 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
   server that `review --detach` starts has no terminal, and terminal-browser finds the Ghostty pane to split by the
   terminal, so the command that starts the server now opens the page (on Linux, tmux names the pane in the
   environment, which is why it had worked there).
-- Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake outside a terminal review, the Codex app, cloud, the rest of the loop on Linux (planning, implementing, the walkthrough), Windows and WSL remain unverified. This branch’s own walkthrough review is a separate acceptance step.
+- Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake outside a terminal review, the Codex app, cloud, the rest of the loop on Linux (planning, implementing, the walkthrough), Windows and WSL remain unverified. So do video depth (low, medium, high) and the scenes a frame can start from (0.3.0): Codex gets them in the same skill, and the CLI holds a video to its depth, but no Codex run has used them yet.
 
 ## Open work
 
