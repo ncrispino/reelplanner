@@ -91,9 +91,9 @@ is under 280 characters (a link counts as 23). Attach `docs/media/system-video.g
 
 ## Publishing the first version by hand
 
-`reelplanner` is not on npm yet (`npm view reelplanner` answers 404): 0.2.0 was tagged and never published, so 0.3.0 is its first publish. (Delete this section once it is out.) Every pin already says 0.3.0 (`node scripts/release/sync-version.mjs --check`), and `CHANGELOG.md` has its section.
+`reelplanner` is not on npm yet (`npm view reelplanner` answers 404): 0.2.0 and 0.3.0 were tagged and never published, so 0.4.0 is its first publish. (Delete this section once it is out.) Every pin already says 0.4.0 (`node scripts/release/sync-version.mjs --check`), and `CHANGELOG.md` has its section.
 
-1. **Check what ships.** Expect about 150 files, under 1 MB packed, and only what `files` in `package.json` lists (`bin/`, `scripts/`, `templates/`, the player, `skills/`, the case-study kit, `CHANGELOG.md`, `NOTICE`) plus `README.md`, `LICENSE` and `package.json`. `scripts/test/package.spec.mjs` (in `npm test`) fails if a shipped script needs a file left out, or if media, tests or plans get in:
+1. **Check what ships.** Expect about 200 files, about 1.2 MB packed, and only what `files` in `package.json` lists (`bin/`, `scripts/`, `templates/`, the player, `skills/`, the case-study kit, `CHANGELOG.md`, `NOTICE`) plus `README.md`, `LICENSE` and `package.json`. `scripts/test/package.spec.mjs` (in `npm test`) fails if a shipped script needs a file left out, or if media, tests or plans get in:
 
    ```bash
    npm pack --dry-run
@@ -108,23 +108,23 @@ is under 280 characters (a link counts as 23). Attach `docs/media/system-video.g
    npm publish --access public                    # add --otp=<code> if your account has 2FA on writes
    ```
 
-4. **Tag and release.** Tag the release's merge commit `v0.3.0` and push the tag; then the release:
+4. **Tag and release.** Tag the release's merge commit `v0.4.0` and push the tag; then the release:
 
    ```bash
-   gh release create v0.3.0 --repo ncrispino/reelplanner --title v0.3.0 --notes-file <(sed -n '/^## 0.3.0/,/^## 0.2.0/p' CHANGELOG.md | sed '$d')
+   gh release create v0.4.0 --repo ncrispino/reelplanner --title v0.4.0 --notes-file <(sed -n '/^## 0.4.0/,/^## 0.3.0/p' CHANGELOG.md | sed '$d')
    ```
 
 5. **Check it from the registry,** in a directory outside the checkout:
 
    ```bash
-   npm view reelplanner version                  # 0.3.0
-   npx -y reelplanner@0.3.0 --version            # 0.3.0
-   npx -y reelplanner@0.3.0 --help               # the command list
-   npx -y reelplanner@0.3.0 reel status <a repo with .reelplanner/>
-   npx -y reelplanner@0.3.0 setup --dry-run      # finds the pinned HyperFrames
-   npx skills add ncrispino/reelplanner --skill plan-to-video -g   # the installed SKILL.md says reelplanner@0.3.0
+   npm view reelplanner version                  # 0.4.0
+   npx -y reelplanner@0.4.0 --version            # 0.4.0
+   npx -y reelplanner@0.4.0 --help               # the command list
+   npx -y reelplanner@0.4.0 reel status <a repo with .reelplanner/>
+   npx -y reelplanner@0.4.0 setup --dry-run      # finds the pinned HyperFrames
+   npx skills add ncrispino/reelplanner --skill plan-to-video -g   # the installed SKILL.md says reelplanner@0.4.0
    ```
 
    The npm page (npmjs.com/package/reelplanner) should show the README, the Apache-2.0 license and the repository link.
 
-If something is wrong after publishing, publish a fixed 0.2.1; `npm deprecate "reelplanner@<bad version>" "<why>"` warns anyone who pinned it. `npm unpublish` is only allowed within 72 hours and blocks the version number for good.
+If something is wrong after publishing, publish a fixed 0.4.1; `npm deprecate "reelplanner@<bad version>" "<why>"` warns anyone who pinned it. `npm unpublish` is only allowed within 72 hours and blocks the version number for good.

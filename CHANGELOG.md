@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (unreleased)
+## 0.4.0 (2026-10-26)
 
 - **Codex CLI, as Claude Code is** (#29, [docs/agents.md](docs/agents.md#codex)). reelplanner's native Codex plugin
   (`codex plugin marketplace add "$(npm root -g)/reelplanner"`, then `codex plugin add reelplanner@reelplanner`;
@@ -33,6 +33,10 @@
 - **On Ubuntu 24.04,** Codex's sandbox needs unprivileged user namespaces, which AppArmor restricts. The docs point to
   the narrower fix Codex documents (an AppArmor profile; not tried here, and 24.04 does not ship the one it names) and
   say not to turn the protection off on a machine you keep.
+- **The player no longer runs past a question** when a runtime packet from before a seek arrives late (seen on a
+  loaded machine): a run of play begins where the video was sent, not where the packet said it was.
+- **`no-video` waives the built video's branch too:** `reel pr-check` no longer asks a PR a maintainer labelled
+  `no-video` for `video/pr-<n>`, since nobody has to watch its video.
 
 ## 0.3.0 (2026-10-24)
 
