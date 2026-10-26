@@ -1,17 +1,16 @@
 # Agents
 
 reelplanner is a skill plus a command-line tool, so any coding agent that loads skills and runs shell commands
-can in principle drive it. Claude Code has the established tested route. Codex now uses the same workflow
-through a native plugin and a small agent adapter; the evidence and remaining limits are listed below.
-The other agents are untested.
+can in principle drive it. Claude Code and Codex CLI are tested, on macOS and Linux; the table says what was tried
+where, and [Codex](#codex) lists its evidence and limits. The other agents are untested.
 
 ## Support
 
 | Agent | Status | What it needs from you |
 |---|---|---|
-| Claude Code | **Tested.** Every part of the loop and the hosted review page; the terminal review on macOS (Ghostty) and Linux (tmux), from opening beside it to the new version. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
-| Codex CLI (0.162.1; 0.164.0 for the terminal review) | Tested on macOS: native plugin, narrated plan/review/implementation/walkthrough/fix loop, unattended rebuild, failure/retry and read-only conversation export. The terminal review on macOS (Ghostty) and Linux (tmux): it opens beside Codex, Send wakes the session (`codex queue`), the split closes, and the new version reopens. | Install the executable plus plugin/skill; preserve the configured sandbox, approvals and signing ([Codex](#codex)). |
-| Codex app | Uses the shared local player and inbox. Untested and outside the current CLI change; app-specific live delivery and workspace behavior need separate evidence. | A reachable local review server; use saved inbox fallback when live notification is unavailable. |
+| Claude Code | **Tested.** Every part of the loop and the hosted review page, on macOS; the whole loop again on a fresh Ubuntu 24.04 machine ([fresh machine](../eval/fresh-machine/2026-10-10-bakery-auto-mode.md)); the terminal review on macOS (Ghostty) and Linux (tmux), from opening beside it to the new version. The headless review run has handled a system-video review, but not yet a plan review, and its sandbox, as it ships, is untested on a normal macOS or Linux machine (it was proven on a weaker setting: [spec](../.reelplanner/spec.md#pipelines), D-082). | [Install](./reference.md#install), and its commands allowed once, so they run without a prompt each time ([Claude Code](#claude-code)). |
+| Codex CLI (0.162.1; 0.164.0 for the terminal review) | **Tested.** On macOS: the whole loop (a narrated plan, its review, implementing it, the walkthrough and a flagged fix), the native plugin, an unattended rebuild with a failure and a retry, and exporting its own conversation. On macOS (Ghostty) and Linux (tmux): the terminal review, from opening beside Codex to the new version; Send wakes the session (`codex queue`). Not yet tried on Linux: planning, implementing and the walkthrough. | [Install](./reference.md#install), then the native plugin or the skill ([Codex](#codex)). Your sandbox, approval and commit-signing settings stay as they are. |
+| Codex app | Untested. It would use the same local review page and inbox; whether a Send reaches an app session, and how it opens the page, are unchecked. | The local review server running; the inbox when a Send cannot reach the session. |
 | GitHub Copilot: agent mode in VS Code, and Copilot CLI (`copilot`) | Untested. | Gets the skill through `npx skills`' link in `~/.copilot/skills` (it also reads `~/.agents/skills`, and a repo's `.github/skills`). In VS Code, subagents are off by default; it can ask. Copilot CLI's subagents and headless flags are unverified. |
 | Copilot cloud agent | Untested. | The skill from the repo (`.github/skills`, `.claude/skills` or `.agents/skills`; unverified for this skill); no subagents, nobody to ask, no display to open the review page on. |
 | Cursor (IDE; CLI `agent`, formerly `cursor-agent`) | Untested. | Gets the skill through `npx skills`' link in `~/.cursor/skills`; has subagents and can ask you questions. |
@@ -70,8 +69,9 @@ The skill names the other skills it loads the same way: HyperFrames' faceless-ex
 
 ## Codex
 
-The native Codex plugin packages the same `plan-to-video` skill as Claude Code. Install the executable
-and media tools first, then add the installed package or checkout as a marketplace:
+The native Codex plugin holds the same `plan-to-video` skill as Claude Code's. Install reelplanner and run
+`reelplanner setup` first ([Install](./reference.md#install)), then add the installed package (or a checkout) as a
+marketplace:
 
 ```sh
 codex plugin marketplace add <package-or-checkout>
@@ -79,7 +79,9 @@ codex plugin add reelplanner@reelplanner
 ```
 
 Codex keeps its own copy of an installed plugin and does not refresh it from the package: after
-updating reelplanner, run `codex plugin add reelplanner@reelplanner` again.
+updating reelplanner, run `codex plugin add reelplanner@reelplanner` again. `npx skills add` (the README's third
+install line) works in Codex too, in place of the plugin. Neither needs Codex hooks. Codex's
+[plugin documentation](https://developers.openai.com/plugins/build/plugins).
 
 On Linux, Codex's sandbox runs commands under bubblewrap, which needs unprivileged user namespaces.
 Ubuntu 24.04 restricts those, and the sandbox would not start (`bwrap: loopback: Failed RTM_NEWADDR`).
@@ -89,64 +91,72 @@ The narrow fix is an AppArmor profile that lets only the sandbox's program use t
 for every program on the machine, not only Codex. (The [Linux trial](./terminal-review.md#ghostty-trial)
 sets it only on the throwaway machine it deletes afterwards.)
 
-The existing `npx skills add` route also works. Core installation does not need hooks; optional hooks
-require explicit local trust. Codex supports plugins, skills and MCP integrations; these are not proof
-of a Claude Mods pane or Artifact bridge. See the [official plugin documentation](https://developers.openai.com/plugins/build/plugins).
+**How a review gets back to Codex.** Codex uses the same local review page as every agent. Send saves the review to
+the inbox, with no file to download, and a waiting `review --wait` claims it and prints where it is. When Codex runs
+`review` itself, it connects its own session (`--session codex:<id>`), and Send queues that session a message
+(`codex queue`) that starts its next turn. reelplanner first checks that the session is running and has that
+conversation loaded; if Codex's App Server cannot be found that way, pass `--session-endpoint ws://127.0.0.1:<port>`.
+A queued message shows only that it was queued, not that the session acted on it. Older Codex CLIs, or a session
+that is not running, get the inbox only, and not every Codex client wakes when a background command ends: so the
+skill checks `reelplanner inbox` at the start of each turn.
 
-The local review page is shared. **Send saves directly to the inbox**, without downloading a file.
-`review --wait` claims work and prints its saved path. An explicitly connected session uses
-`review <video-dir> --detach --session codex:<id>`; notification is only queued until the correct
-session adopts it. Older CLIs and unavailable recipients keep the inbox fallback. Background task
-callbacks differ across clients, so check `inbox` at each turn and poll your waiting task.
-Connection also verifies the running transport and loaded thread. Use `--session-endpoint
-ws://127.0.0.1:<port>` when the active App Server is not reachable through a verified existing daemon.
-A bare successful queue command against saved history does not prove that session acted.
-
-Unattended handling remains opt-in: `reel init <repo> --agent codex`. The default for CLI 0.162.1 is
+**A review sent while no session is open** waits in the inbox, unless you opt in: `reel init <repo> --agent codex`
+has the review server start Codex on it. The command it writes, for CLI 0.162.1, is
 `codex exec --approve-for-me -c 'sandbox_mode="workspace-write"' -c sandbox_workspace_write.network_access=true --color never`.
-That version rejects `--approve-for-me` combined with `-s`; the configuration override was tested with a real run.
-[Automatic approval review](https://learn.chatgpt.com/docs/sandboxing/auto-review) retains the sandbox
-and evaluates eligible requests. It does not grant every request. Git approvals and signing can still
-fail; reelplanner retains the work, log and original progress for retry, and never makes a server-side commit.
+That version rejects `--approve-for-me` together with `-s`, so the sandbox is set with `-c`, as tested in a real run.
+[Automatic approval review](https://learn.chatgpt.com/docs/sandboxing/auto-review) keeps the sandbox and approves
+only the requests it judges eligible, not every one. A git approval or commit signing can still fail: reelplanner
+keeps the work, the log and how far it got, for a retry, and the review server never commits for it.
 
-`explain "What happened in this session?" this-session` selects the actual Codex thread and canonical
-project, excluding unrelated checker conversations. Current history uses the supported read-only
-[App Server](https://learn.chatgpt.com/docs/app-server) export with pagination; legacy saved history
-remains supported. `session export codex:<id> --out <external.jsonl>` writes visible conversation and
-tool history outside Git. No thread resume or undocumented database reads are used. When unavailable,
-request an owner copy of that exact conversation and pass `explain --session-source <path>`.
+**Explaining a session.** `explain "What happened in this session?" this-session` finds the Codex conversation you
+are in and its project, leaving out the conversations of reelplanner's own checkers. It reads the conversation
+through Codex's read-only [App Server](https://learn.chatgpt.com/docs/app-server) export (older saved history works
+too), and never resumes a thread or reads Codex's database directly. `session export codex:<id> --out <file.jsonl>`
+writes the conversation and its tool calls to a file outside Git. When the export is unavailable, ask the owner for
+a copy of that conversation and pass `explain --session-source <path>`.
 
-Fresh reviewers have no inherited conversation and receive exactly the generated prompt. Detailed
-commands, lease renewal, recovery phases and permission advice are in the skill's
-[harness reference](../skills/plan-to-video/references/harnesses.md).
+Fresh-eyes reviewers start with no conversation of their own and get only the prompt reelplanner writes for them.
+The skill's [harness reference](../skills/plan-to-video/references/harnesses.md) has the detailed commands, lease
+renewal, recovery and permission advice.
 
-The selected remote route is a portable copy: the reviewer exports a file and returns it for
-`reel record`. A hosted Codex submission service is outside this plan (D-313). The supplied Claude
-`/reel` Mods implementation is a comparison on its own branch, not imported into the shared player.
-A terminal/workspace adapter opens the same player URL; support must be tested with actual video,
-audio and review controls before claiming parity.
-The [terminal review setup](./terminal-review.md) is shared across agent harnesses and terminal-browser's
-supported terminals. Ghostty is the current hands-on test target.
+**What Codex does not have.** The hosted review page is a claude.ai Artifact, so Claude only; to review away from the
+machine, the reviewer uses a portable copy of the page, exports a review file and returns it for `reel record`
+(D-313). The Claude Code mod (`/reel`) is kept on its own branch for comparison, not in the shared player. The
+[terminal review](./terminal-review.md) is the same for every agent and every terminal terminal-browser supports;
+it is tested in Ghostty, and in tmux on Linux.
 
 ### Evidence and limits
 
 The approved implementation plan is
 [Codex as a first-class reelplanner agent](../.reelplanner/plans/2026-10-11-codex-first-class/plan.md).
 Its [walkthrough](../.reelplanner/plans/2026-10-11-codex-first-class/walkthrough.md) holds validation runs.
-The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support remains unverified and is outside acceptance. As of this implementation pass:
+The owner narrowed this change to Codex CLI on 2026-10-11; the Codex app is untested and was not part of it. What
+was run:
 
-- A packed plugin installed, enabled and loaded its skill through the actual CLI in an isolated `CODEX_HOME`.
-- A real headless review created one intake record and commit. An injected scratch signing failure left
-  edits pending despite exit code zero. Restoring the original signing configuration and retrying made
-  one recovery commit without repeating the edit or intake.
-- The owner-confirmed Codex CLI session in iTerm2 verified its exact loaded daemon thread, adopted a saved API question, answered it, and returned the sourced answer to the page API. It deliberately polled; automatic wake is not claimed.
-- Read-only paginated export of a real scratch Codex conversation matched its ID and project; transcript
-  contents stayed outside Git.
-- The shared terminal player opened in Ghostty 1.3.1 with terminal-browser 0.13.4. Rewind/pause/resume
-  regressions and live timing checks passed, and the owner confirmed normal audio. Scratch plan choices, comments, Ask and direct Send passed, followed by walkthrough Accept/Flag, a requested-change rebuild and changed-scenes approval ([terminal review](./terminal-review.md)).
-- Disconnected download/intake preserved answers and comments. Provided viewer fixtures survived export; unauthenticated browser intake kept the Git identity fallback. This proves preservation, not hosted authentication.
-- A real narrated scratch plan was reviewed, recorded, implemented and independently checked. A walkthrough flag led to a code fix, rebuilt narration and four changed scenes; the subsequent approval was recorded, committed and completed. [Saved lifecycle evidence](../eval/agents/codex-2026-10-11/lifecycle-final.json) distinguishes synthetic trial reviews from owner acceptance.
-- A real unattended Codex review rebuilt one narrated scene, preserved six others, and completed with source-only commits. The initial ignored-audio mistake and completion-guard rejection are retained in the [headless trial](../eval/agents/codex-2026-10-11/headless-video.md).
+- The packed plugin installed, was enabled and loaded its skill in the real CLI, with a separate `CODEX_HOME`.
+- A real headless review took the review in once and committed once. With commit signing made to fail on purpose
+  (in a scratch repo), the edits were left uncommitted although Codex exited 0; with signing restored, a retry made
+  one commit, without redoing the edit or taking the review in again.
+- A Codex CLI session in iTerm2 (the owner confirmed it) checked that its own conversation was the one loaded, took
+  a question asked on the review page, answered it, and sent the sourced answer back to the page. It polled for the
+  question; this run did not test waking it.
+- Exporting a real scratch Codex conversation (read-only, page by page) matched its ID and project; the transcript
+  stayed outside Git.
+- The review page opened in a terminal split (Ghostty 1.3.1, terminal-browser 0.13.4). Rewind, pause and resume,
+  and the live timing checks, passed, and the owner confirmed the audio played normally. On a scratch plan:
+  answering its choices, comments, Ask and Send, then Accept and Flag on the walkthrough, a rebuild for a requested
+  change, and approving the changed scenes ([terminal review](./terminal-review.md)).
+- A review exported from a page with no server, then taken in, kept its answers and comments, and the viewer's test
+  fixtures survived the export. Taken in with no sign-in, it was attributed to the Git user. This shows nothing is
+  lost on the way, not that a hosted sign-in works.
+- A real narrated scratch plan was reviewed, recorded, implemented and checked by a fresh agent. Flagging part of
+  the walkthrough led to a code fix, new narration and four changed scenes; approving them was recorded and
+  committed, and the plan completed. The [saved record](../eval/agents/codex-2026-10-11/lifecycle-final.json) tells
+  the scripted trial reviews apart from the owner's own acceptance.
+- A real unattended Codex review rebuilt one narrated scene, kept the six others, and committed source files only.
+  The [headless trial](../eval/agents/codex-2026-10-11/headless-video.md) keeps what went wrong on the way: the
+  model first committed an audio file git ignores, and the completion check once refused a commit that did not
+  match the files it had checked.
 - On Ubuntu 24.04 (a cloud machine with a virtual display), Codex CLI 0.164.0 in Ghostty 1.3.1 with tmux, following
   the skill: it started the review server (one approval), ran the printed opener with no prompt under the saved
   rule, and the player opened in a tmux split. A scripted reviewer answered the questions and pressed Send in that
@@ -176,7 +186,11 @@ The owner narrowed this change to Codex CLI on 2026-10-11. Desktop-app support r
   server that `review --detach` starts has no terminal, and terminal-browser finds the Ghostty pane to split by the
   terminal, so the command that starts the server now opens the page (on Linux, tmux names the pane in the
   environment, which is why it had worked there).
-- Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine. Automatic wake outside a terminal review, the Codex app, cloud, the rest of the loop on Linux (planning, implementing, the walkthrough), Windows and WSL remain unverified. So do video depth (low, medium, high) and the scenes a frame can start from (0.3.0): Codex gets them in the same skill, and the CLI holds a video to its depth, but no Codex run has used them yet.
+- **Not yet tried.** Apart from those terminal reviews, these trials cover Codex CLI 0.162.1 on one macOS machine.
+  Unverified: waking Codex outside a terminal review, the Codex app, Codex cloud, the rest of the loop on Linux
+  (planning, implementing, the walkthrough), Windows and WSL. So are video depth (low, medium, high) and the scenes
+  a frame can start from (0.3.0): Codex gets them in the same skill, and the CLI holds a video to its depth, but no
+  Codex run has used them yet.
 
 ## Open work
 

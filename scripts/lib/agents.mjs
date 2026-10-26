@@ -2,7 +2,7 @@
 // `agent` block of .reelplanner/config.json each one writes. docs/agents.md says what each agent is tested for.
 //
 //   claude   Claude Code (tested): the template's command, auto mode inside its sandbox (D-082)
-//   codex    Codex CLI (basic support, its headless run not yet tried end to end): `codex exec` in its own
+//   codex    Codex CLI (tested, a real headless review run included): `codex exec` in its own
 //            workspace-write sandbox, network on for what the run fetches or pushes
 //   none     no command: a review sent while no session waits stays in .reelplanner/inbox/ for the next one
 //
