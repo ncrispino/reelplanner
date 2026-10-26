@@ -41,7 +41,7 @@
       "id": "server",
       "name": "The review server",
       "role": "automation",
-      "files": ["scripts/review.mjs", "scripts/inbox.mjs", "scripts/lib/inbox.mjs", "scripts/notify.mjs", "scripts/lib/notify.mjs", "scripts/reel-intake.mjs", "scripts/lib/agents.mjs", "scripts/lib/presentation.mjs", "scripts/lib/review-projects.mjs", "scripts/lib/http-file.mjs"],
+      "files": ["scripts/review.mjs", "scripts/inbox.mjs", "scripts/lib/inbox.mjs", "scripts/notify.mjs", "scripts/lib/notify.mjs", "scripts/reel-intake.mjs", "scripts/lib/agents.mjs", "scripts/lib/presentation.mjs", "scripts/lib/review-projects.mjs", "scripts/lib/http-file.mjs", "scripts/review-open.mjs", "scripts/review-setup.mjs", "scripts/lib/review-pane.mjs", "scripts/lib/review-health.mjs", "scripts/lib/review-preferences.mjs", "scripts/lib/codex-window.mjs"],
       "stage": { "x": 632, "y": 175, "w": 270, "h": 110 }
     },
     {
