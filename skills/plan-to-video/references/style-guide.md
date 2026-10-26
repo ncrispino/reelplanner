@@ -132,7 +132,7 @@ A reviewer who knows them skips it at `familiar`.
   else; file paths go in the narration.
 - **Each highlight lands on its word.** When the narration names a part, that part changes at that
   moment, not before. `$RP retime-frames` (part of `$RP build`) moves cues onto their words after the
-  narration changes.
+  narration changes; run again, it leaves cues it already moved where they are.
 - **Captions are the script's own sentences**, with the current word marked. Whisper supplies the
   timings, never the words.
 - **On screen use digits; the script uses words; `captions-sentences` applies it.**

@@ -13,7 +13,9 @@
 // that landed 40% of the way through "recommend" still lands 40% of the way through "recommend".
 //
 // The old timings come from git (the last committed build, as plan-diff does it); --against
-// overrides with a path.
+// overrides with a path. A frame whose cues were moved since that commit is moved from the line they
+// were moved onto (.hyperframes/frames-timed.json, written by every run that writes): run again, or
+// after a build already moved them, the cues stay where they are rather than moving a second time.
 //
 // It only rewrites positions that are plain numbers, plus the `DUR`/`D` constant a frame holds its
 // own length in. A frame whose positions are computed (`LIFT[i] + 0.08`, `at + 0.12`) is reported
@@ -21,7 +23,7 @@
 // silently wreck a hand-authored frame.
 //
 // usage: reelplanner retime-frames <project-dir> [--against <ref|file>] [--helpers name[@i],…] [--ignore name,…] [--dry-run]
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, resolve, relative } from "node:path";
 
@@ -36,13 +38,22 @@ const metaPath = join(dir, "audio_meta.json");
 if (!existsSync(metaPath)) { console.error(`✗ no audio_meta.json in ${project}`); process.exit(1); }
 
 const now = JSON.parse(readFileSync(metaPath, "utf8"));
+// The line each frame's cues were last moved onto, by frame file. With no --against, a frame moved since the commit is
+// moved from it; one byte for byte as committed (put back from git, say) is on the commit's words. --against names the
+// words the frames are on, for every frame.
+const TIMED = join(dir, ".hyperframes", "frames-timed.json");
+const readTimed = () => { try { return JSON.parse(readFileSync(TIMED, "utf8")).frames || {}; } catch { return {}; } };
+const timed = ai < 0 ? readTimed() : {};
 let prev;
 if (existsSync(against)) prev = JSON.parse(readFileSync(against, "utf8"));
 else {
   // `<rev>:./<path>` is relative to cwd, so git run in the project reads the project's own repo
   const rel = relative(dir, metaPath);
   try { prev = JSON.parse(execFileSync("git", ["show", `${against}:./${rel}`], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })); }
-  catch { console.error(`✗ no previous audio_meta.json at ${against}:${rel} — nothing to remap from`); process.exit(1); }
+  catch {
+    if (!Object.keys(timed).length) { console.error(`✗ no previous audio_meta.json at ${against}:${rel} — nothing to remap from`); process.exit(1); }
+    prev = { voices: [] };   // only the frames moved before, from the lines they were moved onto
+  }
 }
 
 const byFrame = (m) => Object.fromEntries((m.voices || []).map((v) => [v.frame, v]));
@@ -99,6 +110,7 @@ function mapper(pv, nv) {
 }
 
 const framesDir = join(dir, "compositions", "frames");
+const committedAsIs = (f, src) => { try { return execFileSync("git", ["show", `${against}:./${relative(dir, join(framesDir, f))}`], { cwd: dir, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }) === src; } catch { return false; } };
 const files = existsSync(framesDir) ? readdirSync(framesDir).filter((f) => f.endsWith(".html")).sort() : [];
 if (!files.length) { console.error(`✗ no frames in ${project}/compositions/frames`); process.exit(1); }
 
@@ -169,15 +181,17 @@ let changed = 0, skipped = 0, approx = 0;
 const needsEyes = [], unknown = [], pending = [];
 for (const f of files) {
   const n = frameOf(f, nowSb.ids), was = frameOf(f, prevSb.ids);
-  const pv = P[was], nv = N[n];
   const path = join(framesDir, f);
   let src = readFileSync(path, "utf8");
+  // moved since the commit: from the line it was moved onto (and so where the commit has no words: audio_meta.json ignored)
+  const t = timed[f] && !(P[was] && committedAsIs(f, src)) ? timed[f] : null;
+  const pv = t || P[was], nv = N[n];
   if (!pv || !nv) { skipped++; continue; }                       // a new frame, or one with no voice line
   if (Math.abs((pv.duration_s || 0) - (nv.duration_s || 0)) < 0.005) { skipped++; continue; }  // nothing moved
   const m = mapper(pv, nv);
   if (!m.exact) approx++;
   const oldDur = +(src.match(/\b(?:const|var|let)\s+(?:DUR|D)\s*=\s*(\d+(?:\.\d+)?)/)?.[1] || 0);
-  const atEnd = endMark([[prevSb.len[was], nowSb.len[n] ?? nv.duration_s], [pv.duration_s, nv.duration_s], [oldDur, nv.duration_s]]);
+  const atEnd = endMark([[t ? t.len : prevSb.len[was], nowSb.len[n] ?? nv.duration_s], [pv.duration_s, nv.duration_s], [oldDur, nv.duration_s]]);
   const at = (num) => atEnd(num) ?? +m.fn(num).toFixed(3);   // the scaled fallback is not rounded of itself
   if (COMPUTED.test(src)) needsEyes.push(`${f} (frame ${n})`);
   const before = src;
@@ -218,7 +232,14 @@ for (const f of files) {
 }
 // Nothing is written until every frame has been read: a run that bails halfway would leave the
 // project with some frames on the new timebase and some on the old, which is worse than either.
-if (!unknown.length && !DRY) for (const [p, s] of pending) writeFileSync(p, s);
+if (!unknown.length && !DRY) {
+  for (const [p, s] of pending) writeFileSync(p, s);
+  // every voiced frame is now on these words: the ones this run moved, and the ones it left (nothing moved, or new)
+  const frames = readTimed();
+  for (const f of files) { const n = frameOf(f, nowSb.ids), nv = N[n]; if (nv) frames[f] = { duration_s: nv.duration_s, words: nv.words || [], len: nowSb.len[n] ?? null }; else delete frames[f]; }
+  mkdirSync(join(dir, ".hyperframes"), { recursive: true });
+  writeFileSync(TIMED, JSON.stringify({ note: "Written by retime-frames: the voice line each frame's cues were last moved onto. With no --against, a frame changed since the commit is moved from it.", frames }) + "\n");
+}
 
 console.log(`${DRY ? "(dry run) " : ""}${unknown.length ? `· ${project}: ${changed} frame(s) to retime, none written` : `✓ ${project}: ${changed} frame(s) retimed`}, ${skipped} unchanged${approx ? `, ${approx} scaled without word anchors` : ""}`);
 if (needsEyes.length) {

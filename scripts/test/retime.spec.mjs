@@ -9,6 +9,8 @@
 //   - the end-of-timeline marker (beat length less 0.001) goes to the new beat's length, not past it
 //   - a helper whose time is not its last argument, `pop(tl, el, at, dy)`, has its time moved and its
 //     y-offset left; it is found from its own `at` parameter, and --helpers pop@2 names it outright
+//   - run again (by hand, or after a build moved them), nothing moves a second time; voiced again before a
+//     commit, a frame moves from the line it is on, and put back from git, from the commit's words
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -50,6 +52,23 @@ ok(/duration: 0\.001 \}, 6\.799\);/.test(edited), `its end marker goes to the ne
 ok(/pop\(tl, "#c", 4, 12\);/.test(edited), `pop(tl, el, at, dy): its time moves (2 → 4) and its y-offset stays 12, found from its own \`at\` parameter — ${edited.match(/pop\(tl, "#c",[^)]*\)/)?.[0]}`);
 ok(after("05-new") === before["05-new"], "a new frame, with no line before, is skipped");
 ok(/04-edited\.html \(frame 4 → 3\)/.test(out) && /1 frame\(s\) retimed/.test(out), `the report names the move — ${out.trim().split("\n")[0]}`);
+
+// run again (by hand, or after a build already moved them): the cues stay where they are. Measured from the commit's
+// words they would move a second time (frames-timed.json says the line each frame was moved onto)
+const retime = () => execFileSync("node", [join(ROOT, "scripts", "retime-frames.mjs"), dir], { cwd: tmp, encoding: "utf8" });
+const out2 = retime();
+ok(after("04-edited") === edited && /0 frame\(s\) retimed/.test(out2), `run again, nothing moves a second time — ${out2.trim().split("\n").at(-1)}`);
+// voiced again before a commit, slower (1.6 → 2 s a word): moved from the line it is on (×1.25), not the commit's (×2.5)
+writeFileSync(join(dir, "STORYBOARD.md"), board([[1, "01-open", 4.4], [2, "03-kept", 5.2], [3, "04-edited", 8.4], [4, "05-new", 4]]));
+writeFileSync(join(dir, "audio_meta.json"), JSON.stringify({ voices: [voice(1, 1), voice(2, 1.2), voice(3, 2), voice(4, 0.9)] }));
+retime();
+const again = after("04-edited"), pos = (h) => (h.match(/\}, [\d.]+\);/g) || []).join(" ");
+ok(/\}, 3\.75\);/.test(again) && /\}, 6\.25\);/.test(again) && /duration: 0\.001 \}, 8\.399\);/.test(again), `voiced again before a commit, it moves from the line it is on (3 → 3.75, 5 → 6.25, its end 6.799 → 8.399) — ${pos(again)}`);
+ok(after("05-new") === before["05-new"], "…and the new frame, on these words from the start, stays as it was");
+// put back from git, the frame is on the commit's words again (0.8 s a word): moved from those, to the same places
+git("checkout", "-q", "--", "video/compositions/frames/04-edited.html");
+retime();
+ok(after("04-edited") === again, `put back from git, it moves from the commit's words (1.5 → 3.75, 2.5 → 6.25) — ${pos(after("04-edited"))}`);
 
 // A helper whose parameters do not say which is the time: without a flag the run stops rather than
 // guess (its last argument, 12, is not a time); --helpers pop@2 names its time argument.
