@@ -7,63 +7,64 @@ You answer on the video, and the agent updates the plan.
 
 <img src="docs/media/system-video.gif" alt="The start of reelplanner's own overview video: a long plan becomes a short narrated video that stops at each question." width="100%">
 
-**Works with:** Claude Code (tested) · Codex CLI (tested on macOS; [features and evidence](./docs/agents.md#codex)) · GitHub Copilot, Cursor, OpenCode, Antigravity CLI
-(untested: [what each needs](./docs/agents.md))
+**Works with:** Claude Code and Codex CLI, tested on macOS and Linux ([what was tested](./docs/agents.md#support)) ·
+GitHub Copilot, Cursor, OpenCode, Antigravity CLI, untested ([what each needs](./docs/agents.md))
 
 ## Before you try
 
 - macOS (Homebrew) or Linux (apt), Node 22.20+ ([nodejs.org](https://nodejs.org/en/download); apt's own `nodejs`
   is older), and Python 3.10+ for the local voice. Setup may ask for sudo. Windows: not yet (WSL untested).
-- About 1 GB in all: the package (about 64 MB, mostly reelplanner's own plans and the sample videos it ships
-  with), then setup's headless Chrome and a one-time 840 MB of voice and caption models.
+- About 1 GB in all: the download from GitHub (about 64 MB, mostly reelplanner's own plans and the sample videos
+  it ships with), then setup's headless Chrome and a one-time 840 MB of voice and caption models.
 - reelplanner sends none of your code anywhere; an optional [hosted voice](#the-voice) gets only the narration text.
 
 ## Install
 
-```bash
-npm i -g github:ncrispino/reelplanner                                  # the `reelplanner` command
-reelplanner setup                                                      # ffmpeg, Chrome, a local voice (--dry-run to preview)
-npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
-```
-
-In Claude Code, the skill can come as a plugin instead of the third line, kept up to date through `/plugin`:
-
-```
-/plugin marketplace add ncrispino/reelplanner
-/plugin install reelplanner@reelplanner
-```
-
-Codex has a native plugin route too, using the package installed by the first line:
-
-```bash
-codex plugin marketplace add "$(npm root -g)/reelplanner"
-codex plugin add reelplanner@reelplanner
-```
-
-Codex keeps its own copy of the plugin: after updating reelplanner, run the second line again.
-In Codex, start with `$plan-to-video <plan.md>`, or ask it to make a plan with reelplanner.
-See [Codex setup and tested features](./docs/agents.md#codex) for details.
-
-Both plugins install the skill: the first two lines are still what install the `reelplanner` command and its tools
-(the skill installs them itself when they are missing, but running them first is quicker).
-
-The narration needs a voice. Choose one before you run `reelplanner setup`:
+The narration needs a voice, and setup installs it, so choose one first:
 
 - **Local (the default):** free, and nothing leaves your machine. Setup downloads about 840 MB of voice and caption
   models once, and it needs Python 3.10+. On a slow machine it takes minutes per line.
 - **Hosted:** nothing to download, 1–3 seconds a line, about $0.03 a minute of narration with your own OpenRouter key.
-  Run `reelplanner setup --hosted-voice` instead: it skips the local voice and prints two lines to put in
-  `~/.reelplanner/.env` ([the voice](#the-voice) says more).
+  Run `reelplanner setup --hosted-voice` in place of `reelplanner setup` below: it skips the local voice and prints
+  two lines to put in `~/.reelplanner/.env` ([the voice](#the-voice) says more).
 
-In Claude Code, [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
+```bash
+npm i -g github:ncrispino/reelplanner                                  # the `reelplanner` and `reel` commands
+reelplanner setup                                                      # ffmpeg, Chrome, a local voice (--dry-run to preview)
+npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
+```
 
-The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or uninstalling: [install details](./docs/reference.md#install).
-Installed it before as reelplanning, its name until October 2026? Run `npm rm -g reelplanning` first: npm will not
-install over its commands ([moving over](./docs/reference.md#install)).
+- **In Claude Code,** [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
+- **Where it goes:** the skill in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders.
+  Trouble or uninstalling: [install details](./docs/reference.md#install).
+- **Had it as reelplanning,** its name until October 2026? Run `npm rm -g reelplanning` first: npm will not install
+  over its commands ([moving over](./docs/reference.md#install)).
+
+### Or the skill as a plugin
+
+In place of the third line. The first two lines are still what install the commands and their tools (the skill
+installs them itself when they are missing, but running them first is quicker).
+
+- **Claude Code,** kept up to date through `/plugin`:
+
+  ```
+  /plugin marketplace add ncrispino/reelplanner
+  /plugin install reelplanner@reelplanner
+  ```
+
+- **Codex,** from the package the first line installed. Codex keeps its own copy of the plugin, so after updating
+  reelplanner, run the second line again ([Codex](./docs/agents.md#codex)):
+
+  ```bash
+  codex plugin marketplace add "$(npm root -g)/reelplanner"
+  codex plugin add reelplanner@reelplanner
+  ```
 
 ## Quick start
 
-Run these in a terminal, or type the quoted text into your agent's chat.
+Run these in a terminal, or type the quoted text into your agent's chat. They use Claude Code; in Codex it's the same
+with `codex "…"` (or `$plan-to-video <plan.md>` in a session). In Copilot, Cursor and other agents, add "with the
+plan-to-video skill" to the request ([what each needs](./docs/agents.md)).
 
 **A project you already have:** in its folder, ask for the next change as a plan.
 
@@ -91,8 +92,10 @@ claude "Use reelplanner to plan a small website for a neighborhood bakery"
 The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
 Say "quick" in the request ("make a quick video plan for …") to skip the question and get just the video.
 
-**How thorough.** A quick video is the lightest: 1–3 minutes, and no second agent checks it. Any other video has a
-depth, set in your own words: low, medium (the default) or high.
+### How thorough
+
+A quick video is the lightest: 1–3 minutes, and no second agent checks it. Any other video has a depth, set in your
+own words: low, medium (the default) or high.
 
 - "Rough", "a first look" or "low depth" gets low: about 2 minutes and at most 8 scenes, and no second agent
   checks it, so you see it soonest.
@@ -103,20 +106,18 @@ depth, set in your own words: low, medium (the default) or high.
 
 The agent writes it as `depth:` in the video's `BRIEF.md`; ask for another depth and it changes it for the next build.
 
-In Codex, the same with `codex "…"`. In Copilot, Cursor and other agents, add "with the plan-to-video skill" to the request ([what each needs](./docs/agents.md)).
+### What happens
 
 <img src="docs/media/review-page.gif" alt="The review page: the video plays, stops at a question, an answer is picked, a comment is drawn on the frame, and the review is finished." width="100%">
 
 <p align="center"><i>The review page on one of this repo's own plans (45 s, sped up).</i></p>
 
-### What happens
-
 - The agent writes the plan and makes a narrated video of it, in `videos/<name>/`. Building the video takes
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
 - The video opens in your browser and stops at each open question. Pick an answer, or write your own.
 - Comment on any moment, then press **Finish review** and **Send**: the review goes to the agent, which updates
-  the plan. The local page saves directly; you do not need to download a file. A disconnected portable
-  copy exports a review file to return to the agent.
+  the plan. The local page saves it directly, with no file to download. A portable copy of the page (one sent to
+  someone, with no server behind it) exports a review file instead, which goes back to the agent.
   - For a quick video, nothing is added to the repo: the review waits on your machine, in `~/.reelplanner/inbox/`,
     until the agent picks it up. If no agent session is waiting, tell it the review is sent.
   - Otherwise, the agent also keeps the review in a `.reelplanner/` folder in the repo (see
@@ -142,14 +143,18 @@ Ask your agent to open a video's review "beside me in the terminal". It opens in
 answer, comment and press **Send**: the split closes, the agent wakes with your review and gets to work, and when
 the new version is built it opens beside you again. You never leave the terminal or tell the agent it was sent.
 
-Your agent's own permissions still apply while it works. In our Linux trial, Codex on its default settings asked
-you to approve 15 of its commands between Send and the new version (where it keeps the review, the build and its
-checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the repo.
-Codex's "Approve for me" setting decides them for you instead. Claude Code in auto mode, with reelplanner's commands
-allowed ([Claude Code](./docs/agents.md#claude-code)), asked none.
+Your agent's own permissions still apply while it works. In our Linux trial, between Send and the new version:
 
-Set it up once, from your own terminal (not inside an agent). Install
-[terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
+- **Codex,** on its default settings, asked you to approve 15 of its commands (where it keeps the review, the build
+  and its checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the
+  repo. Its "Approve for me" setting decides them for you instead.
+- **Claude Code** in auto mode, with reelplanner's commands allowed ([Claude Code](./docs/agents.md#claude-code)),
+  asked none.
+
+### Set it up
+
+Once, from your own terminal (not inside an agent), and after reading [what you allow](#security-what-you-allow).
+Install [terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
 
 ```sh
 brew install --cask terminal-browser          # macOS (Linux: curl -fsSL https://terminal-browser.sh/install | bash)
@@ -158,12 +163,16 @@ reelplanner review-setup --workspace terminal-browser --codex-allow-open    # Co
 ```
 
 Restart Codex afterwards. Tested with Codex and Claude Code, in Ghostty on macOS and in tmux (in Ghostty) on Linux,
-where the split is a new tmux pane beside the agent's. `reelplanner review-setup --check` checks the
-setup; `--codex-disable-open` removes Codex's rule; `--workspace browser` goes back to your ordinary browser, the
-default. With Codex, start the session with a model Codex does not mark as cyber (`codex -m <model>`): for those,
-Codex ignores the saved rule, and you open the link yourself. Details: [terminal review](./docs/terminal-review.md).
+where the split is a new tmux pane beside the agent's.
 
-**Security: what you allow.** Read this before you set it up.
+- `reelplanner review-setup --check` checks the setup.
+- `--codex-disable-open` removes Codex's rule; `--workspace browser` goes back to your ordinary browser, the default.
+- With Codex, start the session with a model Codex does not mark as cyber (`codex -m <model>`). For those models,
+  Codex ignores the saved rule, and you open the link yourself.
+
+Details: [terminal review](./docs/terminal-review.md).
+
+### Security: what you allow
 
 - **Codex runs the opener outside its sandbox, without asking.** `--codex-allow-open` saves a Codex rule for one
   command, reelplanner's `review-open`. It reads your process list to find the Codex window, reads that window's
@@ -201,20 +210,22 @@ The original name, reelplanning, sounded like “real planning”: watching a pl
 | Plan mode ([Claude Code](https://code.claude.com/docs/en/common-workflows), [Codex](https://developers.openai.com/codex/cli/slash-commands)) | the plan as text, in the chat | reply in the chat | before the code |
 | [GitHub Spec Kit](https://github.com/github/spec-kit), [Kiro](https://kiro.dev/docs/specs/) | Markdown spec files | edit the files, or reply in the chat | before the code; Spec Kit's `converge` step also runs after it |
 | [Plannotator](https://github.com/backnotprop/plannotator) | the plan (or a diff) as text, in a browser | highlight and comment on the text | before the code, or on its diff after |
-| PR-to-video tools ([HyperFrames' `/pr-to-video`](https://github.com/heygen-com/hyperframes), [shipreel](https://github.com/theBstar/shipreel)) | a narrated video of a finished pull request | as on any pull request | after the code |
+| [Builder.io Agent-Native Plans](https://github.com/BuilderIO/agent-native/tree/main/templates/plan) | the plan as a visual document: diagrams, wireframes, code walkthroughs | comment on any part | before the code, and a recap after it |
+| PR-to-video skills ([shipreel](https://github.com/theBstar/shipreel), [Covi](https://github.com/imsungbin/covi)) | a narrated video of a finished change | as on any pull request | after the code |
 
 Spec Kit is far more widely used, and for a one-line fix or a plan you can read in a minute, text is faster.
-More tools, with sources: [docs/comparison.md](./docs/comparison.md).
+More tools, with sources, checked October 2026: [docs/comparison.md](./docs/comparison.md).
 
 ## How it works
 
 reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
-`.reelplanner/` record). Each scene is a web page
-rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
+`.reelplanner/` record). Each scene is a web page rendered with [HyperFrames](https://github.com/heygen-com/hyperframes),
+pinned to one exact version so a change upstream cannot break a build ([why](./docs/reference.md#hyperframes-pinned));
+everything is kept as text, so any video can be rebuilt.
 
 This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
 More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
-[every command](./docs/reference.md) · [what works today](./docs/status.md).
+[every command](./docs/reference.md) · [what works today](./docs/status.md) · [what's new](./CHANGELOG.md).
 
 ## The voice
 
@@ -250,9 +261,9 @@ links the issue it fixes. Setup and tests: [CONTRIBUTING.md](.github/CONTRIBUTIN
 
 Where help is most welcome:
 
-- **The bigger ideas:** live feedback while you watch, spoken comments, reviewing from the terminal, and
+- **The bigger ideas:** live feedback while you watch, spoken comments, a review pane inside the agent itself, and
   learning from your edits ([what's next](./docs/status.md#later-open-work-not-for-the-first-release)).
-- **More agents:** making it work as well in Codex, Copilot, Cursor and others as in Claude Code
+- **More agents:** making it work as well in Copilot, Cursor, OpenCode and others as in Claude Code and Codex
   ([what each needs](./docs/agents.md#open-work)).
 
 ## Where this is going

@@ -34,7 +34,11 @@ Done:
   ([its pages](https://ncrispino.github.io/reelplanner-case-studies/bob-dylan/)): an interactive site from an empty
   folder through four plans, seven videos, each reviewed, with the project, the reviews and the session. The kit for
   it is [`eval/case-studies/`](../eval/case-studies/).
-- **Codex CLI integration:** native plugin installation, real headless commit/failure/retry, private conversation export, live question intake and shared terminal playback are validated with CLI 0.162.1. A real narrated plan, implementation, walkthrough flag/fix and rebuilt approval completed ([evidence and limits](./agents.md#codex)). Desktop-app support is outside this change. The terminal review, end to end, with CLI 0.164.0 in Ghostty on macOS and in tmux on Linux: it opens beside Codex, Send wakes the session, the split closes, and the new version opens.
+- **Codex CLI, as Claude Code is:** on macOS with CLI 0.162.1, a narrated plan through its review, implementation,
+  a flagged walkthrough and the fix; the native plugin; an unattended review run, with a failure and a retry; a
+  question asked on the review page; and exporting its own conversation. The terminal review, end to end, with CLI
+  0.164.0 in Ghostty on macOS and in tmux on Linux: it opens beside Codex, Send wakes the session, the split closes,
+  and the new version opens. The Codex app is untested ([evidence and limits](./agents.md#codex)).
 - **The public repo:** `ncrispino/reelplanner`, since 2026-10-08, its About box set (the description and 18 topics); the development history stays private.
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
