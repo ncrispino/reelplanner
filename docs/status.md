@@ -38,7 +38,8 @@ Done:
   a flagged walkthrough and the fix; the native plugin; an unattended review run, with a failure and a retry; a
   question asked on the review page; and exporting its own conversation. The terminal review, end to end, with CLI
   0.164.0 in Ghostty on macOS and in tmux on Linux: it opens beside Codex, Send wakes the session, the split closes,
-  and the new version opens. The Codex app is untested ([evidence and limits](./agents.md#codex)).
+  and the new version opens. The Codex app is untested ([evidence and limits](./agents.md#codex)). Its videos
+  tend to be more technical and harder to follow than Claude Code's, so Claude Code is the one to use for now.
 - **The public repo:** `ncrispino/reelplanner`, since 2026-10-08, its About box set (the description and 18 topics); the development history stays private.
 
 Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
@@ -58,6 +59,9 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 - **The comparison arms of the case study:** the same Bob Dylan prompt planned as plain text and as an HTML page, set
   beside the reelplanner run, as the kit allows ([`eval/case-studies/bob-dylan-site/`](../eval/case-studies/bob-dylan-site/README.md)).
 - **Another agent end to end:** install the skill and run a narrated plan through review, implementation, walkthrough and a requested-change fix. Codex CLI completed this trial on macOS; other agents and cloud sessions remain unverified.
+- **Clearer videos from Codex.** With the same skill and style guide, Codex's videos tend to come out more
+  technical and harder to follow than Claude Code's. A way in: the same plan made by both (the bakery bench in
+  [`eval/pipeline-cost/`](../eval/pipeline-cost/)), and where Codex's script departs from the style guide.
 - **The sample videos under `videos/` hosted where they play in the browser**; today they play on the local review
   page (`npm run review`), and the case study's videos are hosted on its pages.
 

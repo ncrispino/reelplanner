@@ -10,6 +10,9 @@ You answer on the video, and the agent updates the plan.
 **Works with:** Claude Code and Codex CLI, tested on macOS and Linux ([what was tested](./docs/agents.md#support)) ·
 GitHub Copilot, Cursor, OpenCode, Antigravity CLI, untested ([what each needs](./docs/agents.md))
 
+**For now, use Claude Code if you can.** Codex runs the same loop, but its videos tend to be more technical and
+harder to follow. We are working on that.
+
 ## Before you try
 
 - macOS (Homebrew) or Linux (apt), Node 22.20+ ([nodejs.org](https://nodejs.org/en/download); apt's own `nodejs`
@@ -264,8 +267,8 @@ Where help is most welcome:
 
 - **The bigger ideas:** live feedback while you watch, spoken comments, a review pane inside the agent itself, and
   learning from your edits ([what's next](./docs/status.md#later-open-work-not-for-the-first-release)).
-- **More agents:** making it work as well in Copilot, Cursor, OpenCode and others as in Claude Code and Codex
-  ([what each needs](./docs/agents.md#open-work)).
+- **More agents:** making Codex's videos as clear as Claude Code's, and making it work as well in Copilot, Cursor,
+  OpenCode and others ([what each needs](./docs/agents.md#open-work)).
 
 ## Where this is going
 

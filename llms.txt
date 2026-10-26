@@ -1,6 +1,6 @@
 # reelplanner
 
-> Review a coding agent's implementation plan as a short narrated video that stops at each open choice. The answers are recorded in a decision log in the repo, and after the build a walkthrough video shows the choices the agent made on its own. An agent skill (plan-to-video) plus a CLI (`reelplanner`, `reel`). Tested with Claude Code and Codex CLI, on macOS and Linux. Not on npm yet: install with `npm i -g github:ncrispino/reelplanner`, then `reelplanner setup`, then `npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y`.
+> Review a coding agent's implementation plan as a short narrated video that stops at each open choice. The answers are recorded in a decision log in the repo, and after the build a walkthrough video shows the choices the agent made on its own. An agent skill (plan-to-video) plus a CLI (`reelplanner`, `reel`). Tested with Claude Code and Codex CLI, on macOS and Linux; Claude Code makes the clearer videos for now. Not on npm yet: install with `npm i -g github:ncrispino/reelplanner`, then `reelplanner setup`, then `npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y`.
 
 ## Start here
 
