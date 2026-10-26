@@ -34,15 +34,16 @@ reelplanner setup                                                      # ffmpeg,
 npx skills add "$(npm root -g)/reelplanner" --skill plan-to-video -g -y   # the skill, for every agent found
 ```
 
-In Claude Code, [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
+- **In Claude Code,** [allow its commands once](./docs/agents.md#claude-code), so each step runs without a prompt.
+- **Where it goes:** the skill in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders.
+  Trouble or uninstalling: [install details](./docs/reference.md#install).
+- **Had it as reelplanning,** its name until October 2026? Run `npm rm -g reelplanning` first: npm will not install
+  over its commands ([moving over](./docs/reference.md#install)).
 
-The skill goes in `~/.agents/skills`, linked into `~/.claude/skills` and other agents' folders. Trouble or
-uninstalling: [install details](./docs/reference.md#install). Installed it before as reelplanning, its name until
-October 2026? Run `npm rm -g reelplanning` first: npm will not install over its commands
-([moving over](./docs/reference.md#install)).
+### Or the skill as a plugin
 
-**Or the skill as a plugin,** in place of the third line. The first two lines are still what install the commands
-and their tools (the skill installs them itself when they are missing, but running them first is quicker).
+In place of the third line. The first two lines are still what install the commands and their tools (the skill
+installs them itself when they are missing, but running them first is quicker).
 
 - **Claude Code,** kept up to date through `/plugin`:
 
@@ -91,8 +92,10 @@ claude "Use reelplanner to plan a small website for a neighborhood bakery"
 The first time in a repo, the agent asks how much you want: just a video, or more ([three ways](#three-ways-to-use-it)).
 Say "quick" in the request ("make a quick video plan for …") to skip the question and get just the video.
 
-**How thorough.** A quick video is the lightest: 1–3 minutes, and no second agent checks it. Any other video has a
-depth, set in your own words: low, medium (the default) or high.
+### How thorough
+
+A quick video is the lightest: 1–3 minutes, and no second agent checks it. Any other video has a depth, set in your
+own words: low, medium (the default) or high.
 
 - "Rough", "a first look" or "low depth" gets low: about 2 minutes and at most 8 scenes, and no second agent
   checks it, so you see it soonest.
@@ -103,11 +106,11 @@ depth, set in your own words: low, medium (the default) or high.
 
 The agent writes it as `depth:` in the video's `BRIEF.md`; ask for another depth and it changes it for the next build.
 
+### What happens
+
 <img src="docs/media/review-page.gif" alt="The review page: the video plays, stops at a question, an answer is picked, a comment is drawn on the frame, and the review is finished." width="100%">
 
 <p align="center"><i>The review page on one of this repo's own plans (45 s, sped up).</i></p>
-
-### What happens
 
 - The agent writes the plan and makes a narrated video of it, in `videos/<name>/`. Building the video takes
   minutes; how many depends mostly on the voice (see [The voice](#the-voice)).
@@ -140,14 +143,18 @@ Ask your agent to open a video's review "beside me in the terminal". It opens in
 answer, comment and press **Send**: the split closes, the agent wakes with your review and gets to work, and when
 the new version is built it opens beside you again. You never leave the terminal or tell the agent it was sent.
 
-Your agent's own permissions still apply while it works. In our Linux trial, Codex on its default settings asked
-you to approve 15 of its commands between Send and the new version (where it keeps the review, the build and its
-checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the repo.
-Codex's "Approve for me" setting decides them for you instead. Claude Code in auto mode, with reelplanner's commands
-allowed ([Claude Code](./docs/agents.md#claude-code)), asked none.
+Your agent's own permissions still apply while it works. In our Linux trial, between Send and the new version:
 
-Set it up once, from your own terminal (not inside an agent). Install
-[terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
+- **Codex,** on its default settings, asked you to approve 15 of its commands (where it keeps the review, the build
+  and its checks, `git`, reopening the split); 9 in a repo set up with `reel init`, where the review is kept in the
+  repo. Its "Approve for me" setting decides them for you instead.
+- **Claude Code** in auto mode, with reelplanner's commands allowed ([Claude Code](./docs/agents.md#claude-code)),
+  asked none.
+
+### Set it up
+
+Once, from your own terminal (not inside an agent), and after reading [what you allow](#security-what-you-allow).
+Install [terminal-browser](https://github.com/zenbu-labs/terminal-browser), then remember the workspace:
 
 ```sh
 brew install --cask terminal-browser          # macOS (Linux: curl -fsSL https://terminal-browser.sh/install | bash)
@@ -165,7 +172,7 @@ where the split is a new tmux pane beside the agent's.
 
 Details: [terminal review](./docs/terminal-review.md).
 
-**Security: what you allow.** Read this before you set it up.
+### Security: what you allow
 
 - **Codex runs the opener outside its sandbox, without asking.** `--codex-allow-open` saves a Codex rule for one
   command, reelplanner's `review-open`. It reads your process list to find the Codex window, reads that window's
@@ -212,8 +219,9 @@ More tools, with sources, checked October 2026: [docs/comparison.md](./docs/comp
 ## How it works
 
 reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos) and `reel` (the
-`.reelplanner/` record). Each scene is a web page
-rendered with [HyperFrames](https://github.com/heygen-com/hyperframes); everything is kept as text, so any video can be rebuilt.
+`.reelplanner/` record). Each scene is a web page rendered with [HyperFrames](https://github.com/heygen-com/hyperframes),
+pinned to one exact version so a change upstream cannot break a build ([why](./docs/reference.md#hyperframes-pinned));
+everything is kept as text, so any video can be rebuilt.
 
 This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
 More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·
