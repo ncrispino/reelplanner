@@ -160,7 +160,7 @@ try {
 
   // ---- one video (level 1): no .reelplanner/ at all, so Send lands in this machine's inbox and nothing in the repo ----
   // (its own folder, outside the set-up repo above, whose .reelplanner/ it would otherwise be found under; a git repo)
-  const env2 = { ...process.env, REELPLANNER_OWNER: "session:review-status-cli", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: home };
+  const env2 = { ...process.env, REELPLANNER_OWNER: "session:review-status-cli", CODEX_THREAD_ID: "", CLAUDE_CODE_SESSION_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: home };
   const plain = join(mkdtempSync(join(tmpdir(), "reel-status-plain-")), "plain"), pv = join(plain, "videos", "demo");
   mkdirSync(join(pv, "compositions"), { recursive: true }); execFileSync("git", ["-C", plain, "init", "-q"]);
   writeFileSync(join(pv, "index.html"), "<!doctype html><title>demo</title>\n");

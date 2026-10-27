@@ -45,10 +45,13 @@ export function detectAgent(env = process.env) {
   return { agent: "none", why: "neither `claude` nor `codex` is on PATH" };
 }
 
-/** Strong session identity, kept at the adapter boundary rather than in inbox/ownership code. */
+/** Strong session identity, kept at the adapter boundary rather than in inbox/ownership code. Claude Code gives its
+ *  shell commands CLAUDE_CODE_SESSION_ID, the session_id its hooks are given (seen with 2.1.311); CLAUDE_SESSION_ID is
+ *  still read. */
 export function activeSession(env = process.env) {
   if (env.CODEX_THREAD_ID) return { agent: "codex", id: env.CODEX_THREAD_ID, key: `codex:${env.CODEX_THREAD_ID}` };
-  if (env.CLAUDE_SESSION_ID) return { agent: "claude", id: env.CLAUDE_SESSION_ID, key: `claude:${env.CLAUDE_SESSION_ID}` };
+  const claude = env.CLAUDE_CODE_SESSION_ID || env.CLAUDE_SESSION_ID;
+  if (claude) return { agent: "claude", id: claude, key: `claude:${claude}` };
   return null;
 }
 
@@ -63,7 +66,7 @@ export function agentBlock(agent, template) {
 // The workflow owns intake, claims, retry and completion. These ordinary adapters only describe
 // what a coding agent can do and translate its launch, notification and conversation operations.
 const CAPABILITIES = { headless: false, automaticReview: false, queue: false, plugins: false, mcp: false, sessionExport: false };
-const PARENT_IDENTITY = ["CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT", "CLAUDE_SESSION_ID", "CLAUDE_PROJECT_DIR", "CLAUDE_TRANSCRIPT_PATH",
+const PARENT_IDENTITY = ["CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT", "CLAUDE_CODE_SESSION_ID", "CLAUDE_SESSION_ID", "CLAUDE_PROJECT_DIR", "CLAUDE_TRANSCRIPT_PATH",
   "CODEX_THREAD_ID", "CODEX_SESSION_ID", "CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED", "REELPLANNER_OWNER"];
 export function childAgentEnv(env = process.env) {
   const child = { ...env }; for (const key of PARENT_IDENTITY) delete child[key]; return child;
@@ -153,7 +156,8 @@ const codex = {
   },
   sessionSource: ({ session, ...context }) => codexSessionSource({ ...context, session: sessionId(session, "codex") || null }),
   async deliver({ repo, session, endpoint = null, inboxPath, inboxRoot, env = process.env, executable = "codex" }) {
-    const meta = await this.verifySession({ repo, env, session, endpoint });
+    // a session that cannot be verified is gone (closed, or no longer loaded): the server stops trying it
+    let meta; try { meta = await this.verifySession({ repo, env, session, endpoint }); } catch (e) { return { status: "gone", reason: e.message }; }
     if (!inboxRoot) return { status: "error", reason: "A verified project inbox root is required for notification." };
     const path = realpathSync(inboxPath), rel = relative(realpathSync(inboxRoot), path);
     if (!statSync(path).isFile() || !rel || rel === ".." || rel.startsWith(`..${sep}`) || isAbsolute(rel))

@@ -190,6 +190,10 @@ Details: [terminal review](./docs/terminal-review.md).
   server when you are not reviewing: `reelplanner review --stop`.
 - **The server runs outside the sandbox.** Starting it needs one approval in Codex: it writes its log and your
   review outside the workspace.
+- **The skill adds a Stop hook in Claude Code.** Once the skill is loaded, Claude Code runs
+  `reelplanner review-hook stop` at the end of each turn. It reads which review page the session opened and whether
+  a `review --wait` is waiting for it, and if none is, tells the session to start one. It writes nothing but
+  reelplanner's own notes, and asks for no permission.
 
 ## Case studies
 

@@ -1,6 +1,12 @@
 ---
 name: plan-to-video
 description: "Plan with reelplanner. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanner/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanner video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanner style guide."
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "command -v reelplanner >/dev/null 2>&1 && reelplanner review-hook stop || true"
+          timeout: 10
 ---
 
 # Plan → video (reelplanner)
@@ -743,7 +749,8 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   review's comments), under about 50k tokens; it reads this skill itself.
 - **Local page.** Start the server with `$RP review <video-dir> --detach`: it runs in its own process,
   outlives this session, and is reused by the next `--detach` (one per repo; `$RP review --stop` stops
-  it). Keep `$RP review --wait` running as your own background task. When the reviewer presses Send,
+  it). Keep `$RP review --wait` running as your own background task: in Claude Code it is the only way Send reaches
+  you, and this skill's Stop hook reminds you when a turn ends while a page you opened has none. When the reviewer presses Send,
   `--wait` prints the review's path and exits: run `$RP reel-intake <path>`, hand the revise or fix to a
   worker, run `$RP inbox done <id>`, and start `--wait` again. A path under `inbox/questions/` is a question the
   reviewer asked on the page (Ask about this): answer it at once, in plain words, from the plan, the glossary and
