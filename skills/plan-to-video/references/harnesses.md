@@ -187,7 +187,12 @@ an error. A generic explicit source path stays generic. External transcript text
 ## Claude Code
 
 The existing marketplace installs the lightweight skill folder. Invoke `/plan-to-video <plan.md>`.
-Local Send uses the same inbox and waiting-task route. The supplied native `/reel` Mods pane remains
+Local Send uses the same inbox and waiting-task route. Claude Code has no queue the review server can
+reach, so a Send reaches the session only through its background `review --wait`. `review --detach` run
+from Claude Code notes the page for this session (and stops a session connected before from getting the
+reviews), and the skill's Stop hook (`reelplanner review-hook stop`) asks for a waiter when a turn ends
+while that page's server runs and none of this session's waits on it. The note goes once a review
+from the page is claimed. If the waiter cannot run, ask the person to say when they have sent it. The supplied native `/reel` Mods pane remains
 on its separate branch; it is a behavioral comparison, not a component imported into this checkout.
 
 The configured Claude command retains its existing permission policy and file fence. Only an explicit
