@@ -470,13 +470,16 @@ explainer (`<explainer-dir>/video/`).
    read"), its other notes under `## Advisory`, which need no answer. Either marks a finding `[plan]` when it is about
    the plan, not the video: something the plan leaves out, or a thing the video only describes where the person
    needs to see it. Answer every finding under it in `fresh-eyes/newcomer.md` or `designer.md`, by its number:
-   - `- Answer: fixed: <what changed, and where>`: the line or frame changed;
+   - `- Answer: fixed: <what changed, and where>`: the line or frame changed. `--check` holds it to that: the
+     finding's scene, or a scene the answer names ("fixed: scene 6 now says it"), differs from what the agents saw;
    - `- Answer: meaning: …`: the phrase kept, with a meaning a viewer can click: a row under the glossary's "Other
      words" when other videos will say it, else the storyboard's `terms: <phrase> = <meaning>`;
    - `- Answer: kept: <the reason>`: the finding is wrong about something the video says plainly, say, two scenes
      later. Answering is not always a rewrite: "kept: scene 5 says what the list is" is a full answer. At medium
      depth, a finding that would neither mislead nor lose a viewer (a chip's place, a margin, a fade) is
-     `kept: cosmetic, medium depth: <the fix it would take>`, and no frame is redrawn for it.
+     `kept: cosmetic, medium depth: <the fix it would take>`, and no frame is redrawn for it. A reason that sends the
+     viewer elsewhere ("the linked review explains it", "the guide has it", `details/…`) is no answer: the video has
+     to make sense to someone who opens nothing (style guide §10), so fix the scene, give the phrase a meaning, or ask.
    - `- Answer: plan: <what plan.md now says>`: the plan changed to settle it (plan.md must differ from when the
      agents looked); or `- Answer: ask: <the question for the person>`, shown first on the page's Before you watch.
      A `[plan]` finding takes only these two: you made the video, and are the wrong one to set aside what it lacks.

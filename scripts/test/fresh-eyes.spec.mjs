@@ -157,6 +157,23 @@ const said = (t) => { for (const f of ["SCRIPT.md", "STORYBOARD.md"]) writeFileS
   const r = run(V, "--no-shots");
   ok("a new round is refused while a finding is unanswered", r.status !== 0 && /G1/.test(r.stderr), r.stderr);
   writeFileSync(join(V, "fresh-eyes", "designer.md"), readFileSync(join(V, "fresh-eyes", "designer.md"), "utf8") + "  - Answer: fixed: the heading moved down 48 px, compositions/frames/01-opening.html\n");
+  const fu = run(V, "--check");
+  ok("--check: fixed, with the finding's scene as the agents saw it, fails", fu.status === 1 && /G1 \(scene 1\) fixed, but scene 1 is as the agents saw it/.test(fu.stdout), fu.stdout);
+  ok("…and a new round is refused on it", run(V, "--no-shots").status !== 0);
+  const dm = join(V, "fresh-eyes", "designer.md");
+  writeFileSync(dm, readFileSync(dm, "utf8").replace("fixed: the heading moved down 48 px, compositions/frames/01-opening.html", "fixed: the tab moved in scene 2"));
+  ok("--check: fixed, naming another scene that changed, passes", run(V, "--check").status === 0);
+  writeFileSync(dm, readFileSync(dm, "utf8").replace("fixed: the tab moved in scene 2", "kept: the linked review explains the tab"));
+  const ke = run(V, "--check");
+  ok("--check: kept, sending the viewer to a linked document, fails, quoting where", ke.status === 1 && /G1 \(scene 1\) kept, but the reason sends the viewer elsewhere \("linked review"\)/.test(ke.stdout), ke.stdout);
+  for (const away of ["the guide says what the tab is", "details/notes.html has the whole table", "the full written review has it"]) {
+    writeFileSync(dm, readFileSync(dm, "utf8").replace(/ {2}- Answer: .*\n/, `  - Answer: kept: ${away}\n`));
+    const x = run(V, "--check");
+    ok(`…and "${away}" fails the same way`, x.status === 1 && /kept, but the reason sends the viewer elsewhere/.test(x.stdout), x.stdout);
+  }
+  writeFileSync(dm, readFileSync(dm, "utf8").replace(/ {2}- Answer: .*\n/, "  - Answer: fixed: the heading moved down 48 px, compositions/frames/01-opening.html\n"));
+  writeFileSync(join(V, "compositions", "frames", "01-opening.html"), "<div>one, its heading lower</div>\n");
+  ok("--check: once scene 1's frame changed, the fix passes", run(V, "--check").status === 0);
   const r2 = run(V, "--no-shots"), st2 = JSON.parse(readFileSync(join(V, "fresh-eyes", "stamp.json"), "utf8"));
   ok("round 2 moves round 1's files to round-1/, and looks only at the scene whose words changed", r2.status === 0 && /round 2 of 2/.test(r2.stdout) && st2.scope?.join() === "2" && existsSync(join(V, "fresh-eyes", "round-1", "newcomer.md")) && existsSync(join(V, "fresh-eyes", "round-1", "stamp.json")) && !existsSync(join(V, "fresh-eyes", "newcomer.md")), r2.stdout + r2.stderr + JSON.stringify(st2.scope));
   // round 2: the list again, worded its own way and kept for the same reason (a repeat); the list for another

@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- **Fresh eyes: an answer has to answer in the video** (#42). `fresh-eyes --check`, and so `build`, refuse two
+  answers that left a finding where the agents found it:
+  - `kept:` with a reason that sends the viewer elsewhere (a linked or written review, the guide, a `details/` page).
+    A video whose newcomer kept 7 of 30 findings as "the linked review explains it" passed its checks and was still
+    hard to follow; now each of those is fixed in the scene, given a meaning, or asked.
+  - `fixed:` when neither the finding's scene nor a scene the answer names has changed since the agents looked.
+
 ## 0.4.0 (2026-10-26)
 
 - **Codex CLI, as Claude Code is** (#29, [docs/agents.md](docs/agents.md#codex)). reelplanner's native Codex plugin
