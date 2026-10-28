@@ -43,7 +43,7 @@ as high: a video made before depths keeps the checks it was built with.
 
 | | low | medium (the default) | high |
 |---|---|---|---|
-| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"` | its kind's budget; past it with any `- Length: <why>` |
+| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"`; a plan that needs more is asked about, never told in shorter explanations (style guide §1) | its kind's budget; past it with any `- Length: <why>` |
 | The script's fresh eyes | none | the newcomer | the newcomer |
 | Fresh eyes on the video | none, but the checker for an explainer with a long source | one round: the newcomer, and the checker where there is one, who looks again at what the answers rewrote | the newcomer and the designer, and the checker; two rounds |
 | Findings fixed | — | what would mislead or lose a viewer: a wrong fact, a missing step, a word never defined. A cosmetic one is `kept: cosmetic, medium depth`, with the fix it would take, not redrawn | all |
@@ -471,7 +471,10 @@ explainer (`<explainer-dir>/video/`).
    prompt names one absolute path, `fresh-eyes/<role>.md`; that is
    the only file the agent writes. `--check` fails on this round's findings found anywhere else in the repo (a copy
    in the repo's root, a notes file under `fresh-eyes/`) and never reads them there: move the file to its path, or
-   run the agent again. The newcomer lists what it could not follow from what the video had shown by then; the
+   run the agent again. A plan video that states facts from records (counts, sizes, times, what a run did) gets no
+   checker from `fresh-eyes`, which checks only an explainer's sources: dispatch one by hand, a fresh agent given the
+   storyboard and the files its facts come from, told to check every number and claim on screen and in the
+   narration, and fix what it finds before the next build (`--check` does not see its findings). The newcomer lists what it could not follow from what the video had shown by then; the
    designer only what stops a viewer under the style guide's seven frame rules (§5, "A frame a newcomer can
    read"), its other notes under `## Advisory`, which need no answer. Either marks a finding `[plan]` when it is about
    the plan, not the video: something the plan leaves out, or a thing the video only describes where the person

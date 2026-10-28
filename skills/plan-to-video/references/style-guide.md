@@ -41,6 +41,11 @@ first videos of 15–17 minutes were watched 1–4% of the way. To stay inside i
   the reviewer already accepted down to a line, and keep the changes at full length.
 - Cut in this order: the second example, the "why not" nobody would ask about, a sentence that says
   what the stage already shows, a recap.
+- **The budget never comes out of the teaching.** When those cuts are made and the video still runs past its
+  budget, ask the person before the storyboard: two videos, or one that runs longer (their answer, quoted, is the
+  `- Length:` line). Never drop a case, a definition or the explanation before a question to fit, and never speed
+  the voice past what `narrate` asks for. At low depth nothing takes it past two minutes: cover less, and explain
+  what you cover as fully.
 
 - **A part** is an opener, one or two steps with their decisions and the quick checks that fall there
   (§7: each after the next step's scenes), and a closer. Past about 80 s, split it.
@@ -204,6 +209,41 @@ mechanism; chapter openers, short summaries and direct answers need no extra exa
   storyboard. The player glosses ids too, but the voice has to stand on its own.
 - Recommend an option with the reason that matters in its example. Explain the trade-off without
   giving every alternative equal time (§6).
+
+**Narration is an explanation, not a memo.** A script can keep every rule above in form (short sentences, each
+term named, a recommendation given) and still lose the viewer, because each sentence is a line of a policy memo
+read aloud. Read every line of SCRIPT.md for these five before narrating. The examples are made up, on the upload
+above; each rewrite says the same thing.
+
+- **Orders in place of explanation.** A sentence that tells nobody what to do, before the viewer knows what the
+  thing is. Not "Keep the current part size and retry cadence: two seconds after a failure, thirty during repeated
+  failures", but "An upload goes up in parts of 8 MB. When a part fails, the client waits two seconds and sends it
+  again; if it keeps failing, it waits thirty. The plan keeps both."
+- **Noun stacks.** Three nouns in a row, or a noun made from a verb (persistence, retention, exposure), hides who
+  does what. Not "Resume-token persistence bypasses session storage caps", but "The token that lets an upload
+  resume is saved apart from the session, so a full session store can't lose it."
+- **A list where a case belongs.** Five mechanisms named and none shown. Not "Test interrupted parts, duplicate
+  parts, out-of-order arrival, expired tokens and refused writes", but "Upload 7f3a is 2 GB. Part 4 never arrives;
+  an hour later the client sends it again. The server has parts 1 to 3 and 5, takes the new 4, and the file is
+  whole. The same test runs for a part sent twice, parts out of order, an expired token and a refused write."
+- **The answer before the question.** Not an opening line of "Keep resumable uploads, add the manifest, then
+  validate the retry gaps", which recommends before the viewer knows what is at stake, but "A 2 GB upload fails at
+  90%, and today you start over. This plan makes it resume." The recommendation goes in its decision, after the
+  case (§6).
+- **Caveats as sentences of their own.** Not "Approval does not authorize a migration, new storage or client
+  changes. This is a conservative baseline, not a proven minimum", but one clause where the limit changes the
+  decision: "Approve it, and only the server changes: older clients still start over."
+
+Short sentences hide all five: in the review video these came from, the sentences averaged 11 words and the
+rebuild's 15 ([`design-notes.md`](https://github.com/ncrispino/reelplanner/blob/main/docs/design-notes.md#narration-that-read-as-a-memo)).
+
+**The example: one decision, before and after.** Before, the whole decision was one line: "Decision one: authorize
+persisting resume tokens and part manifests and exposing saved part state on demand. I recommend fixing access to
+existing state first." The viewer has seen no manifest and no lost part, so there is nothing to weigh. After, it
+takes three scenes: upload 7f3a's manifest on screen, "part 4 missing" pinned on its gap; the client coming back an
+hour later and resuming at part 4; then the two outcomes on the same upload, "Approve: it resumes at part 4 · Not
+now: it starts over at 0 of 2 GB", the recommendation, and last the question, "Save each upload's manifest so a
+failed upload resumes?"
 
 ## 5. What to draw
 
@@ -585,7 +625,10 @@ SKILL.md); organize them to answer the question rather than inventing new behavi
 ## 11. Before the storyboard is done
 
 - The whole video is 3–5 minutes (a walkthrough about 2, the system video 5–8), each part about a
-  minute; every beat is at least 4 s, and the holds are in `holds.json`.
+  minute; every beat is at least 4 s, and the holds are in `holds.json`. Past its budget only on the person's
+  words, never by shorter explanations or a faster voice (§1).
+- Every line of the narration was read for §4's five: orders in place of explanation, noun stacks, a list where a
+  case belongs, the answer before the question, caveats as sentences of their own.
 - The overview says what changes before any step, and each step that needs another says so.
 - One `feature_showcase` per plan step, in plan order, each with `- plan_step:` and its anchor.
 - Every open question is a decision beat after its step, with its branches or summary.
