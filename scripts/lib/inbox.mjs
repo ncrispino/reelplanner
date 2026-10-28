@@ -25,6 +25,12 @@
 // has no agent command, so a review there waits for a session's `review --wait`. Once `reel init` sets the repo up,
 // its own inbox is used and the machine's is left as it is: nothing is moved, so nothing is handled twice, and
 // `inbox` there names a review still waiting in it.
+//
+// Claude Code has no queue a server can reach (Codex has one: a connected session), so Send reaches a Claude Code
+// session only through its own `review --wait`. A page such a session opened with `review --detach` is noted in this
+// machine's folder until a review from it is claimed: ~/.reelplanner/pages/claude-<session-id>.json
+// ({ session, pages: [{ box, url, server, wait, at }] }). The plan-to-video skill's Stop hook (scripts/review-hook.mjs) reads
+// it when the session ends a turn, and asks for a `review --wait` while a noted page has none.
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, renameSync, readdirSync, statSync, lstatSync, readlinkSync, openSync, closeSync, writeSync, unlinkSync, rmSync } from "node:fs";
 import { join, relative, dirname, basename, resolve, isAbsolute, sep } from "node:path";
 import { hostname, homedir } from "node:os";
@@ -365,11 +371,11 @@ export function markDone(rp, id, { owner = process.env.REELPLANNER_OWNER || acti
 const waitersDir = (rp) => join(inboxDir(rp), ".waiters");
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === "EPERM"; } };
 
-/** Announce "a session is waiting" until the returned stop() (or this process's exit). */
-export function startHeartbeat(rp, { everyMs = HEARTBEAT_MS } = {}) {
+/** Announce "a session is waiting" until the returned stop() (or this process's exit), and which session it is. */
+export function startHeartbeat(rp, { everyMs = HEARTBEAT_MS, session = activeSession(process.env)?.key || null } = {}) {
   const f = join(ensure(waitersDir(rp)), `${process.pid}.json`);
   const startedAt = new Date().toISOString();
-  const beat = () => { try { writeFileSync(f, JSON.stringify({ pid: process.pid, host: hostname(), startedAt, beat: Date.now() }) + "\n"); } catch { /* next beat */ } };
+  const beat = () => { try { writeFileSync(f, JSON.stringify({ pid: process.pid, host: hostname(), startedAt, beat: Date.now(), ...(session ? { session } : {}) }) + "\n"); } catch { /* next beat */ } };
   beat();
   const t = setInterval(beat, everyMs);
   const stop = () => { clearInterval(t); process.removeListener("exit", stop); try { unlinkSync(f); } catch { /* gone */ } };
@@ -396,6 +402,47 @@ export function liveWaiters(rp, { now = Date.now(), staleMs = STALE_MS } = {}) {
   return live;
 }
 
+// ---------- a page a Claude Code session opened, until a review from it comes back (see the top of this file) ----------
+const pagesDir = () => join(machineDir(), "pages");
+const pagesFile = (session) => join(pagesDir(), `${session.replace(/[^A-Za-z0-9._-]/g, "-")}.json`);
+const sameBox = (rp) => realPath(resolve(rp));
+function readPages(session) {
+  try { const j = JSON.parse(readFileSync(pagesFile(session), "utf8")); return Array.isArray(j.pages) ? j.pages : []; } catch { return []; }
+}
+function writePages(session, pages) {
+  if (!pages.length) { rmSync(pagesFile(session), { force: true }); return; }
+  ensure(pagesDir()); writeAtomic(pagesFile(session), JSON.stringify({ session, pages }) + "\n");
+}
+/** Note that the Claude Code session running this opened the review page `url`, served by the process `server`
+ *  (`wait`: the command that waits for it, in the CLI that opened it). */
+export function notePage(rp, { url, server, wait = null, env = process.env } = {}) {
+  const s = activeSession(env);
+  if (s?.agent !== "claude" || !url || !server) return null;
+  const box = sameBox(rp);
+  writePages(s.key, [...readPages(s.key).filter((p) => p.box !== box), { box, url, server, ...(wait ? { wait } : {}), at: new Date().toISOString() }]);
+  return s.key;
+}
+/** A review from this inbox came back to the session running this: its page is no longer waited for. */
+export function forgetPage(rp, env = process.env) {
+  const s = activeSession(env);
+  if (s?.agent !== "claude") return;
+  try { const box = sameBox(rp), pages = readPages(s.key); if (pages.some((p) => p.box === box)) writePages(s.key, pages.filter((p) => p.box !== box)); } catch { /* the note is advice */ }
+}
+/**
+ * The pages `session` (claude:<id>) opened that nothing in it waits for: their server still running (the inbox's
+ * .server.json names the pid that served the page, and it is alive), and no heartbeat of this session's `review --wait`
+ * in that inbox. A page whose server has stopped is dropped from the note.
+ */
+export function pagesUnwaited(session) {
+  const pages = readPages(session), served = [];
+  for (const p of pages) {
+    let s = null; try { s = JSON.parse(readFileSync(join(inboxDir(p.box), ".server.json"), "utf8")); } catch { /* stopped */ }
+    if (s?.pid === p.server && alive(Number(p.server))) served.push(p);
+  }
+  if (served.length !== pages.length) writePages(session, served);
+  return served.filter((p) => !liveWaiters(p.box).some((w) => w.session === session));
+}
+
 /**
  * Wait until a review is in the inbox that nobody has claimed, claim it for this session, and
  * resolve its path. Reviews already waiting count (the session start pickup). Resolves null after
@@ -412,9 +459,9 @@ export function waitForReview(rp, { timeoutMs = 0, pollMs = 500, owner = ownerOf
       for (const q of waitingQuestions(rp, { owner })) if (claimQuestion(rp, q.id, owner)) { stop(); ok(q.path); return; }
       if (!questionsOnly) for (const r of listInbox(rp)) {
         if (r.claim?.owner === owner && progressOf(rp, r.id)?.phase === "queued") {
-          renewClaim(rp, r.id, { owner, phase: "handling" }); stop(); ok(r.path); return;
+          renewClaim(rp, r.id, { owner, phase: "handling" }); stop(); forgetPage(rp); ok(r.path); return;
         }
-        if (claimItem(rp, r.id, "session", { owner }, { repo, recover: true })) { stop(); ok(r.path); return; }
+        if (claimItem(rp, r.id, "session", { owner }, { repo, recover: true })) { stop(); forgetPage(rp); ok(r.path); return; }
       }
       if (timeoutMs && Date.now() - t0 >= timeoutMs) { stop(); ok(null); return; }
       setTimeout(tick, pollMs);
@@ -587,6 +634,13 @@ export async function retryAgent(rp, id, options = {}) {
 
 const connectionPath = (rp) => join(inboxDir(rp), ".connection.json");
 export const connectionOf = (rp) => { try { return JSON.parse(readFileSync(connectionPath(rp), "utf8")); } catch { return null; } };
+/** Forget the connected session (only `session`, when one is named): the connected one is gone, or another took over. */
+export function dropConnection(rp, { session = null } = {}) {
+  const c = connectionOf(rp);
+  if (!c || (session && c.session !== session)) return null;
+  rmSync(connectionPath(rp), { force: true });
+  return c;
+}
 export async function connectSession(rp, { repo = dirname(rp), session, endpoint = null, env = process.env, adapter = null } = {}) {
   const selected = String(session || "");
   if (!/^[a-z][a-z0-9-]*:[A-Za-z0-9._-]+$/.test(selected)) throw new Error("session must name a harness and exact session id, such as codex:<id>");
@@ -627,6 +681,8 @@ export async function deliverInbox(rp, id, { question = false, repo = dirname(rp
         return true;
       });
       if (!released) return { handledBy: "session", message: "saved; the session has already picked it up" };
+      // the session is not there any more (closed, or no longer loaded): Send stops trying it, and the page says so
+      if (result.status === "gone") dropConnection(rp, { session: connection.session });
     } else return { handledBy: "session", message: "already claimed by its handler" };
   }
   if (!question && !isMachineInbox(rp)) {

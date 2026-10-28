@@ -1,6 +1,12 @@
 ---
 name: plan-to-video
 description: "Plan with reelplanner. Use whenever someone asks their agent for an implementation plan in a repo (a new plan, written in the conversation): write it into the repo's .reelplanner/plans/, check it against the decisions already made, and build the narrated review video the engineer watches, comments on and decides in, instead of handing them text. Also use to turn an existing plan file (Claude Code plan-mode Markdown, or any agent-written plan) into a video, and when someone wants a plan reviewed as a video, a 'plan explainer', or a reelplanner video. And use it for an explainer, a video of what is already there before any plan: 'explain …', 'what's going on in …', 'what happened in this session', 'walk me through this branch', 'what changed since …', 'what did this experiment show'. Quick mode is just the video, of a plan (one written now for the request, or one they already have) or of something that exists, with no record, checks or walkthrough: use it for 'quick', 'just the video', 'no walkthrough'. Builds with HyperFrames' faceless-explainer skill and the reelplanner style guide."
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "command -v reelplanner >/dev/null 2>&1 && reelplanner review-hook stop || true"
+          timeout: 10
 ---
 
 # Plan → video (reelplanner)
@@ -37,7 +43,7 @@ as high: a video made before depths keeps the checks it was built with.
 
 | | low | medium (the default) | high |
 |---|---|---|---|
-| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"` | its kind's budget; past it with any `- Length: <why>` |
+| Length | about 2 minutes and at most 8 scenes; nothing takes it past | its kind's budget (a plan video 3–5 minutes) and at most 15 scenes; past them only on their words, quoted: `- Length: "<what they said>"`; a plan that needs more is asked about, never told in shorter explanations (style guide §1) | its kind's budget; past it with any `- Length: <why>` |
 | The script's fresh eyes | none | the newcomer | the newcomer |
 | Fresh eyes on the video | none, but the checker for an explainer with a long source | one round: the newcomer, and the checker where there is one, who looks again at what the answers rewrote | the newcomer and the designer, and the checker; two rounds |
 | Findings fixed | — | what would mislead or lose a viewer: a wrong fact, a missing step, a word never defined. A cosmetic one is `kept: cosmetic, medium depth`, with the fix it would take, not redrawn | all |
@@ -465,7 +471,10 @@ explainer (`<explainer-dir>/video/`).
    prompt names one absolute path, `fresh-eyes/<role>.md`; that is
    the only file the agent writes. `--check` fails on this round's findings found anywhere else in the repo (a copy
    in the repo's root, a notes file under `fresh-eyes/`) and never reads them there: move the file to its path, or
-   run the agent again. The newcomer lists what it could not follow from what the video had shown by then; the
+   run the agent again. A plan video that states facts from records (counts, sizes, times, what a run did) gets no
+   checker from `fresh-eyes`, which checks only an explainer's sources: dispatch one by hand, a fresh agent given the
+   storyboard and the files its facts come from, told to check every number and claim on screen and in the
+   narration, and fix what it finds before the next build (`--check` does not see its findings). The newcomer lists what it could not follow from what the video had shown by then; the
    designer only what stops a viewer under the style guide's seven frame rules (§5, "A frame a newcomer can
    read"), its other notes under `## Advisory`, which need no answer. Either marks a finding `[plan]` when it is about
    the plan, not the video: something the plan leaves out, or a thing the video only describes where the person
@@ -746,7 +755,8 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   review's comments), under about 50k tokens; it reads this skill itself.
 - **Local page.** Start the server with `$RP review <video-dir> --detach`: it runs in its own process,
   outlives this session, and is reused by the next `--detach` (one per repo; `$RP review --stop` stops
-  it). Keep `$RP review --wait` running as your own background task. When the reviewer presses Send,
+  it). Keep `$RP review --wait` running as your own background task: in Claude Code it is the only way Send reaches
+  you, and this skill's Stop hook reminds you when a turn ends while a page you opened has none. When the reviewer presses Send,
   `--wait` prints the review's path and exits: run `$RP reel-intake <path>`, hand the revise or fix to a
   worker, run `$RP inbox done <id>`, and start `--wait` again. A path under `inbox/questions/` is a question the
   reviewer asked on the page (Ask about this): answer it at once, in plain words, from the plan, the glossary and

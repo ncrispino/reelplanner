@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Narration is an explanation, not a memo** (#46, style guide §4). Five patterns to read every script line for
+  before narrating: orders in place of explanation, noun stacks, a list where a case belongs, the answer before
+  the question, caveats as sentences of their own; each with a made-up line and its rewrite, and one decision told
+  before and after. A Codex-made review video passed every check with all five and could not be followed.
+- **The budget never comes out of the teaching** (style guide §1). A video past its budget after the cuts asks
+  the person (two videos, or a longer one) instead of dropping cases or speeding the voice.
+- **A fact check for plan videos that state facts from records**, dispatched by hand: `fresh-eyes` gives only an
+  explainer a checker.
+- The Codex conversation profile says how to write narration, and points at the five patterns.
 - **Fresh eyes: an answer has to answer in the video** (#42). `fresh-eyes --check`, and so `build`, refuse two
   answers that left a finding where the agents found it:
   - `kept:` with a reason that sends the viewer elsewhere (a linked or written review, the guide, a `details/` page).

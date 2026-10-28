@@ -24,6 +24,9 @@
 //                 removed when the spec passes, kept (and named) when it fails
 //   REELPLANNER_HOME  a folder in that one, so no spec reads or writes your ~/.reelplanner (its .env, read
 //                 by every narration command, and your memory, you.jsonl); a spec that sets its own wins
+// and it takes one thing out: the coding agent's session (CLAUDE_CODE_SESSION_ID, CLAUDE_SESSION_ID, CODEX_THREAD_ID),
+// so a spec run from inside Claude Code or Codex sees what CI sees: a `review` it runs would otherwise connect that
+// real session, or note a page for it. A spec that wants one sets it.
 // After the run, the committed fixtures (GUARDED: videos/, .reelplanner/, eval/) must be as they were before it:
 // the runner takes `git status` of them before the first spec and again as each spec ends, and a path a spec
 // changed (one clean before the run, or one already changed whose content moved) fails the run, naming the
@@ -45,7 +48,7 @@ import { ROOT } from "../lib/env.mjs";
 const S = (n) => `scripts/test/${n}.spec.mjs`, P = (n) => `packages/player/test/${n}.spec.mjs`;
 // Every script spec: quick, no browser (about a minute and a quarter one after another).
 const SCRIPT = ["version", "package", "case-study", "numerals", "hyperframes-skills", "lifecycle", "system-review", "narrate", "narrate-api", "narration-check", "local-speed", "retime", "build",
-  "terms", "names", "loop", "review-data", "reviews", "memory", "details", "bundle-shared", "stage-presence", "visuals", "contributing", "fresh-eyes", "depth", "frame-tools", "media-seek", "thumbs", "explainer", "guide", "guide-revised", "static-server", "supersedes", "ledger", "init", "review-status", "make-public", "rebuild", "old-names", "codex-install", "session-export", "delivery", "harnesses", "presentation", "review-setup", "review-projects"].map(S);
+  "terms", "names", "loop", "review-data", "reviews", "memory", "details", "bundle-shared", "stage-presence", "visuals", "contributing", "fresh-eyes", "depth", "frame-tools", "media-seek", "thumbs", "explainer", "guide", "guide-revised", "static-server", "supersedes", "ledger", "init", "review-status", "make-public", "rebuild", "old-names", "codex-install", "session-export", "delivery", "harnesses", "presentation", "review-setup", "review-projects", "review-hook"].map(S);
 // The player specs. `FAST` is the core the default run
 // keeps: the player loading and playing, its controls, a decision, a quiz and a call, the band, the size
 // and the zoom, the access rules, answer-on-frame's quicker run (one question of each kind), frame-room's
@@ -152,6 +155,7 @@ console.log(`${full ? "full run" : "fast run"}: ${nFiles} specs${nShards ? ` (${
 async function run({ spec, shard, name }) {
   const port = await portBlock(), tmp = mkdtempSync(join(tmpdir(), `rp-test-${basename(spec, ".spec.mjs")}${shard ? `-${shard.replace("/", "of")}` : ""}-`));
   const env = { ...process.env, RP_TEST_PORT: String(port), TMPDIR: tmp, TMP: tmp, TEMP: tmp, REELPLANNER_HOME: join(tmp, "reelplanner-home"), ...(full ? { RP_FULL: "1" } : {}), ...(shard ? { RP_SHARD: shard } : {}) };
+  for (const key of ["CLAUDE_CODE_SESSION_ID", "CLAUDE_SESSION_ID", "CODEX_THREAD_ID"]) delete env[key];
   const t0 = Date.now();
   return new Promise((done) => {
     const child = spawn(process.execPath, [spec], { cwd: ROOT, env, stdio: ["ignore", "pipe", "pipe"] });

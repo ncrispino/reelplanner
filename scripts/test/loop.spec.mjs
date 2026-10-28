@@ -11,7 +11,9 @@
 //   file tools    — the command's PreToolUse hook passes a write inside the repo and refuses one outside
 //   other agents  — a `codex exec`-style command is started as it is: no probe, nothing held back
 //   --detach      — the server runs on its own past the session, is reused by a second --detach, and --stop ends it;
-//                   in a repo with no set-up .reelplanner/ (one video) too, recorded in the machine's inbox for the repo
+//                   in a repo with no set-up .reelplanner/ (one video) too, recorded in the machine's inbox for the repo;
+//                   run by Claude Code, it takes the page over from a session connected before and notes it, the skill's
+//                   Stop hook asks for a waiter until one waits, and the review that waiter claims clears the note
 //   ask           — a question asked on the page (Ask about this): with no session waiting it goes with the review; a
 //                   waiting session's --wait wakes on it, `inbox answer` answers it, GET /api/ask reads the answer
 import { spawn, execFileSync } from "node:child_process";
@@ -20,7 +22,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT, testPort } from "../lib/env.mjs";
 import { waitingLine, osCommand, splitCommand } from "../lib/notify.mjs";
-import { liveWaiters, claim, writeReview, repoKey, agentPrompt, SKILL_PATH } from "../lib/inbox.mjs";
+import { liveWaiters, claim, writeReview, repoKey, agentPrompt, SKILL_PATH, listInbox } from "../lib/inbox.mjs";
 import { existsSync as hasFile } from "node:fs";
 import { sandboxOf, sandboxProblem, withoutSandbox, fencesFileTools } from "../lib/sandbox.mjs";
 // the runner hands this spec a free port and the four above it (RP_TEST_PORT); run alone, a random one below the
@@ -170,7 +172,7 @@ try {
   // a stand-in terminal-browser that shows no windows: a split registered with the server is left open after Send, and said so
   const fakeBin = join(tmp, "fake-bin"); mkdirSync(fakeBin, { recursive: true });
   writeFileSync(join(fakeBin, "terminal-browser"), `#!/bin/sh\necho '{"browsers":[]}'\n`, { mode: 0o755 });
-  const env = { ...process.env, PATH: `${fakeBin}:${process.env.PATH}`, REELPLANNER_PANE_CLOSE_MS: "300", REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
+  const env = { ...process.env, PATH: `${fakeBin}:${process.env.PATH}`, REELPLANNER_PANE_CLOSE_MS: "300", REELPLANNER_OWNER: "session:loop-spec", CODEX_THREAD_ID: "", CLAUDE_CODE_SESSION_ID: "", CLAUDE_SESSION_ID: "", REELPLANNER_HOME: youHome, REELPLANNER_NOTIFY_CMD: NOTIFY_CMD, REELPLANNER_RECHECK_MS: "1500", REELPLANNER_SANDBOX_PROBE_CMD: `"${process.execPath}" "${rec}" "${probes}"` };
   rmSync(notified, { force: true });
   const srv = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--no-open", "--port", String(testPort(BASE_PORT, 0)), "--out", join(tmp, "bundle")], { cwd: tmp, env });
   procs.push(srv);
@@ -379,6 +381,32 @@ try {
   const dCodex = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify"], { cwd: tmp, env: { ...env, CODEX_THREAD_ID: "spec-thread", PATH: `${noCodex}:${env.PATH}` }, encoding: "utf8", timeout: 90000 });
   ok("--detach run by Codex: tries to connect its session, and with none verified says Send still saves, and goes on", /this Codex session is not connected \(.+\): Send saves the review/.test(dCodex)
     && dCodex.includes(`review page: ${sj.url}`) && !existsSync(join(rp, "inbox/.connection.json")), dCodex);
+  // run by Claude Code (its CLAUDE_CODE_SESSION_ID): no queue to connect, so the page is this session's, Send reaches it
+  // through its `review --wait`, and the skill's Stop hook asks for one until it waits
+  writeFileSync(join(rp, "inbox/.connection.json"), JSON.stringify({ session: "codex:spec-old", repo: realpathSync(tmp), endpoint: null, connectedAt: "2026-01-01T00:00:00Z" }) + "\n");
+  const claudeEnv = { ...env, CLAUDE_CODE_SESSION_ID: "spec-claude" }, noteFile = join(youHome, "pages", "claude-spec-claude.json");
+  const dClaude = execFileSync(process.execPath, [join(ROOT, "scripts/review.mjs"), vd, "--detach", "--no-open", "--no-notify"], { cwd: tmp, env: claudeEnv, encoding: "utf8", timeout: 90000 });
+  ok("--detach run by Claude Code: Send no longer goes to the session connected before", /Send no longer goes to codex:spec-old, connected before/.test(dClaude) && !existsSync(join(rp, "inbox/.connection.json")), dClaude);
+  const noted = existsSync(noteFile) ? JSON.parse(readFileSync(noteFile, "utf8")).pages : [];
+  ok("--detach run by Claude Code: the page is noted for the session, which is told Send reaches it only through review --wait", noted.length === 1 && noted[0].url === sj.url && noted[0].server === sj.pid
+    && /Send reaches this Claude Code session only through `.+ review --wait`: keep it running as a background task/.test(dClaude), `${dClaude}\n${JSON.stringify(noted)}`);
+  const stopHook = () => execFileSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "review-hook", "stop"], { cwd: tmp, env, encoding: "utf8", timeout: 30000,
+    input: JSON.stringify({ session_id: "spec-claude", hook_event_name: "Stop", stop_hook_active: false, background_tasks: [] }) });
+  const asked = stopHook();
+  ok("Stop hook: with no waiter, it asks the session for one, naming the page", asked.includes(sj.url) && /review --wait/.test(asked), asked);
+  // what the checks above left in the inbox (a waiter takes a review whose run has ended): this waiter's is the next Send
+  for (const r of listInbox(rp)) for (const f of [r.path, r.path.replace(/\.json$/, ".claim")]) rmSync(f, { force: true });
+  const cw = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), "--wait", "--timeout", "60"], { cwd: tmp, env: claudeEnv });
+  procs.push(cw);
+  let cwOut = ""; cw.stdout.on("data", (d) => (cwOut += d));
+  const cwExit = new Promise((r) => cw.on("exit", (c) => r(c)));
+  ok("--wait from Claude Code: its heartbeat names the session", !!await until(() => liveWaiters(rp).some((w) => w.session === "claude:spec-claude"), 8000), JSON.stringify(liveWaiters(rp)));
+  ok("Stop hook: quiet while this session's review --wait waits", stopHook() === "");
+  const sent = await fetch(new URL("api/review", sj.base), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(row("2026-01-07T10:00:00Z")) }).then((r) => r.json());
+  const cwCode = await Promise.race([cwExit, sleep(8000).then(() => "timeout")]);
+  ok("Send reaches the waiting Claude Code session, and the review it claims clears the note", sent.handledBy === "session" && cwCode === 0 && /video-20260107T100000Z\.json/.test(cwOut) && !existsSync(noteFile),
+    `${JSON.stringify(sent)} · exit ${cwCode} · ${cwOut}`);
+  ok("Stop hook: quiet once the review came back", stopHook() === "");
   const stop = cli("--stop");
   const after = await fetch(new URL("api/review", sj.base)).then(() => "answered", () => "refused");
   ok("--stop: stops it and forgets it", /stopped the review server/.test(stop) && !isAlive(sj.pid) && !existsSync(sfile) && after === "refused", `${stop} · ${after}`);

@@ -76,22 +76,22 @@
 //                    the build signature of the review's video as served here (its plan map's changes.at, else its frames,
 //                    as the player's buildSig()), so the page can tell a rebuilt video from the one it was sent from
 import { createServer } from "node:http";
-import { readFileSync, writeFileSync, existsSync, statSync, readdirSync, mkdirSync, openSync, closeSync, unlinkSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, statSync, readdirSync, mkdirSync, openSync, closeSync, unlinkSync, realpathSync } from "node:fs";
 import { resolve, join, dirname, basename, extname, normalize, relative } from "node:path";
 import { tmpdir, hostname } from "node:os";
 import { execFileSync, spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { ROOT, repoRoot, rpInitialized, hasRp, realPath, rpDirOf } from "./lib/env.mjs";
+import { ROOT, RP_LOCAL_COMMAND, repoRoot, rpInitialized, hasRp, realPath, rpDirOf } from "./lib/env.mjs";
 import { notify, waitingLine, readPlanMap, splitCommand } from "./lib/notify.mjs";
 import { unsandboxedNote } from "./lib/sandbox.mjs";
-import { harnessForCommand } from "./lib/agents.mjs";
+import { harnessForCommand, activeSession } from "./lib/agents.mjs";
 import { openReview, REVIEW_WORKSPACES } from "./lib/presentation.mjs";
 import { paneOf, registerPane, closePane } from "./lib/review-pane.mjs";
 import { findExecutable } from "./lib/review-preferences.mjs";
 import { readReviewPreferences, openerCommand } from "./lib/review-preferences.mjs";
 import { discoverReviewProjects } from "./lib/review-projects.mjs";
 import { sendFile } from "./lib/http-file.mjs";
-import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, claimLive, progressOf, repoKey } from "./lib/inbox.mjs";
+import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, dropConnection, notePage, claimLive, progressOf, repoKey } from "./lib/inbox.mjs";
 import { readYou, youKnows, pendingPath, repoName } from "./lib/memory.mjs";
 import { keepVersion, keepLines } from "./lib/versions.mjs";
 
@@ -209,7 +209,23 @@ if (flag("session")) {
     try { await connectSession(BOX, { repo: REPO, session }); console.log(`· Send wakes this Codex session (${session}): end your turn once the review is open, with no \`review --wait\` left running`); }
     catch (e) { console.log(`△ this Codex session is not connected (${e.message}): Send saves the review; ask the person to say when it is sent`); }
   }
+} else if (activeSession(process.env)?.agent === "claude" && !process.env.REELPLANNER_REVIEW && !process.env.REELPLANNER_REVIEW_DETACHED) {
+  // Run by Claude Code, which has no queue to connect: the page is this session's now, and Send reaches it through its
+  // `review --wait`. A session connected before (a Codex session, closed since, perhaps) no longer gets the reviews.
+  const was = dropConnection(BOX);
+  if (was) console.log(`· Send no longer goes to ${was.session}, connected before: it reaches this session's \`review --wait\``);
 }
+// The waiter, written with this package's own CLI: `reelplanner` when that is this package, else its full path.
+const WAIT = (() => {
+  let same = false; try { const p = findExecutable("reelplanner"); same = !!p && realpathSync(p) === realpathSync(join(ROOT, "bin", "reelplanner.mjs")); } catch {}
+  return `${same ? "reelplanner" : RP_LOCAL_COMMAND} review --wait`;
+})();
+// A page opened from Claude Code is noted until a review from it comes back (scripts/lib/inbox.mjs): the plan-to-video
+// skill's Stop hook asks the session for a waiter while it has none.
+const notedPage = (url, server) => {
+  if (process.env.REELPLANNER_REVIEW || !notePage(BOX, { url, server, wait: WAIT })) return;
+  console.log(`· Send reaches this Claude Code session only through \`${WAIT}\`: keep it running as a background task`);
+};
 // a path in a response or a line: from the repo for its own inbox, from ~ for the machine's
 const shown = (p) => RP ? relative(REPO, p).split("\\").join("/") : shownPath(p);
 if (packedDir) {
@@ -282,6 +298,7 @@ if (args.includes("--detach")) {
     console.log(`✓ review page: ${url}`);
     console.log(`  (the review server already running, pid ${running.pid}; \`reelplanner review --stop\` stops it)`);
     if (running.unsandboxed) console.log(running.unsandboxed);
+    notedPage(url, running.pid);
     await announce(url);
     process.exit(0);
   }
@@ -302,6 +319,7 @@ if (args.includes("--detach")) {
   console.log(`✓ review page: ${s.url}`);
   console.log(`  (a review server of its own, pid ${s.pid}: it outlives this session; logs in ${shownPath(log)}; \`reelplanner review --stop\` stops it)`);
   if (s.unsandboxed) console.log(s.unsandboxed);
+  notedPage(s.url, s.pid);
   // opened from here, as when the server was running already: this command runs in the agent's terminal, the server
   // in none, and terminal-browser in Ghostty on macOS finds the pane to split by its terminal
   await announce(s.url, { tell: false });

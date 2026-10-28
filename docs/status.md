@@ -61,7 +61,9 @@ Left, for the owner ([`docs/releasing.md`](./releasing.md), "Going public"):
 - **Another agent end to end:** install the skill and run a narrated plan through review, implementation, walkthrough and a requested-change fix. Codex CLI completed this trial on macOS; other agents and cloud sessions remain unverified.
 - **Clearer videos from Codex.** With the same skill and style guide, Codex's videos tend to come out more
   technical and harder to follow than Claude Code's. A way in: the same plan made by both (the bakery bench in
-  [`eval/pipeline-cost/`](../eval/pipeline-cost/)), and where Codex's script departs from the style guide.
+  [`eval/pipeline-cost/`](../eval/pipeline-cost/)), and where Codex's script departs from the style guide. A
+  first step from one Codex review video: the guide's five memo patterns and its budget rule (style guide §4 and
+  §1); whether Codex's next videos follow them is still to measure.
 - **The sample videos under `videos/` hosted where they play in the browser**; today they play on the local review
   page (`npm run review`), and the case study's videos are hosted on its pages.
 

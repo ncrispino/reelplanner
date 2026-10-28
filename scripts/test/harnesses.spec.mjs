@@ -61,11 +61,11 @@ else if(args[0]==='app-server' && args[1]==='daemon') console.log(JSON.stringify
     assert.equal(argv.includes('sandbox_mode="workspace-write"'), true);
     assert.equal(argv.includes("--dangerously-bypass-approvals-and-sandbox"), false);
   });
-  const launched = await getHarness("codex").headless({ repo, argv, env: { ...env, CLAUDECODE: "stale", CLAUDE_SESSION_ID: "stale",
+  const launched = await getHarness("codex").headless({ repo, argv, env: { ...env, CLAUDECODE: "stale", CLAUDE_CODE_SESSION_ID: "stale", CLAUDE_SESSION_ID: "stale",
     CODEX_SANDBOX: "parent", REELPLANNER_OWNER: "previous", CLAUDE_CODE_USE_BEDROCK: "1" } });
   check("a new run loses parent identities while preserving storage and provider settings", () => {
     assert.deepEqual(launched.argv, argv); assert.equal(launched.env.CODEX_THREAD_ID, undefined);
-    assert.equal(launched.env.CLAUDE_SESSION_ID, undefined); assert.equal(launched.env.REELPLANNER_OWNER, undefined);
+    assert.equal(launched.env.CLAUDE_SESSION_ID, undefined); assert.equal(launched.env.CLAUDE_CODE_SESSION_ID, undefined); assert.equal(launched.env.REELPLANNER_OWNER, undefined);
     assert.equal(launched.env.CODEX_HOME, home); assert.equal(launched.env.CLAUDE_CODE_USE_BEDROCK, "1");
     assert.match(launched.commitAdvice, /does not automatically escape/);
   });

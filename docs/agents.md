@@ -66,6 +66,14 @@ The skill names the other skills it loads the same way: HyperFrames' faceless-ex
   in `~/.claude/skills`, outside your repo), Claude Code asks once whether reads outside the working directories are
   allowed, in auto mode too. The first answer, Yes and keep allowing them, is the one that lets the skill go on
   without asking again ([seen on a fresh machine](../eval/fresh-machine/2026-10-10-bakery-auto-mode.md), Claude Code 2.1.296).
+- **How a review gets back to Claude Code.** Claude Code has nothing a review server can queue a message to, so Send
+  reaches a session only through the `reelplanner review --wait` it keeps running as a background task: the command
+  exits with the review's path, and the session wakes. A session that forgets it never hears of the review. So the
+  skill declares a Stop hook, `reelplanner review-hook stop`: when the session ends a turn while a page it opened with
+  `review --detach` has no waiter of its own, the hook tells it to start one (once per turn end, as guidance). Claude
+  Code runs the hook once the skill is loaded, for the rest of that session. It reads a few small files of
+  reelplanner's own, is quiet otherwise, and does nothing without `reelplanner` on the PATH. `review --detach` from Claude Code also takes the
+  page over from a session connected before, so reviews stop going to a Codex session that has since closed.
 - **The headless review run** is off until you ask for it: `reel init <repo> --agent claude` (in a repo set up
   already too) writes the command the review server starts on a review sent while no session waits. It runs in
   auto mode inside Claude Code's sandbox (D-082; [project-dir](./project-dir.md): `config.json`).

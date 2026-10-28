@@ -88,7 +88,7 @@ try {
   assert.throws(() => answerQuestion(rp, q.id, "unverified answer", null, { owner: null }), /no verified caller owner/);
   writeFileSync(join(rp, "decisions.json"), JSON.stringify({ decisions: [] })); // CLI selects this scratch repo's inbox
   const foreignAnswer = spawnSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", q.id, "stale CLI answer", "--from", "old session"], {
-    cwd: repo, encoding: "utf8", env: { ...process.env, REELPLANNER_OWNER: "fake:next", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "" },
+    cwd: repo, encoding: "utf8", env: { ...process.env, REELPLANNER_OWNER: "fake:next", CODEX_THREAD_ID: "", CLAUDE_CODE_SESSION_ID: "", CLAUDE_SESSION_ID: "" },
   });
   assert.equal(foreignAnswer.status, 1); assert.match(foreignAnswer.stderr, /belongs to another session/);
   assert(!foreignAnswer.stderr.includes("at answerQuestion"));
@@ -114,7 +114,7 @@ try {
     const result = spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), "inbox", "--repo", repo,
       "answer", question.id, words, "--from", "renew"], {
       cwd: repo, encoding: "utf8", timeout: 2000,
-      env: { ...process.env, REELPLANNER_OWNER: "fake:literal", CODEX_THREAD_ID: "", CLAUDE_SESSION_ID: "" },
+      env: { ...process.env, REELPLANNER_OWNER: "fake:literal", CODEX_THREAD_ID: "", CLAUDE_CODE_SESSION_ID: "", CLAUDE_SESSION_ID: "" },
     });
     assert.equal(result.status, 0, result.stderr);
     assert.equal(readQuestion(rp, question.id).answer, words);
@@ -396,7 +396,7 @@ try {
     const anonymousRepo = mkdtempSync(join(tmpdir(), "reel-owner-handle-")), anonymousRp = join(anonymousRepo, ".reelplanner");
     mkdirSync(anonymousRp); writeFileSync(join(anonymousRp, "decisions.json"), '{"decisions":[]}'); writeFileSync(join(anonymousRp, "config.json"), "{}");
     const anonymousEnv = { ...process.env };
-    for (const key of ["REELPLANNER_OWNER", "CODEX_THREAD_ID", "CODEX_SESSION_ID", "CLAUDE_SESSION_ID", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"]) delete anonymousEnv[key];
+    for (const key of ["REELPLANNER_OWNER", "CODEX_THREAD_ID", "CODEX_SESSION_ID", "CLAUDE_CODE_SESSION_ID", "CLAUDE_SESSION_ID", "CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"]) delete anonymousEnv[key];
     if (mode === "claudecode-only") anonymousEnv.CLAUDECODE = "1";
     const anonGit = (...argv) => execFileSync("git", ["-C", anonymousRepo, ...argv], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
     // Each call retains the ordinary executable prefix; the handle is a command argument.
