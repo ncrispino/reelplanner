@@ -125,6 +125,27 @@ theme, the stage snippet and `frame-lint` rather than in the guide:
 - HyperFrames' skills are pinned: `hyperframes init` and `skills update` install from GitHub main,
   which on 2026-09-21 shipped a `media-use` that could not load.
 
+## Narration that read as a memo
+
+- A collaborator's review video, made with Codex at medium depth, passed every check (`build`, `check-terms`
+  strict, `frame-lint`, `fresh-eyes --check`), and the person it was for could not follow it. It told a written
+  review with five decisions in 15 scenes and about five minutes: 957 words, sped to 1.5× with ffmpeg after
+  narration, its pace file saying why: to stay near five minutes.
+- Its sentences were short, 11.3 words on average, and still dense. 17 of its 85 sentences opened with an order
+  ("Keep…", "Defer…", "Authorize…"), one was a question, and each decision was one line of nouns with no case.
+  A rebuild of the same review, every decision and recommendation unchanged, ran 26 scenes and about 21 minutes:
+  4,109 words, 15.4 a sentence, 11 of 266 sentences opening with an order, 17 questions. Sentence length did not
+  separate the two; the orders and the missing cases did. Hence the five patterns in style guide §4, with made-up
+  examples in place of the private video's lines.
+- The pressure was the budget: at medium, past it only on the person's words, and nobody was asked, so the
+  explanations were cut and the voice sped up instead. Hence "the budget never comes out of the teaching" (§1).
+- Its newcomer had flagged the gaps, and 7 of its 30 findings were kept as "the linked review explains it"
+  (#42; `fresh-eyes --check` refuses that now).
+- A fact check dispatched by hand on the rebuild's storyboard found 18 problems before the frames were done, one
+  a wrong count (a tally said none of a run's 149 tool calls printed nothing; one did). `fresh-eyes` gives only an
+  explainer a checker, hence the skill's line to dispatch one by hand for a plan video that states facts from
+  records.
+
 ## Details
 
 A detail first opened in a side panel, so the frame stayed in view (D-021); since D-195 it opens over
