@@ -215,8 +215,8 @@ term named, a recommendation given) and still lose the viewer, because each sent
 read aloud. Read every line of SCRIPT.md for these five before narrating. The examples are made up, on the upload
 above; each rewrite says the same thing.
 
-- **Orders in place of explanation.** A sentence that tells nobody what to do, before the viewer knows what the
-  thing is. Not "Keep the current part size and retry cadence: two seconds after a failure, thirty during repeated
+- **Orders in place of explanation.** A sentence that gives an order, to no one in particular, before the viewer
+  knows what the thing is. Not "Keep the current part size and retry cadence: two seconds after a failure, thirty during repeated
   failures", but "An upload goes up in parts of 8 MB. When a part fails, the client waits two seconds and sends it
   again; if it keeps failing, it waits thirty. The plan keeps both."
 - **Noun stacks.** Three nouns in a row, or a noun made from a verb (persistence, retention, exposure), hides who

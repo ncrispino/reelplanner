@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Narration is an explanation, not a memo** (#NN, style guide §4). Five patterns to read every script line for
+- **Narration is an explanation, not a memo** (#46, style guide §4). Five patterns to read every script line for
   before narrating: orders in place of explanation, noun stacks, a list where a case belongs, the answer before
   the question, caveats as sentences of their own; each with a made-up line and its rewrite, and one decision told
   before and after. A Codex-made review video passed every check with all five and could not be followed.
