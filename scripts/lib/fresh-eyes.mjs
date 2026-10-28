@@ -190,11 +190,17 @@ export function hasMeaning(videoDir, phrase) {
   return glossaryFor(videoDir).some((g) => (g.forms || []).includes(p) || String(g.display || "").toLowerCase() === p);
 }
 
+// A kept reason that sends the viewer somewhere else (the guide, a detail, a linked document): the video still tells the
+// whole story (style guide §10), so what a viewer could not follow is fixed in it, given a meaning, or asked about.
+const ELSEWHERE = /\b(?:linked|supporting|full|written|separate|source-grounded)\s+(?:review|document|doc|report|notes|page|write-?up)\b|\b(?:the|its)\s+(?:guide|detail page|details? panel|appendix|documentation)\b|\bdetails\/[\w.-]+/i;
+
 /**
  * One answer's problem, or null when it answers the finding. A `[plan]` finding is answered `plan: <what plan.md now
  * says>` (plan.md changed since the agents looked) or `ask: <the question put to the person>`, never kept, fixed in
  * the video or given a meaning (step 3: the web address raised three times and kept). `plan:` and `ask:` answer any
- * finding the author takes to be about the plan.
+ * finding the author takes to be about the plan. A `kept` reason may not send the viewer elsewhere, and a `fixed`
+ * answer needs its scene, or a scene it names, changed since the agents looked: an answer that leaves the video as
+ * they saw it has not answered what they could not follow.
  */
 export function answerProblem(videoDir, f, stamp = readStamp(videoDir)) {
   if (!f.answer) return "no answer";
@@ -209,7 +215,15 @@ export function answerProblem(videoDir, f, stamp = readStamp(videoDir)) {
     if (stamp?.plan && hash(read(plan)) === stamp.plan) return `plan:, but ${sourceName} is unchanged since the agents looked`;
   }
   if (f.answer.kind === "kept" && words < 3) return "kept, with no reason";
+  const away = f.answer.kind === "kept" && ELSEWHERE.exec(f.answer.text);
+  if (away) return `kept, but the reason sends the viewer elsewhere ("${away[0]}"): the video has to make sense to someone who opens nothing (style guide §10): fix the scene, give the phrase a meaning, or ask`;
   if (f.answer.kind === "fixed" && words < 2) return "fixed, but not where";
+  if (f.answer.kind === "fixed" && stamp?.scenes) {
+    // the fix is in the finding's scene or in one the answer names: one of them differs from what the agents saw
+    const named = [...new Set([f.scene, ...[...f.answer.text.matchAll(/\bscenes?\s+(\d+)/gi)].map((m) => Number(m[1]))].filter(Boolean))];
+    if (named.length && !named.some((n) => changedSince(videoDir, stamp).includes(n)))
+      return `fixed, but scene${named.length === 1 ? "" : "s"} ${named.join(", ")} ${named.length === 1 ? "is" : "are"} as the agents saw ${named.length === 1 ? "it" : "them"}: change its narration or frame, or answer it another way`;
+  }
   if (f.answer.kind === "meaning" && f.phrase && !hasMeaning(videoDir, f.phrase)) return `a meaning, but "${f.phrase}" has none in the glossary or the storyboard's terms:`;
   return null;
 }
