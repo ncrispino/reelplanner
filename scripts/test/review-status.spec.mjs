@@ -179,7 +179,10 @@ try {
   const status2 = async (id) => (await (await fetch(`${url2}/api/review/status?id=${encodeURIComponent(id)}`)).json());
   const g2 = await (await fetch(api2)).json();
   ok("level 1: GET /api/review answers (Send is offered): kept on this machine, no session waiting, no agent command", g2.ok === true && g2.where === "machine" && g2.sessionWaiting === false && g2.agentCommand === null && g2.unsandboxed === null, JSON.stringify(g2));
-  const lrow = (at) => row(at, { project: "demo", planDir: null });
+  // as the player sends one now: a decision with its question, a comment on a scene, the reviewer's note
+  const lrow = (at) => row(at, { project: "demo", planDir: null, note: "start with the sweeper", review: { exportedAt: at, verdict: "changes",
+    decisions: [{ id: "d1", option: "b", label: "S3 object", recommended: false, planStep: 1, question: "Where does the manifest live?", t: 5 }],
+    annotations: [{ id: "a1", kind: "note", t: 3, frame: { index: 2, title: "The fix" }, plan: { step: 2 }, comment: "clearer, please" }] } });
   const p1 = await post2(lrow("2026-01-06T00:00:00Z"));
   ok("level 1: a posted review lands in the machine's inbox; no session waiting → saved there, said plainly", p1.code === 200 && p1.body.handledBy === "inbox" && p1.body.path === tilde(join(box, "demo-20260106T000000Z.json"))
     && /saved on this machine, not in the repo; tell your agent it's sent/.test(p1.body.message) && existsSync(join(box, "demo-20260106T000000Z.json")), JSON.stringify(p1.body));
@@ -189,6 +192,9 @@ try {
   const same = (a, b) => { try { return realpathSync(a) === realpathSync(b); } catch { return false; } };
   const w1 = await run2(plain, "review", "--wait", "--timeout", "20");
   ok("level 1: `review --wait` picks up the review waiting there, prints its path and exits 0", w1.code === 0 && same(w1.out.trim(), join(box, `${p1.body.id}.json`)) && /waiting for a review in .*this machine's folder/.test(w1.err), JSON.stringify(w1));
+  // its file is outside the repo, where an agent's sandbox or permissions may not reach: --wait prints the review too
+  ok("level 1: …and prints the review itself (verdict, answers with their questions, comments, the note quoted), stdout still the path",
+    ["📝 the review, printed", "**Changes requested:**", "> start with the sweeper", "Where does the manifest live?: **S3 object**", 'at 0:03 (The fix): "clearer, please"'].every((s) => w1.err.includes(s)), w1.err);
   ok("…claimed by the session: working", (await status2(p1.body.id)).state === "working");
   // one sent while a session waits: it has it at once
   const waiting = run2(plain, "review", "--wait", "--timeout", "30");
@@ -229,6 +235,10 @@ try {
   ok("…`inbox` names it, where it is", /△ 1 review\(s\) sent before `reel init`/.test(lsInit.out) && lsInit.out.includes(`${p3.id}.json`), lsInit.out);
   const dInit = await run2(bare, "inbox", "done", p3.id);
   ok("…and `inbox done` finishes it there, once", dInit.code === 0 && existsSync(join(bbox, "done", `${p3.id}.json`)) && !/sent before/.test((await run2(bare, "inbox")).out), dInit.out + dInit.err);
+  // a set-up repo's review is in the repo, for reel-intake: --wait prints its path, not the review
+  const own = writeReview(bareRp, lrow("2026-01-09T00:00:00Z"));
+  const wOwn = await run2(bare, "review", "--wait", "--timeout", "5");
+  ok("set up: `review --wait` prints a review's path in the repo, not the review (reel-intake files it)", wOwn.code === 0 && same(wOwn.out.trim(), own.path) && !wOwn.err.includes("the review, printed"), JSON.stringify(wOwn));
 } catch (e) {
   failed++; console.log(`✗ ${e.stack}`);
 } finally {
