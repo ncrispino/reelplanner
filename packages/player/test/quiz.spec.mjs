@@ -204,19 +204,23 @@ async function backToExplainedBoundary() {
     await pg.waitForFunction(() => { const el = document.querySelector("#rp"); return el?.player?.ready && el.planMap?.quizzes?.some((q) => q.id === "kreturn"); }, null, { timeout: 60000 });
     // A same-document iframe load can invalidate the first ready event. Delay its probe
     // in one case so the boundary check cannot depend on how quickly the machine re-probes.
+    // Every call made before the first delayed one runs is delayed too: the runtime can announce itself twice.
     if (delayedLoad) await pg.evaluate(() => {
-      const pl = document.querySelector("#rp").player;
+      const pl = document.querySelector("#rp").player; window.__delayedReady = 0;
       for (const name of ["_onProbeReady", "_onRuntimeTimelineReady"]) {
         const ready = pl[name];
-        pl[name] = function (...args) { setTimeout(() => { this[name] = ready; ready.apply(this, args); }, 900); };
+        pl[name] = function (...args) { window.__delayedReady++; setTimeout(() => { this[name] = ready; try { ready.apply(this, args); } finally { window.__delayedReady--; } }, 900); };
       }
       pl.iframeElement.dispatchEvent(new Event("load"));
     });
     // play() before final readiness can start the runtime without emitting play until
     // a later ready callback. Our pause-on-play fixture needs that event at the anchor.
+    // Final means every delayed callback has run: one left over fires "ready" mid-scenario, whose handler
+    // redraws the Play control from a paused state a late runtime packet may still be mirroring, and the
+    // Play pressed after it pauses instead (1 run in 48 on a loaded machine; the CI fast suite on #49).
     await pg.waitForFunction(() => {
       const pl = document.querySelector("#rp").player;
-      return pl.ready && pl.assetsReady && pl.iframeElement.contentDocument?.readyState === "complete";
+      return pl.ready && pl.assetsReady && pl.iframeElement.contentDocument?.readyState === "complete" && !window.__delayedReady;
     }, null, { timeout: 60000 });
     await pg.evaluate(() => { const el = document.querySelector("#rp"); el.start(); el.player.pause(); });
     return pg;
