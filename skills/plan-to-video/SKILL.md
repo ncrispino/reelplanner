@@ -759,8 +759,8 @@ One main session runs the loop: the one the person talks to. It never sits on a 
   you, and this skill's Stop hook reminds you when a turn ends while a page you opened has none. When the reviewer presses Send,
   `--wait` prints the review's path and exits: run `$RP reel-intake <path>`, hand the revise or fix to a
   worker, run `$RP inbox done <id>`, and start `--wait` again. A path under `inbox/questions/` is a question the
-  reviewer asked on the page (Ask about this): answer it at once, in plain words, from the plan, the glossary and
-  the scene it names, with `$RP inbox answer <id> "<answer>" --from "the plan, step N"` (or the glossary's word,
+  reviewer asked on the page (Ask about this), and `--wait` prints it above the path, with the scene it is about
+  (no need to open the file): answer it at once, in plain words, from the plan, the glossary and the scene it names, with `$RP inbox answer <id> "<answer>" --from "the plan, step N"` (or the glossary's word,
   or the scene), and start `--wait` again; the page shows it within seconds. The local page's **Send**
   saves directly, with no download. Supported sessions can be connected explicitly; a queue notification
   still needs adoption, and background callbacks vary by client. Follow

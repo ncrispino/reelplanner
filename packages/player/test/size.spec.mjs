@@ -89,6 +89,10 @@ const geo = (P) => P.p.evaluate(() => {
     size: el.vsize, stored: (() => { try { return localStorage.getItem("rp:size"); } catch { return null; } })(), scrollX: document.documentElement.scrollWidth > innerWidth + 1 };
 });
 const settle = (P) => P.p.waitForTimeout(250);
+// the corner handle's fade (0.15 s) done, on (opacity above 0.9) or off (below 0.1): waited for, not a fixed time,
+// which a loaded runner outlasts when the hover lands late (CI's full suite read 0.85 after 300 ms)
+const gripFaded = (P, on) => P.p.waitForFunction((on) => { const g = document.querySelector("#rp").shadowRoot.querySelector(".szgrip"), op = g ? parseFloat(getComputedStyle(g).opacity) : NaN; return on ? op > 0.9 : op < 0.1; },
+  on, { timeout: 5000, polling: 50 }).catch(() => null);
 const LEAD = FULL ? 1.2 : 0.4;   // how long before a question it is played into
 const near = (a, b, tol = 2) => Math.abs(a - b) <= tol;
 
@@ -136,10 +140,10 @@ try {
   ok(!(await geo(P)).pop.open, "…and so does a click anywhere else");
 
   // ==== 2. the frame's corner: drag it, the video follows the pointer; double-click it, Fit ======================
-  await P.p.mouse.move(fit.mid, fit.top + fit.h / 2); await P.p.waitForTimeout(300);
+  await P.p.mouse.move(fit.mid, fit.top + fit.h / 2); await gripFaded(P, true);
   g = await geo(P);
   ok(g.grip?.shown && g.grip.op > 0.9 && near(g.grip.b.right, g.r, 1) && near(g.grip.b.bottom, g.bottom, 1) && g.grip.b.width <= 28, `with the pointer on the video, a small handle shows at its bottom-right corner (${Math.round(g.grip.b.width)} px, opacity ${g.grip.op})`);
-  await P.p.mouse.move(5, 5); await P.p.waitForTimeout(300);
+  await P.p.mouse.move(5, 5); await gripFaded(P, false);
   ok((await geo(P)).grip.op < 0.1, "…and it is gone when the pointer leaves");
   const gx = g.grip.b.x + g.grip.b.width / 2, gy = g.grip.b.y + g.grip.b.height / 2;
   await P.p.mouse.move(gx, gy); await P.p.waitForTimeout(200); await P.p.mouse.down();

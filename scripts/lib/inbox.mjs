@@ -489,11 +489,23 @@ export function writeQuestion(rp, q) {
   return { id, path, duplicate: false };
 }
 export const readQuestion = (rp, id) => { try { return JSON.parse(readFileSync(join(questionsDir(rp), `${safeId(id)}.json`), "utf8")); } catch { return null; } };
-/** Questions nobody has answered or claimed, oldest first: [{ id, path }]. */
+/** Questions nobody has answered or claimed, oldest first: [{ id, path }]. One queued for `owner` (a connected
+ *  session's) counts; one already handed to `owner` waits for its lease to run out, so a question the session could
+ *  not answer does not end every `--wait` it starts (and a Send still reaches it). */
 export function waitingQuestions(rp, { owner = null, includeClaimed = false } = {}) {
   const dir = questionsDir(rp); if (!existsSync(dir)) return [];
   return readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => ({ id: f.slice(0, -5), path: join(dir, f), mtime: statSync(join(dir, f)).mtimeMs }))
-    .filter((q) => { if (readQuestion(rp, q.id)?.answer) return false; let c; try { c = JSON.parse(readFileSync(qClaimPath(rp, q.id), "utf8")); } catch {} return includeClaimed || !c || !claimLive(c) || c.owner === owner; }).sort((a, b) => a.mtime - b.mtime).map(({ id, path }) => ({ id, path }));
+    .filter((q) => { if (readQuestion(rp, q.id)?.answer) return false; let c; try { c = JSON.parse(readFileSync(qClaimPath(rp, q.id), "utf8")); } catch {} return includeClaimed || !c || !claimLive(c) || (c.owner === owner && progressOf(rp, q.id)?.phase === "queued"); }).sort((a, b) => a.mtime - b.mtime).map(({ id, path }) => ({ id, path }));
+}
+/** A question as the session reads it (`--wait`, `inbox`): its words, the scene it is about, and how to answer.
+ *  Printed, so the session needs no file outside the repo (the machine's inbox, before `reel init`) to answer it. */
+export function questionNote(q) {
+  const t = Number(q.t), at = Number.isFinite(t) && t > 0 ? `at ${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}` : null;
+  const about = [q.frame?.index && `scene ${q.frame.index}${q.frame.title ? `, "${q.frame.title}"` : ""}`, at, q.planStep && `plan step ${q.planStep}`].filter(Boolean).join(", ");
+  const line = (s) => String(s).replace(/\s+/g, " ").trim();
+  return [`❓ question ${q.id}, asked on the page${q.title ? ` of "${line(q.title)}"` : ""}${about ? ` (${about})` : ""}:`, `   ${line(q.question)}`,
+    q.quote && `   about the words: "${line(q.quote)}"`, q.narration && `   the scene says: ${line(q.narration)}`, q.planDir && `   the plan: ${q.planDir}`,
+    `Answer it now, from the plan, the glossary and that scene: reelplanner inbox answer ${q.id} "<answer>" --from "<where it came from>". Then start --wait again.`].filter(Boolean).join("\n");
 }
 const claimQuestion = (rp, id, owner) => {
   let c; try { c = JSON.parse(readFileSync(qClaimPath(rp, id), "utf8")); } catch {}
