@@ -17,6 +17,14 @@
     A video whose newcomer kept 7 of 30 findings as "the linked review explains it" passed its checks and was still
     hard to follow; now each of those is fixed in the scene, given a meaning, or asked.
   - `fixed:` when neither the finding's scene nor a scene the answer names has changed since the agents looked.
+- **Ask about this reaches a Claude Code session** (#48). A question asked on the local page reached the waiting
+  session but went unanswered:
+  - `review --wait` printed only the question's path. Before `reel init` that is this machine's folder, outside
+    the repo, which Claude Code would not read. Now `--wait` prints the question itself, with its scene and the
+    command that answers it, and `reelplanner inbox` lists each open question's words.
+  - The next `--wait` handed the same question straight back, so a question the session could not answer kept it
+    from waiting, and a Send no longer reached it. A question handed to a session now comes back to it only when
+    its lease runs out; one queued for a connected Codex session is still adopted at once.
 
 ## 0.4.0 (2026-10-26)
 

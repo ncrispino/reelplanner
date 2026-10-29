@@ -123,6 +123,39 @@ try {
   console.log("✓ CLI answers and source labels that match command names are saved verbatim, including --wait");
   console.log("✓ adopted questions reject stale/unknown/foreign CLI answers under the ownership lock; finished retries retain answers and direct unclaimed answers work");
 
+  // A question is handed to a session once: its next --wait goes on waiting, so a review sent meanwhile still reaches
+  // it, and the question comes back only when its lease runs out. One queued for a connected session is adopted at once.
+  const handed = writeQuestion(rp, { id: "ask-handed", question: "Why the manifest first?" });
+  assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:asker", timeoutMs: 50 }), handed.path);
+  assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:asker", timeoutMs: 50, pollMs: 10 }), null);
+  const meanwhile = writeReview(rp, { ...row(7), project: "sent-after-a-question" });
+  assert.equal(await waitForReview(rp, { owner: "fake:asker", timeoutMs: 50 }), meanwhile.path); assert(finish(meanwhile.id));
+  const handedClaim = join(box, "questions", `${handed.id}.claim`);
+  writeFileSync(handedClaim, JSON.stringify({ ...JSON.parse(readFileSync(handedClaim, "utf8")), leaseUntil: 1 }));
+  assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:asker", timeoutMs: 50 }), handed.path);
+  answerQuestion(rp, handed.id, "So a resume knows which parts exist.", "the plan, step 1", { owner: "fake:asker" });
+  const forMain = writeQuestion(rp, { id: "ask-queued", question: "And the sweeper?" });
+  assert.equal((await deliverInbox(rp, forMain.id, { question: true, adapter, start: async () => { starts++; } })).handledBy, "session");
+  assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:main", timeoutMs: 50 }), forMain.path);
+  assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:main", timeoutMs: 50, pollMs: 10 }), null);
+  answerQuestion(rp, forMain.id, "It removes abandoned uploads.", "the plan, step 5", { owner: "fake:main" });
+  console.log("✓ a question handed to a session doesn't end its next --wait (a review still reaches it) until its lease runs out; one queued for a connected session is adopted at once");
+
+  // --wait prints the question itself, so a session that can't read the inbox (outside the repo before `reel init`)
+  // can still answer it; stdout stays the path. `inbox` lists each open question's words.
+  const shown = writeQuestion(rp, { id: "ask-shown", title: "Resumable uploads", question: "Why write the\nmanifest first?", t: 31, frame: { index: 4, title: "Step 1: write the manifest first" },
+    planStep: 1, narration: "First the server writes a manifest.", quote: "the manifest" });
+  const rpCli = (...argv) => spawnSync(process.execPath, [join(ROOT, "bin/reelplanner.mjs"), ...argv, "--repo", repo], { cwd: repo, env: { ...process.env, REELPLANNER_OWNER: "fake:cli" }, encoding: "utf8" });
+  const listed = rpCli("inbox");
+  assert.match(listed.stdout, /ask-shown \(scene 4\): "Why write the manifest first\?"/, listed.stdout);
+  const woke = rpCli("review", "--wait", "--questions", "--timeout", "1");
+  assert.equal(woke.status, 0, woke.stderr); assert.equal(woke.stdout.trim(), shown.path);
+  for (const part of ['question ask-shown, asked on the page of "Resumable uploads" (scene 4, "Step 1: write the manifest first", at 0:31, plan step 1):',
+    "   Why write the manifest first?", '   about the words: "the manifest"', "   the scene says: First the server writes a manifest.", 'reelplanner inbox answer ask-shown "<answer>"'])
+    assert(woke.stderr.includes(part), `--wait's note lacks ${JSON.stringify(part)}:\n${woke.stderr}`);
+  assert.equal(rpCli("inbox", "answer", shown.id, "So an upload can resume.", "--from", "the plan, step 1").status, 0);
+  console.log("✓ --wait prints the question, its scene and how to answer (stdout stays the path); inbox lists each open question's words");
+
   const fallback = writeReview(rp, row(2));
   const failed = await deliverInbox(rp, fallback.id, { adapter: { ...adapter, deliver: async () => ({ status: "unavailable" }) }, start: async () => { assert.equal(claimOf(rp, fallback.id), null); starts++; return { started: true, pid: 123 }; } });
   assert.equal(failed.handledBy, "agent"); assert.equal(starts, 1);

@@ -129,10 +129,13 @@ starts two runs, and only the page itself may post (another site's Origin, a tex
 body or a foreign Host is refused). The row is still untrusted: `reel-intake` checks it the same way.
 
 **Ask about this, on the local page:** a question POSTs to `/api/ask` (the same origin and host rules). With a
-main session waiting on `review --wait`, the server writes it to `.reelplanner/inbox/questions/<id>.json` and
-answers `{ handledBy: "session" }`; the waiting `--wait` wakes with that path, and the session answers it from the
-plan, the glossary and the scene it names, with `reelplanner inbox answer <id> "<answer>" --from "the plan, step 3"`,
-then waits again. The page asks `GET /api/ask?id=<id>` every two seconds, for two minutes at most, and shows the
-answer with where it came from. With no session waiting nothing is written, no headless run starts, and the page
-says the question goes with the review; `reviews/<id>.md` then lists it under "Questions you asked", to answer in
-the next version.
+main session waiting on `review --wait`, the server writes it to `.reelplanner/inbox/questions/<id>.json` (before
+`reel init`, this machine's `~/.reelplanner/inbox/<repo-key>/questions/`) and answers `{ handledBy: "session" }`; the
+waiting `--wait` wakes with that path and prints the question itself, with the scene it is about, so the session
+needs no read of the inbox. The session answers it from the plan, the glossary and that scene, with
+`reelplanner inbox answer <id> "<answer>" --from "the plan, step 3"`, then waits again. A question handed to a
+session doesn't wake its next `--wait`: it comes back only when its five-minute lease runs out, so one the session
+could not answer never keeps a Send from reaching it. The page asks `GET /api/ask?id=<id>` every two seconds, for
+two minutes at most, and shows the answer with where it came from. With no session waiting the question is saved
+for the next session's `--wait`, no headless run starts, and it also goes with the review; `reviews/<id>.md` then
+lists it under "Questions you asked", to answer in the next version.

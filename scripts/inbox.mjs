@@ -23,11 +23,11 @@
 //                     pass it to answer, renew, progress, done or a later --wait
 // `reelplanner review --wait` is the same as `inbox --wait`.
 import { fileURLToPath } from "node:url";
-import { resolve, basename } from "node:path";
+import { resolve, basename, dirname } from "node:path";
 import { randomUUID } from "node:crypto";
 import { activeSession } from "./lib/agents.mjs";
 import { repoRoot, rpInitialized, rpDirOf } from "./lib/env.mjs";
-import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
+import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, readQuestion, questionNote, questionsDir, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
 
 export async function main(args) {
   const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
@@ -52,6 +52,8 @@ export async function main(args) {
     catch (e) { console.error(`✗ ${e.message}`); return 1; }
     if (!p) { console.error(`△ no review in ${t}s`); return 2; }
     if (!callerOwner) console.error(`owner handle: ${waitOwner}\nPass --owner ${waitOwner} to inbox answer, renew, progress and done; keep it for this claimed item.`);
+    // a question asked on the page: its words here, so answering it needs no read of the inbox (outside the repo before `reel init`)
+    if (dirname(p) === questionsDir(box)) { const q = readQuestion(box, basename(p, ".json")); if (q) console.error(questionNote(q)); }
     console.log(p);
     return 0;
   }
@@ -97,7 +99,8 @@ export async function main(args) {
   console.log(`${all.length} review(s) in ${setUp ? "the inbox" : where}; ${w ? `${w} session(s) waiting` : "no session waiting"}`);
   for (const r of all) console.log(`  ${r.claim ? `${claimLive(r.claim) ? "claimed" : "stopped"} by ${r.claim.by === "agent" ? "a headless run" : "a session"} ${r.claim.at}${progressOf(box, r.id)?.phase ? ` (${progressOf(box, r.id).phase})` : ""}${r.claim.log ? `; log: ${r.claim.log}` : ""}` : "waiting"}  ${shownPath(r.path)}`);
   const qs = waitingQuestions(box, { includeClaimed: true });
-  if (qs.length) console.log(`${qs.length} question(s) asked on the page, not answered yet:\n${qs.map((q) => `  ${shownPath(q.path)}`).join("\n")}`);
+  if (qs.length) console.log(`${qs.length} question(s) asked on the page, not answered yet (answer with \`reelplanner inbox answer <id> "<answer>" --from "<where>"\`):\n${qs.map((q) => { const s = readQuestion(box, q.id);
+    return `  ${q.id}${s?.frame?.index ? ` (scene ${s.frame.index})` : ""}: ${s?.question ? JSON.stringify(String(s.question).replace(/\s+/g, " ").trim()) : "?"}  ${shownPath(q.path)}`; }).join("\n")}`);
   const left = before ? listInbox(before).filter((r) => !r.claim) : [];
   if (left.length) console.log(`△ ${left.length} review(s) sent before \`reel init\`, from a video with no plan folder, wait in this machine's folder (nothing here handles them): read each, then \`reelplanner inbox done <id>\`:\n${left.map((r) => `  ${shownPath(r.path)}`).join("\n")}`);
   return 0;
