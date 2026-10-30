@@ -5,7 +5,7 @@
 // answer on the frame (by the cards) holds 2 lines, in the same box, and scrolls inside.
 // usage: node packages/player/test/own-answer.spec.mjs [videos/<project>]
 import { chromium } from "playwright-core"; import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
-import { until, frames, seeked, settled, loaded } from "./wait.mjs";
+import { until, frames, seeked, settled, loaded, playable } from "./wait.mjs";
 const project = process.argv[2] || "videos/l2-upload-resume";
 const port = testPort(8869);
 const srv = staticServer(port);
@@ -86,8 +86,8 @@ ok(!!qz, "the fixture map has a quick check to answer");
 if (qz) {
   // A state packet from before the seek (the poster's, paused there) can still arrive between the seek and Play, as
   // it did on a loaded CI runner: the run of play begins where the video was sent all the same, and the check opens.
-  // With the assets ready, Play begins at once, right after that packet (queued, it would begin after newer ones).
-  await p.waitForFunction(() => document.querySelector("#rp").player._assetsReady, null, { timeout: 30000 });
+  // With the player playable, Play begins at once, right after that packet (queued, it would begin after newer ones).
+  await playable(p);
   await p.evaluate((q) => { const el = document.querySelector("#rp"), pl = el.player; el.start?.(); pl.pause(); pl.seek(q.at - 0.6);
     pl._lastUpdateMs = 0;
     window.dispatchEvent(new MessageEvent("message", { source: pl.iframeElement.contentWindow,

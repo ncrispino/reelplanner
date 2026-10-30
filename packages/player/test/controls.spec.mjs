@@ -4,7 +4,7 @@
 // refused — which is the case that matters, because a download is useless inside an embedded page.
 // usage: node packages/player/test/controls.spec.mjs [videos/<project>]
 import { chromium } from "playwright-core"; import { launchOpts, testPort, serverUp, ROOT, staticServer } from "../../../scripts/lib/env.mjs";
-import { until, frames, seeked, still, settled, loaded, pageHold, now, movedOn } from "./wait.mjs";
+import { until, frames, seeked, still, settled, loaded, playable, pageHold, now, movedOn } from "./wait.mjs";
 const project = process.argv[2] || "videos/r1-review-page";
 const port = testPort(8871);
 const srv = staticServer(port);
@@ -182,7 +182,7 @@ ok(await p.evaluate(() => document.querySelector("#rp").shadowRoot.querySelector
 const transport = await b.newPage({ viewport: { width: 1440, height: 1000 } });
 await transport.goto(`http://127.0.0.1:${port}/packages/player/?project=${project}`);
 await loaded(transport);
-await until(transport, () => document.querySelector("#rp").player._assetsReady);
+await playable(transport);
 for (const via of ["click", "Space", "mini-click"]) for (const action of ["Play", "Pause"]) {
   const result = await transport.evaluate(({ via, action }) => {
     const el = document.querySelector("#rp"), pl = el.player, button = el.shadowRoot.querySelector('[data-act="play"]');

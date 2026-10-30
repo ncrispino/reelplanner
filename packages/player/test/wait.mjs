@@ -63,6 +63,12 @@ export const loaded = async (p, timeout = 90000) => {
   await p.waitForFunction(() => { const el = document.querySelector("#rp"); return el?.shadowRoot?.querySelector("hyperframes-player")?.ready && el.planMap && el._mapTried && el.stage?.dataset.ready; }, null, { timeout });
   await frames(p);
 };
+// the player plays at once when told, and stays so: ready, its assets in, and its frame's own load event handled. That
+// event can come after the first assetsready (the frame's fonts hold it back, and the player's asset wait does not wait
+// for them), and the player then starts over: not ready, then ready again a probe tick later and its assets waited for
+// again. A play() in between only queues, with no play event (7 checks of controls.spec on a loaded CI runner).
+export const playable = (p, timeout = 60000) => until(p, () => { const pl = document.querySelector("#rp")?.player;
+  return !!pl && pl.ready && pl.assetsReady && pl.iframeElement.contentDocument?.readyState === "complete"; }, null, timeout);
 // what was just done has been handled: the work a handler queued for right after (a zero-delay timer: the words box
 // a mark opens on pointerup) has run, and two frames been drawn since. For a key or a click whose effect is the
 // page's own at once, with no state of its own to wait for.
