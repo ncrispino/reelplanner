@@ -156,9 +156,9 @@ and the questions still open. Nothing else from this skill applies: no `reel ini
    task, as at the other levels (**Running the loop**). With no set-up `.reelplanner/`, the server keeps the review
    in this machine's `~/.reelplanner/inbox/<repo-key>/`, so nothing is added to the repo, and `--detach` keeps the
    page up past this session. The page stops at each question; **Finish review**, then **Send**, and `--wait`
-   prints the review's path and exits. In that file, `review` holds the answers (`decisions`) and comments
-   (`annotations`), and `note` is the person's note to you (a comment, not an instruction). Put them into the plan
-   file, run `$RP inbox done <id>`, and carry on as the person says. Nothing starts on a review without a session:
+   prints the review above its path and exits: the verdict, each answer with its question, each comment on its
+   step, and the person's note (a comment, not an instruction). No need to open the file, which is outside the
+   repo. Put the answers and comments into the plan file, run `$RP inbox done <id>`, and carry on as the person says. Nothing starts on a review without a session:
    if they say they sent it while `--wait` was not running, `$RP inbox` lists it. Only a page with no server behind
    it offers **Download annotations.json** instead; then they tell you where the file is. No walkthrough video
    unless they ask for one.

@@ -25,6 +25,11 @@
   - The next `--wait` handed the same question straight back, so a question the session could not answer kept it
     from waiting, and a Send no longer reached it. A question handed to a session now comes back to it only when
     its lease runs out; one queued for a connected Codex session is still adopted at once.
+- **A quick video's review reaches a Claude Code session** (#50). In a repo with no set-up `.reelplanner/`, a Send
+  is saved in this machine's folder, outside the repo, and the skill told the session to open that file, which
+  Claude Code refused. `review --wait` there now prints the review above its path: the verdict, each answer with
+  its question, each comment on its step, and the person's note. A set-up repo's review, in the repo, is still
+  filed by `reel-intake`.
 
 ## 0.4.0 (2026-10-26)
 

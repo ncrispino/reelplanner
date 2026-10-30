@@ -87,7 +87,8 @@ A repo that is not set up (one video, the skill's first level) still takes **Sen
 review server keeps its inbox in this machine's folder, `~/.reelplanner/inbox/<repo-key>/` (`REELPLANNER_HOME`
 moves it; the key is the repo folder's name and a short hash of its path), laid out as `inbox/` above, and
 `review --wait`, `inbox` and `inbox done` there use it. No headless run starts there: a review waits for a
-session. Once `reel init` sets the repo up, its own `inbox/` is used; a review still waiting in the machine's is
+session, whose `--wait` prints the review itself above its path (verdict, answers, comments, the note), since an
+agent's sandbox or permissions may not reach a file outside the repo. Once `reel init` sets the repo up, its own `inbox/` is used; a review still waiting in the machine's is
 named by `reelplanner inbox` and finished by `inbox done`, never picked up by `--wait`.
 
 ## Three rules
