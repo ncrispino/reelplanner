@@ -1,0 +1,118 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node bin/reelplanner.mjs verify .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video  [Node22.20 and checkout binaries first on PATH]
+✓ gsap vendored → /Users/ncrispin/GitHubProjects/reelplanner/.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/assets/vendor/gsap.min.js (      20 files rewired)
+▶ verify .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video
+── 1/6 lint
+◆  Linting walkthrough-video/16 files
+
+  ⚠ [index.html] composition_file_too_large: This HTML composition file has 339 lines. Smaller sub-compositions are easier to read, iterate on, and diff.
+    Fix: Split coherent scenes or layers into separate .html files under compositions/, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.
+  ⚠ [index.html] caption_track_kind_missing [el-captions]: <div id="el-captions"> looks like captions but is not marked as such, so the timeline cannot group it on the caption track.
+    Fix: Add data-track-kind="captions" to <div id="el-captions">.
+
+◇  0 error(s), 2 warning(s)
+── 2/6 check
+◆  Checking walkthrough-video
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to /Users/ncrispin/.cache/hyperframes/fonts/eb-garamond)
+[INFO] [Compiler] Injected deterministic @font-face rules for 1 requested font families
+[hyperframes] browserGpuMode probe → hardware (WebGL renderer vendor="Google Inc. (Apple)" renderer="ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)")
+
+Lint
+  ⚠ composition_file_too_large: This HTML composition file has 339 lines. Smaller sub-compositions are easier to read, iterate on, and diff.
+    /Users/ncrispin/GitHubProjects/reelplanner/.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/index.html [data-composition-id] t=0s
+    Fix: Split coherent scenes or layers into separate .html files under compositions/, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.
+  ⚠ caption_track_kind_missing: <div id="el-captions"> looks like captions but is not marked as such, so the timeline cannot group it on the caption track.
+    /Users/ncrispin/GitHubProjects/reelplanner/.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/index.html #el-captions t=0s
+    Fix: Add data-track-kind="captions" to <div id="el-captions">.
+  0 error(s), 2 warning(s), 0 info(s)
+
+Runtime
+  ⚠ clip_media_fit: Audio "el-01-goal-voice" is 12.35s but its slot (data-duration) is 12.75s — the slot is shortened to the media length when rendered. Set data-duration to ~12.35s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-02-recap-voice" is 22.38s but its slot (data-duration) is 22.78s — the slot is shortened to the media length when rendered. Set data-duration to ~22.38s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-03-install-voice" is 11.71s but its slot (data-duration) is 12.11s — the slot is shortened to the media length when rendered. Set data-duration to ~11.71s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-04-guide-voice" is 9.51s but its slot (data-duration) is 9.91s — the slot is shortened to the media length when rendered. Set data-duration to ~9.51s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-05-check-stop-voice" is 3.97s but its slot (data-duration) is 4.50s — the slot is shortened to the media length when rendered. Set data-duration to ~3.97s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-06-recovery-voice" is 18.86s but its slot (data-duration) is 19.26s — the slot is shortened to the media length when rendered. Set data-duration to ~18.86s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-07-question-voice" is 20.50s but its slot (data-duration) is 20.90s — the slot is shortened to the media length when rendered. Set data-duration to ~20.50s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-08-check-source-voice" is 3.78s but its slot (data-duration) is 4.50s — the slot is shortened to the media length when rendered. Set data-duration to ~3.78s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-09-export-voice" is 21.06s but its slot (data-duration) is 21.46s — the slot is shortened to the media length when rendered. Set data-duration to ~21.06s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-10-check-review-voice" is 4.12s but its slot (data-duration) is 4.52s — the slot is shortened to the media length when rendered. Set data-duration to ~4.12s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-11-pane-voice" is 19.20s but its slot (data-duration) is 19.60s — the slot is shortened to the media length when rendered. Set data-duration to ~19.20s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-12-lifecycle-voice" is 15.81s but its slot (data-duration) is 16.21s — the slot is shortened to the media length when rendered. Set data-duration to ~15.81s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  ⚠ clip_media_fit: Audio "el-13-proof-voice" is 18.37s but its slot (data-duration) is 18.77s — the slot is shortened to the media length when rendered. Set data-duration to ~18.37s if that isn't intended.
+    index.html [data-composition-id] t=0s
+  0 error(s), 13 warning(s), 0 info(s)
+
+Layout
+  ℹ t=62.27s content_overlap #f05checkstop-e0 inside #f06recovery-e0 "Right after signing fails" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e2 inside #f09export-e10 > code:nth-of-type(1) "/private/tmp/reelplanner-codex-current-cli-20261011.jsonl" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e3 inside #f09export-e10 > code:nth-of-type(1) ""records": 982, "bytes": 4145072, "mode": "0600"" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e3 inside #f09export-e10 > p:nth-of-type(1) ""records": 982, "bytes": 4145072, "mode": "0600"" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e3 inside #f09export-e10 > p:nth-of-type(1) > strong:nth-of-type(1) ""records": 982, "bytes": 4145072, "mode": "0600"" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e4 inside #f09export-e10 > p:nth-of-type(1) ""canonicalRepoMatches": true, "contentsInGit": false, "readOnly": true" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  ℹ t=110.99s content_overlap #f09export-e4 inside #f09export-e10 > p:nth-of-type(1) > strong:nth-of-type(1) ""canonicalRepoMatches": true, "contentsInGit": false, "readOnly": true" — Two text blocks overlap and may render unreadable.
+        Fix: Give each block its own zone, or mark intentional layering with data-layout-allow-overlap.
+  0 error(s), 0 warning(s), 7 info(s)
+
+Motion
+  ◇ 0 errors, 0 warnings
+
+Contrast
+  ◇ 85/85 text checks pass WCAG AA
+
+Snapshots
+  ◇ disabled
+
+◇  Check passed
+── 3/6 details
+✓ check-details: 6 page(s) ok: step-1.html, step-2.html, step-3.html, step-4.html, step-5.html, step-6.html
+── 4/6 fresh eyes
+✓ fresh eyes: 2 rounds done on this build, round 2's 17 findings answered (15 fixed, 0 a meaning, 0 kept, 2 into the plan); what is left is said on the page ("Before you watch") and in the notification
+── 5/6 snapshot (frame midpoints, then the plan map's thumbnails from them)
+◆  Capturing 14 frames at [6.63s, 24.39s, 41.84s, 52.6s, 60.06s, 71.69s, 91.77s, 104.72s, 117.45s, 130.43s, 142.74s, 160.39s, 178.13s, 190.27s] from walkthrough-video
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to /Users/ncrispin/.cache/hyperframes/fonts/eb-garamond)
+[INFO] [Compiler] Injected deterministic @font-face rules for 1 requested font families
+[hyperframes] browserGpuMode probe → hardware (WebGL renderer vendor="Google Inc. (Apple)" renderer="ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)")
+
+   Fonts: 46 loaded, 6 unused
+   Note: added an end-of-timeline frame at 187.47s. Short beats between your --at times may still be skipped — pass them explicitly.
+
+◇  15 snapshots saved to snapshots/
+   snapshots/frame-00-at-6.63s.png
+   snapshots/frame-01-at-24.39s.png
+   snapshots/frame-02-at-41.84s.png
+   snapshots/frame-03-at-52.6s.png
+   snapshots/frame-04-at-60.06s.png
+   snapshots/frame-05-at-71.69s.png
+   snapshots/frame-06-at-91.77s.png
+   snapshots/frame-07-at-104.72s.png
+   snapshots/frame-08-at-117.45s.png
+   snapshots/frame-09-at-130.43s.png
+   snapshots/frame-10-at-142.74s.png
+   snapshots/frame-11-at-160.39s.png
+   snapshots/frame-12-at-178.13s.png
+   snapshots/frame-13-at-190.27s.png
+   snapshots/frame-14-at-187.469s.png
+   contact-sheet-1..2.jpg (grid view for AI review)
+   --describe: GEMINI_API_KEY not set, skipping
+✓ plan-map.json thumbnails: 14 of 14 frames, from 15 snapshot(s)
+── 6/6 render skipped (pass --render)
+✓ verify complete: .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video
+exit 0

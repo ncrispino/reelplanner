@@ -1,0 +1,22 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node /private/tmp/reelplanner-codex-completion-fix/session-equal-timestamp-receipt.mjs  [synthetic scratch metadata fixture; no real conversation]
+{
+  "fixture": "synthetic; no real conversation",
+  "eligibleCandidates": [
+    {
+      "id": "legacy-main",
+      "source": "legacy rollout",
+      "updatedAt": 2000
+    },
+    {
+      "id": "api-main",
+      "source": "supported API",
+      "updatedAt": 2000
+    }
+  ],
+  "selectedId": "api-main",
+  "selectedUpdatedAt": 2000,
+  "selectedSource": "supported API",
+  "historyBodiesRead": false
+}
+✓ synthetic equal-timestamp selection receipt
+exit 0

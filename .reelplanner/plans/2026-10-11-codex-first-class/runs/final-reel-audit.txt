@@ -1,0 +1,4 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node bin/reelplanner.mjs reel audit .reelplanner/plans/2026-10-11-codex-first-class
+△ 13 calls; step 4 has 4. Past 12, the plan left too much open: a step expected to need 5 or more calls asks its biggest as a question instead, and a step that reaches its 5th during the build waits for one (D-110)
+✓ 2026-10-11-codex-first-class: 6 step(s), 1 own decision(s), 47 cited, 0 failure(s)
+exit 0

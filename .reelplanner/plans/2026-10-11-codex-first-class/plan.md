@@ -375,3 +375,21 @@ These clarify the existing approved contracts using completed trial evidence; th
 - **N14, ownership loss:** renew at least every two minutes within the five-minute session lease. If ownership is lost, stop mutation and inspect the new claim before continuing. Expired adoption retains the original baseline and progress, and never overrides a live headless process. Question answers lock and verify the current owner before saving or removing a claim.
 - **N18, bounded export fallback:** exceeding the export bounds fails without a partial output file. The fallback is an external owner-provided copy of the exact conversation, verified against its session ID and canonical project; it is not an arbitrary transcript or a different checker thread.
 - **N23/G2, the actual trial app:** the synthetic Reading app has Normal (20px) and Large (24px) story text, resetting to the reviewed starting choice on reload and Back. The actual walkthrough flag removed its outlined setting panel while keeping the native selector and label. The fix/rebuild commit is `b068bb4`; final actual changed-scenes approval was recorded separately in `7d01269`. These are synthetic acceptance inputs, separate from this branch’s owner review. CLI trial evidence is eval/agents/codex-2026-10-11/lifecycle-final.json.
+- **Round 2 N12, obtaining the fallback copy:** when supported export is available, `reelplanner session export --thread <exact-id> --repo <repo>` produces an identity-labelled JSONL file outside Git. If that export fails or exceeds its bounds, the owner can supply a previously saved export or select an existing exact legacy JSONL history file from their own Codex sessions folder, outside the project. `explain --session-source <external-file> this-session` verifies the file's existing session ID and canonical project before use. No available exact copy means the explanation remains blocked; do not fabricate metadata, write a partial export, substitute another conversation, inspect private database schemas, or repeat a new main-conversation export without authorization. This clarification specifies acquisition, not a new export or transcript read in this change.
+- **Round 2 N15, visible trial transitions:** the synthetic plan review selected Large (24px). The implemented trial therefore starts at Large and restores Large on reload and Back; Normal (20px) is a temporary selectable state. Show actual recorded selection/reload/Back transitions and captured state frames from the supplied `ui-flow.webm`, alongside the outlined/unboxed panel pair. A selected-state still alone does not establish the reset behavior. The narration must retain the reviewed Large default rather than infer Normal from a temporary selection.
+
+## Owner-authorized addition — caption ordering
+
+The owner supplied the pending `scripts/captions-sentences.mjs` edit and explicitly authorized including it in this branch. Captions must use storyboard playback order for their absolute start time while retaining stable frame IDs, including nonconsecutive IDs and shuffled narration metadata. This shared video-pipeline correction accompanies step 6; it does not change the approved agent or remote scope. The names spec verifies real generated caption text and word timings for these cases.
+
+## Owner-authorized addition — authoring reliability
+
+On 2026-10-12 the owner authorized implementing, committing and pushing the concrete findings from
+the pipeline investigation. The [implementation plan](../../../eval/pipeline-cost/2026-10-12-authoring-reliability-plan.md)
+is an addition to step 6: preserve Decisions in force prose; attach questions with inside-bold step
+annotations and `Recommendation:` wording; expand `(all steps)` component references for the guide;
+retain stable caption/chapter timing after scenes change; and use focused authoring stages with settled
+voice pace and an example-led scene budget. Codex's conversation profile is selected per harness;
+shared teaching and visual guidance applies everywhere. Keep the existing reviewers, model effort and
+permissions. Publish the sanitized measurements and reproducible synthetic benchmark without raw
+research sessions or credentials. No speedup is claimed from the small, capped experiment.

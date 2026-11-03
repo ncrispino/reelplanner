@@ -1,0 +1,23 @@
+$ REELPLANNER_TTS=kokoro REELPLANNER_TRANSCRIBE=whisper PATH=<Node22.20 and checkout binaries first> /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node bin/reelplanner.mjs build .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video
+build .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video
+· frames                0.0 s  skipped: the storyboard or script changed since the last build: verify checks the new assembly
+△ check-terms           0.2 s  terms: 3 words before their definition (warnings)
+· check-sources         0.0 s  skipped: nothing to check (not an explainer, and no scene names a `- source:`)
+△ length                0.0 s  about 2:35 from the script (a walkthrough video: aim 1–2 min)
+✓ narrate               0.2 s  ~/.reelplanning: the machine folder's old name, not read now that ~/.reelplanner is there; `mv ~/.reelplanning
+✓ fetch-sfx             0.0 s  · sfx: 0 cue(s) resolved (bundled library)
+✓ transcribe-missing    0.0 s  .: all 14 voices have word timings
+✓ sync-durations        0.0 s  audio sync-durations: 14 frame duration(s) updated
+✓ hold-durations        0.0 s  holds: 14 frame(s) held, 0.4 s after every line — 1: 12.352s → 12.752s (the tail), 2: 22.379s → 22.779s (the t
+· retime-frames         0.0 s  skipped: no line changed
+✓ finish-project       36.2 s  ◇  Check passed
+✓ verify               19.8 s  [hyperframes] browserGpuMode probe → hardware (WebGL renderer vendor="Google Inc. (Apple)" renderer="ANGLE (Ap
+✓ fresh-eyes                   2 rounds done on this build, round 2's 17 findings answered (15 fixed, 0 a meaning, 0 kept, 2 into the plan); what is left is said on the page ("Befor
+✓ guide                14.1 s  guide/index.html · 6 steps, 1 questions, built: 8 kinds of change, 120 files, 43 runs, 3,440 KB · 17 parts · 5
+✓ built .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video in 70.6 s
+△ length  3:13: long for a walkthrough video (aim 1–2 min; past 3 is long). See what can be cut: style guide §1, "Length"
+✓ variety  9 layout(s), 3 kind(s) of transition, none on over 70% of scenes
+✓ variety  BRIEF.md picks the real things: scene 1 (actual answer/Send form and saved receipt), scene 3 (actual native install), scene 4 (current guide heading and recorded preparation check), scene 6 (actual stopped run and retry), scene 7 (verified connection and adopted question), scene 9 (actual private export receipt), scene 11 (Ghostty pane, seek state and portable review results), scene 12 (actual Reading app clip and outlined/unboxed setting pair), scene 13 (complete tests and independent code check).
+△ ~/.reelplanning: the machine folder's old name, not read now that ~/.reelplanner is there; `mv ~/.reelplanning/you.jsonl ~/.reelplanner/` moves what it holds
+· review   the page is up at http://127.0.0.1:8964/ (pid 65923): `reelplanner review .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video --detach` puts this build on it and prints its link; give the person that link
+exit 0

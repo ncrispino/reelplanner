@@ -1,0 +1,7 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node scripts/test/run.mjs --full names  [Node22.20 first on PATH; loopback networking permitted]
+full run: 1 specs, 8 at a time
+
+✓ scripts/test/names.spec.mjs     0.5 s  43 checks
+
+✓ all 1 passed in 0.6 s (the slowest, scripts/test/names.spec.mjs, 0.5 s)
+exit 0

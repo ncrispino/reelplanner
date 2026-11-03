@@ -1,0 +1,15 @@
+$ /private/tmp/reelplanner-node-runtime/node-v22.20.0-darwin-arm64/bin/node bin/reelplanner.mjs guide .reelplanner/plans/2026-10-11-codex-first-class --check --no-thumbs
+✓ .reelplanner/plans/2026-10-11-codex-first-class/video/guide/index.html · 6 steps, 1 questions, built: 8 kinds of change, 120 files, 41 runs, 3,467 KB · 17 parts · 5.8 s
+  ✓ 6 steps, every heading and paragraph of plan.md in the page (198); 32 scenes, 15 opening a part
+  ✓ 26 cases, 38 interface parts, 47 decisions, 8 full diffs: each opens its layer, each by a visible control
+  ✓ 7 of 60 parts of plan.md changed since your review of 11 Oct (against ebfcd7a), each marked with its "What changed"; none of the other 53 marked
+  ✓ 6 stops on the video's timeline, 6 of 8 choice cards linked to their moment in the video
+  ✓ with reduced motion and Open everything, every layer open; 0 thing(s) to drag or order, each with the keyboard and "Show me"
+  ✓ 17 of 17 parts open without an error in a 560 px panel
+✓ .reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/guide/index.html · 6 steps, 1 questions, built: 8 kinds of change, 120 files, 41 runs, 3,427 KB · 17 parts · 7.6 s
+  ✓ 6 steps, every heading and paragraph of plan.md in the page (198); 32 scenes, 15 opening a part
+  ✓ 26 cases, 38 interface parts, 47 decisions, 8 full diffs: each opens its layer, each by a visible control
+  ✓ 9 stops on the video's timeline, 6 of 8 choice cards linked to their moment in the video
+  ✓ with reduced motion and Open everything, every layer open; 0 thing(s) to drag or order, each with the keyboard and "Show me"
+  ✓ 17 of 17 parts open without an error in a 560 px panel
+exit 0

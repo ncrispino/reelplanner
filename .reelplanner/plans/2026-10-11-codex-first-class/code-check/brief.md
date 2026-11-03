@@ -34,9 +34,11 @@ in one sentence.
 Write "- none" under a section with nothing to report. Every ✗ line must start with its key: `Step N`,
 a decision id, or a backticked path.
 
-## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f)
+## Commits (652894a6ddb8cf7303bd0cf709afa27f27b6b399..HEAD)
 
 ```
+c161c82 Preserve private editor files during review reconciliation
+67c3074 Rank eligible Codex sessions across current and legacy stores
 b2e2c9f Preserve ownership for agent sessions without a stable ID
 76859a2 Enforce question ownership before answering recovered work
 1796951 Recover stopped legacy sessions and record completed CLI lifecycle
@@ -147,15 +149,22 @@ Read `.reelplanner/plans/2026-10-11-codex-first-class/plan.md` in full. Its titl
 | A9 | 5 | Serve single byte ranges and return the complete file for unsupported multipart ranges [close] | Implementing multipart responses for the local review server | Browser media seeking uses single ranges. The shared response helper supplies exact lengths and partial responses without adding a multipart encoder; unsupported requests still get a valid complete representation. | `scripts/lib/http-file.mjs`, `scripts/lib/static-server.mjs`, `scripts/review.mjs`; `scripts/test/media-seek.spec.mjs`. |
 | A10 | 4 | Bound a history export to 64 MiB, 1,000 pages and 30 seconds, with an external-copy fallback [close] | Reading an unbounded conversation through the running service | History can contain large tool output. The limits bound memory, pagination and service waits; an oversized or unavailable history fails explicitly and can use a verified owner copy outside Git. The independent code check identified that these existing implementation limits needed to be recorded. | `scripts/lib/codex-session.mjs`; `scripts/test/session-export.spec.mjs`; `explain --session-source` verifies the exact session and project. |
 | A11 | 5 | Preserve a provided viewer in downloaded reviews, with the same bounded 1.5-second identity wait as hosted Send [visible] | Keeping a known identity only on hosted submissions | The portable path must retain the provided reviewer together with answers and comments. A delayed identity may resolve before download, while an absent or hanging capability still permits export with the existing Git fallback at intake. No new anonymous identity is invented. | `packages/player/reelplanner-player.js`; `packages/player/test/handoff.spec.mjs`; disconnected download/intake trial. |
+| A12 | 4 | Prefer supported App Server metadata when eligible sessions have equal valid timestamps [close] | Preferring a legacy transcript or requiring an explicit thread ID for a valid tie | Equal times provide no recency difference; prefer the supported interface while retaining exact active-ID precedence. Missing or invalid timestamps across different identities still require explicit selection. | `scripts/lib/codex-session.mjs`, `scripts/test/session-export.spec.mjs`; `runs/full-session-recency.txt`. |
+| A13 | 2 | Ignore editor `.swp` and `.swo` files in review trees and packages [close] | Fingerprinting private transient editor data as owner files | Editor swap files can contain environment secrets and can disappear while a checked tree is captured. Keep those local files out of Git discovery without reading or deleting them. | `.gitignore`; `c161c82` and the source checkpoint reconciliation below. |
+| A14 | 3 | Allow an explicitly selected loaded main conversation in a verified linked Git worktree [visible] | Rejecting every conversation outside the review's exact folder | The owner tests with linked checkouts. Verify both worktree roots share a Git common directory, send the owning repo explicitly, and keep discovery/export restricted to the exact folder. | `scripts/lib/codex-session.mjs`, `scripts/lib/agents.mjs`, `scripts/test/session-export.spec.mjs`. |
+| A15 | 2 | Exclude tracked operational inbox updates from checked ownership evidence [close] | Treating claim/progress updates as owner source edits | Runtime progress must not change the expected source tree; retained older baselines filter those operational paths while preserving source edits. | `scripts/lib/inbox.mjs`, `scripts/test/delivery.spec.mjs`. |
+| A16 | 6 | Target 12–20 scenes for small plans, expand when examples or choices need more, and hand growing builders off by stage [close] | An unrestricted continuing builder or a hard scene cap | The experiment produced 20 or 30 scenes from the same facts and did not keep the continuing builder small. Preserve choices, uncertainty, reviewers and variety; this is guidance with no measured latency guarantee. | `skills/plan-to-video/references/authoring.md`, `eval/pipeline-cost/2026-10-12-codex-packet-bench.md`. |
+| A17 | 6 | Keep Codex's conversation adjustments in a harness-selected profile, with shared example-first teaching [close] | Changing global settings or imposing Codex-specific preferences on all harnesses | The owner requested a patient engineering partner and per-harness setup; the terminal or session source label does not select the profile. | `skills/plan-to-video/references/harnesses.md`, `references/communication/codex.md`, `references/style-guide.md`. |
 
 ## The diff
 
-Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (from the repository root). The files it touches:
+Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..HEAD` (from the repository root). The files it touches:
 
 ```
 .agents/plugins/marketplace.json                   |   20 +
+ .gitignore                                         |    4 +
  .reelplanner/glossary.md                           |    2 +
- .../code-check/brief.md                            |  263 ++
+ .../code-check/brief.md                            |  270 ++
  .../code-check/checkpoint-0d051e7/brief.md         |  203 ++
  .../code-check/checkpoint-0d051e7/findings.md      |   61 +
  .../code-check/checkpoint-0fef69b/brief.md         |  220 ++
@@ -164,6 +173,8 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  .../code-check/checkpoint-1796951/findings.md      |   61 +
  .../code-check/checkpoint-76859a2/brief.md         |  263 ++
  .../code-check/checkpoint-76859a2/findings.md      |   61 +
+ .../code-check/checkpoint-b2e2c9f/brief.md         |  270 ++
+ .../code-check/checkpoint-b2e2c9f/findings.md      |   61 +
  .../code-check/checkpoint-e481b8c/brief.md         |  228 ++
  .../code-check/checkpoint-e481b8c/findings.md      |   61 +
  .../code-check/findings.md                         |   61 +
@@ -180,11 +191,13 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  .../runs/full-legacy-recovery.txt                  |   24 +
  .../runs/full-owner-handle.txt                     |   27 +
  .../runs/full-question-ownership.txt               |   25 +
+ .../runs/full-session-recency.txt                  |   24 +
  .../runs/full-touched.txt                          |   27 +
  .../runs/ghostty-audio-position.txt                |    3 +
  .../runs/headless-real.txt                         |   27 +
  .../runs/headless-video-served.txt                 |  177 ++
  .../runs/legacy-owner-recovery.txt                 |    5 +
+ .../runs/main-metadata-after-recency.txt           |   13 +
  .../runs/native-plugin-install.txt                 |   58 +
  .../runs/native-plugin-owner-handle.txt            |   58 +
  .../runs/native-plugin-source-only.txt             |   58 +
@@ -194,6 +207,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  .../runs/npm-test-owner-handle.txt                 |   69 +
  .../runs/npm-test-post-review.txt                  |   69 +
  .../runs/npm-test-question-ownership.txt           |   69 +
+ .../runs/npm-test-session-recency.txt              |   69 +
  .../runs/npm-test-source-doc-and-isolation.txt     |   69 +
  .../runs/occupied-port.txt                         |    7 +
  .../runs/plan-check-final.txt                      |    3 +
@@ -202,7 +216,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  .../runs/stops-checkpoint.txt                      |   22 +
  .../runs/terminal-lifecycle.txt                    | 2577 ++++++++++++++++++++
  .../runs/unclaimed-completion.txt                  |    8 +
- .../2026-10-11-codex-first-class/walkthrough.md    |  486 ++++
+ .../2026-10-11-codex-first-class/walkthrough.md    |  493 ++++
  .reelplanner/spec.md                               |   12 +-
  .reelplanner/system.json                           |    8 +-
  AGENTS.md                                          |    8 +-
@@ -219,6 +233,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  .../headless-video-source-only.json                |  175 ++
  eval/agents/codex-2026-10-11/headless-video.md     |   21 +
  eval/agents/codex-2026-10-11/lifecycle-final.json  |  938 +++++++
+ .../main-metadata-after-recency.json               |   11 +
  .../native-install-owner-handle.json               |   16 +
  .../native-install-source-only.json                |   16 +
  .../codex-2026-10-11/queue-active-summary.json     |   22 +
@@ -234,7 +249,7 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  scripts/explain.mjs                                |   11 +-
  scripts/inbox.mjs                                  |   40 +-
  scripts/lib/agents.mjs                             |  142 +-
- scripts/lib/codex-session.mjs                      |  273 +++
+ scripts/lib/codex-session.mjs                      |  305 +++
  scripts/lib/env.mjs                                |   36 +-
  scripts/lib/explainer.mjs                          |   19 +-
  scripts/lib/fresh-eyes.mjs                         |   14 +-
@@ -262,9 +277,64 @@ Read it yourself: `git diff 652894a6ddb8cf7303bd0cf709afa27f27b6b399..b2e2c9f` (
  scripts/test/review-projects.spec.mjs              |  104 +
  scripts/test/review-status.spec.mjs                |   59 +-
  scripts/test/run.mjs                               |    2 +-
- scripts/test/session-export.spec.mjs               |  144 ++
+ scripts/test/session-export.spec.mjs               |  212 ++
  scripts/test/version.spec.mjs                      |   23 +-
  skills/plan-to-video/SKILL.md                      |   50 +-
  skills/plan-to-video/references/harnesses.md       |  148 ++
- 113 files changed, 10767 insertions(+), 310 deletions(-)
+ 120 files changed, 11333 insertions(+), 310 deletions(-)
 ```
+
+
+## Current implementation pending commit
+
+The working tree is the implementation being delivered. In addition to the committed range above, read `git diff HEAD` for tracked changes. Inspect these new source files as part of the review:
+
+```
+.claude/skills/pipeline-cost/bench/codex/AUTHORING-PACKET.md
+.claude/skills/pipeline-cost/bench/codex/README.md
+.claude/skills/pipeline-cost/bench/codex/codex-machine.sh
+.claude/skills/pipeline-cost/bench/codex/collect-and-cleanup.py
+.claude/skills/pipeline-cost/bench/codex/continue-after-timeout.py
+.claude/skills/pipeline-cost/bench/codex/finish.py
+.claude/skills/pipeline-cost/bench/codex/fixture/REQUEST.md
+.claude/skills/pipeline-cost/bench/codex/fixture/choices.md
+.claude/skills/pipeline-cost/bench/codex/fixture/definitions.md
+.claude/skills/pipeline-cost/bench/codex/fixture/record.jsonl
+.claude/skills/pipeline-cost/bench/codex/fixture/task.md
+.claude/skills/pipeline-cost/bench/codex/login.py
+.claude/skills/pipeline-cost/bench/codex/observe-showings.py
+.claude/skills/pipeline-cost/bench/codex/reviewer.mjs
+.claude/skills/pipeline-cost/bench/codex/rp-shim.sh
+.claude/skills/pipeline-cost/bench/codex/run-all.sh
+.claude/skills/pipeline-cost/bench/codex/source-manifest.json
+.claude/skills/pipeline-cost/bench/codex/summarize.py
+.claude/skills/pipeline-cost/bench/codex/test_login.py
+.claude/skills/pipeline-cost/bench/codex/test_summarize.py
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/.hyperframes/packets/01.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/AGENTS.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/BRIEF.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/CLAUDE.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/PRODUCTION.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/SCRIPT.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/STORYBOARD.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/frame.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/designer-brief.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/designer.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/newcomer-brief.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/newcomer.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/round-1/designer-brief.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/round-1/designer.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/round-1/newcomer-brief.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/round-1/newcomer.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/script/newcomer-brief.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/fresh-eyes/script/newcomer.md
+.reelplanner/plans/2026-10-11-codex-first-class/walkthrough-video/motion-language.md
+eval/pipeline-cost/2026-10-12-authoring-reliability-plan.md
+eval/pipeline-cost/2026-10-12-codex-packet-bench.json
+eval/pipeline-cost/2026-10-12-codex-packet-bench.md
+eval/pipeline-cost/2026-10-12-reading-prompt-codex.md
+skills/plan-to-video/references/authoring.md
+skills/plan-to-video/references/communication/codex.md
+```
+
+Owner scratch `:memory:.ses`, ignored runtime files, raw research sessions, private result archives and credentials are outside this check: never read or modify them. Read the owner-authorized additions at the end of plan.md and their implementation plan. Existing final video sources cover the CLI implementation; the new authoring proposals do not have a timed post-change result. Do not infer a measured speedup.
