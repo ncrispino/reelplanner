@@ -23,10 +23,12 @@
 //                     pass it to answer, renew, progress, done or a later --wait
 // `reelplanner review --wait` is the same as `inbox --wait`.
 import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
 import { resolve, basename, dirname } from "node:path";
 import { randomUUID } from "node:crypto";
 import { activeSession } from "./lib/agents.mjs";
 import { repoRoot, rpInitialized, rpDirOf } from "./lib/env.mjs";
+import { actOnMarkdown } from "./lib/review-scope.mjs";
 import { listInbox, waitForReview, markDone, liveWaiters, answerQuestion, waitingQuestions, readQuestion, questionNote, questionsDir, machineInbox, inboxDir, shownPath, retryAgent, renewClaim, progressOf, claimLive } from "./lib/inbox.mjs";
 
 export async function main(args) {
@@ -54,6 +56,9 @@ export async function main(args) {
     if (!callerOwner) console.error(`owner handle: ${waitOwner}\nPass --owner ${waitOwner} to inbox answer, renew, progress and done; keep it for this claimed item.`);
     // a question asked on the page: its words here, so answering it needs no read of the inbox (outside the repo before `reel init`)
     if (dirname(p) === questionsDir(box)) { const q = readQuestion(box, basename(p, ".json")); if (q) console.error(questionNote(q)); }
+    // a review in this machine's folder (no set-up .reelplanner/: a quick video's) is printed too, as what to act on;
+    // a set-up repo's is in the repo, for reel-intake, and an explainer's goes to `reel record`, which reads it itself
+    else if (!setUp) { const r = machineReviewNote(p); if (r) console.error(r); }
     console.log(p);
     return 0;
   }
@@ -104,6 +109,17 @@ export async function main(args) {
   const left = before ? listInbox(before).filter((r) => !r.claim) : [];
   if (left.length) console.log(`△ ${left.length} review(s) sent before \`reel init\`, from a video with no plan folder, wait in this machine's folder (nothing here handles them): read each, then \`reelplanner inbox done <id>\`:\n${left.map((r) => `  ${shownPath(r.path)}`).join("\n")}`);
   return 0;
+}
+
+// A review in this machine's folder, as what to act on (a set-up repo's reviews/<id>.md, lib/review-scope.mjs): the
+// verdict, each answer with its question, each comment on its step, the person's note quoted. The file is outside the
+// repo, where an agent's sandbox or permissions may not reach it. An explainer's review (`reel record`) → null.
+function machineReviewNote(path) {
+  let row; try { row = JSON.parse(readFileSync(path, "utf8")); } catch { return null; }
+  if (!row?.review || row.review.kind === "explainer") return null;
+  const review = { ...row.review, note: row.note || row.review.note || "", verdict: row.review.verdict ?? row.verdict ?? null };
+  const map = { decisions: (review.decisions || []).map((d) => ({ id: d.id, question: d.question, planStep: d.planStep })) };
+  return `📝 the review, printed: its file is in this machine's folder, outside the repo\n${actOnMarkdown({ id: basename(path, ".json"), kind: "plan", review, planName: null, map }).trimEnd()}`;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(await main(process.argv.slice(2)));
