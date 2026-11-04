@@ -668,6 +668,9 @@ export async function deliverInbox(rp, id, { question = false, repo = dirname(rp
   const path = question ? join(questionsDir(rp), `${id}.json`) : join(inboxDir(rp), `${id}.json`);
   const cp = question ? qClaimPath(rp, id) : claimPath(rp, id);
   if (!existsSync(path)) return { handledBy: "inbox", message: "no pending item" };
+  // an answered question keeps its file (the page reads the answer) but loses its claim: the re-check below would
+  // otherwise hand it out again, to whatever session is connected by then
+  if (question && readQuestion(rp, id)?.answer) return { handledBy: "session", message: "already answered" };
   let current; try { current = JSON.parse(readFileSync(cp, "utf8")); } catch {}
   if (current) return { handledBy: current.by === "agent" ? "agent" : "session", message: progressOf(rp, id)?.phase === "queued" ? "saved and queued; waiting for the connected session to pick it up" : "already claimed by its handler" };
   if (liveWaiters(rp).length) {
