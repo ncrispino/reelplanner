@@ -16,7 +16,8 @@ harder to follow. We are working on that.
 ## Before you try
 
 - macOS (Homebrew) or Linux (apt), Node 22.20+ ([nodejs.org](https://nodejs.org/en/download); apt's own `nodejs`
-  is older), and Python 3.10+ for the local voice. Setup may ask for sudo. Windows: not yet (WSL untested).
+  is older), and Python 3.10+ for the local voice (where `python3` is too new for it, as 3.15 is, setup uses an
+  older one, and on a Mac installs one). Setup may ask for sudo. Windows: not yet (WSL untested).
 - About 1 GB in all: the download from GitHub (about 64 MB, mostly reelplanner's own plans and the sample videos
   it ships with), then setup's headless Chrome and a one-time 840 MB of voice and caption models.
 - reelplanner sends none of your code anywhere; an optional [hosted voice](#the-voice) gets only the narration text.

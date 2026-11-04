@@ -15,7 +15,7 @@ import { readdirSync, readFileSync, existsSync, realpathSync } from "node:fs";
 import { dirname, join, delimiter } from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { RP_COMMAND } from "../scripts/lib/env.mjs";
+import { RP_COMMAND, voicePython } from "../scripts/lib/env.mjs";
 
 const ROOT = join(dirname(realpathSync(fileURLToPath(import.meta.url))), "..");
 const SCRIPTS = join(ROOT, "scripts");
@@ -87,6 +87,9 @@ try {
   const bin = hf && [join(hf, "..", ".bin"), join(hf, "..", "..", ".bin")].find((d) => existsSync(join(d, "hyperframes")));
   if (bin) env.PATH = `${bin}${delimiter}${process.env.PATH || ""}`;
 } catch { /* the scripts resolve HyperFrames themselves; PATH is a convenience */ }
+// The local voice's own Python, where setup made one because python3 could not have Kokoro (scripts/lib/voice-python.mjs):
+// HyperFrames runs Kokoro with $HYPERFRAMES_PYTHON, or else python3. One you set yourself is kept.
+if (!env.HYPERFRAMES_PYTHON) { const py = voicePython(env); if (py) env.HYPERFRAMES_PYTHON = py; }
 
 // Asynchronous, so a signal sent to this process (an agent stopping a background `review`, say)
 // reaches the script too instead of leaving it running as an orphan.

@@ -306,18 +306,29 @@ let toldMachine = false;
 /**
  * This machine's own folder, ~/.reelplanner (REELPLANNER_HOME): your memory (you.jsonl) and the machine's .env.
  * Before the rename it was ~/.reelplanning: that one is used while there is no ~/.reelplanner. Once both are there,
- * the old one is not read: a file of it the new one lacks is said once on stderr, with the `mv` that moves it.
+ * the old one is not read: a file of it the new one lacks is said once on stderr, with the `mv` that moves it
+ * (not with `quiet`: a look the command itself does not report, such as the CLI's for the voice's Python).
  */
-export function machineDir(env = process.env) {
+export function machineDir(env = process.env, { quiet = false } = {}) {
   if (env.REELPLANNER_HOME) return resolve(env.REELPLANNER_HOME);
   const fresh = join(homedir(), RP_DIR), old = join(homedir(), OLD_RP_DIR);
   if (!existsSync(fresh)) return resolve(existsSync(old) ? old : fresh);
   const left = MACHINE_FILES.filter((f) => existsSync(join(old, f)) && !existsSync(join(fresh, f)));
-  if (left.length && !toldMachine) {
+  if (left.length && !toldMachine && !quiet) {
     toldMachine = true;
     process.stderr.write(`△ ~/${OLD_RP_DIR}: the machine folder's old name, not read now that ~/${RP_DIR} is there; \`mv ${left.map((f) => `~/${OLD_RP_DIR}/${f}`).join(" ")} ~/${RP_DIR}/\` moves what it holds\n`);
   }
   return resolve(fresh);
+}
+/**
+ * The local voice's own venv, in the machine's folder: setup makes it where python3 cannot have Kokoro
+ * (scripts/lib/voice-python.mjs), and every command then runs HyperFrames with its python (bin/reelplanner.mjs).
+ */
+export const voiceVenv = (env = process.env) => join(machineDir(env, { quiet: true }), "voice");
+/** That venv's python, when setup made it; null when it did not. */
+export function voicePython(env = process.env) {
+  const p = join(voiceVenv(env), "bin", "python");
+  return existsSync(p) ? p : null;
 }
 /** How a line names the machine's folder: ~/.reelplanner, or ~/.reelplanning while that is the one read. */
 export function machineDirShown(env = process.env) {
@@ -338,8 +349,9 @@ export function hasRp(d) {
 }
 
 // The same answers for the shell scripts:
-//   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp | home
-//   (rp: the command people run, RP_COMMAND; home: the machine's folder as a line names it, machineDirShown())
+//   node scripts/lib/env.mjs hf-bin | dep <name> <file-in-it> | version | rp | home | voice-python
+//   (rp: the command people run, RP_COMMAND; home: the machine's folder as a line names it, machineDirShown();
+//   voice-python: where the voice's own venv has its python, made or not)
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [what, a, b] = process.argv.slice(2);
   try {
@@ -348,6 +360,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     else if (what === "version") console.log(VERSION);
     else if (what === "rp") console.log(RP_COMMAND);
     else if (what === "home") console.log(machineDirShown());
-    else { console.error("usage: node scripts/lib/env.mjs hf-bin | dep <name> <file> | version | rp | home"); process.exit(2); }
+    else if (what === "voice-python") console.log(join(voiceVenv(), "bin", "python"));
+    else { console.error("usage: node scripts/lib/env.mjs hf-bin | dep <name> <file> | version | rp | home | voice-python"); process.exit(2); }
   } catch (e) { console.error(`✗ ${e.message}`); process.exit(1); }
 }
