@@ -30,6 +30,12 @@
   Claude Code refused. `review --wait` there now prints the review above its path: the verdict, each answer with
   its question, each comment on its step, and the person's note. A set-up repo's review, in the repo, is still
   filed by `reel-intake`.
+- **The local voice installs where python3 is 3.15** (#54). kokoro-onnx needs onnxruntime, which has no build for
+  Python 3.15 yet, so `setup` failed wherever `python3` was 3.15 (Homebrew's newest, and GitHub's macOS runner since
+  Oct 28), and the venv its hint suggested failed the same way. Where pip cannot install it for `python3`, setup now
+  makes the voice a venv of its own, `~/.reelplanner/voice`, with an older Python here (on a Mac with none,
+  Homebrew's `python@3.14`, installed first), and every command runs HyperFrames with it. A `HYPERFRAMES_PYTHON` of
+  yours is kept.
 
 ## 0.4.0 (2026-10-26)
 
