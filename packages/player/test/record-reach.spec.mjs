@@ -65,6 +65,15 @@ const recordAt = (p) => R(p, () => { const el = document.querySelector("#rp"), S
 const clickGrab = async (p) => { const r = await R(p, () => { const q = document.querySelector("#rp").shadowRoot.querySelector(".grab").getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2 }; }); await p.mouse.click(r.x, r.y); };
 const pulledIs = (p, on) => until(p, (on) => { const S = document.querySelector("#rp").shadowRoot, s = S.querySelector(".side"); return S.querySelector(".wrap").classList.contains("pulled") === on && !s.getAnimations().length; }, on);
 const toGuide = async (p) => { await R(p, () => document.querySelector("#rp").shadowRoot.querySelector('[data-act="guide"]').click()); await until(p, () => !!document.querySelector("#rp")._mini, null, 15000); await laidOut(p); };
+// a comment's time gone to from the record, the guide open, and the page come to rest there. The record goes down, the
+// page scrolls smoothly back up, the small player ends as the frame's room comes into view (mid-way), and the picture
+// flies from the corner to its place, over the page, for a third of a second. A slow machine read it on its way: the
+// picture half out of the window; or, the scroll run ahead of it, a click on the Record bar landed on the picture flying
+// over the bar (the video played, the record stayed down). So: the video back in its place, landed, the page scrolled
+// to it (where backToVideo sends it), the record down and still, paused at t
+const backAt = (p, t) => until(p, (t) => { const el = document.querySelector("#rp"), S = el.shadowRoot, above = parseFloat(getComputedStyle(el).getPropertyValue("--rp-above")) || 0;
+  return !el._mini && !el.stage.classList.contains("flying") && Math.abs(Math.max(0, el.getBoundingClientRect().top + scrollY - above) - scrollY) < 1
+    && !S.querySelector(".wrap").classList.contains("pulled") && !S.querySelector(".side").getAnimations().length && Math.abs(el.player.currentTime - t) < 0.2 && el.player.paused; }, t, 15000);
 // how much of the frame's overlay is drawn on (the drawn marks): the canvas's alpha, summed
 const ink = (p) => R(p, () => { const el = document.querySelector("#rp"), c = el.canvas, d = el.ctx.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) n += d[i] > 0 ? 1 : 0; return n; });
 // …once the frame's overlay has drawn them: the canvas is drawn as the video reports its time after the seek (and
@@ -88,11 +97,7 @@ try {
     check(`${tag}: …pulled up over the guide, it covers the small player and lists every comment; aria-expanded says so`, s.mini && s.pulled && cover && s.expanded === "true" && s.rows.length === 5, JSON.stringify({ cover, ...s }));
     // ---- a comment's time: to it on the video, the video back in its place
     await R(p, () => document.querySelector("#rp").shadowRoot.querySelector('.marks .list [data-ann-go="c3"]').click());
-    // (and the page come to rest there: the small player ends as the frame's room comes into view, mid-way through the
-    // smooth scroll back, the picture still growing to its place; a slow machine read it there, half out of the window)
-    await until(p, () => { const el = document.querySelector("#rp"), st = el.shadowRoot.querySelector(".stage").getBoundingClientRect(), w = (window.__rpBack ||= { k: null, n: 0 }), k = `${scrollY} ${Math.round(st.top)} ${Math.round(st.bottom)}`;
-      if (k !== w.k) { w.k = k; w.n = 0; return false; }
-      return ++w.n >= 4 && !el._mini && !el.shadowRoot.querySelector(".wrap").classList.contains("pulled") && Math.abs(el.player.currentTime - 160) < 0.2 && el.player.paused; }, null, 15000);
+    await backAt(p, 160);
     const went = await R(p, () => { const el = document.querySelector("#rp"), S = el.shadowRoot, c = S.querySelector(".partcard"), st = S.querySelector(".stage").getBoundingClientRect(); return { mini: !!el._mini, t: el.player.currentTime, paused: el.player.paused, inView: st.top >= -1 && st.bottom <= innerHeight + 1, card: c.classList.contains("on") ? c.textContent : null, status: S.querySelector(".status").textContent }; });
     check(`${tag}: a comment's time goes to it: the record down, the video back in its place, paused at it, the comment named on the frame`, !went.mini && Math.abs(went.t - 160) < 0.2 && went.paused && went.inView && (went.card || "").includes(W3), JSON.stringify(went));
     // ---- a guide comment's place: to it in the guide
@@ -183,7 +188,7 @@ try {
       S.querySelector('.marks .list [data-ann-go="c3"]').click(); const was = c.classList.contains("on") ? c.textContent : null;
       const t = S.querySelector('.marks [data-comment="c3"]'); t.value = w; t.dispatchEvent(new Event("change"));
       return was && c.classList.contains("on") ? c.textContent : null; }, E3);
-    await pulledIs(p, false);
+    await backAt(p, 160);
     check(`${tag}: …the comment named on the frame shows its words as edited`, (card || "").includes(E3), JSON.stringify(card));
     const EB = "This box: the label should say retries";
     await clickGrab(p); await pulledIs(p, true);
