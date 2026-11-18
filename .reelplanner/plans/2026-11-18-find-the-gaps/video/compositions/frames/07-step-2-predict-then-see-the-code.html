@@ -44,15 +44,15 @@
   .f07-dim { opacity:0.55; }
   .f07-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f07-ok { color:var(--rp-ink); }
-  .f07-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f07-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f07-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f07-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f07-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="07-step-2-predict-then-see-the-code" data-band="bottom" data-duration="22.068" data-width="1920" data-height="1080">
-  <div class="clip f07-bg" id="f07-bg" data-start="0" data-duration="22.068" data-track-index="0"></div>
-  <div class="clip f07-scene" id="f07-scene" data-start="0" data-duration="22.068" data-track-index="1">
+<div id="root" data-composition-id="07-step-2-predict-then-see-the-code" data-band="bottom" data-duration="22.032" data-width="1920" data-height="1080">
+  <div class="clip f07-bg" id="f07-bg" data-start="0" data-duration="22.032" data-track-index="0"></div>
+  <div class="clip f07-scene" id="f07-scene" data-start="0" data-duration="22.032" data-track-index="1">
   <div class="f07-planned" id="f07-planned" style="left:1600px; top:60px;">planned</div>
   <div class="f07-paper" id="f07-front" style="left:260px; top:120px; width:1400px; height:740px;">
     <div class="f07-lab" style="left:44px; top:40px">card c3 · predict · step 2</div>
@@ -82,25 +82,25 @@
 <script>
 (function () {
   var FID = "07-step-2-predict-then-see-the-code";
-  var DUR = 21.568;
+  var DUR = 27.697;
   var tl = gsap.timeline({ paused: true });
-  tl.to("#f07-front", { scaleX: 0, duration: 0.35, ease: "power2.in" }, 7.490);
-  tl.set("#f07-front", { opacity: 0 }, 7.850);
+  tl.to("#f07-front", { scaleX: 0, duration: 0.35, ease: "power2.in" }, 5.410);
+  tl.set("#f07-front", { opacity: 0 }, 5.770);
   gsap.set("#f07-back", { scaleX: 0, opacity: 0 });
-  tl.set("#f07-back", { opacity: 1 }, 7.840);
-  tl.to("#f07-back", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 7.840);
+  tl.set("#f07-back", { opacity: 1 }, 5.760);
+  tl.to("#f07-back", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 5.760);
   gsap.set("#f07-pick", { opacity: 0 });
-  tl.to("#f07-pick", { opacity: 1, duration: 0.4, ease: "power2.out" }, 5.140);
+  tl.to("#f07-pick", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.780);
   gsap.set("#f07-btns", { opacity: 0, y: 26 });
-  tl.to("#f07-btns", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.890);
+  tl.to("#f07-btns", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.780);
   gsap.set("#f07-ns", { opacity: 0 });
-  tl.to("#f07-ns", { opacity: 1, duration: 0.4, ease: "power2.out" }, 19.630);
+  tl.to("#f07-ns", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.300);
   gsap.set("#f07-skip", { opacity: 0 });
-  tl.to("#f07-skip", { opacity: 1, duration: 0.4, ease: "power2.out" }, 20.080);
+  tl.to("#f07-skip", { opacity: 1, duration: 0.4, ease: "power2.out" }, 18.180);
   gsap.set("#f07-gl", { opacity: 0 });
-  tl.to("#f07-gl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 12.150);
+  tl.to("#f07-gl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 9.850);
   gsap.set("#f07-gl0", { opacity: 0 });
-  tl.to("#f07-gl0", { opacity: 1, duration: 0.4, ease: "power2.out" }, 11.470);
+  tl.to("#f07-gl0", { opacity: 1, duration: 0.4, ease: "power2.out" }, 9.240);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

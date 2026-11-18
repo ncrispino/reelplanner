@@ -1,6 +1,6 @@
 # Fresh eyes: the newcomer's script brief · Find the gaps: line up your picture, the agent's and the code
 
-You are a newcomer to this project, reading the script of "Find the gaps: line up your picture, the agent's and the code", a narrated video of 32 scenes,
+You are a newcomer to this project, reading the script of "Find the gaps: line up your picture, the agent's and the code", a narrated video of 19 scenes,
 before any picture is drawn: what each scene will show and what it says. You also have what the person who asked for
 the video said, in their words. You have nothing else: not the plan, not the code.
 
@@ -17,7 +17,7 @@ Read it as the person would watch it, and list:
 ## The shape of newcomer.md (keep it exactly)
 
 ```
-# Fresh eyes: newcomer · script · stamp 53ed0f6e5924
+# Fresh eyes: newcomer · script · stamp 5770408c262e
 
 - N1 · scene 4 · "the phrase": what you could not follow, and what you guessed; why it matters
 - N2 [plan] · scene 7 · …
@@ -30,6 +30,33 @@ One finding a line, in scene order. Write "- none" if you have nothing. Do not a
 - "basiclaly what i need here is a way to align me and the actual code + agent writing it. oftentimes we are not aligned, i assume it is one way when it is actually another. we want to actually interact to be able to do this."
 - "we want to also make it easy for human to really make sure htey are aligned and interact in a way that is least effort for them to do interactions (this is what the drawing and voice was for) just like video is easiest way for them to understand."
 - "then pls create a reelplanner video for this i think we can make a good plan for what we want to do here, really think in depth about it"
+
+### Their last review
+
+# Plan review · 2026-11-18 22:39 UTC · changes requested
+
+**Changes requested:** revise the steps below, rebuild the beats they touch, and show the plan video again.
+
+What to act on, from [plan-20261118T223944Z.json](plan-20261118T223944Z.json): 4 decisions, 5 quick checks, 2 marks; watched 100%.
+
+## Decisions
+
+- **Q1** (step 2) Where do a round's cards show up first?: **like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)** (in the reviewer's own words) → D-314
+- **Q2** (step 3) Who reads your spoken explanation against the code?: **The waiting session** (the recommendation) → D-315
+- **Q3** (step 4) After Got it, when does the same card return?: **Once more, a few days later** (not the recommendation) → D-316
+- **Q4** (step 5) How often does a round come ahead of a plan?: **When a gap is likely and costly** (the recommendation) → D-317
+
+## Steps to revise
+
+- **Step 1**
+  - quick check missed: "A card about `reel status` says B; the fresh checker reads the code and picks C. What do you see?" — answered "Both answers, side by side", the answer is "The card fixed, or no card". Explain this step so that answer is obvious.
+- **Step 2**
+  - comment at 1:59 (Step 2 · Predict, then see the code): "note we also should support an easier implementation of just doing in agent alone without video, just with something like askuserquestions or wahtever the harness suppports. then, we can do in html, and also here in video. jic some dont use full reelplanner pipelien, we can still use this same kindo f quizzing and realignment."
+  - comment at 2:37 (Question 1 · Where the cards show first): "like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)"
+  - quick check missed: "On card c5, you press N: not sure. What comes next?" — answered "The next card; nothing kept", the answer is "A gap: Got it or Show me more". Explain this step so that answer is obvious.
+- **Step 3**
+  - quick check missed: "You say: 'and it should only go to the session I have open.' How is that claim marked?" — answered "A match", the answer is "Neither: an assume card". Explain this step so that answer is obvious.
+
 
 ## The words this video gives a meaning
 
@@ -48,6 +75,7 @@ One finding a line, in scene order. Write "- none" if you have nothing. Do not a
 - **Change the plan**: settling a gap where you want it your way: it goes into the plan
 - **The code is wrong**: settling a gap as a bug: it becomes a fix
 - **Show me more**: settling a gap by asking for more: a longer card now, and one short video of the round's gaps at the end
+- **not sure**: the answer when you have no picture of your own: a gap of its own kind, settled with Got it or Show me more
 - **Skip the rest**: ends a round at any time, and the cards you skipped are listed in the plan as not checked
 - **whisper**: the speech-to-text program the narration already uses, run on this machine
 - **planned**: a picture of what this plan would build: it does not exist yet
@@ -159,186 +187,108 @@ _Says:_ You asked for a way to line up three things: you, the code, and the agen
 
 ### Scene 2 · Earlier plans
 
-_Shows:_ FOUR PLAIN LINES, one at a time, each with the earlier plan's name small beside it: review · Send → the waiting session, or a headless run; quick check · predict, later, on a new case; explainer · quoted word for word; memory · a file in your home folder
+_Shows:_ FOUR PLAIN LINES, one at a time, each with the earlier plan's name small beside it: review · Send → the waiting session, or a headless run; quick check · predict a case the video didn't show; explainer · quoted word for word; memory · a file in your home folder
 
-_Says:_ If you're new: you review a plan on this page, and Send hands your review to the agent session waiting on it; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict, later, on a new case. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.
+_Says:_ If you're new, four things this plan builds on. Send hands your review to the agent session waiting on this page; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict a case the video didn't show. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.
 
 ### Scene 3 · Three pictures, three gaps
 
-_Shows:_ A TRIANGLE: three nodes, 'you', 'the agent', 'the code'. Each side lights in turn with its gap written along it as the voice says it: you–code 'waits for you · a headless run takes it'; agent–code 'tries once · tries again after 15 s'; you–agent 'any agent · your open session'
+_Shows:_ A TRIANGLE: three nodes, 'you', 'the agent', 'the code'. Each side lights in turn with its gap written along it as the voice says it: you–code 'waits for you · a headless run takes it'; agent–code 'tries once · tries again after 15 s'; you–agent 'the agent read: any agent · you meant: your open session'
 
-_Says:_ Three things hold a picture of the code: you, the agent, and the code itself. A gap is where two disagree. You think a review sent with no session open waits for you; in this repo, a headless run takes it. The agent remembers Send trying once; it tries again fifteen seconds later. And you asked for a review that reaches the agent: it took any agent, and you meant your open session.
+_Says:_ Three things hold a picture of the code: you, the agent, and the code itself. A gap is where two disagree. You think a review sent with no session open waits for you; in this repo, a headless run takes it. The agent remembers Send trying once; it tries again fifteen seconds later. And you asked for a review that reaches the agent. The agent read any agent; you meant your open session.
 
 ### Scene 4 · Today, and what changes
 
-_Shows:_ LEFT: one arrow 'agent → you', labelled 'today'. RIGHT: four rows landing on their words: 'a round · steps 1, 2'; 'your own words · step 3'; 'one click a gap · step 4'; 'in the loop · step 5'
+_Shows:_ LEFT: one arrow 'agent → you', labelled 'today'. RIGHT: four rows landing on their words: 'a round · steps 1, 2'; 'your own words · step 3'; 'one click a gap · step 4'; 'before a plan, and on quick checks · step 5'
 
-_Says:_ Today reelplanner explains one way, from the agent to you. Its checks test whether you followed the video, not what you assumed that it never said. The plan has five steps, each one change, in four parts. Steps one and two: a few cards where a gap is likely. Step three: your own words, checked. Step four: one click settles each gap. Step five: the cards in the loop.
+_Says:_ Today reelplanner explains one way, from the agent to you. Its checks test whether you followed the video, not what you assumed that it never said. The plan has five steps, each one change. Steps one and two: a few cards where a gap is likely. Step three: your own words, checked. Step four: one click settles each gap. Step five: the cards before a plan, and on every quick check.
 
-### Scene 5 · Step 1 · Three kinds of card
+### Scene 5 · What your review changed
+
+_Shows:_ THREE ROWS landing on their words, each with its decision tag: 'one round, three ways in · decided D-314'; 'asked once more, days later · decided D-316'; 'three checks you missed · steps 1, 2, 3'. Small under them: 'question 2 and 4 kept the recommendation · D-315, D-317'
+
+_Says:_ Your review changed three things. One: the cards are one record with three ways to answer them, in the chat with the agent alone, on the review page, or in a video. Two: a card you got right comes back once more, a few days later, on a new case. Three: you got three quick checks wrong, so the checker, not sure, and a should claim are now said plainly. Those were gaps too.
+
+### Scene 6 · Step 1 · Three kinds of card
 
 _Shows:_ THREE PLANNED CARDS fanned out, each landing on its word, each labelled with its kind: predict · 'In this repo, you press Send and no session is waiting. What happens to the review?' with A B C; assume · 'I'm assuming you mean the session you have open'; say · 'Say how you think a review reaches the agent'. A quiet 'planned' label; a counter '3 of at most 6'
 
-_Says:_ Step one. A round is a short set of cards, at most six, about one topic: about two minutes. A card is one of three kinds. A predict card asks what the code does, and holds the answer with the code's own lines. An assume card says what the agent assumes you want, for you to answer. A say card asks you to explain it in your own words.
+_Says:_ Step one. A round is a short set of cards, at most six, about one topic: about two minutes. A card is one of three kinds. A predict card asks what the code does, and holds the answer with the code's own lines. An assume card says what the agent assumes you want, for you to answer. A say card asks you to explain it in your own words: that's step three.
 
-### Scene 6 · Step 1 · Where gaps are likely
+### Scene 7 · Step 1 · Where gaps are likely
 
-_Shows:_ FOUR SOURCES on the left (your words; your memory; what moved; the agent's assumptions) flowing into 'candidates', then 'at most 6'. One card's two lines pinned on it: 'likely wrong: in a repo with no headless command it does wait' and 'matters: step 2 of the plan'. Then the checker: card c4 'tries once' struck, 'tries again after 15 s' written in; the agent–code side of the small triangle lights
+_Shows:_ FOUR SOURCES on the left, in the narration's words (what your words take for granted; quick checks you got wrong; commits since you watched; its own assumptions) flowing into 'candidates', then 'at most 6'. One card's two lines pinned on it: 'likely wrong: in a repo with no headless command it does wait' and 'matters: step 2 of the plan'. Then the checker: card c4 'tries once' struck, 'tries again after 15 s' written in; the agent–code side of the small triangle lights
 
-_Says:_ Picking the cards is the point. Each must say why you might picture it otherwise, and what depends on it. The agent looks at what your words take for granted, checks you got wrong, commits since you last watched, and its own assumptions. Then a fresh checker, an agent that never saw this conversation, answers each predict card from the code alone. Where it disagrees, the card is fixed or dropped before you see it.
+_Says:_ Picking the cards is the point. Each must say why you might picture it otherwise, and what depends on it. The agent looks at what your words take for granted, quick checks you got wrong, commits since you last watched, and its own assumptions, and keeps at most six. Then a fresh checker, an agent that never saw this conversation, answers each predict card from the code alone. Where it disagrees, the card is fixed or dropped before the round opens. You never see two answers side by side.
 
-### Scene 7 · Step 2 · Predict, then see the code
+### Scene 8 · Step 2 · One round, three ways in
+
+_Shows:_ ONE RECORD in the middle, 'align.md · one record'. Three ways landing in order on their words, left to right: 'the chat' (a planned AskUserQuestion mock: card c3's question, options A B C, then the lines as a code block); 'the review page' (the card, turned over); 'a video' (a quick check). A 'decided · D-314' tag; 'built first' on the chat
+
+_Says:_ Step two, as you decided: one round, three ways in. First, in the chat with the agent alone: it asks each card with its own question tool, and shows the code's lines as text. That needs no page, no video, and no setup in the repo. Then the review page, which adds pointing and your voice. Then a video, where a quick check is a card. Each way writes the same record, so what comes next is the same.
+
+### Scene 9 · Step 2 · Predict, then see the code
 
 _Shows:_ THE PLANNED CARD, FRONT: c3's question and three options, A ringed in coral as 'your pick'. It TURNS OVER: the back is the real thing (data-artifact): scripts/lib/inbox.mjs, lines 700–702 on the navy slab ('if (!question && !isMachineInbox(rp)) {', 'const result = await start();', 'if (result.started) return { handledBy: "agent", …') beside .reelplanner/config.json's '"command": "claude --permission-mode auto …"'; under them the why, 'A headless command is set, so a run starts'; your A dashed, B ringed in ink 'the answer'; a row of four buttons 'Got it · Change the plan · The code is wrong · Show me more'; a quiet 'Skip the rest'
 
-_Says:_ Step two puts the round on the review page, a card at a time. You answer first, with a key: A to D, or N for not sure. Then the card turns over: the file, the lines, one sentence why. Here, this repo's config sets a headless command, so a run starts. Where you match, the next card comes. Where you don't, it's a gap: Got it, Change the plan, The code is wrong, or Show me more. Skip the rest is always there.
+_Says:_ On the review page, a card at a time, you answer first, with a letter key, or N for not sure. Then the card turns over: the file, the lines, one sentence why. Here, this repo's config sets a headless command, so a run starts. A match brings the next card. A wrong answer is a gap, with four ways to settle it. Not sure is kept too, never skipped: it's a gap of its own, settled with Got it or Show me more.
 
-### Scene 8 · Question 1 · Where the cards show first
-
-_Shows:_ THE QUESTION AND THREE CARDS, still, each with a tiny drawing of where the card appears: a page card; a chat bubble; both. The recommended card carries 'recommended'
-
-_Says:_ Question one. A: the cards show up on the review page, with keys, pointing, your voice, and the code on the card. B: in the chat, as the agent's questions: quickest to build, but plain text and no voice. C: both from the start, twice the work before either is good. I recommend A: the page makes each answer a key press. Where do the cards show up first?
-
-### Scene 9 · If A · on the review page
-
-_Shows:_ kicker 'If A'; the planned card's back on a review page, the slab of lines on it
-
-_Says:_ With A, the card turns over on the page, with the code's lines on its back.
-
-### Scene 10 · If B · in the chat
-
-_Shows:_ kicker 'If B'; a chat exchange: the agent's question with A B C, your 'A', and the answer as plain lines of text
-
-_Says:_ With B, the agent asks each card in the chat, and the lines come back as text.
-
-### Scene 11 · If C · both from the start
-
-_Shows:_ kicker 'If C'; the card on a page beside the same card in a chat, one line joining them 'one round'
-
-_Says:_ With C, the same round opens on the page and in the chat at once.
-
-### Scene 12 · Quick check · A card the checker disagrees with
+### Scene 10 · Quick check · A card the checker disagrees with
 
 _Shows:_ THE CASE ON A LINE ABOVE: 'card c2: B · checker: C'; the heading and three cards land, still
 
 _Says:_ Quick check. A card about reel status says B. The fresh checker reads the code and picks C. What do you see?
 
-### Scene 13 · Step 3 · Your own words, checked
+### Scene 11 · Step 3 · Your own words, checked
 
-_Shows:_ YOUR WORDS typed out as said (planned page): 'When I press Send it goes to my session. If I'm not there, it waits for me. A question I ask on the page does the same.' Each claim underlined as the voice reads it: the first and third marked ✓ with 'inbox.mjs:673' and ':700' pinned under them; the second marked ✗ in coral with 'inbox.mjs:700–705 · config.json' and a small gap card sliding out of it. 'whisper · on this machine' small by a microphone
+_Shows:_ YOUR WORDS typed out as said (planned page): 'When I press Send it goes to my session. If I'm not there, it waits for me. It should tell me when it's been taken.' Each claim underlined as the voice reads it: the first marked ✓ with 'inbox.mjs:673' pinned under it; the second marked ✗ in coral with 'inbox.mjs:700–705 · config.json' and a small gap card sliding out of it. 'whisper · on this machine' small by a microphone; the third sentence 'It should tell me when it's been taken.' marked '?' with 'assume card' sliding out of it; a quiet line at the foot 'drawing your picture · issue #23, a separate plan'
 
-_Says:_ Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. The waiting session splits your words into claims, each a stretch that says one thing, and checks each against the code. It goes to my session: a match. If I'm not there, it waits: a gap, in this repo. A claim about what you want, not what is, comes back as an assume card.
+_Says:_ Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. The waiting session, as you chose, splits your words into claims, each checked against the code. It goes to my session: a match. If I'm not there, it waits: a gap, in this repo. It should tell me when it's taken: that says should, so it's neither a match nor a gap. It comes back as an assume card.
 
-### Scene 14 · Question 2 · Who checks what you said
-
-_Shows:_ THE QUESTION AND THREE CARDS, still, each with its time on it: 'about 1 min'; 'a few seconds'; 'next version'. The recommended card carries 'recommended'
-
-_Says:_ Question two. A: the session that's waiting reads your words against the code. It knows the code best, and takes about a minute. B: a small fast model on the page: seconds, but it sees only the pinned lines. C: the agent after Send, so nothing live. I recommend A, falling back to C when no session waits. Who reads your spoken explanation against the code?
-
-### Scene 15 · If A · the waiting session
-
-_Shows:_ kicker 'If A'; your three claims, marked, with '≈ 1 min' beside them
-
-_Says:_ With A, your claims come back marked in about a minute.
-
-### Scene 16 · If B · a small fast model
-
-_Shows:_ kicker 'If B'; your three claims, marked, '≈ 3 s', and 'from the pinned lines only' on them
-
-_Says:_ With B, they're marked in seconds, from the pinned lines alone.
-
-### Scene 17 · If C · after Send
-
-_Shows:_ kicker 'If C'; your three claims unmarked, then a 'next version' tab where they are marked
-
-_Says:_ With C, you see them marked only in the next version.
-
-### Scene 18 · Quick check · Not sure
+### Scene 12 · Quick check · Not sure
 
 _Shows:_ THE CASE ON A LINE ABOVE: 'card c5 · you press N'; the heading and three cards land, still
 
-_Says:_ Quick check. On a card about where a question waits, you press N, for not sure. What comes next?
+_Says:_ Quick check. On card c five, you press N, for not sure. What comes next?
 
-### Scene 19 · Step 4 · Settle each gap
+### Scene 13 · Step 4 · Settle each gap
 
-_Shows:_ THE PLANNED CARD'S FOUR BUTTONS across the top; from each a line drawn down to where it goes, landing on its word: Got it → 'your memory · you.jsonl'; Change the plan → 'plan.md · You told me first'; The code is wrong → 'a fix'; Show me more → 'one short video'. Then 'decision log' at the side, struck: 'not directly'
+_Shows:_ THE PLANNED CARD'S FOUR BUTTONS across the top; from each a line drawn down to where it goes, landing on its word: Got it → 'your memory · you.jsonl'; Change the plan → 'plan.md · You told me first'; The code is wrong → 'a plan step · or issue.md'; Show me more → 'one short video'. Then 'decision log' at the side, reached only from 'plan.md' by a thin line labelled 'its questions'
 
-_Says:_ Step four: one click settles a gap, and each goes somewhere. Got it: the code is right, and your memory keeps it as something you know. Change the plan: it goes into the plan, under You told me first. The code is wrong: it becomes a fix. Show me more: a longer card now, and one short video of those gaps at the end. Nothing goes straight into the decision log, the record of your answers.
+_Says:_ Step four: one click settles a gap, and each goes somewhere. Got it: the code is right, and your memory keeps it. Change the plan: it goes into the plan, under You told me first. The code is wrong: a step of the plan, or an issue to file. Show me more: a longer card now, and one short video of those gaps at the end. The decision log, the record of your answers, gets them only through the plan's own questions.
 
-### Scene 20 · Question 3 · When a card comes back
+### Scene 14 · Step 4 · Asked once more
 
-_Shows:_ A SMALL MEMORY LINE first: 'knows: a headless run takes it · inbox.mjs:700–705 · 4b1e', 'fingerprint' pinned on 4b1e. Then THE QUESTION AND THREE CARDS, still. The recommended card carries 'recommended'
+_Shows:_ A TIMELINE, ticks on the line, labels under them, left to right: 'Got it · c3'; '3 days'; 'the next round on the inbox'; 'a new case · same rule'; 'known until the lines change'. A 'decided · D-316' tag
 
-_Says:_ Got it is kept with the lines' fingerprint, a short code that changes when they do. Question three. A: the same card comes back only when those lines change. B: also once more, on a new case, a few days later. C: whenever a plan depends on it. I recommend A: a change to the code is what makes your picture stale. When does the same card return?
+_Says:_ As you decided, Got it is not the end. A few days later, the next round on that part asks it once more, on a new case: other names, the same rule, so you apply it instead of remembering the answer. Got it again, and it's known until its lines change; wrong again, and it's a gap to settle. Nothing reminds you on a schedule: it waits for the next round on that part.
 
-### Scene 21 · If A · when its lines change
-
-_Shows:_ kicker 'If A'; a timeline: 'Got it · 4b1e', weeks of nothing, 'inbox.mjs edited · 9c07', 'asked again'
-
-_Says:_ With A, the card returns only after its lines change.
-
-### Scene 22 · If B · once more, later
-
-_Shows:_ kicker 'If B'; a timeline: 'Got it', 'three days', 'a new case'
-
-_Says:_ With B, it returns once more, on a new case, a few days on.
-
-### Scene 23 · If C · whenever a plan needs it
-
-_Shows:_ kicker 'If C'; a timeline: 'Got it', then 'plan', 'asked', 'plan', 'asked'
-
-_Says:_ With C, it returns each time a plan leans on it.
-
-### Scene 24 · Quick check · A want, not a fact
+### Scene 15 · Quick check · A want, not a fact
 
 _Shows:_ THE CASE ON A LINE ABOVE, your words in quotes: 'and it should only go to the session I have open'; the heading and three cards land, still
 
 _Says:_ Quick check. You say: and it should only go to the session I have open. How is that claim marked?
 
-### Scene 25 · Step 5 · Into the loop
+### Scene 16 · Step 5 · Into the loop
 
-_Shows:_ THREE PLACES in a row, each landing on its word: 'before a plan' with candidates → 'a round, if worth it'; a quick-check card with the four buttons under its answer and 'Approve · never blocked'; a planned reel status line 'rounds 3 · gaps 11 · Got it 7 · the plan 3 · a fix 1', with 'too few plans to compare'
+_Shows:_ THREE PLACES in a row, each landing on its word: 'before a plan' with candidates → 'a round, if worth it'; a quick-check card with the four buttons under its answer and 'Approve · never blocked'; a planned reel status line 'rounds 3 · gaps 11 · Got it 7 · the plan 3 · a fix 1', with 'compared after 5 plans each way'
 
-_Says:_ Step five puts the round in the loop. Before a plan on code that exists, the agent lists the likely gaps, and runs a round when one is worth your time. A wrong quick check gets the same four buttons; Change the plan's words reach the agent as a comment, and nothing blocks Approve, the verdict that accepts a plan. And reel status counts rounds, gaps, and later surprises.
+_Says:_ Step five puts the round in the loop. Before a plan, the agent lists the likely gaps, and, as you chose, runs a round only when one is likely and costly. A wrong quick check gets the same buttons, with Change the plan's words reaching the agent as a comment, and nothing blocks Approve, the verdict that accepts a plan. And reel status counts rounds, gaps, and whether plans with a round need fewer late fixes, things a review let through that a later fix had to change.
 
-### Scene 26 · Question 4 · How often a round comes
+### Scene 17 · Quick check · Two gaps, more please
 
-_Shows:_ THE QUESTION AND THREE CARDS, still, each showing what the two requests get: A 'Send · 4 cards, rename · 2 cards'; B 'Send · 4 cards, rename · none'; C 'none, none'. The recommended card carries 'recommended'
-
-_Says:_ Question four. A: a round comes before every plan on code that exists: the surest, and two minutes more each time, often for nothing. B: when the agent finds a gap that's likely and costly; it can overlook one it didn't see coming. C: only when you ask. I recommend B, with a line in the plan when there was none. How often does a round come ahead of a plan?
-
-### Scene 27 · If A · every plan
-
-_Shows:_ kicker 'If A'; three plans in a row, each with a round before it
-
-_Says:_ With A, every plan on existing code starts with a round, a rename included.
-
-### Scene 28 · If B · when it's worth it
-
-_Shows:_ kicker 'If B'; two plans: 'rename the Save button · no round', 'make Send reach my open session · 4 cards'
-
-_Says:_ With B, the rename gets no round, and the change to Send gets four cards.
-
-### Scene 29 · If C · only when you ask
-
-_Shows:_ kicker 'If C'; a chat line 'align me first', then a round
-
-_Says:_ With C, a round comes only when you say: align me first.
-
-### Scene 30 · Quick check · Two gaps, more please
-
-_Shows:_ THE CASE ON A LINE ABOVE: 'a round of 5 · Show me more on c2 and c4'; the heading and three cards land, still
+_Shows:_ THE CASE ON A LINE ABOVE: 'a round · Show me more on c2 and c4'; the heading and three cards land, still
 
 _Says:_ Quick check. In a round of five, you press Show me more on two gaps. How many videos are made?
 
-### Scene 31 · Quick check · A quick check you missed
+### Scene 18 · Quick check · A quick check you missed
 
-_Shows:_ THE CASE ON A LINE ABOVE: 'a video like this one · quick check k2 wrong · you pressed Change the plan'; the heading and three cards land, still
+_Shows:_ THE CASE ON A LINE ABOVE: 'a video like this one · a quick check you got wrong · Change the plan'; the heading and three cards land, still
 
 _Says:_ Quick check. In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?
 
-### Scene 32 · The plan
+### Scene 19 · The plan
 
-_Shows:_ THE RAIL OF FIVE STEPS, each with its slot for an answer (data-plan-step): step 2 · question 1; step 3 · question 2; step 4 · question 3; step 5 · question 4; the triangle small beside it, its three sides closed. Holds still
+_Shows:_ THE RAIL OF FIVE STEPS, each with its slot for an answer (data-plan-step): step 2 · D-314; step 3 · D-315; step 4 · D-316; step 5 · D-317; the triangle small beside it, its three sides closed. Holds still
 
-_Says:_ That's the plan: a round of a few cards where a gap is likely, your own words checked, one click to settle each gap, and the round in the loop. Your four answers sit on the steps. Draw on any step to leave a note, or approve.
+_Says:_ That's the revised plan: one round with three ways in, your own words checked, one click to settle each gap, asked once more days later, and the round in the loop. Your four decisions sit on the steps. Draw on any step to leave a note, or approve.

@@ -44,7 +44,7 @@
   .f18-dim { opacity:0.55; }
   .f18-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f18-ok { color:var(--rp-ink); }
-  .f18-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f18-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f18-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f18-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f18-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
@@ -63,7 +63,7 @@
 <script>
 (function () {
   var FID = "18-quick-check-not-sure";
-  var DUR = 4.032;
+  var DUR = 5.439;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f18-q", { opacity: 0, x: -24 });
   tl.to("#f18-q", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 0.150);

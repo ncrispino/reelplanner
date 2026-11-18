@@ -44,15 +44,15 @@
   .f03-dim { opacity:0.55; }
   .f03-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f03-ok { color:var(--rp-ink); }
-  .f03-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f03-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f03-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f03-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f03-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="03-three-pictures-three-gaps" data-band="bottom" data-duration="21.599" data-width="1920" data-height="1080">
-  <div class="clip f03-bg" id="f03-bg" data-start="0" data-duration="21.599" data-track-index="0"></div>
-  <div class="clip f03-scene" id="f03-scene" data-start="0" data-duration="21.599" data-track-index="1">
+<div id="root" data-composition-id="03-three-pictures-three-gaps" data-band="bottom" data-duration="22.964" data-width="1920" data-height="1080">
+  <div class="clip f03-bg" id="f03-bg" data-start="0" data-duration="26.084" data-track-index="0"></div>
+  <div class="clip f03-scene" id="f03-scene" data-start="0" data-duration="26.084" data-track-index="1">
   <svg class="f03-svg" style="position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible">
     <line x1="960" y1="216" x2="1530" y2="560" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="f03-s-ac-ln" x1="960" y1="216" x2="1530" y2="560" style="stroke:var(--rp-coral); opacity:0" stroke-width="5" stroke-linecap="round"/>
     <line x1="520" y1="608" x2="1400" y2="608" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="f03-s-yc-ln" x1="520" y1="608" x2="1400" y2="608" style="stroke:var(--rp-coral); opacity:0" stroke-width="5" stroke-linecap="round"/>
@@ -70,26 +70,26 @@
 <script>
 (function () {
   var FID = "03-three-pictures-three-gaps";
-  var DUR = 21.099;
+  var DUR = 26.084;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f03-n-you", { opacity: 0, y: 26 });
-  tl.to("#f03-n-you", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.130);
+  tl.to("#f03-n-you", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.140);
   gsap.set("#f03-n-agent", { opacity: 0, y: 26 });
-  tl.to("#f03-n-agent", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.550);
+  tl.to("#f03-n-agent", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.540);
   gsap.set("#f03-n-code", { opacity: 0, y: 26 });
-  tl.to("#f03-n-code", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.380);
+  tl.to("#f03-n-code", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.350);
   gsap.set("#f03-s-yc", { opacity: 0, y: 26 });
-  tl.to("#f03-s-yc", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.280);
-  tl.to("#f03-s-yc-ln", { opacity: 1, duration: 0.3 }, 8.280);
-  tl.to("#f03-s-yc-ln", { opacity: 0, duration: 0.3 }, 12.280);
+  tl.to("#f03-s-yc", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.120);
+  tl.to("#f03-s-yc-ln", { opacity: 1, duration: 0.3 }, 8.120);
+  tl.to("#f03-s-yc-ln", { opacity: 0, duration: 0.3 }, 12.120);
   gsap.set("#f03-s-ac", { opacity: 0, y: 26 });
-  tl.to("#f03-s-ac", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.780);
-  tl.to("#f03-s-ac-ln", { opacity: 1, duration: 0.3 }, 11.780);
-  tl.to("#f03-s-ac-ln", { opacity: 0, duration: 0.3 }, 15.780);
+  tl.to("#f03-s-ac", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.600);
+  tl.to("#f03-s-ac-ln", { opacity: 1, duration: 0.3 }, 11.600);
+  tl.to("#f03-s-ac-ln", { opacity: 0, duration: 0.3 }, 15.600);
   gsap.set("#f03-s-ya", { opacity: 0, y: 26 });
-  tl.to("#f03-s-ya", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.980);
-  tl.to("#f03-s-ya-ln", { opacity: 1, duration: 0.3 }, 15.980);
-  tl.to("#f03-s-ya-ln", { opacity: 0, duration: 0.3 }, 19.980);
+  tl.to("#f03-s-ya", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 17.360);
+  tl.to("#f03-s-ya-ln", { opacity: 1, duration: 0.3 }, 17.360);
+  tl.to("#f03-s-ya-ln", { opacity: 0, duration: 0.3 }, 21.360);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

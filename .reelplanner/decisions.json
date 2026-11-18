@@ -11599,6 +11599,165 @@
       ],
       "status": "active",
       "supersedes": []
+    },
+    {
+      "id": "D-314",
+      "date": "2026-11-18",
+      "plan": "2026-11-18-find-the-gaps",
+      "step": 2,
+      "stepTitle": "The round on the review page: predict, then see the code",
+      "questionId": "q1",
+      "question": "Where do a round's cards show up first?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The review page",
+          "why": "The page: a key per answer, the code turned over on the card, and your voice.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The chat",
+          "why": "The chat: quickest to build, but plain text, no pointing and no voice.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Both from the start",
+          "why": "Both now: two ways to answer, twice the work before either is good.",
+          "recommended": false
+        }
+      ],
+      "chosen": "like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)",
+      "chosenId": "own",
+      "recommended": false,
+      "why": "",
+      "components": [
+        "server",
+        "headless",
+        "align"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-315",
+      "date": "2026-11-18",
+      "plan": "2026-11-18-find-the-gaps",
+      "step": 3,
+      "stepTitle": "Say it in your own words, and see each thing you said checked",
+      "questionId": "q2",
+      "question": "Who reads your spoken explanation against the code?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The waiting session",
+          "why": "The waiting session: it knows the code best; about a minute.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A small hosted model",
+          "why": "A small hosted model: seconds, but your words leave the machine.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The agent, after Send",
+          "why": "After Send: nothing live; marked when the round comes back.",
+          "recommended": false
+        }
+      ],
+      "chosen": "The waiting session",
+      "chosenId": "a",
+      "recommended": true,
+      "why": "The waiting session: it knows the code best; about a minute.",
+      "components": [
+        "headless",
+        "align"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-316",
+      "date": "2026-11-18",
+      "plan": "2026-11-18-find-the-gaps",
+      "step": 4,
+      "stepTitle": "Settle each gap, and keep what it settled where it belongs",
+      "questionId": "q3",
+      "question": "After Got it, when does the same card return?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Only when its lines change",
+          "why": "Known until its lines change: nothing more to sit through.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Once more, a few days later",
+          "why": "Once more, later, to check it stuck: a card a round more.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Whenever a plan needs it",
+          "why": "Each time a plan leans on it: surest, most repetition.",
+          "recommended": false
+        }
+      ],
+      "chosen": "Once more, a few days later",
+      "chosenId": "b",
+      "recommended": false,
+      "why": "Once more, later, to check it stuck: a card a round more.",
+      "components": [
+        "finish",
+        "headless",
+        "explainer",
+        "align"
+      ],
+      "status": "active",
+      "supersedes": []
+    },
+    {
+      "id": "D-317",
+      "date": "2026-11-18",
+      "plan": "2026-11-18-find-the-gaps",
+      "step": 5,
+      "stepTitle": "Into the loop: before a plan, in every quick check, and measured",
+      "questionId": "q4",
+      "question": "How often does a round come ahead of a plan?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Every plan on existing code",
+          "why": "Every plan: the surest, two minutes more each time.",
+          "recommended": false
+        },
+        {
+          "id": "b",
+          "label": "When a gap is likely and costly",
+          "why": "When likely and costly: none on a rename, four on Send.",
+          "recommended": true
+        },
+        {
+          "id": "c",
+          "label": "Only when you ask",
+          "why": "Only when asked: the gaps you didn't think of stay hidden.",
+          "recommended": false
+        }
+      ],
+      "chosen": "When a gap is likely and costly",
+      "chosenId": "b",
+      "recommended": true,
+      "why": "When likely and costly: none on a rename, four on Send.",
+      "components": [
+        "skill",
+        "system-video"
+      ],
+      "status": "active",
+      "supersedes": []
     }
   ]
 }

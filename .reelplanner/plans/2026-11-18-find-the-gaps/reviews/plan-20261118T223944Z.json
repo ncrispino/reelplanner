@@ -1,0 +1,184 @@
+{
+  "annotations": [
+    {
+      "about": "",
+      "comment": "note we also should support an easier implementation of just doing in agent alone without video, just with something like askuserquestions or wahtever the harness suppports. then, we can do in html, and also here in video. jic some dont use full reelplanner pipelien, we can still use this same kindo f quizzing and realignment.",
+      "frame": {
+        "compositionId": "07-step-2-predict-then-see-the-code",
+        "index": 7,
+        "title": "Step 2 · Predict, then see the code"
+      },
+      "id": "amwmp8jp5u5s2",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 118.8
+    },
+    {
+      "about": "Answered in their own words: Where do a round's cards show up first?",
+      "comment": "like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)",
+      "frame": {
+        "compositionId": "08-question-1-where-the-cards-show-first",
+        "index": 8,
+        "title": "Question 1 · Where the cards show first"
+      },
+      "id": "amwmpa0p699oh",
+      "kind": "note",
+      "plan": {
+        "component": null,
+        "questions": [],
+        "step": 2
+      },
+      "t": 156.56
+    }
+  ],
+  "autonomy": [],
+  "checks": "on",
+  "confusion": {
+    "rewinds": 0,
+    "termsLookedUp": [],
+    "termsOpened": 0,
+    "walked": 3,
+    "watchedPct": 100,
+    "wrongChecks": 3
+  },
+  "decisions": [
+    {
+      "decidedAt": "2026-11-18T22:35:58.601Z",
+      "id": "q1",
+      "label": "like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)",
+      "option": "own",
+      "own": true,
+      "planStep": 2,
+      "question": "Where do a round's cards show up first?",
+      "recommended": false,
+      "t": 156.558
+    },
+    {
+      "decidedAt": "2026-11-18T22:37:34.011Z",
+      "id": "q2",
+      "label": "The waiting session",
+      "option": "a",
+      "planStep": 3,
+      "question": "Who reads your spoken explanation against the code?",
+      "recommended": true,
+      "t": 217.617
+    },
+    {
+      "decidedAt": "2026-11-18T22:38:28.914Z",
+      "id": "q3",
+      "label": "Once more, a few days later",
+      "option": "b",
+      "planStep": 4,
+      "question": "After Got it, when does the same card return?",
+      "recommended": false,
+      "t": 276.627
+    },
+    {
+      "decidedAt": "2026-11-18T22:39:20.235Z",
+      "id": "q4",
+      "label": "When a gap is likely and costly",
+      "option": "b",
+      "planStep": 5,
+      "question": "How often does a round come ahead of a plan?",
+      "recommended": true,
+      "t": 341.313
+    }
+  ],
+  "exportedAt": "2026-11-18T22:39:44.705Z",
+  "knowledgeLevel": "new",
+  "project": "video",
+  "questions": [],
+  "quizzes": [
+    {
+      "answer": "a",
+      "answeredAt": "2026-11-18T22:37:07.951Z",
+      "correct": false,
+      "id": "k1",
+      "t": 177.51,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-11-18T22:37:44.827Z",
+      "correct": false,
+      "id": "k2",
+      "t": 236.649,
+      "walked": true
+    },
+    {
+      "answer": "a",
+      "answeredAt": "2026-11-18T22:38:42.472Z",
+      "correct": false,
+      "id": "k3",
+      "t": 296.683,
+      "walked": true
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-11-18T22:39:28.108Z",
+      "correct": true,
+      "id": "k4",
+      "t": 361.049
+    },
+    {
+      "answer": "b",
+      "answeredAt": "2026-11-18T22:39:34.143Z",
+      "correct": true,
+      "id": "k5",
+      "t": 367.278
+    }
+  ],
+  "src": "2026-11-18-find-the-gaps/index.html",
+  "verdict": "changes",
+  "version": 1,
+  "viewer": {
+    "id": "u__QW4QN2sxsgvOrtVg_mzBQ",
+    "owner": true
+  },
+  "watch": {
+    "chapters": [
+      {
+        "completion": 1,
+        "id": "ch1"
+      },
+      {
+        "completion": 1,
+        "id": "ch2"
+      },
+      {
+        "completion": 1,
+        "id": "ch3"
+      },
+      {
+        "completion": 1,
+        "id": "ch4"
+      },
+      {
+        "completion": 1,
+        "id": "ch5"
+      }
+    ],
+    "completion": 1,
+    "details": [],
+    "durationSeconds": 380.19,
+    "firstPlayAt": "2026-11-18T22:32:29.300Z",
+    "maxTimeReached": 380.19,
+    "moments": []
+  },
+  "watched": [
+    {
+      "seen": "2026-11-18T22:38:47.729Z",
+      "video": "2026-11-18-find-the-gaps"
+    }
+  ],
+  "recorded": {
+    "reviewer": "owner",
+    "id": "id:u__QW4QN2sxsgvOrtVg_mzBQ",
+    "via": "the page's viewer",
+    "reelplanner": "0.4.0"
+  }
+}

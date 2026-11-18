@@ -44,15 +44,15 @@
   .f31-dim { opacity:0.55; }
   .f31-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f31-ok { color:var(--rp-ink); }
-  .f31-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f31-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f31-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f31-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f31-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
 <div id="root" data-composition-id="31-quick-check-a-quick-check-you-missed" data-band="bottom" data-duration="6.729" data-width="1920" data-height="1080">
-  <div class="clip f31-bg" id="f31-bg" data-start="0" data-duration="6.729" data-track-index="0"></div>
-  <div class="clip f31-scene" id="f31-scene" data-start="0" data-duration="6.729" data-track-index="1">
+  <div class="clip f31-bg" id="f31-bg" data-start="0" data-duration="8.987" data-track-index="0"></div>
+  <div class="clip f31-scene" id="f31-scene" data-start="0" data-duration="8.987" data-track-index="1">
   <div class="f31-lab" id="f31-ctx" style="left:160px; top:80px;">quick check · step 5</div><div class="f31-lab" id="f31-case" style="left:160px; top:130px;">a video like this one · a quick check you got wrong · Change the plan</div><div class="f31-q" id="f31-q" style="left:160px; top:190px; width:1600px;" data-question>In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?</div>
   <div class="f31-opt" id="f31-opt-a" style="left:160px; top:420px; width:500px; height:300px;" data-option="a" data-plan-option="a"><span class="k">A</span><span class="l">Your memory, as known</span> </div>
 <div class="f31-opt" id="f31-opt-b" style="left:690px; top:420px; width:500px; height:300px;" data-option="b" data-plan-option="b"><span class="k">B</span><span class="l">The agent, as a comment</span> </div>
@@ -63,7 +63,7 @@
 <script>
 (function () {
   var FID = "31-quick-check-a-quick-check-you-missed";
-  var DUR = 6.229;
+  var DUR = 8.987;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f31-q", { opacity: 0, x: -24 });
   tl.to("#f31-q", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 0.150);

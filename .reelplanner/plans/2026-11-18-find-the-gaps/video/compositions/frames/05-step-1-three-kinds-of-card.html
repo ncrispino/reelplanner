@@ -44,15 +44,15 @@
   .f05-dim { opacity:0.55; }
   .f05-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f05-ok { color:var(--rp-ink); }
-  .f05-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f05-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f05-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f05-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f05-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
 <div id="root" data-composition-id="05-step-1-three-kinds-of-card" data-band="bottom" data-duration="19.785" data-width="1920" data-height="1080">
-  <div class="clip f05-bg" id="f05-bg" data-start="0" data-duration="19.785" data-track-index="0"></div>
-  <div class="clip f05-scene" id="f05-scene" data-start="0" data-duration="19.785" data-track-index="1">
+  <div class="clip f05-bg" id="f05-bg" data-start="0" data-duration="23.826" data-track-index="0"></div>
+  <div class="clip f05-scene" id="f05-scene" data-start="0" data-duration="23.826" data-track-index="1">
   <div class="f05-planned" id="f05-planned" style="left:1600px; top:70px;">planned</div>
   <div class="f05-paper" id="f05-c1" style="left:160px; top:200px; width:500px; height:560px;"><div class="f05-pin" style="left:30px; top:30px">predict</div><div class="f05-big" style="left:30px; top:110px; width:440px; font-size:40px">In this repo, you press Send and no session is waiting. What happens?</div><div class="f05-s" style="left:30px; top:370px; width:440px">A · it waits for the next session</div><div class="f05-s" style="left:30px; top:422px; width:440px">B · a headless run starts</div><div class="f05-s" style="left:30px; top:474px; width:440px">C · it is lost</div></div>
   <div class="f05-paper" id="f05-c2" style="left:710px; top:200px; width:500px; height:560px;"><div class="f05-pin" style="left:30px; top:30px">assume</div><div class="f05-big" style="left:30px; top:110px; width:440px; font-size:40px">I'm assuming you mean the session you have open.</div><div class="f05-s" style="left:30px; top:470px">Right · Not quite</div></div>
@@ -64,7 +64,7 @@
 <script>
 (function () {
   var FID = "05-step-1-three-kinds-of-card";
-  var DUR = 19.285;
+  var DUR = 23.826;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f05-count", { opacity: 0 });
   tl.to("#f05-count", { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.200);

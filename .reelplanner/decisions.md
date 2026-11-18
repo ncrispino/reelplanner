@@ -317,6 +317,10 @@ Append-only ledger. `reel record` adds entries from a plan review; a plan that c
 | D-311 | 2026-10-08 | 2026-09-26-contributing |  | How does a pull request reach the full suite, and what else does it need before it merges? | **The full suite runs on every push to a pull request, with no label: a PR's checks are green or red for its code, never red for waiting on a maintainer. `.github/workflows/ci.yml` holds the tests (the fast and full suites) and starts only on pushes; `reel pr-check` and the video branch's cleanup move to `.github/workflows/pr.yml`, which also runs when the PR's text or labels change, so no such event records a skipped test check (GitHub counts a skipped required check as passed). Main requires a pull request with one approving review, and the fast suite, the full suite and `reel pr-check` passed on its last commit, up to date with main; the owner may merge their own with the admin bypass. The maintainer runs `reel pr-check --merge` before merging (the PR template), not CI** | active, supersedes D-296 |
 | D-312 | 2026-10-08 | 2026-09-26-contributing |  | What is the project called? | **reelplanner, said "reel planner": the npm package, the command `reelplanner` (`reel` stays), the GitHub repo ncrispino/reelplanner, the case-studies repo ncrispino/reelplanner-case-studies (its site at ncrispino.github.io/reelplanner-case-studies), the Claude Code plugin and its marketplace, a repo's project folder `.reelplanner/`, the machine's folder `~/.reelplanner` and the settings `REELPLANNER_*`. The old names are still read for a while: a repo's `.reelplanning/` when it has no `.reelplanner/` (said once, with the `git mv .reelplanning .reelplanner` that renames it), `~/.reelplanning` while there is no `~/.reelplanner`, a `REELPLANNING_*` setting, in the shell or a .env file, when its new name is unset, and the `reelplanning` command, which says the new name on stderr and runs it. The review page keeps its saved marks' storage keys (`reelplanning:annotations:…`), so a review begun before the rename is still there after it** | active |
 | D-313 | 2026-10-11 | 2026-10-11-codex-first-class | 5 | How far should remote reviews go? | **Local loop + portable exports** | active |
+| D-314 | 2026-11-18 | 2026-11-18-find-the-gaps | 2 | Where do a round's cards show up first? | **like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)** (not the recommendation) | active |
+| D-315 | 2026-11-18 | 2026-11-18-find-the-gaps | 3 | Who reads your spoken explanation against the code? | **The waiting session** | active |
+| D-316 | 2026-11-18 | 2026-11-18-find-the-gaps | 4 | After Got it, when does the same card return? | **Once more, a few days later** (not the recommendation) | active |
+| D-317 | 2026-11-18 | 2026-11-18-find-the-gaps | 5 | How often does a round come ahead of a plan? | **When a gap is likely and costly** | active |
 
 ### D-001 — Who checks that the code followed the plan?
 
@@ -2566,4 +2570,32 @@ Append-only ledger. `reel record` adds entries from a plan review; a plan that c
 - **Chosen:** Local loop + portable exports — Concrete local gaps; no drop-in Artifact runtime proved
 - **Not chosen:** Add authenticated hosted spike (Proves automatic remote handoff before service design)
 - **Where:** 2026-10-11-codex-first-class, step 5 (Match terminal review and choose the remote path); components: finish, player, server, cli, guide
+- **Status:** active
+
+### D-314 — Where do a round's cards show up first?
+
+- **Chosen:** like said earlier commnet we should support multiple modalities here, but same backend for doing the review (maybe with minor adjustments based on how the user gives the feedback, if later they want to for example draw what they are thinking and intereact more that cant be done in text but can in html and video)
+- **Not chosen:** The review page (The page: a key per answer, the code turned over on the card, and your voice.); The chat (The chat: quickest to build, but plain text, no pointing and no voice.); Both from the start (Both now: two ways to answer, twice the work before either is good.)
+- **Where:** 2026-11-18-find-the-gaps, step 2 (The round on the review page: predict, then see the code); components: server, headless, align
+- **Status:** active
+
+### D-315 — Who reads your spoken explanation against the code?
+
+- **Chosen:** The waiting session — The waiting session: it knows the code best; about a minute.
+- **Not chosen:** A small hosted model (A small hosted model: seconds, but your words leave the machine.); The agent, after Send (After Send: nothing live; marked when the round comes back.)
+- **Where:** 2026-11-18-find-the-gaps, step 3 (Say it in your own words, and see each thing you said checked); components: headless, align
+- **Status:** active
+
+### D-316 — After Got it, when does the same card return?
+
+- **Chosen:** Once more, a few days later — Once more, later, to check it stuck: a card a round more.
+- **Not chosen:** Only when its lines change (Known until its lines change: nothing more to sit through.); Whenever a plan needs it (Each time a plan leans on it: surest, most repetition.)
+- **Where:** 2026-11-18-find-the-gaps, step 4 (Settle each gap, and keep what it settled where it belongs); components: finish, headless, explainer, align
+- **Status:** active
+
+### D-317 — How often does a round come ahead of a plan?
+
+- **Chosen:** When a gap is likely and costly — When likely and costly: none on a rename, four on Send.
+- **Not chosen:** Every plan on existing code (Every plan: the surest, two minutes more each time.); Only when you ask (Only when asked: the gaps you didn't think of stay hidden.)
+- **Where:** 2026-11-18-find-the-gaps, step 5 (Into the loop: before a plan, in every quick check, and measured); components: skill, system-video
 - **Status:** active

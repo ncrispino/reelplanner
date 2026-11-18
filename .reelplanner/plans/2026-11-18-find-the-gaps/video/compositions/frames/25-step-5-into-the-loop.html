@@ -44,15 +44,15 @@
   .f25-dim { opacity:0.55; }
   .f25-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
   .f25-ok { color:var(--rp-ink); }
-  .f25-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f25-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f25-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
   .f25-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
   .f25-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="25-step-5-into-the-loop" data-band="bottom" data-duration="23.775" data-width="1920" data-height="1080">
-  <div class="clip f25-bg" id="f25-bg" data-start="0" data-duration="23.775" data-track-index="0"></div>
-  <div class="clip f25-scene" id="f25-scene" data-start="0" data-duration="23.775" data-track-index="1">
+<div id="root" data-composition-id="25-step-5-into-the-loop" data-band="bottom" data-duration="24.613" data-width="1920" data-height="1080">
+  <div class="clip f25-bg" id="f25-bg" data-start="0" data-duration="24.613" data-track-index="0"></div>
+  <div class="clip f25-scene" id="f25-scene" data-start="0" data-duration="24.613" data-track-index="1">
   <div class="f25-planned" id="f25-planned" style="left:1600px; top:60px;">planned</div>
   <div class="f25-paper" id="f25-a" style="left:160px; top:160px; width:500px; height:640px;"><div class="f25-lab" style="left:30px; top:30px">before a plan</div><div class="f25-big" style="left:30px; top:90px; width:440px; font-size:40px">likely gaps listed</div><div class="f25-big" style="left:30px; top:240px; width:440px; font-size:40px">→ a round, if worth it</div><div class="f25-s" style="left:30px; top:400px; width:440px">if not, one line in the plan says why</div></div>
   <div class="f25-paper" id="f25-b" style="left:710px; top:160px; width:500px; height:640px;"><div class="f25-lab" style="left:30px; top:30px">a quick check, wrong</div><div class="f25-btn" style="left:30px; top:80px; width:440px">Got it</div><div class="f25-btn" style="left:30px; top:156px; width:440px">Change the plan</div><div class="f25-btn" style="left:30px; top:232px; width:440px">Show me more</div><div class="f25-btn f25-dim" style="left:30px; top:308px; width:440px; border-style:dashed; font-size:26px; padding:0 10px">The code is wrong, once built</div><div class="f25-card" style="left:30px; top:392px; width:440px; height:56px;"><div class="f25-s" style="left:18px; top:10px">your words…</div></div><div class="f25-s" style="left:30px; top:466px; width:440px">Change the plan → the agent, as a comment</div><div class="f25-s" style="left:30px; top:540px; width:440px">Approve: never blocked · left unsettled: recorded as today</div></div>
@@ -63,14 +63,14 @@
 <script>
 (function () {
   var FID = "25-step-5-into-the-loop";
-  var DUR = 23.275;
+  var DUR = 28.987;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f25-a", { opacity: 0, y: 26 });
-  tl.to("#f25-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.060);
+  tl.to("#f25-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.000);
   gsap.set("#f25-b", { opacity: 0, y: 26 });
-  tl.to("#f25-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.820);
+  tl.to("#f25-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.160);
   gsap.set("#f25-c", { opacity: 0, y: 26 });
-  tl.to("#f25-c", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.840);
+  tl.to("#f25-c", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.840);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
