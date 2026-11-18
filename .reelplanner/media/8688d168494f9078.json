@@ -1,0 +1,3598 @@
+{
+  "project": "video",
+  "title": "Find the gaps: line up your picture, the agent's and the code",
+  "planDir": ".reelplanner/plans/2026-11-18-find-the-gaps",
+  "totalSeconds": 380.187,
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "Three pictures of the same code",
+      "fromFrame": 1,
+      "toFrame": 4,
+      "start": 0,
+      "end": 73.729,
+      "linearSeconds": 73.729,
+      "watchedSeconds": 73.729,
+      "decisions": []
+    },
+    {
+      "id": "ch2",
+      "title": "Steps 1 and 2: a round",
+      "fromFrame": 5,
+      "toFrame": 12,
+      "start": 73.729,
+      "end": 177.56,
+      "linearSeconds": 103.831,
+      "watchedSeconds": 93.831,
+      "decisions": [
+        "q1"
+      ]
+    },
+    {
+      "id": "ch3",
+      "title": "Step 3: your own words",
+      "fromFrame": 13,
+      "toFrame": 18,
+      "start": 177.56,
+      "end": 236.699,
+      "linearSeconds": 59.139,
+      "watchedSeconds": 49.139,
+      "decisions": [
+        "q2"
+      ]
+    },
+    {
+      "id": "ch4",
+      "title": "Step 4: settle each gap",
+      "fromFrame": 19,
+      "toFrame": 24,
+      "start": 236.699,
+      "end": 296.733,
+      "linearSeconds": 60.034,
+      "watchedSeconds": 50.034,
+      "decisions": [
+        "q3"
+      ]
+    },
+    {
+      "id": "ch5",
+      "title": "Step 5: into the loop",
+      "fromFrame": 25,
+      "toFrame": 32,
+      "start": 296.733,
+      "end": 380.187,
+      "linearSeconds": 83.454,
+      "watchedSeconds": 73.454,
+      "decisions": [
+        "q4"
+      ]
+    }
+  ],
+  "levels": {
+    "new": 380.187,
+    "familiar": 360.603,
+    "owner": 360.603
+  },
+  "quizzes": [
+    {
+      "id": "k1",
+      "frameIndex": 12,
+      "planStep": 1,
+      "question": "A card about `reel status` says B; the fresh checker reads the code and picks C. What do you see?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Both answers, side by side",
+          "why": "You never see a card the code doesn't back; the two answers are settled before the round opens."
+        },
+        {
+          "id": "b",
+          "label": "The card fixed, or no card",
+          "why": "The checker answers from the code alone, so a card it disagrees with is fixed against the code or dropped."
+        },
+        {
+          "id": "c",
+          "label": "The card as written, with a note",
+          "why": "A note would still show you a card whose answer the code may not back."
+        }
+      ],
+      "answer": "b",
+      "explain": "Where the checker's answer differs, the agent's picture is the wrong one, so the card is fixed against the code or dropped before you see it.",
+      "at": 177.51,
+      "explainedAt": 93.014,
+      "explainedFrame": 6,
+      "walkMeThrough": "The card says B. The checker read only the code and the card, and picked C. So the card's answer is not backed by the code: the agent's picture was wrong. Before the round opens, the card is fixed against the code, or dropped. You see the right card, or none."
+    },
+    {
+      "id": "k2",
+      "frameIndex": 18,
+      "planStep": 2,
+      "question": "On card c5, you press N: not sure. What comes next?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The next card; nothing kept",
+          "why": "Not sure is kept: having no picture is a gap too, so it isn't skipped."
+        },
+        {
+          "id": "b",
+          "label": "A gap: Got it or Show me more",
+          "why": "Having no picture is a gap of its own kind, settled with Got it or Show me more."
+        },
+        {
+          "id": "c",
+          "label": "The round ends",
+          "why": "Only Skip the rest ends a round; one Not sure doesn't."
+        }
+      ],
+      "answer": "b",
+      "explain": "Not sure is a gap of its own kind, you had no picture, so the card turns over and you settle it with Got it or Show me more.",
+      "at": 236.649,
+      "explainedAt": 115.435,
+      "explainedFrame": 7,
+      "walkMeThrough": "You press N on card c5. The card still turns over, and shows the lines. You had no picture there, which is a gap of its own kind. So you settle it, with Got it or Show me more, and the next card comes."
+    },
+    {
+      "id": "k3",
+      "frameIndex": 24,
+      "planStep": 3,
+      "question": "You say: 'and it should only go to the session I have open.' How is that claim marked?",
+      "options": [
+        {
+          "id": "a",
+          "label": "A match",
+          "why": "A match needs lines that back it; a want has none."
+        },
+        {
+          "id": "b",
+          "label": "A gap",
+          "why": "A gap needs code that does otherwise; this is about what should be, which only you can settle."
+        },
+        {
+          "id": "c",
+          "label": "Neither: an assume card",
+          "why": "'Should' is about what you want, so the code can't say, and it comes back as an assume card."
+        }
+      ],
+      "answer": "c",
+      "explain": "It says what you want, not what the code does, so it is neither a match nor a gap; it becomes an assume card for you to confirm.",
+      "at": 296.683,
+      "explainedAt": 177.56,
+      "explainedFrame": 13,
+      "walkMeThrough": "The claim says 'it should only go to my session'. That is a want, not how the code works now. The code can't say whether you want it. So it is neither a match nor a gap, and becomes an assume card: you answer Right or Not quite."
+    },
+    {
+      "id": "k4",
+      "frameIndex": 30,
+      "planStep": 4,
+      "question": "In a round, you press Show me more on two gaps. How many videos are made?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Two, one a gap",
+          "why": "One video a gap would mean minutes of building for each; the gaps share one."
+        },
+        {
+          "id": "b",
+          "label": "One, at the end of the round",
+          "why": "The gaps you asked more on become one short video at the end of the round."
+        },
+        {
+          "id": "c",
+          "label": "None; text only",
+          "why": "Text comes at once on the card, and the video comes after, at the end."
+        }
+      ],
+      "answer": "b",
+      "explain": "Show me more opens a longer card at once, and at the end the gaps you asked about become one short video, since a video takes minutes and a card seconds.",
+      "at": 361.049,
+      "explainedAt": 236.699,
+      "explainedFrame": 19,
+      "walkMeThrough": "You press Show me more on two gaps. Each card opens its longer page right away. At the end of the round, both gaps go into one short explainer video, which starts from what you expected. That is one video."
+    },
+    {
+      "id": "k5",
+      "frameIndex": 31,
+      "planStep": 5,
+      "question": "In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Your memory, as known",
+          "why": "Your memory takes Got it, not Change the plan."
+        },
+        {
+          "id": "b",
+          "label": "The agent, as a comment",
+          "why": "Change the plan's words go to the agent as a comment on the step the check tests."
+        },
+        {
+          "id": "c",
+          "label": "Straight into the decision log",
+          "why": "Nothing goes straight into the decision log; it gets there through the plan."
+        }
+      ],
+      "answer": "b",
+      "explain": "A quick check settles like a card: Change the plan's words reach the agent as a comment on that step, as Expected something else does today.",
+      "at": 367.278,
+      "explainedAt": 296.733,
+      "explainedFrame": 25,
+      "walkMeThrough": "You got the check wrong and pressed Change the plan, so you want it to work your way. Your words go to the agent with the review, as a comment on the step the check tests, as Expected something else does today. The plan changes, and a decision comes only from its questions."
+    }
+  ],
+  "autonomy": [],
+  "watchedSeconds": 340.187,
+  "frames": [
+    {
+      "index": 1,
+      "title": "Your words",
+      "compositionId": "01-your-words",
+      "type": "hook",
+      "durationSeconds": 12.971,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Three pictures of the same code",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "You asked for a way to line up three things: you, the code, and the agent, the AI assistant writing it. In your words: I assume it is one way when it is actually another. This plan finds those places, with the least effort from you.",
+      "start": 0,
+      "thumb": "snapshots/frame-00-at-6.74s.png",
+      "terms": [
+        "agent"
+      ],
+      "defines": [
+        "agent"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "Earlier plans",
+      "compositionId": "02-earlier-plans",
+      "type": "product_intro",
+      "durationSeconds": 19.584,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": [
+        "new"
+      ],
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "If you're new, four things this plan builds on. Send hands your review to the agent session waiting on this page; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict a case the video didn't show. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.",
+      "start": 12.971,
+      "thumb": "snapshots/frame-01-at-23.01s.png",
+      "terms": [
+        "review",
+        "headless run",
+        "quick check",
+        "explainer",
+        "memory",
+        "agent",
+        "session"
+      ],
+      "defines": [
+        "review",
+        "headless run",
+        "quick check",
+        "explainer",
+        "memory"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "Three pictures, three gaps",
+      "compositionId": "03-three-pictures-three-gaps",
+      "type": "pain_point",
+      "durationSeconds": 21.099,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Three things hold a picture of the code: you, the agent, and the code itself. A gap is where two disagree. You think a review sent with no session open waits for you; in this repo, a headless run takes it. The agent remembers Send trying once; it tries again fifteen seconds later. And you asked for a review that reaches the agent. The agent read any agent; you meant your open session.",
+      "start": 32.555,
+      "thumb": "snapshots/frame-02-at-43.35s.png",
+      "terms": [
+        "gap",
+        "headless run",
+        "review",
+        "agent",
+        "repo",
+        "session"
+      ],
+      "defines": [
+        "gap"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "Today, and what changes",
+      "compositionId": "04-today-and-what-changes",
+      "type": "product_intro",
+      "durationSeconds": 20.075,
+      "planStep": null,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "Today reelplanner explains one way, from the agent to you. Its checks test whether you followed the video, not what you assumed that it never said. The plan has five steps, each one change. Steps one and two: a few cards where a gap is likely. Step three: your own words, checked. Step four: one click settles each gap. Step five: the cards before a plan, and on every quick check.",
+      "start": 53.654,
+      "thumb": "snapshots/frame-03-at-63.69s.png",
+      "terms": [
+        "step",
+        "quick check",
+        "agent",
+        "gap",
+        "card"
+      ],
+      "defines": [
+        "step"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "Step 1 · Three kinds of card",
+      "compositionId": "05-step-1-three-kinds-of-card",
+      "type": "feature_showcase",
+      "durationSeconds": 19.285,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Steps 1 and 2: a round",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-1",
+      "options": [],
+      "narration": "Step one. A round is a short set of cards, at most six, about one topic: about two minutes. A card is one of three kinds. A predict card asks what the code does, and holds the answer with the code's own lines. An assume card says what the agent assumes you want, for you to answer. A say card asks you to explain it in your own words: that's step three.",
+      "start": 73.729,
+      "thumb": "snapshots/frame-04-at-83.62s.png",
+      "detail": "step-1",
+      "terms": [
+        "round",
+        "card",
+        "step",
+        "agent",
+        "alignment round",
+        "predict card",
+        "assume card",
+        "say card"
+      ],
+      "defines": [
+        "round",
+        "card"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "Step 1 · Where gaps are likely",
+      "compositionId": "06-step-1-where-gaps-are-likely",
+      "type": "feature_showcase",
+      "durationSeconds": 22.421,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-1",
+      "options": [],
+      "narration": "Picking the cards is the point. Each must say why you might picture it otherwise, and what depends on it. The agent looks at what your words take for granted, quick checks you got wrong, commits since you last watched, and its own assumptions, and keeps at most six of those candidates. Then a fresh checker, an agent that never saw this conversation, answers each predict card from the code alone; where it disagrees, the card is fixed or dropped.",
+      "start": 93.014,
+      "thumb": "snapshots/frame-05-at-104.47s.png",
+      "detail": "step-1",
+      "terms": [
+        "fresh checker",
+        "quick check",
+        "agent",
+        "commit",
+        "card",
+        "predict card"
+      ],
+      "defines": [
+        "fresh checker"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "Step 2 · Predict, then see the code",
+      "compositionId": "07-step-2-predict-then-see-the-code",
+      "type": "feature_showcase",
+      "durationSeconds": 21.568,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-2",
+      "options": [],
+      "narration": "Step two, as proposed, puts the round on the review page, a card at a time. You answer first, with a letter key, or N for not sure. Then the card turns over: the file, the lines, one sentence why. Here, this repo's config sets a headless command, so a run starts. A match brings the next card. A wrong answer is a gap, with four ways to settle it; not sure, with two. Skip the rest ends the round.",
+      "start": 115.435,
+      "thumb": "snapshots/frame-06-at-126.47s.png",
+      "detail": "step-2",
+      "terms": [
+        "not sure",
+        "review",
+        "step",
+        "alignment round",
+        "repo",
+        "gap",
+        "round",
+        "card",
+        "skip the rest",
+        "config"
+      ],
+      "defines": [
+        "not sure"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "Question 1 · Where the cards show first",
+      "compositionId": "08-question-1-where-the-cards-show-first",
+      "type": "cta",
+      "durationSeconds": 19.605,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q1",
+      "branch": null,
+      "question": "Where do a round's cards show up first?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The review page",
+          "why": "The page: a key per answer, the code turned over on the card, and your voice.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The chat",
+          "why": "The chat: quickest to build, but plain text, no pointing and no voice.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Both from the start",
+          "why": "Both now: two ways to answer, twice the work before either is good.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question one. A: the cards show up on the review page, with a key per answer, a box to click, your spoken words, and the code on the card. B: in the chat, as the agent's questions: quickest to build, but plain text, nothing to click or say. C: both at once, twice the work. I recommend A: the page makes each answer a key press. Where do the cards show up first?",
+      "start": 137.003,
+      "thumb": "snapshots/frame-07-at-147.06s.png",
+      "terms": [
+        "review",
+        "agent",
+        "alignment round",
+        "round",
+        "card"
+      ]
+    },
+    {
+      "index": 9,
+      "title": "If A · on the review page",
+      "compositionId": "09-if-a-on-the-review-page",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, the card turns over on the page, with the code's lines on its back.",
+      "start": 156.608,
+      "thumb": "snapshots/frame-08-at-159.36s.png",
+      "terms": [
+        "card"
+      ]
+    },
+    {
+      "index": 10,
+      "title": "If B · in the chat",
+      "compositionId": "10-if-b-in-the-chat",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, the agent asks each card in the chat, and the lines come back as text.",
+      "start": 161.608,
+      "thumb": "snapshots/frame-09-at-164.36s.png",
+      "terms": [
+        "agent",
+        "card"
+      ]
+    },
+    {
+      "index": 11,
+      "title": "If C · both from the start",
+      "compositionId": "11-if-c-both-from-the-start",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q1=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, the same round opens on the page and in the chat at once.",
+      "start": 166.608,
+      "thumb": "snapshots/frame-10-at-169.11s.png",
+      "terms": [
+        "alignment round",
+        "round"
+      ]
+    },
+    {
+      "index": 12,
+      "title": "Quick check · A card the checker disagrees with",
+      "compositionId": "12-quick-check-a-card-the-checker-disagrees",
+      "type": "social_proof",
+      "durationSeconds": 5.952,
+      "planStep": 1,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "A card about `reel status` says B; the fresh checker reads the code and picks C. What do you see?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k1",
+      "answer": "b",
+      "explain": "Where the checker's answer differs, the agent's picture is the wrong one, so the card is fixed against the code or dropped before you see it.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Both answers, side by side",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The card fixed, or no card",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The card as written, with a note",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. A card about reel status says B. The fresh checker reads the code and picks C. What do you see?",
+      "start": 171.608,
+      "thumb": "snapshots/frame-11-at-174.58s.png",
+      "terms": [
+        "quick check",
+        "agent",
+        "card",
+        "fresh checker"
+      ]
+    },
+    {
+      "index": 13,
+      "title": "Step 3 · Your own words, checked",
+      "compositionId": "13-step-3-your-own-words-checked",
+      "type": "feature_showcase",
+      "durationSeconds": 19.776,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 3: your own words",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-3",
+      "options": [],
+      "narration": "Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. Your words are split into claims, each a stretch that says one thing, checked against the code. It goes to my session: a match. If I'm not there, it waits: a gap, in this repo. A claim about what you want comes back as an assume card. Drawing your picture stays a separate plan.",
+      "start": 177.56,
+      "thumb": "snapshots/frame-12-at-187.7s.png",
+      "detail": "step-3",
+      "terms": [
+        "claim",
+        "step",
+        "repo",
+        "gap",
+        "card",
+        "assume card",
+        "session",
+        "whisper"
+      ],
+      "defines": [
+        "claim"
+      ]
+    },
+    {
+      "index": 14,
+      "title": "Question 2 · Who checks what you said",
+      "compositionId": "14-question-2-who-checks-what-you-said",
+      "type": "cta",
+      "durationSeconds": 20.331,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q2",
+      "branch": null,
+      "question": "Who reads your spoken explanation against the code?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The waiting session",
+          "why": "The waiting session: it knows the code best; about a minute.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A small hosted model",
+          "why": "A small hosted model: seconds, but your words leave the machine.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The agent, after Send",
+          "why": "After Send: nothing live; marked when the round comes back.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question two. A: the waiting agent session checks your words. It knows the code best, and takes about a minute. B: a small hosted model, called from the page: seconds, but your words leave the machine, and it sees only the pinned lines. C: the next session to take the round, after Send. I recommend A, falling back to C. So who checks your spoken words against the code?",
+      "start": 197.336,
+      "thumb": "snapshots/frame-13-at-207.75s.png",
+      "terms": [
+        "agent",
+        "alignment round",
+        "round",
+        "session",
+        "pinned"
+      ]
+    },
+    {
+      "index": 15,
+      "title": "If A · the waiting session",
+      "compositionId": "15-if-a-the-waiting-session",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, your claims come back marked in about a minute.",
+      "start": 217.667,
+      "thumb": "snapshots/frame-14-at-220.42s.png",
+      "terms": [
+        "claim"
+      ]
+    },
+    {
+      "index": 16,
+      "title": "If B · a small fast model",
+      "compositionId": "16-if-b-a-small-fast-model",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, they're marked in seconds, by a model your words are sent to.",
+      "start": 222.667,
+      "thumb": "snapshots/frame-15-at-225.42s.png"
+    },
+    {
+      "index": 17,
+      "title": "If C · after Send",
+      "compositionId": "17-if-c-after-send",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q2=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, you see them marked only when the round comes back.",
+      "start": 227.667,
+      "thumb": "snapshots/frame-16-at-230.17s.png",
+      "terms": [
+        "alignment round",
+        "round"
+      ]
+    },
+    {
+      "index": 18,
+      "title": "Quick check · Not sure",
+      "compositionId": "18-quick-check-not-sure",
+      "type": "social_proof",
+      "durationSeconds": 4.032,
+      "planStep": 2,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "On card c5, you press N: not sure. What comes next?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k2",
+      "answer": "b",
+      "explain": "Not sure is a gap of its own kind, you had no picture, so the card turns over and you settle it with Got it or Show me more.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "The next card; nothing kept",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A gap: Got it or Show me more",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "The round ends",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. On card c five, you press N, for not sure. What comes next?",
+      "start": 232.667,
+      "thumb": "snapshots/frame-17-at-234.68s.png",
+      "terms": [
+        "quick check",
+        "gap",
+        "card",
+        "got it",
+        "show me more",
+        "not sure"
+      ]
+    },
+    {
+      "index": 19,
+      "title": "Step 4 · Settle each gap",
+      "compositionId": "19-step-4-settle-each-gap",
+      "type": "feature_showcase",
+      "durationSeconds": 21.013,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 4: settle each gap",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-4",
+      "options": [],
+      "narration": "Step four: one click settles a gap, and each goes somewhere. Got it: the code is right, and your memory keeps it. Change the plan: it goes into the plan, under You told me first. The code is wrong: a step of the plan, or an issue to file. Show me more: a longer card now, and one short video of those gaps at the end. The decision log, the record of your answers, gets them only through the plan's own questions.",
+      "start": 236.699,
+      "thumb": "snapshots/frame-18-at-247.46s.png",
+      "detail": "step-4",
+      "terms": [
+        "decision log",
+        "memory",
+        "step",
+        "gap",
+        "card",
+        "you told me first",
+        "got it",
+        "change the plan",
+        "the code is wrong",
+        "show me more"
+      ],
+      "defines": [
+        "decision log"
+      ]
+    },
+    {
+      "index": 20,
+      "title": "Question 3 · When a card comes back",
+      "compositionId": "20-question-3-when-a-card-comes-back",
+      "type": "cta",
+      "durationSeconds": 18.965,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q3",
+      "branch": null,
+      "question": "After Got it, when does the same card return?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Only when its lines change",
+          "why": "Known until its lines change: nothing more to sit through.",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "Once more, a few days later",
+          "why": "Once more, later, to check it stuck: a card a round more.",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Whenever a plan needs it",
+          "why": "Each time a plan leans on it: surest, most repetition.",
+          "recommended": false
+        }
+      ],
+      "narration": "Got it is kept with the lines' fingerprint, a short code that changes when they do. Question three. A: the same card comes back only when those lines change. B: also once more, on a new case, days later. C: whenever a plan depends on it. I recommend A: a change to the code is what makes your picture stale. When does the same card return?",
+      "start": 257.712,
+      "thumb": "snapshots/frame-19-at-267.44s.png",
+      "terms": [
+        "fingerprint",
+        "card",
+        "got it"
+      ],
+      "defines": [
+        "fingerprint"
+      ]
+    },
+    {
+      "index": 21,
+      "title": "If A · when its lines change",
+      "compositionId": "21-if-a-when-its-lines-change",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, the card returns only after its lines change.",
+      "start": 276.677,
+      "thumb": "snapshots/frame-20-at-279.43s.png",
+      "terms": [
+        "card"
+      ]
+    },
+    {
+      "index": 22,
+      "title": "If B · once more, later",
+      "compositionId": "22-if-b-once-more-later",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, it returns once more, on a new case, a few days on.",
+      "start": 281.677,
+      "thumb": "snapshots/frame-21-at-284.43s.png"
+    },
+    {
+      "index": 23,
+      "title": "If C · whenever a plan needs it",
+      "compositionId": "23-if-c-whenever-a-plan-needs-it",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q3=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, it returns each time a plan leans on it.",
+      "start": 286.677,
+      "thumb": "snapshots/frame-22-at-289.18s.png"
+    },
+    {
+      "index": 24,
+      "title": "Quick check · A want, not a fact",
+      "compositionId": "24-quick-check-a-want-not-a-fact",
+      "type": "social_proof",
+      "durationSeconds": 5.056,
+      "planStep": 3,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "You say: 'and it should only go to the session I have open.' How is that claim marked?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k3",
+      "answer": "c",
+      "explain": "It says what you want, not what the code does, so it is neither a match nor a gap; it becomes an assume card for you to confirm.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "A match",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "A gap",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Neither: an assume card",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. You say: and it should only go to the session I have open. How is that claim marked?",
+      "start": 291.677,
+      "thumb": "snapshots/frame-23-at-294.2s.png",
+      "terms": [
+        "quick check",
+        "gap",
+        "card",
+        "assume card",
+        "claim",
+        "session"
+      ]
+    },
+    {
+      "index": 25,
+      "title": "Step 5 · Into the loop",
+      "compositionId": "25-step-5-into-the-loop",
+      "type": "feature_showcase",
+      "durationSeconds": 23.275,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": "Step 5: into the loop",
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "guide": "step-5",
+      "options": [],
+      "narration": "Step five puts the round in the loop. Before a plan, the agent lists the likely gaps, and runs a round when one is worth your time. A wrong quick check gets the same buttons, with Change the plan's words reaching the agent as a comment, and nothing blocks Approve, the verdict that accepts a plan. And reel status counts rounds, gaps, and whether plans with a round need fewer late fixes, things a review let through that a later fix had to change.",
+      "start": 296.733,
+      "thumb": "snapshots/frame-24-at-308.62s.png",
+      "detail": "step-5",
+      "terms": [
+        "approve",
+        "miss",
+        "review",
+        "step",
+        "quick check",
+        "agent",
+        "alignment round",
+        "gap",
+        "round",
+        "change the plan"
+      ],
+      "defines": [
+        "approve",
+        "miss"
+      ]
+    },
+    {
+      "index": 26,
+      "title": "Question 4 · How often a round comes",
+      "compositionId": "26-question-4-how-often-a-round-comes",
+      "type": "cta",
+      "durationSeconds": 21.355,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": "q4",
+      "branch": null,
+      "question": "How often does a round come ahead of a plan?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Every plan on existing code",
+          "why": "Every plan: the surest, two minutes more each time.",
+          "recommended": false
+        },
+        {
+          "id": "b",
+          "label": "When a gap is likely and costly",
+          "why": "When likely and costly: none on a rename, four on Send.",
+          "recommended": true
+        },
+        {
+          "id": "c",
+          "label": "Only when you ask",
+          "why": "Only when asked: the gaps you didn't think of stay hidden.",
+          "recommended": false
+        }
+      ],
+      "narration": "Question four. Take two requests: make Send reach my open session, and rename the Save button. A: a round before every plan, both included: the surest, and two minutes more each time. B: only when a gap is likely and costly, so Send gets four cards and the rename none, with a line saying why. C: only when you ask. I recommend B. So how often should a round come before a plan?",
+      "start": 320.008,
+      "thumb": "snapshots/frame-25-at-330.94s.png",
+      "terms": [
+        "alignment round",
+        "gap",
+        "round",
+        "card",
+        "session"
+      ]
+    },
+    {
+      "index": 27,
+      "title": "If A · every plan",
+      "compositionId": "27-if-a-every-plan",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q4=a",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With A, every plan on existing code starts with a round, a rename included.",
+      "start": 341.363,
+      "thumb": "snapshots/frame-26-at-344.11s.png",
+      "terms": [
+        "alignment round",
+        "round"
+      ]
+    },
+    {
+      "index": 28,
+      "title": "If B · when it's worth it",
+      "compositionId": "28-if-b-when-it-s-worth-it",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q4=b",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With B, the rename gets no round, and the change to Send gets four cards.",
+      "start": 346.363,
+      "thumb": "snapshots/frame-27-at-349.11s.png",
+      "terms": [
+        "alignment round",
+        "round",
+        "card"
+      ]
+    },
+    {
+      "index": 29,
+      "title": "If C · only when you ask",
+      "compositionId": "29-if-c-only-when-you-ask",
+      "type": "benefit_highlight",
+      "durationSeconds": 5,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": "q4=c",
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "With C, a round comes only when you say: align me first.",
+      "start": 351.363,
+      "thumb": "snapshots/frame-28-at-353.86s.png",
+      "terms": [
+        "alignment round",
+        "round"
+      ]
+    },
+    {
+      "index": 30,
+      "title": "Quick check · Two gaps, more please",
+      "compositionId": "30-quick-check-two-gaps-more-please",
+      "type": "social_proof",
+      "durationSeconds": 4.736,
+      "planStep": 4,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "In a round, you press Show me more on two gaps. How many videos are made?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k4",
+      "answer": "b",
+      "explain": "Show me more opens a longer card at once, and at the end the gaps you asked about become one short video, since a video takes minutes and a card seconds.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Two, one a gap",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "One, at the end of the round",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "None; text only",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. In a round of five, you press Show me more on two gaps. How many videos are made?",
+      "start": 356.363,
+      "thumb": "snapshots/frame-29-at-358.73s.png",
+      "terms": [
+        "quick check",
+        "alignment round",
+        "gap",
+        "round",
+        "card",
+        "show me more"
+      ]
+    },
+    {
+      "index": 31,
+      "title": "Quick check · A quick check you missed",
+      "compositionId": "31-quick-check-a-quick-check-you-missed",
+      "type": "social_proof",
+      "durationSeconds": 6.229,
+      "planStep": 5,
+      "planQuestions": [],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": "In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?",
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": "k5",
+      "answer": "b",
+      "explain": "A quick check settles like a card: Change the plan's words reach the agent as a comment on that step, as Expected something else does today.",
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [
+        {
+          "id": "a",
+          "label": "Your memory, as known",
+          "why": "",
+          "recommended": true
+        },
+        {
+          "id": "b",
+          "label": "The agent, as a comment",
+          "why": "",
+          "recommended": false
+        },
+        {
+          "id": "c",
+          "label": "Straight into the decision log",
+          "why": "",
+          "recommended": false
+        }
+      ],
+      "narration": "Quick check. In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?",
+      "start": 361.099,
+      "thumb": "snapshots/frame-30-at-364.46s.png",
+      "terms": [
+        "step",
+        "quick check",
+        "agent",
+        "card",
+        "change the plan"
+      ]
+    },
+    {
+      "index": 32,
+      "title": "The plan",
+      "compositionId": "32-the-plan",
+      "type": "cta",
+      "durationSeconds": 12.859,
+      "planStep": null,
+      "planQuestions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "specSection": null,
+      "components": [],
+      "decision": null,
+      "branch": null,
+      "question": null,
+      "chapterStart": null,
+      "knowledge": null,
+      "quiz": null,
+      "answer": null,
+      "explain": null,
+      "autonomy": null,
+      "chose": null,
+      "insteadOf": null,
+      "why": null,
+      "check": null,
+      "kind": null,
+      "summary": null,
+      "options": [],
+      "narration": "That's the plan: a round of a few cards where a gap is likely, your own words checked, one click to settle each gap, and the round in the loop. Your four answers sit on the steps. Draw on any step to leave a note, or approve.",
+      "start": 367.328,
+      "thumb": "snapshots/frame-31-at-373.76s.png",
+      "terms": [
+        "approve",
+        "step",
+        "alignment round",
+        "gap",
+        "round",
+        "card"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "q1",
+      "kind": "one",
+      "frameIndex": 8,
+      "compositionId": "08-question-1-where-the-cards-show-first",
+      "planStep": 2,
+      "question": "Where do a round's cards show up first?",
+      "questionMore": "The same round of four cards about the inbox, answered either on the review page or in the chat with your agent.",
+      "at": 156.558,
+      "resumeAt": 171.608,
+      "options": [
+        {
+          "id": "a",
+          "label": "The review page",
+          "why": "The page: a key per answer, the code turned over on the card, and your voice.",
+          "recommended": true,
+          "more": "One card at a time on the review page: a key per answer, a box of a diagram to click, your spoken words (step 3), and the code's own lines on the card's back. It needs the browser open.",
+          "branch": {
+            "frameIndex": 9,
+            "compositionId": "09-if-a-on-the-review-page",
+            "start": 156.608,
+            "end": 161.608
+          }
+        },
+        {
+          "id": "b",
+          "label": "The chat",
+          "why": "The chat: quickest to build, but plain text, no pointing and no voice.",
+          "recommended": false,
+          "more": "The agent asks each card as a question in the conversation. Quickest to build; no pointing, no voice, and the code's lines come as plain text.",
+          "branch": {
+            "frameIndex": 10,
+            "compositionId": "10-if-b-in-the-chat",
+            "start": 161.608,
+            "end": 166.608
+          }
+        },
+        {
+          "id": "c",
+          "label": "Both from the start",
+          "why": "Both now: two ways to answer, twice the work before either is good.",
+          "recommended": false,
+          "more": "One round, two ways to answer it, both built now. Twice the work before either one is good.",
+          "branch": {
+            "frameIndex": 11,
+            "compositionId": "11-if-c-both-from-the-start",
+            "start": 166.608,
+            "end": 171.608
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q2",
+      "kind": "one",
+      "frameIndex": 14,
+      "compositionId": "14-question-2-who-checks-what-you-said",
+      "planStep": 3,
+      "question": "Who reads your spoken explanation against the code?",
+      "questionMore": "Your 20 seconds of speech, three claims, checked against the inbox's code.",
+      "at": 217.617,
+      "resumeAt": 232.667,
+      "options": [
+        {
+          "id": "a",
+          "label": "The waiting session",
+          "why": "The waiting session: it knows the code best; about a minute.",
+          "recommended": true,
+          "more": "The agent session waiting on the page splits your words into claims and checks each against the code. About a minute, and only with a session open; with none, it falls back to after Send.",
+          "branch": {
+            "frameIndex": 15,
+            "compositionId": "15-if-a-the-waiting-session",
+            "start": 217.667,
+            "end": 222.667
+          }
+        },
+        {
+          "id": "b",
+          "label": "A small hosted model",
+          "why": "A small hosted model: seconds, but your words leave the machine.",
+          "recommended": false,
+          "more": "A small hosted model, called from the page with your own key in ~/.reelplanner/.env and billed to you, as the hosted voice is, marks your claims in a few seconds. Your words go to its service, and it sees only the pinned lines, so it misses what the agent would find elsewhere.",
+          "branch": {
+            "frameIndex": 16,
+            "compositionId": "16-if-b-a-small-fast-model",
+            "start": 222.667,
+            "end": 227.667
+          }
+        },
+        {
+          "id": "c",
+          "label": "The agent, after Send",
+          "why": "After Send: nothing live; marked when the round comes back.",
+          "recommended": false,
+          "more": "Nothing is checked while you answer; your words go with Send, filed with the round as a review is, and the next session that takes the round marks them when it hands the round back.",
+          "branch": {
+            "frameIndex": 17,
+            "compositionId": "17-if-c-after-send",
+            "start": 227.667,
+            "end": 232.667
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q3",
+      "kind": "one",
+      "frameIndex": 20,
+      "compositionId": "20-question-3-when-a-card-comes-back",
+      "planStep": 4,
+      "question": "After Got it, when does the same card return?",
+      "questionMore": "You had card c3 wrong and pressed Got it. It is kept in your memory with inbox.mjs lines 700 to 705 at fingerprint 4b1e.",
+      "at": 276.627,
+      "resumeAt": 291.677,
+      "options": [
+        {
+          "id": "a",
+          "label": "Only when its lines change",
+          "why": "Known until its lines change: nothing more to sit through.",
+          "recommended": true,
+          "more": "Known until the lines' fingerprint changes: when inbox.mjs lines 700 to 705 are edited, it may be asked again.",
+          "branch": {
+            "frameIndex": 21,
+            "compositionId": "21-if-a-when-its-lines-change",
+            "start": 276.677,
+            "end": 281.677
+          }
+        },
+        {
+          "id": "b",
+          "label": "Once more, a few days later",
+          "why": "Once more, later, to check it stuck: a card a round more.",
+          "recommended": false,
+          "more": "As A, and also once more, on a new case, a few days on, to check it stuck. About one card a round more.",
+          "branch": {
+            "frameIndex": 22,
+            "compositionId": "22-if-b-once-more-later",
+            "start": 281.677,
+            "end": 286.677
+          }
+        },
+        {
+          "id": "c",
+          "label": "Whenever a plan needs it",
+          "why": "Each time a plan leans on it: surest, most repetition.",
+          "recommended": false,
+          "more": "Asked again each time a plan depends on it. The surest for a big change, and the most repetition.",
+          "branch": {
+            "frameIndex": 23,
+            "compositionId": "23-if-c-whenever-a-plan-needs-it",
+            "start": 286.677,
+            "end": 291.677
+          }
+        }
+      ],
+      "summary": null
+    },
+    {
+      "id": "q4",
+      "kind": "one",
+      "frameIndex": 26,
+      "compositionId": "26-question-4-how-often-a-round-comes",
+      "planStep": 5,
+      "question": "How often does a round come ahead of a plan?",
+      "questionMore": "Two requests: 'make Send reach my open session' (six candidates, four likely and costly) and 'rename the Save button' (one candidate, not costly).",
+      "at": 341.313,
+      "resumeAt": 356.363,
+      "options": [
+        {
+          "id": "a",
+          "label": "Every plan on existing code",
+          "why": "Every plan: the surest, two minutes more each time.",
+          "recommended": false,
+          "more": "A round before each plan on code that exists, both requests included. About two minutes more each time, often on nothing.",
+          "branch": {
+            "frameIndex": 27,
+            "compositionId": "27-if-a-every-plan",
+            "start": 341.363,
+            "end": 346.363
+          }
+        },
+        {
+          "id": "b",
+          "label": "When a gap is likely and costly",
+          "why": "When likely and costly: none on a rename, four on Send.",
+          "recommended": true,
+          "more": "Likely: one of the four places points at it. Costly: a step of the plan depends on it, or it is hard to undo. The Send change gets a round of four; the rename gets none, and its plan says so in a line. It can miss a gap the agent didn't see coming.",
+          "branch": {
+            "frameIndex": 28,
+            "compositionId": "28-if-b-when-it-s-worth-it",
+            "start": 346.363,
+            "end": 351.363
+          }
+        },
+        {
+          "id": "c",
+          "label": "Only when you ask",
+          "why": "Only when asked: the gaps you didn't think of stay hidden.",
+          "recommended": false,
+          "more": "No round unless you say 'align me first'. Nothing changes otherwise; the gaps you didn't think to ask about stay hidden.",
+          "branch": {
+            "frameIndex": 29,
+            "compositionId": "29-if-c-only-when-you-ask",
+            "start": 351.363,
+            "end": 356.363
+          }
+        }
+      ],
+      "summary": null
+    }
+  ],
+  "details": [
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html",
+      "title": "Step 1 · A round of cards, written where a gap is likely and costly",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 5,
+      "compositionId": "05-step-1-three-kinds-of-card",
+      "planStep": 1,
+      "start": 73.729,
+      "end": 93.014,
+      "autonomy": null
+    },
+    {
+      "name": "step-1",
+      "src": "guide/step-1.html",
+      "title": "Step 1 · A round of cards, written where a gap is likely and costly",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 6,
+      "compositionId": "06-step-1-where-gaps-are-likely",
+      "planStep": 1,
+      "start": 93.014,
+      "end": 115.435,
+      "autonomy": null
+    },
+    {
+      "name": "step-2",
+      "src": "guide/step-2.html",
+      "title": "Step 2 · The round on the review page: predict, then see the code",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 7,
+      "compositionId": "07-step-2-predict-then-see-the-code",
+      "planStep": 2,
+      "start": 115.435,
+      "end": 137.003,
+      "autonomy": null
+    },
+    {
+      "name": "step-3",
+      "src": "guide/step-3.html",
+      "title": "Step 3 · Say it in your own words, and see each thing you said checked",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 13,
+      "compositionId": "13-step-3-your-own-words-checked",
+      "planStep": 3,
+      "start": 177.56,
+      "end": 197.336,
+      "autonomy": null
+    },
+    {
+      "name": "step-4",
+      "src": "guide/step-4.html",
+      "title": "Step 4 · Settle each gap, and keep what it settled where it belongs",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 19,
+      "compositionId": "19-step-4-settle-each-gap",
+      "planStep": 4,
+      "start": 236.699,
+      "end": 257.712,
+      "autonomy": null
+    },
+    {
+      "name": "step-5",
+      "src": "guide/step-5.html",
+      "title": "Step 5 · Into the loop: before a plan, in every quick check, and measured",
+      "kind": "guide",
+      "guide": true,
+      "why": "Open it for every case, the whole interface, the example and the decisions of this step, and what landed for it.",
+      "frameIndex": 25,
+      "compositionId": "25-step-5-into-the-loop",
+      "planStep": 5,
+      "start": 296.733,
+      "end": 320.008,
+      "autonomy": null
+    }
+  ],
+  "guide": {
+    "parts": [
+      {
+        "name": "step-1",
+        "title": "Step 1 · A round of cards, written where a gap is likely and costly",
+        "planStep": 1,
+        "kind": "step",
+        "src": "guide/step-1.html"
+      },
+      {
+        "name": "step-2",
+        "title": "Step 2 · The round on the review page: predict, then see the code",
+        "planStep": 2,
+        "kind": "step",
+        "src": "guide/step-2.html"
+      },
+      {
+        "name": "step-3",
+        "title": "Step 3 · Say it in your own words, and see each thing you said checked",
+        "planStep": 3,
+        "kind": "step",
+        "src": "guide/step-3.html"
+      },
+      {
+        "name": "step-4",
+        "title": "Step 4 · Settle each gap, and keep what it settled where it belongs",
+        "planStep": 4,
+        "kind": "step",
+        "src": "guide/step-4.html"
+      },
+      {
+        "name": "step-5",
+        "title": "Step 5 · Into the loop: before a plan, in every quick check, and measured",
+        "planStep": 5,
+        "kind": "step",
+        "src": "guide/step-5.html"
+      },
+      {
+        "name": "decisions",
+        "title": "Decisions in force",
+        "planStep": null,
+        "kind": "decisions",
+        "src": "guide/decisions.html"
+      }
+    ]
+  },
+  "plan": {
+    "title": "Find the gaps: line up your picture, the agent's and the code",
+    "problem": "The owner asked (issue #57): \"basiclaly what i need here is a way to align me and the actual code + agent writing it. oftentimes we are not aligned, i assume it is one way when it is actually another. we want to actually interact to be able to do this.\" And: \"rn reelplanner focuses on making the plans easier to understand and lowest friction. but we want to also make it easy for human to really make sure htey are aligned and interact in a way that is least effort for them to do interactions (this is what the drawing and voice was for) just like video is easiest way for them to understand.\"\n\nThree things hold a picture of the code: you, the agent, and the code itself. They drift apart in three ways:\n\n- **You and the code.** You think a review you send with no session open waits in the inbox for you. In this repo it doesn't: `.reelplanner/config.json` sets a headless command, so a headless run starts on it. Nothing told you otherwise, because nothing asked.\n- **The agent and the code.** The agent read the inbox code an hour ago and remembers Send as trying once and giving up. It tries again: when the waiting session goes away, Send checks again 15 seconds later. A plan built on the agent's picture is wrong before you see it.\n- **You and the agent.** You asked for \"a review that reaches the agent\". The agent took that to mean any agent, a headless one included. You meant the session you have open. Neither of you said so.\n\nreelplanner today explains in one direction, from the agent to you. A plan video's quick checks test whether you followed what the video said, on a new case. They don't find what you assumed and the video never mentioned, and that is where surprises come from. The decision questions cover only the choices the agent saw. Ask about this answers what you think to ask.\n\nIssue #53 asked for a whole-repo quiz with scores, readiness thresholds and spaced retests. That treats a wrong answer as you failing. Here a wrong answer is a finding: one of the three pictures is wrong, and it is not always yours. #53 is closed in favour of #57. Drawing your picture first (#23) stays separate for now; this plan leaves room for it as another way to give your picture.\n\nThe plan makes four changes:\n\n1. **A round**: a few cards the agent writes where a gap is likely and costly, each about the code checked against the code, or about what you want (steps 1 and 2).\n2. **Your own words**: say or type how you think it works, and each thing you said comes back checked (step 3).\n3. **Settling and keeping**: one click on each gap, and what it settled goes to the right place: your memory, the plan, a fix, or a short video (step 4).\n4. **Into the loop**: a round before a plan when one is worth it, the same settling on every quick check, and a count of whether it helps (step 5).\n\nSteps 1 and 2 go together. Step 3 needs step 2's page. Step 4 needs step 2. Step 5 needs steps 1 and 4.\n\n### Step 1 — A round of cards, written where a gap is likely and costly\n\n**It lets you:** get a handful of questions about exactly the places you and the agent are most likely to disagree, each one checked against the code before you see it.\n\nThis step stands alone. A **round** is a short set of **cards**, at most six, about one topic: a part of the code, a plan about to be written, a change. It takes about two minutes. `reelplanner align \"<topic, in your words>\" <source> …` starts one in `.reelplanner/align/<date>-<slug>/`, with `align.md` (your words, then the cards) and `sources.json`, pinned the way an explainer pins its sources: each file by its commit and fingerprint, so a card can quote it word for word.\n\nA card is one of three kinds:\n\n- **Predict**, about the code as it is. \"In this repo, you press Send and no session is waiting. What happens to the review?\" Two to four options; the page always adds **Not sure**. The card holds the right answer, the lines that show it (`scripts/lib/inbox.mjs:700-705`), those lines quoted word for word, and one sentence why.\n- **Assume**, about what you want. \"I'm assuming you mean the session you have open, not a headless one.\" It has no right answer; only you can settle it. You answer Right, Not quite (and say what), or Doesn't matter.\n- **Say**, your own words: \"Say how you think a review reaches the agent.\" Step 3.\n\n**Choosing the cards is the point.** A round that tests what you already know wastes your time; a round of trivia is #53 again. So every card carries two lines the agent must write: `likely_wrong:`, why a reasonable person would picture it otherwise (in a repo with no headless command the review does wait, and this one has one), and `matters:`, what depends on it (step 2 of the plan; an agent you didn't expect working on your review). `align` hands the agent four places to look for candidates, and the agent picks the likeliest and costliest:\n\n- **Your words**: what your request takes for granted. \"A review that reaches the agent\" takes for granted which agent.\n- **Your memory**: quick checks you missed on these parts, words you looked up, answers in your own words (`reel memory --you`).\n- **What moved**: commits on the pinned files since you last watched a video of these parts.\n- **The agent's own assumptions**: what it would have to take for granted to write the plan. These become assume cards.\n\n**The agent's picture is checked too.** A card with a wrong answer would teach you something false. So before you see the predict cards, a fresh agent that never saw this conversation answers each one from the pinned sources alone. Where its answer differs from the card's, the agent's picture is the wrong one: the card is fixed against the code, or dropped. Who decides, and how: the agent rewrites the card once from the quoted lines, and the checker answers it again. A card reaches you only when the two agree. If they still disagree, the card is dropped and listed at the end of the round as \"the agent and the checker read this code differently\": a gap between the agent and the code, shown to you, not hidden. The assume cards need no check and come first, so the check runs while you answer them. What a round costs before you see it: the agent's own minute or two to list candidates and write the cards, and one fresh agent reading only the cards and their pinned lines, a few thousand tokens. Step 5 counts it with the rest, so a round's cost can be weighed against the gaps it found.\n\n`align --check` holds a round to its rules before it opens: each quote is in its source word for word (the explainer's `check-sources`), each card has `likely_wrong:` and `matters:`, there are at most six, an assume card has no answer, and no card asks what your memory says you already know, at the same fingerprint.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Before a plan | \"make Send reach my open session\" | Two assume cards, three predict cards on the inbox | you ask: plan; agent lists: candidates; picked: 5 cards; checked: by a fresh agent; you see: the round |\n| On its own | `reelplanner align \"how a review reaches the agent\" scripts/lib/inbox.mjs` | Four predict cards, one say card | you run: align; pinned: inbox.mjs; written: 5 cards; checked: quotes; you see: the round |\n| The agent was wrong | A card says Send tries once; the checker reads a second try 15 s later | The card is fixed before you see it | written: card c4; checker answers: tries again; fixed: c4 against the code; you see: the right c4 |\n| You know it already | Your memory knows c2 at the same fingerprint | c2 is not asked | listed: c2; memory: known at fingerprint 4b1e; dropped: c2; you see: 4 cards |\n| Nothing worth asking | The agent finds no likely, costly gap | No round; the plan says so in a line | agent lists: candidates; none: likely and costly; you see: the plan |\n\n#### Interface\n\n```text\nreelplanner align \"<topic>\" <source> …        # start a round: .reelplanner/align/<date>-<slug>/\n  --plan <plan-dir>                          # a round before that plan; its answers go into it\nreelplanner align <align-dir> --check         # quotes, likely_wrong, matters, at most six, not known already\nreelplanner align <align-dir> --prompt checker  # the fresh agent's exact prompt: answer each predict card from the sources\nalign.md                                      # your words, then the cards, then (after) what each settled\n  ### c1 · predict | assume | say             # one card\n  - question:                                 # what you are asked\n  - option_a: … option_d:                     # predict only; Not sure is added by the page\n  - answer: <letter>                          # predict only\n  - source: <path>:<from>-<to>                # predict only, a pinned source\n  - quote: \"<the lines, word for word>\"       # predict only\n  - why:                                      # one sentence, shown after you answer\n  - likely_wrong:                             # why a reasonable person would picture it otherwise\n  - matters:                                  # what depends on it\nsources.json                                  # as an explainer's: each source pinned by commit and fingerprint\n```\n\n#### Example\n\nYou ask for a plan: \"make Send reach my open session\". Before writing it, the agent lists its candidates and writes five cards. c1, assume: \"I'm assuming you mean the session you have open, not a headless run\" (`likely_wrong:` your words say \"the agent\"; `matters:` step 2 of the plan). c3, predict: \"In this repo, you press Send and no session is waiting. What happens to the review?\" A · it waits in the inbox for the next session, B · a headless run starts on it, C · it is lost. Answer B, from `scripts/lib/inbox.mjs:700-705` and the `agent.command` in `.reelplanner/config.json`. The fresh checker answers B too, so c3 stays. c4 said Send tries once; the checker read the second try 15 seconds later, so c4 is fixed. Your memory knows c5 already, so the round has four cards.\n\n```diagram\nflow: How a round is written\nyour words -> candidates: what they take for granted\nyour memory --> candidates: missed checks, words looked up\nwhat moved --> candidates: commits since you watched\nagent's assumptions -> candidates: assume cards\ncandidates -> round (at most six): likely and costly | each card says why you might picture it otherwise, and what depends on it\nround (at most six) -> fresh checker: predict cards\nfresh checker -x round (at most six): a card the code does not back | fixed or dropped before you see it\n```\n\n### Step 2 — The round on the review page: predict, then see the code\n\n**It lets you:** answer each card in a click or a key, then see the code's own lines beside your answer.\n\nNeeds step 1's cards. The round opens on the review page as a row of its own, **Round**, served by the review server like every video: `reelplanner review <align-dir> --detach`. One card at a time, at the size of a video frame, in the review page's look.\n\nYou answer before you see anything: A to D, or N for Not sure. Committing first is what shows a gap; seeing the answer first would let you nod along. Then the card turns over. The code's lines are on it, quoted, with the file and line numbers, and the one sentence why. Your pick and the right one are marked as a quick check's are.\n\n- **Same picture**: a quiet \"✓ Same picture\" and the next card after two seconds.\n- **A gap**: the four ways to settle it (step 4) sit under the card. Nothing goes on until you pick one.\n- **Not sure**: a gap too, of its own kind: you had no picture. It settles with Got it or Show me more.\n\nA predict card can also ask you to point: its options are the boxes of a diagram drawn with the plan's ` ```diagram ` format, and you click the box. \"You ask about a scene and no session is waiting. Where does your question go?\" You click **inbox**: a question never starts a headless run.\n\n**Skip the rest** is always there. A round is for you, not a gate: skipping ends it, and the cards you skipped go into the plan as **Assumed, not checked**, each in a line, so you can see what was never lined up.\n\n**Send** files the round through the inbox, as a review is filed. The waiting session's `--wait` prints it: each card, your answer, same or a gap, and how you settled it. With no session waiting it stays in the inbox; a round never starts a headless run, as a question asked on the page never does.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Same picture | c3, you press B, the answer is B | ✓ and the next card | you press: B; turned over: lines 700–705; marked: same; next: c4 |\n| A gap | c3, you press A | The lines, the why, and the four ways to settle | you press: A; turned over: lines; marked: gap; you see: Got it, Change the plan, The code is wrong, Show me more |\n| Not sure | c3, you press N | A gap of its own kind | you press: N; turned over: lines; you see: Got it, Show me more |\n| Pointing | \"Where does a question wait?\", a diagram | You click a box | you click: inbox; turned over: lines; marked: same |\n| Send, no session | All cards answered, nobody waiting | Kept in the inbox, nothing started | you press: Send; saved: inbox; you see: waiting for a session |\n| Skipped | Two of five cards answered, then Skip the rest | The plan lists the other three as not checked | you press: Skip the rest; kept: 2 answers; written: plan.md, Assumed, not checked: c3, c4, c5 |\n\n#### Interface\n\n```text\nreelplanner review <align-dir> --detach    # the round as a row of its own on the review page, Round\nkeys                                       # A–D answer, N Not sure, 1–4 settle a gap, Enter next, S skip the rest\ncard, front                                # the question and its options; nothing about the answer\ncard, back                                 # the code's lines (path:from-to), the why, your pick and the answer marked\n  ✓ Same picture                           # then the next card after 2 s\n  Got it · Change the plan · The code is wrong · Show me more   # a gap; nothing goes on until one is picked\nSend                                       # files the round as inbox/<id>.json, kind: align\nreelplanner review --wait                  # prints it: each card, your answer, same or gap, how settled\n```\n\n#### Example\n\nCard c3 shows its question and three options. You press A, \"it waits in the inbox\". It turns over: `scripts/lib/inbox.mjs`, lines 700 to 705, where a review with no session waiting goes to `start()`, beside the `agent.command` line of this repo's `config.json`, and \"This repo sets a headless command, so a review no session takes starts a headless run; with none set, it would wait.\" Your A has a dashed ring, B the ink ring. Under them, the four ways to settle it. You press 1, Got it, and c4 comes up.\n\n#### Look\n\nThe review page's own look, so a round feels like a part of reviewing, not a new tool: paper `#FAF9F5` and tile `#EFE9DE`, ink `#141413`, and the one coral `#B8552E` only on what is yours (your pick, the settle row while it waits on you). The question in EB Garamond at 44 px, the options and the why in Inter at 22 px, the quoted lines in JetBrains Mono at 20 px on the navy slab `#181715`, as code shows itself everywhere in reelplanner. The one thing that makes it recognisable: the card turns over, front to back, the question on one side and the code's lines on the other, so \"you said, the code says\" is always one card.\n\n```diagram\nsequence: One card\nyou -> page: press A\npage -> you: the back: lines 700–705, the why, your A and the answer B\nyou -> page: 1, Got it\npage -> inbox: kept with the round\npage -> you: the next card\n```\n\n### Step 3 — Say it in your own words, and see each thing you said checked\n\n**It lets you:** talk through how you think it works for half a minute, and see your own words marked where they match the code and where they don't.\n\nNeeds step 2's page. A say card asks you to explain, not to pick: \"Say how you think a review reaches the agent.\" Hold Space, or press the microphone, and talk. By default the page records on your machine and the local whisper the narration already uses writes your words down when you stop, in a few seconds. A browser's own live recognition shows the words as you speak, but some browsers send the audio to their maker's servers to do it, so it is off until you turn it on, and the switch says so. You can type instead, or fix a word. Where there is no microphone, or on a hosted page (which has no local whisper and no session to hand words to), the say card takes typed words only, and says so; where whisper is not installed and live recognition is off, it offers typing and says how to install whisper (`reelplanner setup --local-voice`). The recording stays in the inbox and is never committed; only your words go into `align.md`.\n\nYour words go to the waiting agent session the way a question from Ask about this does: saved first, then handed to a session that is waiting or connected. The agent splits them into **claims**, each one a stretch of your own words that says one thing about the code (\"it starts the agent right away\"), and checks each against the pinned sources. The page shows your words with each claim marked:\n\n- **✓ matches**, with the lines that back it;\n- **✗ differs**: a gap, made into a card from your own words and the code's lines, settled as in step 4;\n- **? the code can't say**: a claim about what you want, not what is; it becomes an assume card for you to confirm.\n\nWith no session waiting, your words stay with the round in the inbox, and the next session that takes the round checks them; you see them marked when it hands the round back. A say card never starts a headless run, even in a repo that sets a headless command: like a question asked on the page, it waits for a session.\n\nClaims are the shared format: a drawing of your picture (#23) can later produce the same claims, checked the same way.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Mostly right | 20 s of speech, 3 claims, 2 match | Two ✓, one ✗ made into a card | you say: 3 things; split: 3 claims; checked: against inbox.mjs; you see: 2 ✓, 1 gap card |\n| A want, not a fact | \"and it should only go to my session\" | A ? claim, as an assume card | you say: should; marked: ?; made: assume card; you answer: Right |\n| The default, local | Live recognition off | Recorded, written down by local whisper when you stop | you hold: Space; recorded: 21 s; transcribed: whisper, on this machine; you see: your words |\n| Live words, turned on | You switch on the browser's recognition | Words as you speak; the switch says where the audio goes | you turn on: live; you speak: words appear; kept: your words, not the audio |\n| No session waiting | Nobody to check | Kept, checked after Send | you say: words; saved: inbox; you see: checked when a session takes the round |\n\n#### Interface\n\n```text\nsay card                                     # \"Say how you think <topic> works\"; hold Space or the mic, or type\nPOST /api/align/say                          # your words, saved under inbox/questions/ before any hand-off\nPOST /api/align/transcribe                   # a recording, through local whisper, when the browser has no recognition\nreelplanner align answer <align-dir> <card> <claims.json>   # the agent's checked claims; the page shows them in seconds\nclaims.json                                  # [{ words, from, to, verdict: match | differs | open, source, quote }]\n  from, to                                   # where in your words the claim is, so the page can mark it\n```\n\n#### Example\n\nYou hold Space and say: \"When I press Send it goes to my session. If I'm not there, it waits for me. A question I ask on the page does the same.\" Three claims. \"It goes to my session\": ✓, when a session is waiting (`inbox.mjs:673`). \"If I'm not there, it waits\": ✗, in this repo a headless run starts, because `config.json` sets `agent.command` (`inbox.mjs:700-705`). \"A question does the same\": ✓, a question waits and never starts a run (the `!question` on line 700). One gap card appears under your words, with your sentence on its front and the code's lines on its back.\n\n```diagram\nflow: Your words, checked\nyou speak -> your words: browser recognition or whisper\nyour words -> waiting session: saved first, then handed on\nwaiting session -> claims: one stretch of your words each\nclaims -> ✓ matches: the lines that back it\nclaims -> ✗ differs: a gap card from your words\nclaims --> ? open: a want, not a fact | becomes an assume card\n```\n\n### Step 4 — Settle each gap, and keep what it settled where it belongs\n\n**It lets you:** close a gap in one click and know it won't come back to bite you, in this plan or a later one.\n\nNeeds step 2. A gap is settled one of four ways, each with somewhere to go:\n\n- **Got it**: the code is right and you had it wrong. It goes to your memory (`~/.reelplanner/you.jsonl`) as something you know: the card's claim, its file and lines, and their fingerprint. A later round doesn't ask it, and a later video drops the explanation, the way it already drops a word you know. When those lines change, the fingerprint no longer matches and it counts as not known again. The fingerprint is of the lines' text, not their numbers: when an edit above them moves them, or the file is renamed, the next round finds the same text (in the file, then in the repo) and updates where it is; only when the text itself is gone or changed is it not known.\n- **Change the plan**: you want it your way. Before a plan, it goes into the plan under **You told me first**: the plan is written on it, and its video doesn't ask it again. With no plan, the round's Finish offers **Plan this**, which starts one from the round, as an explainer does.\n- **The code is wrong**: a fix, never a change made on the spot. Before a plan, it becomes a step of that plan, with the card's lines as its case. With no plan, the round's Finish drafts an issue's text, `align/<slug>/issue.md`, for you to file or to start a plan from. Nothing leaves the machine without you.\n- **Show me more**: at once, the card opens a longer explanation and a diagram, from the same pinned lines. At the end of the round, the gaps you asked more on become one short explainer video, built by `reelplanner explain` from the round's sources, which starts from your picture: \"You expected the review to wait for you. Here is why a headless run took it.\" One video for the round, not one a gap: a video takes minutes, a card seconds. It is built in the background at low depth, a few minutes, while you go on; the review page says when it is ready, as it does for a rebuilt video.\n\nAn assume card answered **Not quite** is a gap about what you want; your words go into the plan as **You told me first**. A card answered **Right** is said in the plan in one line.\n\n**Nothing from a round goes into the decision log.** Only an answer to a plan's question is a decision, and a round is not a plan. What you settle reaches the log through the plan it shapes, as an explainer's comments do. `align.md` keeps the whole record: each card, your answer, same or a gap, and how it was settled. It is committed like an explainer's folder; a recording is never committed.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Got it | c3, you had A | Known in your memory at its fingerprint | you press: Got it; kept: you.jsonl, inbox.mjs:700-705 at 4b1e; later: not asked |\n| The code changes | Lines 700–705 edited a week later | Not known any more | edited: inbox.mjs; fingerprint: 9c07, not 4b1e; next round: may ask again |\n| Change the plan | c1, \"Not quite: only my open session\" | Into the plan, You told me first | you answer: Not quite; written: plan.md, You told me first; plan video: no question on it |\n| The code is wrong | A card's lines do what it says, and you say no code should do that | A step of the next plan, or an issue's text | you press: The code is wrong; drafted: a step; you see: it in the plan |\n| Show me more, three gaps | c2, c3, c5 | One explainer at the end of the round | you press: Show me more ×3; made: one explainer; it starts: from what you expected |\n\n#### Interface\n\n```text\nGot it                    # you.jsonl: { knows: <claim>, repo, source: path:from-to, fingerprint }\nChange the plan           # plan.md, ## You told me first: your words, the card, the code's lines\nThe code is wrong         # a step of the next plan, or align/<slug>/issue.md for you to file\nShow me more              # now: the card's longer page; at the end: one explainer of these gaps\nFinish                    # Done · Plan this · Explain the gaps (when any asked for more)\nalign.md, after           # each card: your answer, same | gap | not sure, how settled\nreel memory --you         # lists what you know, by repo, and lets you remove a line\n```\n\n#### Example\n\nOf four cards you settle three gaps. c1, \"Not quite: only my open session\", goes into the plan's You told me first. c3 you had wrong: Got it, kept at fingerprint 4b1e. c4 you asked more on: the card opens the inbox's hand-off order as a diagram (a waiting session, then a connected one, then the headless run, then the inbox), and at Finish, Explain the gaps builds a two-minute explainer that opens with \"You expected Send to try once\". The plan that follows is written on c1, its video skips what c3 taught you, and nothing went into the decision log.\n\n```diagram\nflow: Where a gap goes\ngap -> your memory: Got it | known at the lines' fingerprint, until they change\ngap -> the plan: Change the plan | You told me first\ngap -> a fix: The code is wrong | a step, or an issue's text\ngap -> an explainer: Show me more | one video for the round's gaps\ngap -x decision log: never directly\n```\n\n### Step 5 — Into the loop: before a plan, in every quick check, and measured\n\n**It lets you:** get a round only when one is worth your time, settle a wrong quick check the same way, and see whether rounds make later surprises rarer.\n\nNeeds steps 1 and 4.\n\n**Before a plan.** When you ask for a plan on code that exists, the skill lists gap candidates first (step 1's four places). A candidate is **likely** when one of the four places points at it: your words take it for granted, you missed a check on that part, it changed since you last watched, or it is an assumption the agent can't check alone. It is **costly** when a step of the plan depends on it, or it is hard to undo (stored data and formats, permissions, what other people's code relies on: the walkthrough's own label). When one is likely and costly, it runs a round before writing the plan, with `--plan` so the answers go into it. The plan then starts from where you stand: what you settled is said in a line, what you knew is not explained again.\n\n**A new project.** With no code yet there is nothing to predict, so a round before a plan in a new project holds only assume and say cards: what the agent assumes you want, and how you picture what you are asking for.\n\n**Every quick check settles like a card.** A quick check is a predict card inside a video. In a plan video, nothing is built yet, so its quick check asks what the plan will do, and settles three ways: Got it (you had the plan wrong), Change the plan, Show me more. A walkthrough's and the system video's quick checks are about code that exists, and add The code is wrong. Today a wrong answer shows Walk me through it and the box \"Expected something else?\". With this, a wrong answer also offers the same four ways: Got it (into your memory), Change the plan and The code is wrong (each with your words, reaching the agent as a comment does now), Show me more (Walk me through it). The box's words become Change the plan's words, so nothing you can do now is lost. A wrong quick check left unsettled is recorded as it is today, and never blocks Approve.\n\n**Measured.** `reel status` gains a memory line: rounds, gaps found per round, and how they were settled. And it compares later surprises (answers in your own words, \"Expected something else\", choices you flagged in a walkthrough, late fixes) on plans that had a round with plans that didn't. It reports the counts and says nothing about whether rounds help until five plans of each kind exist. To compare like with like, the plans without a round it counts are the ones where the agent found a likely, costly gap and no round ran (you skipped it, or rounds were off), not the easy ones where it found none. It prints, for example, `late fixes · with a round 1 · likely gap, no round 4`, and below five plans of each, `too few plans to compare`.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| A plan with a likely gap | \"make Send reach my open session\" | A round of four, then the plan | you ask: plan; candidates: 6; likely and costly: 4; you see: a round, then the plan |\n| A plan with none | \"rename the Save button\" | No round | you ask: plan; candidates: 1, not costly; you see: the plan |\n| A wrong quick check | k2, you picked A | The four ways under the answer | you pick: A; you see: B marked, the four ways; you press: Got it; kept: you.jsonl |\n| Too early to say | 3 plans with a round, 2 without | Counts only | you run: reel status; you see: 3 rounds, 11 gaps, 7 Got it; \"too few plans to compare\" |\n\n#### Interface\n\n```text\nthe plan-to-video skill, A new plan   # lists candidates; runs a round when one is likely and costly\nplan.md, ## You told me first         # what the round settled, each with its card\nquick check, a wrong answer           # Got it · Change the plan · The code is wrong · Show me more\nreel status                           # rounds: 3, gaps: 11 (Got it 7, the plan 3, a fix 1); compared after 5 and 5\n```\n\n#### Example\n\nYou ask for a plan to make Send reach your open session. The agent finds six candidates, four likely and costly, and opens a round of four. You settle two gaps. The plan is written with \"You told me first: only the session you have open\". In its video, quick check k2 asks what happens when two sessions are open; you pick A, the wrong one, and press Got it. Three weeks later `reel status` says 3 rounds, 11 gaps, and \"too few plans to compare\".\n\n```diagram\nflow: Before a plan\nyour request -> candidates: step 1's four places\ncandidates -> a round: one likely and costly\ncandidates --> the plan: none worth asking | no round\na round -> the plan: You told me first\nthe plan -> its video: skips what you knew\n```",
+    "steps": [
+      {
+        "n": 1,
+        "title": "A round of cards, written where a gap is likely and costly",
+        "text": "**It lets you:** get a handful of questions about exactly the places you and the agent are most likely to disagree, each one checked against the code before you see it.\n\nThis step stands alone. A **round** is a short set of **cards**, at most six, about one topic: a part of the code, a plan about to be written, a change. It takes about two minutes. `reelplanner align \"<topic, in your words>\" <source> …` starts one in `.reelplanner/align/<date>-<slug>/`, with `align.md` (your words, then the cards) and `sources.json`, pinned the way an explainer pins its sources: each file by its commit and fingerprint, so a card can quote it word for word.\n\nA card is one of three kinds:\n\n- **Predict**, about the code as it is. \"In this repo, you press Send and no session is waiting. What happens to the review?\" Two to four options; the page always adds **Not sure**. The card holds the right answer, the lines that show it (`scripts/lib/inbox.mjs:700-705`), those lines quoted word for word, and one sentence why.\n- **Assume**, about what you want. \"I'm assuming you mean the session you have open, not a headless one.\" It has no right answer; only you can settle it. You answer Right, Not quite (and say what), or Doesn't matter.\n- **Say**, your own words: \"Say how you think a review reaches the agent.\" Step 3.\n\n**Choosing the cards is the point.** A round that tests what you already know wastes your time; a round of trivia is #53 again. So every card carries two lines the agent must write: `likely_wrong:`, why a reasonable person would picture it otherwise (in a repo with no headless command the review does wait, and this one has one), and `matters:`, what depends on it (step 2 of the plan; an agent you didn't expect working on your review). `align` hands the agent four places to look for candidates, and the agent picks the likeliest and costliest:\n\n- **Your words**: what your request takes for granted. \"A review that reaches the agent\" takes for granted which agent.\n- **Your memory**: quick checks you missed on these parts, words you looked up, answers in your own words (`reel memory --you`).\n- **What moved**: commits on the pinned files since you last watched a video of these parts.\n- **The agent's own assumptions**: what it would have to take for granted to write the plan. These become assume cards.\n\n**The agent's picture is checked too.** A card with a wrong answer would teach you something false. So before you see the predict cards, a fresh agent that never saw this conversation answers each one from the pinned sources alone. Where its answer differs from the card's, the agent's picture is the wrong one: the card is fixed against the code, or dropped. Who decides, and how: the agent rewrites the card once from the quoted lines, and the checker answers it again. A card reaches you only when the two agree. If they still disagree, the card is dropped and listed at the end of the round as \"the agent and the checker read this code differently\": a gap between the agent and the code, shown to you, not hidden. The assume cards need no check and come first, so the check runs while you answer them. What a round costs before you see it: the agent's own minute or two to list candidates and write the cards, and one fresh agent reading only the cards and their pinned lines, a few thousand tokens. Step 5 counts it with the rest, so a round's cost can be weighed against the gaps it found.\n\n`align --check` holds a round to its rules before it opens: each quote is in its source word for word (the explainer's `check-sources`), each card has `likely_wrong:` and `matters:`, there are at most six, an assume card has no answer, and no card asks what your memory says you already know, at the same fingerprint.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Before a plan | \"make Send reach my open session\" | Two assume cards, three predict cards on the inbox | you ask: plan; agent lists: candidates; picked: 5 cards; checked: by a fresh agent; you see: the round |\n| On its own | `reelplanner align \"how a review reaches the agent\" scripts/lib/inbox.mjs` | Four predict cards, one say card | you run: align; pinned: inbox.mjs; written: 5 cards; checked: quotes; you see: the round |\n| The agent was wrong | A card says Send tries once; the checker reads a second try 15 s later | The card is fixed before you see it | written: card c4; checker answers: tries again; fixed: c4 against the code; you see: the right c4 |\n| You know it already | Your memory knows c2 at the same fingerprint | c2 is not asked | listed: c2; memory: known at fingerprint 4b1e; dropped: c2; you see: 4 cards |\n| Nothing worth asking | The agent finds no likely, costly gap | No round; the plan says so in a line | agent lists: candidates; none: likely and costly; you see: the plan |\n\n#### Interface\n\n```text\nreelplanner align \"<topic>\" <source> …        # start a round: .reelplanner/align/<date>-<slug>/\n  --plan <plan-dir>                          # a round before that plan; its answers go into it\nreelplanner align <align-dir> --check         # quotes, likely_wrong, matters, at most six, not known already\nreelplanner align <align-dir> --prompt checker  # the fresh agent's exact prompt: answer each predict card from the sources\nalign.md                                      # your words, then the cards, then (after) what each settled\n  ### c1 · predict | assume | say             # one card\n  - question:                                 # what you are asked\n  - option_a: … option_d:                     # predict only; Not sure is added by the page\n  - answer: <letter>                          # predict only\n  - source: <path>:<from>-<to>                # predict only, a pinned source\n  - quote: \"<the lines, word for word>\"       # predict only\n  - why:                                      # one sentence, shown after you answer\n  - likely_wrong:                             # why a reasonable person would picture it otherwise\n  - matters:                                  # what depends on it\nsources.json                                  # as an explainer's: each source pinned by commit and fingerprint\n```\n\n#### Example\n\nYou ask for a plan: \"make Send reach my open session\". Before writing it, the agent lists its candidates and writes five cards. c1, assume: \"I'm assuming you mean the session you have open, not a headless run\" (`likely_wrong:` your words say \"the agent\"; `matters:` step 2 of the plan). c3, predict: \"In this repo, you press Send and no session is waiting. What happens to the review?\" A · it waits in the inbox for the next session, B · a headless run starts on it, C · it is lost. Answer B, from `scripts/lib/inbox.mjs:700-705` and the `agent.command` in `.reelplanner/config.json`. The fresh checker answers B too, so c3 stays. c4 said Send tries once; the checker read the second try 15 seconds later, so c4 is fixed. Your memory knows c5 already, so the round has four cards.\n\n```diagram\nflow: How a round is written\nyour words -> candidates: what they take for granted\nyour memory --> candidates: missed checks, words looked up\nwhat moved --> candidates: commits since you watched\nagent's assumptions -> candidates: assume cards\ncandidates -> round (at most six): likely and costly | each card says why you might picture it otherwise, and what depends on it\nround (at most six) -> fresh checker: predict cards\nfresh checker -x round (at most six): a card the code does not back | fixed or dropped before you see it\n```"
+      },
+      {
+        "n": 2,
+        "title": "The round on the review page: predict, then see the code",
+        "text": "**It lets you:** answer each card in a click or a key, then see the code's own lines beside your answer.\n\nNeeds step 1's cards. The round opens on the review page as a row of its own, **Round**, served by the review server like every video: `reelplanner review <align-dir> --detach`. One card at a time, at the size of a video frame, in the review page's look.\n\nYou answer before you see anything: A to D, or N for Not sure. Committing first is what shows a gap; seeing the answer first would let you nod along. Then the card turns over. The code's lines are on it, quoted, with the file and line numbers, and the one sentence why. Your pick and the right one are marked as a quick check's are.\n\n- **Same picture**: a quiet \"✓ Same picture\" and the next card after two seconds.\n- **A gap**: the four ways to settle it (step 4) sit under the card. Nothing goes on until you pick one.\n- **Not sure**: a gap too, of its own kind: you had no picture. It settles with Got it or Show me more.\n\nA predict card can also ask you to point: its options are the boxes of a diagram drawn with the plan's ` ```diagram ` format, and you click the box. \"You ask about a scene and no session is waiting. Where does your question go?\" You click **inbox**: a question never starts a headless run.\n\n**Skip the rest** is always there. A round is for you, not a gate: skipping ends it, and the cards you skipped go into the plan as **Assumed, not checked**, each in a line, so you can see what was never lined up.\n\n**Send** files the round through the inbox, as a review is filed. The waiting session's `--wait` prints it: each card, your answer, same or a gap, and how you settled it. With no session waiting it stays in the inbox; a round never starts a headless run, as a question asked on the page never does.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Same picture | c3, you press B, the answer is B | ✓ and the next card | you press: B; turned over: lines 700–705; marked: same; next: c4 |\n| A gap | c3, you press A | The lines, the why, and the four ways to settle | you press: A; turned over: lines; marked: gap; you see: Got it, Change the plan, The code is wrong, Show me more |\n| Not sure | c3, you press N | A gap of its own kind | you press: N; turned over: lines; you see: Got it, Show me more |\n| Pointing | \"Where does a question wait?\", a diagram | You click a box | you click: inbox; turned over: lines; marked: same |\n| Send, no session | All cards answered, nobody waiting | Kept in the inbox, nothing started | you press: Send; saved: inbox; you see: waiting for a session |\n| Skipped | Two of five cards answered, then Skip the rest | The plan lists the other three as not checked | you press: Skip the rest; kept: 2 answers; written: plan.md, Assumed, not checked: c3, c4, c5 |\n\n#### Interface\n\n```text\nreelplanner review <align-dir> --detach    # the round as a row of its own on the review page, Round\nkeys                                       # A–D answer, N Not sure, 1–4 settle a gap, Enter next, S skip the rest\ncard, front                                # the question and its options; nothing about the answer\ncard, back                                 # the code's lines (path:from-to), the why, your pick and the answer marked\n  ✓ Same picture                           # then the next card after 2 s\n  Got it · Change the plan · The code is wrong · Show me more   # a gap; nothing goes on until one is picked\nSend                                       # files the round as inbox/<id>.json, kind: align\nreelplanner review --wait                  # prints it: each card, your answer, same or gap, how settled\n```\n\n#### Example\n\nCard c3 shows its question and three options. You press A, \"it waits in the inbox\". It turns over: `scripts/lib/inbox.mjs`, lines 700 to 705, where a review with no session waiting goes to `start()`, beside the `agent.command` line of this repo's `config.json`, and \"This repo sets a headless command, so a review no session takes starts a headless run; with none set, it would wait.\" Your A has a dashed ring, B the ink ring. Under them, the four ways to settle it. You press 1, Got it, and c4 comes up.\n\n#### Look\n\nThe review page's own look, so a round feels like a part of reviewing, not a new tool: paper `#FAF9F5` and tile `#EFE9DE`, ink `#141413`, and the one coral `#B8552E` only on what is yours (your pick, the settle row while it waits on you). The question in EB Garamond at 44 px, the options and the why in Inter at 22 px, the quoted lines in JetBrains Mono at 20 px on the navy slab `#181715`, as code shows itself everywhere in reelplanner. The one thing that makes it recognisable: the card turns over, front to back, the question on one side and the code's lines on the other, so \"you said, the code says\" is always one card.\n\n```diagram\nsequence: One card\nyou -> page: press A\npage -> you: the back: lines 700–705, the why, your A and the answer B\nyou -> page: 1, Got it\npage -> inbox: kept with the round\npage -> you: the next card\n```"
+      },
+      {
+        "n": 3,
+        "title": "Say it in your own words, and see each thing you said checked",
+        "text": "**It lets you:** talk through how you think it works for half a minute, and see your own words marked where they match the code and where they don't.\n\nNeeds step 2's page. A say card asks you to explain, not to pick: \"Say how you think a review reaches the agent.\" Hold Space, or press the microphone, and talk. By default the page records on your machine and the local whisper the narration already uses writes your words down when you stop, in a few seconds. A browser's own live recognition shows the words as you speak, but some browsers send the audio to their maker's servers to do it, so it is off until you turn it on, and the switch says so. You can type instead, or fix a word. Where there is no microphone, or on a hosted page (which has no local whisper and no session to hand words to), the say card takes typed words only, and says so; where whisper is not installed and live recognition is off, it offers typing and says how to install whisper (`reelplanner setup --local-voice`). The recording stays in the inbox and is never committed; only your words go into `align.md`.\n\nYour words go to the waiting agent session the way a question from Ask about this does: saved first, then handed to a session that is waiting or connected. The agent splits them into **claims**, each one a stretch of your own words that says one thing about the code (\"it starts the agent right away\"), and checks each against the pinned sources. The page shows your words with each claim marked:\n\n- **✓ matches**, with the lines that back it;\n- **✗ differs**: a gap, made into a card from your own words and the code's lines, settled as in step 4;\n- **? the code can't say**: a claim about what you want, not what is; it becomes an assume card for you to confirm.\n\nWith no session waiting, your words stay with the round in the inbox, and the next session that takes the round checks them; you see them marked when it hands the round back. A say card never starts a headless run, even in a repo that sets a headless command: like a question asked on the page, it waits for a session.\n\nClaims are the shared format: a drawing of your picture (#23) can later produce the same claims, checked the same way.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Mostly right | 20 s of speech, 3 claims, 2 match | Two ✓, one ✗ made into a card | you say: 3 things; split: 3 claims; checked: against inbox.mjs; you see: 2 ✓, 1 gap card |\n| A want, not a fact | \"and it should only go to my session\" | A ? claim, as an assume card | you say: should; marked: ?; made: assume card; you answer: Right |\n| The default, local | Live recognition off | Recorded, written down by local whisper when you stop | you hold: Space; recorded: 21 s; transcribed: whisper, on this machine; you see: your words |\n| Live words, turned on | You switch on the browser's recognition | Words as you speak; the switch says where the audio goes | you turn on: live; you speak: words appear; kept: your words, not the audio |\n| No session waiting | Nobody to check | Kept, checked after Send | you say: words; saved: inbox; you see: checked when a session takes the round |\n\n#### Interface\n\n```text\nsay card                                     # \"Say how you think <topic> works\"; hold Space or the mic, or type\nPOST /api/align/say                          # your words, saved under inbox/questions/ before any hand-off\nPOST /api/align/transcribe                   # a recording, through local whisper, when the browser has no recognition\nreelplanner align answer <align-dir> <card> <claims.json>   # the agent's checked claims; the page shows them in seconds\nclaims.json                                  # [{ words, from, to, verdict: match | differs | open, source, quote }]\n  from, to                                   # where in your words the claim is, so the page can mark it\n```\n\n#### Example\n\nYou hold Space and say: \"When I press Send it goes to my session. If I'm not there, it waits for me. A question I ask on the page does the same.\" Three claims. \"It goes to my session\": ✓, when a session is waiting (`inbox.mjs:673`). \"If I'm not there, it waits\": ✗, in this repo a headless run starts, because `config.json` sets `agent.command` (`inbox.mjs:700-705`). \"A question does the same\": ✓, a question waits and never starts a run (the `!question` on line 700). One gap card appears under your words, with your sentence on its front and the code's lines on its back.\n\n```diagram\nflow: Your words, checked\nyou speak -> your words: browser recognition or whisper\nyour words -> waiting session: saved first, then handed on\nwaiting session -> claims: one stretch of your words each\nclaims -> ✓ matches: the lines that back it\nclaims -> ✗ differs: a gap card from your words\nclaims --> ? open: a want, not a fact | becomes an assume card\n```"
+      },
+      {
+        "n": 4,
+        "title": "Settle each gap, and keep what it settled where it belongs",
+        "text": "**It lets you:** close a gap in one click and know it won't come back to bite you, in this plan or a later one.\n\nNeeds step 2. A gap is settled one of four ways, each with somewhere to go:\n\n- **Got it**: the code is right and you had it wrong. It goes to your memory (`~/.reelplanner/you.jsonl`) as something you know: the card's claim, its file and lines, and their fingerprint. A later round doesn't ask it, and a later video drops the explanation, the way it already drops a word you know. When those lines change, the fingerprint no longer matches and it counts as not known again. The fingerprint is of the lines' text, not their numbers: when an edit above them moves them, or the file is renamed, the next round finds the same text (in the file, then in the repo) and updates where it is; only when the text itself is gone or changed is it not known.\n- **Change the plan**: you want it your way. Before a plan, it goes into the plan under **You told me first**: the plan is written on it, and its video doesn't ask it again. With no plan, the round's Finish offers **Plan this**, which starts one from the round, as an explainer does.\n- **The code is wrong**: a fix, never a change made on the spot. Before a plan, it becomes a step of that plan, with the card's lines as its case. With no plan, the round's Finish drafts an issue's text, `align/<slug>/issue.md`, for you to file or to start a plan from. Nothing leaves the machine without you.\n- **Show me more**: at once, the card opens a longer explanation and a diagram, from the same pinned lines. At the end of the round, the gaps you asked more on become one short explainer video, built by `reelplanner explain` from the round's sources, which starts from your picture: \"You expected the review to wait for you. Here is why a headless run took it.\" One video for the round, not one a gap: a video takes minutes, a card seconds. It is built in the background at low depth, a few minutes, while you go on; the review page says when it is ready, as it does for a rebuilt video.\n\nAn assume card answered **Not quite** is a gap about what you want; your words go into the plan as **You told me first**. A card answered **Right** is said in the plan in one line.\n\n**Nothing from a round goes into the decision log.** Only an answer to a plan's question is a decision, and a round is not a plan. What you settle reaches the log through the plan it shapes, as an explainer's comments do. `align.md` keeps the whole record: each card, your answer, same or a gap, and how it was settled. It is committed like an explainer's folder; a recording is never committed.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| Got it | c3, you had A | Known in your memory at its fingerprint | you press: Got it; kept: you.jsonl, inbox.mjs:700-705 at 4b1e; later: not asked |\n| The code changes | Lines 700–705 edited a week later | Not known any more | edited: inbox.mjs; fingerprint: 9c07, not 4b1e; next round: may ask again |\n| Change the plan | c1, \"Not quite: only my open session\" | Into the plan, You told me first | you answer: Not quite; written: plan.md, You told me first; plan video: no question on it |\n| The code is wrong | A card's lines do what it says, and you say no code should do that | A step of the next plan, or an issue's text | you press: The code is wrong; drafted: a step; you see: it in the plan |\n| Show me more, three gaps | c2, c3, c5 | One explainer at the end of the round | you press: Show me more ×3; made: one explainer; it starts: from what you expected |\n\n#### Interface\n\n```text\nGot it                    # you.jsonl: { knows: <claim>, repo, source: path:from-to, fingerprint }\nChange the plan           # plan.md, ## You told me first: your words, the card, the code's lines\nThe code is wrong         # a step of the next plan, or align/<slug>/issue.md for you to file\nShow me more              # now: the card's longer page; at the end: one explainer of these gaps\nFinish                    # Done · Plan this · Explain the gaps (when any asked for more)\nalign.md, after           # each card: your answer, same | gap | not sure, how settled\nreel memory --you         # lists what you know, by repo, and lets you remove a line\n```\n\n#### Example\n\nOf four cards you settle three gaps. c1, \"Not quite: only my open session\", goes into the plan's You told me first. c3 you had wrong: Got it, kept at fingerprint 4b1e. c4 you asked more on: the card opens the inbox's hand-off order as a diagram (a waiting session, then a connected one, then the headless run, then the inbox), and at Finish, Explain the gaps builds a two-minute explainer that opens with \"You expected Send to try once\". The plan that follows is written on c1, its video skips what c3 taught you, and nothing went into the decision log.\n\n```diagram\nflow: Where a gap goes\ngap -> your memory: Got it | known at the lines' fingerprint, until they change\ngap -> the plan: Change the plan | You told me first\ngap -> a fix: The code is wrong | a step, or an issue's text\ngap -> an explainer: Show me more | one video for the round's gaps\ngap -x decision log: never directly\n```"
+      },
+      {
+        "n": 5,
+        "title": "Into the loop: before a plan, in every quick check, and measured",
+        "text": "**It lets you:** get a round only when one is worth your time, settle a wrong quick check the same way, and see whether rounds make later surprises rarer.\n\nNeeds steps 1 and 4.\n\n**Before a plan.** When you ask for a plan on code that exists, the skill lists gap candidates first (step 1's four places). A candidate is **likely** when one of the four places points at it: your words take it for granted, you missed a check on that part, it changed since you last watched, or it is an assumption the agent can't check alone. It is **costly** when a step of the plan depends on it, or it is hard to undo (stored data and formats, permissions, what other people's code relies on: the walkthrough's own label). When one is likely and costly, it runs a round before writing the plan, with `--plan` so the answers go into it. The plan then starts from where you stand: what you settled is said in a line, what you knew is not explained again.\n\n**A new project.** With no code yet there is nothing to predict, so a round before a plan in a new project holds only assume and say cards: what the agent assumes you want, and how you picture what you are asking for.\n\n**Every quick check settles like a card.** A quick check is a predict card inside a video. In a plan video, nothing is built yet, so its quick check asks what the plan will do, and settles three ways: Got it (you had the plan wrong), Change the plan, Show me more. A walkthrough's and the system video's quick checks are about code that exists, and add The code is wrong. Today a wrong answer shows Walk me through it and the box \"Expected something else?\". With this, a wrong answer also offers the same four ways: Got it (into your memory), Change the plan and The code is wrong (each with your words, reaching the agent as a comment does now), Show me more (Walk me through it). The box's words become Change the plan's words, so nothing you can do now is lost. A wrong quick check left unsettled is recorded as it is today, and never blocks Approve.\n\n**Measured.** `reel status` gains a memory line: rounds, gaps found per round, and how they were settled. And it compares later surprises (answers in your own words, \"Expected something else\", choices you flagged in a walkthrough, late fixes) on plans that had a round with plans that didn't. It reports the counts and says nothing about whether rounds help until five plans of each kind exist. To compare like with like, the plans without a round it counts are the ones where the agent found a likely, costly gap and no round ran (you skipped it, or rounds were off), not the easy ones where it found none. It prints, for example, `late fixes · with a round 1 · likely gap, no round 4`, and below five plans of each, `too few plans to compare`.\n\n#### Cases\n\n| Case | Input | What happens | Trace |\n|---|---|---|---|\n| A plan with a likely gap | \"make Send reach my open session\" | A round of four, then the plan | you ask: plan; candidates: 6; likely and costly: 4; you see: a round, then the plan |\n| A plan with none | \"rename the Save button\" | No round | you ask: plan; candidates: 1, not costly; you see: the plan |\n| A wrong quick check | k2, you picked A | The four ways under the answer | you pick: A; you see: B marked, the four ways; you press: Got it; kept: you.jsonl |\n| Too early to say | 3 plans with a round, 2 without | Counts only | you run: reel status; you see: 3 rounds, 11 gaps, 7 Got it; \"too few plans to compare\" |\n\n#### Interface\n\n```text\nthe plan-to-video skill, A new plan   # lists candidates; runs a round when one is likely and costly\nplan.md, ## You told me first         # what the round settled, each with its card\nquick check, a wrong answer           # Got it · Change the plan · The code is wrong · Show me more\nreel status                           # rounds: 3, gaps: 11 (Got it 7, the plan 3, a fix 1); compared after 5 and 5\n```\n\n#### Example\n\nYou ask for a plan to make Send reach your open session. The agent finds six candidates, four likely and costly, and opens a round of four. You settle two gaps. The plan is written with \"You told me first: only the session you have open\". In its video, quick check k2 asks what happens when two sessions are open; you pick A, the wrong one, and press Got it. Three weeks later `reel status` says 3 rounds, 11 gaps, and \"too few plans to compare\".\n\n```diagram\nflow: Before a plan\nyour request -> candidates: step 1's four places\ncandidates -> a round: one likely and costly\ncandidates --> the plan: none worth asking | no round\na round -> the plan: You told me first\nthe plan -> its video: skips what you knew\n```"
+      }
+    ]
+  },
+  "slug": "2026-11-18-find-the-gaps",
+  "prerequisites": [
+    {
+      "video": "system",
+      "part": 6,
+      "partTitle": "The build and its walkthrough",
+      "title": "reelplanner: the whole system",
+      "gives": "the build and its walkthrough, with the reel CLI, the review player, the review server",
+      "seconds": 85.2,
+      "terms": [
+        "own words",
+        "plan.md",
+        "walkthrough.md",
+        "spec.md",
+        "system.json",
+        "interface",
+        "HyperFrames",
+        "maintainer",
+        "author",
+        "glossary",
+        "pr-check",
+        "case",
+        "reel-intake",
+        "the list",
+        "reel fold",
+        "past choice",
+        "decisions.md",
+        "superseded",
+        "in force",
+        "cite",
+        "pipeline"
+      ],
+      "found": true
+    },
+    {
+      "video": "system",
+      "part": 7,
+      "partTitle": "What's kept",
+      "title": "reelplanner: the whole system",
+      "gives": "what's kept, with the reel CLI, the explainer",
+      "seconds": 113.4,
+      "terms": [
+        "own words",
+        "plan.md",
+        "walkthrough.md",
+        "spec.md",
+        "system.json",
+        "interface",
+        "HyperFrames",
+        "maintainer",
+        "author",
+        "glossary",
+        "pr-check",
+        "case",
+        "reel-intake",
+        "the list",
+        "reel fold",
+        "past choice",
+        "decisions.md",
+        "superseded",
+        "in force",
+        "cite",
+        "pipeline"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-26-contributing",
+      "title": "Several people, one repo: contributing with reelplanning",
+      "gives": "decisions D-306, D-171, D-200, D-201, D-202, D-213, D-215, D-305, D-310, D-311, D-312: how does the decision log scale to thousands of decisions?",
+      "seconds": 288.4,
+      "terms": [
+        "pull request",
+        "contributor",
+        "maintainer",
+        "CI",
+        "CONTRIBUTING.md",
+        "pr-check",
+        "plan.md",
+        "terms index"
+      ],
+      "found": true
+    },
+    {
+      "video": "2026-09-27-walkthroughs-that-help",
+      "title": "Walkthroughs that help: see the build run, stop only where you'd notice",
+      "gives": "decisions D-222, D-219, D-220, D-221, D-223, D-224: does the walkthrough test you?",
+      "seconds": 231.1,
+      "terms": [
+        "backend",
+        "the list",
+        "pr-check"
+      ],
+      "found": true
+    }
+  ],
+  "terms": [
+    "gap",
+    "round",
+    "card",
+    "predict card",
+    "assume card",
+    "say card",
+    "claim",
+    "fingerprint",
+    "fresh checker",
+    "session",
+    "You told me first",
+    "Got it",
+    "Change the plan",
+    "The code is wrong",
+    "Show me more",
+    "not sure",
+    "Skip the rest",
+    "whisper",
+    "planned",
+    "pinned",
+    "config",
+    "draw on a step",
+    "recommended"
+  ],
+  "termMeanings": {
+    "gap": "a place where two of the three pictures of the code disagree: yours, the agent's, or the code itself",
+    "round": "a short set of cards, at most six, about one topic, that the agent writes where a gap is likely and costly",
+    "card": "one question in a round: predict, assume or say",
+    "predict card": "a card that asks what the code does, holding the answer and the code's own lines, quoted",
+    "assume card": "a card that says what the agent assumes you want, which only you can answer",
+    "say card": "a card that asks you to explain how you think something works, in your own words",
+    "claim": "a stretch of your own words that says one thing about the code, checked on its own",
+    "fingerprint": "a short code worked out from some lines of a file, which changes when one character of them changes",
+    "fresh checker": "a new agent that never saw this conversation and answers each predict card from the code alone",
+    "session": "one conversation with your agent, open in a terminal or an app",
+    "you told me first": "the section of a plan that lists what a round settled, so the plan is written on it and its video doesn't ask it again",
+    "got it": "settling a gap where the code is right: it goes into your memory as something you know",
+    "change the plan": "settling a gap where you want it your way: it goes into the plan",
+    "the code is wrong": "settling a gap as a bug: it becomes a fix",
+    "show me more": "settling a gap by asking for more: a longer card now, and one short video of the round's gaps at the end",
+    "not sure": "the answer when you have no picture of your own: a gap of its own kind, settled with Got it or Show me more",
+    "skip the rest": "ends a round at any time, and the cards you skipped are listed in the plan as not checked",
+    "whisper": "the speech-to-text program the narration already uses, run on this machine",
+    "planned": "a picture of what this plan would build: it does not exist yet",
+    "pinned": "kept as it was when the round was made (the commit, and a fingerprint of each file), so a card quotes only what the code said then",
+    "config": "the repo's settings file for reelplanner, `.reelplanner/config.json`",
+    "draw on a step": "mark the step's row with the player's pen, to leave a note on that step",
+    "recommended": "the option a question's author suggests, marked on its card"
+  },
+  "glossary": [
+    {
+      "term": "The plan-to-video skill",
+      "id": "skill",
+      "meaning": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video (skills/plan-to-video/, made with HyperFrames: plan.md in, a HyperFrames project out)",
+      "forms": [
+        "plan-to-video skill"
+      ],
+      "said": "The instructions the agent follows for this whole way of working: turning a plan into a video, then building the change and making its walkthrough video.",
+      "files": [
+        "`skills/plan-to-video/`, made with HyperFrames: `plan.md` in, a HyperFrames project out"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 5,
+        "title": "The skill, and which agents",
+        "start": 73.664,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "narrate",
+      "id": "narrate",
+      "meaning": "Voices the script, only the lines that changed since the last build; reelplanner build runs it, then finish-project and verify",
+      "forms": [
+        "narrate"
+      ],
+      "said": "Voices the script, only the lines that changed since the last build; `reelplanner build` runs it, then finish-project and verify.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "finish-project",
+      "id": "finish",
+      "meaning": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result (finish-project: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check)",
+      "forms": [
+        "finish-project"
+      ],
+      "said": "The last stage of building a video: it adds the captions and the page, ties each scene to the plan, and checks the result.",
+      "files": [
+        "`finish-project`: captions → index → plan-map → the terms index, which video explains each word → plan-diff → the details check"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "plan-diff",
+      "id": "diff",
+      "meaning": "Content-hash diff vs. the last committed build",
+      "forms": [
+        "plan-diff"
+      ],
+      "said": "Content-hash diff vs. the last committed build.",
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "spec-diff",
+      "meaning": "Which scenes of the system video a change to the system's description (spec.md), its parts (system.json) or this glossary reaches, so only those are rebuilt (reelplanner spec-diff); it also names a row no scene explains yet",
+      "forms": [
+        "spec-diff"
+      ],
+      "said": "Which scenes of the system video a change to the system's description, its parts or this glossary reaches, so only those are rebuilt; it also names a row no scene explains yet.",
+      "files": [
+        "`spec.md`",
+        "`system.json`",
+        "`reelplanner spec-diff`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "The review player",
+      "id": "player",
+      "meaning": "The video player on the review page (<reelplanner-player>). You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review",
+      "forms": [
+        "review player"
+      ],
+      "said": "The video player on the review page. You watch, answer the video's questions, mark and comment on what you see, and press Finish to send your review.",
+      "files": [
+        "`<reelplanner-player>`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 17,
+        "title": "The review player",
+        "start": 229.866,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The review server",
+      "id": "server",
+      "meaning": "reelplanner review: serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications",
+      "forms": [
+        "review server"
+      ],
+      "said": "Serves the review page, takes the review when you press Send, keeps it in the inbox and hands it on once; sends the notifications.",
+      "files": [
+        "`reelplanner review`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "The review page",
+        "start": 206.101,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The headless run",
+      "id": "headless",
+      "meaning": "The agent's own command (from config.json), started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it",
+      "forms": [
+        "headless run"
+      ],
+      "said": "The agent's own command, started by the review server when no session is waiting; auto mode, inside the sandbox, or without it (and the reviewer told) where this machine can't run it.",
+      "files": [
+        "from `config.json`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The reel CLI",
+      "id": "cli",
+      "meaning": "The command that keeps the project's record: its plans, reviews and decisions (scripts/reel.mjs, in .reelplanner/). For example, reel record files a review and logs your answers, and reel status says what is waiting",
+      "forms": [
+        "reel cli"
+      ],
+      "said": "The command that keeps the project's record: its plans, reviews and decisions. For example, `reel record` files a review and logs your answers, and `reel status` says what is waiting.",
+      "files": [
+        "`scripts/reel.mjs`, in `.reelplanner/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 6,
+        "title": "The tooling, once per machine",
+        "start": 86.731,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "The revise step",
+      "id": "revise",
+      "meaning": "What the agent does with your review of a plan (plan.md). If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched",
+      "forms": [
+        "revise step"
+      ],
+      "said": "What the agent does with your review of a plan. If you approved it, it works your comments into the plan; if you asked for changes, it rewrites the steps your comments touched.",
+      "files": [
+        "`plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 29,
+        "title": "Only what your words touched",
+        "start": 379.839,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The implement step",
+      "id": "implement-step",
+      "meaning": "The agent building what the approved plan says (plan.md), and noting each choice the plan left open (in walkthrough.md). A second agent then checks the code against the plan: the code check",
+      "forms": [
+        "implement step"
+      ],
+      "said": "The agent building what the approved plan says, and noting each choice the plan left open. A second agent then checks the code against the plan: the code check.",
+      "files": [
+        "`plan.md`",
+        "in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 31,
+        "title": "Every choice, written down",
+        "start": 402.581,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The walkthrough fix step",
+      "id": "fix-step",
+      "meaning": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats",
+      "forms": [
+        "walkthrough fix step"
+      ],
+      "said": "Acts on a walkthrough review: changes the code for each flagged call; on changes requested, rebuilds only those beats.",
+      "definedIn": {
+        "video": "system",
+        "frame": 36,
+        "title": "What was built, and the fix",
+        "start": 466.805,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The system video",
+      "id": "system-video",
+      "meaning": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes (spec.md, system.json, this glossary)",
+      "forms": [
+        "system video"
+      ],
+      "said": "One video that explains the whole project: its parts and how they work together. It is updated whenever the project's description of itself changes.",
+      "files": [
+        "`spec.md`, `system.json`, this glossary"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "A review",
+      "meaning": "One pass by a reviewer, filed once and never overwritten (reviews/<kind>-<time>.json, with a .md of what to act on). The player's download is annotations.json until it is filed",
+      "forms": [
+        "review"
+      ],
+      "said": "One pass by a reviewer, filed once and never overwritten. The player's download is `annotations.json` until it is filed.",
+      "files": [
+        "`reviews/<kind>-<time>.json`, with a `.md` of what to act on"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "Approve / Request changes",
+      "meaning": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again",
+      "forms": [
+        "approve",
+        "request changes"
+      ],
+      "said": "The verdict at Finish. Approve (on a walkthrough, the build is accepted): the comments are acted on, no new video. Request changes: they are acted on, the touched beats rebuilt, and the video shown again.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "Finish: approve, or ask for changes",
+        "start": 303.434,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The inbox",
+      "meaning": ".reelplanner/inbox/: reviews the review server has taken, each handed on once; not committed. A repo not set up has it in this machine's ~/.reelplanner/inbox/<repo-key>/",
+      "forms": [
+        "inbox"
+      ],
+      "said": "Reviews the review server has taken, each handed on once; not committed. A repo not set up has it in this machine's `~/.reelplanner/inbox/<repo-key>/`.",
+      "files": [
+        "`.reelplanner/inbox/`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "The sandbox",
+      "meaning": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays)",
+      "forms": [
+        "sandbox"
+      ],
+      "said": "The fence a headless run starts in: commands write only inside the repo, a hook keeps the file tools there too; checked before each run, and turned off, with the reviewer told, where it can't run (the hook stays).",
+      "definedIn": {
+        "video": "system",
+        "frame": 27,
+        "title": "Who picks it up",
+        "start": 337.215,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "A notification",
+      "meaning": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended",
+      "forms": [
+        "notification"
+      ],
+      "said": "A desktop notice from the review server: a video is ready, with what it will ask, or a headless run has ended.",
+      "definedIn": {
+        "video": "system",
+        "frame": 15,
+        "title": "The review page",
+        "start": 206.101,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "A call",
+      "meaning": "A choice the agent made on its own while building, one the plan did not cover (one row in walkthrough.md). Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it",
+      "forms": [
+        "call",
+        "choice"
+      ],
+      "display": "choice",
+      "said": "A choice the agent made on its own while building, one the plan did not cover. Labelled *visible*, *hard-to-undo* or *close* when you might want to overturn it.",
+      "files": [
+        "one row in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "reel stops",
+      "meaning": "Which choices pause the walkthrough video: an off-plan change always, a choice labelled *visible* or *hard-to-undo*, and one sharing a label with a recent late fix; every other choice goes on the list at the end",
+      "forms": [
+        "reel stops"
+      ],
+      "said": "Which choices pause the walkthrough video: an off-plan change always, a choice labelled *visible* or *hard-to-undo*, and one sharing a label with a recent late fix; every other choice goes on the list at the end.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "Memory",
+      "meaning": "What reviews show, worked out each time from the decision log and the filed reviews (reviews/), never kept by hand: the lines reel status ends with, the evidence behind each in reel memory <id>; the reviewer's own, across repos, from ~/.reelplanner/you.jsonl (--you)",
+      "forms": [
+        "memory"
+      ],
+      "said": "What reviews show, worked out each time from the decision log and the filed reviews, never kept by hand: the lines `reel status` ends with, the evidence behind each in `reel memory <id>`; the reviewer's own, across repos, from `~/.reelplanner/you.jsonl`.",
+      "files": [
+        "`reviews/`",
+        "`--you`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 40,
+        "title": "What your reviews teach",
+        "start": 535.285,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A miss",
+      "meaning": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label pause the walkthrough video",
+      "forms": [
+        "miss",
+        "late fix"
+      ],
+      "display": "late fix",
+      "said": "A late fix: something a review let through that a later plan, fix or review had to change. A recent one makes choices with its label pause the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A tag",
+      "meaning": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A choice labelled *visible* or *hard-to-undo* pauses the walkthrough video; the rest go on the list at the end",
+      "forms": [
+        "tag",
+        "label"
+      ],
+      "display": "label",
+      "said": "A label the agent puts on a choice it made alone, saying why you might want to look at it. Four kinds: *visible* (you'll notice it when you use the thing), *hard-to-undo* (changing it later costs real work), *close* (a toss-up: the other way was nearly as good), *deviation* (an off-plan change). A choice labelled *visible* or *hard-to-undo* pauses the walkthrough video; the rest go on the list at the end.",
+      "definedIn": {
+        "video": "system",
+        "frame": 31,
+        "title": "Every choice, written down",
+        "start": 402.581,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A deviation",
+      "meaning": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video",
+      "forms": [
+        "deviation",
+        "off-plan change"
+      ],
+      "display": "off-plan change",
+      "said": "An off-plan change: a choice where the agent did something other than what the plan said. It always stops the walkthrough video.",
+      "definedIn": {
+        "video": "system",
+        "frame": 34,
+        "title": "What pauses it",
+        "start": 442.57,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A beat",
+      "meaning": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene",
+      "forms": [
+        "beat",
+        "scene"
+      ],
+      "display": "scene",
+      "said": "One scene of a video: a picture and a sentence or two of its voice. A video is a row of scenes; a question or a choice pauses at the end of its scene.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "A chapter",
+      "meaning": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system",
+      "forms": [
+        "chapter"
+      ],
+      "said": "A stretch of one video under one title; the player shows \"Chapter 2 of 4\" as it begins, and N / P jump between them. Not a plan's step, and not a part of the system.",
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "An area",
+      "meaning": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. system.json calls it a component; the system video says \"part\"",
+      "forms": [
+        "area",
+        "part of the system"
+      ],
+      "display": "part of the system",
+      "said": "One part of the system, drawn as a box: the review player, the review server and the rest of this table's ids. `system.json` calls it a component; the system video says \"part\".",
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A retro",
+      "meaning": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark (reel retro, reel status)",
+      "forms": [
+        "retro"
+      ],
+      "said": "A plan of skill edits the memory's evidence supports, started when the status says one is due, and judged against a fixed benchmark.",
+      "files": [
+        "`reel retro`, `reel status`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 40,
+        "title": "What your reviews teach",
+        "start": 535.285,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A grouped beat",
+      "meaning": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest",
+      "forms": [
+        "grouped beat",
+        "grouped scene"
+      ],
+      "display": "grouped scene",
+      "said": "In older walkthrough videos, one scene per chapter listing the agent's smaller choices, the ones the video doesn't stop on. You flag any you'd change, and Accept all takes the rest.",
+      "definedIn": {
+        "video": "system",
+        "frame": 35,
+        "title": "A pause, and the list",
+        "start": 458.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "A step",
+      "meaning": "One numbered part of a plan: one change, what it does and what it needs from another step (### Step N in plan.md); the video tells each in its own scenes. The system video tells its two loops in steps too",
+      "forms": [
+        "step"
+      ],
+      "said": "One numbered part of a plan: one change, what it does and what it needs from another step; the video tells each in its own scenes. The system video tells its two loops in steps too.",
+      "files": [
+        "`### Step N` in `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A long plan",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "Finish",
+      "meaning": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this",
+      "forms": [
+        "finish"
+      ],
+      "said": "Where a review ends: you approve, or ask for changes, and send what you answered and marked. An explainer's ends instead with Done, Explain more or Plan this.",
+      "definedIn": {
+        "video": "system",
+        "frame": 24,
+        "title": "Finish: approve, or ask for changes",
+        "start": 303.434,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The decision log",
+      "meaning": "decisions.md: the record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it",
+      "forms": [
+        "decision log"
+      ],
+      "said": "The record of every answer you gave and every choice you accepted, one numbered entry each (D-056). An entry is never changed; a later one can replace it.",
+      "files": [
+        "`decisions.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 9,
+        "title": "Then, in each repo",
+        "start": 120.597,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "A quick check",
+      "meaning": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment",
+      "forms": [
+        "quick check"
+      ],
+      "said": "A short question the video asks you about what the plan or the code will do, to check you followed. If you expected something else, you can say so, and your words go to the agent as a comment.",
+      "definedIn": {
+        "video": "system",
+        "frame": 10,
+        "title": "Quick check: a login page, built",
+        "start": 140.042,
+        "chapter": 2,
+        "chapterTitle": "Installing it"
+      }
+    },
+    {
+      "term": "The answer band",
+      "meaning": "The answer bar. A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty (data-band=\"bottom\"), and only an older video without that gets it under the video; the video never changes size",
+      "forms": [
+        "answer band",
+        "answer bar"
+      ],
+      "display": "answer bar",
+      "said": "A question is answered on the frame's cards when it has them (own words, a note, Accept / Flag beside them); a frame with no cards gets the bar in the lowest eighth it leaves empty, and only an older video without that gets it under the video; the video never changes size.",
+      "files": [
+        "`data-band=\"bottom\"`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 18,
+        "title": "It stops, and you answer on the frame",
+        "start": 240.501,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "system-review",
+      "meaning": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan",
+      "forms": [
+        "system-review"
+      ],
+      "said": "Files a review of the system video and sorts each comment: fix the video, a small change, or a new plan.",
+      "definedIn": {
+        "video": "system",
+        "frame": 39,
+        "title": "This video, kept current",
+        "start": 511.573,
+        "chapter": 7,
+        "chapterTitle": "What's kept"
+      }
+    },
+    {
+      "term": "A part of the guide / guide part",
+      "meaning": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video (- guide: <part>, built by reelplanner guide; - detail:, from a template in templates/details/; the frame marks the thing with data-detail)",
+      "forms": [
+        "part of the guide",
+        "guide part"
+      ],
+      "display": "part of the guide",
+      "said": "One section of the page under the video, about one thing a scene shows: click that thing in the video, or press O, and the page scrolls to its section while the video pauses. A scene can instead open a small page of its own over the video.",
+      "files": [
+        "`- guide: <part>`, built by `reelplanner guide`; `- detail:`, from a template in `templates/details/`; the frame marks the thing with `data-detail`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A quiet way into the guide",
+        "start": 287.285,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The Open chip",
+      "meaning": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip",
+      "forms": [
+        "open chip"
+      ],
+      "said": "The way into a detail where the frame marks nothing (an older video), or, on a phone, where the marked thing is too small to tap: a chip in the frame's corner; click it or press O. A scene that marks its thing has no chip.",
+      "definedIn": {
+        "video": "system",
+        "frame": 22,
+        "title": "A quiet way into the guide",
+        "start": 287.285,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The side panel",
+      "meaning": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here",
+      "forms": [
+        "side panel"
+      ],
+      "said": "Where the Terms and the answer bar's long words open: beside the stage on a wide window, covering it otherwise. A detail opens over the frame, not here.",
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The plan text",
+      "meaning": "The plan's own words, shown beside the video with the current step highlighted (from plan.md). It is off until you turn it on with the Plan switch, or press L",
+      "forms": [
+        "plan text"
+      ],
+      "said": "The plan's own words, shown beside the video with the current step highlighted. It is off until you turn it on with the Plan switch, or press L.",
+      "files": [
+        "from `plan.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "The details check / check-details",
+      "meaning": "The check that every detail page works and that each frame marks only its own scene's detail (check-details), run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build (under details_check: strict, so does a scene whose thing is marked nowhere)",
+      "forms": [
+        "details check",
+        "check-details"
+      ],
+      "said": "The check that every detail page works and that each frame marks only its own scene's detail, run by finish-project and verify; a broken detail page, or a frame marking a detail its scene does not have, stops the build.",
+      "files": [
+        "`check-details`",
+        "under `details_check: strict`, so does a scene whose thing is marked nowhere"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The agent",
+      "meaning": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses (config.json names its command)",
+      "forms": [
+        "agent"
+      ],
+      "said": "The AI coding assistant that does the work, in chat: it writes the plan, builds the code and makes the videos. Claude Code, Codex or opencode, whichever the repo uses.",
+      "files": [
+        "`config.json` names its command"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 1,
+        "title": "A long plan",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The plan video",
+      "meaning": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised",
+      "forms": [
+        "plan video"
+      ],
+      "said": "The video of a plan, made before any code is written: its steps, and a question wherever a choice is yours. You answer on the video, and the plan is revised.",
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The walkthrough video / walkthrough",
+      "meaning": "The video made after the code is built: what was built, step by step, and each choice the agent made alone (listed in walkthrough.md). You accept or flag each choice, then approve the build or ask for changes",
+      "forms": [
+        "walkthrough video",
+        "walkthrough"
+      ],
+      "said": "The video made after the code is built: what was built, step by step, and each choice the agent made alone. You accept or flag each choice, then approve the build or ask for changes.",
+      "files": [
+        "listed in `walkthrough.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 3,
+        "title": "One loop for every change",
+        "start": 32.491,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The code check",
+      "meaning": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made (code-check, from a short brief)",
+      "forms": [
+        "code check"
+      ],
+      "said": "A second agent, which has not seen the work, reads the built code against the plan and the earlier decisions, and lists where they differ. Each thing it finds is answered before the walkthrough video is made.",
+      "files": [
+        "`code-check`, from a short brief"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "A second agent checks",
+        "start": 422.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "Fresh eyes",
+      "meaning": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you (reelplanner fresh-eyes; what is kept after the third look is said on Before you watch)",
+      "forms": [
+        "fresh eyes"
+      ],
+      "said": "Two new agents that look at every new or rebuilt video before you do, knowing nothing of the plan: one lists what a newcomer couldn't follow, the other what breaks the rules for a clear frame. Everything they find is fixed or answered before the video reaches you.",
+      "files": [
+        "`reelplanner fresh-eyes`; what is kept after the third look is said on Before you watch"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Fresh eyes, before you",
+        "start": 187.786,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "A video's depth / depth",
+      "meaning": "How deep a video's checks go, set in its brief: low (about two minutes, and no fresh eyes but the fact check), medium, the default (one round of fresh eyes, a cosmetic finding noted rather than redrawn), or high (two rounds, every finding fixed or answered)",
+      "forms": [
+        "video's depth",
+        "depth"
+      ],
+      "said": "How deep a video's checks go, set in its brief: low (about two minutes, and no fresh eyes but the fact check), medium, the default (one round of fresh eyes, a cosmetic finding noted rather than redrawn), or high (two rounds, every finding fixed or answered)."
+    },
+    {
+      "term": "The frame rules",
+      "meaning": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven",
+      "forms": [
+        "frame rules"
+      ],
+      "said": "The style guide's seven rules for a frame a newcomer can read (§5): show the thing, never a stand-in; one reading order; each name on its thing; a question that says what you decide; nothing covering content; readable at a glance; pleasing. frame-lint fails the two a program can see; the designer of fresh eyes checks all seven.",
+      "definedIn": {
+        "video": "system",
+        "frame": 14,
+        "title": "Fresh eyes, before you",
+        "start": 187.786,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "frame-lint",
+      "meaning": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at (reelplanner frame-lint)",
+      "forms": [
+        "frame-lint"
+      ],
+      "said": "A check that reads each frame of a video for problems a program can spot, such as an empty bar where words should be, or something in the way of a thing the video points at.",
+      "files": [
+        "`reelplanner frame-lint`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "Ask about this",
+      "meaning": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review",
+      "forms": [
+        "ask about this"
+      ],
+      "said": "Ask a question about the scene you're on: press Q, or click a word in the captions, and type it. An agent answers it from the plan and the scene when one is there to answer (on a hosted page, Claude), and every question is kept with your review.",
+      "definedIn": {
+        "video": "system",
+        "frame": 19,
+        "title": "Terms, Ask, and the plan text",
+        "start": 255.061,
+        "chapter": 4,
+        "chapterTitle": "Reviewing in the player"
+      }
+    },
+    {
+      "term": "A brief",
+      "meaning": "A short written description an agent starts from. A video's brief (BRIEF.md) says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare",
+      "forms": [
+        "brief"
+      ],
+      "said": "A short written description an agent starts from. A video's brief says who it is for, what it shows and how it looks; the code check's agent gets one saying what to compare.",
+      "files": [
+        "`BRIEF.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "The storyboard",
+      "meaning": "A video's plan, scene by scene (STORYBOARD.md): what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains",
+      "forms": [
+        "storyboard"
+      ],
+      "said": "A video's plan, scene by scene: what each scene shows and says, and the tags the player reads, such as a question, a quick check or a word the scene explains.",
+      "files": [
+        "`STORYBOARD.md`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 13,
+        "title": "From plan to video",
+        "start": 178.581,
+        "chapter": 3,
+        "chapterTitle": "The plan and its video"
+      }
+    },
+    {
+      "term": "reel audit / audit",
+      "meaning": "The check on a walkthrough (reel audit): it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked",
+      "forms": [
+        "reel audit",
+        "audit"
+      ],
+      "said": "The check on a walkthrough: it fails while a finding of the code check is unanswered, or a step has five choices the agent made alone and no question asked.",
+      "files": [
+        "`reel audit`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 32,
+        "title": "A second agent checks",
+        "start": 422.645,
+        "chapter": 6,
+        "chapterTitle": "The build and its walkthrough"
+      }
+    },
+    {
+      "term": "The explainer",
+      "id": "explainer",
+      "meaning": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it (reelplanner explain \"<what you asked>\" <source> …, in .reelplanner/explainers/; every fact from a named source, check-sources)",
+      "forms": [
+        "explainer"
+      ],
+      "said": "A video that explains something already there (some code, a log, a transcript, a session's changes), made when you ask, so you understand it before deciding anything. It asks you nothing; at the end you choose Done, Explain more or Plan this, and a plan can start from it.",
+      "files": [
+        "`reelplanner explain \"<what you asked>\" <source> …`, in `.reelplanner/explainers/`; every fact from a named source, `check-sources`"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 4,
+        "title": "How much you use",
+        "start": 51.552,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "The alignment round",
+      "id": "align",
+      "meaning": "A few cards (at most six) the agent writes where you and it most likely picture the code differently, before a plan or whenever you ask: some ask you to predict what the code does, checked against its own lines; some say what the agent assumes you want, for you to confirm. Each gap you find is settled in one click: you learn it, the plan changes, or the code is fixed (reelplanner align \"<topic>\" <source> …, in .reelplanner/align/). It adds nothing to the decision log",
+      "forms": [
+        "alignment round",
+        "round"
+      ],
+      "display": "a round",
+      "said": "A few cards (at most six) the agent writes where you and it most likely picture the code differently, before a plan or whenever you ask: some ask you to predict what the code does, checked against its own lines; some say what the agent assumes you want, for you to confirm. Each gap you find is settled in one click: you learn it, the plan changes, or the code is fixed. It adds nothing to the decision log.",
+      "files": [
+        "`reelplanner align \"<topic>\" <source> …`, in `.reelplanner/align/`"
+      ],
+      "definedIn": {
+        "video": "2026-11-18-find-the-gaps",
+        "frame": 5,
+        "title": "Step 1 · Three kinds of card",
+        "start": 73.729,
+        "chapter": 2,
+        "chapterTitle": "Steps 1 and 2: a round"
+      }
+    },
+    {
+      "term": "The guide",
+      "id": "guide",
+      "meaning": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner (built from plan.md by reelplanner guide, never committed; D-264). Select any words on it to comment, suggest an edit or ask",
+      "forms": [
+        "guide"
+      ],
+      "said": "The page under a video, with what the video cannot hold: every case, every command, every decision, and after the build every changed line and the real runs. Scroll down from the video to read it; the video goes on in a small player in the corner. Select any words on it to comment, suggest an edit or ask.",
+      "files": [
+        "built from `plan.md` by `reelplanner guide`, never committed; D-264"
+      ],
+      "definedIn": {
+        "video": "system",
+        "frame": 2,
+        "title": "A plan, as a video",
+        "start": 17.675,
+        "chapter": 1,
+        "chapterTitle": "What reelplanner is"
+      }
+    },
+    {
+      "term": "An agent adapter",
+      "meaning": "The small boundary for an agent's feature checks, launch and permission advice, live notification and conversation sources. The review workflow, storage and completion stay shared",
+      "forms": [
+        "agent adapter"
+      ],
+      "said": "The small boundary for an agent's feature checks, launch and permission advice, live notification and conversation sources. The review workflow, storage and completion stay shared."
+    },
+    {
+      "term": "A terminal review pane",
+      "meaning": "The existing review player opened beside the coding agent through terminal-browser or cmux. The same questions, comments and Send use the same inbox; after a Send a session took, the server closes it, and the agent opens the new version in a new one",
+      "forms": [
+        "terminal review pane"
+      ],
+      "said": "The existing review player opened beside the coding agent through terminal-browser or cmux. The same questions, comments and Send use the same inbox; after a Send a session took, the server closes it, and the agent opens the new version in a new one."
+    },
+    {
+      "term": "A repo / repository",
+      "meaning": "A project's folder of code together with its whole history, kept with git (on GitHub, say)",
+      "forms": [
+        "repo",
+        "repository"
+      ],
+      "said": "A project's folder of code together with its whole history, kept with git (on GitHub, say).",
+      "other": true
+    },
+    {
+      "term": "A branch",
+      "meaning": "A line of work kept apart from the main code until it is merged",
+      "forms": [
+        "branch"
+      ],
+      "said": "A line of work kept apart from the main code until it is merged.",
+      "other": true
+    },
+    {
+      "term": "Merge",
+      "meaning": "To bring a branch's changes into the main code. A pull request is merged when it is accepted",
+      "forms": [
+        "merge"
+      ],
+      "said": "To bring a branch's changes into the main code. A pull request is merged when it is accepted.",
+      "other": true
+    },
+    {
+      "term": "A commit",
+      "meaning": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them",
+      "forms": [
+        "commit"
+      ],
+      "said": "One saved change to a repo, with a message saying what changed; a repo's history is a row of them.",
+      "other": true
+    },
+    {
+      "term": "Clone",
+      "meaning": "To copy a repo, with its history, onto your own computer",
+      "forms": [
+        "clone"
+      ],
+      "said": "To copy a repo, with its history, onto your own computer.",
+      "other": true
+    },
+    {
+      "term": "A diff",
+      "meaning": "The lines a change adds and removes, shown together",
+      "forms": [
+        "diff"
+      ],
+      "said": "The lines a change adds and removes, shown together.",
+      "other": true
+    },
+    {
+      "term": "A pull request / PR",
+      "meaning": "A change someone asks to have merged into a repo; others read it and comment before it goes in",
+      "forms": [
+        "pull request",
+        "pr"
+      ],
+      "said": "A change someone asks to have merged into a repo; others read it and comment before it goes in.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 1,
+        "title": "One person per repo, then a shared one",
+        "start": 0,
+        "chapter": 1,
+        "chapterTitle": "One repo, several people"
+      }
+    },
+    {
+      "term": "Squash",
+      "meaning": "To merge a pull request's commits as one commit",
+      "forms": [
+        "squash"
+      ],
+      "said": "To merge a pull request's commits as one commit.",
+      "other": true
+    },
+    {
+      "term": "CI",
+      "meaning": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it",
+      "forms": [
+        "ci"
+      ],
+      "said": "The checks a repo runs by itself on every pull request (its tests, say), before anyone merges it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-contributing",
+        "frame": 10,
+        "title": "Step 3: watching and checking, as decided",
+        "start": 145.322,
+        "chapter": 4,
+        "chapterTitle": "Step 3: watching, checking, and where the video lives"
+      }
+    },
+    {
+      "term": "A test suite",
+      "meaning": "All of a project's tests, run together to check that nothing broke",
+      "forms": [
+        "test suite"
+      ],
+      "said": "All of a project's tests, run together to check that nothing broke.",
+      "other": true
+    },
+    {
+      "term": "A spec",
+      "meaning": "Two meanings here: one file of tests (scripts/test/terms.spec.mjs), run with the others by npm test; or the system's own description of its parts, spec.md",
+      "forms": [
+        "spec"
+      ],
+      "said": "Two meanings here: one file of tests, run with the others by `npm test`; or the system's own description of its parts, `spec.md`.",
+      "files": [
+        "`scripts/test/terms.spec.mjs`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Lint / linter",
+      "meaning": "A check that reads code or files for mistakes without running them (frame-lint reads a video's scenes)",
+      "forms": [
+        "lint",
+        "linter"
+      ],
+      "said": "A check that reads code or files for mistakes without running them.",
+      "files": [
+        "`frame-lint` reads a video's scenes"
+      ],
+      "other": true
+    },
+    {
+      "term": "A flag",
+      "meaning": "In a command, an option written after its name (like --dry-run). On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept)",
+      "forms": [
+        "flag"
+      ],
+      "said": "In a command, an option written after its name. On a choice in the walkthrough video, Flag is the answer that says \"change this\" (the other is Accept).",
+      "files": [
+        "like `--dry-run`"
+      ],
+      "other": true
+    },
+    {
+      "term": "A prompt",
+      "meaning": "The words given to an agent to start it on a task",
+      "forms": [
+        "prompt"
+      ],
+      "said": "The words given to an agent to start it on a task.",
+      "other": true
+    },
+    {
+      "term": "A template",
+      "meaning": "A file to start from, filled in for each new use",
+      "forms": [
+        "template"
+      ],
+      "said": "A file to start from, filled in for each new use.",
+      "other": true
+    },
+    {
+      "term": "A dependency",
+      "meaning": "A package of someone else's code a project needs in order to run",
+      "forms": [
+        "dependency"
+      ],
+      "said": "A package of someone else's code a project needs in order to run.",
+      "other": true
+    },
+    {
+      "term": "A terminal",
+      "meaning": "The window where you type commands",
+      "forms": [
+        "terminal"
+      ],
+      "said": "The window where you type commands.",
+      "other": true
+    },
+    {
+      "term": "CLI",
+      "meaning": "A command-line tool: a program you run by typing its name and options in a terminal",
+      "forms": [
+        "cli"
+      ],
+      "said": "A command-line tool: a program you run by typing its name and options in a terminal.",
+      "other": true
+    },
+    {
+      "term": "HTML",
+      "meaning": "The language web pages are written in; each scene of a video is an HTML page",
+      "forms": [
+        "html"
+      ],
+      "said": "The language web pages are written in; each scene of a video is an HTML page.",
+      "other": true
+    },
+    {
+      "term": "reelplanning",
+      "meaning": "reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written",
+      "forms": [
+        "reelplanning"
+      ],
+      "said": "Reelplanner's name until October 2026 (D-312). Plans, reviews, pages and videos made before then keep it, as they were written.",
+      "other": true
+    },
+    {
+      "term": "CSS",
+      "meaning": "The rules for how a web page looks: its colours, sizes and where things sit",
+      "forms": [
+        "css"
+      ],
+      "said": "The rules for how a web page looks: its colours, sizes and where things sit.",
+      "other": true
+    },
+    {
+      "term": "JSON",
+      "meaning": "A plain-text format for data a program reads (plan-map.json, say)",
+      "forms": [
+        "json"
+      ],
+      "said": "A plain-text format for data a program reads.",
+      "files": [
+        "`plan-map.json`, say"
+      ],
+      "other": true
+    },
+    {
+      "term": "TTS",
+      "meaning": "Text to speech: the voice made from a video's script",
+      "forms": [
+        "tts"
+      ],
+      "said": "Text to speech: the voice made from a video's script.",
+      "other": true
+    },
+    {
+      "term": "git",
+      "meaning": "The tool that keeps a repo's history: its commits and branches",
+      "forms": [
+        "git"
+      ],
+      "said": "The tool that keeps a repo's history: its commits and branches.",
+      "other": true
+    },
+    {
+      "term": "GitHub",
+      "meaning": "The website where many repos are kept and pull requests are reviewed",
+      "forms": [
+        "github"
+      ],
+      "said": "The website where many repos are kept and pull requests are reviewed.",
+      "other": true
+    },
+    {
+      "term": "npm",
+      "meaning": "The tool that installs a JavaScript project's packages and runs its scripts (npm test)",
+      "forms": [
+        "npm"
+      ],
+      "said": "The tool that installs a JavaScript project's packages and runs its scripts.",
+      "files": [
+        "`npm test`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "Claude Code's mode where the agent plans in chat and changes nothing until you approve",
+      "forms": [
+        "plan mode"
+      ],
+      "said": "Claude Code's mode where the agent plans in chat and changes nothing until you approve.",
+      "other": true
+    },
+    {
+      "term": "npx",
+      "meaning": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it (npx -y reelplanner@0.2.0 reel record …)",
+      "forms": [
+        "npx"
+      ],
+      "said": "Runs a published package's command without installing it first, as in the two commands the review page shows when no review server is behind it.",
+      "files": [
+        "`npx -y reelplanner@0.2.0 reel record …`"
+      ],
+      "other": true
+    },
+    {
+      "term": "Recommended",
+      "meaning": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it",
+      "forms": [
+        "recommended"
+      ],
+      "said": "The option a question's author suggests, marked on its card; the video plays what it leads to unless you pick another, and your memory counts how often you take it.",
+      "other": true
+    },
+    {
+      "term": "The real thing",
+      "meaning": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it",
+      "forms": [
+        "real thing"
+      ],
+      "said": "What a scene is about, shown as it is: the actual file, table, command output or screen, with its own words, instead of a picture about it.",
+      "other": true,
+      "definedIn": {
+        "video": "2026-09-26-better-visuals",
+        "frame": 3,
+        "title": "What “the real thing” means",
+        "start": 27.2,
+        "chapter": 2,
+        "chapterTitle": "The real thing, even across ten files"
+      }
+    },
+    {
+      "term": "A hosted page",
+      "meaning": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account",
+      "forms": [
+        "hosted page"
+      ],
+      "said": "The review page published online and opened from a link (a Claude Artifact), rather than run on your own computer. There, Claude answers Ask about this, on your own account.",
+      "other": true,
+      "definedIn": {
+        "video": "system",
+        "frame": 26,
+        "title": "How a review arrives",
+        "start": 324.618,
+        "chapter": 5,
+        "chapterTitle": "After you send"
+      }
+    },
+    {
+      "term": "Before you watch",
+      "meaning": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why",
+      "forms": [
+        "before you watch"
+      ],
+      "said": "The card the review page shows before a video first plays: the videos to watch first, and what fresh eyes left as it is (the findings the author kept), each with why.",
+      "other": true
+    },
+    {
+      "term": "Walk me through it",
+      "meaning": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences",
+      "forms": [
+        "walk me through it"
+      ],
+      "said": "The button under a quick check once you have answered: it works that check's own case through, step by step, in a few plain sentences.",
+      "other": true
+    }
+  ],
+  "ids": {
+    "k1": {
+      "kind": "quick check",
+      "n": 1,
+      "gloss": "A card about `reel status` says B; the fresh checker reads the code and picks…"
+    },
+    "k2": {
+      "kind": "quick check",
+      "n": 2,
+      "gloss": "On card c5, you press N: not sure. What comes next?"
+    },
+    "k3": {
+      "kind": "quick check",
+      "n": 3,
+      "gloss": "You say: 'and it should only go to the session I have open.' How is that claim…"
+    },
+    "k4": {
+      "kind": "quick check",
+      "n": 4,
+      "gloss": "In a round, you press Show me more on two gaps. How many videos are made?"
+    },
+    "k5": {
+      "kind": "quick check",
+      "n": 5,
+      "gloss": "In a video like this one, you get a quick check wrong and press Change the…"
+    },
+    "q1": {
+      "kind": "question",
+      "n": 1,
+      "gloss": "Where do a round's cards show up first?"
+    },
+    "q2": {
+      "kind": "question",
+      "n": 2,
+      "gloss": "Who reads your spoken explanation against the code?"
+    },
+    "q3": {
+      "kind": "question",
+      "n": 3,
+      "gloss": "After Got it, when does the same card return?"
+    },
+    "q4": {
+      "kind": "question",
+      "n": 4,
+      "gloss": "How often does a round come ahead of a plan?"
+    }
+  },
+  "termsCheck": "strict",
+  "freshEyes": {
+    "rounds": 2,
+    "left": [
+      {
+        "id": "N4",
+        "role": "newcomer",
+        "scene": 7,
+        "what": "scene 7 · \"a card at a time … with a letter key, or N\": step two only shows how a predict card plays. The scene never shows an assume card (which has no right answer in the code to turn over to) or a say card (your own words, which scene 8 calls \"your spoken words\") on the review page. I guessed a say card has a text box or a mic and goes to the fresh checker or the agent, but nothing shows it. A newcomer would ask how two of the three card kinds are answered on the page.",
+        "why": "scene 5 shows the assume card's 'Right · Not quite' and the say card's 'hold Space, or type', and scene 13 shows a say card answered on the page; scene 7 is the predict card, the one that turns over."
+      },
+      {
+        "id": "N5",
+        "role": "newcomer",
+        "scene": 18,
+        "what": "scene 18 · \"A gap: Got it or Show me more\": the video defines a gap as a place where two pictures disagree. \"Not sure\" is not a disagreement, so calling it \"a gap\" in option B stretches that meaning. I could not tell whether the video means a not-sure answer really is filed and counted as a gap (say, in reel status's \"gaps 11\") or only gets the same buttons. That matters both for answering this check and for the counts in scene 25.",
+        "why": "scene 7 says a wrong answer is a gap, and not sure a gap with two ways to settle it, and shows 'not sure: Got it · Show me more' on the card; 'not sure' also has that meaning in the Terms, so option B is what scene 7 showed."
+      },
+      {
+        "id": "N6",
+        "role": "newcomer",
+        "scene": 18,
+        "what": "scene 18 · \"nothing kept\": option A says nothing is kept, but the video has not said what a card's answer is normally kept as, or where (memory, the plan, the round's record). I guessed \"kept\" means it goes into memory or the plan the way a settled gap does. Without that, A and B are hard to tell apart on anything but the buttons.",
+        "why": "'nothing kept' is the wrong option, and its why on the card says so: Not sure is kept, as a gap; scene 7 says a wrong answer or not sure is a gap."
+      }
+    ],
+    "again": [],
+    "asks": []
+  },
+  "changes": {
+    "against": "HEAD",
+    "baseline": false,
+    "build": "first",
+    "note": "no previous build to compare against"
+  }
+}
