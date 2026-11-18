@@ -93,6 +93,12 @@
       "files": ["scripts/explain.mjs", "scripts/check-sources.mjs", "scripts/lib/explainer.mjs", "scripts/lib/codex-session.mjs", "scripts/session.mjs"]
     },
     {
+      "id": "align",
+      "name": "The alignment round",
+      "role": "authoring",
+      "files": ["scripts/align.mjs", "scripts/lib/align.mjs", "packages/player/align-page.js"]
+    },
+    {
       "id": "guide",
       "name": "The guide",
       "role": "artifact",
