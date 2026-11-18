@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "voice": "am_michael",
+  "speed": 1.25,
+  "model": "kokoro-v1.0 + whisper small.en",
+  "lines": {
+    "10": {
+      "key": "52a66bc7f5a527f37202",
+      "text": "With B, the agent asks each card in the chat, and the lines come back as text.",
+      "sha256": "7349fedebf8f7a319a078b8ce52893ccc51086aed282ff99faed486e7d1594fc",
+      "duration_s": 4.523
+    },
+    "11": {
+      "key": "0b8632d0c402e61366ec",
+      "text": "With C, the same round opens on the page and in the chat at once.",
+      "sha256": "0dad342874ecc03b02e34eb550b700cc8cf6bf92df8bfdeafb275f99e7db4130",
+      "duration_s": 3.605
+    },
+    "12": {
+      "key": "514ab820f81369530dd0",
+      "text": "Quick check. A card about reel status says B. The fresh checker reads the code and picks C. What do you see?",
+      "sha256": "e72af978fb4d51afae74e27e600ea3bc6043eb75088712d95d7be6db5c628ff5",
+      "duration_s": 5.952
+    },
+    "13": {
+      "key": "af2dcf101788cdc5d216",
+      "text": "Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. Your words are split into claims, each a stretch that says one thing, checked against the code. It goes to my session: a match. If I'm not there, it waits: a gap, in this repo. A claim about what you want comes back as an assume card. Drawing your picture stays a separate plan.",
+      "sha256": "a612700f42820a3eb4e0bf97bae8461aa039ba7dbf8d7a0496ca9320f2e51ddd",
+      "duration_s": 19.776
+    },
+    "14": {
+      "key": "c786629fae76d0296c0c",
+      "text": "Question two. A: the waiting agent session checks your words. It knows the code best, and takes about a minute. B: a small hosted model, called from the page: seconds, but your words leave the machine, and it sees only the pinned lines. C: the next session to take the round, after Send. I recommend A, falling back to C. So who checks your spoken words against the code?",
+      "sha256": "232e2df0419a6f6fe776550e41dd10d20f4d71b1411ec04ed9f58789a2068867",
+      "duration_s": 20.331
+    },
+    "15": {
+      "key": "00b3e2826822212f726c",
+      "text": "With A, your claims come back marked in about a minute.",
+      "sha256": "a2bc223c4ed37c858429e5bf2d8482b5a7d5544b12109ebd759e5558c7c5251d",
+      "duration_s": 2.624
+    },
+    "16": {
+      "key": "2d6604383d05b14e8b72",
+      "text": "With B, they're marked in seconds, by a model your words are sent to.",
+      "sha256": "9c0973492cb779de31fd5ae1ce0b84d85d110955826048ae5da74fb4b26d6ce3",
+      "duration_s": 3.712
+    },
+    "17": {
+      "key": "41e1c9d3d99a4a650841",
+      "text": "With C, you see them marked only when the round comes back.",
+      "sha256": "65c7a61724e65ba8aaa22c9c4ebf885f8a02ee212cb6c86fd265e5ae3dd82fc4",
+      "duration_s": 3.029
+    },
+    "18": {
+      "key": "3b122847bb2d87a4700f",
+      "text": "Quick check. On card c five, you press N, for not sure. What comes next?",
+      "sha256": "c65ac4edb408cc09796a72407c4695c674ea22c29b2072e796e2f64fe6690a84",
+      "duration_s": 4.032
+    },
+    "19": {
+      "key": "9e4eed94e08dd9b37da2",
+      "text": "Step four: one click settles a gap, and each goes somewhere. Got it: the code is right, and your memory keeps it. Change the plan: it goes into the plan, under You told me first. The code is wrong: a step of the plan, or an issue to file. Show me more: a longer card now, and one short video of those gaps at the end. The decision log, the record of your answers, gets them only through the plan's own questions.",
+      "sha256": "e7ecea2d236a0e7eddac85d0865e4303e3e66eac06bb20871ed8d95bda3001de",
+      "duration_s": 21.013
+    },
+    "20": {
+      "key": "3d9332eb5ea0cfa2d9cc",
+      "text": "Got it is kept with the lines' fingerprint, a short code that changes when they do. Question three. A: the same card comes back only when those lines change. B: also once more, on a new case, days later. C: whenever a plan depends on it. I recommend A: a change to the code is what makes your picture stale. When does the same card return?",
+      "sha256": "7c4dbcf2211acfc933f9f42cc078440018bb9dfd37bd4e205c7223c8c486046b",
+      "duration_s": 18.965
+    },
+    "21": {
+      "key": "39c39478bb877c1fd537",
+      "text": "With A, the card returns only after its lines change.",
+      "sha256": "767c3dddfbbfbb03958e302d7112c85ac88e68b8c35e800e91f5c64e92d8fd31",
+      "duration_s": 3.093
+    },
+    "22": {
+      "key": "71cdac9cf5d1d9320b39",
+      "text": "With B, it returns once more, on a new case, a few days on.",
+      "sha256": "54bae2acaa7b9e84c86a9f504922b859d5c8309ac30c54a20d3b580eee7c9822",
+      "duration_s": 3.563
+    },
+    "23": {
+      "key": "8a8c15044c71a0d3660c",
+      "text": "With C, it returns each time a plan leans on it.",
+      "sha256": "b5b20570bf2956d1dcef7d61d8978672638d0f91458c7cbfbe8d8805add2f394",
+      "duration_s": 2.795
+    },
+    "24": {
+      "key": "232e5d1cb0d503cd74bc",
+      "text": "Quick check. You say: and it should only go to the session I have open. How is that claim marked?",
+      "sha256": "c996654b9a23f6eb789d4b3ee8540cd1f5c82afb0eb6ae1e5ec4da6f4db32dda",
+      "duration_s": 5.056
+    },
+    "25": {
+      "key": "cd16114eb21c8656b633",
+      "text": "Step five puts the round in the loop. Before a plan, the agent lists the likely gaps, and runs a round when one is worth your time. A wrong quick check gets the same buttons, with Change the plan's words reaching the agent as a comment, and nothing blocks Approve, the verdict that accepts a plan. And reel status counts rounds, gaps, and whether plans with a round need fewer late fixes, things a review let through that a later fix had to change.",
+      "sha256": "92bdb3a90fc6b2148568b9156cfb31fa585963d471bf7b9bdccfc05443cb83c1",
+      "duration_s": 23.275
+    },
+    "26": {
+      "key": "b4689cf1524ec0bbbe9f",
+      "text": "Question four. Take two requests: make Send reach my open session, and rename the Save button. A: a round before every plan, both included: the surest, and two minutes more each time. B: only when a gap is likely and costly, so Send gets four cards and the rename none, with a line saying why. C: only when you ask. I recommend B. So how often should a round come before a plan?",
+      "sha256": "d078058150dea752619e3d3b7870ce3ad42174395b5157491d6a52b995ef6ddf",
+      "duration_s": 21.355
+    },
+    "27": {
+      "key": "9093aeb3a00b9f063037",
+      "text": "With A, every plan on existing code starts with a round, a rename included.",
+      "sha256": "1cb7d76919270a67364008ce0943b3f12984c80e34afd28a00684684366a87df",
+      "duration_s": 4.373
+    },
+    "28": {
+      "key": "450ebef4621999ee71ef",
+      "text": "With B, the rename gets no round, and the change to Send gets four cards.",
+      "sha256": "3d5b87e58043580d7f019be01379ec748c5a8d3c3913ea98335217638bc3f078",
+      "duration_s": 4.309
+    },
+    "29": {
+      "key": "1d4ead3191a614ba1124",
+      "text": "With C, a round comes only when you say: align me first.",
+      "sha256": "8bfb4b109d29cfa8636ba6fa3d685219468e7f5d012964b29c3f112658dfe144",
+      "duration_s": 3.392
+    },
+    "30": {
+      "key": "1c1645ed40954c7f32a5",
+      "text": "Quick check. In a round of five, you press Show me more on two gaps. How many videos are made?",
+      "sha256": "243b52fe0a69ca9c71621a9d663ce1705dc8aaf22731a4c9eb4643b6bde21aed",
+      "duration_s": 4.736
+    },
+    "31": {
+      "key": "70bd9bb72d750867ba3c",
+      "text": "Quick check. In a video like this one, you get a quick check wrong and press Change the plan, with your words. Where do they go?",
+      "sha256": "f52da8a23036321f4530cd09a43ea8c84fff180f1caf184bb4017f9bb61a5c63",
+      "duration_s": 6.229
+    },
+    "32": {
+      "key": "6ef63a6d7116741a900e",
+      "text": "That's the plan: a round of a few cards where a gap is likely, your own words checked, one click to settle each gap, and the round in the loop. Your four answers sit on the steps. Draw on any step to leave a note, or approve.",
+      "sha256": "43bf49ca2adea3dacf254c32a17581b63dcc161a8caa25d751358aa2984af248",
+      "duration_s": 12.459
+    },
+    "01": {
+      "key": "98f70881eb1781b2f3c8",
+      "text": "You asked for a way to line up three things: you, the code, and the agent, the AI assistant writing it. In your words: I assume it is one way when it is actually another. This plan finds those places, with the least effort from you.",
+      "sha256": "fb688ad6f9ff62a0f3d713b23f63b215971153dab24484d77e94827806266cb0",
+      "duration_s": 12.971
+    },
+    "02": {
+      "key": "a77ecc0c0c954d1b002f",
+      "text": "If you're new, four things this plan builds on. Send hands your review to the agent session waiting on this page; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict a case the video didn't show. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.",
+      "sha256": "e888397a37e6aed317a4bdcc7d12441702b6c61bb40db19cc019f21046190ec7",
+      "duration_s": 19.584
+    },
+    "03": {
+      "key": "cbf171eb5cbcc3419acb",
+      "text": "Three things hold a picture of the code: you, the agent, and the code itself. A gap is where two disagree. You think a review sent with no session open waits for you; in this repo, a headless run takes it. The agent remembers Send trying once; it tries again fifteen seconds later. And you asked for a review that reaches the agent. The agent read any agent; you meant your open session.",
+      "sha256": "6ec844c129196ed093729cb97a57603926b6f5d7ea99999aff9e625c44f12f6b",
+      "duration_s": 21.099
+    },
+    "04": {
+      "key": "4e209803200546b73d62",
+      "text": "Today reelplanner explains one way, from the agent to you. Its checks test whether you followed the video, not what you assumed that it never said. The plan has five steps, each one change. Steps one and two: a few cards where a gap is likely. Step three: your own words, checked. Step four: one click settles each gap. Step five: the cards before a plan, and on every quick check.",
+      "said": "Today reel planner explains one way, from the agent to you. Its checks test whether you followed the video, not what you assumed that it never said. The plan has five steps, each one change. Steps one and two: a few cards where a gap is likely. Step three: your own words, checked. Step four: one click settles each gap. Step five: the cards before a plan, and on every quick check.",
+      "sha256": "892bbcb6084793db2c85e23c6fea2b37f950d5a64f503b6292641634c465a027",
+      "duration_s": 20.075
+    },
+    "05": {
+      "key": "590d3b0f73908fbd84fa",
+      "text": "Step one. A round is a short set of cards, at most six, about one topic: about two minutes. A card is one of three kinds. A predict card asks what the code does, and holds the answer with the code's own lines. An assume card says what the agent assumes you want, for you to answer. A say card asks you to explain it in your own words: that's step three.",
+      "sha256": "010efc42f034eed8dcae06fbd79237489e7bc0e9be307e9874e8a16df9eb959d",
+      "duration_s": 19.285
+    },
+    "06": {
+      "key": "7c5648df330af7b68a22",
+      "text": "Picking the cards is the point. Each must say why you might picture it otherwise, and what depends on it. The agent looks at what your words take for granted, quick checks you got wrong, commits since you last watched, and its own assumptions, and keeps at most six of those candidates. Then a fresh checker, an agent that never saw this conversation, answers each predict card from the code alone; where it disagrees, the card is fixed or dropped.",
+      "sha256": "0a8a058c7fb8e1447041e0e925889b3671db8f20297beda3035744c2c0fc142f",
+      "duration_s": 22.421
+    },
+    "07": {
+      "key": "a240294fd04fd27f65a7",
+      "text": "Step two, as proposed, puts the round on the review page, a card at a time. You answer first, with a letter key, or N for not sure. Then the card turns over: the file, the lines, one sentence why. Here, this repo's config sets a headless command, so a run starts. A match brings the next card. A wrong answer is a gap, with four ways to settle it; not sure, with two. Skip the rest ends the round.",
+      "sha256": "7f86bc457316d4e752734da0d2cf6b25326f400ce407943a69a0f25f4876fbb4",
+      "duration_s": 21.568
+    },
+    "08": {
+      "key": "13808489bc732ec57d34",
+      "text": "Question one. A: the cards show up on the review page, with a key per answer, a box to click, your spoken words, and the code on the card. B: in the chat, as the agent's questions: quickest to build, but plain text, nothing to click or say. C: both at once, twice the work. I recommend A: the page makes each answer a key press. Where do the cards show up first?",
+      "sha256": "9c510d92457398a70d622750112ea26dee9505ce672d9c4029a0ea74399ad142",
+      "duration_s": 19.605
+    },
+    "09": {
+      "key": "a7a18048861f1dfb95eb",
+      "text": "With A, the card turns over on the page, with the code's lines on its back.",
+      "sha256": "30c05689c7435d3407084c5f66397b3967ff0d725054681f93dfb1f602978481",
+      "duration_s": 3.883
+    }
+  }
+}

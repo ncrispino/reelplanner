@@ -1,0 +1,79 @@
+<template>
+<style>
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f25-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f25-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f25-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .f25-h { position:absolute; font:400 64px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f25-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f25-big { position:absolute; font:400 46px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .f25-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .f25-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .f25-m { position:absolute; font:400 28px/1.4 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f25-t code, .f25-s code, .f25-big code, .f25-q code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .f25-card { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f25-paper { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f25-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 28px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; }
+  .f25-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .f25-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .f25-pin.hot { background:var(--rp-coral); }
+  .f25-pin em { font-style:normal; }
+  .f25-planned { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.75); border:2px dashed rgba(var(--rp-ink-rgb),0.5); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .f25-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .f25-bar { position:absolute; left:0; top:0; right:0; height:44px; background:var(--rp-slab-bar); }
+  .f25-bt { position:absolute; left:22px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .f25-code { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f25-code .n { color:rgba(var(--rp-slab-ink-rgb),0.5); }
+  .f25-code .k { color:var(--rp-syn-num); }
+  .f25-code .hl { background:rgba(var(--rp-slab-ink-rgb),0.10); }
+  .f25-line { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.45); transform-origin:0 50%; }
+  .f25-line.hot { background:var(--rp-coral); height:4px; }
+  .f25-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; transform-origin:0 50%; }
+  .f25-strike { position:absolute; height:4px; background:var(--rp-ink); border-radius:2px; transform-origin:0 50%; }
+  .f25-ring { position:absolute; box-sizing:border-box; border-radius:16px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .f25-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f25-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f25-opt .l { position:absolute; left:30px; top:76px; right:26px; font:400 46px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f25-opt .c { position:absolute; left:30px; right:26px; bottom:30px; font:400 27px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.78); }
+  .f25-opt .r { position:absolute; right:24px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f25-node { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); font:500 34px/1 "Inter"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; }
+  .f25-node.navy { background:var(--rp-slab); color:var(--rp-slab-ink); border-color:rgba(var(--rp-slab-ink-rgb),0.14); }
+  .f25-btn { position:absolute; height:64px; box-sizing:border-box; padding:0 22px; font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:10px; white-space:nowrap; text-align:center; }
+  .f25-btn.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .f25-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f25-dim { opacity:0.55; }
+  .f25-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f25-ok { color:var(--rp-ink); }
+  .f25-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f25-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f25-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f25-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+</style>
+
+<div id="root" data-composition-id="25-step-5-into-the-loop" data-band="bottom" data-duration="23.775" data-width="1920" data-height="1080">
+  <div class="clip f25-bg" id="f25-bg" data-start="0" data-duration="23.775" data-track-index="0"></div>
+  <div class="clip f25-scene" id="f25-scene" data-start="0" data-duration="23.775" data-track-index="1">
+  <div class="f25-planned" id="f25-planned" style="left:1600px; top:60px;">planned</div>
+  <div class="f25-paper" id="f25-a" style="left:160px; top:160px; width:500px; height:640px;"><div class="f25-lab" style="left:30px; top:30px">before a plan</div><div class="f25-big" style="left:30px; top:90px; width:440px; font-size:40px">likely gaps listed</div><div class="f25-big" style="left:30px; top:240px; width:440px; font-size:40px">→ a round, if worth it</div><div class="f25-s" style="left:30px; top:400px; width:440px">if not, one line in the plan says why</div></div>
+  <div class="f25-paper" id="f25-b" style="left:710px; top:160px; width:500px; height:640px;"><div class="f25-lab" style="left:30px; top:30px">a quick check, wrong</div><div class="f25-btn" style="left:30px; top:80px; width:440px">Got it</div><div class="f25-btn" style="left:30px; top:156px; width:440px">Change the plan</div><div class="f25-btn" style="left:30px; top:232px; width:440px">Show me more</div><div class="f25-btn f25-dim" style="left:30px; top:308px; width:440px; border-style:dashed; font-size:26px; padding:0 10px">The code is wrong, once built</div><div class="f25-card" style="left:30px; top:392px; width:440px; height:56px;"><div class="f25-s" style="left:18px; top:10px">your words…</div></div><div class="f25-s" style="left:30px; top:466px; width:440px">Change the plan → the agent, as a comment</div><div class="f25-s" style="left:30px; top:540px; width:440px">Approve: never blocked · left unsettled: recorded as today</div></div>
+  <div class="f25-paper" id="f25-c" style="left:1260px; top:160px; width:500px; height:640px;"><div class="f25-lab" style="left:30px; top:30px">reel status</div><div class="f25-m" style="left:30px; top:80px; width:440px">rounds 3 · gaps 11</div><div class="f25-m" style="left:30px; top:124px; width:440px">Got it 7</div><div class="f25-m" style="left:30px; top:168px; width:440px">Change the plan 3</div><div class="f25-m" style="left:30px; top:212px; width:440px">The code is wrong 1</div><div class="f25-m" style="left:30px; top:256px; width:440px">Show me more 0</div><div class="f25-m" style="left:30px; top:300px; width:440px">not sure 2 · skipped 1</div><div class="f25-m" style="left:30px; top:364px; width:440px">late fixes · with a round 1</div><div class="f25-m" style="left:30px; top:408px; width:440px">· likely gap, no round 4</div><div class="f25-s" style="left:30px; top:470px; width:440px">under 5 plans of each: too few to compare</div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "25-step-5-into-the-loop";
+  var DUR = 23.275;
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#f25-a", { opacity: 0, y: 26 });
+  tl.to("#f25-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.060);
+  gsap.set("#f25-b", { opacity: 0, y: 26 });
+  tl.to("#f25-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.820);
+  gsap.set("#f25-c", { opacity: 0, y: 26 });
+  tl.to("#f25-c", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.840);
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

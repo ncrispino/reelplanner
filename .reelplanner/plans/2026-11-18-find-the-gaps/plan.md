@@ -44,7 +44,7 @@ A card is one of three kinds:
 - **What moved**: commits on the pinned files since you last watched a video of these parts.
 - **The agent's own assumptions**: what it would have to take for granted to write the plan. These become assume cards.
 
-**The agent's picture is checked too.** A card with a wrong answer would teach you something false. So before you see the predict cards, a fresh agent that never saw this conversation answers each one from the pinned sources alone. Where its answer differs from the card's, the agent's picture is the wrong one: the card is fixed against the code, or dropped. The assume cards need no check and come first, so the check runs while you answer them.
+**The agent's picture is checked too.** A card with a wrong answer would teach you something false. So before you see the predict cards, a fresh agent that never saw this conversation answers each one from the pinned sources alone. Where its answer differs from the card's, the agent's picture is the wrong one: the card is fixed against the code, or dropped. Who decides, and how: the agent rewrites the card once from the quoted lines, and the checker answers it again. A card reaches you only when the two agree. If they still disagree, the card is dropped and listed at the end of the round as "the agent and the checker read this code differently": a gap between the agent and the code, shown to you, not hidden. The assume cards need no check and come first, so the check runs while you answer them. What a round costs before you see it: the agent's own minute or two to list candidates and write the cards, and one fresh agent reading only the cards and their pinned lines, a few thousand tokens. Step 5 counts it with the rest, so a round's cost can be weighed against the gaps it found.
 
 `align --check` holds a round to its rules before it opens: each quote is in its source word for word (the explainer's `check-sources`), each card has `likely_wrong:` and `matters:`, there are at most six, an assume card has no answer, and no card asks what your memory says you already know, at the same fingerprint.
 
@@ -156,7 +156,7 @@ page -> you: the next card
 
 **It lets you:** talk through how you think it works for half a minute, and see your own words marked where they match the code and where they don't.
 
-Needs step 2's page. A say card asks you to explain, not to pick: "Say how you think a review reaches the agent." Hold Space, or press the microphone, and talk. By default the page records on your machine and the local whisper the narration already uses writes your words down when you stop, in a few seconds. A browser's own live recognition shows the words as you speak, but some browsers send the audio to their maker's servers to do it, so it is off until you turn it on, and the switch says so. You can type instead, or fix a word. The recording stays in the inbox and is never committed; only your words go into `align.md`.
+Needs step 2's page. A say card asks you to explain, not to pick: "Say how you think a review reaches the agent." Hold Space, or press the microphone, and talk. By default the page records on your machine and the local whisper the narration already uses writes your words down when you stop, in a few seconds. A browser's own live recognition shows the words as you speak, but some browsers send the audio to their maker's servers to do it, so it is off until you turn it on, and the switch says so. You can type instead, or fix a word. Where there is no microphone, or on a hosted page (which has no local whisper and no session to hand words to), the say card takes typed words only, and says so; where whisper is not installed and live recognition is off, it offers typing and says how to install whisper (`reelplanner setup --local-voice`). The recording stays in the inbox and is never committed; only your words go into `align.md`.
 
 Your words go to the waiting agent session the way a question from Ask about this does: saved first, then handed to a session that is waiting or connected. The agent splits them into **claims**, each one a stretch of your own words that says one thing about the code ("it starts the agent right away"), and checks each against the pinned sources. The page shows your words with each claim marked:
 
@@ -164,7 +164,7 @@ Your words go to the waiting agent session the way a question from Ask about thi
 - **✗ differs**: a gap, made into a card from your own words and the code's lines, settled as in step 4;
 - **? the code can't say**: a claim about what you want, not what is; it becomes an assume card for you to confirm.
 
-With no session waiting, your words are kept and checked after Send, as a question asked on the page is answered in the next version. A say card never starts a headless run.
+With no session waiting, your words stay with the round in the inbox, and the next session that takes the round checks them; you see them marked when it hands the round back. A say card never starts a headless run, even in a repo that sets a headless command: like a question asked on the page, it waits for a session.
 
 Claims are the shared format: a drawing of your picture (#23) can later produce the same claims, checked the same way.
 
@@ -209,10 +209,10 @@ claims --> ? open: a want, not a fact | becomes an assume card
 
 Needs step 2. A gap is settled one of four ways, each with somewhere to go:
 
-- **Got it**: the code is right and you had it wrong. It goes to your memory (`~/.reelplanner/you.jsonl`) as something you know: the card's claim, its file and lines, and their fingerprint. A later round doesn't ask it, and a later video drops the explanation, the way it already drops a word you know. When those lines change, the fingerprint no longer matches and it counts as not known again.
+- **Got it**: the code is right and you had it wrong. It goes to your memory (`~/.reelplanner/you.jsonl`) as something you know: the card's claim, its file and lines, and their fingerprint. A later round doesn't ask it, and a later video drops the explanation, the way it already drops a word you know. When those lines change, the fingerprint no longer matches and it counts as not known again. The fingerprint is of the lines' text, not their numbers: when an edit above them moves them, or the file is renamed, the next round finds the same text (in the file, then in the repo) and updates where it is; only when the text itself is gone or changed is it not known.
 - **Change the plan**: you want it your way. Before a plan, it goes into the plan under **You told me first**: the plan is written on it, and its video doesn't ask it again. With no plan, the round's Finish offers **Plan this**, which starts one from the round, as an explainer does.
-- **The code is wrong**: a fix. It becomes a step of the next plan, or, with no plan, an issue's text drafted for you to file. Nothing leaves the machine without you.
-- **Show me more**: at once, the card opens a longer explanation and a diagram, from the same pinned lines. At the end of the round, the gaps you asked more on become one short explainer video, built by `reelplanner explain` from the round's sources, which starts from your picture: "You expected the review to wait for you. Here is why a headless run took it." One video for the round, not one a gap: a video takes minutes, a card seconds.
+- **The code is wrong**: a fix, never a change made on the spot. Before a plan, it becomes a step of that plan, with the card's lines as its case. With no plan, the round's Finish drafts an issue's text, `align/<slug>/issue.md`, for you to file or to start a plan from. Nothing leaves the machine without you.
+- **Show me more**: at once, the card opens a longer explanation and a diagram, from the same pinned lines. At the end of the round, the gaps you asked more on become one short explainer video, built by `reelplanner explain` from the round's sources, which starts from your picture: "You expected the review to wait for you. Here is why a headless run took it." One video for the round, not one a gap: a video takes minutes, a card seconds. It is built in the background at low depth, a few minutes, while you go on; the review page says when it is ready, as it does for a rebuilt video.
 
 An assume card answered **Not quite** is a gap about what you want; your words go into the plan as **You told me first**. A card answered **Right** is said in the plan in one line.
 
@@ -259,11 +259,13 @@ gap -x decision log: never directly
 
 Needs steps 1 and 4.
 
-**Before a plan.** When you ask for a plan on code that exists, the skill lists gap candidates first (step 1's four places). When one is likely and costly, it runs a round before writing the plan, with `--plan` so the answers go into it. The plan then starts from where you stand: what you settled is said in a line, what you knew is not explained again.
+**Before a plan.** When you ask for a plan on code that exists, the skill lists gap candidates first (step 1's four places). A candidate is **likely** when one of the four places points at it: your words take it for granted, you missed a check on that part, it changed since you last watched, or it is an assumption the agent can't check alone. It is **costly** when a step of the plan depends on it, or it is hard to undo (stored data and formats, permissions, what other people's code relies on: the walkthrough's own label). When one is likely and costly, it runs a round before writing the plan, with `--plan` so the answers go into it. The plan then starts from where you stand: what you settled is said in a line, what you knew is not explained again.
 
-**Every quick check settles like a card.** A quick check is a predict card inside a video. Today a wrong answer shows Walk me through it and the box "Expected something else?". With this, a wrong answer also offers the same four ways: Got it (into your memory), Change the plan and The code is wrong (each with your words, reaching the agent as a comment does now), Show me more (Walk me through it). The box's words become Change the plan's words, so nothing you can do now is lost. A wrong quick check left unsettled is recorded as it is today, and never blocks Approve.
+**A new project.** With no code yet there is nothing to predict, so a round before a plan in a new project holds only assume and say cards: what the agent assumes you want, and how you picture what you are asking for.
 
-**Measured.** `reel status` gains a memory line: rounds, gaps found per round, and how they were settled. And it compares later surprises (answers in your own words, "Expected something else", choices you flagged in a walkthrough, late fixes) on plans that had a round with plans that didn't. It reports the counts and says nothing about whether rounds help until five plans of each kind exist.
+**Every quick check settles like a card.** A quick check is a predict card inside a video. In a plan video, nothing is built yet, so its quick check asks what the plan will do, and settles three ways: Got it (you had the plan wrong), Change the plan, Show me more. A walkthrough's and the system video's quick checks are about code that exists, and add The code is wrong. Today a wrong answer shows Walk me through it and the box "Expected something else?". With this, a wrong answer also offers the same four ways: Got it (into your memory), Change the plan and The code is wrong (each with your words, reaching the agent as a comment does now), Show me more (Walk me through it). The box's words become Change the plan's words, so nothing you can do now is lost. A wrong quick check left unsettled is recorded as it is today, and never blocks Approve.
+
+**Measured.** `reel status` gains a memory line: rounds, gaps found per round, and how they were settled. And it compares later surprises (answers in your own words, "Expected something else", choices you flagged in a walkthrough, late fixes) on plans that had a round with plans that didn't. It reports the counts and says nothing about whether rounds help until five plans of each kind exist. To compare like with like, the plans without a round it counts are the ones where the agent found a likely, costly gap and no round ran (you skipped it, or rounds were off), not the easy ones where it found none. It prints, for example, `late fixes · with a round 1 · likely gap, no round 4`, and below five plans of each, `too few plans to compare`.
 
 #### Cases
 
@@ -300,7 +302,7 @@ the plan -> its video: skips what you knew
 
 - **It turns into a quiz.** The agent writes what is easy to ask, not what is likely wrong. Guard: every card says why you might picture it otherwise and what depends on it, at most six, nothing you already know, and step 5 counts how many cards found a gap. A round where most cards were Same picture says the agent is asking the wrong things, and `reel status` says so.
 - **A card teaches something false.** The agent's own picture is wrong and it writes the card from it. Guard: the fresh checker answers every predict card from the sources alone before you see it, and each card shows the code's own lines, so you can see what it rests on.
-- **It costs more time than it saves.** Guard: two minutes at most, Skip the rest at any time, and question 1 decides how often a round comes at all.
+- **It costs more time than it saves.** Guard: two minutes at most, Skip the rest at any time, and question 4 decides how often a round comes at all.
 
 ## How it is tested
 
@@ -318,29 +320,32 @@ the plan -> its video: skips what you knew
 
 ## Open questions for the reviewer
 
-1. **How often does a round come ahead of a plan? (step 5)**
-   - **A · Every plan on code that exists** — two to six cards before each plan; the surest, and about two minutes more each time, often on nothing.
-   - **B · When it finds a gap that is likely and costly** — no round when nothing is worth asking; it can miss a gap it didn't see coming.
-   - **C · Only when you ask** — nothing changes unless you say "align me first"; the gaps you didn't think to ask about stay hidden.
-   - Recommended: **B**. A round costs your time, so it should come only when it is likely to find something that matters; the plan says in one line when there was none.
-
-2. **Where do the cards show up first? (step 2)**
+1. **Where do the cards show up first? (step 2)**
    - **A · On the review page** — pointing, your voice, the code's lines on the card, and Send; it needs the browser open.
    - **B · In the chat** — the agent asks each card as a question in the conversation; quickest to build, but no pointing, no voice, and the code's lines as plain text.
    - **C · Both from the start** — one round, two ways to answer it; twice the work before either is good.
    - Recommended: **A**. The page is what makes it low effort for you: a key per answer, the code turned over on the card, and your voice. The chat can come later from the same cards.
 
-3. **Who reads your spoken explanation against the code? (step 3)**
+
+2. **Who reads your spoken explanation against the code? (step 3)**
    - **A · The agent session that is waiting** — it knows the code and checks against it; about a minute, and only with a session open.
-   - **B · A small fast model on the page** — a few seconds, with a key you set; it sees only the pinned lines, so it misses what the agent would find.
+   - **B · A small fast model on the page** — a few seconds, through OpenRouter with your own key in `~/.reelplanner/.env`, billed to you, as the hosted voice is; your words go to that service, and it sees only the pinned lines, so it misses what the agent would find.
    - **C · The agent, after Send** — nothing live; you see the checks in the next version.
    - Recommended: **A**. The check is only as good as the reader's picture of the code, and the waiting session has the best one; with none waiting it falls back to C.
 
-4. **After Got it, when does the same card return? (step 4)**
+
+3. **After Got it, when does the same card return? (step 4)**
    - **A · Only when that code changes** — known until its lines' fingerprint changes; nothing more to sit through.
    - **B · Also once more, on a new case, a few days later** — a second check that it stuck; about one card a round more.
    - **C · Whenever a plan depends on it** — asked again each time it matters to a plan; the surest for big changes, the most repetition.
    - Recommended: **A**. The point is to line up your picture with the code, not to test your memory of it; a change to the code is what makes your picture stale.
+
+4. **How often does a round come ahead of a plan? (step 5)**
+   - **A · Every plan on code that exists** — two to six cards before each plan; the surest, and about two minutes more each time, often on nothing.
+   - **B · When it finds a gap that is likely and costly** — no round when nothing is worth asking; it can miss a gap it didn't see coming.
+   - **C · Only when you ask** — nothing changes unless you say "align me first"; the gaps you didn't think to ask about stay hidden.
+   - Recommended: **B**. A round costs your time, so it should come only when it is likely to find something that matters; the plan says in one line when there was none.
+
 
 ## Decisions in force
 

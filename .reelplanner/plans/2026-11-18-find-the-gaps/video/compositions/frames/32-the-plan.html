@@ -1,0 +1,89 @@
+<template>
+<style>
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f32-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f32-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f32-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .f32-h { position:absolute; font:400 64px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f32-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f32-big { position:absolute; font:400 46px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .f32-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .f32-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .f32-m { position:absolute; font:400 28px/1.4 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f32-t code, .f32-s code, .f32-big code, .f32-q code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .f32-card { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f32-paper { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f32-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 28px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; }
+  .f32-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .f32-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .f32-pin.hot { background:var(--rp-coral); }
+  .f32-pin em { font-style:normal; }
+  .f32-planned { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.75); border:2px dashed rgba(var(--rp-ink-rgb),0.5); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .f32-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .f32-bar { position:absolute; left:0; top:0; right:0; height:44px; background:var(--rp-slab-bar); }
+  .f32-bt { position:absolute; left:22px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .f32-code { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f32-code .n { color:rgba(var(--rp-slab-ink-rgb),0.5); }
+  .f32-code .k { color:var(--rp-syn-num); }
+  .f32-code .hl { background:rgba(var(--rp-slab-ink-rgb),0.10); }
+  .f32-line { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.45); transform-origin:0 50%; }
+  .f32-line.hot { background:var(--rp-coral); height:4px; }
+  .f32-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; transform-origin:0 50%; }
+  .f32-strike { position:absolute; height:4px; background:var(--rp-ink); border-radius:2px; transform-origin:0 50%; }
+  .f32-ring { position:absolute; box-sizing:border-box; border-radius:16px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .f32-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f32-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f32-opt .l { position:absolute; left:30px; top:76px; right:26px; font:400 46px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f32-opt .c { position:absolute; left:30px; right:26px; bottom:30px; font:400 27px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.78); }
+  .f32-opt .r { position:absolute; right:24px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f32-node { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); font:500 34px/1 "Inter"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; }
+  .f32-node.navy { background:var(--rp-slab); color:var(--rp-slab-ink); border-color:rgba(var(--rp-slab-ink-rgb),0.14); }
+  .f32-btn { position:absolute; height:64px; box-sizing:border-box; padding:0 22px; font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:10px; white-space:nowrap; text-align:center; }
+  .f32-btn.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .f32-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f32-dim { opacity:0.55; }
+  .f32-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f32-ok { color:var(--rp-ink); }
+  .f32-slot { position:absolute; left:0; width:900px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f32-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f32-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f32-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+</style>
+
+<div id="root" data-composition-id="32-the-plan" data-band="bottom" data-duration="12.859" data-width="1920" data-height="1080">
+  <div class="clip f32-bg" id="f32-bg" data-start="0" data-duration="12.859" data-track-index="0"></div>
+  <div class="clip f32-scene" id="f32-scene" data-start="0" data-duration="12.859" data-track-index="1">
+  <div class="f32-lab" id="f32-kick" style="left:160px; top:90px;">the plan · find the gaps</div>
+  <div style="position:absolute; left:160px; top:150px; width:900px; height:640px;"><div class="f32-slot" id="f32-s0" data-plan-step="1" style="top:0px"><span class="n">1</span><span class="t">A round of cards</span><span class="d"></span></div><div class="f32-slot" id="f32-s1" data-plan-step="2" style="top:124px"><span class="n">2</span><span class="t">Predict, then the code</span><span class="d">your answer</span></div><div class="f32-slot" id="f32-s2" data-plan-step="3" style="top:248px"><span class="n">3</span><span class="t">Your own words, checked</span><span class="d">your answer</span></div><div class="f32-slot" id="f32-s3" data-plan-step="4" style="top:372px"><span class="n">4</span><span class="t">Settle each gap</span><span class="d">your answer</span></div><div class="f32-slot" id="f32-s4" data-plan-step="5" style="top:496px"><span class="n">5</span><span class="t">Before a plan, and on checks</span><span class="d">your answer</span></div></div>
+  <div id="f32-tri" style="position:absolute; left:1200px; top:220px; width:560px; height:480px;">
+    <svg style="position:absolute; left:0; top:0; width:560px; height:480px; overflow:visible"><polygon points="280,60 60,400 500,400" fill="none" style="stroke:rgba(var(--rp-ink-rgb),0.55)" stroke-width="4" stroke-linejoin="round"/></svg>
+    <div class="f32-node" style="left:170px; top:10px; width:220px; height:80px;; font-size:28px">the agent</div>
+    <div class="f32-node" style="left:0px; top:370px; width:160px; height:80px;; font-size:28px">you</div>
+    <div class="f32-node navy" style="left:380px; top:370px; width:180px; height:80px;; font-size:28px">the code</div>
+  </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "32-the-plan";
+  var DUR = 12.859;
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#f32-s0", { opacity: 0, y: 26 });
+  tl.to("#f32-s0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.300);
+  gsap.set("#f32-s1", { opacity: 0, y: 26 });
+  tl.to("#f32-s1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.650);
+  gsap.set("#f32-s2", { opacity: 0, y: 26 });
+  tl.to("#f32-s2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.000);
+  gsap.set("#f32-s3", { opacity: 0, y: 26 });
+  tl.to("#f32-s3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.350);
+  gsap.set("#f32-s4", { opacity: 0, y: 26 });
+  tl.to("#f32-s4", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 1.700);
+  gsap.set("#f32-tri", { opacity: 0 });
+  tl.to("#f32-tri", { opacity: 1, duration: 0.4, ease: "power2.out" }, 2.200);
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>
