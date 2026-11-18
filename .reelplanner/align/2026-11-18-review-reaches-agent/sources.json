@@ -1,0 +1,51 @@
+{
+  "format": 1,
+  "kind": "round",
+  "repo": "/home/user/reelplanner",
+  "commit": "95a5bdbfe13d",
+  "words": "how a review reaches the agent",
+  "sources": [
+    {
+      "id": "scripts/lib/inbox.mjs",
+      "form": "path",
+      "shape": "files",
+      "commit": "95a5bdbfe13d",
+      "dirty": false,
+      "files": [
+        {
+          "path": "scripts/lib/inbox.mjs",
+          "hash": "5ce06ebf342f2011",
+          "lines": 721,
+          "shape": "text"
+        }
+      ],
+      "size": {
+        "lines": 721,
+        "files": 1
+      },
+      "hash": "5ce06ebf342f2011",
+      "guide": true
+    },
+    {
+      "id": ".reelplanner/config.json",
+      "form": "path",
+      "shape": "files",
+      "commit": "95a5bdbfe13d",
+      "dirty": false,
+      "files": [
+        {
+          "path": ".reelplanner/config.json",
+          "hash": "3729ff97db22b6d2",
+          "lines": 13,
+          "shape": "text"
+        }
+      ],
+      "size": {
+        "lines": 13,
+        "files": 1
+      },
+      "hash": "3729ff97db22b6d2",
+      "guide": false
+    }
+  ]
+}

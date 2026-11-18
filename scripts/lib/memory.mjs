@@ -495,9 +495,19 @@ export function repoMemory(rp) {
 
 // ---- your memory, across repos (D-106) ----
 
-/** Your memory's lines: every review summarised in you.jsonl. */
+/** Your memory's lines: every review summarised in you.jsonl. The file also holds what an alignment round's Got it
+ *  kept (`kind: "knows"`, find-the-gaps step 4): those are read by readKnows, never counted here as a review. */
 export function readYou(path = youPath()) {
-  return read(path).split("\n").filter((l) => l.trim()).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  return readLines(path).filter((f) => f.kind !== "knows");
+}
+const readLines = (path) => read(path).split("\n").filter((l) => l.trim()).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+/** What a round's Got it kept in your file: [{ kind: "knows", repo, round, card, claim, source, fingerprint, at, due, asked }]. */
+export function readKnows(path = youPath()) { return readLines(path).filter((f) => f.kind === "knows"); }
+/** Add one Got it to your file. → "added"; throws where the file cannot be written. */
+export function appendKnows(fact, path = youPath()) {
+  mkdirSync(dirname(path), { recursive: true });
+  appendFileSync(path, JSON.stringify({ v: 1, kind: "knows", ...fact }) + "\n");
+  return "added";
 }
 // one review's summary, whichever file holds it: the key appendYou dedups by
 const sameReview = (a, b) => a.repo === b.repo && a.plan === b.plan && a.review === b.review;

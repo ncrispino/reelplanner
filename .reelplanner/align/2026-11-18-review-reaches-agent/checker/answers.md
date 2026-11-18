@@ -1,0 +1,3 @@
+- c2: b · `if (!question && !isMachineInbox(rp)) { const result = await start(); if (result.started) return { handledBy: "agent", message: "saved; started the configured headless run..." }` (assumes the repo is not a machine inbox and start() succeeds; startAgent itself is not shown)
+- c3: b · `setTimeout(async () => { if (!existsSync(cp) && !liveWaiters(rp).length) await deliverInbox(rp, id, { ... }) }, recheckMs)` with `recheckMs = 15000`: it runs delivery again; what that second delivery does with no waiters is in lines not shown here
+- c4: b · `if (!question && ...)` skips start() for a question; returns `handledBy: "inbox", message: question ? "saved; waiting for the next session to answer it"`
