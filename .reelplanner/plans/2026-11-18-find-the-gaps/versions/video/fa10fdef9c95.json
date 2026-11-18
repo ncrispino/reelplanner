@@ -1,0 +1,162 @@
+{
+  "format": 1,
+  "video": ".reelplanner/plans/2026-11-18-find-the-gaps/video",
+  "build": "2026-11-18T23:26:25.792Z",
+  "id": "fa10fdef9c95",
+  "keptAt": "2026-11-18T23:32:39.163Z",
+  "keptBy": "record",
+  "commit": "06328724c617109ce63eacdc2424efdf84cc7b88",
+  "dirty": [],
+  "scenes": {
+    ".hyperframes/caption-skin.html": "fcaf21e51bea8272",
+    ".hyperframes/frames-built.json": "f9d60976ed513b08",
+    ".hyperframes/frames-timed.json": "65cda196245c82c5",
+    ".hyperframes/frames.mjs": "6e9024b04c78ffb9",
+    ".hyperframes/holds.json": "9cf4e9cd8a898e32",
+    ".hyperframes/narration.json": "2818efdef9daf3b5",
+    ".hyperframes/sb.py": "7dd1cf785a6574f0",
+    ".hyperframes/stage-snippet.html": "6dde3c861103b441",
+    "AGENTS.md": "6361e5d1b78020e6",
+    "BRIEF.md": "baa66b73687a9f4d",
+    "CLAUDE.md": "6361e5d1b78020e6",
+    "SCRIPT.md": "ea7ad50cb4dc23d3",
+    "STORYBOARD.md": "194f580698009426",
+    "audio_request.json": "7350dae2f9744ccf",
+    "caption-overrides.json": "37517e5f3dc66819",
+    "compositions/frames/01-your-words.html": "bfd558765784ac02",
+    "compositions/frames/02-earlier-plans.html": "efd1ff7c9adda7c6",
+    "compositions/frames/03-three-pictures-three-gaps.html": "f9a198f90f5d720a",
+    "compositions/frames/04-today-and-what-changes.html": "52c5e232b599e57c",
+    "compositions/frames/04b-what-your-review-changed.html": "cd031a20f9872429",
+    "compositions/frames/05-step-1-three-kinds-of-card.html": "7b4caa2cb18a3379",
+    "compositions/frames/06-step-1-where-gaps-are-likely.html": "b1b660e2f40b5aab",
+    "compositions/frames/07-step-2-predict-then-see-the-code.html": "d27ad1081e45b644",
+    "compositions/frames/07a-step-2-one-round-three-ways-in.html": "22fc462e74b1c707",
+    "compositions/frames/12-quick-check-a-card-the-checker-disagrees.html": "7e9708b0f024b85d",
+    "compositions/frames/13-step-3-your-own-words-checked.html": "fa335e86f3dbb960",
+    "compositions/frames/18-quick-check-not-sure.html": "d20933c27f97bebd",
+    "compositions/frames/19-step-4-settle-each-gap.html": "d8af8ff452f85ac8",
+    "compositions/frames/20b-step-4-asked-once-more.html": "217f04929cc40ad9",
+    "compositions/frames/24-quick-check-a-want-not-a-fact.html": "e8b5350715722cac",
+    "compositions/frames/25-step-5-into-the-loop.html": "473f7abd820985a8",
+    "compositions/frames/30-quick-check-two-gaps-more-please.html": "64401f34ba96d456",
+    "compositions/frames/31-quick-check-a-quick-check-you-missed.html": "b989349fe60e1de9",
+    "compositions/frames/32-the-plan.html": "8d399c3665e7251d",
+    "frame.md": "d29bcf50cb191b36",
+    "fresh-eyes/build-1/round-1/designer-brief.md": "11158bf96f927a94",
+    "fresh-eyes/build-1/round-1/designer.md": "93d204b729d77f0a",
+    "fresh-eyes/build-1/round-1/newcomer-brief.md": "9519f0363e6c409a",
+    "fresh-eyes/build-1/round-1/newcomer.md": "7d2281c53655f255",
+    "fresh-eyes/build-1/round-1/stamp.json": "7914105f4c62741c",
+    "fresh-eyes/build-1/round-2/designer-brief.md": "e0e3454464f0547a",
+    "fresh-eyes/build-1/round-2/designer.md": "cb290927bb71d6ba",
+    "fresh-eyes/build-1/round-2/newcomer-brief.md": "8699ac08b6b734a0",
+    "fresh-eyes/build-1/round-2/newcomer.md": "f4a6ef783813dfc1",
+    "fresh-eyes/build-1/round-2/stamp.json": "95bfaad3add84462",
+    "fresh-eyes/designer-brief.md": "88de7eeeee579e69",
+    "fresh-eyes/designer.md": "a9db8b2d553b95be",
+    "fresh-eyes/newcomer-brief.md": "389619aa02964821",
+    "fresh-eyes/newcomer.md": "7cfdf1acaba45e4c",
+    "fresh-eyes/round-1/designer-brief.md": "8adc2eca1dc3da24",
+    "fresh-eyes/round-1/designer.md": "4801f31283e3a76b",
+    "fresh-eyes/round-1/newcomer-brief.md": "91895c865fe483b4",
+    "fresh-eyes/round-1/newcomer.md": "0653ccd56599013f",
+    "fresh-eyes/round-1/stamp.json": "8af387f607f03229",
+    "fresh-eyes/script/newcomer-brief.md": "3d9613e98ff9048c",
+    "fresh-eyes/script/newcomer.md": "97438fde10499898",
+    "fresh-eyes/script/stamp.json": "45b69690533294e1",
+    "fresh-eyes/stamp.json": "85b3cb6e4a098d31",
+    "hyperframes.json": "9313260261b6e431",
+    "index.html": "adf23da972a1c173",
+    "meta.json": "63568a8beee52169",
+    "package.json": "688cc2ecfcaf661c"
+  },
+  "files": [
+    {
+      "path": "caption_groups.json",
+      "sha256": "ba614ebd159d84f1543b8da6b03a163840eb74ff535254f6ba98001721a4f35a",
+      "size": 174671,
+      "store": "media/ba614ebd159d84f1.json",
+      "as": "as-is"
+    },
+    {
+      "path": "capture/extracted/tokens.json",
+      "sha256": "d0ffd5e77c8f4e7418b371594f409ab55f1204bc315a363ab9662b5531afd347",
+      "size": 161,
+      "store": "media/d0ffd5e77c8f4e74.json",
+      "as": "as-is"
+    },
+    {
+      "path": "capture/extracted/visible-text.txt",
+      "sha256": "595b5f1307e738b39b12ba0332e15e0949a9595a48b8c264489af60f55a0fbbf",
+      "size": 35093,
+      "store": "media/595b5f1307e738b3.txt",
+      "as": "as-is"
+    },
+    {
+      "path": "compositions/captions.html",
+      "sha256": "215a1a6c04e58cbc7226dd1ae94fb935cba15147c26dac817b96f00313fd20be",
+      "size": 114239,
+      "store": "media/215a1a6c04e58cbc.html",
+      "as": "as-is"
+    },
+    {
+      "path": "plan-map.json",
+      "sha256": "4cf0475076c86ba2955bd32fc7dee56d64ca5f77005845c7a4c9c32a33d5f70a",
+      "size": 182437,
+      "store": "media/4cf0475076c86ba2.json",
+      "as": "as-is"
+    }
+  ],
+  "shipped": [
+    {
+      "path": "assets/fonts/JetBrainsMono-400.woff2",
+      "sha256": "18be452724bfdc236c074ca94a249a7f41a86752c7d04ab258ce9ed5651f6a7e",
+      "from": "reelplanner:packages/player/fonts/jetbrains-mono-latin-wght-normal.woff2"
+    },
+    {
+      "path": "assets/fonts/JetBrainsMono-700.woff2",
+      "sha256": "18be452724bfdc236c074ca94a249a7f41a86752c7d04ab258ce9ed5651f6a7e",
+      "from": "reelplanner:packages/player/fonts/jetbrains-mono-latin-wght-normal.woff2"
+    },
+    {
+      "path": "assets/fonts/OFL-jetbrains-mono.txt",
+      "sha256": "403581b69dac5cff4079205e01c6b467e56af449ecbd7247693ddb1baafa005b",
+      "from": "skills:hyperframes-creative/frame-presets/code-editorial/fonts/OFL-jetbrains-mono.txt"
+    }
+  ],
+  "regenerated": {
+    "assets/voice/": 19,
+    "audio_engine_meta.json": 1,
+    "audio_meta.json": 1
+  },
+  "rebuilt": [
+    "assets/vendor/",
+    "fresh-eyes/shots/",
+    "guide/",
+    "snapshots/"
+  ],
+  "lost": [],
+  "tools": {
+    "reelplanner": "0.4.0",
+    "reelplannerCommit": "06328724c617109ce63eacdc2424efdf84cc7b88",
+    "hyperframes": "0.8.52",
+    "skills": {
+      "ref": "v0.8.52",
+      "faceless-explainer": "96be5fde104b67a1aa87c20add4e0e57cab789ddbdd9f44c31792c63b3f15046",
+      "media-use": "de4f0c160e63c797899155f55886be382649efc7b155a7ed7622a9e5519268b5",
+      "hyperframes-creative": "263464b5dd0b7bc18754fdf1177ffa54923ca1ebe4d7c01fe992eafc5efd20b8"
+    }
+  },
+  "narration": {
+    "voice": "am_michael",
+    "speed": 1.25,
+    "model": "kokoro-v1.0 + whisper small.en",
+    "provider": "kokoro",
+    "lines": 19
+  },
+  "audio": {
+    "sfx": [],
+    "bgm": null
+  }
+}
