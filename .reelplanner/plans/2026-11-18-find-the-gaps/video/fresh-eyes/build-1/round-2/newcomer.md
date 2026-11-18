@@ -1,0 +1,37 @@
+# Fresh eyes: newcomer · round 2 · stamp ae2c1bec4d7e
+
+- N1 · scene 7 · "the code says · your pick A · the answer B": the frame shows only the card after it turns over, so I never see what this card asked or what A and B were. I guessed it asked something like "a review arrives and no session takes it: what happens?", with A "it waits in the inbox" and B "a headless run starts", but that is a guess. Without the question, "your pick A" means nothing, and neither does the narration's "Here, this repo's config sets a headless command, so a run starts", which comes out of nowhere. It matters because this is the one card the video shows working, and it is the picture I would have to get to follow how a round plays.
+  - Answer: fixed: scene 7's turned card now keeps its question as a line, and spells both answers: 'your pick A: it waits for the next session · the answer B: a headless run starts on it'.
+
+- N2 · scene 7 · "a review, in a set-up repo" / "!question": the tag on line 700 says "a set-up repo", but the scene never says what makes a repo set up (I guessed it means `reel init` was run there, from the glossary line about the inbox of "a repo not set up"). The `!question` in the same condition gets no tag at all, so I cannot tell what it rules out, maybe a review that is only an Ask about this question. I need both to check the card's own answer against its quoted lines, and checking that is what the card is for.
+  - Answer: fixed: scene 7's pin on line 700 now reads 'a review, in a repo with .reelplanner/', which is what !question && !isMachineInbox(rp) together say: a review, not a question, in a set-up repo.
+
+- N3 · scene 7 · "not sure, with two": the narration says a not-sure answer gets two ways to settle it but does not name them, and the frame shows all four buttons. I guessed Got it and Show me more, because "Change the plan" and "The code is wrong" need you to have a view. It is also unclear whether a not-sure answer counts as a gap. This matters because scene 18's quick check asks exactly this.
+  - Answer: fixed: scene 7 now shows 'not sure: Got it · Show me more' under the four buttons as the voice says 'with two'; 'not sure' has a meaning in the Terms that says it is a gap of its own kind.
+
+- N4 · scene 7 · "a card at a time … with a letter key, or N": step two only shows how a predict card plays. The scene never shows an assume card (which has no right answer in the code to turn over to) or a say card (your own words, which scene 8 calls "your spoken words") on the review page. I guessed a say card has a text box or a mic and goes to the fresh checker or the agent, but nothing shows it. A newcomer would ask how two of the three card kinds are answered on the page.
+  - Answer: kept: scene 5 shows the assume card's 'Right · Not quite' and the say card's 'hold Space, or type', and scene 13 shows a say card answered on the page; scene 7 is the predict card, the one that turns over.
+
+- N5 · scene 18 · "A gap: Got it or Show me more": the video defines a gap as a place where two pictures disagree. "Not sure" is not a disagreement, so calling it "a gap" in option B stretches that meaning. I could not tell whether the video means a not-sure answer really is filed and counted as a gap (say, in reel status's "gaps 11") or only gets the same buttons. That matters both for answering this check and for the counts in scene 25.
+  - Answer: kept: scene 7 says a wrong answer is a gap, and not sure a gap with two ways to settle it, and shows 'not sure: Got it · Show me more' on the card; 'not sure' also has that meaning in the Terms, so option B is what scene 7 showed.
+
+- N6 · scene 18 · "nothing kept": option A says nothing is kept, but the video has not said what a card's answer is normally kept as, or where (memory, the plan, the round's record). I guessed "kept" means it goes into memory or the plan the way a settled gap does. Without that, A and B are hard to tell apart on anything but the buttons.
+  - Answer: kept: 'nothing kept' is the wrong option, and its why on the card says so: Not sure is kept, as a gap; scene 7 says a wrong answer or not sure is a gap.
+
+- N7 · scene 25 · "the same buttons": the narration says a wrong quick check gets the same buttons, but the frame draws three, with "and The code is wrong, once there is code" in small type. I guessed that on a plan video there is no code yet, so the fourth button only shows on a walkthrough. The narration never says so, so the frame seems to contradict it.
+  - Answer: fixed: scene 25 now draws all four buttons, the fourth dashed and dimmed as 'The code is wrong · once there is code'.
+
+- N8 · scene 25 · "Change the plan's words reaching the agent as a comment": the video has only shown Change the plan as a one-click button (scenes 7 and 19), never a place to type words. I guessed that pressing it on a quick check opens a box for what you expected, like a quick check's "say so" comment in the glossary. It matters because it is the only path here that carries the person's own words to the agent.
+  - Answer: fixed: scene 25 now shows the box for your words under the buttons, 'your words…', above 'Change the plan → the agent, as a comment'.
+
+- N9 · scene 25 · "nothing blocks Approve" / "Approve · never blocked": blocked by what is not said. I guessed that gaps left unsettled, or a skipped round, do not stop you approving the plan. A newcomer would ask whether gaps still open at Approve are dropped, listed as not checked (as Skip the rest's are), or carried into the revise step.
+  - Answer: fixed: scene 25 now reads 'Approve: never blocked · left unsettled: recorded as today'.
+
+- N10 · scene 25 · "Got it 7 · the plan 3 · code wrong 1 · more 0": these short names are guessable as the four settle buttons, but "rounds 3 · gaps 11" leaves open whether not-sure answers and skipped cards are counted, and what a round with no gaps adds. I guessed only wrong answers are counted, since 7+3+1+0 = 11. This matters if the count is meant to show whether rounds are worth it.
+  - Answer: fixed: scene 25's status now lists 'not sure 2 · skipped 1' with the other counts.
+
+- N11 [plan] · scene 25 · "late fixes compared after 5 plans with a round and 5 without": the video does not say what reel status shows before ten such plans exist, or where the 5 comes from. If rounds run only where a gap is likely and costly (scene 26's B), then the plans without a round are the easy ones, so "fewer late fixes with a round" would not show that rounds help. The plan would need to say how that comparison is made fair, or what it can and cannot tell you.
+  - Answer: plan: step 5 now compares like with like: the plans without a round it counts are those where the agent found a likely, costly gap and no round ran, not the easy ones; it prints 'late fixes · with a round 1 · likely gap, no round 4', and below five of each 'too few plans to compare'. Scene 25 shows those lines.
+
+- N12 · scene 25 · "likely gaps, listed in the plan": I could not tell where in the plan the list goes (its own section, or next to You told me first) or whether you see it when no round runs. I guessed a short section near the top of plan.md with a line on why no round ran, like scene 26's "none, and why". It matters because that list is the only trace of a round that was not run.
+  - Answer: fixed: scene 25's first card now says 'if not, one line in the plan says why' under 'a round, if worth it'.

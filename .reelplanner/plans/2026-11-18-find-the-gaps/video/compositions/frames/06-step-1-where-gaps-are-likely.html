@@ -43,11 +43,12 @@
   .f06-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .f06-dim { opacity:0.55; }
   .f06-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f06-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .f06-ok { color:var(--rp-ink); }
   .f06-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f06-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
-  .f06-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
-  .f06-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f06-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f06-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
 <div id="root" data-composition-id="06-step-1-where-gaps-are-likely" data-band="bottom" data-duration="27.353" data-width="1920" data-height="1080">
@@ -59,15 +60,18 @@
 <div class="f06-chip" id="f06-s3" style="left:160px; top:432px;">its own assumptions</div>
   <div class="f06-node" id="f06-cand" style="left:740px; top:300px; width:260px; height:96px;">candidates</div>
   <div class="f06-node" id="f06-six" style="left:740px; top:460px; width:260px; height:96px;">at most 6</div>
-  <div class="f06-paper" id="f06-card" style="left:1100px; top:150px; width:660px; height:500px;">
-    <div class="f06-pin" style="left:30px; top:28px">predict · c4</div>
-    <div class="f06-big" style="left:30px; top:100px; width:600px; font-size:38px">Send, no session waiting: how many tries?</div>
-    <div class="f06-m" style="left:30px; top:226px">answer: once</div>
-    <div class="f06-strike" id="f06-strike" style="left:150px; top:246px; width:100px;"></div>
-    <div class="f06-m" id="f06-fix" style="left:280px; top:226px; color:var(--rp-coral-deep)">twice · 15 s apart</div><div class="f06-lab" id="f06-fixl" style="left:280px; top:272px">fixed by the checker</div>
-    <div class="f06-row" style="left:30px; top:316px; width:600px; height:170px;"><div class="f06-s" style="left:0; top:20px; width:600px">why you might picture it otherwise: the review page says Sent right away</div><div class="f06-s" style="left:0; top:104px; width:600px">what depends on it: step 2 of the plan</div></div>
+  <div class="f06-card" id="f06-card" style="left:1100px; top:120px; width:660px; height:300px;">
+    <div class="f06-lab" style="left:30px; top:24px">c4, as the agent wrote it</div>
+    <div class="f06-t" style="left:30px; top:64px; width:600px">A session is waiting but doesn't take the review. Does Send try again?</div>
+    <div class="f06-m" style="left:30px; top:160px">answer: no</div><div class="f06-strike" id="f06-strike" style="left:30px; top:180px; width:200px;"></div>
+    <div class="f06-s" style="left:30px; top:214px; width:600px; font-size:24px">why you might picture it otherwise: the page says Sent at once · what depends on it: step 2</div>
   </div>
-  <div class="f06-chip f06-hot" id="f06-chk" style="left:1100px; top:700px;">fresh checker · reads the code alone</div>
+  <div class="f06-chip f06-hot" id="f06-chk" style="left:1100px; top:440px;">fresh checker reads the code · fixed before the round opens</div>
+  <div class="f06-paper" id="f06-seen" style="left:1100px; top:520px; width:660px; height:280px;">
+    <div class="f06-lab" style="left:30px; top:24px">c4, the card you see</div>
+    <div class="f06-t" style="left:30px; top:64px; width:600px">A session is waiting but doesn't take the review. Does Send try again?</div>
+    <div class="f06-m" style="left:30px; top:196px; color:var(--rp-coral-deep)">answer: yes · 15 s later</div>
+  </div>
   </div>
 </div>
 
@@ -86,10 +90,8 @@
   tl.to("#f06-chk", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.280);
   gsap.set("#f06-strike", { scaleX: 0 });
   tl.to("#f06-strike", { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 20.580);
-  gsap.set("#f06-fix", { opacity: 0 });
-  tl.to("#f06-fix", { opacity: 1, duration: 0.4, ease: "power2.out" }, 21.930);
-  gsap.set("#f06-fixl", { opacity: 0 });
-  tl.to("#f06-fixl", { opacity: 1, duration: 0.4, ease: "power2.out" }, 21.930);
+  gsap.set("#f06-seen", { opacity: 0, y: 26 });
+  tl.to("#f06-seen", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 15.660);
   gsap.set("#f06-s0", { opacity: 0, y: 26 });
   tl.to("#f06-s0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.820);
   gsap.set("#f06-s1", { opacity: 0, y: 26 });

@@ -16,7 +16,7 @@
 
 **Delivery:** Plain.
 
-    If you're new, four things this plan builds on. Send hands your review to the agent session waiting on this page; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict a case the video didn't show. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.
+    If you're new, four things this plan builds on. Send hands your review to an agent session that is waiting for it, the one you opened this page from; with none waiting, a headless run, the agent started on its own, can take it. A quick check asks you to predict a case the video didn't show. An explainer quotes its sources word for word. And your memory, a file in your home folder, keeps what you've watched.
 
 ## Line 3 — Three pictures, three gaps (Frame 3)
 
@@ -70,7 +70,7 @@
 
 **Delivery:** Plain.
 
-    Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. The waiting session, as you chose, splits your words into claims, each checked against the code. It goes to my session: a match. If I'm not there, it waits: a gap, in this repo. It should tell me when it's taken: that says should, so it's neither a match nor a gap. It comes back as an assume card.
+    Step three: say it in your own words. Hold Space and talk; whisper writes it down on this machine. The waiting session, as you chose, splits your words into claims, each checked against the code. Say you said: it goes to my session. A match. If I'm not there, it waits. A gap, in this repo. It should tell me when it's taken: that says should, so it's neither a match nor a gap. It comes back as an assume card, next in this same round.
 
 ## Line 12 — Quick check · Not sure (Frame 12)
 

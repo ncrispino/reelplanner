@@ -43,6 +43,7 @@
   .f32-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .f32-dim { opacity:0.55; }
   .f32-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f32-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .f32-ok { color:var(--rp-ink); }
   .f32-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f32-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
@@ -55,6 +56,7 @@
   <div class="clip f32-scene" id="f32-scene" data-start="0" data-duration="13.611" data-track-index="1">
   <div class="f32-lab" id="f32-kick" style="left:160px; top:90px;">the revised plan · find the gaps</div>
   <div style="position:absolute; left:160px; top:150px; width:900px; height:640px;"><div class="f32-slot" id="f32-s0" data-plan-step="1" style="top:0px"><span class="n">1</span> <span class="t">A round of cards</span> <span class="d"></span></div><div class="f32-slot" id="f32-s1" data-plan-step="2" style="top:124px"><span class="n">2</span> <span class="t">One round, three ways in</span> <span class="d">decision D-314 · the chat first</span></div><div class="f32-slot" id="f32-s2" data-plan-step="3" style="top:248px"><span class="n">3</span> <span class="t">Your own words, checked</span> <span class="d">decision D-315 · the waiting session</span></div><div class="f32-slot" id="f32-s3" data-plan-step="4" style="top:372px"><span class="n">4</span> <span class="t">Settle each gap</span> <span class="d">decision D-316 · once more, days later</span></div><div class="f32-slot" id="f32-s4" data-plan-step="5" style="top:496px"><span class="n">5</span> <span class="t">Before a plan, and on checks</span> <span class="d">decision D-317 · likely and costly</span></div></div>
+  <div class="f32-lab" id="f32-ask" style="left:160px; top:800px;">approve the revised plan, or draw on a step to leave a note</div>
   <div id="f32-tri" style="position:absolute; left:1200px; top:220px; width:560px; height:480px;">
     <svg style="position:absolute; left:0; top:0; width:560px; height:480px; overflow:visible"><polygon points="280,60 60,400 500,400" fill="none" style="stroke:rgba(var(--rp-ink-rgb),0.55)" stroke-width="4" stroke-linejoin="round"/></svg>
     <div class="f32-node" style="left:170px; top:10px; width:220px; height:80px;; font-size:28px">the agent</div>
@@ -67,7 +69,7 @@
 <script>
 (function () {
   var FID = "32-the-plan";
-  var DUR = 13.611;
+  var DUR = 16.084;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f32-s0", { opacity: 0, y: 26 });
   tl.to("#f32-s0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.300);

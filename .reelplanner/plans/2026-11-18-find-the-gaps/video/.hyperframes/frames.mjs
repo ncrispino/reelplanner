@@ -72,6 +72,7 @@ const CSS = (P) => `
   .${P}-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .${P}-dim { opacity:0.55; }
   .${P}-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .${P}-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .${P}-ok { color:var(--rp-ink); }
   .${P}-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .${P}-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
@@ -87,7 +88,7 @@ const pos = (x, y, w, h) => `left:${x}px; top:${y}px;${w != null ? ` width:${w}p
 const el = (cls, key, x, y, w, h, inner = "", attrs = "") => `<div class="${cls.split(" ").map((c) => (c.startsWith("+") ? c.slice(1) : `${P}-${c}`)).join(" ")}" id="${id(key)}" style="${pos(x, y, w, h)}"${attrs ? " " + attrs : ""}>${inner}</div>`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const label = (key, x, y, text) => el("lab", key, x, y, null, null, esc(text));
-const planned = (x = 1600, y = 70) => el("planned", "planned", x, y, null, null, "planned");
+const planned = () => el("planned", "planned", 1380, 880, null, null, "planned: not built yet");
 const kicker = (text) => label("kick", 160, 84, text);
 
 function optionCards({ y = 330, h = 420, opts, rec = null, recCue = null, cap = {}, w = 500, gap = 30, x0 = 160 }) {
@@ -105,41 +106,36 @@ function question(text, y = 150, h = null) { anim(`#${id("q")}`, "left", 0.15); 
 const B = {};
 B[1] = () => {
   anim(`#${id("quote")}`, "up", 0.2);
-  anim(`#${id("u")}`, "draw", cue(F, "assume")); anim(`#${id("u2")}`, "draw", cue(F, "actually"));
-  ["you", "code", "agent"].forEach((w, i) => anim(`#${id("c-" + w)}`, "up", cue(F, w === "you" ? "you" : w, w === "you" ? 2 : 1)));
+  A.push({ sel: `#${id("assume")}`, kind: "mark", t: cue(F, "assume") });
   return `${label("kick", 160, 120, "GitHub issue #57 · your words, as sent")}
-  <div class="${P}-card" id="${id("quote")}" style="${pos(160, 180, 1600, 470)}" data-artifact="the owner's message, issue #57">
-    <div class="${P}-big" style="left:56px; top:52px; width:1490px; font-size:50px; line-height:1.4">basiclaly what i need here is a way to align me and the actual code + agent writing it. oftentimes we are not aligned, <span id="${id("assume")}">i assume it is one way when it is actually another.</span></div>
+  <div class="${P}-card" id="${id("quote")}" style="${pos(160, 180, 1600, 340)}" data-artifact="the owner's message, issue #57">
+    <div class="${P}-big" style="left:56px; top:48px; width:1490px; font-size:50px; line-height:1.4">basiclaly what i need here is a way to align <span class="${P}-ink">me</span> and <span class="${P}-ink">the actual code</span> + <span class="${P}-ink">agent writing it</span>. oftentimes we are not aligned, <span class="${P}-mark" id="${id("assume")}">i assume it is one way when it is actually another.</span></div>
   </div>
-  <div class="${P}-u" id="${id("u")}" style="${pos(975, 368, 592)}"></div><div class="${P}-u" id="${id("u2")}" style="${pos(197, 438, 318)}"></div>
-  ${el("chip", "c-you", 160, 720, null, null, "you")}
-  ${el("chip", "c-code", 300, 720, null, null, "the code")}
-  ${el("chip", "c-agent", 510, 720, null, null, "the agent writing it")}`;
+  ${label("three", 160, 570, "three pictures: you · the code · the agent writing it")}`;
 };
 B[2] = () => {
-  const rows = [["Send", "to the waiting session, or a headless run", "review", "review loop"], ["a quick check", "predict a case the video didn't show", "quick", "quick checks"], ["an explainer", "its sources, quoted word for word", "explainer", "explain first"], ["your memory", "a file in your home folder", "memory", "memory"]];
+  const rows = [["Send", "the button that ends your review: to the session that opened this page and waits, or a headless run where the config sets one", "review", "review loop"], ["a quick check", "predict a case the video didn't show", "quick", "quick checks"], ["an explainer", "its sources quoted word for word, as a card quotes the code", "explainer", "explain first"], ["your memory", "~/.reelplanner/you.jsonl: what you watched, and what you know", "memory", "memory"]];
   anim(`#${id("h")}`, "left", 0.15);
   return `${el("h", "h", 160, 110, 1600, null, "Four things this plan builds on")}
   ${rows.map(([k, v, w, src], i) => { anim(`#${id("r" + i)}`, "up", cue(F, w)); return el("row", "r" + i, 160, 250 + i * 150, 1600, 150, `<div class="${P}-big" style="left:0; top:38px">${esc(k)}</div><div class="${P}-t" style="left:520px; top:36px; width:1050px">${esc(v)}</div>`); }).join("\n")}`;
 };
 B[3] = () => {
-  const side = (k, x, y, w, a, b, word) => { anim(`#${id(k)}`, "up", cue(F, word)); anim(`#${id(k + "-ln")}`, "hot", cue(F, word), { until: cue(F, word) + 4 }); return el("paper", k, x, y, w, 180, `<div class="${P}-lab" style="left:28px; top:24px">${esc(a)}</div><div class="${P}-t" style="left:28px; top:64px; width:${w - 56}px">${esc(b)}</div>`); };
+  const side = (k, y, a, b, word) => { anim(`#${id(k)}`, "up", cue(F, word)); anim(`#${id(k + "-ln")}`, "hot", cue(F, word), { until: cue(F, word) + 4 }); return el("paper", k, 860, y, 900, 180, `<div class="${P}-lab" style="left:28px; top:24px">${esc(a)}</div><div class="${P}-t" style="left:28px; top:64px; width:844px">${esc(b)}</div>`); };
   anim(`#${id("n-you")}`, "up", cue(F, "you")); anim(`#${id("n-agent")}`, "up", cue(F, "agent")); anim(`#${id("n-code")}`, "up", cue(F, "code", 2));
-  return `<svg class="${P}-svg" style="position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible">
-    <line x1="960" y1="216" x2="1530" y2="560" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="${id("s-ac-ln")}" x1="960" y1="216" x2="1530" y2="560" style="stroke:var(--rp-coral); opacity:0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="520" y1="608" x2="1400" y2="608" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="${id("s-yc-ln")}" x1="520" y1="608" x2="1400" y2="608" style="stroke:var(--rp-coral); opacity:0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="960" y1="216" x2="390" y2="560" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="${id("s-ya-ln")}" x1="960" y1="216" x2="390" y2="560" style="stroke:var(--rp-coral); opacity:0" stroke-width="5" stroke-linecap="round"/>
+  const ln = (k, x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:rgba(var(--rp-ink-rgb),0.45)" stroke-width="4" stroke-linecap="round"/><line id="${id(k + "-ln")}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:var(--rp-coral); opacity:0" stroke-width="6" stroke-linecap="round"/>`;
+  return `<svg style="position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible">
+    ${ln("s-yc", 340, 668, 520, 668)}${ln("s-ac", 430, 296, 610, 620)}${ln("s-ya", 430, 296, 250, 620)}
   </svg>
-  ${el("node", "n-agent", 830, 120, 260, 96, "the agent")}
-  ${el("node", "n-you", 260, 560, 260, 96, "you")}
-  ${el("node navy", "n-code", 1400, 560, 260, 96, "the code")}
-  ${side("s-yc", 560, 680, 800, "gap 1 · you and the code", "it waits for you · this repo's config starts a headless run", "waits")}
-  ${side("s-ac", 1300, 230, 540, "gap 2 · the agent and the code", "hand-off tried once · tried again 15 s later", "remembers")}
-  ${side("s-ya", 80, 230, 540, "gap 3 · you and the agent", "the agent read: any agent · you meant: your open session", "asked")}`;
+  ${el("node", "n-agent", 310, 200, 240, 96, "the agent")}
+  ${el("node", "n-you", 100, 620, 240, 96, "you")}
+  ${el("node navy", "n-code", 520, 620, 240, 96, "the code")}
+  ${side("s-yc", 160, "gap 1 · you and the code", "you: it waits for you · the code: this repo's config starts a headless run", "waits")}
+  ${side("s-ac", 380, "gap 2 · the agent and the code", "the agent: a waiting session that doesn't take it gets one try · the code: Send tries again 15 s later", "remembers")}
+  ${side("s-ya", 600, "gap 3 · you and the agent", "you meant: your open session · the agent read: any agent", "asked")}`;
 };
 B[4] = () => {
   anim(`#${id("today")}`, "up", cue(F, "today"));
-  const rows = [["a few cards, three ways in", "steps 1, 2", "one"], ["your own words, checked", "step 3", "three"], ["one click a gap", "step 4", "four"], ["before a plan · quick checks alike", "step 5", "five", 2]];
+  const rows = [["a few cards, three ways in", "steps 1, 2", "one"], ["your own words, checked", "step 3", "three"], ["one click a gap", "step 4", "four"], ["before a plan · quick checks settle like cards", "step 5", "five", 2]];
   return `${label("tl", 160, 150, "today")}
   <div id="${id("today")}" style="${pos(160, 200, 600, 200)}; position:absolute"><div class="${P}-node" style="${pos(0, 40, 220, 96)}">the agent</div><div class="${P}-line" style="${pos(232, 88, 120)}"></div><div class="${P}-big" style="left:350px; top:58px">→</div><div class="${P}-node" style="${pos(400, 40, 180, 96)}">you</div><div class="${P}-s" style="left:0; top:160px; width:600px">one way</div></div>
   ${label("ch", 900, 150, "this plan")}
@@ -151,28 +147,31 @@ B[5] = () => {
   const opts = ["it waits for the next session", "a headless run starts", "it is lost"].map((o, i) => `<div class="${P}-s" style="left:30px; top:${370 + i * 52}px; width:440px">${"ABC"[i]} · ${o}</div>`).join("");
   return `${planned()}
   ${card("c1", 160, "predict", "In this repo, you press Send and no session is waiting. What happens?", opts, "predict")}
-  ${card("c2", 710, "assume", "I'm assuming you mean the session you have open.", `<div class="${P}-s" style="left:30px; top:470px">Right · Not quite</div>`, "assume")}
+  ${card("c2", 710, "assume", "I'm assuming you mean the session you have open.", `<div class="${P}-s" style="left:30px; top:400px; width:440px">Right · Not quite: say what, and it goes into the plan</div>`, "assume")}
   ${card("c3", 1260, "say", "Say how you think a review reaches the agent.", `<div class="${P}-s" style="left:30px; top:470px">hold Space, or type</div>`, "say")}
-  ${label("count", 160, 820, "three kinds · at most 6 in a round")}`;
+  ${label("count", 160, 800, "cards c1, c2, c3 … numbered in their round · at most 6")}`;
 };
 B[6] = () => {
   const src = [["what your words take for granted", "words"], ["quick checks you got wrong", "quick"], ["commits since you watched", "commits"], ["its own assumptions", "assumptions"]];
   anim(`#${id("cand")}`, "up", cue(F, "keeps")); anim(`#${id("six")}`, "up", cue(F, "six"));
   anim(`#${id("card")}`, "up", cue(F, "each must"));
   anim(`#${id("chk")}`, "up", cue(F, "fresh"));
-  anim(`#${id("strike")}`, "draw", cue(F, "disagrees")); anim(`#${id("fix")}`, "fade", cue(F, "fixed")); anim(`#${id("fixl")}`, "fade", cue(F, "fixed"));
+  anim(`#${id("strike")}`, "draw", cue(F, "disagrees")); anim(`#${id("seen")}`, "up", cue(F, "never"));
   return `${src.map(([s, w], i) => { anim(`#${id("s" + i)}`, "up", cue(F, w)); return el("chip", "s" + i, 160, 180 + i * 84, null, null, esc(s)); }).join("\n")}
   ${el("node", "cand", 740, 300, 260, 96, "candidates")}
   ${el("node", "six", 740, 460, 260, 96, "at most 6")}
-  <div class="${P}-paper" id="${id("card")}" style="${pos(1100, 150, 660, 500)}">
-    <div class="${P}-pin" style="left:30px; top:28px">predict · c4</div>
-    <div class="${P}-big" style="left:30px; top:100px; width:600px; font-size:38px">Send, no session waiting: how many tries?</div>
-    <div class="${P}-m" style="left:30px; top:226px">answer: once</div>
-    <div class="${P}-strike" id="${id("strike")}" style="${pos(150, 246, 100)}"></div>
-    <div class="${P}-m" id="${id("fix")}" style="left:280px; top:226px; color:var(--rp-coral-deep)">twice · 15 s apart</div><div class="${P}-lab" id="${id("fixl")}" style="left:280px; top:272px">fixed by the checker</div>
-    <div class="${P}-row" style="${pos(30, 316, 600, 170)}"><div class="${P}-s" style="left:0; top:20px; width:600px">why you might picture it otherwise: the review page says Sent right away</div><div class="${P}-s" style="left:0; top:104px; width:600px">what depends on it: step 2 of the plan</div></div>
+  <div class="${P}-card" id="${id("card")}" style="${pos(1100, 120, 660, 300)}">
+    <div class="${P}-lab" style="left:30px; top:24px">c4, as the agent wrote it</div>
+    <div class="${P}-t" style="left:30px; top:64px; width:600px">A session is waiting but doesn't take the review. Does Send try again?</div>
+    <div class="${P}-m" style="left:30px; top:160px">answer: no</div><div class="${P}-strike" id="${id("strike")}" style="${pos(30, 180, 200)}"></div>
+    <div class="${P}-s" style="left:30px; top:214px; width:600px; font-size:24px">why you might picture it otherwise: the page says Sent at once · what depends on it: step 2</div>
   </div>
-  ${el("chip hot", "chk", 1100, 700, null, null, "fresh checker · reads the code alone")}`;
+  ${el("chip hot", "chk", 1100, 440, null, null, "fresh checker reads the code · fixed before the round opens")}
+  <div class="${P}-paper" id="${id("seen")}" style="${pos(1100, 520, 660, 280)}">
+    <div class="${P}-lab" style="left:30px; top:24px">c4, the card you see</div>
+    <div class="${P}-t" style="left:30px; top:64px; width:600px">A session is waiting but doesn't take the review. Does Send try again?</div>
+    <div class="${P}-m" style="left:30px; top:196px; color:var(--rp-coral-deep)">answer: yes · 15 s later</div>
+  </div>`;
 };
 B[7] = () => {
   const t0 = cue(F, "turns");
@@ -184,18 +183,18 @@ B[7] = () => {
   <div class="${P}-paper" id="${id("front")}" style="${pos(260, 120, 1400, 740)}">
     <div class="${P}-lab" style="left:44px; top:40px">card c3 · predict · step 2</div>
     <div class="${P}-q" style="left:44px; top:100px; width:1300px">In this repo, you press Send and no session is waiting. What happens to the review?</div>
-    ${["it waits for the next session", "a headless run starts on it", "it is lost"].map((o, i) => `<div class="${P}-paper" style="${pos(44 + i * 440, 360, 410, 200)}"><div class="${P}-lab" style="left:26px; top:26px">${"ABC"[i]}</div><div class="${P}-big" style="left:26px; top:70px; width:360px; font-size:40px">${o}</div></div>`).join("")}
+    ${["it waits for the next session", "a headless run starts on the review", "it is lost"].map((o, i) => `<div class="${P}-paper" style="${pos(44 + i * 440, 360, 410, 200)}"><div class="${P}-lab" style="left:26px; top:26px">${"ABC"[i]}</div><div class="${P}-big" style="left:26px; top:70px; width:360px; font-size:40px">${o}</div></div>`).join("")}
     <div class="${P}-ring" id="${id("pick")}" style="${pos(36, 352, 426, 216)}"></div>
     <div class="${P}-lab" style="left:44px; top:620px">A–C or N, not sure</div>
   </div>
   <div class="${P}-paper" id="${id("back")}" style="${pos(260, 120, 1400, 740)}">
     <div class="${P}-lab" style="left:44px; top:30px">card c3, turned over</div>
     <div class="${P}-t" style="left:44px; top:66px; width:1312px; font-size:28px">In this repo, you press Send and no session is waiting. What happens?</div>
-    <div class="${P}-s" style="left:44px; top:110px; width:1312px; font-size:26px">your pick A: it waits for the next session · the answer B: a headless run starts on it</div>
+    <div class="${P}-s" style="left:44px; top:110px; width:1312px; font-size:26px">your pick A: it waits for the next session · the answer B: a headless run starts on the review</div>
     <div class="${P}-slab" style="${pos(44, 160, 1312, 190)}" data-artifact="scripts/lib/inbox.mjs, lines 700–702"><div class="${P}-bar"></div><div class="${P}-bt">scripts/lib/inbox.mjs · 700–702</div>
       <div class="${P}-code" style="left:24px; top:56px"><span class="n">700</span>  if (!question &amp;&amp; !isMachineInbox(rp)) {
 <span class="n">701</span>    const result = await <span class="k">start</span>();
-<span class="n">702</span>    if (result.started) return { handledBy: "agent", …</div><div class="${P}-pin" id="${id("gl0")}" style="left:740px; top:48px"><em data-gloss="isMachineInbox">a review, in a repo with .reelplanner/</em></div><div class="${P}-pin hot" id="${id("gl")}" style="left:640px; top:96px"><em data-gloss="start">a headless run</em></div></div>
+<span class="n">702</span>    if (result.started) return { handledBy: "agent", …</div><div class="${P}-pin" id="${id("gl0")}" style="left:740px; top:48px"><em data-gloss="isMachineInbox">a review, not a question, in a set-up repo</em></div><div class="${P}-pin hot" id="${id("gl")}" style="left:640px; top:96px"><em data-gloss="start">a headless run</em></div></div>
     <div class="${P}-slab" style="${pos(44, 366, 1312, 96)}" data-artifact=".reelplanner/config.json, agent.command"><div class="${P}-bar"></div><div class="${P}-bt">.reelplanner/config.json</div>
       <div class="${P}-code" style="left:24px; top:50px">"command": "claude --permission-mode auto …"</div></div>
     <div class="${P}-t" style="left:44px; top:480px; width:1312px">A headless command is set here, so a review that no open session picks up starts a headless run.</div>
@@ -220,16 +219,18 @@ const check = (o) => () => `${label("ctx", 160, 80, o.ctx)}${label("case", 160, 
   ${optionCards({ y: 420, h: 300, opts: o.opts.map((l) => ({ label: l })) })}`;
 B[12] = check({ ctx: "quick check · step 1", cs: "card c2 says B · the fresh checker picks C", q: "A card about `reel status` says B; the fresh checker reads the code and picks C. What do you see?", opts: ["Both answers, side by side", "The card fixed, or no card", "The card as written, with a note"] });
 B[13] = () => {
-  const s = [["When I press Send it goes to my session.", "✓", "line 673", "session"], ["If I'm not there, it waits for me.", "✗", "lines 700–705 · config.json", "waits"], ["It should tell me when it's been taken.", "?", "neither: an assume card", "should"]];
+  const s = [["When I press Send it goes to my session.", "✓", "a match · checked against scripts/lib/inbox.mjs:673", "session"], ["If I'm not there, it waits for me.", "✗", "a gap · checked against inbox.mjs:700–705 · config.json", "waits"], ["It should tell me when it's been taken.", "?", "neither: an assume card, next in this round", "should"]];
   anim(`#${id("mic")}`, "fade", cue(F, "whisper"));
-  anim(`#${id("note")}`, "fade", cue(F, "assume"));
-  return `${planned(1600, 60)}
-  <div class="${P}-paper" id="${id("pg")}" style="${pos(160, 120, 1600, 700)}">
-    <div class="${P}-lab" style="left:40px; top:34px">card c6 · say · your words, as you said them</div>
-    <div class="${P}-chip" id="${id("mic")}" style="left:1120px; top:20px">Whisper · on this machine</div>
-    ${s.map(([t, m, src, w], i) => { anim(`#${id("w" + i)}`, "fade", i ? cue(F, w) : 0.3); anim(`#${id("m" + i)}`, "up", cue(F, w)); const hot = m !== "✓"; return `<div class="${P}-big" id="${id("w" + i)}" style="left:40px; top:${110 + i * 180}px; width:1100px; font-size:44px"><span class="${hot ? P + "-mark" : ""}">“${esc(t)}”</span></div><div class="${P}-pin${m === "✗" ? " hot" : ""}" id="${id("m" + i)}" style="left:40px; top:${180 + i * 180}px">${m} ${esc(src)}</div>`; }).join("\n")}
-  </div>
-  ${label("note", 160, 850, "the waiting session checks them · your decision D-315")}`;
+  anim(`#${id("note")}`, "fade", cue(F, "chose"));
+  anim(`#${id("settle")}`, "fade", cue(F, "gap"));
+  return `<div class="${P}-paper" id="${id("pg")}" style="${pos(160, 110, 1600, 730)}" data-artifact="your words, checked against scripts/lib/inbox.mjs">
+    <div class="${P}-lab" style="left:40px; top:30px">card c6 · say · your words, as you said them</div>
+    <div class="${P}-planned" style="left:830px; top:22px">planned: not built yet</div>
+    <div class="${P}-chip" id="${id("mic")}" style="left:900px; top:84px">hold Space on this page · or type, and fix it</div>
+    ${s.map(([t, m, src, w], i) => { anim(`#${id("w" + i)}`, "fade", i ? cue(F, w) : 0.3); anim(`#${id("m" + i)}`, "up", cue(F, w)); const cls = m === "✗" ? P + "-mark" : m === "?" ? P + "-ink" : ""; return `<div class="${P}-big" id="${id("w" + i)}" style="left:40px; top:${150 + i * 170}px; width:1000px; font-size:42px"><span class="${cls}">“${esc(t)}”</span></div><div class="${P}-pin" id="${id("m" + i)}" style="left:40px; top:${212 + i * 170}px">${m} ${esc(src)}</div>`; }).join("\n")}
+    <div class="${P}-s" id="${id("settle")}" style="left:40px; top:434px; width:1500px; font-size:24px">→ a gap card: Got it · Change the plan · The code is wrong · Show me more</div>
+    <div class="${P}-lab" id="${id("note")}" style="left:40px; top:676px">checked by the waiting session (decision D-315), then the fresh checker</div>
+  </div>`;
 };
 B[14] = decision({ kick: "question 2 · step 3", q: "Who reads your spoken explanation against the code?", rec: "a",
   opts: [{ label: "The waiting session" }, { label: "A small hosted model" }, { label: "The agent, after Send" }],
@@ -240,11 +241,11 @@ B[16] = branch("If B", () => { anim(`#${id("c")}`, "up", 0.3); return `<div id="
 B[17] = branch("If C", () => { anim(`#${id("c")}`, "up", 0.3); anim(`#${id("b")}`, "fade", 1.6); return `<div id="${id("c")}" style="position:absolute; ${pos(360, 300, 1200, 300)}">${["goes to my session", "waits for me", "tell me when taken"].map((c, i) => `<div class="${P}-t" style="left:0; top:${i * 70}px">${c}</div>`).join("")}</div>${el("chip hot", "b", 980, 360, null, null, "marked when the round comes back")}`; });
 B[18] = check({ ctx: "quick check · step 2", cs: "card c5 · you press N", q: "On card c5, you press N: not sure. What comes next?", opts: ["The next card; nothing kept", "A gap: Got it or Show me more", "The round ends"] });
 B[19] = () => {
-  const bs = [["Got it", "your memory · you.jsonl", "got"], ["Change the plan", "plan.md · You told me first", "change"], ["The code is wrong", "a step of the plan · with no plan, issue.md for you to file", "wrong"], ["Show me more", "one short video, at the end", "show"]];
+  const bs = [["Got it", "your memory · you.jsonl", "got"], ["Change the plan", "plan.md · You told me first", "change"], ["The code is wrong", "a plan step · or issue.md to file", "wrong"], ["Show me more", "one short video, at the end", "show"]];
   anim(`#${id("log")}`, "up", cue(F, "decision"));
   return `${planned(1600, 60)}
   ${bs.map(([b, d, w], i) => { const x = 160 + i * 410; anim(`#${id("b" + i)}`, "up", cue(F, w)); anim(`#${id("d" + i)}`, "up", cue(F, w) + 0.4); return `${el("btn ink", "b" + i, x, 170, 380)}`.replace("></div>", `>${b}</div>`) + `<div class="${P}-line" style="${pos(x + 188, 250, 3, 160)}; width:3px; height:160px"></div>` + el("card", "d" + i, x, 420, 380, 150, `<div class="${P}-t" style="left:24px; top:28px; width:330px">${esc(d)}</div>`); }).join("\n")}
-  <div id="${id("log")}" style="position:absolute; ${pos(570, 570, 1100, 260)}"><div class="${P}-line" style="${pos(188, 0, 3, 90)}; width:3px; height:90px"></div><div class="${P}-node" style="${pos(40, 100, 300, 84)}">decision log</div><div class="${P}-lab" style="left:206px; top:34px">only when a plan's question asks it and you answer</div></div>`;
+  <div id="${id("log")}" style="position:absolute; ${pos(160, 660, 1600, 140)}"><div class="${P}-node ${P}-dim" style="${pos(0, 20, 300, 84)}">decision log</div><div class="${P}-t" style="left:340px; top:40px; width:1260px">nothing from a round goes in · a plan's own questions do</div></div>`;
 };
 B[20] = () => {
   anim(`#${id("mem")}`, "up", cue(F, "fingerprint")); anim(`#${id("fp")}`, "fade", cue(F, "short"));
@@ -264,8 +265,8 @@ B[25] = () => {
   const r = (t, y, cls = "m") => `<div class="${P}-${cls}" style="left:30px; top:${y}px; width:440px">${t}</div>`;
   return `${planned(1600, 60)}
   ${el("paper", "a", 160, 160, 500, 640, `<div class="${P}-lab" style="left:30px; top:30px">before a plan</div><div class="${P}-big" style="left:30px; top:90px; width:440px; font-size:40px">likely gaps listed</div><div class="${P}-big" style="left:30px; top:240px; width:440px; font-size:40px">→ a round, if worth it</div><div class="${P}-s" style="left:30px; top:400px; width:440px">if not, one line in the plan says why</div>`)}
-  ${el("paper", "b", 710, 160, 500, 640, `<div class="${P}-lab" style="left:30px; top:30px">a quick check, wrong</div>${["Got it", "Change the plan", "Show me more"].map((t, i) => `<div class="${P}-btn" style="left:30px; top:${80 + i * 76}px; width:440px">${t}</div>`).join("")}<div class="${P}-btn ${P}-dim" style="left:30px; top:308px; width:440px; border-style:dashed; font-size:26px; padding:0 10px">The code is wrong, once built</div><div class="${P}-card" style="${pos(30, 392, 440, 56)}"><div class="${P}-s" style="left:18px; top:10px">your words…</div></div>${r("Change the plan → the agent, as a comment", 466, "s")}${r("Approve: never blocked · left unsettled: recorded as today", 540, "s")}`)}
-  ${el("paper", "c", 1260, 160, 500, 640, `<div class="${P}-lab" style="left:30px; top:30px">reel status</div>${r("rounds 3 · gaps 11", 80)}${r("Got it 7", 124)}${r("Change the plan 3", 168)}${r("The code is wrong 1", 212)}${r("Show me more 0", 256)}${r("not sure 2 · skipped 1", 300)}${r("late fixes · with a round 1", 364)}${r("· likely gap, no round 4", 408)}${r("under 5 plans of each: too few to compare", 470, "s")}`)}`;
+  ${el("paper", "b", 710, 160, 500, 640, `<div class="${P}-lab" style="left:30px; top:30px">a quick check, wrong</div>${["Got it", "Change the plan", "Show me more"].map((t, i) => `<div class="${P}-btn" style="left:30px; top:${80 + i * 76}px; width:440px">${t}</div>`).join("")}<div class="${P}-btn ${P}-dim" style="left:30px; top:308px; width:440px; border-style:dashed">The code is wrong</div><div class="${P}-lab" style="left:30px; top:380px">only once there is code</div><div class="${P}-card" style="${pos(30, 420, 440, 56)}"><div class="${P}-s" style="left:18px; top:10px">your words…</div></div>${r("Change the plan → the agent, as a comment", 488, "s")}${r("Approve is never blocked · left unsettled, it is kept as a wrong check is now", 566, "s")}`)}
+  ${el("paper", "c", 1260, 160, 500, 640, `<div class="${P}-lab" style="left:30px; top:30px">reel status</div>${r("rounds 3 · gaps 11", 80)}${r("Got it 7", 124)}${r("Change the plan 3", 168)}${r("The code is wrong 1", 212)}${r("Show me more 0", 256)}${r("not sure 2 (in the 11) · skipped 1", 300)}${r("late fixes after: with a round 1", 364)}${r("likely gap, no round 4", 408)}${r("under 5 plans of each: too few to compare", 470, "s")}`)}`;
 };
 
 B[26] = decision({ kick: "question 4 · step 5", q: "How often does a round come ahead of a plan?", rec: "b",
@@ -285,6 +286,7 @@ B[32] = () => {
   anim(`#${id("tri")}`, "fade", 2.2);
   return `${label("kick", 160, 90, "the revised plan · find the gaps")}
   <div style="position:absolute; ${pos(160, 150, 900, 640)}">${st.map(([t, q], i) => `<div class="${P}-slot" id="${id("s" + i)}" data-plan-step="${i + 1}" style="top:${i * 124}px"><span class="n">${i + 1}</span> <span class="t">${esc(t)}</span> <span class="d">${q ? esc(q) : ""}</span></div>`).join("")}</div>
+  ${label("ask", 160, 800, "approve the revised plan, or draw on a step to leave a note")}
   <div id="${id("tri")}" style="position:absolute; ${pos(1200, 220, 560, 480)}">
     <svg style="position:absolute; left:0; top:0; width:560px; height:480px; overflow:visible"><polygon points="280,60 60,400 500,400" fill="none" style="stroke:rgba(var(--rp-ink-rgb),0.55)" stroke-width="4" stroke-linejoin="round"/></svg>
     <div class="${P}-node" style="${pos(170, 10, 220, 80)}; font-size:28px">the agent</div>
@@ -294,23 +296,25 @@ B[32] = () => {
 };
 
 B["4b"] = () => {
-  const rows = [["Three ways to answer", "your decision D-314", "one"], ["Asked once more, days later", "your decision D-316", "two"], ["Three checks you missed", "steps 1, 2, 3", "three"]];
+  const rows = [["Three ways to answer", "your decision D-314", "one"], ["Asked once more, days later", "your decision D-316", "two"], ["Three quick checks you got wrong", "steps 1, 2, 3", "three"]];
   anim(`#${id("h")}`, "left", 0.15); anim(`#${id("kept")}`, "fade", cue(F, "those"));
   return `${label("kick", 160, 84, "your review · changes requested")}${el("h", "h", 160, 130, 1600, null, "What your review changed")}
   ${rows.map(([a, b, w], i) => { anim(`#${id("r" + i)}`, "up", cue(F, w)); return el("row", "r" + i, 160, 290 + i * 150, 1600, 150, `<div class="${P}-big" style="left:0; top:44px">${esc(a)}</div><div class="${P}-chip" style="right:0; left:auto; top:46px">${esc(b)}</div>`); }).join("\n")}
-  ${label("kept", 160, 780, "questions 2 and 4 kept the recommendation · decisions D-315, D-317")}`;
+  ${label("kept", 160, 780, "kept as recommended · the waiting session checks your words (decision D-315) · asked first only when a gap is likely and costly (decision D-317)")}`;
 };
 B["7a"] = () => {
   anim(`#${id("rec")}`, "up", cue(F, "one round")); anim(`#${id("tag")}`, "fade", cue(F, "decided"));
   const way = (k, x, t, word, inner, first) => { anim(`#${id(k)}`, "up", cue(F, word)); return el("paper", k, x, 330, 500, 470, `<div class="${P}-lab" style="left:28px; top:26px">${t}${first ? " · built first" : ""}</div>${inner}`); };
+  const bt = "font-size:24px";
   return `${planned(1600, 60)}
-  ${el("node navy", "rec", 760, 130, 400, 96, "align.md · one record")}${label("recl", 560, 240, "the cards and your answers · .reelplanner/align/, or this machine")}
+  ${el("node navy", "rec", 760, 130, 400, 96, "align.md · one record")}${label("recl", 470, 240, "one file a round · .reelplanner/align/, or ~/.reelplanner/")}
   ${el("chip", "tag", 1200, 152, null, null, "your decision D-314")}
   <div class="${P}-line" style="${pos(958, 280, 3, 50)}; width:3px; height:50px"></div><div class="${P}-line" style="${pos(410, 300, 1100)}"></div>
-  ${way("w0", 160, "the chat", "chat", `<div class="${P}-s" style="left:28px; top:70px; width:444px">agent · c3: you press Send, no session waiting. What happens?</div><div class="${P}-btn" style="left:28px; top:170px; width:444px">A · it waits for the next session</div><div class="${P}-btn ink" style="left:28px; top:244px; width:444px">B · a headless run starts</div><div class="${P}-slab" style="${pos(28, 330, 444, 110)}"><div class="${P}-code" style="left:18px; top:14px; font-size:22px"><span class="n">701</span>  const result = await start();</div></div>`, true)}
+  ${way("w0", 160, "the chat", "chat", `<div class="${P}-s" style="left:28px; top:70px; width:444px">AskUserQuestion · c3: no session waiting. What happens?</div><div class="${P}-btn" style="left:28px; top:180px; width:444px; ${bt}">A · it waits for the next session</div><div class="${P}-btn ink" style="left:28px; top:254px; width:444px; ${bt}">B · a headless run starts</div><div class="${P}-slab" style="${pos(28, 336, 444, 104)}"><div class="${P}-code" style="left:18px; top:16px; font-size:22px"><span class="n">700</span>  if (!question …
+<span class="n">701</span>    await start();</div></div>`, true)}
   ${way("w1", 710, "the review page", "review page", `<div class="${P}-s" style="left:28px; top:70px; width:444px">card c3, turned over</div><div class="${P}-slab" style="${pos(28, 120, 444, 150)}"><div class="${P}-code" style="left:18px; top:20px; font-size:22px"><span class="n">700</span>  if (!question …
-<span class="n">701</span>    await start();</div></div><div class="${P}-s" style="left:28px; top:300px; width:444px">+ click a box on a diagram · your voice</div><div class="${P}-s" style="left:28px; top:380px; width:444px">later: drawing your picture</div>`)}
-  ${way("w2", 1260, "a video", "video", `<div class="${P}-s" style="left:28px; top:70px; width:444px">a quick check is a card</div><div class="${P}-opt" style="${pos(28, 130, 444, 120)}"><span class="k">A</span><span class="l" style="font-size:36px">it waits</span></div><div class="${P}-opt" style="${pos(28, 270, 444, 120)}"><span class="k">B</span><span class="l" style="font-size:36px">a headless run</span></div>`)}`;
+<span class="n">701</span>    await start();</div></div><div class="${P}-s" style="left:28px; top:300px; width:444px">+ click a box on a diagram · your voice</div><div class="${P}-s" style="left:28px; top:380px; width:444px">later: drawing how you think it works</div>`)}
+  ${way("w2", 1260, "a video", "video", `<div class="${P}-s" style="left:28px; top:70px; width:444px">quick checks ask the cards</div><div class="${P}-opt" style="${pos(28, 130, 444, 120)}"><span class="k">A</span><span class="l" style="top:66px; font-size:30px">it waits</span></div><div class="${P}-opt" style="${pos(28, 270, 444, 120)}"><span class="k">B</span><span class="l" style="top:66px; font-size:30px">a headless run</span></div>`)}`;
 };
 B["20b"] = () => {
   anim(`#${id("tag")}`, "fade", cue(F, "decided"));
@@ -326,6 +330,7 @@ const JS = (P, dur) => A.map((a) => {
     case "fade": return `  gsap.set("${a.sel}", { opacity: 0 });\n  tl.to("${a.sel}", { opacity: 1, duration: 0.4, ease: "power2.out" }, ${t});`;
     case "draw": return `  gsap.set("${a.sel}", { scaleX: 0 });\n  tl.to("${a.sel}", { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, ${t});`;
     case "hot": { const u = Math.min(+a.until || +t + 3, dur - 0.5).toFixed(3); return `  tl.to("${a.sel}", { opacity: 1, duration: 0.3 }, ${t});\n  tl.to("${a.sel}", { opacity: 0, duration: 0.3 }, ${u});`; }
+    case "mark": return `  gsap.set("${a.sel}", { textDecorationColor: "rgba(184,85,46,0)" });\n  tl.to("${a.sel}", { textDecorationColor: "rgba(184,85,46,1)", duration: 0.5 }, ${t});`;
     case "flipout": return `  tl.to("${a.sel}", { scaleX: 0, duration: 0.35, ease: "power2.in" }, ${t});\n  tl.set("${a.sel}", { opacity: 0 }, ${(+t + 0.36).toFixed(3)});`;
     case "flipin": return `  gsap.set("${a.sel}", { scaleX: 0, opacity: 0 });\n  tl.set("${a.sel}", { opacity: 1 }, ${t});\n  tl.to("${a.sel}", { scaleX: 1, duration: 0.35, ease: "power2.out" }, ${t});`;
   }

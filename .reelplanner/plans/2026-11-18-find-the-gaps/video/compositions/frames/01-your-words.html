@@ -43,24 +43,22 @@
   .f01-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .f01-dim { opacity:0.55; }
   .f01-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f01-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .f01-ok { color:var(--rp-ink); }
   .f01-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f01-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
-  .f01-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
-  .f01-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f01-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f01-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
 <div id="root" data-composition-id="01-your-words" data-band="bottom" data-duration="13.471" data-width="1920" data-height="1080">
   <div class="clip f01-bg" id="f01-bg" data-start="0" data-duration="15.439" data-track-index="0"></div>
   <div class="clip f01-scene" id="f01-scene" data-start="0" data-duration="15.439" data-track-index="1">
   <div class="f01-lab" id="f01-kick" style="left:160px; top:120px;">GitHub issue #57 · your words, as sent</div>
-  <div class="f01-card" id="f01-quote" style="left:160px; top:180px; width:1600px; height:470px;" data-artifact="the owner's message, issue #57">
-    <div class="f01-big" style="left:56px; top:52px; width:1490px; font-size:50px; line-height:1.4">basiclaly what i need here is a way to align me and the actual code + agent writing it. oftentimes we are not aligned, <span id="f01-assume">i assume it is one way when it is actually another.</span></div>
+  <div class="f01-card" id="f01-quote" style="left:160px; top:180px; width:1600px; height:340px;" data-artifact="the owner's message, issue #57">
+    <div class="f01-big" style="left:56px; top:48px; width:1490px; font-size:50px; line-height:1.4">basiclaly what i need here is a way to align <span class="f01-ink">me</span> and <span class="f01-ink">the actual code</span> + <span class="f01-ink">agent writing it</span>. oftentimes we are not aligned, <span class="f01-mark" id="f01-assume">i assume it is one way when it is actually another.</span></div>
   </div>
-  <div class="f01-u" id="f01-u" style="left:975px; top:368px; width:592px;"></div><div class="f01-u" id="f01-u2" style="left:197px; top:438px; width:318px;"></div>
-  <div class="f01-chip" id="f01-c-you" style="left:160px; top:720px;">you</div>
-  <div class="f01-chip" id="f01-c-code" style="left:300px; top:720px;">the code</div>
-  <div class="f01-chip" id="f01-c-agent" style="left:510px; top:720px;">the agent writing it</div>
+  <div class="f01-lab" id="f01-three" style="left:160px; top:570px;">three pictures: you · the code · the agent writing it</div>
   </div>
 </div>
 
@@ -71,16 +69,8 @@
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f01-quote", { opacity: 0, y: 26 });
   tl.to("#f01-quote", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.200);
-  gsap.set("#f01-u", { scaleX: 0 });
-  tl.to("#f01-u", { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 7.070);
-  gsap.set("#f01-u2", { scaleX: 0 });
-  tl.to("#f01-u2", { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 8.740);
-  gsap.set("#f01-c-you", { opacity: 0, y: 26 });
-  tl.to("#f01-c-you", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.370);
-  gsap.set("#f01-c-code", { opacity: 0, y: 26 });
-  tl.to("#f01-c-code", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 2.820);
-  gsap.set("#f01-c-agent", { opacity: 0, y: 26 });
-  tl.to("#f01-c-agent", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.450);
+  gsap.set("#f01-assume", { textDecorationColor: "rgba(184,85,46,0)" });
+  tl.to("#f01-assume", { textDecorationColor: "rgba(184,85,46,1)", duration: 0.5 }, 7.070);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

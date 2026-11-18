@@ -43,32 +43,33 @@
   .f07-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .f07-dim { opacity:0.55; }
   .f07-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f07-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .f07-ok { color:var(--rp-ink); }
   .f07-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f07-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
-  .f07-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
-  .f07-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f07-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f07-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
 <div id="root" data-composition-id="07-step-2-predict-then-see-the-code" data-band="bottom" data-duration="22.032" data-width="1920" data-height="1080">
   <div class="clip f07-bg" id="f07-bg" data-start="0" data-duration="22.032" data-track-index="0"></div>
   <div class="clip f07-scene" id="f07-scene" data-start="0" data-duration="22.032" data-track-index="1">
-  <div class="f07-planned" id="f07-planned" style="left:1600px; top:60px;">planned</div>
+  <div class="f07-planned" id="f07-planned" style="left:1380px; top:880px;">planned: not built yet</div>
   <div class="f07-paper" id="f07-front" style="left:260px; top:120px; width:1400px; height:740px;">
     <div class="f07-lab" style="left:44px; top:40px">card c3 · predict · step 2</div>
     <div class="f07-q" style="left:44px; top:100px; width:1300px">In this repo, you press Send and no session is waiting. What happens to the review?</div>
-    <div class="f07-paper" style="left:44px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">A</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">it waits for the next session</div></div><div class="f07-paper" style="left:484px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">B</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">a headless run starts on it</div></div><div class="f07-paper" style="left:924px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">C</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">it is lost</div></div>
+    <div class="f07-paper" style="left:44px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">A</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">it waits for the next session</div></div><div class="f07-paper" style="left:484px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">B</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">a headless run starts on the review</div></div><div class="f07-paper" style="left:924px; top:360px; width:410px; height:200px;"><div class="f07-lab" style="left:26px; top:26px">C</div><div class="f07-big" style="left:26px; top:70px; width:360px; font-size:40px">it is lost</div></div>
     <div class="f07-ring" id="f07-pick" style="left:36px; top:352px; width:426px; height:216px;"></div>
     <div class="f07-lab" style="left:44px; top:620px">A–C or N, not sure</div>
   </div>
   <div class="f07-paper" id="f07-back" style="left:260px; top:120px; width:1400px; height:740px;">
     <div class="f07-lab" style="left:44px; top:30px">card c3, turned over</div>
     <div class="f07-t" style="left:44px; top:66px; width:1312px; font-size:28px">In this repo, you press Send and no session is waiting. What happens?</div>
-    <div class="f07-s" style="left:44px; top:110px; width:1312px; font-size:26px">your pick A: it waits for the next session · the answer B: a headless run starts on it</div>
+    <div class="f07-s" style="left:44px; top:110px; width:1312px; font-size:26px">your pick A: it waits for the next session · the answer B: a headless run starts on the review</div>
     <div class="f07-slab" style="left:44px; top:160px; width:1312px; height:190px;" data-artifact="scripts/lib/inbox.mjs, lines 700–702"><div class="f07-bar"></div><div class="f07-bt">scripts/lib/inbox.mjs · 700–702</div>
       <div class="f07-code" style="left:24px; top:56px"><span class="n">700</span>  if (!question &amp;&amp; !isMachineInbox(rp)) {
 <span class="n">701</span>    const result = await <span class="k">start</span>();
-<span class="n">702</span>    if (result.started) return { handledBy: "agent", …</div><div class="f07-pin" id="f07-gl0" style="left:740px; top:48px"><em data-gloss="isMachineInbox">a review, in a repo with .reelplanner/</em></div><div class="f07-pin hot" id="f07-gl" style="left:640px; top:96px"><em data-gloss="start">a headless run</em></div></div>
+<span class="n">702</span>    if (result.started) return { handledBy: "agent", …</div><div class="f07-pin" id="f07-gl0" style="left:740px; top:48px"><em data-gloss="isMachineInbox">a review, not a question, in a set-up repo</em></div><div class="f07-pin hot" id="f07-gl" style="left:640px; top:96px"><em data-gloss="start">a headless run</em></div></div>
     <div class="f07-slab" style="left:44px; top:366px; width:1312px; height:96px;" data-artifact=".reelplanner/config.json, agent.command"><div class="f07-bar"></div><div class="f07-bt">.reelplanner/config.json</div>
       <div class="f07-code" style="left:24px; top:50px">"command": "claude --permission-mode auto …"</div></div>
     <div class="f07-t" style="left:44px; top:480px; width:1312px">A headless command is set here, so a review that no open session picks up starts a headless run.</div>

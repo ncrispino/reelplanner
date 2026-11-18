@@ -1,46 +1,46 @@
-# Fresh eyes: designer · round 1 · stamp 3b5c70df6202
+# Fresh eyes: designer · round 1 · stamp 2b7d9dd8c2ea
 
-- G1 · scene 1 · "the orange underline": the accent rule sits alone in the empty lower half of the quote box, under no words, while the narration quotes "I assume it is one way when it is actually another"; a mark that labels nothing (rule 3) makes the viewer hunt for what it points at. Put the underline under that phrase.
-  - Answer: fixed: scene 1's coral underline now sits under 'i assume it is one way when it is actually another.', two strokes on its two lines, drawn on 'assume' and 'actually'.
+- G1 · scene 1 · "aligned, i assume it is one way when it is actually another": the orange underline starts on "aligned," and on the second line starts left of the text and stops partway through "actually", so it does not sit on the words the narration quotes ("I assume it is one way when it is actually another"); rule 3. The viewer cannot tell which words are being quoted. Fix: underline exactly "i assume it is one way when it is actually another".
+  - Answer: fixed: scene 1's underline is now the phrase's own text decoration, coloured in on 'assume', so it sits exactly under 'i assume it is one way when it is actually another.'
 
-- G2 · scene 3 · "tries again after 15 s": the line wraps and leaves "s" alone on a second line pressed against the box's bottom edge, and "you meant: your open session" in the left box also touches its bottom border; cut off at the edge (rule 6). Widen the boxes or shorten the text so each fits on its lines with padding.
-  - Answer: fixed: scene 3's boxes are now 580 wide and 180 tall, and the text shorter ('tried again 15 s later'), so nothing touches an edge.
+- G2 · scene 1 · "you" "the code" "the agent writing it": the three chips sit in a row under the issue box, away from the words they name ("me", "the actual code", "agent writing it" in the quote); rule 3. Fix: mark those words in the quote itself, or join each chip to its word.
+  - Answer: fixed: scene 1 drops the chips; 'me', 'the actual code' and 'agent writing it' are underlined in the quote itself, and one line under it names the three pictures.
 
-- G3 · scene 3 · "you · the code / the agent · the code / you · the agent": the narration goes you–code, then agent–code, then you–agent, but the frame reads top-left (you · the agent) first and the bottom box last, the reverse (rule 2); the viewer reads the wrong gap against the words. Order the boxes as the narration says them, or reveal them in that order.
-  - Answer: fixed: scene 3's boxes are now numbered 'gap 1', 'gap 2', 'gap 3' in the narration's order, and each still lands on its words; the triangle keeps each box beside its own side.
+- G3 · scene 3 · "gap 2 · the agent and the code": the mono header runs into the right edge of its box, so "code" touches or is cut by the border; rule 5/6. Fix: widen the box or wrap the header.
+  - Answer: fixed: scene 3's gap boxes are now 900 wide, so every header fits.
 
-- G4 · scene 6 · "twice · again after 15 s": the answer runs past the card's right edge; the card border cuts through between "15" and "s" (rule 5). Wrap the answer or widen the card.
-  - Answer: fixed: scene 6's answer now reads 'twice · 15 s apart', inside the card.
+- G4 · scene 3 · "gap 3" "gap 2" "gap 1": read top to bottom, left to right, the boxes come gap 3, gap 2, gap 1, the reverse of the narration (you and the code first, then the agent and the code, then you and the agent); rule 2. Fix: number the gaps in reading order, or turn the triangle so gap 1 sits top left.
+  - Answer: fixed: scene 3 now puts the triangle on the left and the three gaps on the right in a column, gap 1, 2, 3 top to bottom, in the narration's order.
 
-- G5 · scene 10 · "A": the person's reply is a lone "A" chip floating to the right of the agent's message with no "you" label, and the beige reply box starting "B." has no speaker either; a newcomer cannot tell who said A and who said B (rule 3). Label the two turns ("you", "agent") on the bubbles themselves.
-  - Answer: fixed: scene 10's reply chip reads 'you: A', and the code box is labelled 'agent'.
+- G5 · scene 7 · "answer: once  twice · 15 s apart · fixed by the checker": the card shows the struck-out answer next to the fixed one, i.e. two answers side by side, while the caption says "You never see 2 answers side by side"; rule 1. The viewer trusts the picture over the sentence, and scene 10's quick check then offers "Both answers, side by side" as option A, which this frame teaches. Fix: show the card as the viewer gets it (only "twice · 15 s apart"), with the checker's fix marked as happening before the round opens.
+  - Answer: fixed: scene 7 now shows the card as written (struck), the checker's fix 'before the round opens', and the card you see with one answer only.
 
-- G6 · scene 11 · "card c3, a key per answer / card c3, as a question": both panels are large empty boxes with one caption line each, where the narration says the same round opens on the page and in the chat; the card itself is absent, an empty box where the thing goes (rule 1). Show the actual card (question, A/B/C keys) on the left and the chat question on the right.
-  - Answer: fixed: scene 11's left panel now shows the card, its question, A/B/C and 'a key: A, B, C or N'; the right shows the agent's question and 'you: A'.
+- G6 · scene 8 · "701 const result = await start(": the code line in the chat card is cut at the box's right edge, and "A · it waits for the next session" runs into its button's border; rule 5/6. Fix: shorten or wrap the line, widen the card, or drop the code to fewer characters.
+  - Answer: fixed: scene 8's chat lines are now 700 'if (!question …' and 701 'await start();', which fit, and its buttons use 24 px type so the text sits inside them.
 
-- G7 · scene 19 · "decision log": its connector starts well below the "plan.md · You told me first" box and touches nothing, so the log floats; the viewer cannot see that it hangs off Change the plan (rule 3). Run the line from the plan.md box down to the decision log.
-  - Answer: fixed: scene 19's decision log now hangs from the plan.md box by a line from its foot, labelled 'only when a plan's question asks it and you answer'.
+- G7 · scene 8 · "it waits" "a headless run": in the video card, each answer's text sits on the bottom border of its box, so the descenders look clipped; rule 5/6. Fix: give each answer box bottom padding.
+  - Answer: fixed: scene 8's quick-check answers now sit 56 px down at 32 px, clear of their boxes' borders.
 
-- G8 · scene 20 · "fingerprint": the label sits under the strip at empty space to the right of "4b1e", not under the fingerprint it names (rule 3); the narration explains the fingerprint and the viewer cannot find it. Put the label directly under "4b1e".
-  - Answer: fixed: scene 20's 'fingerprint ↑' label now sits under 4b1e.
+- G8 · scene 13 · "issue.md for you to file": the third destination's text overflows its box, and "file" falls onto the line "only when a plan's question asks it and you answer", so two texts overlap; rule 5. Fix: make the boxes taller or the text shorter ("a plan step, or issue.md").
+  - Answer: fixed: scene 13's box now reads 'a plan step · or issue.md to file', which fits its box.
 
-- G9 · scene 21 · "Got it · 4b1e / inbox.mjs edited · 9c07 / weeks: not asked / asked again": the timeline's events sit in two rows above and below the line with no ticks, so top-to-bottom reading gives Got it, edited, weeks, asked again, while the time order is Got it, weeks, edited, asked again (rule 2, rule 3). Mark each event as a tick on the line with its label at the tick, left to right in time; the same applies to scenes 22 ("three days") and 23 ("a plan · asked" twice).
-  - Answer: fixed: scenes 21–23 now draw each event as a tick on the line with its label under it, left to right in time.
+- G9 · scene 13 · "decision log" / "only when a plan's question asks it and you answer": a line runs from "Change the plan" down to "decision log", which reads as "a round's answers go into the decision log", the opposite of the narration ("Nothing from a round goes into the decision log"); the qualifier that says so floats to the right, over the third column, not on the line it qualifies; rule 3. Fix: put the qualifier on that line, or show the decision log as apart and crossed out for a round.
+  - Answer: fixed: scene 13 no longer joins the decision log to Change the plan: it sits apart, dimmed, with 'nothing from a round goes in · a plan's own questions do' on its own line.
 
-- G10 · scene 26 · "two requests: make Send reach my open session · rename the Save button": a line of tiny unstyled serif text is jammed into the top-left corner against the frame edge, far below readable size (rule 6), and it carries the setup the narration opens with ("Take two requests"). Style it as the scene's eyebrow or a proper line above the question, at the frame's type size.
-  - Answer: fixed: the line was built before the frame's styles existed; it is now the mono line under scene 26's question, at the theme's size.
+- G10 [plan] · scene 14 · "the first round after, any topic": the re-ask waits for the next round in this repo, three days or more later; the plan does not say what happens when no round ever runs there again (the Got it is never asked again and never reaches "known until the lines change"). Fix: say in the plan what carries it then, or that it stays unconfirmed.
+  - Answer: plan: step 4 now says that if no round or plan ever comes, the card stays due and reel memory --you lists it as due until it is asked.
 
-- G11 · scene 32 · "Your four answers sit on the steps": the five step rows show only their titles; no answer appears on any step, so the viewer cannot see what the narration says is there (rule 1). Put each question's answer (or "your answer here") on its step row.
-  - Answer: fixed: scene 32's steps two to five now show 'your answer' in their slot until the player writes your pick there.
+- G11 · scene 19 · "or approve.": the closing ask (draw on a step for a note, or approve) is only in the narration and the last word of the caption; nothing on the frame says what the viewer decides; rule 4. Fix: a line such as "Approve the revised plan, or draw on a step to leave a note".
+  - Answer: fixed: scene 19 now says on the frame 'approve the revised plan, or draw on a step to leave a note'.
 
 ## Advisory
 
-- Scenes 7, 13, 19, 25: the dashed "planned" chip's top edge tucks under the "Open" chip; give it a few pixels of room.
-- Scene 4: the "today" column leaves the lower left two thirds empty against a full right column; the frame leans right.
-- Scene 8, 12, 14, 18, 20, 24, 26, 30, 31: the three option cards stop short of the right margin that the heading and other scenes use (about 1057 vs 1082), so the row looks off-centre.
-- Scene 9: the code block has a tall empty dark band below two lines, and the card a large empty bottom; tighten both.
-- Scenes 9, 11, 15–17, 21–23: the "If A/B/C" frames fill only the top third or a small top-left block, leaving most of the frame empty.
-- Scenes 15–16: the "≈ 1 min" / "≈ 3 s" chip floats in mid-frame away from the claims it times; set it beside the list's heading. The bare "?" after "tell me when taken" reads as a question mark more than as "assume card".
-- Scene 13: "If I'm not there…" (a gap) and "It should tell me…" (an assume card) carry the same orange underline; the second could take a different mark to match its black "? assume card" tag.
-- Scenes 12, 18, 24, 30, 31: the mono eyebrow repeats the heading below it almost word for word; one of the two is enough. "k2" in scene 31 is an unexplained id.
-- Scene 32: "the code" is filled black with no reason given in the narration; an unexplained focal point.
+- scene 1: the issue box is twice the height of its three lines, leaving an empty lower half.
+- scene 3 and scene 19: the triangle repeats, but in scene 19 "the code" is filled black with nothing in the narration to point at it, so the eye goes to the wrong place.
+- scene 4: the left column ends after "one way", leaving the lower left of the frame empty.
+- scene 8, 9, 11, 13, 16: the player's "Open" chip sits on the top border of the dashed "planned" tag below it; a few pixels of gap would separate them.
+- scene 8: the frame holds more than three type sizes (mono labels, sans body, serif answers, code, caption); the align.md header that the narration names last is read first.
+- scene 10, 12, 15, 17, 18: the mono line under "quick check" repeats the question just below it; the three answer cards stop short of the right margin the other scenes use (about 25 px narrower).
+- scene 11: the card's lower quarter is empty under the last claim.
+- scene 14: the timeline shows only the Got-it-again path; "wrong again: a gap" and "3 days or more" (the label says "3 days") are only spoken. The upper and lower thirds of the frame are empty.
+- scene 16: the middle card's footer ("Change the plan → the agent, as a comment / Approve: never blocked · left unsettled: recorded as today") is crammed with no gap between its two lines; in reel status, the wrapped "· likely gap, no round 4" reads as a new item.

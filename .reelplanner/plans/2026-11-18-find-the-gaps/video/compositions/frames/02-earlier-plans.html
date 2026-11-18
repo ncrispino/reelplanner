@@ -43,39 +43,40 @@
   .f02-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
   .f02-dim { opacity:0.55; }
   .f02-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f02-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
   .f02-ok { color:var(--rp-ink); }
   .f02-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
   .f02-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
-  .f02-slot .t { position:absolute; left:80px; top:30px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
-  .f02-slot .d { position:absolute; right:24px; top:36px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f02-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f02-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
 </style>
 
-<div id="root" data-composition-id="02-earlier-plans" data-band="bottom" data-duration="20.084" data-width="1920" data-height="1080">
-  <div class="clip f02-bg" id="f02-bg" data-start="0" data-duration="23.181" data-track-index="0"></div>
-  <div class="clip f02-scene" id="f02-scene" data-start="0" data-duration="23.181" data-track-index="1">
+<div id="root" data-composition-id="02-earlier-plans" data-band="bottom" data-duration="21.428" data-width="1920" data-height="1080">
+  <div class="clip f02-bg" id="f02-bg" data-start="0" data-duration="21.428" data-track-index="0"></div>
+  <div class="clip f02-scene" id="f02-scene" data-start="0" data-duration="21.428" data-track-index="1">
   <div class="f02-h" id="f02-h" style="left:160px; top:110px; width:1600px;">Four things this plan builds on</div>
-  <div class="f02-row" id="f02-r0" style="left:160px; top:250px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">Send</div><div class="f02-t" style="left:520px; top:36px; width:1050px">to the waiting session, or a headless run</div></div>
+  <div class="f02-row" id="f02-r0" style="left:160px; top:250px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">Send</div><div class="f02-t" style="left:520px; top:36px; width:1050px">the button that ends your review: to the session that opened this page and waits, or a headless run where the config sets one</div></div>
 <div class="f02-row" id="f02-r1" style="left:160px; top:400px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">a quick check</div><div class="f02-t" style="left:520px; top:36px; width:1050px">predict a case the video didn't show</div></div>
-<div class="f02-row" id="f02-r2" style="left:160px; top:550px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">an explainer</div><div class="f02-t" style="left:520px; top:36px; width:1050px">its sources, quoted word for word</div></div>
-<div class="f02-row" id="f02-r3" style="left:160px; top:700px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">your memory</div><div class="f02-t" style="left:520px; top:36px; width:1050px">a file in your home folder</div></div>
+<div class="f02-row" id="f02-r2" style="left:160px; top:550px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">an explainer</div><div class="f02-t" style="left:520px; top:36px; width:1050px">its sources quoted word for word, as a card quotes the code</div></div>
+<div class="f02-row" id="f02-r3" style="left:160px; top:700px; width:1600px; height:150px;"><div class="f02-big" style="left:0; top:38px">your memory</div><div class="f02-t" style="left:520px; top:36px; width:1050px">~/.reelplanner/you.jsonl: what you watched, and what you know</div></div>
   </div>
 </div>
 
 <script>
 (function () {
   var FID = "02-earlier-plans";
-  var DUR = 23.181;
+  var DUR = 20.928;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f02-h", { opacity: 0, x: -24 });
   tl.to("#f02-h", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 0.150);
   gsap.set("#f02-r0", { opacity: 0, y: 26 });
-  tl.to("#f02-r0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.180);
+  tl.to("#f02-r0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 3.160);
   gsap.set("#f02-r1", { opacity: 0, y: 26 });
-  tl.to("#f02-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.060);
+  tl.to("#f02-r1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 11.500);
   gsap.set("#f02-r2", { opacity: 0, y: 26 });
-  tl.to("#f02-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 13.380);
+  tl.to("#f02-r2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 14.740);
   gsap.set("#f02-r3", { opacity: 0, y: 26 });
-  tl.to("#f02-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 16.240);
+  tl.to("#f02-r3", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 17.680);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

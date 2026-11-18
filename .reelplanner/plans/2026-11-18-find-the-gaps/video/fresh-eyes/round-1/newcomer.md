@@ -1,94 +1,76 @@
-# Fresh eyes: newcomer · round 1 · stamp 3b5c70df6202
+# Fresh eyes: newcomer · round 1 · stamp 2b7d9dd8c2ea
 
-- N1 · scene 1 · "issue #57 · your words, as sent": the video never says what issue #57 is or where it lives (a GitHub issue? a file in the repo?). I guessed it is a GitHub issue the owner wrote. It matters because scene 13 cites "issue #23" and scene 19 puts "issue.md" on screen, and I can't tell whether these are the same kind of thing.
-  - Answer: fixed: scene 1's label now reads 'GitHub issue #57 · your words, as sent', and scene 13's 'GitHub issue #23'; scene 19 no longer shows issue.md.
+- N1 · scene 2 · "the agent session waiting on this page": I could not tell how a session "waits on" a review page (is it a terminal conversation that opened the page and is listening for Send?). I guessed it is the chat that made the video and opened the page; it matters because scenes 3, 9 and 11 all turn on whether a session is "waiting" or "open", and I can't tell those two words apart.
+  - Answer: fixed: scene 2 now says Send hands your review 'to an agent session that is waiting for it, the one you opened this page from'.
 
-- N2 · scene 2 · "review loop", "quick checks", "explain first", "memory" (the small grey labels under each row): nothing says what these labels are. I guessed they name the earlier videos each idea comes from, but no scene says so or tells me where to find those videos.
-  - Answer: fixed: scene 2 drops the small plan-name labels; its heading, 'Four things this plan builds on', is what the rows are.
+- N2 · scene 3 · "hand-off tried once · tried again 15 s later": the narration says Send tries the hand-off "to a waiting session", but scene 7's card on the same gap asks "Send, no session waiting: how many tries?". I could not tell whether the retry happens when a session is waiting or when none is, or how it fits with gap 1, where no session means a headless run starts. I guessed: no session, try twice 15 s apart, then a headless run. I need the order of events spelled out once.
+  - Answer: fixed: scene 3's gap 2 now spells the order: 'the agent: a waiting session that doesn't take it gets one try · the code: Send tries again 15 s later', and card c4 in scene 7 asks the same case, 'A session is waiting but doesn't take the review. Does Send try again?'
 
-- N3 · scene 3 · "tries once · tries again after 15 s": what does Send "try"? I guessed it tries to hand the review to a waiting session, but the video never says what happens after the second try fails (does a headless run start then, or does it wait?). I need that to follow card c4 in scene 6.
-  - Answer: fixed: scene 3's box now reads 'hand-off tried once · tried again 15 s later': Send tries to hand the review on; scene 7 shows what happens when no session takes it, and card c4 in scene 6 is the same case.
+- N3 · scene 3 · "gap 3 · you and the agent" / "the agent read: any agent · you meant: your open session": gaps 1 and 2 put the sides in the order the label names them, but gap 3 puts the agent's side first, though its label says "you and the agent". I read it twice to work out whose picture was whose.
+  - Answer: fixed: scene 3's gap 3 now reads 'you meant: your open session · the agent read: any agent', you first as its label says.
 
-- N4 · scene 3 · "a gap" (the label on the you–code line only): the narration says a gap is wherever two of the three disagree, and gives one on each side, but the frame labels only the bottom line. I wondered for a moment whether only you-versus-the-code counts as a gap.
-  - Answer: fixed: scene 3 drops the single 'a gap' label; each side's box is now headed 'gap 1', 'gap 2', 'gap 3' with the two pictures it lines up.
+- N4 · scene 4 · "before a plan · quick checks alike": I could not tell what "quick checks alike" means, or what "the cards ... on every quick check" in the narration means: do quick checks become cards, or get a card after them? I guessed that a wrong quick check gets the same settle buttons as a card, but only found that out in scene 16.
+  - Answer: fixed: scene 4's row now reads 'before a plan · quick checks settle like cards'.
 
-- N5 · scene 3 · "in this repo, a headless run takes it": why "in this repo"? The reason (the config sets a headless command) only comes in scene 7. Until then it reads as a rule I am meant to know already.
-  - Answer: fixed: scene 3's box now says 'this repo's config starts a headless run', so the reason is on screen where the gap is first named; scene 7 shows the config line.
+- N5 · scene 5 · "questions 2 and 4 kept the recommendation · decisions D-315, D-317": the video never says what questions 2 and 4 were or what was recommended, so this line tells a newcomer nothing. Also "Three checks you missed · steps 1, 2, 3": which checks they were, and what is "now said plainly", is not shown. I guessed they are the quick checks in scenes 10, 12 and 15.
+  - Answer: fixed: scene 5's line now names the two kept answers, 'the waiting session checks your words (decision D-315) · asked first only when a gap is likely and costly (decision D-317)', and the row reads 'Three quick checks you got wrong · steps 1, 2, 3'.
 
-- N6 · scene 4 · "Step five: the cards before a plan, and on every quick check": I could not work out what cards "on a quick check" would be. Scene 25 shows it means the four settle buttons after a wrong quick check. Here it sounds like a round of cards is added to every quick check.
-  - Answer: fixed: scene 4's step-five row now reads 'before a plan; quick checks settle the same way', so it no longer reads as cards added to a quick check.
+- N6 · scene 6 · the "Open Step 1 · A round of cards …" chip with a "0" badge: I don't know what the 0 counts (comments? details?), and the "planned" tag sits half under the chip. I guessed 0 is a count of notes on the step.
+  - Answer: fixed: the 'planned' tag now sits at the frame's foot, clear of the player's chip. kept for the '0': the Open chip is the review player's own, drawn on every video; this video's frames do not draw it.
 
-- N7 · scene 5 · "Open Step 1 · A round of cards… 0" (the chip, top right): the glossary explains the Open chip, but not the "0" at its end. I guessed it is a count of comments or notes on that step. It is on every step scene, so it looks like it matters.
-  - Answer: kept: the 'Open … 0' chip is the review player's own corner chip, drawn on every scene of every video that has a guide part; this video's frames don't draw it, and the glossary's Open chip row already says what it opens.
+- N7 · scene 6 · "Right · Not quite" on the assume card: the video never says what happens after Not quite. Is it a gap with the four settle buttons, or does it ask for your words? I guessed it becomes a gap, but the settle buttons (scenes 9 and 13) are only ever shown on a predict card.
+  - Answer: fixed: scene 6's assume card now reads 'Right · Not quite: say what, and it goes into the plan'.
 
-- N8 · scene 6 · "answer: once (struck through) twice · again after 15 s": the video never says what the strike-through shows. I guessed the agent first wrote "once" and the fresh checker changed it to "twice". If that is right, it is the clearest example of "the card is fixed", and the narration says nothing about it.
-  - Answer: fixed: scene 6 now labels the new answer 'fixed by the checker' as the strike lands, on the word 'fixed'.
+- N8 · scene 7 · "You never see 2 answers side by side" against the card showing "answer: ~~once~~ twice · 15 s apart, fixed by the checker": the picture shows both answers side by side, with one crossed out, at the moment the caption says you never see that. I guessed the crossed-out answer is only the author's view, not what the reviewer gets, but nothing says so. It also makes the quick check in scene 10 (option A, "Both answers, side by side") a trap.
+  - Answer: fixed: scene 7 now shows 'c4, as the agent wrote it' (answer no, struck), the checker's chip 'fixed before the round opens', and 'c4, the card you see' with only 'answer: yes · 15 s later', so the card you get never holds two answers.
 
-- N9 · scene 6 · "the page says Sent at once": which page, and what does "Sent" look like? I guessed the review page shows "Sent" as soon as you press Send, even though no session has the review yet. I'd need to see that to understand why I'd "picture it otherwise".
-  - Answer: fixed: scene 6's line now reads 'the review page says Sent right away'.
+- N9 · scene 7 · "predict · c4": this is the first time a card has a number like "c4", and later scenes use c2, c3, c5 and c6. I guessed it means card 4 of the round. It needs saying once, since scenes 10, 12 and 17 ask about cards only by these numbers.
+  - Answer: fixed: scene 6's line now reads 'cards c1, c2, c3 … numbered in their round · at most 6'.
 
-- N10 [plan] · scene 6 · "where it disagrees, the card is fixed or dropped": who decides between fixing and dropping, and what if the fresh checker is the one that is wrong? The video also doesn't say what the fresh checker costs (time, a second agent run) before every round.
-  - Answer: plan: step 1 now says who decides and how: the agent rewrites the card once from the quoted lines and the checker answers again; a card reaches you only when they agree; still disagreeing, it is dropped and listed at the end of the round as a gap between the agent and the code. The checker's cost was already added to step 1.
+- N10 · scene 8 · "align.md · one record" and ".reelplanner/align/, or this machine": align.md is never explained (one file per round? per topic?), and I couldn't tell when the record goes to "this machine" instead of the repo, or where on the machine it goes. I guessed: in the repo when it is set up, otherwise in the home folder like the inbox.
+  - Answer: fixed: scene 8's label now reads 'one file a round: the cards and your answers · .reelplanner/align/, or ~/.reelplanner/ in a repo not set up'.
 
-- N11 · scene 7 · "if (!question && !isMachineInbox(rp))" and the "a headless run" label laid over line 701: I couldn't tell from these lines why they mean a run starts. What is "question", and what is a "machine inbox"? The label sits on top of the code it explains, so I couldn't read the full line under it.
-  - Answer: fixed: scene 7 now pins 'a review, in a set-up repo' on line 700's isMachineInbox and 'a headless run' on start() in coral, each to the right of its line, so neither covers the code.
+- N11 · scene 8 · "with its own question tool": I couldn't tell what the agent's "question tool" is. I guessed it is the agent's built-in multiple-choice prompt in the chat. It matters because it is the way in that gets built first.
+  - Answer: fixed: scene 8's chat card now reads 'the agent's multiple-choice prompt (AskUserQuestion)'.
 
-- N12 · scene 9 · "card c3, turned over" (only lines 700–701, no file name): scene 7 said the back of a card holds the file, the lines and one sentence why, but this back has no file name. The card numbers also skip around (c4 in scene 6, c3 here, c2 in 12, c5 in 18, c6 in 13), and I couldn't tell whether they are all one round.
-  - Answer: fixed: scene 9's card now has its file bar, 'scripts/lib/inbox.mjs · 700–701', and the four buttons under it. The card numbers c2 to c6 are one example round's cards, each named on the card itself in scenes 5 to 7.
+- N12 · scene 8 · the chat's "701 const result = await start(" next to the review page's "700 if (!question … / 701 await start();": both are card c3, but they show different code for line 701, so I wondered whether they quote different files or versions.
+  - Answer: fixed: scene 8's chat and page cards now quote the same lines, 700 'if (!question …' and 701 'await start();'.
 
-- N13 · scene 10 · "c3: you press Send, no session waiting. A, B or C?": in the chat version the options are never shown, so I couldn't see how anyone would know what A, B and C stand for. Is that part of what option B costs, or is the picture just leaving them out?
-  - Answer: fixed: scene 10's agent message now gives the options, 'A waits · B a headless run · C lost?', and the reply chip reads 'you: A', the code box 'agent'.
+- N13 · scene 8 · "later: drawing your picture" / "Drawing your picture comes later, on the page, as a plan of its own": I couldn't tell what drawing your picture means (sketching a diagram of how you think the code works?). Also "a video · a quick check is a card": I couldn't tell whether a video's quick checks become cards or a card plays as a quick check.
+  - Answer: fixed: scene 8 now reads 'later: drawing how you think it works', and the video's card 'its quick checks ask the same cards'.
 
-- N14 · scene 13 · "It goes to my session: a match. If I'm not there, it waits: a gap": the narration suddenly says "my" and "I". I took a while to work out that it is reading out the viewer's own spoken claims. Nothing marks it as a quote.
-  - Answer: fixed: scene 13 now heads its words 'your words, as you said them' and puts each sentence in quotation marks.
+- N14 · scene 9 · "if (!question && !isMachineInbox(rp))" labelled "a review, in a repo with .reelplanner/": the label says "a review" but the code tests "!question". I couldn't tell what "question" is here (a question asked with Ask about this?) or why its absence means "a review". The card also says "a headless run starts on it", and I couldn't tell what "it" is.
+  - Answer: fixed: scene 9's pin now reads 'a review, not a question, in a set-up repo', and its option and answer say 'a headless run starts on the review'.
 
-- N15 · scene 13 · "Drawing your picture stays a separate plan" / "issue #23": "drawing your picture" is never explained. I guessed it means sketching a diagram of how you think the code works, instead of saying it, but that is a guess.
-  - Answer: fixed: scene 13's foot line now reads 'drawing your picture instead of saying it · GitHub issue #23, a separate plan'.
+- N15 · scene 11 · "It goes to my session: a match. If I'm not there, it waits": the narration moves into the first person to quote the viewer's words without saying so, so in audio it sounds like the narrator talking about its own session. The picture shows them as quotes; the voice does not.
+  - Answer: fixed: scene 11's narration now marks the quote, 'Say you said: it goes to my session. A match.', and the frame shows each sentence in quotation marks.
 
-- N16 [plan] · scene 13 · "Hold Space and talk; whisper writes it down on this machine": what happens on a hosted page (the glossary says hosted pages run online, in a Claude Artifact), or on a machine without a microphone or without whisper? The video says only "hold Space, or type" on the card in scene 5.
-  - Answer: plan: step 3 now says that with no microphone, or on a hosted page, the say card takes typed words only and says so; with no whisper and live recognition off, it offers typing and how to install whisper.
+- N16 · scene 11 · "✓ line 673": no file is named (the other claim names "lines 700–705 · config.json"). I guessed it is scripts/lib/inbox.mjs, but a claim's check should say where it looked.
+  - Answer: fixed: scene 11's pins now name the file, 'scripts/lib/inbox.mjs:673' and 'scripts/lib/inbox.mjs:700–705 · .reelplanner/config.json'.
 
-- N17 [plan] · scene 14 · "a small hosted model, called from the page": whose model is it, who pays for it, and does it need a key? Option B can't be weighed fairly without knowing that.
-  - Answer: plan: question 2's option B now says it is OpenRouter with your own key in ~/.reelplanner/.env, billed to you as the hosted voice is, and that your words go to that service; scene 14's card and its more say the same.
+- N17 · scene 11 · "It comes back as an assume card": I couldn't tell when it comes back: right away, in the same round, or in the next round? And does it count toward the round's six?
+  - Answer: fixed: scene 11 now says it comes back 'as an assume card, next in this same round', and its pin reads the same; step 3 of the plan says it is not counted in the six.
 
-- N18 · scene 14 · "C: the next session to take the round, after Send": I didn't know a round could be "taken" like a review. I guessed the round's answers go out with Send in the review, but the video never says how a round travels to the agent.
-  - Answer: fixed: scene 14's option C now reads 'sent with the round, like a review · marked when it comes back', and its more says it is filed with the round as a review is.
+- N18 [plan] · scene 11 · "The waiting session, as you chose, splits your words into claims": what checks your words when no session is waiting (the case the whole video is about)? Does a headless run do it, does it wait, or is the say card unavailable? The video doesn't say, and the plan may not cover it.
+  - Answer: plan: step 3 now says a say card is checked by a session or not yet, never by a headless run; in the chat there is always one, and on the page with none waiting the words wait with the round.
 
-- N19 · scene 18 · "a card about where a question waits": which question? I didn't know whether this means a plan video's question, a quick check, or a review. Also, option B gives "Got it or Show me more" when scene 7 said a gap has four ways to settle. Are Change the plan and The code is wrong not offered after Not sure? The video doesn't say.
-  - Answer: fixed: scene 18 now asks about 'card c5', not a card about a question; scene 7 now says 'A wrong answer is a gap, with four ways to settle it; not sure, with two.', so B's two ways are what was explained.
+- N19 · scene 13 · "a step of the plan · with no plan, issue.md for you to file": the text runs out of its box ("file" spills below it, over the next label). I couldn't tell where issue.md is written. And "only when a plan's question asks it and you answer": I couldn't tell what "it" refers to (the gap? the same matter?). I guessed it means a round's result reaches the decision log only if a later plan's own question asks the same thing.
+  - Answer: fixed: scene 13's box now reads 'a plan step · or issue.md to file', which fits, and the decision log sits apart, dimmed, with 'nothing from a round goes in · a plan's own questions do' beside it.
 
-- N20 · scene 19 · "a plan step · or issue.md": who decides whether The code is wrong becomes a plan step or an issue, and what is issue.md? (It is not the GitHub "issue #57" of scene 1, as far as I can tell.)
-  - Answer: fixed: scene 19 now reads 'a step of the plan · with no plan, an issue to file', so the rule is on screen and issue.md is gone.
+- N20 [plan] · scene 13 · "Change the plan: it goes into the plan, under You told me first": a round can run before any plan exists (step 5). Where does Change the plan go then? "The code is wrong" has a no-plan case (issue.md), but Change the plan doesn't.
+  - Answer: plan: step 4 now says that before any plan exists your Change the plan words wait in align.md under You told me first, and the plan started from it (Plan this) carries them.
 
-- N21 · scene 19 · "The decision log… gets them only through the plan's own questions": I couldn't follow this. I guessed that a settled gap reaches the decision log only if it later becomes one of the plan video's questions and gets answered there. It matters, because scene 31's quick check depends on it.
-  - Answer: fixed: scene 19's line now reads 'only when a plan's question asks it and you answer', drawn down from the plan.md box to the decision log.
+- N21 [plan] · scene 14 · "known until the lines change": what happens when the lines do change? Is it asked again as a card, dropped from memory, or flagged? The video stops there.
+  - Answer: plan: step 4 now says that when the lines change it counts as not known, and the next round that touches it may ask it again as a new card, never the old one.
 
-- N22 [plan] · scene 19 · "Show me more: a longer card now, and one short video of those gaps at the end": the longer card and the short video are only named, never shown. I'd need to see one, and to know how long the video takes to make while I wait.
-  - Answer: plan: step 4 now says Show me more's video is built in the background at low depth, a few minutes, while you go on, and the page says when it is ready. The longer card is the card's own page, the same lines with more words and the diagram.
+- N22 · scene 16 · "The code is wrong, once built" (dashed button): the narration says "the same buttons", but this one is greyed and its words are never explained. I guessed that in a plan video no code exists yet, so that button only works after the build, and I couldn't tell what to press until then.
+  - Answer: fixed: scene 16's dimmed button now reads 'The code is wrong' with 'only once there is code' under it.
 
-- N23 [plan] · scene 20 · "Got it is kept with the lines' fingerprint": what happens when an edit above those lines moves them (700–705 become 710–715) without changing them, or when the file is renamed? Does the card come back, or is the memory lost?
-  - Answer: plan: step 4 now says the fingerprint is of the lines' text, not their numbers: a move or a rename is found again by that text and the place updated; only changed or removed text makes it not known.
+- N23 · scene 16 · "Approve: never blocked · left unsettled: recorded as today": I couldn't tell what "recorded as today" means. I guessed a wrong quick check left unsettled is kept the way a missed quick check is kept now, but "today" was only used in scene 4 for the current one-way setup.
+  - Answer: fixed: scene 16 now reads 'Approve is never blocked · left unsettled, it is kept as a wrong check is now'.
 
-- N24 · scene 24 · "Open: an assume card": "Open" here seems to mean "not yet settled", but the glossary uses "the Open chip" for something else, and every step scene shows an "Open" chip. I wasn't sure the two were unrelated.
-  - Answer: fixed: scene 24's third option is now 'Neither: an assume card', with its explain and walk-through saying neither a match nor a gap.
+- N24 · scene 16 · "late fixes · with a round 1 · likely gap, no round 4" and "under 5 plans of each: too few to compare": I couldn't tell what the two groups being compared are. I guessed: plans that ran a round vs plans where gaps were likely but no round was run. Also "rounds 3 · gaps 11" next to "not sure 2 · skipped 1": does 11 include the not-sure gaps? The numbers add up to 11 without them.
+  - Answer: fixed: scene 16 now reads 'not sure 2 (in the 11) · skipped 1', 'late fixes after: with a round 1' and 'likely gap, no round 4'; the narration says what the comparison is.
 
-- N25 [plan] · scene 25 · "A wrong quick check gets the same four buttons": on a plan video's quick check the code isn't built yet. What do "Got it" (the code is right) and "The code is wrong" mean there?
-  - Answer: plan: step 5 now says a plan video's quick check is about what the plan will do and settles three ways (Got it, Change the plan, Show me more); The code is wrong comes only where there is code, a walkthrough or the system video. Scene 7 and 25 now say 'the same buttons', and scene 25 shows three with 'and The code is wrong, once there is code'.
-
-- N26 · scene 25 · "Got it 7 · the plan 3 · a fix 1" and "late fixes: compared after 5 plans each way": these labels don't match the button names (is "a fix" The code is wrong? where is Show me more?), and "each way" is not explained. I guessed it means 5 plans with a round against 5 plans without one.
-  - Answer: fixed: scene 25's status lines now read 'Got it 7 · the plan 3' and 'code wrong 1 · more 0', the buttons' own names, and 'late fixes compared after 5 plans with a round and 5 without'.
-
-- N27 · scene 25 · "likely gaps listed": listed where, and to whom: in the chat, in the plan, or on the page? Nothing says whether I see this list when no round runs.
-  - Answer: fixed: scene 25 now reads 'likely gaps, listed in the plan'.
-
-- N28 · scene 26 · "two requests: make Send reach my open session · rename the Save button" (tiny unstyled text in the very top-left corner): it looks like a stray caption left in the frame, far smaller than anything else on screen.
-  - Answer: fixed: scene 26's two requests were built before the frame's styles existed and came out unstyled; they are now the scene's mono line under the question, at the theme's size.
-
-- N29 [plan] · scene 26 · "only when a gap is likely and costly": the video never says how the agent judges "likely" or "costly", and Question 4's recommended option depends on that rule. I'd need at least the rule or an example of the "line saying why".
-  - Answer: plan: step 5 now gives the rule: likely when one of the four places points at it (your words take it for granted, a missed check on that part, a change since you watched, an assumption the agent can't check alone); costly when a plan step depends on it or it is hard to undo. Question 4's option B more says the same.
-
-- N30 · scene 31 · "quick check k2 wrong": cards are numbered c1, c2 and so on, but here a quick check is "k2". No scene explains the k numbering.
-  - Answer: fixed: scene 31's case line now reads 'a video like this one · a quick check you got wrong · Change the plan', with no k2.
-
-- N31 · scene 32 · "Your four answers sit on the steps" and "the code" drawn black in the triangle: the step list on screen shows no answers, so I couldn't see where they "sit". Nothing says why "the code" is highlighted at the end.
-  - Answer: plan: plan.md's questions are as they were; this was the frame: scene 32's steps two to five now each show 'your answer' in their slot until the player writes your pick there. The code stays navy, as it is in every scene where code shows itself (scenes 3 and 7).
+- N25 · scene 19 · "the code" box drawn solid black in the triangle: the other two boxes stay light, and nothing says why the code is singled out at the end. I guessed it is the side that settles a disagreement, but the video never says that.
+  - Answer: kept: the code is navy in every scene that draws it (scenes 3 and 9), as code shows itself across reelplanner; the triangle at the end is scene 3's.
