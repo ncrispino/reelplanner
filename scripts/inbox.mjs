@@ -58,6 +58,7 @@ export async function main(args) {
     if (dirname(p) === questionsDir(box)) { const q = readQuestion(box, basename(p, ".json")); if (q) console.error(questionNote(q)); }
     // a review in this machine's folder (no set-up .reelplanner/: a quick video's) is printed too, as what to act on;
     // a set-up repo's is in the repo, for reel-intake, and an explainer's goes to `reel record`, which reads it itself
+    else if (roundNote(p)) console.error(roundNote(p));
     else if (!setUp) { const r = machineReviewNote(p); if (r) console.error(r); }
     console.log(p);
     return 0;
@@ -109,6 +110,17 @@ export async function main(args) {
   const left = before ? listInbox(before).filter((r) => !r.claim) : [];
   if (left.length) console.log(`△ ${left.length} review(s) sent before \`reel init\`, from a video with no plan folder, wait in this machine's folder (nothing here handles them): read each, then \`reelplanner inbox done <id>\`:\n${left.map((r) => `  ${shownPath(r.path)}`).join("\n")}`);
   return 0;
+}
+
+// A round sent from its page (find-the-gaps step 2): what came back, and what to do with it. It goes into no decision
+// log: the round's record (answers.json) already routed each settled gap; the session reads what is left and goes on.
+function roundNote(path) {
+  let row; try { row = JSON.parse(readFileSync(path, "utf8")); } catch { return null; }
+  if (row?.review?.kind !== "align") return null;
+  const at = row.review.round || row.round;
+  return [`🃏 the round ${at}, sent from its page: ${row.review.summary || ""}`,
+    `Read what each gap settled to: reelplanner align list, and ${at}/answers.json. A Show me more is one explainer: reelplanner align ${at} --explain-gaps prints its command.`,
+    `A skipped card is "Assumed, not checked" in the plan. Then: reelplanner inbox done ${basename(path, ".json")}, and go on with the plan. Nothing goes into the decision log.`].join("\n");
 }
 
 // A review in this machine's folder, as what to act on (a set-up repo's reviews/<id>.md, lib/review-scope.mjs): the

@@ -94,6 +94,8 @@ import { sendFile } from "./lib/http-file.mjs";
 import { rowProblem, writeReview, liveWaiters, startAgent, claimOf, readConfig, listInbox, writeQuestion, readQuestion, machineInbox, inboxDir, shownPath, deliverInbox, connectSession, connectionOf, dropConnection, notePage, claimLive, progressOf, repoKey } from "./lib/inbox.mjs";
 import { readYou, youKnows, pendingPath, repoName } from "./lib/memory.mjs";
 import { keepVersion, keepLines } from "./lib/versions.mjs";
+import { roundDirOf, repoOfRound } from "./lib/align.mjs";
+import { handleRound, roundAsset } from "./lib/align-server.mjs";
 
 const args = process.argv.slice(2);
 // the waiting half: no server, no bundle — wait on the inbox and exit with the review's path
@@ -108,7 +110,12 @@ const valued = new Set(["--out", "--port", "--timeout", "--repo", "--session", "
 if (flag("session-endpoint") && !flag("session")) { console.error("✗ --session-endpoint requires --session codex:<id>"); process.exit(1); }
 // each by where it really is, as the working directory and git name it, so a path shown relative to here, or
 // written relative to the repo, never climbs out through a link (macOS's /var/… for /private/var/…)
-const projects = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i - 1])).map((p) => realPath(p));
+const named = args.filter((a, i) => !a.startsWith("--") && !valued.has(args[i - 1])).map((p) => realPath(p));
+// a round's folder (find-the-gaps step 2) is no video: the page opens on it, at /round/?r=<name>, beside any videos named
+const rounds = named.map((p) => (existsSync(join(p, "index.html")) ? null : roundDirOf(p))).filter(Boolean);
+const projects = named.filter((p) => !rounds.some((r) => p === r || p.startsWith(r + "/")));
+const roundOnly = rounds.length > 0 && !projects.length;
+if (new Set(rounds.map((r) => realPath(repoOfRound(r)))).size > 1) { console.error("✗ these rounds belong to different repos: open each repo's on its own"); process.exit(1); }
 if (args.includes("--list")) {
   const found = discoverReviewProjects(projects[0] || process.cwd());
   for (const item of found) console.log(`${item.path}\n  owning repo: ${item.repo}`);
@@ -151,7 +158,7 @@ if (args.includes("--stop")) {
   process.exit(0);
 }
 let rp = null;
-if (!projects.length) {
+if (!projects.length && !roundOnly) {
   // the whole repo: find its .reelplanner/ and every built video in it
   let setupOnly = null;
   // (the nearest .reelplanner/ is this repo's: one of setup files only stops the search, never a parent's past it)
@@ -192,8 +199,9 @@ if (!packedDir && new Set(projects.map((p) => realPath(repoRoot(p)))).size > 1) 
 // where a review submitted on this page lands: the repo the videos belong to, in its set-up .reelplanner/inbox/, or
 // with none (one video, the skill's level 1) in this machine's ~/.reelplanner/inbox/<repo-key>/: nothing is added to
 // the repo. BOX is what the inbox functions are given (scripts/lib/inbox.mjs), INBOX the folder itself.
-const RP = rp || findRp(packedDir ? process.cwd() : projects[0]);
-const REPO = RP ? dirname(RP) : repoRoot(packedDir ? process.cwd() : projects[0]);
+const from = roundOnly ? repoOfRound(rounds[0]) : packedDir ? process.cwd() : projects[0];
+const RP = rp || findRp(from);
+const REPO = RP ? dirname(RP) : repoRoot(from);
 const BOX = RP || machineInbox(REPO), INBOX = inboxDir(BOX);
 if (flag("session")) {
   try { await connectSession(BOX, { repo: REPO, session: flag("session"), endpoint: flag("session-endpoint") || null }); }
@@ -251,9 +259,9 @@ if (!packedDir && !rp && !process.env.REELPLANNER_REVIEW_DETACHED) for (const p 
   catch (e) { console.log(`△ ${relative(process.cwd(), p) || "."}: its version not kept for \`reel rebuild\` (${e.message})`); }
 }
 
-const bundle = (dir) => packedDir ? undefined : execFileSync(process.execPath, [join(ROOT, "scripts", "bundle-player.mjs"), dir, ...projects, ...(rp ? ["--reelplanner", rp] : [])], { stdio: ["ignore", "inherit", "inherit"] });
+const bundle = (dir) => packedDir ? undefined : roundOnly ? mkdirSync(dir, { recursive: true }) : execFileSync(process.execPath, [join(ROOT, "scripts", "bundle-player.mjs"), dir, ...projects, ...(rp ? ["--reelplanner", rp] : [])], { stdio: ["ignore", "inherit", "inherit"] });
 // one video: open it; the whole repo: open on the library
-const pageUrl = (base, dir) => rp ? base : `${base}?project=${encodeURIComponent(JSON.parse(readFileSync(join(dir, "library.json"), "utf8")).slugs[0])}`;
+const pageUrl = (base, dir) => rounds.length ? `${base}round/?r=${encodeURIComponent(basename(rounds[0]))}` : rp ? base : `${base}?project=${encodeURIComponent(JSON.parse(readFileSync(join(dir, "library.json"), "utf8")).slugs[0])}`;
 const printOpener = (url) => {
   // only for Codex: the saved preference is the machine's, and another agent shown the line runs it too
   if (workspace === "terminal-browser" && reviewPreferences.codexAutoOpen && process.env.CODEX_THREAD_ID) {
@@ -266,7 +274,7 @@ const announce = async (url, { tell = true, show = true } = {}) => {
   printOpener(url);
   // A video was just built and its page is up: say so, with what is waiting. (The library, opened on
   // demand, is not news.) It never fails the page: a missing notifier is only a line on stdout.
-  if (tell && !rp && !args.includes("--no-notify")) {
+  if (tell && !rp && !roundOnly && !args.includes("--no-notify")) {
     const map = readPlanMap(projects[0]);
     notify({ title: map?.title || basename(projects[0]), line: map ? waitingLine(map) : "", url }).then((r) => { if (!r.shown) console.log(`  (no desktop notification: ${r.error || r.via})`); });
   }
@@ -458,13 +466,16 @@ function readBody(req, limit = 5e6) {
 }
 
 async function handleApi(req, res, path) {
-  if (path !== "api/review" && path !== "api/ask" && path !== "api/review/status" && path !== "api/pane") return json(res, 404, { ok: false, error: "no such endpoint" });
+  const round = path === "api/round" || path.startsWith("api/round/");
+  if (!round && path !== "api/review" && path !== "api/ask" && path !== "api/review/status" && path !== "api/pane") return json(res, 404, { ok: false, error: "no such endpoint" });
   // This endpoint can start an agent run, so only this page may call it: no other site's Origin
   // (a plain form post skips CORS preflight), and a Host that is us (a rebinding DNS name is not).
   const hosts = [`127.0.0.1:${port}`, `localhost:${port}`];
   if (!hosts.includes(String(req.headers.host))) return json(res, 403, { ok: false, error: "wrong host" });
   if (req.headers.origin && !hosts.some((h) => req.headers.origin === `http://${h}`)) return json(res, 403, { ok: false, error: "cross-origin" });
   if (path === "api/ask") return handleAsk(req, res);
+  // a round (find-the-gaps steps 2 and 3): its cards, answers, your words, Send; never a headless run
+  if (round) return handleRound(req, res, path, { repo: REPO, box: BOX, json, readBody });
   if (path === "api/pane") {
     if (req.method !== "POST") return json(res, 405, { ok: false, error: "POST the split's key and terminal" });
     let pane; try { pane = paneOf(JSON.parse(await readBody(req, 4e3))); } catch {}
@@ -539,6 +550,14 @@ const server = createServer((req, res) => {
   const api = new URL(req.url, "http://x").pathname.replace(/^\/+|\/+$/g, "");
   if (api === "api" || api.startsWith("api/")) { handleApi(req, res, api).catch((e) => { console.error(`✗ /${api}: ${e.message}`); if (!res.headersSent) json(res, 500, { ok: false, error: e.message }); }); return; }
   const path = normalize(decodeURIComponent(new URL(req.url, "http://x").pathname)).replace(/^([/\\])+/, "");
+  // the round page and its fonts, from the player's package (any round of this repo, by name: ?r=)
+  if (path === "round" || path.startsWith("round/") || path.startsWith("round\\")) {
+    const f = roundAsset(ROOT, path.split("\\").join("/"));
+    if (!f) { res.writeHead(404).end("not found"); return; }
+    sendFile(req, res, f, { contentType: TYPES[extname(f).toLowerCase()] || "application/octet-stream", headers: { "cache-control": "no-store" },
+      body: f.endsWith(".html") ? readFileSync(f, "utf8").replace(/<head>/i, '<head>\n<meta name="reelplanning-review-server" content="1">') : null });
+    return;
+  }
   let file = join(out, path);
   if (!file.startsWith(out)) { res.writeHead(403).end(); return; }
   if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");

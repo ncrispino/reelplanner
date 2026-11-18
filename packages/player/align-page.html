@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round · review</title>
+<style>
+  /* the review page's own look (find-the-gaps step 2): paper and tile, ink, and the one coral only on what is yours */
+  @font-face { font-family: "Inter"; src: url("fonts/inter-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: "EB Garamond"; src: url("fonts/eb-garamond-latin-wght-normal.woff2") format("woff2"); font-weight: 400 800; font-display: swap; }
+  @font-face { font-family: "JetBrains Mono"; src: url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 800; font-display: swap; }
+  :root { --ground: #F1EFE8; --paper: #FAF9F5; --tile: #EFE9DE; --ink: #141413; --ink-2: #3D3B37; --ink-3: #5C5953; --ink-rgb: 20,20,19; --coral: #B8552E; --coral-text: #9C4524; --slab: #181715; --slab-ink: #FAF9F5;
+    --serif: "EB Garamond", Georgia, serif; --sans: "Inter", ui-sans-serif, system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ground: #0E0D0B; --paper: #141310; --tile: #1F1E1B; --ink: #F2EFE8; --ink-2: #CFCAC1; --ink-3: #A6A196; --ink-rgb: 242,239,232; --coral: #D2693F; --coral-text: #E3A184; --slab: #252320; } }
+  :root[data-theme="dark"] { --ground: #0E0D0B; --paper: #141310; --tile: #1F1E1B; --ink: #F2EFE8; --ink-2: #CFCAC1; --ink-3: #A6A196; --ink-rgb: 242,239,232; --coral: #D2693F; --coral-text: #E3A184; --slab: #252320; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0 16px 48px; background: var(--ground); color: var(--ink); font: 16px/1.5 var(--sans); }
+  header { max-width: 980px; margin: 0 auto; padding: 18px 0 10px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+  header h1 { margin: 0; font: 400 24px/1.25 var(--serif); flex: 1 1 auto; }
+  .lab { font: 500 13px/1.3 var(--mono); letter-spacing: .04em; color: var(--ink-3); }
+  .words { max-width: 980px; margin: 0 auto 14px; color: var(--ink-2); }
+  .card { max-width: 980px; margin: 0 auto; background: var(--paper); border-radius: 14px; box-shadow: 0 0 0 1px rgba(var(--ink-rgb),.14), 0 6px 24px -12px rgba(var(--ink-rgb),.25); padding: 28px 32px 26px; min-height: 360px; }
+  .card.turn { animation: turn .45s ease; }
+  @keyframes turn { 0% { transform: perspective(1200px) rotateY(0); } 50% { transform: perspective(1200px) rotateY(90deg); } 100% { transform: perspective(1200px) rotateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .card.turn { animation: none; } }
+  .card h2 { margin: 6px 0 18px; font: 400 32px/1.2 var(--serif); }
+  .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 8px 0 16px; }
+  .opts.point { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .opt { text-align: left; font: 400 18px/1.35 var(--sans); color: var(--ink); background: var(--paper); border: 1px solid rgba(var(--ink-rgb),.3); border-radius: 10px; padding: 14px 16px; cursor: pointer; min-height: 64px; }
+  .opts.point .opt { text-align: center; background: var(--tile); }
+  .opt:hover { border-color: var(--ink); }
+  .opt:focus-visible, .btn:focus-visible, textarea:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .opt .k { display: inline-block; min-width: 1.6em; font: 500 14px/1 var(--mono); color: var(--ink-3); }
+  .opt.mine { border: 3px solid var(--coral); }
+  .opt.mine.wrong { border-style: dashed; }
+  .opt.right { border: 3px solid var(--ink); }
+  .opt[disabled] { cursor: default; }
+  .slab { background: var(--slab); color: var(--slab-ink); border-radius: 10px; padding: 12px 16px; overflow-x: auto; font: 400 14px/1.55 var(--mono); white-space: pre; margin: 6px 0 12px; }
+  .why { font-size: 18px; margin: 4px 0 14px; }
+  .verdict { font: 500 14px/1.3 var(--mono); margin: 0 0 10px; }
+  .verdict.gap { color: var(--coral-text); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+  .btn { font: 500 16px/1 var(--sans); color: var(--ink); background: var(--paper); border: 2px solid rgba(var(--ink-rgb),.55); border-radius: 9px; padding: 12px 16px; cursor: pointer; }
+  .btn.ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.quiet { border-color: transparent; color: var(--ink-3); padding-left: 4px; padding-right: 4px; }
+  .btn.yours { border-color: var(--coral); color: var(--coral-text); }
+  .btn kbd { font: 500 12px/1 var(--mono); color: var(--ink-3); margin-left: 6px; }
+  textarea { width: 100%; min-height: 110px; font: 400 18px/1.45 var(--sans); color: var(--ink); background: var(--paper); border: 1px solid rgba(var(--ink-rgb),.3); border-radius: 10px; padding: 12px 14px; }
+  .claims { margin: 10px 0 0; padding: 0; list-style: none; }
+  .claims li { margin: 8px 0; font-size: 18px; }
+  .claims .m { font: 500 13px/1.3 var(--mono); color: var(--ink-3); display: block; }
+  .claims .differs { text-decoration: underline 4px var(--coral); text-underline-offset: 6px; }
+  .claims .open { text-decoration: underline 2px rgba(var(--ink-rgb),.5); text-underline-offset: 6px; }
+  .status { max-width: 980px; margin: 12px auto 0; color: var(--ink-3); font-size: 14px; min-height: 1.4em; }
+  .progress { max-width: 980px; margin: 0 auto 10px; display: flex; gap: 6px; }
+  .progress span { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--ink-rgb),.15); }
+  .progress span.done { background: var(--ink); }
+  .progress span.now { background: var(--coral); }
+  .planned { display: inline-block; font: 500 12px/1 var(--mono); border: 1px dashed rgba(var(--ink-rgb),.5); border-radius: 5px; padding: 4px 7px; color: var(--ink-3); }
+  @media (max-width: 600px) { .card { padding: 20px 16px; } .card h2 { font-size: 26px; } }
+</style>
+</head>
+<body>
+<header><h1 id="title">Round</h1><span class="lab" id="where"></span></header>
+<p class="words" id="words"></p>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<main class="card" id="card" aria-live="polite"></main>
+<p class="status" id="status" role="status"></p>
+<script type="module">
+// find-the-gaps steps 2 and 3: one card at a time; you answer before you see anything, then the card turns over to the
+// code's own lines. Every answer is recorded as you go (POST /api/round/answer), in the record the chat writes too.
+const name = new URLSearchParams(location.search).get("r");
+const $ = (id) => document.getElementById(id), esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const api = async (path, opts = {}) => { const r = await fetch(path, { ...opts, headers: { ...(opts.body && !(opts.body instanceof Blob) ? { "content-type": "application/json" } : {}), ...(opts.headers || {}) } }); return r.json(); };
+const SETTLE = { "got-it": "Got it", "change-plan": "Change the plan", "code-wrong": "The code is wrong", "show-more": "Show me more" };
+let round = null, i = 0, state = {};   // state[card] = { answer, own, back, settled, phase: "front" | "back" | "settled" }
+const status = (t) => { $("status").textContent = t || ""; };
+
+async function load() {
+  if (!name) { $("card").innerHTML = "<h2>No round named</h2><p>Open this page from <code>reelplanner review &lt;round&gt;</code>.</p>"; return; }
+  const r = await api(`/api/round?r=${encodeURIComponent(name)}`);
+  if (!r.ok) { $("card").innerHTML = `<h2>${esc(r.error)}</h2>`; return; }
+  round = r; document.title = `${r.title} · round`; $("title").textContent = r.title; $("where").textContent = `round · ${r.name}`;
+  $("words").textContent = r.words ? `Your words: “${r.words}”` : "";
+  for (const c of r.cards) if (c.answered) state[c.id] = { ...c.answered, back: c.back, phase: c.answered.settled || !["gap", "not-sure"].includes(c.back?.gap) ? "settled" : "back" };
+  i = Math.max(0, r.cards.findIndex((c) => !state[c.id] || state[c.id].phase !== "settled")); if (i < 0) i = r.cards.length;
+  draw();
+}
+function bar() { $("progress").innerHTML = round.cards.map((c, k) => `<span class="${state[c.id]?.phase === "settled" || round.skipped.includes(c.id) ? "done" : k === i ? "now" : ""}"></span>`).join(""); }
+function draw(turn = false) {
+  bar();
+  const el = $("card"); if (turn) { el.classList.remove("turn"); void el.offsetWidth; el.classList.add("turn"); }
+  if (i >= round.cards.length) return drawEnd();
+  const c = round.cards[i], s = state[c.id] || {};
+  const head = `<div class="lab">card ${esc(c.id)} · ${esc(c.kind)} · ${i + 1} of ${round.cards.length}</div><h2>${esc(c.question)}</h2>`;
+  if (c.kind === "say") return drawSay(c, s, head);
+  if (!s.phase) {
+    const opts = c.kind === "predict" ? [...c.options.map((o) => ({ id: o.id, label: o.label, key: o.id.toUpperCase() })), { id: "not-sure", label: "Not sure", key: "N" }]
+      : [{ id: "right", label: "Right", key: "A" }, { id: "not-quite", label: "Not quite: say what", key: "B" }, { id: "doesnt-matter", label: "Doesn't matter", key: "C" }];
+    el.innerHTML = `${head}<div class="opts${c.point ? " point" : ""}">${opts.map((o) => `<button class="opt" data-a="${o.id}"><span class="k">${o.key}</span> ${esc(o.label)}</button>`).join("")}</div>
+      <div id="ownbox" hidden><textarea id="own" placeholder="Say what you mean, in your own words"></textarea><div class="row"><button class="btn ink" id="ownsave">Save <kbd>Enter</kbd></button></div></div>
+      <div class="row"><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>`;
+    for (const b of el.querySelectorAll(".opt")) b.onclick = () => choose(c, b.dataset.a);
+    $("skip").onclick = skipRest;
+    return;
+  }
+  if (c.kind === "assume") { el.innerHTML = `${head}<p class="why">${s.answer === "right" ? "Right: said in the plan in a line." : s.answer === "not-quite" ? `Not quite: “${esc(s.own)}”, into the plan's You told me first.` : "Doesn't matter: left as it is."}</p><div class="row"><button class="btn ink" id="next">Next <kbd>Enter</kbd></button></div>`; $("next").onclick = next; return; }
+  const b = s.back || {}, mine = s.answer, gap = b.gap;
+  el.innerHTML = `<div class="lab">card ${esc(c.id)}, turned over · ${i + 1} of ${round.cards.length}</div><h2 style="font-size:24px">${esc(c.question)}</h2>
+    <div class="opts">${c.options.map((o) => `<button class="opt${o.id === b.answer ? " right" : ""}${o.id === mine ? ` mine${o.id !== b.answer ? " wrong" : ""}` : ""}" disabled><span class="k">${o.id.toUpperCase()}</span> ${esc(o.label)}${o.id === b.answer ? " · the answer" : o.id === mine ? " · your pick" : ""}</button>`).join("")}</div>
+    <div class="lab">${esc(b.source)}</div><div class="slab">${esc(b.lines)}</div>
+    <p class="why">${esc(b.why)}</p>
+    <p class="verdict${gap === "same" ? "" : " gap"}">${gap === "same" ? "✓ Same picture" : gap === "not-sure" ? "Not sure: a gap of its own kind. Settle it:" : "A gap. Settle it:"}</p>
+    ${gap === "same" ? "" : `<div class="row">${(b.settles || []).map((k, n) => `<button class="btn${s.settled === k ? " yours" : ""}" data-s="${k}">${SETTLE[k]} <kbd>${n + 1}</kbd></button>`).join("")}</div>
+      <div id="ownbox" hidden><textarea id="own" placeholder="How should it work? (optional)"></textarea></div>`}
+    <div class="row"><button class="btn ink" id="next" ${gap !== "same" && !s.settled ? "disabled" : ""}>Next <kbd>Enter</kbd></button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>`;
+  for (const btn of el.querySelectorAll("[data-s]")) btn.onclick = () => settle(c, btn.dataset.s);
+  $("next").onclick = next; $("skip").onclick = skipRest;
+  if (gap === "same") setTimeout(() => { if (round.cards[i] === c) next(); }, 2000);
+}
+async function choose(c, answer) {
+  if (answer === "not-quite") { $("ownbox").hidden = false; $("own").focus(); $("ownsave").onclick = () => send(c, { answer, own: $("own").value.trim() }); return; }
+  send(c, { answer });
+}
+async function send(c, a) {
+  if (a.answer === "not-quite" && !a.own) { status("Say what you mean first."); return; }
+  const r = await api("/api/round/answer", { method: "POST", body: JSON.stringify({ r: name, card: c.id, ...a }) });
+  if (!r.ok) { status(r.error); return; }
+  state[c.id] = { ...a, back: r.back, phase: c.kind === "assume" || r.back.gap === "same" ? "settled" : "back" };
+  status(r.routed?.length ? r.routed.join(" · ") : ""); draw(true);
+}
+async function settle(c, k) {
+  const s = state[c.id]; const own = ($("own")?.value || "").trim();
+  if ((k === "change-plan" || k === "code-wrong") && !own && $("ownbox")?.hidden) { $("ownbox").hidden = false; $("own").focus(); status("Say how it should work, if you like, then press it again."); return; }
+  const r = await api("/api/round/answer", { method: "POST", body: JSON.stringify({ r: name, card: c.id, answer: s.answer, own: own || s.own, settled: k }) });
+  if (!r.ok) { status(r.error); return; }
+  state[c.id] = { ...s, settled: k, back: r.back, phase: "settled" }; status(r.routed?.join(" · ") || ""); next();   // settled: on to the next card
+}
+function drawSay(c, s, head) {
+  const el = $("card");
+  const claims = s.back?.claims;
+  el.innerHTML = `${head}<p class="lab">Hold Space, or the microphone, and talk; or type. Your words are written down on this machine. Nothing is checked until you press Check.</p>
+    <textarea id="said" placeholder="How you think it works, in your own words">${esc(s.own || "")}</textarea>
+    <div class="row"><button class="btn" id="mic">🎙 Hold to talk <kbd>Space</kbd></button><button class="btn ink" id="check">Check</button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>
+    ${claims ? `<ul class="claims">${claims.map((x) => `<li><span class="${x.verdict}">“${esc(x.words)}”</span><span class="m">${x.verdict === "match" ? "✓ a match" : x.verdict === "differs" ? "✗ a gap" : x.verdict === "open" ? "? neither: an assume card, next in this round" : "not settled: the session and the checker read it differently"}${x.source ? ` · checked against ${esc(x.source)}` : ""}</span></li>`).join("")}</ul><div class="row"><button class="btn ink" id="next">Next <kbd>Enter</kbd></button></div>` : ""}`;
+  $("check").onclick = () => checkSay(c); $("skip").onclick = skipRest; if ($("next")) $("next").onclick = next;
+  const mic = $("mic"); mic.onpointerdown = () => startRec(); mic.onpointerup = mic.onpointerleave = () => stopRec();
+}
+let rec = null, chunks = [];
+async function startRec() {
+  if (rec) return; if (!navigator.mediaDevices?.getUserMedia) { status("No microphone here: type your words instead."); return; }
+  try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); chunks = []; rec = new MediaRecorder(stream); rec.ondataavailable = (e) => chunks.push(e.data);
+    rec.onstop = async () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" }); rec = null; status("Writing it down on this machine…");
+      const r = await fetch("/api/round/transcribe", { method: "POST", headers: { "content-type": blob.type || "audio/webm" }, body: blob }).then((x) => x.json());
+      if (!r.ok) { status(r.error); return; } const t = $("said"); t.value = `${t.value ? `${t.value} ` : ""}${r.text}`; status("Check it, fix a word if one is wrong, then press Check."); };
+    rec.start(); status("Listening… let go to stop."); }
+  catch { status("The microphone was not allowed: type your words instead."); }
+}
+function stopRec() { if (rec && rec.state === "recording") rec.stop(); }
+async function checkSay(c) {
+  const words = $("said").value.trim(); if (!words) { status("Say or type your words first."); return; }
+  state[c.id] = { ...(state[c.id] || {}), own: words };
+  const r = await api("/api/round/say", { method: "POST", body: JSON.stringify({ r: name, card: c.id, words }) });
+  if (!r.ok) { status(r.error); return; }
+  status(r.message);
+  const poll = async (n) => { const p = await api(`/api/round/say?r=${encodeURIComponent(name)}&card=${c.id}`); if (p.checked) { state[c.id] = { ...state[c.id], back: { claims: p.claims }, phase: "settled" }; status(""); draw(true); } else if (n < 300) setTimeout(() => poll(n + 1), 2000); };
+  poll(0);
+}
+function next() { i = Math.min(round.cards.length, i + 1); while (i < round.cards.length && state[round.cards[i].id]?.phase === "settled") i++; draw(); }
+function skipRest() { round.skipped = round.cards.filter((c) => !state[c.id]).map((c) => c.id); i = round.cards.length; draw(); }
+async function drawEnd() {
+  bar();
+  const gaps = round.cards.filter((c) => state[c.id] && !["same", "said", undefined].includes(state[c.id].back?.gap));
+  $("card").innerHTML = `<div class="lab">the round's end</div><h2>${gaps.length ? `${gaps.length} gap${gaps.length === 1 ? "" : "s"} found` : "Same picture all round"}</h2>
+    <p class="why">${round.skipped.length ? `Skipped, so listed in the plan as Assumed, not checked: ${round.skipped.join(", ")}. ` : ""}Send hands the round to the session waiting on this page; with none waiting it stays in the inbox for the next one.</p>
+    <div class="row"><button class="btn ink" id="send">Send</button></div>`;
+  $("send").onclick = async () => { const r = await api("/api/round/send", { method: "POST", body: JSON.stringify({ r: name, skipped: round.skipped }) }); status(r.ok ? `${r.message} · ${r.summary}` : r.error); if (r.ok) $("send").disabled = true; };
+}
+addEventListener("keydown", (e) => {
+  if (!round || e.target.closest?.("textarea")) { if (e.key === "Enter" && !e.shiftKey && e.target.id === "own" && $("ownsave")) { e.preventDefault(); $("ownsave").click(); } return; }
+  const c = round.cards[i], s = c ? state[c.id] || {} : {}, k = e.key.toLowerCase();
+  if (k === "s") return skipRest();
+  if (!c) return;
+  if (c.kind === "say") { if (e.code === "Space") { e.preventDefault(); if (!e.repeat) startRec(); } return; }
+  if (!s.phase) { const map = c.kind === "predict" ? Object.fromEntries([...c.options.map((o) => [o.id, o.id]), ["n", "not-sure"]]) : { a: "right", b: "not-quite", c: "doesnt-matter" }; if (map[k]) { e.preventDefault(); choose(c, map[k]); } return; }
+  if (s.phase === "back" && /^[1-4]$/.test(k)) { const ks = s.back?.settles || []; if (ks[Number(k) - 1]) settle(c, ks[Number(k) - 1]); return; }
+  if (e.key === "Enter" && (s.phase === "settled" || s.back?.gap === "same")) next();
+});
+addEventListener("keyup", (e) => { if (e.code === "Space" && round?.cards[i]?.kind === "say" && !e.target.closest?.("textarea")) stopRec(); });
+load();
+</script>
+</body>
+</html>
