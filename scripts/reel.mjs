@@ -47,7 +47,7 @@ import { resolve, join, dirname, basename, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { parseCalls, stopFor, beatsByStep, listedOf, callLoad, askOf, placeOf, MANY_CALLS, STEP_CALLS, TAGS } from "./lib/autonomy.mjs";
-import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, walkthroughBar, LINES } from "./lib/memory.mjs";
+import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, readKnows, walkthroughBar, LINES } from "./lib/memory.mjs";
 import { parseSteps, readPlanBlocks, blockFindings, blocksDue, BLOCKS_FROM, supersedesOf } from "./lib/plan-md.mjs";
 import { fileReview, listReviews, reviewKind, reviewOf, reviewTime, reviewsDir, planStage, asksMore, approvalOf, lastChanged } from "./lib/reviews.mjs";
 import { walkthroughScope, actOnMarkdown, distinctive, editsOf } from "./lib/review-scope.mjs";
@@ -891,7 +891,7 @@ async function memory() {
       catch (e) { pending = pendingPath(rp); console.log(`△ could not write ${youPath()} (${e.code || e.message}): the summaries waiting in ${relative(process.cwd(), pending)} are read beside it, and move in when it can be written\n`); }
     }
     mem = youMemory(youPath(), pending); where = `your memory across repos, from ${youPath()}${pending ? ` and ${relative(process.cwd(), pending)}` : ""}`;
-    if (!mem.facts.length) { console.log(`· ${youPath()} holds nothing yet: a summary of each review is added when \`reel record\` records it`); return; }
+    if (!mem.facts.length && !readKnows().length) { console.log(`· ${youPath()} holds nothing yet: a summary of each review is added when \`reel record\` records it`); return; }
   } else {
     const rp = rpDir(other[0] || "."); mem = repoMemory(rp); where = `${relative(process.cwd(), rp) || rp}: the ledger and every plan's reviews/`;
     // the accepted calls none of whose lines is left in HEAD (D-306): said here, never written into the log
@@ -905,6 +905,12 @@ async function memory() {
     if (!mem.lines.length) console.log("  nothing yet: no review is recorded");
     // what your file says you know (D-106, D-128): so a video need not explain a word you know, in any repo
     if (you) { const k = youKnows(mem.facts); if (k.watched.length || k.looked.size) console.log(`\nWatched: ${k.watched.length ? `${k.watched.length} video${k.watched.length === 1 ? "" : "s"} (${k.watched.slice(-4).map((w) => `${w.repo ? `${w.repo}: ` : ""}${w.video}`).join(", ")}${k.watched.length > 4 ? ", …" : ""})` : "none recorded"}. Words looked up: ${k.looked.size ? [...k.looked].sort((a, b) => b[1] - a[1]).map(([w, n]) => (n > 1 ? `${w} ×${n}` : w)).join(", ") : "none"}.`); }
+    // what a round's Got it kept (find-the-gaps step 4): known until its lines change; once more, on a new case, when due (D-316)
+    if (you) {
+      const latest = new Map(); for (const k of readKnows()) latest.set(`${k.repo}|${k.path}|${k.fingerprint}`, k);
+      const ks = [...latest.values()], due = ks.filter((k) => (k.asked || 1) < 2 && k.dueAt && Date.parse(k.dueAt) <= Date.now());
+      if (ks.length) console.log(`\nKnown from rounds: ${ks.length} (${ks.slice(-3).map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ")}${ks.length > 3 ? ", …" : ""}). Due once more, on a new case: ${due.length ? due.map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ") : "none"}${due.length ? " (`reelplanner align due`)" : ""}.`);
+    }
     console.log(`\n\`reel memory <id>${you ? " --you" : ""}\` prints the evidence behind a line.`);
     return;
   }
