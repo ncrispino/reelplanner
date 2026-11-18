@@ -394,3 +394,60 @@ export function roundsOf(repo) {
   const d = roundsDir(repo); if (!existsSync(d)) return [];
   return readdirSync(d).filter((n) => existsSync(join(d, n, "align.md"))).sort().reverse().map((n) => join(d, n));
 }
+
+// ── measured (step 5): rounds, the gaps they found, and later surprises with a round and without ──────────────────
+/** Plans of each kind a comparison needs before `reel status` says anything about it. */
+export const COMPARE_AT = 5;
+/** A plan's `**Round:**` line, which the skill writes in its header: a round's folder, `none, a likely, costly gap
+ *  (<why no round>)`, or `none needed`. → { round } | { likelyNoRound: why } | { none: true } | null */
+export function roundLineOf(planMd) {
+  const m = /^\*\*Round:\*\*\s*(.+?)\s*$/m.exec(planMd || ""); if (!m) return null;
+  const v = m[1].replace(/`/g, "");
+  if (/^none\b.*\blikely\b/i.test(v)) return { likelyNoRound: (/\(([^)]*)\)/.exec(v) || [])[1] || "" };
+  if (/^none\b/i.test(v)) return { none: true };
+  return { round: v };
+}
+/**
+ * What rounds did in a set-up repo: rounds, gaps per round and how each was settled, and later surprises (answers in
+ * your own words, "Expected something else", calls you flagged in a walkthrough, late fixes) on plans that had a round
+ * against plans where a likely, costly gap was found and no round ran. `facts`, `misses`: lib/memory.mjs repoMemory's.
+ */
+export function roundStats(rp, { facts = [], misses = [] } = {}) {
+  const repo = dirname(rp), plansDir = join(rp, "plans");
+  const rounds = roundsOf(repo), settled = { "got-it": 0, "change-plan": 0, "code-wrong": 0, "show-more": 0, none: 0 };
+  let gaps = 0, answered = 0;
+  const withRound = new Set(), likelyNoRound = new Set();
+  for (const d of rounds) {
+    const cards = parseCards(read(join(d, "align.md"))), rec = readJson(join(d, "answers.json"));
+    if (rec) answered++;
+    for (const c of cards) { const a = rec?.cards?.[c.id], g = gapOf(c, a); if (!g || g === "same" || g === "said") continue; gaps++; settled[a.settled || "none"]++; }
+    const p = /^\*\*Plan:\*\*\s*`?([^`\n]+?)`?\s*$/m.exec(read(join(d, "align.md")))?.[1];
+    if (p && !/^none$/i.test(p) && rec) withRound.add(basename(p));
+  }
+  const plans = existsSync(plansDir) ? readdirSync(plansDir).filter((p) => existsSync(join(plansDir, p, "plan.md"))) : [];
+  for (const p of plans) {
+    const l = roundLineOf(read(join(plansDir, p, "plan.md")));
+    if (l?.round && rounds.some((d) => basename(d) === basename(l.round))) withRound.add(p);
+    else if (l?.likelyNoRound != null && !withRound.has(p)) likelyNoRound.add(p);
+  }
+  const KINDS = { own: "own words", expected: "Expected something else", flagged: "flagged calls", late: "late fixes" };
+  const count = (set) => {
+    const n = { own: 0, expected: 0, flagged: 0, late: 0 };
+    for (const f of facts) if (set.has(f.plan)) { n.own += (f.own || []).length; n.expected += (f.wrongChecks || []).filter((w) => w.note).length; if (f.kind === "walkthrough") n.flagged += (f.flagged || []).length; }
+    for (const m of misses) if (set.has(m.plan) && m.type !== "reworked") n.late++;   // (a reworked step is its Expected something else, counted above)
+    return n;
+  };
+  return { rounds: rounds.length, answered, gaps, settled, withRound: [...withRound], likelyNoRound: [...likelyNoRound], KINDS,
+    surprises: { withRound: count(withRound), likelyNoRound: count(likelyNoRound) }, enough: withRound.size >= COMPARE_AT && likelyNoRound.size >= COMPARE_AT };
+}
+/** reel status's lines for it: [] with no round and no plan judged. */
+export function roundStatusLines(s) {
+  if (!s.rounds && !s.likelyNoRound.length) return [];
+  const st = s.settled, parts = [st["got-it"] && `Got it ${st["got-it"]}`, st["change-plan"] && `the plan ${st["change-plan"]}`, st["code-wrong"] && `a fix ${st["code-wrong"]}`, st["show-more"] && `more ${st["show-more"]}`, st.none && `not settled ${st.none}`].filter(Boolean);
+  const lines = [`rounds: ${s.rounds}${s.rounds !== s.answered ? ` (${s.answered} answered)` : ""}, gaps: ${s.gaps}${parts.length ? ` (${parts.join(", ")})` : ""}${s.answered ? `, ${(s.gaps / s.answered).toFixed(1)} a round` : ""}`];
+  const w = s.surprises.withRound, n = s.surprises.likelyNoRound;
+  lines.push(`later surprises, with a round · likely gap, no round: ${Object.keys(s.KINDS).map((k) => `${s.KINDS[k]} ${w[k]} · ${n[k]}`).join("; ")}`);
+  lines.push(s.enough ? `over ${s.withRound.length} plans with a round and ${s.likelyNoRound.length} with a likely gap and none: compare them`
+    : `too few plans to compare (${s.withRound.length} with a round, ${s.likelyNoRound.length} with a likely gap and none; ${COMPARE_AT} of each)`);
+  return lines;
+}

@@ -74,7 +74,7 @@ calls), and run each in a tool call of its own, not chained to another with `&&`
 what a permission rule matches and what auto mode judges. Before one that writes into the repo (`reel init`,
 `new-plan`, `record`), say in a line what it writes. `$RP --help` lists every command. `$RP reel …` keeps the project record (`init`, `new-plan`, `stage`,
 `check`, `record`, `audit`, `stops`, `prereqs`, `status`, `memory`, `retro`, `fold`, `build`, `pr-check`,
-`renumber`); `$RP explain …` starts an explainer (**An explainer**); `$RP guide <video-dir>` builds a
+`renumber`); `$RP explain …` starts an explainer (**An explainer**); `$RP align …` a round (**A round**); `$RP guide <video-dir>` builds a
 video's guide (`build` runs it); `$RP hyperframes …` is the HyperFrames CLI at the pinned version, to use
 wherever the faceless-explainer skill says `npx hyperframes`. Paths are relative
 to your working directory, so video projects and plans live in the repo being planned.
@@ -191,6 +191,10 @@ The plan goes into the repo, and the person gets a review page, not text in the 
    its place on the plan's row (a "what changed" section beside the plan video, a few lines per change,
    the list with its Flags, and Approve). Nothing changes until they approve that plan; asking for
    changes, or never answering, keeps walkthrough videos as they are.
+   **Before writing it, look for gaps** (**A round**): where the person likely pictures the code otherwise, and it
+   matters. When one is likely and costly, run a round first, with `--plan`, so the plan starts from where they stand.
+   Say in the plan's header which it was: `**Round:** <the round's folder>`, `**Round:** none, a likely, costly gap
+   (<why no round ran: they skipped it>)`, or `**Round:** none needed`. `reel status` compares the first two.
 3. **Write the plan.** Aim for a reviewer who knows what is changing before how, and can tell which
    steps depend on which: say the two to four changes up front, and give each step what it needs from
    another (or that it stands alone). Plain words, one idea a sentence, and no more complicated than it
@@ -309,6 +313,53 @@ written. What it can be of is open, so there is no list of kinds: the same princ
      **A new plan**. `$RP reel
      prereqs` lists the explainer first under Before you watch with a recap line, and the plan video starts at what
      changes: it never explains again what the explainer showed.
+
+## A round
+
+A round finds where the person and you picture the code differently, before that costs anything, and settles each
+gap. It is up to six cards, answered in a minute or two: **assume** ("I'm assuming you mean the session you have
+open"), **predict** ("No session is waiting and a command is set. Where does the review go?", answered before
+anything is shown, then turned over to the code's own lines) and **say** (they say, or type, how they think it works;
+the waiting session checks each claim against the code). Nothing a round settles goes into the decision log.
+
+**When.** Before a plan on code that exists, and whenever they ask ("align me first", "check I've got this right").
+List where gaps are likely: `$RP align "<their words>" <the files the plan touches> --plan <plan-dir>` starts the round's
+folder (`.reelplanner/align/<date>-<slug>/`; a repo not set up keeps it on this machine), then
+`$RP align <round> --candidates` lists four places: their words (what they take for granted), their memory (quick
+checks missed on these parts), what moved since they last watched, and cards due once more. A candidate is **likely**
+when one of the four points at it, and **costly** when a step of the plan depends on it or it is hard to undo (stored
+data and formats, permissions, what other people's code relies on). Run a round only when one is both; otherwise say
+in a line that you found none worth asking and go on. A new project has no code to predict: only assume and say cards.
+
+**The cards** go in `align.md` under `## Cards`, one `### c<N> · assume|predict|say` each, with `- question:`,
+`- likely_wrong:` (why they might picture it otherwise) and `- matters:` (what depends on it). A predict card adds
+`- option_a:`…, `- answer:`, `- source: <path>:<from>-<to>` (one range, pinned), `- quote:` (word for word from those
+lines) and `- why:`. Ask what the code does, never what the code is called. A card on something they said Got it to
+before, due once more, asks it on a new case and carries `- once_more: <fingerprint>`.
+
+**Check, then the fresh checker.** `$RP align <round> --check --no-checker` until it passes; then
+`$RP align <round> --prompt checker`, and run the prompt it prints in a fresh agent (a subagent with no context: it
+reads only `checker/brief.md`, with no answers in it) that writes `checker/answers.md`. `$RP align <round> --check`
+then passes only when it read each predict card's lines as the card does. A disagreement or a `?` (its lines do not
+decide it): rewrite the card once, with lines that do, or drop it. Never show a card the checker could not answer.
+
+**Asking it.** In the chat, by default: `$RP align <round> --cards` prints each card's front and back, assume first.
+Ask each with your question tool where you have one (AskUserQuestion in Claude Code: the options, and Not sure), one
+card at a time, and only then show its back (the lines, the answer, why). On a gap, offer the four ways: Got it,
+Change the plan, The code is wrong (predict cards only), Show me more; Not sure settles only Got it or Show me more.
+When they would rather click, or talk: `$RP review <round> --detach` opens it on the review page (one card at a time,
+keys or the microphone; what they say is written down on this machine), with `$RP review --wait` in the background;
+Send hands it back, and never starts a headless run. A say card's words come to you as a question to check: split them
+into claims, check each against the pinned sources, write `[{ words, verdict: match|differs|open, source }]` and
+`$RP align answer <round> <card> <claims.json>`.
+
+**Recording it.** Chat answers go in `answers.json` as `{ answers: [{ card, answer, own?, settled? }], skipped: [] }`:
+`$RP align record <round> <answers.json>` (the page records its own as they come). Each gap goes where its way says:
+Got it into their memory, asked once more on a new case three days on; Change the plan and Not quite into the plan's
+`## You told me first`; The code is wrong into a step of the plan, or `issue.md` to file when there is no plan; Show me
+more into one short explainer (`$RP align <round> --explain-gaps` prints its command). Skipped cards are listed in the
+plan as "Assumed, not checked". Then write the plan from where they stand: what they settled said in a line, what they
+knew not explained again.
 
 ## Build a video
 

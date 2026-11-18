@@ -119,7 +119,7 @@ export function reviewFacts(r, { plan, map = null, calls = [], ledger = [], step
     const label = (id) => (def.options || []).find((o) => o.id === id)?.label || id || "";
     const step = def.planStep ?? q.planStep ?? null;
     facts.wrongChecks.push({ k: q.id, step, t: q.t ?? null, question: def.question || q.id, answered: q.answer === "own" ? String(q.own || "") : label(q.answer),
-      answer: label(def.answer), correct: q.correct !== false, ...(note ? { note } : {}), components: steps[step] || [] });
+      answer: label(def.answer), correct: q.correct !== false, ...(note ? { note } : {}), ...(q.settled ? { settled: q.settled } : {}), components: steps[step] || [] });
   }
   for (const v of rv.autonomy || []) {
     // a call on the list the reviewer left (D-221) was not judged: it counts as neither an accept nor a flag
@@ -415,9 +415,9 @@ export function findMisses(rp, { ledger = null, sys = null, facts = null } = {})
     if (call && s && s.plan === d.plan && s.questionId === d.questionId) {
       if (s.verdict !== "flag" && s.verdict !== "own") continue;
       out.push({ type: "flagged", what: `${d.id} accepted, then ${s.verdict === "flag" ? "flagged" : "answered in your own words"} as ${s.id}`, brief: `${callId(d).toUpperCase()} of ${short(d.plan)} accepted, then ${s.verdict === "flag" ? "flagged" : "questioned"}`,
-        through, tags: tagsOf(d), components: d.components || [], shownIn: s.plan, date: s.date || d.supersededOn || null });
+        plan: d.plan, through, tags: tagsOf(d), components: d.components || [], shownIn: s.plan, date: s.date || d.supersededOn || null });
     } else out.push({ type: "superseded", what: `${d.id} superseded by ${by}${s ? ` (${short(s.plan)}: "${s.chosen}")` : ""}`, brief: `${d.id} superseded by ${by}`,
-      through, tags: call ? tagsOf(d) : [], components: d.components || [], shownIn: s?.plan || d.supersededByPlan || d.plan, date: d.supersededOn || null });
+      plan: d.plan, through, tags: call ? tagsOf(d) : [], components: d.components || [], shownIn: s?.plan || d.supersededByPlan || d.plan, date: d.supersededOn || null });
   }
   // a call the walkthrough review accepted, whose row was then changed after review (the note itself, not
   // a row that quotes it: memory's D1 describes the rule in "(changed after review: …)"). Only an accept
@@ -434,7 +434,7 @@ export function findMisses(rp, { ledger = null, sys = null, facts = null } = {})
     if (out.some((m) => m.through.startsWith(`call ${c.id.toUpperCase()} of ${short(plan)} `))) continue;
     const sc = stepComponents(join(rp, "plans", plan), sys)[c.step] || [];
     out.push({ type: "flagged", what: `${c.id} of ${short(plan)} accepted${v ? ` in ${v.review}` : ""}, then changed after review: ${(c.chose.match(new RegExp(`${AFTER_REVIEW.source}:\\**\\s*([^)]*)`, "i")) || [])[1]?.trim() || ""}`,
-      brief: `${c.id} of ${short(plan)} accepted, then changed`, through: `call ${c.id.toUpperCase()} of ${short(plan)}${led ? ` (${led.id})` : ""}`, tags: c.tags.filter((t) => t !== "deviation"), components: led?.components || sc, shownIn: plan, date: led?.date || (v?.at || "").slice(0, 10) || null });
+      brief: `${c.id} of ${short(plan)} accepted, then changed`, through: `call ${c.id.toUpperCase()} of ${short(plan)}${led ? ` (${led.id})` : ""}`, tags: c.tags.filter((t) => t !== "deviation"), components: led?.components || sc, plan, shownIn: plan, date: led?.date || (v?.at || "").slice(0, 10) || null });
   }
   // a walkthrough quick check the reviewer disagreed with: the step the plan review approved worked otherwise
   for (const f of facts.filter((x) => x.kind === "walkthrough")) for (const w of f.wrongChecks.filter((x) => x.note)) {
@@ -442,7 +442,7 @@ export function findMisses(rp, { ledger = null, sys = null, facts = null } = {})
     const comps = [...new Set(qs.flatMap((x) => x.components || []))];
     out.push({ type: "reworked", what: `step ${w.step} of ${short(f.plan)} reworked after the walkthrough's quick check ${w.k} ("${w.question}"): "${w.note}"`, brief: `step ${w.step} of ${short(f.plan)} reworked (${w.k})`,
       through: qs.length ? qs.map((x) => `question ${x.questionId} of ${short(x.plan)} (${x.id}: "${x.question}" → ${x.chosen})`).join("; ") : `step ${w.step} of ${short(f.plan)}, as the plan review approved it`,
-      tags: [], components: comps.length ? comps : w.components || [], shownIn: f.plan, date: (f.at || "").slice(0, 10) || null });
+      tags: [], components: comps.length ? comps : w.components || [], plan: f.plan, shownIn: f.plan, date: (f.at || "").slice(0, 10) || null });
   }
   return out.map((m) => ({ ...m, recent: recentPlans.has(m.shownIn) }));
 }

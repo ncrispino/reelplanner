@@ -166,6 +166,28 @@ try {
   r = run(set.repo, "record", sdir, ans([{ card: "c3", answer: "a", settled: "show-more", via: "page" }]));
   r = run(set.repo, sdir, "--explain-gaps");
   ok("--explain-gaps: one explainer of the gaps asked more on, from what you expected", /^reelplanner explain ".*you expected The inbox.*" src\/send\.mjs --depth low/m.test(r.out), r.out);
+
+  // ── measured (step 5): reel status counts rounds and compares later surprises ───────────────────────────
+  write(join(set.repo, ".reelplanner/plans/2026-11-19-other/plan.md"), "# Other\n\n**Round:** none, a likely, costly gap (you skipped it)\n\n### Step 1 — x\n");
+  write(join(set.repo, ".reelplanner/plans/2026-11-20-easy/plan.md"), "# Easy\n\n**Round:** none needed\n\n### Step 1 — x\n");
+  const { roundStats, roundStatusLines, roundLineOf } = await import("../lib/align.mjs");
+  ok("a plan's Round line: a round, a likely gap with none, or none needed", roundLineOf("**Round:** `.reelplanner/align/x`").round === ".reelplanner/align/x" && roundLineOf("**Round:** none, a likely, costly gap (you skipped it)").likelyNoRound === "you skipped it" && roundLineOf("**Round:** none needed").none);
+  const st = roundStats(join(set.repo, ".reelplanner"), { facts: [{ plan: "2026-11-19-other", own: [{}], wrongChecks: [{ note: "x" }], flagged: [], kind: "plan" }], misses: [{ plan: "2026-11-19-other", type: "superseded" }, { plan: "2026-11-18-send", type: "reworked" }] });
+  ok("roundStats: the plan a round was for, against the plan with a likely gap and none (not the easy one)", st.withRound.join() === "2026-11-18-send" && st.likelyNoRound.join() === "2026-11-19-other", JSON.stringify(st));
+  ok("…gaps counted by how each was settled", st.gaps >= 2 && st.settled["got-it"] >= 1 && st.settled["show-more"] >= 1, JSON.stringify(st.settled));
+  ok("…later surprises on each kind of plan (a reworked step counted once, as its Expected something else)", st.surprises.likelyNoRound.own === 1 && st.surprises.likelyNoRound.expected === 1 && st.surprises.likelyNoRound.late === 1 && st.surprises.withRound.late === 0, JSON.stringify(st.surprises));
+  const sl = roundStatusLines(st);
+  ok("…and below five of each, too few plans to compare", /^rounds: \d+/.test(sl[0]) && /late fixes 0 · 1/.test(sl[1]) && /too few plans to compare \(1 with a round, 1 with a likely gap and none; 5 of each\)/.test(sl[2]), sl.join("\n"));
+  ok("reel status prints it", /Alignment rounds[\s\S]*too few plans to compare/.test(reel(set.repo, "status", set.repo)), reel(set.repo, "status", set.repo));
+
+  // ── a quick check settled in a video reaches the revise as its way says ──────────────────────────────────
+  const { reviseScope } = await import("../lib/review-scope.mjs");
+  const map = { quizzes: [{ id: "k1", planStep: 1, question: "Where?", answer: "b", options: [{ id: "a", label: "A" }, { id: "b", label: "B" }] }] };
+  const why = (q) => reviseScope({ quizzes: [{ id: "k1", answer: "a", correct: false, ...q }] }, { map }).steps.flatMap((x) => x.reasons);
+  ok("a quick check settled Got it: yours, no rewrite of the step", why({ settled: "got-it" }).length === 0, JSON.stringify(why({ settled: "got-it" })));
+  ok("…Change the plan with words: the plan changed, in their words", why({ settled: "change-plan", note: "stop at three" }).some((r) => r.kind === "quiz-disagree" && /wants the plan changed/.test(r.comment) && /stop at three/.test(r.comment)));
+  ok("…The code is wrong with no words: ask them how", why({ settled: "code-wrong" }).some((r) => /The code is wrong/.test(r.comment) && /Ask them how/.test(r.comment)));
+  ok("…left unsettled: a missed check, as before", why({}).some((r) => r.kind === "quiz-missed"));
 } catch (e) { console.log(`✗ the spec threw: ${e.stack}`); failed++; }
 console.log(failed ? `\n${failed} failed (scratch kept: ${tmp})` : "\nalign: all passed");
 process.exit(failed ? 1 : 0);

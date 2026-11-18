@@ -136,6 +136,35 @@ marked context only, and a finding on a context scene is out of scope (named by 
 answer). "Before you watch" lists this build's kept findings only, never an earlier build's. `--all` looks at every
 scene on a rebuild too, for the rest of that build.
 
+## Find the gaps first (`reelplanner align`)
+
+A round asks you up to six cards where you likely picture the code otherwise and it matters (a step of the plan
+depends on it, or it is hard to undo), and settles each gap. The skill runs one before a plan when it finds such a
+gap, and whenever you ask ("align me first").
+
+```bash
+reelplanner align "how a review reaches the agent" scripts/lib/inbox.mjs --plan .reelplanner/plans/<plan>
+```
+
+- **The cards:** assume ("I'm assuming you mean…": Right, Not quite, Doesn't matter), predict (a case, answered before
+  anything is shown, then turned over to the code's own lines and why) and say (you say how you think it works; the
+  waiting session checks each claim against the code). `align <round> --check` holds them to the rules; a fresh agent
+  answers each predict card from its lines alone (`--prompt checker`), and a card it reads otherwise never reaches you.
+- **Where you answer:** in the chat (`align <round> --cards`), or on the review page (`reelplanner review <round>`):
+  one card at a time, keys A–D and N, or hold Space and talk. Speech is written down on this machine by the local
+  whisper; nothing leaves it. Every answer goes into one record, `answers.json`. Send never starts a headless run.
+- **Settling a gap:** Got it (into your memory, `~/.reelplanner/you.jsonl`, asked once more on a new case three days
+  on), Change the plan (the plan's "You told me first"), The code is wrong (a step of the plan, or `issue.md` to file),
+  Show me more (one short explainer of all such gaps: `align <round> --explain-gaps`). Not sure is a gap of its own,
+  settled Got it or Show me more. A skipped card is "Assumed, not checked" in the plan. Nothing goes into the decision log.
+- **A quick check in a video** you answer wrong settles the same way, under the answer: Got it, Change the plan, Show me
+  more, and in a walkthrough, an explainer or the system video, The code is wrong. It never blocks Approve.
+- **Measured:** `reel status` lists rounds, their gaps and how each was settled, and later surprises (your own words,
+  Expected something else, flagged calls, late fixes) on plans with a round and on plans with a likely gap and no
+  round. It says "too few plans to compare" until there are five of each.
+
+`align due` lists what is due once more; `align list` this repo's rounds. The folder: [`.reelplanner/align/`](project-dir.md).
+
 ## The guide behind a video
 
 `reelplanner guide <video-dir | plan-dir | explainer-dir> [--check] [--out <file>]` builds a video's guide from

@@ -779,6 +779,12 @@ h4 .count{font-weight:400;color:var(--ink-3)}
 .disagree textarea:focus{outline:0;border-color:var(--ink)}
 .disagree .kept{flex-basis:100%;margin:2px 0 0;font-size:var(--fs-xs);color:var(--ink-3)}
 .disagree .kept:empty{display:none}
+/* a wrong quick check settles like a round's card (find-the-gaps step 5); never needed for Approve */
+.disagree .settle{display:none;flex-basis:100%;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.disagree[data-wrong] .settle{display:flex}
+.disagree .settle button{font:500 var(--fs-sm)/1.2 var(--sans);padding:5px 10px;border-radius:7px;border:1px solid var(--ink-20);background:var(--paper);color:var(--ink);cursor:pointer}
+.disagree .settle button[hidden]{display:none}
+.disagree .settle button[aria-pressed="true"]{border:2px solid var(--accent);color:var(--accent-text)}
 .foot{display:flex;gap:12px;align-items:center;margin-top:12px;font-size:var(--fs-sm);color:var(--ink-3)}
 /* the sheet's one act once it has what it needs: Confirm your picks, Continue after a quick check */
 .foot .confirm:not(:disabled),.foot .gobtn{height:36px;padding:0 14px;background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:500}
@@ -1953,7 +1959,7 @@ export class ReelplannerPlayer extends HTMLElement {
             <div class="dmark" hidden><button class="dhit" data-act="dmark-open" tabindex="-1"><em class="dtab" aria-hidden="true"><span class="dtl">More in the guide</span><i class="dgl">↓</i></em></button></div>
             <div class="markbox" hidden><div class="row"><textarea data-markword rows="1" maxlength="280" placeholder="Your note, a question, or a suggested edit…" aria-label="Your words for this mark — Enter saves them, Esc closes and keeps them, × deletes them"></textarea><button class="x trash" type="button" data-marktrash hidden title="Delete this mark — U puts it back" aria-label="Delete this mark"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5"/></svg></button><button class="x" type="button" data-markdiscard title="Delete these words (the mark stays)" aria-label="Delete these words">×</button></div><span class="k"><kbd>Enter</kbd> saves · <kbd>Esc</kbd> closes (kept) · <kbd>×</kbd> deletes</span></div></div></div>
             <div class="idle"><div class="before" hidden role="region" aria-label="Before you watch"></div><button class="go" data-act="poster-play" hidden aria-label="Play (space)" title="Play (space)"></button><span class="meta">Loading the video…</span></div>
-            <div class="decision sheet" role="dialog" aria-label="Decision"><div class="hd"><span class="k"></span><button class="fold" data-act="fold" title="Fold the question away so you can see the frame it is about — it stays unanswered">Show the frame</button><button class="reopen" data-act="unfold">Still to answer</button></div><p class="q"></p><div class="reason" hidden></div><div class="opts"></div><div class="more"><div class="own" hidden><button class="ownbtn" data-act="own" title="Type your own answer instead of picking one (O) — Esc cancels">Answer in my own words <kbd>O</kbd></button><div class="ownbox"><textarea rows="2" placeholder="Your answer — Enter saves it"></textarea><button data-act="own-save">Save</button></div><p class="ownhint" hidden>Your words become an instruction: the agent changes the code to match.</p></div><button class="ownbtn unclearbtn" data-act="unclear" hidden title="Not ready to answer: ask for this to be explained better, with examples (?) — the note, if any, says what is unclear. It is never counted as a decision.">Explain this more <kbd>?</kbd></button><div class="note" hidden><textarea rows="1" data-note maxlength="400" placeholder="Add a note to this answer (optional)" aria-label="A note to go with your answer (optional) — Enter keeps it, Shift+Enter starts a new line" title="A few words that clarify your answer — they go with it, they are not a second answer"></textarea></div></div><div class="feedback"></div><p class="blong" hidden></p><div class="walk" hidden role="note"><span class="wk">Walk me through it</span><p class="wt"></p><button class="lnk wread" data-act="walk-read" title="The walk-through in the side panel; closing it brings this back">Read it in the side panel</button></div><div class="fwhys" aria-live="polite"></div><div class="disagree"><label for="rp-disagree">Expected something else?</label><textarea id="rp-disagree" rows="1" data-disagree maxlength="400" placeholder="Say how it should work — Enter saves" title="The quick check itself is wrong or not how you expected it to work: your words go to the agent with your answer (Shift+Enter starts a new line)" autocomplete="off"></textarea><p class="kept" role="status"></p></div><div class="foot"><button data-act="walk" class="walkbtn" hidden title="A worked example of what this quick check tests">Walk me through it</button><button data-act="quiz-back" class="backbtn" hidden title="Take the video back to where this was explained; the question waits here again when the video reaches it">Back to where this was explained</button><button data-act="rowmore" class="rowmore" hidden aria-expanded="false" title="The other buttons for this question: there is no room on the frame for all of them">…</button><button data-act="confirm" class="confirm" hidden disabled>Confirm <kbd>&#8629;</kbd></button><button data-act="quiz-go" class="gobtn" hidden title="Go on now (space or Enter)">Continue <kbd>Space</kbd></button><span class="hint"></span></div></div>
+            <div class="decision sheet" role="dialog" aria-label="Decision"><div class="hd"><span class="k"></span><button class="fold" data-act="fold" title="Fold the question away so you can see the frame it is about — it stays unanswered">Show the frame</button><button class="reopen" data-act="unfold">Still to answer</button></div><p class="q"></p><div class="reason" hidden></div><div class="opts"></div><div class="more"><div class="own" hidden><button class="ownbtn" data-act="own" title="Type your own answer instead of picking one (O) — Esc cancels">Answer in my own words <kbd>O</kbd></button><div class="ownbox"><textarea rows="2" placeholder="Your answer — Enter saves it"></textarea><button data-act="own-save">Save</button></div><p class="ownhint" hidden>Your words become an instruction: the agent changes the code to match.</p></div><button class="ownbtn unclearbtn" data-act="unclear" hidden title="Not ready to answer: ask for this to be explained better, with examples (?) — the note, if any, says what is unclear. It is never counted as a decision.">Explain this more <kbd>?</kbd></button><div class="note" hidden><textarea rows="1" data-note maxlength="400" placeholder="Add a note to this answer (optional)" aria-label="A note to go with your answer (optional) — Enter keeps it, Shift+Enter starts a new line" title="A few words that clarify your answer — they go with it, they are not a second answer"></textarea></div></div><div class="feedback"></div><p class="blong" hidden></p><div class="walk" hidden role="note"><span class="wk">Walk me through it</span><p class="wt"></p><button class="lnk wread" data-act="walk-read" title="The walk-through in the side panel; closing it brings this back">Read it in the side panel</button></div><div class="fwhys" aria-live="polite"></div><div class="disagree"><div class="settle" role="group" aria-label="Settle it: you had it wrong, or it is"><button data-act="settle" data-settle="got-it" aria-pressed="false" title="You had it wrong: kept in your memory, and asked once more later on a new case">Got it</button><button data-act="settle" data-settle="change-plan" aria-pressed="false" title="It should work otherwise: say how, below; it reaches the agent as a comment does">Change the plan</button><button data-act="settle" data-settle="code-wrong" aria-pressed="false" hidden title="The code does this, and it should not: say how it should work, below">The code is wrong</button><button data-act="settle" data-settle="show-more" aria-pressed="false" title="Walk me through it: a worked example of what this checks">Show me more</button></div><label for="rp-disagree">Expected something else?</label><textarea id="rp-disagree" rows="1" data-disagree maxlength="400" placeholder="Say how it should work — Enter saves" title="The quick check itself is wrong or not how you expected it to work: your words go to the agent with your answer (Shift+Enter starts a new line)" autocomplete="off"></textarea><p class="kept" role="status"></p></div><div class="foot"><button data-act="walk" class="walkbtn" hidden title="A worked example of what this quick check tests">Walk me through it</button><button data-act="quiz-back" class="backbtn" hidden title="Take the video back to where this was explained; the question waits here again when the video reaches it">Back to where this was explained</button><button data-act="rowmore" class="rowmore" hidden aria-expanded="false" title="The other buttons for this question: there is no room on the frame for all of them">…</button><button data-act="confirm" class="confirm" hidden disabled>Confirm <kbd>&#8629;</kbd></button><button data-act="quiz-go" class="gobtn" hidden title="Go on now (space or Enter)">Continue <kbd>Space</kbd></button><span class="hint"></span></div></div>
             <div class="chend sheet" role="dialog" aria-label="End of chapter"><div class="hd"><span class="k"></span></div><p class="q"></p><div class="foot"><button data-act="ch-next" title="Next chapter (N)">Next chapter <kbd>N</kbd></button><button data-act="ch-stay" class="lnk">Stay here</button><span class="hint">Stopping because "Pause between chapters" is on, under Steps.</span></div></div>
             <img class="mstill" alt="" hidden>
             <div class="partcard" role="status" aria-live="polite" aria-hidden="true"><span class="k"></span><span class="sep">·</span><span class="t"></span></div>
@@ -2588,7 +2594,7 @@ export class ReelplannerPlayer extends HTMLElement {
     const last = { when: key.slice(pre.length), sentAt: round?.sentAt || null, verdict: typeof A[":verdict"] === "string" ? A[":verdict"] : null,
       annotations: (Array.isArray(ann) ? ann : []).filter((a) => a && a.kind !== "approve" && (String(a.comment || "").trim() || a.path)),
       decisions: rows(js(":decisions", {})),
-      quizzes: rows(js(":quiz", {})).filter((r) => String(r.note || "").trim() || r.answer === "own" || r.unclear),
+      quizzes: rows(js(":quiz", {})).filter((r) => String(r.note || "").trim() || r.answer === "own" || r.unclear || (r.settled && r.settled !== "got-it")),
       calls: rows(js(":autonomy", {})).filter((r) => r.verdict && r.verdict !== "accept" && r.verdict !== "listed") };
     if (last.annotations.length + last.decisions.length + last.quizzes.length + last.calls.length) this._last = last;
   }
@@ -4711,7 +4717,7 @@ ${clip(gloss || "(none)", 9000)}`;
     const nb = box.querySelector(".note"); nb.hidden = note == null; nb.querySelector("textarea").value = note || "";
     const cb = box.querySelector(".confirm"); cb.hidden = !confirm; box.querySelector(".gobtn").hidden = true;
     const hn = box.querySelector(".hint"); hn.textContent = hint; delete hn.dataset.live; box.querySelector(".feedback").style.display = "none";
-    const dis = box.querySelector(".disagree"); dis.classList.remove("on"); delete dis.dataset.wrong; dis.querySelector("textarea").value = ""; dis.querySelector(".kept").textContent = "";
+    const dis = box.querySelector(".disagree"); dis.classList.remove("on"); delete dis.dataset.wrong; dis.querySelector("textarea").value = ""; dis.querySelector(".kept").textContent = ""; this.syncSettle(null);
     this.stopWait();
     // Every question the player asks goes through here, so the reviewer's own answer belongs here
     // too: a plan review whose options were all written by the plan's author is not a review. The
@@ -5736,6 +5742,7 @@ ${clip(gloss || "(none)", 9000)}`;
     // the reviewer's words, so they get no second line.
     const dis = box.querySelector(".disagree"); dis.classList.toggle("on", !own); if (r.correct === false) dis.dataset.wrong = ""; else delete dis.dataset.wrong;
     dis.querySelector("textarea").value = r.note || ""; dis.querySelector(".kept").textContent = r.note ? "Kept with your answer — it goes to the agent." : "";
+    this.syncSettle(r.correct === false && !own ? r : null);
     // Continue is the way on now, and it takes the focus: the option just clicked is disabled, which
     // would otherwise drop focus to <body> and leave space with nothing to reach (the owner's bug)
     this.startWait(this._pendingDecision);
@@ -5746,9 +5753,34 @@ ${clip(gloss || "(none)", 9000)}`;
     const dis = this.$(".decision .disagree"), v = keepLines(dis.querySelector("textarea").value);
     if (v === (r.note || "")) return;
     if (v) r.note = v; else delete r.note;
+    // on a wrong answer, words with no way chosen are Change the plan's: nothing you could say before is lost
+    if (v && r.correct === false && !["change-plan", "code-wrong"].includes(r.settled)) { r.settled = "change-plan"; this.syncSettle(r); }
     try { localStorage.setItem(this.rkey + ":quiz", JSON.stringify(this.quizzes)); } catch {}
     dis.querySelector(".kept").textContent = v ? "Kept with your answer — it goes to the agent." : "";
     this.renderDecisions(); this.dispatchEvent(new CustomEvent("quiz", { detail: { id: p.q.id, ...r } }));
+  }
+  // A wrong quick check settles like a round's card (find-the-gaps step 5): Got it (you had it wrong: into your memory),
+  // Change the plan and The code is wrong (each with your words in the box below, which reach the agent as a comment
+  // does), Show me more (Walk me through it). The code is wrong only where the video is about code that exists (a
+  // walkthrough, the system video, an explainer). Left unsettled it is recorded as before; it never blocks Approve.
+  syncSettle(r) {
+    const box = this.$(".decision"), dis = box?.querySelector(".disagree"); if (!dis) return;
+    const code = this.isWalkthrough || this.isSystem || this.isExplainer;
+    for (const b of dis.querySelectorAll(".settle button")) { if (b.dataset.settle === "code-wrong") b.hidden = !code; b.setAttribute("aria-pressed", String(!!r && r.settled === b.dataset.settle)); }
+    const lab = dis.querySelector("label");
+    lab.textContent = r?.settled === "change-plan" ? "Change the plan: how should it work?" : r?.settled === "code-wrong" ? "The code is wrong: how should it work?" : "Expected something else?";
+  }
+  settleQuiz(way) {
+    const p = this._pendingDecision; if (p?.kind !== "quiz") return; const q = p.q, r = this.quizzes[q.id]; if (!r || r.correct !== false) return;
+    r.settled = way;
+    if (way === "show-more" && !q.walkMeThrough) r.unclear = true;   // no worked example: asked to have it explained again
+    try { localStorage.setItem(this.rkey + ":quiz", JSON.stringify(this.quizzes)); } catch {}
+    this.syncSettle(r);
+    const d = this.$(".decision .disagree");
+    if (way === "change-plan" || way === "code-wrong") { this.stopWait(); d.querySelector("textarea").focus({ preventScroll: true }); }
+    else if (way === "show-more" && q.walkMeThrough) this.openWalk();
+    else d.querySelector(".kept").textContent = way === "got-it" ? "Kept: you had it wrong, and know it now." : "Asked to have it explained again.";
+    this.renderDecisions(); this.dispatchEvent(new CustomEvent("quiz", { detail: { id: q.id, ...r } }));
   }
   // An answered question goes on by itself: 10 s after a quick check is answered, for its explanation (the
   // owner found 4 s too fast; step 5), and 4 s for a question met again already answered. On the band the
@@ -6360,6 +6392,7 @@ ${clip(gloss || "(none)", 9000)}`;
       case "plantext": this.togglePlanText(); break;
       case "quiz-go": this.skipWait(); break;
       case "walk": this.openWalk(); break;
+      case "settle": this.settleQuiz(b.dataset.settle); break;
       case "rowmore": { const box = this.$(".decision"); box.classList.toggle("rowopen"); this.layoutFrame(); break; }
       case "walk-read": this.readWalk(); break;
       case "terms": this.toggleTerms(); break;

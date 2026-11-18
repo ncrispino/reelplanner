@@ -73,6 +73,30 @@ try {
   t0 = await now(page); await page.locator("#rp").locator('[data-act="quiz-go"]').click(); await goneOn(t0);
   qs2 = await qstate();
   check("a click on Continue goes on at once", !qs2.on && !qs2.paused && !qs2.body, JSON.stringify(qs2));
+  // 2d. a wrong answer settles like a round's card (find-the-gaps step 5): a plan video offers Got it, Change the plan and
+  // Show me more (no The code is wrong: nothing is built yet); Change the plan takes the box's words; never needed to go on
+  await page.evaluate((qq) => { const el = document.querySelector("#rp"); el.player.pause(); delete el.quizzes[qq.id]; el.askQuiz(qq); }, q);
+  await page.keyboard.press("a"); await answered(q.id);
+  const row = await page.evaluate(() => [...document.querySelector("#rp").shadowRoot.querySelectorAll(".decision .settle button")].filter((b) => !b.hidden && b.offsetParent).map((b) => b.textContent));
+  check("a wrong quick check: Got it, Change the plan, Show me more under the answer", row.join(",") === "Got it,Change the plan,Show me more", JSON.stringify(row));
+  await page.locator("#rp").locator('.settle [data-settle="change-plan"]').click();
+  const lab = await page.evaluate(() => { const r = document.querySelector("#rp").shadowRoot; return { lab: r.querySelector(".disagree label").textContent, focus: r.activeElement?.id, pressed: r.querySelector('[data-settle="change-plan"]').getAttribute("aria-pressed") }; });
+  check("Change the plan: its words are the box's, and the box takes the keys", /^Change the plan: how should it work\?/.test(lab.lab) && lab.focus === "rp-disagree" && lab.pressed === "true", JSON.stringify(lab));
+  await page.keyboard.type("retries should stop after three"); await page.keyboard.press("Enter");
+  const st = await page.evaluate((id) => document.querySelector("#rp").quizzes[id], q.id);
+  check("…recorded settled, with your words as the note", st.settled === "change-plan" && /stop after three/.test(st.note || ""), JSON.stringify(st));
+  await page.evaluate((qq) => { const el = document.querySelector("#rp"); el.player.pause(); delete el.quizzes[qq.id]; el.askQuiz(qq); }, q);
+  await page.keyboard.press("a"); await answered(q.id);
+  await page.locator("#rp").locator('.settle [data-settle="got-it"]').click();
+  const got = await page.evaluate((id) => ({ r: document.querySelector("#rp").quizzes[id], kept: document.querySelector("#rp").shadowRoot.querySelector(".disagree .kept").textContent }), q.id);
+  check("Got it: recorded, and said so", got.r.settled === "got-it" && /know it now/.test(got.kept), JSON.stringify(got));
+  t0 = await now(page); await page.locator("#rp").locator('[data-act="quiz-go"]').click(); await goneOn(t0);
+  await page.evaluate((qq) => { const el = document.querySelector("#rp"); el.player.pause(); delete el.quizzes[qq.id]; el.askQuiz(qq); }, q);
+  await page.keyboard.press("b"); await answered(q.id);
+  const right = await page.evaluate(() => [...document.querySelector("#rp").shadowRoot.querySelectorAll(".decision .settle button")].filter((b) => b.offsetParent).length);
+  check("a right answer has nothing to settle", right === 0, String(right));
+  t0 = await now(page); await page.locator("#rp").locator('[data-act="quiz-go"]').click(); await goneOn(t0);
+  await page.evaluate((qq) => { const el = document.querySelector("#rp"); delete el.quizzes[qq.id]; el.quizzes[qq.id] = { answer: "a", correct: false, t: qq.at }; }, q);
   // 3. autonomy: seek before it, play, Flag → annotation of kind flag on the step
   const a = pm.autonomy[0];
   await page.evaluate((t) => { const p = document.querySelector("#rp").shadowRoot.querySelector("hyperframes-player"); p.pause(); p.seek(t); }, a.at - 1.2);

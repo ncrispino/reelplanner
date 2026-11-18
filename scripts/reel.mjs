@@ -47,6 +47,7 @@ import { resolve, join, dirname, basename, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { parseCalls, stopFor, beatsByStep, listedOf, callLoad, askOf, placeOf, MANY_CALLS, STEP_CALLS, TAGS } from "./lib/autonomy.mjs";
+import { roundStats, roundStatusLines } from "./lib/align.mjs";
 import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, readKnows, walkthroughBar, LINES } from "./lib/memory.mjs";
 import { parseSteps, readPlanBlocks, blockFindings, blocksDue, BLOCKS_FROM, supersedesOf } from "./lib/plan-md.mjs";
 import { fileReview, listReviews, reviewKind, reviewOf, reviewTime, reviewsDir, planStage, asksMore, approvalOf, lastChanged } from "./lib/reviews.mjs";
@@ -733,6 +734,9 @@ async function status() {
   // plan's reviews/, each with the id `reel memory <id>` takes; then a retro when one is due (D-107).
   const mem = repoMemory(rp), at = relative(process.cwd(), dirname(rp)) || ".";
   if (mem.lines.length) console.log(`\nWhat reviews show (\`reel memory <id>\` for the evidence):\n${mem.lines.map((l) => `  ${`[${l.id}]`.padEnd(14)}${l.text}`).join("\n")}`);
+  // find-the-gaps step 5: rounds, their gaps and how each was settled; later surprises with a round and without
+  const rl = roundStatusLines(roundStats(rp, mem));
+  if (rl.length) console.log(`\nAlignment rounds (\`reelplanner align list\`):\n${rl.map((l) => `  ${l}`).join("\n")}`);
   if (mem.retro.due) console.log(`\n△ a retro is due: ${mem.retro.why.join("; ")}. \`reel retro ${at}\` starts its plan; you decide whether to hold it.`);
   // walkthroughs-that-help step 6: the first three timed walkthrough reviews all missed the bar. The agent's next
   // plan proposes dropping the walkthrough video, as a plan reviewed like any other; nothing changes until it is approved.

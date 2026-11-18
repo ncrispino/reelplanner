@@ -54,6 +54,9 @@ Every project we plan for gets one directory, committed in that project's repo. 
     motion-language.md   how frames move: the camera, reveals, what each transition means
   system-video/      the HyperFrames project for the system video (`kind: system`)
   explainers/<date>-<slug>/   an explainer: explain.md, sources.json, video/, reviews/
+  align/<date>-<slug>/        a round (find-the-gaps): align.md (your words, the cards, After the round), sources.json
+                               (each source pinned), checker/ (the brief and the fresh checker's answers), answers.json
+                               (the one record, whichever way it was answered), issue.md (The code is wrong, with no plan)
   plans/
     2026-09-12-upload-resume/
       plan.md              the harness's plan-mode Markdown, as written
