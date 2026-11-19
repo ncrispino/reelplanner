@@ -186,6 +186,27 @@ try {
   ok("reel memory --you --forget takes a thing you know out of your memory, and only that", /forgotten/.test(r) && !knows().some((k) => k.fingerprint === fp) && read(join(RH, "you.jsonl")).split("\n").filter(Boolean).length === before - matching, r);
   ok("…and says so when nothing matches", /nothing you know from a round matches/.test(reel(set.repo, "memory", "--you", "--forget", "nope")));
 
+  // ── a later video drops what you know (step 4) ─────────────────────────────────────────────────────────
+  {
+    const { knownNow, fingerprint } = await import("../lib/align.mjs");
+    const { appendKnows } = await import("../lib/memory.mjs");
+    const lines = read(join(set.repo, "src/send.mjs")).split("\n").slice(2, 5).join("\n");
+    appendKnows({ repo: "set", round: "r", card: "c9", claim: "Where does it go with a command set? A headless run", source: "src/send.mjs:3-5", path: "src/send.mjs", fingerprint: fingerprint(lines), at: new Date().toISOString(), dueAt: null, asked: 2 }, join(RH, "you.jsonl"));
+    // an edit above the lines moves them: still known, at their new place
+    write(join(set.repo, "src/send.mjs"), `// moved down a line\n${read(join(set.repo, "src/send.mjs"))}`);
+    const k = knownNow(set.repo).find((x) => x.fact.card === "c9");
+    ok("what you know still holds where its lines moved", k && k.from === 4 && k.to === 6, JSON.stringify(k));
+    const vd = join(set.repo, ".reelplanner/plans/2026-11-18-send/video");
+    write(join(vd, "STORYBOARD.md"), "---\ntitle: t\n---\n\n## Frame 1 — The hand-off\n\n- voiceover: \"Here is how it is handed on.\"\n- src: compositions/frames/01.html\n");
+    write(join(vd, "compositions/frames/01.html"), `<template><div id="root" data-composition-id="01"><div data-artifact="the code"><pre>${lines.replace(/</g, "&lt;")}</pre></div></div></template>`);
+    const ct = (() => { try { return execFileSync("node", [join(ROOT, "scripts", "check-terms.mjs"), vd], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { return `${e.stdout}${e.stderr}`; } })();
+    ok("check-terms: a frame showing lines you know says so, with what you said Got it to", /frame 1 shows `src\/send\.mjs:4-6`, which you know \(Got it on .*Where does it go with a command set\? A headless run\) — say it in a line, or drop the explanation/.test(ct), ct);
+    const pr = reel(set.repo, "prereqs", join(set.repo, ".reelplanner/plans/2026-11-18-send"), "--dry-run");
+    ok("reel prereqs lists what you know, to say in a line", /What you know from rounds[\s\S]*Where does it go with a command set\? A headless run · `src\/send\.mjs:4-6`/.test(pr), pr);
+    write(join(set.repo, "src/send.mjs"), read(join(set.repo, "src/send.mjs")).replace("a headless run", "a run"));
+    ok("…and once the lines change, it is not known any more", !knownNow(set.repo).some((x) => x.fact.card === "c9"));
+  }
+
   // ── measured (step 5): reel status counts rounds and compares later surprises ───────────────────────────
   write(join(set.repo, ".reelplanner/plans/2026-11-19-other/plan.md"), "# Other\n\n**Round:** none, a likely, costly gap (you skipped it)\n\n### Step 1 — x\n");
   write(join(set.repo, ".reelplanner/plans/2026-11-20-easy/plan.md"), "# Easy\n\n**Round:** none needed\n\n### Step 1 — x\n");

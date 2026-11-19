@@ -47,7 +47,7 @@ import { resolve, join, dirname, basename, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { parseCalls, stopFor, beatsByStep, listedOf, callLoad, askOf, placeOf, MANY_CALLS, STEP_CALLS, TAGS } from "./lib/autonomy.mjs";
-import { roundStats, roundStatusLines } from "./lib/align.mjs";
+import { roundStats, roundStatusLines, knownNow } from "./lib/align.mjs";
 import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, readKnows, forgetKnows, walkthroughBar, LINES } from "./lib/memory.mjs";
 import { parseSteps, readPlanBlocks, blockFindings, blocksDue, BLOCKS_FROM, supersedesOf } from "./lib/plan-md.mjs";
 import { fileReview, listReviews, reviewKind, reviewOf, reviewTime, reviewsDir, planStage, asksMore, approvalOf, lastChanged } from "./lib/reviews.mjs";
@@ -865,6 +865,12 @@ function prereqs() {
     const recapVideos = [...(exLine ? [exLine.video] : []), ...ranked.map((r) => r.video)];
     recap.forEach((l, i) => console.log(`  ${l}${seen.has(recapVideos[i]) ? "   (your file: watched)" : ""}`));
   }
+  // what you know from rounds on the files this plan touches (find-the-gaps step 4): not explained again, as a known word is not
+  try {
+    const files = [...new Set((sys.components || []).filter((c) => touched.has(c.id)).flatMap((c) => c.files || []))];
+    const known = knownNow(dirname(rp), files.length ? { files } : {});
+    if (known.length) console.log(`What you know from rounds, on the files it touches (say each in a line, never explain it again):\n${known.map((k) => `  ${k.fact.claim} · \`${k.path}:${k.from}-${k.to}\` (Got it on ${String(k.fact.at).slice(0, 10)})`).join("\n")}`);
+  } catch { /* no memory file */ }
   if (argv.includes("--dry-run")) return;
   if (!existsSync(sbPath)) { console.log(`· no ${rel(sbPath)} yet: these lines go in its front matter (run this again once it exists, and they are written there)`); return; }
   const sb = read(sbPath), fm = frontMatter(sb); if (!fm && !/^---\n/.test(sb)) die(`${rel(sbPath)} has no front matter to write \`before:\` into`);

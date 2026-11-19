@@ -15,7 +15,7 @@ import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from "no
 import { join, basename, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
-import { roundsDir, parseCards, linesOf, recordAnswers, gapOf, validAnswers, SETTLE_WORDS } from "./align.mjs";
+import { roundsDir, parseCards, linesOf, recordAnswers, gapOf, validAnswers, SETTLE_WORDS, cardDiagram, claimsChecked } from "./align.mjs";
 import { writeReview, writeQuestion, deliverInbox, liveWaiters } from "./inbox.mjs";
 import { whisperPath } from "./local-speed.mjs";
 import { findExecutable } from "./review-preferences.mjs";
@@ -36,7 +36,9 @@ export function roundFront(dir) {
   const words = ((/\*\*Your words:\*\*\s*(.*)/.exec(md) || [])[1] || "").replace(/^"(.*)"$/, "$1");
   const title = ((/^# Round:\s*(.*)$/m.exec(md) || [])[1] || basename(dir)).trim();
   const order = [...cards.filter((c) => c.kind === "assume"), ...cards.filter((c) => c.kind === "predict"), ...cards.filter((c) => c.kind === "say")];
-  return { name: basename(dir), title, words, cards: order.map((c) => ({ id: c.id, kind: c.kind, question: c.question, options: c.options, point: /^(yes|true)$/i.test(c.fields.point || ""),
+  return { name: basename(dir), title, words, cards: order.map((c) => ({ id: c.id, kind: c.kind, question: c.question, options: c.options, point: c.point,
+    // a point card's front is its diagram: you answer by clicking a box (step 2)
+    ...(c.point ? { diagram: cardDiagram(c) } : {}),
     answered: rec.cards[c.id] || null, ...(rec.cards[c.id] ? { back: backOf(dir, c, rec.cards[c.id]) } : {}) })), skipped: rec.skipped || [] };
 }
 /** A card's back: the code's own lines, the answer and why (a predict card), and whether your answer was a gap. */
@@ -47,14 +49,21 @@ export function backOf(dir, c, a) {
   if (c.kind !== "predict") return { gap };
   const { text } = linesOf(dir, c);
   return { gap, answer: c.answer, label: c.options.find((o) => o.id === c.answer)?.label || "", source: c.source, lines: text, why: c.why, more: c.more || "",
+    // Show me more's diagram (step 4), drawn from the card's ```diagram block
+    ...(c.diagram ? { diagram: cardDiagram(c) } : {}),
     settles: a.answer === "not-sure" ? ["got-it", "show-more"] : ["got-it", "change-plan", "code-wrong", "show-more"] };
 }
 
+/** whisper and its model, where `transcribe` finds them: null when it cannot write a recording down here. */
+export function whisperReady(env = process.env) {
+  const whisper = whisperPath(env), model = [env.REELPLANNER_WHISPER_MODEL, join(homedir(), ".cache", "hyperframes", "whisper", "models", "ggml-small.en.bin")].find((m) => m && existsSync(m));
+  return whisper && model ? { whisper, model } : null;
+}
 /** Write a recording down with the local whisper: { text } or { error }. Nothing leaves the machine. */
 export function transcribe(audio, { env = process.env } = {}) {
-  const whisper = whisperPath(env), ffmpeg = findExecutable("ffmpeg") || "ffmpeg";
-  const model = [env.REELPLANNER_WHISPER_MODEL, join(homedir(), ".cache", "hyperframes", "whisper", "models", "ggml-small.en.bin")].find((m) => m && existsSync(m));
-  if (!whisper || !model) return { error: "whisper is not installed here: type your words instead (reelplanner setup --local-voice installs it)" };
+  const ready = whisperReady(env), ffmpeg = findExecutable("ffmpeg") || "ffmpeg";
+  const { whisper, model } = ready || {};
+  if (!ready) return { error: "whisper is not installed here: type your words instead (reelplanner setup --local-voice installs it)" };
   const t = mkdtempSync(join(tmpdir(), "rp-say-"));
   try {
     writeFileSync(join(t, "in"), audio);
@@ -73,7 +82,7 @@ export async function handleRound(req, res, path, { repo, box, json, readBody })
   const q = new URL(req.url, "http://x").searchParams;
   const body = async (limit) => { try { return JSON.parse(await readBody(req, limit)); } catch (e) { json(res, e.status || 400, { ok: false, error: e.status ? "too large" : "body is not JSON" }); return null; } };
   const dirFor = (name) => { const d = roundByName(repo, name); if (!d) json(res, 404, { ok: false, error: `no round ${name}` }); return d; };
-  if (path === "api/round" && req.method === "GET") { const d = dirFor(q.get("r")); if (d) json(res, 200, { ok: true, ...roundFront(d), sessionWaiting: liveWaiters(box).length > 0 }); return true; }
+  if (path === "api/round" && req.method === "GET") { const d = dirFor(q.get("r")); if (d) json(res, 200, { ok: true, ...roundFront(d), sessionWaiting: liveWaiters(box).length > 0, whisper: !!whisperReady() }); return true; }
   if (path === "api/round/transcribe" && req.method === "POST") {
     if (!/^audio\//i.test(String(req.headers["content-type"] || ""))) { json(res, 415, { ok: false, error: "content-type must be audio/*" }); return true; }
     const chunks = []; let n = 0;
@@ -84,7 +93,9 @@ export async function handleRound(req, res, path, { repo, box, json, readBody })
   if (path === "api/round/say" && req.method === "GET") {
     const d = dirFor(q.get("r")); if (!d) return true;
     const a = (readJson(join(d, "answers.json")) || { cards: {} }).cards[String(q.get("card") || "").toLowerCase()];
-    json(res, 200, { ok: true, checked: !!a?.claims, ...(a?.claims ? { claims: a.claims } : {}) }); return true;
+    // shown once the fresh checker has read each marked claim (step 3): before that, nothing the session alone marked
+    const ready = claimsChecked(a?.claims);
+    json(res, 200, { ok: true, checked: ready, ...(ready ? { claims: a.claims } : a?.claims ? { waiting: "the fresh checker is reading your claims" } : {}) }); return true;
   }
   if (req.method !== "POST") { json(res, 405, { ok: false, error: "GET the round, POST an answer" }); return true; }
   if (!/^application\/json\b/i.test(String(req.headers["content-type"] || ""))) { json(res, 415, { ok: false, error: "content-type must be application/json" }); return true; }
@@ -106,7 +117,7 @@ export async function handleRound(req, res, path, { repo, box, json, readBody })
     if (!words || words.length > 4000) { json(res, 400, { ok: false, error: "your words are 1 to 4000 characters" }); return true; }
     const at = relative(repo, d) || d;
     const w = writeQuestion(box, { id: `say-${basename(d)}-${c.id}-${Date.now().toString(36)}`.slice(0, 80), kind: "say", round: basename(d), card: c.id, title: `round ${basename(d)}`,
-      question: `Check card ${c.id} of the round ${basename(d)} (${c.question}). The person said: "${words}". Split their words into claims, each a stretch that says one thing; check each against the round's pinned sources (read them, never guess); mark each match (with the lines), differs (with the lines) or open (a want, not what is). Then: reelplanner align answer ${at} ${c.id} <claims.json>, and reelplanner inbox answer <this id> "checked" --from "the round's sources". The fresh checker then reads each marked claim from its lines alone.`,
+      question: `Check card ${c.id} of the round ${basename(d)} (${c.question}). The person said: "${words}". Split their words into claims, each a stretch that says one thing; check each against the round's pinned sources (read them, never guess); mark each match (with the lines), differs (with the lines) or open (a want, not what is). Then: reelplanner align answer ${at} ${c.id} <claims.json>; then the fresh checker on the marked claims, before the page shows them: reelplanner align ${at} --prompt claims --card ${c.id}, its prompt in a fresh agent, and reelplanner align ${at} --claims ${c.id}. Last: reelplanner inbox answer <this id> "checked" --from "the round's sources".`,
       quote: words.slice(0, 400) });
     const r = await deliverInbox(box, w.id, { question: true, repo });
     json(res, 200, { ok: true, id: w.id, handledBy: r.handledBy, message: r.handledBy === "session" ? "a session is checking your words" : "waiting for a session to check your words" }); return true;

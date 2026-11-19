@@ -15,6 +15,8 @@
 //   reelplanner align record <round> <answers.json>   the one record of the answers, whichever way they came, and where
 //                                              each settled gap goes: your memory, the plan, a fix, the round's explainer
 //   reelplanner align answer <round> <card> <claims.json>   a say card's words, split into claims and checked
+//   reelplanner align <round> --prompt claims --card <card>  the fresh checker's brief on those claims (never the marks)
+//   reelplanner align <round> --claims <card>   its reading applied: a claim it reads otherwise is "not settled"
 //   reelplanner align <round> --explain-gaps   the command that makes the one explainer of the gaps you asked more on
 //   reelplanner align due [<repo>]             the things you said Got it to that are due once more
 //   reelplanner align list [<repo>]            this repo's rounds
@@ -25,10 +27,10 @@ import { execFileSync } from "node:child_process";
 import { pinAll, sourceLine, slugOf, repoTop } from "./lib/explainer.mjs";
 import { rpDirOf } from "./lib/env.mjs";
 import { roundsDir, roundDirOf, roundMd, checkRound, writeCheckerBrief, checkerPrompt, candidates, recordAnswers, validClaims,
-  parseCards, explainGaps, cardsForChat, knowsFor, roundsOf, MAX_CARDS } from "./lib/align.mjs";
+  parseCards, explainGaps, cardsForChat, knowsFor, roundsOf, MAX_CARDS, writeClaimsBrief, claimsPrompt, applyClaimsCheck } from "./lib/align.mjs";
 
 const args = process.argv.slice(2);
-const VALUED = new Set(["--plan", "--slug", "--date", "--repo", "--prompt"]);
+const VALUED = new Set(["--plan", "--slug", "--date", "--repo", "--prompt", "--card", "--claims"]);
 const flag = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
 const has = (n) => args.includes(`--${n}`);
 const die = (m) => { console.error(`✗ align: ${m}`); process.exit(1); };
@@ -61,6 +63,7 @@ if (first === "answer") {
   if (e2.length) die(e2.join("\n  "));
   console.log(`✓ ${card}: ${claims.length} claim${claims.length === 1 ? "" : "s"}, ${claims.filter((x) => x.verdict === "match").length} ✓, ${claims.filter((x) => x.verdict === "differs").length} ✗, ${claims.filter((x) => x.verdict === "open").length} ?`);
   const open = claims.filter((x) => x.verdict === "open"); if (open.length) console.log(`  add an assume card for each ? to this round (\`- from: say\`, not counted in its ${MAX_CARDS}): ${open.map((x) => `"${x.words}"`).join(", ")}`);
+  if (claims.some((x) => x.verdict === "match" || x.verdict === "differs")) console.log(`  next, before they see the marks, the fresh checker reads each marked claim from its lines alone:\n  reelplanner align ${rel(dir)} --prompt claims --card ${card}, that prompt in a fresh agent, then reelplanner align ${rel(dir)} --claims ${card}`);
   for (const r of routed) console.log(`  ${r}`);
   process.exit(0);
 }
@@ -77,7 +80,13 @@ const existing = roundDirOf(first);
 if (existing) {
   const dir = existing;
   if (flag("prompt")) {
-    if (flag("prompt") !== "checker") die(`--prompt ${flag("prompt")}: only checker`);
+    if (flag("prompt") === "claims") {
+      const card = String(flag("card") || die("--prompt claims --card <the say card>")).toLowerCase();
+      let brief; try { brief = writeClaimsBrief(dir, card); } catch (e) { die(e.message); }
+      console.error(`✓ ${rel(brief)}: each claim marked match or differs, and its lines, never the mark. Launch one fresh agent with no context of this conversation, with exactly the prompt below, and nothing else`);
+      console.log(claimsPrompt(dir, card)); process.exit(0);
+    }
+    if (flag("prompt") !== "checker") die(`--prompt ${flag("prompt")}: checker, or claims --card <card>`);
     const brief = writeCheckerBrief(dir);
     console.error(`✓ ${rel(brief)}: each predict card's question, options and lines, never its answer. Launch one fresh agent with no context of this conversation, with exactly the prompt below, and nothing else`);
     console.log(checkerPrompt(dir)); process.exit(0);
@@ -100,6 +109,15 @@ if (existing) {
       for (const o of c.front.options) console.log(`   ${o.id.length === 1 ? o.id.toUpperCase() : "·"} ${o.label}`);
       if (c.back) console.log(`   back: ${c.back.answer.toUpperCase()} · ${c.back.label} · ${c.back.source}\n${(c.back.lines || "").split("\n").map((l) => `     | ${l}`).join("\n")}\n   ${c.back.why}`);
     }
+    process.exit(0);
+  }
+  if (flag("claims")) {
+    const card = String(flag("claims")).toLowerCase(), r = applyClaimsCheck(dir, card);
+    if (r.missing) die(`no checker answers for ${card} yet (checker/claims-${card}-answers.md): --prompt claims --card ${card} first`);
+    const a = JSON.parse(readFileSync(join(dir, "answers.json"), "utf8")).cards[card];
+    const { errors } = recordAnswers(dir, [{ card, answer: "said", own: a.own, claims: r.claims, via: a.via || "page", ...(a.settled ? { settled: a.settled } : {}) }]);
+    if (errors.length) die(errors.join("\n  "));
+    console.log(`✓ ${card}: the checker read ${r.agreed} claim${r.agreed === 1 ? "" : "s"} as the session did${r.unsettled ? `; ${r.unsettled} not settled, shown so (the two read them differently)` : ""}. The page shows the marks now.`);
     process.exit(0);
   }
   if (has("explain-gaps")) { const g = explainGaps(dir); console.log(g.command || "· no gap was asked more on"); process.exit(0); }

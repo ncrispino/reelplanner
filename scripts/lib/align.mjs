@@ -17,6 +17,7 @@ import { execFileSync } from "node:child_process";
 import { machineDir, rpInitialized, rpDirOf } from "./env.mjs";
 import { repoKey } from "./inbox.mjs";
 import { sourceText, repoTop } from "./explainer.mjs";
+import { parseDiagram, drawDiagram } from "./guide/diagram.mjs";
 import { readKnows, appendKnows, readYou, repoName, youPath } from "./memory.mjs";
 
 export const MAX_CARDS = 6;                    // the cards the agent writes; an assume card made from your words is not counted
@@ -53,6 +54,16 @@ export function repoOfRound(dir) {
 }
 const realTop = (p) => { try { return realpathSync(p); } catch { return p; } };
 
+const boxName = (t) => String(t || "").toLowerCase().replace(/[`*_]/g, "").replace(/\s+/g, " ").trim();
+/** A card's diagram drawn for the page (the guide's own drawing): { wide, narrow, nodes } or null. On a point card,
+ *  `boxes` maps each box you can click to the option it answers. */
+export function cardDiagram(c) {
+  if (!c.diagram) return null;
+  const d = drawDiagram(c.diagram, { id: `card-${c.id}`, anchor: `card ${c.id}` });
+  if (!d.wide) return null;
+  const boxes = c.point ? Object.fromEntries(d.nodes.map((n) => [n.id, c.options.find((o) => boxName(o.label) === boxName(n.label))?.id]).filter(([, v]) => v)) : null;
+  return { title: d.title, wide: d.wide, narrow: d.narrow, ...(boxes ? { boxes } : {}) };
+}
 // ── the cards ────────────────────────────────────────────────────────────────────────────────────────────
 /**
  * align.md's cards: `### c<N> · predict | assume | say`, then `- key: value` lines. → [{ id, kind, line, fields,
@@ -60,8 +71,12 @@ const realTop = (p) => { try { return realpathSync(p); } catch { return p; } };
  */
 export function parseCards(md, { all = false } = {}) {
   const cards = [], lines = String(md).split("\n");
-  let cur = null, inCards = false;
+  let cur = null, inCards = false, fence = null;
   lines.forEach((l, i) => {
+    // a card's diagram: a ```diagram block under it, in the repo's diagram text (the guide's): what Show me more opens,
+    // or, on a point card, the boxes you click to answer
+    if (fence) { if (/^```\s*$/.test(l)) { if (cur) cur.diagram = fence.join("\n") + "\n"; fence = null; } else fence.push(l); return; }
+    if (inCards && cur && /^```diagram\b/.test(l)) { fence = []; return; }
     if (/^## /.test(l)) { inCards = /^## Cards\b/i.test(l); cur = null; return; }
     if (!inCards) return;
     const h = /^### (c\d+)\s*·\s*(\w+)/i.exec(l);
@@ -73,7 +88,8 @@ export function parseCards(md, { all = false } = {}) {
     const f = c.fields, options = LETTERS.filter((k) => f[`option_${k}`]).map((k) => ({ id: k, label: f[`option_${k}`] }));
     return { ...c, question: f.question || "", options, answer: (f.answer || "").toLowerCase() || null, source: f.source || null,
       quote: f.quote ? f.quote.replace(/^"(.*)"$/, "$1") : null, why: f.why || "", likelyWrong: f.likely_wrong || "", matters: f.matters || "",
-      from: f.from || null, onceMore: f.once_more || null, more: f.more || "", dropped: f.dropped || null };
+      from: f.from || null, onceMore: f.once_more || null, more: f.more || "", dropped: f.dropped || null,
+      diagram: c.diagram || null, point: /^(yes|true)$/i.test(f.point || "") };
   }).filter((c) => all || !c.dropped);   // a dropped card (`- dropped: <why>`) is never asked; After the round lists it
 }
 /** A card's source ref `path:from-to` (or `path:line`) → { path, from, to } or null. */
@@ -135,6 +151,12 @@ export function checkRound(dir, { repo = repoOfRound(dir), knowsPath = youPath()
       if (c.options.length) fails.push(`${at}: an ${c.kind} card has no options (assume: Right, Not quite, Doesn't matter; say: your own words)`);
       continue;
     }
+    if (c.diagram) {
+      const g = parseDiagram(c.diagram);
+      if (g.errors?.length) fails.push(`${at}: its diagram does not read: ${g.errors.join("; ")}`);
+      if (c.point) { const boxes = new Set(g.nodes.map((n) => boxName(n.label || n.id)));
+        for (const o of c.options) if (!boxes.has(boxName(o.label))) fails.push(`${at}: a point card's option ${o.id.toUpperCase()} ("${o.label}") is no box of its diagram`); }
+    } else if (c.point) fails.push(`${at}: a point card needs a \`\`\`diagram block under it, its options the boxes you click`);
     if (c.options.length < 2) fails.push(`${at}: a predict card has two to four options`);
     if (!c.answer || !c.options.some((o) => o.id === c.answer)) fails.push(`${at}: \`- answer:\` names none of its options`);
     if (!c.why) fails.push(`${at}: no \`- why:\` (one sentence, shown after you answer)`);
@@ -194,6 +216,27 @@ export function checkerAnswers(dir) {
 }
 
 // ── where gaps are likely (step 1's four places) ─────────────────────────────────────────────────────────
+/**
+ * What you know from rounds in this repo that still holds (step 4: a later video drops its explanation, as it drops a
+ * word you know): each Got it whose lines' text is still in its file, wherever it has moved to. → [{ fact, path, from,
+ * to, text }]. `files`: only these paths (the files a plan touches); none: all of the repo's.
+ */
+export function knownNow(repo, { files = null, path = youPath(), now = Date.now() } = {}) {
+  const name = repoName(repo) || basename(resolve(repo)), latest = new Map();
+  for (const k of readKnows(path)) if (!k.repo || k.repo === name) latest.set(`${k.path}|${k.fingerprint}`, k);
+  const out = [];
+  for (const k of latest.values()) {
+    if (files && !files.includes(k.path)) continue;
+    const ref = refOf(k.source); let text; try { text = readFileSync(join(repo, k.path), "utf8"); } catch { continue; }
+    const all = text.split("\n"), n = ref ? ref.to - ref.from + 1 : 1;
+    // the same text, where it is now (an edit above moves it; changed, it is not known any more)
+    for (let i = 0; i + n <= all.length; i++) {
+      const win = all.slice(i, i + n).join("\n");
+      if (fingerprint(win) === k.fingerprint) { out.push({ fact: k, path: k.path, from: i + 1, to: i + n, text: win }); break; }
+    }
+  }
+  return out;
+}
 /** The candidates `align --candidates` prints: your words, your memory, what moved, and the due cards. */
 export function candidates(dir, { repo = repoOfRound(dir), path = youPath(), now = Date.now() } = {}) {
   const md = read(join(dir, "align.md")), words = ((/\*\*Your words:\*\*\s*(.*)/.exec(md) || [])[1] || "").replace(/^"(.*)"$/, "$1");
@@ -352,6 +395,62 @@ export function validClaims(input) {
   }).filter(Boolean);
   return { claims, errors };
 }
+// ── the fresh checker on your spoken claims (step 3) ─────────────────────────────────────────────────────
+/** The claims of a say card the session marked match or differs, numbered `c4.1`, `c4.2` …: what the checker reads. */
+export function markedClaims(dir, card) {
+  const a = (readJson(join(dir, "answers.json")) || { cards: {} }).cards[card];
+  return (a?.claims || []).map((x, k) => ({ ...x, key: `${card}.${k + 1}`, k })).filter((x) => x.verdict === "match" || x.verdict === "differs" || x.was);
+}
+/** checker/claims-<card>.md: each marked claim's words and its lines, never the session's verdict. → path */
+export function writeClaimsBrief(dir, card, { repo = repoOfRound(dir) } = {}) {
+  const claims = markedClaims(dir, card);
+  if (!claims.length) throw new Error(`${card} has no claim marked match or differs: run \`align answer\` first`);
+  const out = [`# The checker's brief · ${basename(dir)} · what a person said, card ${card}`, "",
+    "Each item below is something a person said about some code, and the lines it is about. Read only those lines: they are",
+    "the code as it was pinned. Does what they said hold for these lines? Write one line an item to the answers file:", "",
+    `    - ${card}.1: yes · <the words in the lines that decide it>`, "",
+    `\`no\` when the lines say otherwise; \`?\` when they do not decide it (\`- ${card}.2: ? · <what is missing>\`).`, ""];
+  for (const x of claims) {
+    const { text } = linesOf(dir, { id: x.key, source: x.was?.source || x.source }, { repo });
+    out.push(`## ${x.key}`, "", `They said: "${x.words}"`, "", `${x.was?.source || x.source}:`, "", "```", text ?? "(these lines cannot be read here)", "```", "");
+  }
+  mkdirSync(join(dir, "checker"), { recursive: true });
+  const p = join(dir, "checker", `claims-${card}.md`); writeFileSync(p, out.join("\n")); return p;
+}
+export const claimsPrompt = (dir, card) => `You are checking what a person said about some code. You did not hear them, and you do not see what anyone else
+made of it. Everything you get is in one file:
+
+  ${join(resolve(dir), "checker", `claims-${card}.md`)}
+
+Read it in full. Do not open any other file. Judge each item from its lines alone, and write your answers to exactly:
+
+  ${join(resolve(dir), "checker", `claims-${card}-answers.md`)}
+
+It is the only file you write. Then reply with how many items you answered.`;
+/**
+ * Apply the checker's reading to a say card's claims: where it reads a claim as the session did (yes for a match, no
+ * for a differs) the claim stands, marked `checker: "agrees"`; anything else (the other way, `?`, or no line) is
+ * `unsettled`, the session's verdict kept as `was`. → { claims, agreed, unsettled, missing } (missing: no answers file)
+ */
+export function applyClaimsCheck(dir, card) {
+  const t = read(join(dir, "checker", `claims-${card}-answers.md`));
+  if (!t) return { missing: true };
+  const said = {}; for (const m of t.matchAll(/^- (c\d+\.\d+):\s*(yes|no|\?)(?=\s|$)\s*(?:·\s*(.*))?$/gim)) said[m[1].toLowerCase()] = { reads: m[2].toLowerCase(), why: (m[3] || "").trim() };
+  const rec = readJson(join(dir, "answers.json")), a = rec?.cards?.[card];
+  if (!a?.claims) return { missing: true };
+  let agreed = 0, unsettled = 0;
+  const claims = a.claims.map((x, k) => {
+    const orig = x.was || (x.verdict === "match" || x.verdict === "differs" ? { verdict: x.verdict, source: x.source } : null);
+    if (!orig) return x;
+    const r = said[`${card}.${k + 1}`], same = r && ((orig.verdict === "match" && r.reads === "yes") || (orig.verdict === "differs" && r.reads === "no"));
+    if (same) { agreed++; return { words: x.words, ...(x.from != null ? { from: x.from, to: x.to } : {}), verdict: orig.verdict, source: orig.source, checker: "agrees" }; }
+    unsettled++;
+    return { words: x.words, ...(x.from != null ? { from: x.from, to: x.to } : {}), verdict: "unsettled", source: orig.source, was: orig, checker: r ? `reads it ${r.reads === "?" ? "as undecided" : r.reads === "yes" ? "as a match" : "as a gap"}${r.why ? `: ${r.why}` : ""}` : "no answer" };
+  });
+  return { claims, agreed, unsettled };
+}
+/** Whether a say card's claims are ready to show: every claim marked match or differs has the checker's reading. */
+export const claimsChecked = (claims) => !!claims && claims.every((x) => !(x.verdict === "match" || x.verdict === "differs" || x.was) || x.checker);
 /** The gaps you asked more on, and the command that makes their one explainer (step 4). */
 export function explainGaps(dir) {
   const cards = parseCards(read(join(dir, "align.md"))), rec = readJson(join(dir, "answers.json")) || { cards: {} };

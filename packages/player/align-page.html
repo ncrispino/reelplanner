@@ -58,7 +58,21 @@
   .progress span { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--ink-rgb),.15); }
   .progress span.done { background: var(--ink); }
   .progress span.now { background: var(--coral); }
+  .live { display: block; margin: 0 0 10px; font-size: 15px; color: var(--ink-2); } .live input { margin-right: 8px; }
   .planned { display: inline-block; font: 500 12px/1 var(--mono); border: 1px dashed rgba(var(--ink-rgb),.5); border-radius: 5px; padding: 4px 7px; color: var(--ink-3); }
+  /* a card's diagram, drawn as the guide draws one (templates/guide/guide.css, on this page's tokens) */
+  :root { --ink-20: rgba(var(--ink-rgb),.2); --ink-12: rgba(var(--ink-rgb),.12); --tile-2: var(--tile); }
+  .dg-box { overflow-x: auto; padding: 4px 0; margin: 6px 0 14px; } .dg-vn { display: none; }
+  @media (max-width: 600px) { .dg-vw { display: none; } .dg-vn { display: block; } }
+  .dg-svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--sans); margin: 0 auto; max-width: 860px; }
+  .dg-n>rect { fill: var(--paper); stroke: var(--ink-20); stroke-width: 1.3; } .dg-n.k-file>rect, .dg-n.k-step>rect { fill: var(--tile-2); }
+  .dg-t { fill: var(--ink); font-weight: 500; } .dg-t.mono { font-family: var(--mono); }
+  .dg-dot { fill: var(--ink-2); } .dg-ring { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+  .dg-l { fill: none; stroke: var(--ink-3); stroke-width: 1.4; } .dg-e.dash .dg-l { stroke-dasharray: 5 4; } .dg-ah { fill: var(--ink-3); }
+  .dg-el { fill: var(--ink-2); paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; } .dg-lb { fill: var(--paper); fill-opacity: .94; }
+  .dg-num { font: 600 13px var(--sans); fill: var(--ink-3); } .dg-note rect { fill: var(--tile-2); stroke: none; } .dg-note .dg-lb { display: none; }
+  .point .dg-n[data-box] { cursor: pointer; } .point .dg-n[data-box]:hover>rect, .point .dg-n[data-box]:focus-visible>rect { stroke: var(--ink); stroke-width: 2.2; }
+  .dg-n.mine>rect { stroke: var(--coral); stroke-width: 3; stroke-dasharray: 6 4; } .dg-n.right>rect { stroke: var(--ink); stroke-width: 3; }
   @media (max-width: 600px) { .card { padding: 20px 16px; } .card h2 { font-size: 30px; } .opt { font-size: 19px; } .slab { font-size: 15px; } }
 </style>
 </head>
@@ -74,6 +88,16 @@
 const name = new URLSearchParams(location.search).get("r");
 const $ = (id) => document.getElementById(id), esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const api = async (path, opts = {}) => { const r = await fetch(path, { ...opts, headers: { ...(opts.body && !(opts.body instanceof Blob) ? { "content-type": "application/json" } : {}), ...(opts.headers || {}) } }); return r.json(); };
+// a card's diagram, both drawings (wide, and narrow for a phone); a point card's boxes answer it
+const drawn = (d, { point = false } = {}) => d ? `<div class="dg-box${point ? " point" : ""}" aria-label="${esc(d.title || "diagram")}"><div class="dg-vw">${d.wide}</div><div class="dg-vn">${d.narrow}</div></div>` : "";
+function boxes(el, d, onPick, { mine = null, right = null } = {}) {
+  if (!d?.boxes) return;
+  for (const g of el.querySelectorAll(".dg-n[data-n]")) {
+    const opt = d.boxes[g.dataset.n]; if (!opt) continue;
+    if (onPick) { g.dataset.box = opt; g.setAttribute("tabindex", "0"); g.setAttribute("role", "button"); g.onclick = () => onPick(opt); g.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(opt); } }; }
+    if (opt === mine) g.classList.add("mine"); if (opt === right) g.classList.add("right");
+  }
+}
 const SETTLE = { "got-it": "Got it", "change-plan": "Change the plan", "code-wrong": "The code is wrong", "show-more": "Show me more" };
 let round = null, i = 0, state = {};   // state[card] = { answer, own, back, settled, phase: "front" | "back" | "settled" }
 const status = (t) => { $("status").textContent = t || ""; };
@@ -99,10 +123,11 @@ function draw(turn = false) {
   if (!s.phase) {
     const opts = c.kind === "predict" ? [...c.options.map((o) => ({ id: o.id, label: o.label, key: o.id.toUpperCase() })), { id: "not-sure", label: "Not sure", key: "N" }]
       : [{ id: "right", label: "Right", key: "A" }, { id: "not-quite", label: "Not quite: say what", key: "B" }, { id: "doesnt-matter", label: "Doesn't matter", key: "C" }];
-    el.innerHTML = `${head}<div class="opts${c.point ? " point" : ""}">${opts.map((o) => `<button class="opt" data-a="${o.id}"><span class="k">${o.key}</span> ${esc(o.label)}</button>`).join("")}</div>
+    el.innerHTML = `${head}${c.point ? `<p class="lab">Click the box, or press its letter</p>${drawn(c.diagram, { point: true })}` : ""}<div class="opts${c.point ? " point" : ""}">${opts.map((o) => `<button class="opt" data-a="${o.id}"><span class="k">${o.key}</span> ${esc(o.label)}</button>`).join("")}</div>
       <div id="ownbox" hidden><textarea id="own" placeholder="Say what you mean, in your own words"></textarea><div class="row"><button class="btn ink" id="ownsave">Save <kbd>Enter</kbd></button></div></div>
       <div class="row"><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>`;
     for (const b of el.querySelectorAll(".opt")) b.onclick = () => choose(c, b.dataset.a);
+    if (c.point) boxes(el, c.diagram, (opt) => choose(c, opt));
     $("skip").onclick = skipRest;
     return;
   }
@@ -110,6 +135,7 @@ function draw(turn = false) {
   const b = s.back || {}, mine = s.answer, gap = b.gap;
   el.innerHTML = `<div class="lab">card ${esc(c.id)}, turned over · ${i + 1} of ${round.cards.length}</div><h2 style="font-size:32px">${esc(c.question)}</h2>
     <div class="opts">${c.options.map((o) => `<button class="opt${o.id === b.answer ? " right" : ""}${o.id === mine ? ` mine${o.id !== b.answer ? " wrong" : ""}` : ""}" disabled><span class="k">${o.id.toUpperCase()}</span> ${esc(o.label)}${o.id === b.answer ? " · the answer" : o.id === mine ? " · your pick" : ""}</button>`).join("")}</div>
+    ${c.point ? drawn(c.diagram) : ""}
     <div class="lab">${esc(b.source)}</div><div class="slab">${esc(b.lines)}</div>
     <p class="why">${esc(b.why)}</p>
     <p class="verdict${gap === "same" ? "" : " gap"}">${gap === "same" ? "✓ Same picture" : gap === "not-sure" ? "Not sure: a gap of its own kind. Settle it:" : "A gap. Settle it:"}</p>
@@ -117,6 +143,7 @@ function draw(turn = false) {
       <div id="ownbox" hidden><textarea id="own" placeholder="How should it work? (optional)"></textarea></div>`}
     <div class="row"><button class="btn ink" id="next" ${gap !== "same" && !s.settled ? "disabled" : ""}>Next <kbd>Enter</kbd></button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>`;
   for (const btn of el.querySelectorAll("[data-s]")) btn.onclick = () => settle(c, btn.dataset.s);
+  if (c.point) boxes(el, c.diagram, null, { mine, right: b.answer });
   $("next").onclick = next; $("skip").onclick = skipRest;
   if (gap === "same") setTimeout(() => { if (round.cards[i] === c) next(); }, 2000);
 }
@@ -138,23 +165,41 @@ async function settle(c, k) {
   if (!r.ok) { status(r.error); return; }
   state[c.id] = { ...s, settled: k, back: r.back, phase: "settled" }; status(r.routed?.join(" · ") || "");
   // Show me more: the card's longer explanation opens at once (step 4), and the gap goes into the round's one explainer
-  if (k === "show-more" && c.kind === "predict") { const el = $("card"), box = document.createElement("div"); box.className = "more"; box.innerHTML = `<b>More:</b> ${esc(r.back.more || "No longer explanation was written for this card: it goes into the round's short video at the end.")}`;
+  if (k === "show-more" && c.kind === "predict") { const el = $("card"), box = document.createElement("div"); box.className = "more"; box.innerHTML = `<b>More:</b> ${esc(r.back.more || "No longer explanation was written for this card: it goes into the round's short video at the end.")}${r.back.diagram && !c.point ? drawn(r.back.diagram) : ""}`;
     el.querySelector(".verdict").after(box); for (const x of el.querySelectorAll("[data-s]")) x.disabled = true; $("next").disabled = false; $("next").focus(); return; }
   next();   // settled: on to the next card
 }
 function drawSay(c, s, head) {
   const el = $("card");
   const claims = s.back?.claims;
-  el.innerHTML = `${head}<p class="lab">Hold Space, or the microphone, and talk; or type. Your words are written down on this machine. Nothing is checked until you press Check.</p>
+  // how your voice is written down: by this machine's whisper when you let go (the default), or, once you turn it on,
+  // by the browser's own recognition as you speak, which some browsers do on their maker's servers (step 3)
+  const can = !!SR, voice = live ? "live" : round.whisper ? "whisper" : null;
+  el.innerHTML = `${head}<p class="lab">${voice === "live" ? "Hold Space, or the microphone, and talk: your words appear as you speak." : voice ? "Hold Space, or the microphone, and talk; or type. Your words are written down on this machine when you let go." : "Type your words. To talk instead: whisper is not installed here (reelplanner setup --local-voice installs it)" + (can ? ", or turn on live words below." : ".")} Nothing is checked until you press Check.${round.sessionWaiting ? "" : " No session is waiting on this page: your words wait in its inbox for the next one."}</p>
+    ${can ? `<label class="live"><input type="checkbox" id="live" ${live ? "checked" : ""}> Live words as you talk: your browser's own recognition, which in some browsers sends the audio to its maker's servers. Off until you turn it on.</label>` : ""}
     <textarea id="said" placeholder="How you think it works, in your own words">${esc(s.own || "")}</textarea>
-    <div class="row"><button class="btn" id="mic">🎙 Hold to talk <kbd>Space</kbd></button><button class="btn ink" id="check">Check</button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>
+    <div class="row"><button class="btn" id="mic" ${voice ? "" : "disabled"}>🎙 Hold to talk <kbd>Space</kbd></button><button class="btn ink" id="check">Check</button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>
     ${claims ? `<ul class="claims">${claims.map((x) => `<li><span class="${x.verdict}">“${esc(x.words)}”</span><span class="m">${x.verdict === "match" ? "✓ a match" : x.verdict === "differs" ? "✗ a gap" : x.verdict === "open" ? "? neither: an assume card, next in this round" : "not settled: the session and the checker read it differently"}${x.source ? ` · checked against ${esc(x.source)}` : ""}</span></li>`).join("")}</ul>${(s.back?.settles || []).length && !s.settled ? `<p class="verdict gap">A gap, from your own words. Settle it:</p><div class="row">${s.back.settles.map((k, n) => `<button class="btn" data-s="${k}">${SETTLE[k]} <kbd>${n + 1}</kbd></button>`).join("")}</div>` : ""}<div class="row"><button class="btn ink" id="next" ${(s.back?.settles || []).length && !s.settled ? "disabled" : ""}>Next <kbd>Enter</kbd></button></div>` : ""}`;
   for (const btn of el.querySelectorAll("[data-s]")) btn.onclick = () => settle(c, btn.dataset.s);
   $("check").onclick = () => checkSay(c); $("skip").onclick = skipRest; if ($("next")) $("next").onclick = next;
   const mic = $("mic"); mic.onpointerdown = () => startRec(); mic.onpointerup = mic.onpointerleave = () => stopRec();
+  if ($("live")) $("live").onchange = (e) => { live = e.target.checked; state[c.id] = { ...(state[c.id] || {}), own: $("said").value }; drawSay(c, state[c.id], head); };
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let live = false, heard = null;   // live words: off on every visit until you turn them on
+function startLive() {
+  if (heard) return; const t = $("said"), base = t.value ? `${t.value.replace(/\s+$/, "")} ` : "";
+  heard = new SR(); heard.continuous = true; heard.interimResults = true; heard.lang = document.documentElement.lang || "en";
+  let done = "";
+  heard.onresult = (e) => { let now = ""; for (let k = e.resultIndex; k < e.results.length; k++) { const x = e.results[k]; if (x.isFinal) done += x[0].transcript; else now += x[0].transcript; } t.value = `${base}${done}${now}`.replace(/\s+/g, " "); };
+  heard.onerror = (e) => { status(e.error === "not-allowed" ? "The microphone was not allowed: type your words instead." : `Live words stopped (${e.error}): type, or try again.`); heard = null; };
+  heard.onend = () => { heard = null; status("Check it, fix a word if one is wrong, then press Check."); };
+  heard.start(); status("Listening, live… let go to stop.");
 }
 let rec = null, chunks = [];
 async function startRec() {
+  if (live && SR) return startLive();
+  if (!round.whisper) { status("whisper is not installed here: type your words instead (reelplanner setup --local-voice installs it)"); return; }
   if (rec) return; if (!navigator.mediaDevices?.getUserMedia) { status("No microphone here: type your words instead."); return; }
   try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); chunks = []; rec = new MediaRecorder(stream); rec.ondataavailable = (e) => chunks.push(e.data);
     rec.onstop = async () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" }); rec = null; status("Writing it down on this machine…");
@@ -163,7 +208,7 @@ async function startRec() {
     rec.start(); status("Listening… let go to stop."); }
   catch { status("The microphone was not allowed: type your words instead."); }
 }
-function stopRec() { if (rec && rec.state === "recording") rec.stop(); }
+function stopRec() { if (heard) heard.stop(); if (rec && rec.state === "recording") rec.stop(); }
 async function checkSay(c) {
   const words = $("said").value.trim(); if (!words) { status("Say or type your words first."); return; }
   state[c.id] = { ...(state[c.id] || {}), own: words };
@@ -184,7 +229,7 @@ async function drawEnd() {
   for (const b of $("card").querySelectorAll("[data-next]")) b.onclick = async () => { const r = await api("/api/round/send", { method: "POST", body: JSON.stringify({ r: name, skipped: round.skipped, next: b.dataset.next }) }); status(r.ok ? `${r.message} · ${r.summary}` : r.error); if (r.ok) for (const x of $("card").querySelectorAll("[data-next]")) x.disabled = true; };
 }
 addEventListener("keydown", (e) => {
-  if (!round || e.target.closest?.("textarea")) { if (e.key === "Enter" && !e.shiftKey && e.target.id === "own" && $("ownsave")) { e.preventDefault(); $("ownsave").click(); } return; }
+  if (!round || e.target.closest?.("textarea, input")) { if (e.key === "Enter" && !e.shiftKey && e.target.id === "own" && $("ownsave")) { e.preventDefault(); $("ownsave").click(); } return; }
   const c = round.cards[i], s = c ? state[c.id] || {} : {}, k = e.key.toLowerCase();
   if (k === "s") return skipRest();
   if (!c) return;
@@ -193,7 +238,7 @@ addEventListener("keydown", (e) => {
   if (s.phase === "back" && /^[1-4]$/.test(k)) { const ks = s.back?.settles || []; if (ks[Number(k) - 1]) settle(c, ks[Number(k) - 1]); return; }
   if (e.key === "Enter" && (s.phase === "settled" || s.back?.gap === "same")) next();
 });
-addEventListener("keyup", (e) => { if (e.code === "Space" && round?.cards[i]?.kind === "say" && !e.target.closest?.("textarea")) stopRec(); });
+addEventListener("keyup", (e) => { if (e.code === "Space" && round?.cards[i]?.kind === "say" && !e.target.closest?.("textarea, input")) stopRec(); });
 load();
 </script>
 </body>

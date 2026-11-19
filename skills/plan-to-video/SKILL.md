@@ -353,9 +353,11 @@ Not sure settles only Got it or Show me more.
 When they would rather click, or talk: `$RP review <round> --detach` opens it on the review page (one card at a time,
 keys or the microphone; what they say is written down on this machine), with `$RP review --wait` in the background;
 Send hands it back, and never starts a headless run. A say card's words come to you as a question to check: split them
-into claims, check each against the pinned sources, then give a fresh agent each claim you marked match or differs with
-only its lines (as the checker), and mark `unsettled` any it reads otherwise. Write
-`[{ words, verdict: match|differs|open|unsettled, source }]` and `$RP align answer <round> <card> <claims.json>`. A
+into claims, check each against the pinned sources, write `[{ words, verdict: match|differs|open, source }]` and
+`$RP align answer <round> <card> <claims.json>`. Then the fresh checker, before they see a mark:
+`$RP align <round> --prompt claims --card <card>` writes its brief (each marked claim and its lines, never the mark);
+run that prompt in a fresh agent, then `$RP align <round> --claims <card>`: a claim it reads otherwise is shown as not
+settled, and only then does the page show the marks. A
 claim that differs is a gap from their own words, settled the four ways like a card. The page's end offers Done, Plan
 this (write the plan on what it settled) and Explain the gaps; `--wait` prints which they pressed.
 
@@ -415,6 +417,8 @@ explainer (`<explainer-dir>/video/`).
    reviewer knows: when `$RP reel memory --you` shows they know a word (they watched the video that
    defines it, or looked it up and later answered a quick check on it right), this video drops its
    definition card for that word (the recap line, the defining clause); the word stays in the Terms panel.
+   The same for what a round's Got it kept: `reel prereqs` lists what they know on the files the plan touches, and
+   `check-terms` warns on a frame that shows those lines again; say each in a line, never explain it again.
    **Then read it against the ask, before any frame** (not at low depth): `$RP fresh-eyes <video-dir> --script` writes a brief from the
    storyboard, the script and the person's words; launch one fresh agent with exactly the prompt from `--script
    --prompt newcomer` (as for fresh eyes, step 5), and answer each finding under it (`--script --check`) before

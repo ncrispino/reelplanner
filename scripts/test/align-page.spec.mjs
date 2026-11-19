@@ -94,8 +94,15 @@ try {
   ok("…not checked yet", (await get(`api/round/say?r=${name}&card=c1`)).checked === false);
   writeFileSync(join(tmp, "claims.json"), JSON.stringify([{ words: "It always waits for my session", verdict: "differs", source: "src/send.mjs:3-5" }, { words: "otherwise it is lost", verdict: "differs", source: "src/send.mjs:5-5" }]));
   const a = align("answer", dir, "c1", join(tmp, "claims.json"));
-  const claims = await get(`api/round/say?r=${name}&card=c1`);
-  ok("…its claims come back once `align answer` records them", a.code === 0 && claims.checked && claims.claims.length === 2, `${a.out}\n${JSON.stringify(claims)}`);
+  let claims = await get(`api/round/say?r=${name}&card=c1`);
+  ok("…recorded by `align answer`, but not shown before the fresh checker reads them", a.code === 0 && !claims.checked && /checker/.test(claims.waiting) && /--prompt claims --card c1/.test(a.out), `${a.out}\n${JSON.stringify(claims)}`);
+  const cb = align(dir, "--prompt", "claims", "--card", "c1"), brief = read(join(dir, "checker", "claims-c1.md"));
+  ok("the checker's brief on the claims: each one's words and lines, never the session's mark", cb.code === 0 && /c1\.1/.test(brief) && /It always waits for my session/.test(brief) && /if \(command\) return "a headless run";/.test(brief) && !/differs|\bmatch\b/.test(brief) && /claims-c1-answers\.md/.test(cb.out), `${cb.out}\n${brief}`);
+  ok("…and nothing is applied before it has answered", align(dir, "--claims", "c1").code === 1);
+  writeFileSync(join(dir, "checker", "claims-c1-answers.md"), "- c1.1: no · a set command starts a run\n- c1.2: ? · line 5 alone does not say it is lost\n");
+  const ap = align(dir, "--claims", "c1");
+  claims = await get(`api/round/say?r=${name}&card=c1`);
+  ok("its reading applied: where it agrees the mark stands; where it does not, not settled", ap.code === 0 && claims.checked && claims.claims[0].verdict === "differs" && claims.claims[0].checker === "agrees" && claims.claims[1].verdict === "unsettled" && claims.claims[1].was.verdict === "differs", `${ap.out}\n${JSON.stringify(claims)}`);
   // a claim that differs is a gap from your own words, settled as any (step 3)
   const sf = (await get(`api/round?r=${name}`)).cards.find((c) => c.id === "c1");
   ok("a say card with a claim that differs: a gap, settled four ways", sf.back.gap === "gap" && sf.back.settles.join() === "got-it,change-plan,code-wrong,show-more", JSON.stringify(sf.back));
@@ -150,7 +157,60 @@ try {
       await p.waitForFunction(() => /waiting for a session|sent to the session/.test(document.getElementById("status").textContent), null, { timeout: 5000 });
       ok("Plan this goes with the round, for the session to write the plan on it", readdirSync(join(RP, "inbox")).filter((f) => f.endsWith(".json")).some((f) => JSON.parse(read(join(RP, "inbox", f))).review?.next === "plan"));
       ok("Send says where it went, never a headless run", /a round never starts a headless run|sent to the session/.test(await p.textContent("#status")), await p.textContent("#status"));
+
+      // a point card: its diagram is the question, a box the answer; Show me more opens a card's diagram
+      align("a point card", "src/send.mjs", "--slug", "point", "--date", "2026-11-18");
+      const d3 = join(RP, "align", "2026-11-18-point"), m3 = read(join(d3, "align.md"));
+      const dg = "```diagram\nflow: Where a review goes\nSend -> the waiting session: one is waiting\nSend -> a headless run: none waiting, a command set\nSend -> the inbox: neither\n```\n";
+      const c2 = predict("c2", "Nobody waits and no command is set. Where does it go?", "a").replace("- why:", "- more: With neither, nothing else can take it, so it waits.\n- why:").replace("src/send.mjs:3-5", "src/send.mjs:2-6");
+      writeFileSync(join(d3, "align.md"), `${m3.slice(0, m3.indexOf("## Cards"))}## Cards\n\n### c1 · predict\n- question: No session is waiting and a command is set. Where does the review go?\n- option_a: the inbox\n- option_b: a headless run\n- option_c: the waiting session\n- answer: b\n- point: yes\n- source: src/send.mjs:2-5\n- quote: "if (command) return"\n- why: A set command starts a run.\n- likely_wrong: it looks like it waits\n- matters: who works on it\n\n${dg}\n${c2}\n${dg}`);
+      mkdirSync(join(d3, "checker"), { recursive: true }); writeFileSync(join(d3, "checker", "answers.md"), "- c1: b\n- c2: a\n");
+      ok("--check: a point card's options are boxes of its diagram", align(d3, "--check").code === 0, align(d3, "--check").out);
+      const good = read(join(d3, "align.md")); writeFileSync(join(d3, "align.md"), good.replace("- option_c: the waiting session", "- option_c: nowhere"));
+      ok("…and fails on an option that is no box", /option C \("nowhere"\) is no box of its diagram/.test(align(d3, "--check").out), align(d3, "--check").out);
+      writeFileSync(join(d3, "align.md"), good);
+      await p.goto(`${base}round/?r=2026-11-18-point`); await p.waitForSelector(".dg-n[data-box]");
+      ok("a point card: its diagram, each box a way to answer", (await p.$$(".point .dg-vw .dg-n[data-box]")).length === 3);
+      await p.click('.dg-vw .dg-n[data-box="a"]');
+      await p.waitForSelector(".slab");
+      ok("…a click on a box answers it, and the back marks your box and the answer's", (await p.$$(".dg-vw .dg-n.mine")).length === 1 && (await p.$$(".dg-vw .dg-n.right")).length === 1 && /A gap/.test(await p.textContent(".verdict")));
+      await p.keyboard.press("1"); await p.waitForFunction(() => /Nobody waits/.test(document.querySelector("h2").textContent), null, { timeout: 5000 });
+      await p.keyboard.press("b"); await p.waitForSelector(".slab");
+      await p.keyboard.press("4"); await p.waitForSelector(".more", { timeout: 5000 }).catch(() => {});
+      ok("Show me more: the card's longer explanation and its diagram, at once", /nothing else can take it/.test(await p.textContent(".more").catch(() => "")) && (await p.$$(".more .dg-svg")).length >= 1);
+
+      // a say card where whisper is not installed: typing, how to install it, and live words off until you turn them on
+      align("say it", "src/send.mjs", "--slug", "say", "--date", "2026-11-18");
+      const d4 = join(RP, "align", "2026-11-18-say"), m4 = read(join(d4, "align.md"));
+      writeFileSync(join(d4, "align.md"), `${m4.slice(0, m4.indexOf("## Cards"))}## Cards\n\n### c1 · say\n- question: Say how you think a review is handed on.\n- likely_wrong: three ways run together\n- matters: the whole picture\n`);
+      await p.goto(`${base}round/?r=2026-11-18-say`); await p.waitForSelector("#said");
+      ok("no whisper here: the say card says to type, and how to install whisper; the microphone waits", /whisper is not installed here \(reelplanner setup --local-voice installs it\)/.test(await p.textContent("main")) && await p.$eval("#mic", (b) => b.disabled), await p.textContent("main"));
+      if (await p.evaluate(() => !!(window.SpeechRecognition || window.webkitSpeechRecognition))) {
+        ok("…live words: a switch, off, that says where the audio may go", !(await p.$eval("#live", (x) => x.checked)) && /sends the audio to its maker's servers/.test(await p.textContent(".live")));
+        await p.click("#live");
+        ok("…turned on, the microphone takes live words", !(await p.$eval("#mic", (b) => b.disabled)) && /appear as you speak/.test(await p.textContent("main")));
+      } else console.log("· this browser has no speech recognition: the live switch is not shown");
+      ok("…and with no session waiting, it says your words wait for the next", /No session is waiting on this page: your words wait in its inbox/.test(await p.textContent("main")));
       await browser.close();
+
+      // the microphone, end to end: a spoken clip as the browser's microphone, recorded, written down by whisper here
+      const H = process.env.HOME || "", W = { whisper: [process.env.HYPERFRAMES_WHISPER_PATH, join(H, ".cache/hyperframes/whisper/whisper.cpp/build/bin/whisper-cli")].find((x) => x && existsSync(x)), model: [process.env.REELPLANNER_WHISPER_MODEL, join(H, ".cache/hyperframes/whisper/models/ggml-small.en.bin")].find((x) => x && existsSync(x)) };
+      if (W.whisper && W.model) {
+        const port2 = testPort(20000 + Math.floor(Math.random() * 10000), 3);
+        const srv2 = spawn(process.execPath, [join(ROOT, "scripts/review.mjs"), d4, "--no-open", "--no-notify", "--port", String(port2), "--out", join(tmp, "bundle2")], { cwd: repo, env: { ...env, HYPERFRAMES_WHISPER_PATH: W.whisper, REELPLANNER_WHISPER_MODEL: W.model } });
+        procs.push(srv2); let log2 = ""; srv2.stdout.on("data", (x) => (log2 += x));
+        const base2 = await until(() => log2.match(/review page: (http:\/\/127\.0\.0\.1:\d+\/)/)?.[1], 60000);
+        const clip = join(ROOT, "scripts/test/fixtures/round-say.wav"), args = ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream", `--use-file-for-fake-audio-capture=${clip}`];
+        const b2 = await chromium.launch({ args }).catch(() => chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args }));
+        const ctx = await b2.newContext(); await ctx.grantPermissions(["microphone"], { origin: base2.replace(/\/$/, "") });
+        const q = await ctx.newPage(); await q.goto(`${base2}round/?r=2026-11-18-say`); await q.waitForSelector("#said");
+        ok("whisper here: the microphone is ready, and the card says your words are written down on this machine", !(await q.$eval("#mic", (b) => b.disabled)) && /written down on this machine when you let go/.test(await q.textContent("main")));
+        await q.dispatchEvent("#mic", "pointerdown"); await q.waitForTimeout(5200); await q.dispatchEvent("#mic", "pointerup");
+        await q.waitForFunction(() => /inbox/i.test(document.getElementById("said").value), null, { timeout: 90000 }).catch(() => {});
+        const heard = await q.$eval("#said", (t) => t.value);
+        ok("…held and let go: the recording is written down by whisper, into the box to fix before Check", /goes to my session/i.test(heard) && /waits in the inbox/i.test(heard), heard);
+        await b2.close();
+      } else console.log("· skipped the microphone end to end: whisper or its model is not installed here");
     } else console.log("· skipped the in-browser checks: no Chromium here");
   } else console.log("· skipped the in-browser checks: playwright-core is not installed");
 } finally { for (const p of procs) p.kill(); }

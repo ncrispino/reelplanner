@@ -60,6 +60,8 @@ import { findJargon } from "./lib/jargon.mjs";
 import { spelledOut } from "./lib/say.mjs";
 import { kindOf } from "./lib/length.mjs";
 import { valueClashes, clashLine } from "./lib/consistency.mjs";
+import { knownNow } from "./lib/align.mjs";
+import { repoTop } from "./lib/explainer.mjs";
 import { basename, dirname } from "node:path";
 import { frontMatter, fmValue, listOf, termsOf, plainOf, storyboardFrames, parseBefore, resolvePrereqs, glossaryFor, jargonFor, saysWord, ID_RE, normId, rowFor, rpDirFor, termsElsewhere } from "./lib/terms.mjs";
 
@@ -258,6 +260,19 @@ for (const q of unshown) console.log(`△ frame ${q.frame}, quick check ${q.k}: 
 for (const q of tooSoon) console.log(`△ frame ${q.frame}, quick check ${q.k}: right after frame ${q.shown}, which explains its rule (${q.by}) — ask it later, after the next step's scenes, so the viewer applies the rule rather than recalls the last sentence`);
 for (const q of sameCase) console.log(`△ frame ${q.frame}, quick check ${q.k}: its case is frame ${q.shown}'s again (${q.by}): ${q.again.map((x) => `"${x}"`).join(", ")} said or shown there — ask about a case the video did not show: other names, other numbers`);
 for (const q of idIn) console.log(`△ frame ${q.frame}, quick check ${q.k}: its ${q.field} names ${q.ids.join(", ")} — give the reason in words, not an id`);
+// what you know from a round (find-the-gaps step 4): a frame that shows those lines again explains what you know; say it
+// in a line, as a known word is (D-218). A warning: a walkthrough may show the same lines changing.
+const knownShown = [];
+try {
+  const top = repoTop(V), squash = (t) => String(t).replace(/\s+/g, " ").trim();
+  for (const k of top ? knownNow(top) : []) {
+    const lines = k.text.split("\n").map(squash).filter((l) => l.length >= 12);
+    if (!lines.length) continue;
+    const at = new Map(); for (const u of units) if (u.where !== "said") at.set(u.frame, `${at.get(u.frame) || ""} ${squash(u.text)}`);
+    for (const [frame, text] of at) if (lines.every((l) => text.includes(l))) knownShown.push({ frame, k });
+  }
+} catch { /* no repo, no memory file: nothing known */ }
+for (const x of knownShown) console.log(`△ frame ${x.frame} shows \`${x.k.path}:${x.k.from}-${x.k.to}\`, which you know (Got it on ${String(x.k.fact.at).slice(0, 10)}: ${x.k.fact.claim}) — say it in a line, or drop the explanation (\`reel memory --you\`)`);
 // one thing, one value in every scene (lib/consistency.mjs): a phone, an address, a count
 const clashes = valueClashes(units);
 for (const c of clashes) console.log(clashLine(c));
@@ -265,7 +280,7 @@ const fails = (IDS_FAIL ? bare.length + unlabelled.length : 0) + (STRICT ? early
 const n = (k, w) => `${k} ${w}${k === 1 ? "" : "s"}`;
 const bits = [bare.length && n(bare.length, "bare id"), bareShown.length && `${n(bareShown.length, "id")} in a real thing's own text`, early.length && `${n(early.length, "word")} before ${early.length === 1 ? "its" : "their"} definition`, never.length && `${n(never.length, "term")} never defined`,
   noBeat.length && `${n(noBeat.length, "glossary row")} the system video never explains`, unsaid.length && `${n(unsaid.length, "defining beat")} not saying ${unsaid.length === 1 ? "its word" : "their words"}`,
-  unlabelled.length && `${n(unlabelled.length, "word")} with no meaning`, misnamed.length && `${n(misnamed.length, "name")} on screen not as names.md shows ${misnamed.length === 1 ? "it" : "them"}`, spelled.length && `${spelled.length} ${spelled.length === 1 ? "flag, path or file name" : "flags, paths or file names"} spelled out in the script`, noWalk.length && `${n(noWalk.length, "quick check")} with no walk-through`, unshown.length && `${n(unshown.length, "quick check")} whose answer was not shown`, tooSoon.length && `${n(tooSoon.length, "quick check")} right after ${tooSoon.length === 1 ? "the beat that explains it" : "the beats that explain them"}`, sameCase.length && `${n(sameCase.length, "quick check")} on ${sameCase.length === 1 ? "its" : "their"} explaining beat's own case`, idIn.length && `${n(idIn.length, "quick check")} explained by an id`, clashes.length && `${n(clashes.length, "thing")} with different values across scenes`].filter(Boolean);
+  unlabelled.length && `${n(unlabelled.length, "word")} with no meaning`, misnamed.length && `${n(misnamed.length, "name")} on screen not as names.md shows ${misnamed.length === 1 ? "it" : "them"}`, spelled.length && `${spelled.length} ${spelled.length === 1 ? "flag, path or file name" : "flags, paths or file names"} spelled out in the script`, noWalk.length && `${n(noWalk.length, "quick check")} with no walk-through`, unshown.length && `${n(unshown.length, "quick check")} whose answer was not shown`, tooSoon.length && `${n(tooSoon.length, "quick check")} right after ${tooSoon.length === 1 ? "the beat that explains it" : "the beats that explain them"}`, sameCase.length && `${n(sameCase.length, "quick check")} on ${sameCase.length === 1 ? "its" : "their"} explaining beat's own case`, idIn.length && `${n(idIn.length, "quick check")} explained by an id`, knownShown.length && `${n(knownShown.length, "frame")} showing what you know from a round`, clashes.length && `${n(clashes.length, "thing")} with different values across scenes`].filter(Boolean);
 if (!bits.length) console.log(`✓ terms: no id alone, every word defined before it is used and labelled${SYSTEM ? `, every glossary row explained (${glossary.filter((g) => !g.other).length})` : ""} (${units.length} lines and on-screen blocks, ${words.size} words watched${prerequisites.length ? `, ${known.size} from ${prerequisites.map((p) => p.video).join(", ")}` : ""})`);
 else console.log(`${fails ? "✗" : "△"} terms: ${bits.join(", ")}${fails ? " — failing" : " (warnings"}${!fails && bare.length && !IDS_FAIL ? "; terms_check: strict makes a bare id fail)" : !fails ? ")" : ""}`);
 process.exit(fails ? 1 : 0);
