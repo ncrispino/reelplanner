@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (2026-11-19)
 
 - **Narration is an explanation, not a memo** (#46, style guide §4). Five patterns to read every script line for
   before narrating: orders in place of explanation, noun stacks, a list where a case belongs, the answer before
