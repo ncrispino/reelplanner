@@ -13,7 +13,7 @@
 | A3 | 1 | `align --check` fails while any predict card has no checker answer; `--no-checker` checks the rest first [visible] | Making the checker a warning, or a separate command | A card reaches you only when the agent and the checker agree (step 1); `--no-checker` lets the brief be written from cards that already pass | `scripts/align.mjs`, `checkRound({ checker })` |
 | A4 | 1 | A card's `- source:` is one `path:from-to` range, read as pinned [close] | Several ranges a card | One range a card keeps the back of the card one block of code, and the checker's brief one block to read; a card that needs two files is two cards | `scripts/lib/align.mjs` `refOf`, `linesOf` |
 | A5 | 4 | A due card comes back as one more card in the first round three days on: `--check` warns on a due card and asks for `- once_more: <fingerprint>`; Got it on it is "known for good" (`asked: 2`) [close] | A second card the tool adds by itself | The agent writes the new case (other names, the same rule); the tool can only say which thing is due | `scripts/lib/align.mjs` `knowsFor`, `checkRound`, `recordAnswers` |
-| A6 | 4 | You told me first is a `## You told me first` section put before the plan's first `### Step`, made when absent [visible] | At the end of plan.md | It is what the plan is written on, so it reads before the steps | `scripts/lib/align.mjs` `appendSection` |
+| A6 | 4 | You told me first is a `## You told me first` section put before the plan's first `### Step`, made when absent; The code is wrong lands there too, as a line marked "A step of this plan." with the card's lines, for the agent to make into a step [visible] | At the end of plan.md; `record` writing a `### Step` itself | It is what the plan is written on, so it reads before the steps; a step needs its cases and interface, which the agent writes, and `record` adding steps to a reviewed plan would change what was approved | `scripts/lib/align.mjs` `appendSection`, `recordAnswers` |
 | A7 | 2 | The record merges answers by card, and each card's settlement is routed once (`routed` in answers.json) [close] | Routing every time `record` runs | The page sends answers as they come and Send sends them all again; a Got it must not land twice in your file | `scripts/lib/align.mjs` `recordAnswers` |
 | A8 | 4 | Show me more's one video is a command the agent runs, `align --explain-gaps` printing `reelplanner explain "<the gaps, from what you expected>" <their files> --depth low` [visible] | Building the explainer from inside `align record` | An explainer is built like any video (narration, frames, fresh eyes); the record stays seconds | `scripts/lib/align.mjs` `explainGaps` |
 | A9 | 2 | The round page is `/round/?r=<name>` on the review server, `reelplanner review <round>` opening it with no video bundled; any round of the repo is served by name [visible] | A row in the video library | A round is no video: it has no frames or narration to bundle, and one server per repo serves both | `scripts/review.mjs` (`rounds`, `roundOnly`), `scripts/lib/align-server.mjs` `roundAsset`, `roundByName` |
@@ -25,6 +25,9 @@
 | A15 | 5 | A late fix counts against the plan whose call was changed later (`plan` added to each miss); a step reworked after a walkthrough check counts once, as its Expected something else [close] | Counting a reworked step as both | The four kinds of surprise should not count one thing twice | `scripts/lib/memory.mjs` `findMisses`, `scripts/lib/align.mjs` `roundStats` |
 | A16 | 5 | The quick check's settle row sits inside its "Expected something else?" box, and pressing Change the plan or The code is wrong relabels that box and focuses it; words typed with no way chosen are Change the plan's [visible] | A row of its own on the frame | The box is already placed on the frame by the layout; the plan says its words become Change the plan's | `packages/player/reelplanner-player.js` `syncSettle`, `settleQuiz`, `saveDisagree` |
 | A17 | 5 | A quick check settled Got it with no words sends no rewrite of its step; The code is wrong or Change the plan with no words asks the agent to ask how [close] | Sending every missed check as "explain this step so the answer is obvious", as before | Got it says the reviewer had it wrong, not that the step was unclear; left unsettled, it is sent as before | `scripts/lib/review-scope.mjs` `reviseScope` |
+| A19 | 3 | A recording is thrown away once whisper has written it down; only your words, which you can edit, are kept [hard-to-undo] | Keeping the recording in the inbox | Your words are the record and you check them before Check; a recording kept is a voice file on disk for nothing (D-249: never a transcript in git; D-305) | `scripts/lib/align-server.mjs` `transcribe` |
+| A20 | 1 | A round's repo is found from its own folder (the git top around `.reelplanner/align/`); `sources.json`'s `repo` path is read only for a round kept on this machine [close] | Always the path `sources.json` names, or no path at all | A committed round must work in every clone; a round kept in `~/.reelplanner/align/` has no repo around it but the one it names | `scripts/lib/align.mjs` `repoOfRound` |
+| D1 | 5 | Step 5's fifth choice (A18) was made and the step built before its biggest open choice became the plan's question 5 [deviation] | Stopping at the fifth choice, asking, and building the rest after the answer (D-110) | Noticed only when counting the step's rows; the question is now open, and the code follows its recommendation (A): an answer of B or C changes `roundLineOf` and `roundStats` only, nothing stored | `plan.md` question 5; `scripts/lib/align.mjs` `roundLineOf`, `roundStats` |
 | A18 | 5 | Show me more on a quick check with no worked example marks it "asked to have it explained again" (`unclear`) [close] | A button that does nothing there | That is the existing explain-again path the revise already reads | `packages/player/reelplanner-player.js` `settleQuiz` |
 
 ## Implementation by step
@@ -39,7 +42,7 @@
 
 `reelplanner align "<your words>" <sources…> [--plan <plan-dir>]` makes `.reelplanner/align/<date>-<slug>/` (a repo not set up: `~/.reelplanner/align/<repo-key>/`, nothing written into the repo), with `align.md` (your words, the plan it is for, a `## Cards` section to write in) and `sources.json` (each source pinned at its commit and hash, as an explainer pins it: `pinAll` in `scripts/lib/explainer.mjs`). `--candidates` lists the four places a gap is likely: your words, your memory (quick checks missed on these files), what moved since you last watched, and cards due once more. `--check` holds the cards to the plan's rules: at most six; `likely_wrong` and `matters` on each; an assume card has no answer; a predict card has a source, an answer among its options, and a quote found word for word in its lines; nothing you know already at the same lines. `--prompt checker` writes `checker/brief.md` with each predict card's question, options and lines and never its answer or why, and prints the prompt for a fresh agent, which writes `checker/answers.md`; `--check` then fails on a predict card it read otherwise, or could not decide (`?`, A2). The first real round, on this repo's inbox (`.reelplanner/align/2026-11-18-review-reaches-agent/`), had its first checker catch a card whose answer was wrong (`checker/round-1/`); the rewritten cards pass.
 
-**Tests:** `scripts/test/align.spec.mjs` (49 checks: the folder in both kinds of repo, each rule of `--check`, the brief holding no answer, the checker's disagreement and `?`).
+**Tests:** `scripts/test/align.spec.mjs` (53 checks: the folder in both kinds of repo, each rule of `--check`, the brief holding no answer, the checker's disagreement and `?`).
 
 ```diagram
 flow: A round's cards, before you see them
@@ -102,7 +105,7 @@ Nothing writes the cards for the agent: `--candidates` points at where to look, 
 
 In the chat, `align <round> --cards` prints each card's front, then its back (the lines, the answer, why), assume cards first; the agent asks them one at a time (AskUserQuestion in Claude Code) and records them with `align record <round> <answers.json>`. On the page, `reelplanner review <round>` opens `/round/?r=<name>` on the review server, with no video to bundle (A9): `packages/player/align-page.html`, in the review page's look (paper, ink, the coral on what is yours; EB Garamond, Inter, JetBrains Mono). Its API is `scripts/lib/align-server.mjs`, behind the server's host and origin checks: the fronts with no answer, why or lines until you answer; each answer recorded as it comes through the same `recordAnswers` the chat uses (`via: "page"`); Send files the round as an inbox row of kind `align` for the waiting session, and never starts a headless run, even with one configured (A10); `review --wait` prints what came back (`roundNote` in `scripts/inbox.mjs`). In a video, a quick check settles the same way (step 5). Found while saving the runs: answering a card again with a different pick kept the old settlement; a new answer now clears it, so the card is settled again (`recordAnswers`, checked in `align-page.spec.mjs`).
 
-**Tests:** `scripts/test/align-page.spec.mjs` (32 checks: the page and its fonts, the fronts with nothing given away, a wrong pick turning over to the lines, Got it landing once, Not sure's two ways, the say card's route, Send into the inbox and never a headless run, another site refused; in Chromium, a key answering a card, 1 settling it, a right pick moving on, Send).
+**Tests:** `scripts/test/align-page.spec.mjs` (37 checks: the page and its fonts, the fronts with nothing given away, a wrong pick turning over to the lines, Got it landing once, Not sure's two ways, the say card's route, Send into the inbox and never a headless run, another site refused; in Chromium, a key answering a card, 1 settling it, a right pick moving on, Send).
 
 ```diagram
 flow: One record, three ways in
@@ -304,6 +307,86 @@ No round has yet run before a real plan, and none has been answered by you; the 
 
 `skills/plan-to-video/SKILL.md` (**A round**, **A new plan** step 2), `packages/player/reelplanner-player.js` (`syncSettle`, `settleQuiz`), `scripts/lib/review-scope.mjs`, `scripts/lib/align.mjs` (`roundLineOf`, `roundStats`, `roundStatusLines`), `scripts/lib/memory.mjs` (`plan` on each miss, `settled` on each wrong check), `scripts/reel.mjs` (`status`), `docs/reference.md`, `docs/status.md`, `docs/project-dir.md`; `reelplanner reel status`.
 
+## Decisions in force
+
+Each decision the plan cites, and whether the code holds to it (checked again by the code check):
+
+- **D-001** holds: `scripts/lib/align.mjs` `writeCheckerBrief`/`checkerPrompt` (a fresh agent with no answers answers each predict card; `checkRound` fails on a disagreement)
+- **D-005** holds: nothing in this change touches it; the player diff adds only the settle row (`packages/player/reelplanner-player.js` `syncSettle`, `settleQuiz`)
+- **D-024** holds: detail pages untouched
+- **D-082** holds: `scripts/lib/align-server.mjs:183` passes Send a start that returns `{ started: false }`, and a say card goes through `deliverInbox(..., { question: true })`, which never reaches `start()` (`scripts/lib/inbox.mjs:700`)
+- **D-085** holds: nothing in this change touches it
+- **D-106** holds: `scripts/lib/memory.mjs` `appendKnows` writes to `youPath()` (`~/.reelplanner/you.jsonl`)
+- **D-107** holds: the retro line in `scripts/reel.mjs` status is unchanged
+- **D-109** holds: `scripts/lib/memory.mjs` `findMisses` only adds a `plan` field; nothing new stops on a miss
+- **D-110** not kept on step 5: its fifth choice was built before its question was asked; said as the deviation D1, and asked as the plan's question 5.
+- **D-128** holds: "you watched it" storage untouched
+- **D-129** holds: `packages/player/reelplanner-player.js` `settleQuiz` never gates Continue or Approve; `packages/player/test/quiz.spec.mjs` 2d goes on with nothing settled
+- **D-142** holds: `packages/player/align-page.html:12` uses `--coral: #B8552E`, the player's `--accent`
+- **D-166** holds: nothing in this change touches it
+- **D-167** holds: `packages/player/align-page.html` takes the review page's palette and fonts
+- **D-169** holds: nothing in this change touches it
+- **D-170** holds: nothing in this change touches it
+- **D-171** holds: nothing in this change touches it; nothing from a round enters the decision log (`scripts/lib/align.mjs` `recordAnswers`)
+- **D-195** holds: the player's detail opening is untouched
+- **D-196** holds: nothing in this change touches it
+- **D-197** holds: when and where quick checks are asked is untouched
+- **D-198** holds: nothing in this change touches it
+- **D-199** holds: nothing in this change touches it
+- **D-200** holds: nothing in this change touches it
+- **D-201** holds: nothing in this change touches it
+- **D-202** holds: nothing in this change touches it
+- **D-213** holds: nothing in this change touches it
+- **D-215** holds: nothing in this change touches it
+- **D-216** holds: nothing in this change touches it
+- **D-217** holds: nothing in this change touches it
+- **D-218** holds: term underlining untouched
+- **D-219** holds: nothing in this change touches it
+- **D-220** holds: nothing in this change touches it
+- **D-221** holds: the autonomy-row filters in `packages/player/reelplanner-player.js` are unchanged
+- **D-222** holds: nothing in this change touches it
+- **D-223** holds: nothing in this change touches it
+- **D-224** holds: the round is its own page (`/round/`), not a row of the library
+- **D-225** holds: Show me more's video is an ordinary `reelplanner explain` (`scripts/lib/align.mjs` `explainGaps`), so it gets fresh eyes as any video does
+- **D-226** holds: a say card's words take Ask about this's route (`scripts/lib/align-server.mjs` `writeQuestion` + `deliverInbox` question)
+- **D-227** holds: as D-225
+- **D-244** holds: nothing in this change touches it
+- **D-245** holds: nothing in this change touches it
+- **D-246** holds: nothing in this change touches it
+- **D-247** holds: nothing in this change touches it
+- **D-248** holds: nothing in this change touches it
+- **D-249** holds: `scripts/lib/align-server.mjs` `transcribe` keeps no recording; only words go into `align.md`/`answers.json`
+- **D-250** holds: nothing in this change touches it
+- **D-264** holds: nothing in this change touches it
+- **D-266** holds: nothing in this change touches it
+- **D-303** holds: nothing in this change touches it
+- **D-304** holds: nothing in this change touches it
+- **D-305** holds: no voice file is written into the repo (`scripts/lib/align-server.mjs` `transcribe` works in a temp folder)
+- **D-309** holds: nothing in this change touches it
+- **D-310** holds: nothing in this change touches it
+- **D-311** holds: nothing in this change touches it; the new specs are added to `scripts/test/run.mjs`
+- **D-312** holds: new code uses `reelplanner`/`.reelplanner`; the `reelplanning-review-server` meta in `scripts/review.mjs:558` is the existing marker the player reads
+- **D-313** holds: a round is filed through the local inbox (`scripts/lib/align-server.mjs` `api/round/send`)
+- **D-314** holds: chat, page and `align answer` all write through `recordAnswers` (`scripts/lib/align.mjs`)
+- **D-315** holds: `scripts/lib/align-server.mjs` `api/round/say` hands the words to the waiting session as a question
+- **D-316** holds: `scripts/lib/align.mjs` `ONCE_MORE_DAYS = 3`, `knowsFor` due, `checkRound` warns, `asked: 2` known for good
+- **D-317** holds: `skills/plan-to-video/SKILL.md` runs a round only when a candidate is both likely and costly
+- **D-232** holds: Ask about this is untouched; a say card's words take its route, a question for the waiting session (`scripts/lib/align-server.mjs` `api/round/say`).
+- **D-306** holds: nothing a round settles is written into the decision log (`scripts/lib/align.mjs` `recordAnswers`), and no accepted call's lines are changed (`reel check --base 95a5bdb`: none).
+
+## Code check
+
+The fresh checker's findings are in `code-check/findings.md` (2 of 5 steps ✓, 60 of 61 decisions ✓, 4 unexplained). Each ✗, by its key:
+
+- **Step 1** — fixed: a card the checker reads otherwise can be dropped with `- dropped: <how it read it>`; it is never checked or asked (`parseCards` leaves it out), and After the round lists it as "the agent and the checker read this code differently" (`writeAfter`). Checked in `align.spec.mjs`.
+- **Step 3** — (1) fixed: a say card whose claims differ is a gap, made into a card from your first differing claim and its lines (`sayGapCard`) and settled the four ways, on the page and in the chat; The code is wrong on it goes to `issue.md` or the plan with your words and the lines (`align-page.spec.mjs`). (2) not done: the browser's live recognition behind a switch; the page records and the local whisper writes it down, nothing else (Not done). (3) partly: the skill now tells the session to give each marked claim, with only its lines, to a fresh agent and mark `unsettled` what it reads otherwise; no tool checks that it ran (Not done).
+- **Step 4** — (1) fixed in part: a predict card's `- more:` is the longer explanation, shown on the card at once when you press Show me more, and given in the chat; no diagram (Not done). (2) fixed: the round's end offers Done, Plan this, and Explain the gaps once a gap asked for more; the session's `--wait` says which was pressed (`roundNote`). (3) not done: a later video's build does not read what you know from rounds to drop an explanation (Not done). (4) fixed: `reel memory --you --forget <fingerprint>` takes a thing out, and `reel memory --you` says so.
+- **D-110** — a deviation, D1: step 5 was built past its fifth choice before asking. The question is open as the plan's question 5.
+- **`scripts/align.mjs:134`** — fixed and a row, A20: a round's repo is the git top around its folder; the absolute path is read only for a round kept on this machine. Checked against a second clone in `align.spec.mjs` (it fails on the old code).
+- **`scripts/lib/align-server.mjs:117-124`** — a row, A19: the recording is thrown away once written down.
+- **`scripts/lib/align.mjs:280-281`** — a row: A6 now says that The code is wrong lands in You told me first, marked "A step of this plan.", for the agent to make into a step.
+- **`packages/player/align-page.html:26,29,38`** — fixed: the question at 44 px, the options at 22 px and the lines at 20 px, as step 2's Look gives (smaller under 600 px wide).
+
 ## Tests run
 
 `npm test` (the fast suite) — see `runs/npm-test.txt`. Full runs of the specs touched: `align`, `align-page`, `memory`, `reviews`, `review-data`, `contributing`, `package`, and the player's `quiz`, `answer-on-frame`, `frame-room`, `revisit`, `band`.
@@ -311,10 +394,12 @@ No round has yet run before a real plan, and none has been answered by you; the 
 ## Not done
 
 - **Point cards on a diagram:** a card's options can be tiles (`- point: yes`), but no diagram is drawn on the card to click a box of.
-- **The fresh checker on spoken claims** is asked of the waiting session in the question's words; the tool does not prove it ran.
-- **Show me more on the page** lists the gap for the round's one explainer; it does not open a detail over the card.
+- **The fresh checker on spoken claims** is asked of the waiting session in the question's words and the skill; the tool does not prove it ran.
 - **Not yet used for real:** no round before a real plan, and the one real round in this repo (`.reelplanner/align/2026-11-18-review-reaches-agent/`) is checked but not answered by you.
-- **The plan's question 5** (how a plan says whether a round ran) is open; it is built as recommended.
+- **The plan's question 5** (how a plan says whether a round ran) is open; it is built as recommended (D1).
+- **Live recognition in the browser**, off by default behind a switch that says where the audio goes: only recording and the local whisper are built.
+- **A diagram on Show me more**: the card's `- more:` text opens at once; no diagram is drawn.
+- **A later video dropping what you know from rounds**: what you know is kept and asked once more, but no build reads it to drop an explanation yet.
 
 ## Categories of change
 

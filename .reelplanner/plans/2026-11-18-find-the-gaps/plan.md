@@ -265,11 +265,11 @@ Of four cards you settle three gaps. c1, "Not quite: only my open session", goes
 
 ```diagram
 flow: Where a gap goes
-gap -> your memory: Got it | asked once more on a new case days later; then known until the lines change
-gap -> the plan: Change the plan | You told me first
-gap -> a fix: The code is wrong | a step, or an issue's text
-gap -> an explainer: Show me more | one video for the round's gaps
-gap -x decision log: never directly
+Got it -> your memory: asked once more on a new case days later; then known until the lines change
+Change the plan -> the plan: You told me first
+The code is wrong -> a fix: a step, or an issue's text
+Show me more -> an explainer: one video for the round's gaps
+a round -x decision log: never directly
 ```
 
 ### Step 5 — Into the loop: before a plan, in every quick check, and measured

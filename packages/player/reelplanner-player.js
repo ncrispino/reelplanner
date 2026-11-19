@@ -5777,7 +5777,7 @@ ${clip(gloss || "(none)", 9000)}`;
     try { localStorage.setItem(this.rkey + ":quiz", JSON.stringify(this.quizzes)); } catch {}
     this.syncSettle(r);
     const d = this.$(".decision .disagree");
-    if (way === "change-plan" || way === "code-wrong") { this.stopWait(); d.querySelector("textarea").focus({ preventScroll: true }); }
+    if (way === "change-plan" || way === "code-wrong") { this.stopWait(); const h = this.$(".decision .hint"); h.textContent = "Say how, then Enter; Continue goes on."; delete h.dataset.live; d.querySelector("textarea").focus({ preventScroll: true }); }
     else if (way === "show-more" && q.walkMeThrough) this.openWalk();
     else d.querySelector(".kept").textContent = way === "got-it" ? "Kept: you had it wrong, and know it now." : "Asked to have it explained again.";
     this.renderDecisions(); this.dispatchEvent(new CustomEvent("quiz", { detail: { id: q.id, ...r } }));

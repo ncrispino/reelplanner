@@ -96,6 +96,12 @@ try {
   const a = align("answer", dir, "c1", join(tmp, "claims.json"));
   const claims = await get(`api/round/say?r=${name}&card=c1`);
   ok("…its claims come back once `align answer` records them", a.code === 0 && claims.checked && claims.claims.length === 2, `${a.out}\n${JSON.stringify(claims)}`);
+  // a claim that differs is a gap from your own words, settled as any (step 3)
+  const sf = (await get(`api/round?r=${name}`)).cards.find((c) => c.id === "c1");
+  ok("a say card with a claim that differs: a gap, settled four ways", sf.back.gap === "gap" && sf.back.settles.join() === "got-it,change-plan,code-wrong,show-more", JSON.stringify(sf.back));
+  r = await post("api/round/answer", { r: name, card: "c1", answer: "said", own: "It always waits for my session, and otherwise it is lost.", settled: "code-wrong" });
+  ok("…The code is wrong on it goes into the round's issue.md with your words and its lines", r.ok && /c1 → issue\.md/.test(r.routed.join()) && /You said: "It always waits for my session"/.test(read(join(dir, "issue.md"))) && /src\/send\.mjs:3-5/.test(read(join(dir, "issue.md"))), `${JSON.stringify(r)}\n${read(join(dir, "issue.md"))}`);
+  ok("…and its claims are kept", JSON.parse(read(join(dir, "answers.json"))).cards.c1.claims.length === 2);
 
   const audio = await fetch(`${base}api/round/transcribe`, { method: "POST", headers: { "content-type": "text/plain" }, body: "x" });
   ok("transcribe takes audio only", audio.status === 415);
@@ -105,14 +111,14 @@ try {
   r = await post("api/round/send", { r: name, skipped: ["c4"] });
   const rows = readdirSync(join(RP, "inbox")).filter((f) => f.endsWith(".json")).map((f) => JSON.parse(read(join(RP, "inbox", f))));
   const row = rows.find((x) => x.review?.kind === "align");
-  ok("Send: the round into the inbox, kind align, with what each gap settled to", r.ok && row && /c2 Got it/.test(row.review.summary) && /1 skipped/.test(row.review.summary), JSON.stringify(r));
+  ok("Send: the round into the inbox, kind align, with what each gap settled to", r.ok && row && /c2 Got it/.test(row.review.summary) && /1 skipped/.test(row.review.summary) && row.review.next === "done", JSON.stringify(r));
   ok("…skipped cards listed as Assumed, not checked", JSON.parse(read(join(dir, "answers.json"))).skipped.includes("c4"));
   await sleep(1500);
   ok("…and the configured headless command never ran", !existsSync(marker) && r.handledBy !== "agent", JSON.stringify(r));
   // the say question answered (the session checked the words), the waiter takes the round, and says what to do with it
   execFileSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "answer", q.id, "checked", "--from", "the round's sources"], { cwd: repo, env, stdio: "ignore" });
   const w = spawnSync(process.execPath, [join(ROOT, "scripts/inbox.mjs"), "--wait", "--timeout", "5"], { cwd: repo, env, encoding: "utf8" });
-  ok("`review --wait` takes the round and says what to do with it, no decision log", /\.json/.test(w.stdout) && /🃏 the round \.reelplanner\/align\/2026-11-18-handed-on/.test(w.stderr) && /Nothing goes into the decision log/.test(w.stderr), `${w.stdout}${w.stderr}`);
+  ok("`review --wait` takes the round and says what to do with it, no decision log", /\.json/.test(w.stdout) && /🃏 the round \.reelplanner\/align\/2026-11-18-handed-on/.test(w.stderr) && /They pressed Done/.test(w.stderr) && /Nothing goes into the decision log/.test(w.stderr), `${w.stdout}${w.stderr}`);
 
   // ── in the browser ──
   let chromium = null; try { ({ chromium } = await import("playwright-core")); } catch {}
@@ -138,9 +144,11 @@ try {
       await p.keyboard.press("a");
       await p.waitForSelector(".verdict", { timeout: 5000 }).catch(() => {});
       ok("a right pick: Same picture, and it moves on by itself", /Same picture/.test(await p.textContent(".verdict")));
-      await p.waitForFunction(() => /Send/.test(document.querySelector("main").textContent), null, { timeout: 5000 });
-      await p.click("#send");
+      await p.waitForFunction(() => /Plan this/.test(document.querySelector("main").textContent), null, { timeout: 5000 });
+      ok("the round's end: Done and Plan this (Explain the gaps only once a gap asked for more)", await p.$$eval("[data-next]", (b) => b.map((x) => x.dataset.next).join()) === "done,plan");
+      await p.click('[data-next="plan"]');
       await p.waitForFunction(() => /waiting for a session|sent to the session/.test(document.getElementById("status").textContent), null, { timeout: 5000 });
+      ok("Plan this goes with the round, for the session to write the plan on it", readdirSync(join(RP, "inbox")).filter((f) => f.endsWith(".json")).some((f) => JSON.parse(read(join(RP, "inbox", f))).review?.next === "plan"));
       ok("Send says where it went, never a headless run", /a round never starts a headless run|sent to the session/.test(await p.textContent("#status")), await p.textContent("#status"));
       await browser.close();
     } else console.log("· skipped the in-browser checks: no Chromium here");

@@ -42,9 +42,11 @@ export function roundFront(dir) {
 /** A card's back: the code's own lines, the answer and why (a predict card), and whether your answer was a gap. */
 export function backOf(dir, c, a) {
   const gap = gapOf(c, a);
-  if (c.kind !== "predict") return { gap, ...(c.kind === "say" && a.claims ? { claims: a.claims } : {}) };
+  // a say card whose claims differ is a gap settled as any (step 3): the four ways, under the claims
+  if (c.kind === "say") return { gap, ...(a.claims ? { claims: a.claims } : {}), ...(gap === "gap" ? { settles: ["got-it", "change-plan", "code-wrong", "show-more"] } : {}) };
+  if (c.kind !== "predict") return { gap };
   const { text } = linesOf(dir, c);
-  return { gap, answer: c.answer, label: c.options.find((o) => o.id === c.answer)?.label || "", source: c.source, lines: text, why: c.why,
+  return { gap, answer: c.answer, label: c.options.find((o) => o.id === c.answer)?.label || "", source: c.source, lines: text, why: c.why, more: c.more || "",
     settles: a.answer === "not-sure" ? ["got-it", "show-more"] : ["got-it", "change-plan", "code-wrong", "show-more"] };
 }
 
@@ -111,12 +113,14 @@ export async function handleRound(req, res, path, { repo, box, json, readBody })
   }
   if (path === "api/round/send") {
     const skipped = (Array.isArray(b.skipped) ? b.skipped : []).map(String);
+    // the round's Finish (step 4): Done, Plan this (a plan written on what it settled) or Explain the gaps (its one explainer)
+    const next = ["done", "plan", "explain"].includes(b.next) ? b.next : "done";
     const r = recordAnswers(d, { answers: [], skipped });
     if (r.errors.length) { json(res, 400, { ok: false, error: r.errors.join("; ") }); return true; }
     const rec = r.record, gaps = cards.filter((c) => rec.cards[c.id] && !["same", "said"].includes(gapOf(c, rec.cards[c.id])));
     const summary = `${Object.keys(rec.cards).length} of ${cards.length} answered, ${gaps.length} gap${gaps.length === 1 ? "" : "s"}${skipped.length ? `, ${skipped.length} skipped` : ""}: ${gaps.map((c) => `${c.id} ${SETTLE_WORDS[rec.cards[c.id].settled] || "not settled"}`).join(", ") || "no gap"}`;
     const row = { project: `round-${basename(d)}`, kind: "align", title: `Round: ${basename(d)}`, round: relative(repo, d) || d, submittedAt: new Date().toISOString(), verdict: "round",
-      review: { kind: "align", round: relative(repo, d) || d, summary, annotations: [] } };
+      review: { kind: "align", round: relative(repo, d) || d, summary, next, annotations: [] } };
     const w = writeReview(box, row);
     // a round is for a session: it never starts a headless run, as a question asked on the page never does
     const dl = w.duplicate ? { handledBy: "inbox", message: "already sent" } : await deliverInbox(box, w.id, { repo, start: async () => ({ started: false }) });

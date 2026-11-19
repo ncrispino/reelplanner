@@ -163,7 +163,7 @@ reelplanner align "how a review reaches the agent" scripts/lib/inbox.mjs --plan 
   Expected something else, flagged calls, late fixes) on plans with a round and on plans with a likely gap and no
   round. It says "too few plans to compare" until there are five of each.
 
-`align due` lists what is due once more; `align list` this repo's rounds. The folder: [`.reelplanner/align/`](project-dir.md).
+`align due` lists what is due once more; `reel memory --you --forget <fingerprint>` takes a known thing out of your memory; `align list` this repo's rounds. The folder: [`.reelplanner/align/`](project-dir.md).
 
 ## The guide behind a video
 

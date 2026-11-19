@@ -14,7 +14,7 @@
 //   align answer           — a say card's claims, checked; an open claim asks for an assume card not counted in the six
 //   align --cards          — assume first, then predict, then say; each predict card's back holds its lines
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { ROOT } from "../lib/env.mjs";
@@ -166,6 +166,25 @@ try {
   r = run(set.repo, "record", sdir, ans([{ card: "c3", answer: "a", settled: "show-more", via: "page" }]));
   r = run(set.repo, sdir, "--explain-gaps");
   ok("--explain-gaps: one explainer of the gaps asked more on, from what you expected", /^reelplanner explain ".*you expected The inbox.*" src\/send\.mjs --depth low/m.test(r.out), r.out);
+
+  // ── a dropped card, a round in another clone, forgetting ─────────────────────────────────────────────────
+  setCards(cdir, [predict("c1", { quote: "if (command) return \"a headless run, if it can\";" }), predict("c2", { extra: "- dropped: the checker read it as A\n" })]);
+  r = run(set.repo, cdir, "--check", "--no-checker");
+  ok("a dropped card is never checked or asked", r.code === 0 && /1 predict/.test(r.out) && !/c2/.test(run(set.repo, cdir, "--cards").out), r.out);
+  write(join(cdir, "checker", "answers.md"), "- c1: b\n");
+  run(set.repo, "record", cdir, ans([{ card: "c1", answer: "b", via: "chat" }]));
+  ok("…After the round lists it: the agent and the checker read this code differently", /\*\*c2\*\*.*dropped: the agent and the checker read this code differently \(the checker read it as A\)/.test(read(join(cdir, "align.md"))), read(join(cdir, "align.md")));
+  set.git("add", "-A"); set.git("commit", "-qm", "rounds");
+  const clone = join(tmp, "clone"); execFileSync("git", ["clone", "-q", set.repo, clone]);
+  const cround = join(clone, ".reelplanner/align", readdirSync(join(clone, ".reelplanner/align")).find((n) => n.includes("after")));
+  r = run(clone, cround, "--check", "--no-checker");
+  const { repoOfRound } = await import("../lib/align.mjs");
+  ok("a committed round works in another clone (its repo is the folder's, not the path sources.json names)", r.code === 0 && realpathSync(repoOfRound(cround)) === realpathSync(clone) && JSON.parse(read(join(cround, "sources.json"))).repo !== clone, `${r.out} ${repoOfRound(cround)}`);
+  const fp = knows()[0].fingerprint;
+  const before = read(join(RH, "you.jsonl")).split("\n").filter(Boolean).length, matching = knows().filter((k) => k.fingerprint === fp).length;
+  r = reel(set.repo, "memory", "--you", "--forget", fp);
+  ok("reel memory --you --forget takes a thing you know out of your memory, and only that", /forgotten/.test(r) && !knows().some((k) => k.fingerprint === fp) && read(join(RH, "you.jsonl")).split("\n").filter(Boolean).length === before - matching, r);
+  ok("…and says so when nothing matches", /nothing you know from a round matches/.test(reel(set.repo, "memory", "--you", "--forget", "nope")));
 
   // ── measured (step 5): reel status counts rounds and compares later surprises ───────────────────────────
   write(join(set.repo, ".reelplanner/plans/2026-11-19-other/plan.md"), "# Other\n\n**Round:** none, a likely, costly gap (you skipped it)\n\n### Step 1 — x\n");

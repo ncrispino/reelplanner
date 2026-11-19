@@ -23,10 +23,10 @@
   .card.turn { animation: turn .45s ease; }
   @keyframes turn { 0% { transform: perspective(1200px) rotateY(0); } 50% { transform: perspective(1200px) rotateY(90deg); } 100% { transform: perspective(1200px) rotateY(0); } }
   @media (prefers-reduced-motion: reduce) { .card.turn { animation: none; } }
-  .card h2 { margin: 6px 0 18px; font: 400 32px/1.2 var(--serif); }
+  .card h2 { margin: 6px 0 18px; font: 400 44px/1.15 var(--serif); }
   .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 8px 0 16px; }
   .opts.point { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-  .opt { text-align: left; font: 400 18px/1.35 var(--sans); color: var(--ink); background: var(--paper); border: 1px solid rgba(var(--ink-rgb),.3); border-radius: 10px; padding: 14px 16px; cursor: pointer; min-height: 64px; }
+  .opt { text-align: left; font: 400 22px/1.35 var(--sans); color: var(--ink); background: var(--paper); border: 1px solid rgba(var(--ink-rgb),.3); border-radius: 10px; padding: 14px 16px; cursor: pointer; min-height: 64px; }
   .opts.point .opt { text-align: center; background: var(--tile); }
   .opt:hover { border-color: var(--ink); }
   .opt:focus-visible, .btn:focus-visible, textarea:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -35,13 +35,15 @@
   .opt.mine.wrong { border-style: dashed; }
   .opt.right { border: 3px solid var(--ink); }
   .opt[disabled] { cursor: default; }
-  .slab { background: var(--slab); color: var(--slab-ink); border-radius: 10px; padding: 12px 16px; overflow-x: auto; font: 400 14px/1.55 var(--mono); white-space: pre; margin: 6px 0 12px; }
-  .why { font-size: 18px; margin: 4px 0 14px; }
+  .slab { background: var(--slab); color: var(--slab-ink); border-radius: 10px; padding: 12px 16px; overflow-x: auto; font: 400 20px/1.5 var(--mono); white-space: pre; margin: 6px 0 12px; }
+  .why { font-size: 22px; margin: 4px 0 14px; }
+  .more { font-size: 20px; margin: 0 0 14px; padding: 12px 16px; border-left: 3px solid var(--ink); background: var(--tile); border-radius: 0 8px 8px 0; }
   .verdict { font: 500 14px/1.3 var(--mono); margin: 0 0 10px; }
   .verdict.gap { color: var(--coral-text); }
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
   .btn { font: 500 16px/1 var(--sans); color: var(--ink); background: var(--paper); border: 2px solid rgba(var(--ink-rgb),.55); border-radius: 9px; padding: 12px 16px; cursor: pointer; }
   .btn.ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn[disabled] { opacity: .35; cursor: default; }
   .btn.quiet { border-color: transparent; color: var(--ink-3); padding-left: 4px; padding-right: 4px; }
   .btn.yours { border-color: var(--coral); color: var(--coral-text); }
   .btn kbd { font: 500 12px/1 var(--mono); color: var(--ink-3); margin-left: 6px; }
@@ -57,7 +59,7 @@
   .progress span.done { background: var(--ink); }
   .progress span.now { background: var(--coral); }
   .planned { display: inline-block; font: 500 12px/1 var(--mono); border: 1px dashed rgba(var(--ink-rgb),.5); border-radius: 5px; padding: 4px 7px; color: var(--ink-3); }
-  @media (max-width: 600px) { .card { padding: 20px 16px; } .card h2 { font-size: 26px; } }
+  @media (max-width: 600px) { .card { padding: 20px 16px; } .card h2 { font-size: 30px; } .opt { font-size: 19px; } .slab { font-size: 15px; } }
 </style>
 </head>
 <body>
@@ -106,7 +108,7 @@ function draw(turn = false) {
   }
   if (c.kind === "assume") { el.innerHTML = `${head}<p class="why">${s.answer === "right" ? "Right: said in the plan in a line." : s.answer === "not-quite" ? `Not quite: “${esc(s.own)}”, into the plan's You told me first.` : "Doesn't matter: left as it is."}</p><div class="row"><button class="btn ink" id="next">Next <kbd>Enter</kbd></button></div>`; $("next").onclick = next; return; }
   const b = s.back || {}, mine = s.answer, gap = b.gap;
-  el.innerHTML = `<div class="lab">card ${esc(c.id)}, turned over · ${i + 1} of ${round.cards.length}</div><h2 style="font-size:24px">${esc(c.question)}</h2>
+  el.innerHTML = `<div class="lab">card ${esc(c.id)}, turned over · ${i + 1} of ${round.cards.length}</div><h2 style="font-size:32px">${esc(c.question)}</h2>
     <div class="opts">${c.options.map((o) => `<button class="opt${o.id === b.answer ? " right" : ""}${o.id === mine ? ` mine${o.id !== b.answer ? " wrong" : ""}` : ""}" disabled><span class="k">${o.id.toUpperCase()}</span> ${esc(o.label)}${o.id === b.answer ? " · the answer" : o.id === mine ? " · your pick" : ""}</button>`).join("")}</div>
     <div class="lab">${esc(b.source)}</div><div class="slab">${esc(b.lines)}</div>
     <p class="why">${esc(b.why)}</p>
@@ -134,7 +136,11 @@ async function settle(c, k) {
   if ((k === "change-plan" || k === "code-wrong") && !own && $("ownbox")?.hidden) { $("ownbox").hidden = false; $("own").focus(); status("Say how it should work, if you like, then press it again."); return; }
   const r = await api("/api/round/answer", { method: "POST", body: JSON.stringify({ r: name, card: c.id, answer: s.answer, own: own || s.own, settled: k }) });
   if (!r.ok) { status(r.error); return; }
-  state[c.id] = { ...s, settled: k, back: r.back, phase: "settled" }; status(r.routed?.join(" · ") || ""); next();   // settled: on to the next card
+  state[c.id] = { ...s, settled: k, back: r.back, phase: "settled" }; status(r.routed?.join(" · ") || "");
+  // Show me more: the card's longer explanation opens at once (step 4), and the gap goes into the round's one explainer
+  if (k === "show-more" && c.kind === "predict") { const el = $("card"), box = document.createElement("div"); box.className = "more"; box.innerHTML = `<b>More:</b> ${esc(r.back.more || "No longer explanation was written for this card: it goes into the round's short video at the end.")}`;
+    el.querySelector(".verdict").after(box); for (const x of el.querySelectorAll("[data-s]")) x.disabled = true; $("next").disabled = false; $("next").focus(); return; }
+  next();   // settled: on to the next card
 }
 function drawSay(c, s, head) {
   const el = $("card");
@@ -142,7 +148,8 @@ function drawSay(c, s, head) {
   el.innerHTML = `${head}<p class="lab">Hold Space, or the microphone, and talk; or type. Your words are written down on this machine. Nothing is checked until you press Check.</p>
     <textarea id="said" placeholder="How you think it works, in your own words">${esc(s.own || "")}</textarea>
     <div class="row"><button class="btn" id="mic">🎙 Hold to talk <kbd>Space</kbd></button><button class="btn ink" id="check">Check</button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>
-    ${claims ? `<ul class="claims">${claims.map((x) => `<li><span class="${x.verdict}">“${esc(x.words)}”</span><span class="m">${x.verdict === "match" ? "✓ a match" : x.verdict === "differs" ? "✗ a gap" : x.verdict === "open" ? "? neither: an assume card, next in this round" : "not settled: the session and the checker read it differently"}${x.source ? ` · checked against ${esc(x.source)}` : ""}</span></li>`).join("")}</ul><div class="row"><button class="btn ink" id="next">Next <kbd>Enter</kbd></button></div>` : ""}`;
+    ${claims ? `<ul class="claims">${claims.map((x) => `<li><span class="${x.verdict}">“${esc(x.words)}”</span><span class="m">${x.verdict === "match" ? "✓ a match" : x.verdict === "differs" ? "✗ a gap" : x.verdict === "open" ? "? neither: an assume card, next in this round" : "not settled: the session and the checker read it differently"}${x.source ? ` · checked against ${esc(x.source)}` : ""}</span></li>`).join("")}</ul>${(s.back?.settles || []).length && !s.settled ? `<p class="verdict gap">A gap, from your own words. Settle it:</p><div class="row">${s.back.settles.map((k, n) => `<button class="btn" data-s="${k}">${SETTLE[k]} <kbd>${n + 1}</kbd></button>`).join("")}</div>` : ""}<div class="row"><button class="btn ink" id="next" ${(s.back?.settles || []).length && !s.settled ? "disabled" : ""}>Next <kbd>Enter</kbd></button></div>` : ""}`;
+  for (const btn of el.querySelectorAll("[data-s]")) btn.onclick = () => settle(c, btn.dataset.s);
   $("check").onclick = () => checkSay(c); $("skip").onclick = skipRest; if ($("next")) $("next").onclick = next;
   const mic = $("mic"); mic.onpointerdown = () => startRec(); mic.onpointerup = mic.onpointerleave = () => stopRec();
 }
@@ -163,7 +170,7 @@ async function checkSay(c) {
   const r = await api("/api/round/say", { method: "POST", body: JSON.stringify({ r: name, card: c.id, words }) });
   if (!r.ok) { status(r.error); return; }
   status(r.message);
-  const poll = async (n) => { const p = await api(`/api/round/say?r=${encodeURIComponent(name)}&card=${c.id}`); if (p.checked) { state[c.id] = { ...state[c.id], back: { claims: p.claims }, phase: "settled" }; status(""); draw(true); } else if (n < 300) setTimeout(() => poll(n + 1), 2000); };
+  const poll = async (n) => { const p = await api(`/api/round/say?r=${encodeURIComponent(name)}&card=${c.id}`); if (p.checked) { const gap = p.claims.some((x) => x.verdict === "differs"); state[c.id] = { ...state[c.id], answer: "said", back: { claims: p.claims, ...(gap ? { settles: ["got-it", "change-plan", "code-wrong", "show-more"] } : {}) }, phase: gap ? "back" : "settled" }; status(""); draw(true); } else if (n < 300) setTimeout(() => poll(n + 1), 2000); };
   poll(0);
 }
 function next() { i = Math.min(round.cards.length, i + 1); while (i < round.cards.length && state[round.cards[i].id]?.phase === "settled") i++; draw(); }
@@ -172,16 +179,16 @@ async function drawEnd() {
   bar();
   const gaps = round.cards.filter((c) => state[c.id] && !["same", "said", undefined].includes(state[c.id].back?.gap));
   $("card").innerHTML = `<div class="lab">the round's end</div><h2>${gaps.length ? `${gaps.length} gap${gaps.length === 1 ? "" : "s"} found` : "Same picture all round"}</h2>
-    <p class="why">${round.skipped.length ? `Skipped, so listed in the plan as Assumed, not checked: ${round.skipped.join(", ")}. ` : ""}Send hands the round to the session waiting on this page; with none waiting it stays in the inbox for the next one.</p>
-    <div class="row"><button class="btn ink" id="send">Send</button></div>`;
-  $("send").onclick = async () => { const r = await api("/api/round/send", { method: "POST", body: JSON.stringify({ r: name, skipped: round.skipped }) }); status(r.ok ? `${r.message} · ${r.summary}` : r.error); if (r.ok) $("send").disabled = true; };
+    <p class="why">${round.skipped.length ? `Skipped, so listed in the plan as Assumed, not checked: ${round.skipped.join(", ")}. ` : ""}Each sends the round to the session waiting on this page; with none waiting it stays in the inbox for the next one.</p>
+    <div class="row"><button class="btn ink" data-next="done" id="send">Done</button><button class="btn" data-next="plan">Plan this</button>${gaps.some((c) => state[c.id]?.settled === "show-more") ? `<button class="btn" data-next="explain">Explain the gaps</button>` : ""}</div>`;
+  for (const b of $("card").querySelectorAll("[data-next]")) b.onclick = async () => { const r = await api("/api/round/send", { method: "POST", body: JSON.stringify({ r: name, skipped: round.skipped, next: b.dataset.next }) }); status(r.ok ? `${r.message} · ${r.summary}` : r.error); if (r.ok) for (const x of $("card").querySelectorAll("[data-next]")) x.disabled = true; };
 }
 addEventListener("keydown", (e) => {
   if (!round || e.target.closest?.("textarea")) { if (e.key === "Enter" && !e.shiftKey && e.target.id === "own" && $("ownsave")) { e.preventDefault(); $("ownsave").click(); } return; }
   const c = round.cards[i], s = c ? state[c.id] || {} : {}, k = e.key.toLowerCase();
   if (k === "s") return skipRest();
   if (!c) return;
-  if (c.kind === "say") { if (e.code === "Space") { e.preventDefault(); if (!e.repeat) startRec(); } return; }
+  if (c.kind === "say") { if (s.phase === "back" && /^[1-4]$/.test(k)) { const ks = s.back?.settles || []; if (ks[Number(k) - 1]) settle(c, ks[Number(k) - 1]); return; } if (e.code === "Space") { e.preventDefault(); if (!e.repeat) startRec(); } return; }
   if (!s.phase) { const map = c.kind === "predict" ? Object.fromEntries([...c.options.map((o) => [o.id, o.id]), ["n", "not-sure"]]) : { a: "right", b: "not-quite", c: "doesnt-matter" }; if (map[k]) { e.preventDefault(); choose(c, map[k]); } return; }
   if (s.phase === "back" && /^[1-4]$/.test(k)) { const ks = s.back?.settles || []; if (ks[Number(k) - 1]) settle(c, ks[Number(k) - 1]); return; }
   if (e.key === "Enter" && (s.phase === "settled" || s.back?.gap === "same")) next();

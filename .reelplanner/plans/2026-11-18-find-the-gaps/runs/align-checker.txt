@@ -7,17 +7,17 @@ $ reelplanner align .reelplanner/align/2026-11-18-send --prompt checker  [in a s
 You are checking the answers to a few questions about some code. You did not write them, and you do not see their
 answers. Everything you get is in one file:
 
-  /tmp/rp-walk-12UG/app/.reelplanner/align/2026-11-18-send/checker/brief.md
+  /tmp/rp-walk-Szzx/app/.reelplanner/align/2026-11-18-send/checker/brief.md
 
 Read it in full. Do not open any other file. Answer each card from its lines alone, and write your answers to exactly:
 
-  /tmp/rp-walk-12UG/app/.reelplanner/align/2026-11-18-send/checker/answers.md
+  /tmp/rp-walk-Szzx/app/.reelplanner/align/2026-11-18-send/checker/answers.md
 
 It is the only file you write. Then reply with how many cards you answered.
 exit 0
 
 $ reelplanner align .reelplanner/align/2026-11-18-send --check  [in a scratch repo]
-✗ c2 (line 17): the checker read the lines as A, the card says B: rewrite it once from the quoted lines and check again; if you still disagree, drop it and list it as "the agent and the checker read this code differently"
+✗ c2 (line 17): the checker read the lines as A, the card says B: rewrite it once from the quoted lines and check again; if you still disagree, drop it: `- dropped: the checker read it as A`, and After the round lists it as "the agent and the checker read this code differently"
 ✗ 2026-11-18-send: 3 cards (1 assume, 1 predict, 1 say), 1 failure(s), 0 warning(s)
 exit 1
 

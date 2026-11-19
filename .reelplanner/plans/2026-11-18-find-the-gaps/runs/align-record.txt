@@ -1,7 +1,7 @@
-$ reelplanner align record .reelplanner/align/2026-11-18-send /tmp/rp-walk-12UG/answers.json  [in a scratch repo]
+$ reelplanner align record .reelplanner/align/2026-11-18-send /tmp/rp-walk-Szzx/answers.json  [in a scratch repo]
 ✓ .reelplanner/align/2026-11-18-send/answers.json: the round's one record
   c1 → You told me first, in a line
-  c2 → your memory, asked once more on a new case from 2026-11-21
+  c2 → your memory, asked once more on a new case from 2026-11-22
   c3 → Assumed, not checked
 exit 0
 
@@ -18,10 +18,10 @@ $ sed -n '/## You told me first/,/### Step 1/p' .reelplanner/plans/2026-11-18-se
 exit 0
 
 $ reelplanner reel memory --you  [in a scratch repo]
-What reviews show (your memory across repos, from /tmp/rp-walk-12UG/home/.reelplanner/you.jsonl):
+What reviews show (your memory across repos, from /tmp/rp-walk-Szzx/home/.reelplanner/you.jsonl):
   nothing yet: no review is recorded
 
-Known from rounds: 1 (app: `src/send.mjs:3-5`). Due once more, on a new case: none.
+Known from rounds: 1 (app: `src/send.mjs:3-5`). Due once more, on a new case: none. `reel memory --you --forget <fingerprint>` takes one out.
 
 `reel memory <id> --you` prints the evidence behind a line.
 exit 0

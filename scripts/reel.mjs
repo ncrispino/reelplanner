@@ -48,7 +48,7 @@ import { fileURLToPath } from "node:url";
 import { execFileSync, spawnSync } from "node:child_process";
 import { parseCalls, stopFor, beatsByStep, listedOf, callLoad, askOf, placeOf, MANY_CALLS, STEP_CALLS, TAGS } from "./lib/autonomy.mjs";
 import { roundStats, roundStatusLines } from "./lib/align.mjs";
-import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, readKnows, walkthroughBar, LINES } from "./lib/memory.mjs";
+import { componentsIn, stepComponents, repoMemory, youMemory, youPath, pendingPath, reviewFacts, recordYou, movePending, repoName, findMisses, lostWords, sinceRetro, youKnows, readYou, readKnows, forgetKnows, walkthroughBar, LINES } from "./lib/memory.mjs";
 import { parseSteps, readPlanBlocks, blockFindings, blocksDue, BLOCKS_FROM, supersedesOf } from "./lib/plan-md.mjs";
 import { fileReview, listReviews, reviewKind, reviewOf, reviewTime, reviewsDir, planStage, asksMore, approvalOf, lastChanged } from "./lib/reviews.mjs";
 import { walkthroughScope, actOnMarkdown, distinctive, editsOf } from "./lib/review-scope.mjs";
@@ -877,7 +877,16 @@ function prereqs() {
 // evidence behind one: the reviews, the words, the times. --you: your own memory, across every repo you
 // have reviewed in (~/.reelplanner/you.jsonl, D-106).
 async function memory() {
-  const you = argv.includes("--you"), rest = argv.slice(1).filter((a) => !a.startsWith("--"));
+  // `--you --forget <fingerprint | path>`: take a thing a round's Got it kept out of your memory (find-the-gaps step 4)
+  const fi = argv.indexOf("--forget");
+  if (fi >= 0) {
+    const what = argv[fi + 1] || die("usage: reel memory --you --forget <fingerprint | path>");
+    const gone = forgetKnows(what);
+    if (!gone.length) die(`memory: nothing you know from a round matches ${what} (\`reel memory --you\` lists them)`);
+    for (const k of gone) console.log(`✓ forgotten: ${k.claim} · \`${k.source}\` (${k.fingerprint}): a round may ask it again`);
+    return;
+  }
+  const you = argv.includes("--you"), rest = argv.slice(1).filter((a, i, all) => !a.startsWith("--") && all[i - 1] !== "--forget");
   const ids = [...LINES, "flagged", "outlived"], id = rest.find((a) => ids.includes(a)), other = rest.filter((a) => a !== id);
   if (other.length > (you ? 0 : 1) || (other.length && !existsSync(other[0]))) die(`memory: "${other.at(-1)}" is neither a repo nor a line id (the ids: ${ids.join(", ")})`);
   let mem, where;
@@ -913,7 +922,7 @@ async function memory() {
     if (you) {
       const latest = new Map(); for (const k of readKnows()) latest.set(`${k.repo}|${k.path}|${k.fingerprint}`, k);
       const ks = [...latest.values()], due = ks.filter((k) => (k.asked || 1) < 2 && k.dueAt && Date.parse(k.dueAt) <= Date.now());
-      if (ks.length) console.log(`\nKnown from rounds: ${ks.length} (${ks.slice(-3).map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ")}${ks.length > 3 ? ", …" : ""}). Due once more, on a new case: ${due.length ? due.map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ") : "none"}${due.length ? " (`reelplanner align due`)" : ""}.`);
+      if (ks.length) console.log(`\nKnown from rounds: ${ks.length} (${ks.slice(-3).map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ")}${ks.length > 3 ? ", …" : ""}). Due once more, on a new case: ${due.length ? due.map((k) => `${k.repo ? `${k.repo}: ` : ""}\`${k.source}\``).join(", ") : "none"}${due.length ? " (`reelplanner align due`)" : ""}. \`reel memory --you --forget <fingerprint>\` takes one out.`);
     }
     console.log(`\n\`reel memory <id>${you ? " --you" : ""}\` prints the evidence behind a line.`);
     return;

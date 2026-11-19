@@ -334,31 +334,38 @@ in a line that you found none worth asking and go on. A new project has no code 
 **The cards** go in `align.md` under `## Cards`, one `### c<N> · assume|predict|say` each, with `- question:`,
 `- likely_wrong:` (why they might picture it otherwise) and `- matters:` (what depends on it). A predict card adds
 `- option_a:`…, `- answer:`, `- source: <path>:<from>-<to>` (one range, pinned), `- quote:` (word for word from those
-lines) and `- why:`. Ask what the code does, never what the code is called. A card on something they said Got it to
+lines), `- why:` and `- more:` (the longer explanation Show me more opens at once). Ask what the code does, never what the code is called. A card on something they said Got it to
 before, due once more, asks it on a new case and carries `- once_more: <fingerprint>`.
 
 **Check, then the fresh checker.** `$RP align <round> --check --no-checker` until it passes; then
 `$RP align <round> --prompt checker`, and run the prompt it prints in a fresh agent (a subagent with no context: it
 reads only `checker/brief.md`, with no answers in it) that writes `checker/answers.md`. `$RP align <round> --check`
 then passes only when it read each predict card's lines as the card does. A disagreement or a `?` (its lines do not
-decide it): rewrite the card once, with lines that do, or drop it. Never show a card the checker could not answer.
+decide it): rewrite the card once, with lines that do, or drop it with `- dropped: <how the checker read it>` (never
+asked; After the round lists it as "the agent and the checker read this code differently"). Never show a card the
+checker could not answer.
 
 **Asking it.** In the chat, by default: `$RP align <round> --cards` prints each card's front and back, assume first.
 Ask each with your question tool where you have one (AskUserQuestion in Claude Code: the options, and Not sure), one
 card at a time, and only then show its back (the lines, the answer, why). On a gap, offer the four ways: Got it,
-Change the plan, The code is wrong (predict cards only), Show me more; Not sure settles only Got it or Show me more.
+Change the plan, The code is wrong (a card about the code), Show me more (give the card's `- more:` then and there);
+Not sure settles only Got it or Show me more.
 When they would rather click, or talk: `$RP review <round> --detach` opens it on the review page (one card at a time,
 keys or the microphone; what they say is written down on this machine), with `$RP review --wait` in the background;
 Send hands it back, and never starts a headless run. A say card's words come to you as a question to check: split them
-into claims, check each against the pinned sources, write `[{ words, verdict: match|differs|open, source }]` and
-`$RP align answer <round> <card> <claims.json>`.
+into claims, check each against the pinned sources, then give a fresh agent each claim you marked match or differs with
+only its lines (as the checker), and mark `unsettled` any it reads otherwise. Write
+`[{ words, verdict: match|differs|open|unsettled, source }]` and `$RP align answer <round> <card> <claims.json>`. A
+claim that differs is a gap from their own words, settled the four ways like a card. The page's end offers Done, Plan
+this (write the plan on what it settled) and Explain the gaps; `--wait` prints which they pressed.
 
 **Recording it.** Chat answers go in `answers.json` as `{ answers: [{ card, answer, own?, settled? }], skipped: [] }`:
 `$RP align record <round> <answers.json>` (the page records its own as they come). Each gap goes where its way says:
 Got it into their memory, asked once more on a new case three days on; Change the plan and Not quite into the plan's
 `## You told me first`; The code is wrong into a step of the plan, or `issue.md` to file when there is no plan; Show me
 more into one short explainer (`$RP align <round> --explain-gaps` prints its command). Skipped cards are listed in the
-plan as "Assumed, not checked". Then write the plan from where they stand: what they settled said in a line, what they
+plan as "Assumed, not checked". `$RP reel memory --you --forget <fingerprint>` takes a known thing out of their memory when they
+ask. Then write the plan from where they stand: what they settled said in a line, what they
 knew not explained again.
 
 ## Build a video

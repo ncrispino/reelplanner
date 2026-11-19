@@ -10,7 +10,7 @@
 //   answers.json  the one record of the answers, whichever way they came (`reelplanner align record`)
 //   checker/      the fresh checker's brief (no answers in it) and its answers.md
 //   issue.md      The code is wrong, with no plan to put it in: an issue's text for you to file
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, realpathSync } from "node:fs";
 import { join, resolve, basename, dirname, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
@@ -44,14 +44,21 @@ export function roundDirOf(p) {
   return null;
 }
 /** The repo a round belongs to: its sources.json says (a round outside the repo has no git top of its own). */
-export const repoOfRound = (dir) => readJson(join(dir, "sources.json"))?.repo || repoTop(dir);
+export function repoOfRound(dir) {
+  // in a set-up repo the round is in its .reelplanner/align/: the repo is the folder's own git top, in whatever clone it is
+  // (sources.json's absolute path is this machine's); a round kept on this machine has no repo around it but the one named
+  const top = repoTop(dir);
+  if (top && resolve(dir).startsWith(join(realTop(top), ".reelplanner", "align"))) return top;
+  return readJson(join(dir, "sources.json"))?.repo || top;
+}
+const realTop = (p) => { try { return realpathSync(p); } catch { return p; } };
 
 // ── the cards ────────────────────────────────────────────────────────────────────────────────────────────
 /**
  * align.md's cards: `### c<N> · predict | assume | say`, then `- key: value` lines. → [{ id, kind, line, fields,
  * question, options: [{ id, label }], answer, source, quote, why, likelyWrong, matters, from, onceMore }]
  */
-export function parseCards(md) {
+export function parseCards(md, { all = false } = {}) {
   const cards = [], lines = String(md).split("\n");
   let cur = null, inCards = false;
   lines.forEach((l, i) => {
@@ -66,8 +73,8 @@ export function parseCards(md) {
     const f = c.fields, options = LETTERS.filter((k) => f[`option_${k}`]).map((k) => ({ id: k, label: f[`option_${k}`] }));
     return { ...c, question: f.question || "", options, answer: (f.answer || "").toLowerCase() || null, source: f.source || null,
       quote: f.quote ? f.quote.replace(/^"(.*)"$/, "$1") : null, why: f.why || "", likelyWrong: f.likely_wrong || "", matters: f.matters || "",
-      from: f.from || null, onceMore: f.once_more || null };
-  });
+      from: f.from || null, onceMore: f.once_more || null, more: f.more || "", dropped: f.dropped || null };
+  }).filter((c) => all || !c.dropped);   // a dropped card (`- dropped: <why>`) is never asked; After the round lists it
 }
 /** A card's source ref `path:from-to` (or `path:line`) → { path, from, to } or null. */
 export function refOf(source) {
@@ -145,7 +152,7 @@ export function checkRound(dir, { repo = repoOfRound(dir), knowsPath = youPath()
       if (!checked) fails.push(`${at}: the fresh checker has not answered it yet (align ${relative(process.cwd(), dir)} --prompt checker)`);
       else if (!a) fails.push(`${at}: the checker's answers.md has no line for it`);
       else if (a.answer === "?") fails.push(`${at}: the checker says its lines do not decide it (${a.why || "no reason given"}): quote the lines that do, and check again`);
-      else if (a.answer !== c.answer) fails.push(`${at}: the checker read the lines as ${a.answer.toUpperCase()}, the card says ${c.answer.toUpperCase()}: rewrite it once from the quoted lines and check again; if you still disagree, drop it and list it as "the agent and the checker read this code differently"`);
+      else if (a.answer !== c.answer) fails.push(`${at}: the checker read the lines as ${a.answer.toUpperCase()}, the card says ${c.answer.toUpperCase()}: rewrite it once from the quoted lines and check again; if you still disagree, drop it: \`- dropped: the checker read it as ${a.answer.toUpperCase()}\`, and After the round lists it as "the agent and the checker read this code differently"`);
     }
   }
   return { fails, warns, cards };
@@ -219,12 +226,18 @@ export function validAnswers(cards, input) {
     if ((ans === "own" || ans === "not-quite" || ans === "said") && !own) { errors.push(`${c.id}: "${ans}" needs your words in \`own\``); continue; }
     if (settled && !SETTLE.includes(settled)) { errors.push(`${c.id}: "${settled}" is not one of ${SETTLE.join(", ")}`); continue; }
     if (settled && ans === "not-sure" && !["got-it", "show-more"].includes(settled)) { errors.push(`${c.id}: Not sure settles with Got it or Show me more`); continue; }
-    if (settled === "code-wrong" && c.kind !== "predict") { errors.push(`${c.id}: The code is wrong settles a card about the code`); continue; }
+    if (settled === "code-wrong" && c.kind === "assume") { errors.push(`${c.id}: The code is wrong settles a card about the code`); continue; }
     answers.push({ card: c.id, answer: ans, ...(own ? { own } : {}), ...(settled ? { settled } : {}), via: ["chat", "page", "video"].includes(a.via) ? a.via : "chat",
       ...(Array.isArray(a.claims) ? { claims: a.claims } : {}), at: a.at || new Date().toISOString() });
   }
   const skipped = (Array.isArray(input?.skipped) ? input.skipped : []).map((x) => String(x).toLowerCase()).filter((x) => byId[x]);
   return { answers, skipped, errors };
+}
+/** A say card's gap as a card: your first claim that differs, its lines, and what the code does there. */
+function sayGapCard(c, a) {
+  const d = (a.claims || []).find((x) => x.verdict === "differs");
+  if (!d) return c;
+  return { ...c, question: `You said: "${d.words}"`, source: d.source || null, answer: "code", options: [{ id: "code", label: `otherwise, at \`${d.source}\`` }] };
 }
 /** Whether an answer is a gap: a predict card answered other than its answer, or Not sure; an assume card Not quite. */
 export function gapOf(card, a) {
@@ -253,15 +266,17 @@ export function recordAnswers(dir, input, { repo = repoOfRound(dir), knowsPath =
   for (const a of answers) { const prev = record.cards[a.card]; record.cards[a.card] = prev && prev.answer === a.answer ? { ...prev, ...a } : { ...a }; }
   record.skipped = [...new Set([...(record.skipped || []), ...skipped])].filter((id) => !record.cards[id]);
   const routed = [], plan = planDirOf(dir, repo), told = [], fixes = [], notChecked = [];
-  for (const c of cards) {
-    const a = record.cards[c.id]; if (!a) continue;
-    const gap = gapOf(c, a), key = `${c.id}:${a.settled || a.answer}`;
+  for (const card of cards) {
+    const a = record.cards[card.id]; if (!a) continue;
+    // a say card with a claim that differs is a card made from your words and the code's lines (step 3), settled as any
+    const c = card.kind === "say" ? sayGapCard(card, a) : card;
+    const gap = gapOf(card, a), key = `${c.id}:${a.settled || a.answer}`;
     if (record.routed[c.id] === key) continue;
     if (c.kind === "assume" && a.answer === "not-quite") { told.push(`- **${c.id}** "${c.question}" Not quite: "${a.own}"`); routed.push(`${c.id} → You told me first`); }
     else if (c.kind === "assume" && a.answer === "right") { told.push(`- **${c.id}** "${c.question}" Right.`); routed.push(`${c.id} → You told me first, in a line`); }
     else if (gap && gap !== "same" && gap !== "said" && a.settled) {
       const label = c.options.find((o) => o.id === c.answer)?.label;
-      if (a.settled === "got-it" && c.kind === "predict") {
+      if (a.settled === "got-it" && c.source) {
         const { text } = linesOf(dir, c, { repo }), ref = refOf(c.source);
         const prior = knowsFor(repo, { path: knowsPath }).find((k) => k.fingerprint === fingerprint(text || ""));
         const asked = c.onceMore || prior ? 2 : 1;
@@ -318,7 +333,9 @@ export function writeAfter(dir, cards, record) {
     const gap = gapOf(c, a), claims = (a.claims || []).map((x) => `${x.verdict === "match" ? "✓" : x.verdict === "differs" ? "✗" : "?"} "${x.words}"`).join("; ");
     return `- **${c.id}** ${ans} · ${gap === "same" ? "same picture" : gap === "not-sure" ? "not sure: a gap" : gap === "said" ? "said" : "a gap"}${a.settled ? ` · ${SETTLE_WORDS[a.settled]}` : ""} · via ${a.via}${claims ? ` · ${claims}` : ""}`;
   });
-  const block = `## After the round\n\n${rows.join("\n")}\n`, head = "\n## After the round\n";
+  // the cards dropped before the round (step 1): the agent and the checker read their code differently
+  const dropped = parseCards(s, { all: true }).filter((c) => c.dropped).map((c) => `- **${c.id}** "${c.question}" · dropped: the agent and the checker read this code differently (${c.dropped})`);
+  const block = `## After the round\n\n${[...rows, ...dropped].join("\n")}\n`, head = "\n## After the round\n";
   const at = s.indexOf(head);
   if (at >= 0) { const rest = s.slice(at + head.length), next = rest.search(/\n## /); s = `${s.slice(0, at)}\n${block}${next < 0 ? "" : rest.slice(next)}`; }
   else s = `${s.replace(/\n+$/, "")}\n\n${block}`;

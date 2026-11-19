@@ -118,7 +118,10 @@ function roundNote(path) {
   let row; try { row = JSON.parse(readFileSync(path, "utf8")); } catch { return null; }
   if (row?.review?.kind !== "align") return null;
   const at = row.review.round || row.round;
-  return [`🃏 the round ${at}, sent from its page: ${row.review.summary || ""}`,
+  const next = { plan: `They pressed Plan this: write the plan on what the round settled (its You told me first), with \`**Round:** ${at}\` in its header.`,
+    explain: `They pressed Explain the gaps: build the round's one explainer, reelplanner align ${at} --explain-gaps prints its command.`,
+    done: "They pressed Done." }[row.review.next || "done"];
+  return [`🃏 the round ${at}, sent from its page: ${row.review.summary || ""}`, next,
     `Read what each gap settled to: reelplanner align list, and ${at}/answers.json. A Show me more is one explainer: reelplanner align ${at} --explain-gaps prints its command.`,
     `A skipped card is "Assumed, not checked" in the plan. Then: reelplanner inbox done ${basename(path, ".json")}, and go on with the plan. Nothing goes into the decision log.`].join("\n");
 }

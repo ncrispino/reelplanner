@@ -509,6 +509,17 @@ export function appendKnows(fact, path = youPath()) {
   appendFileSync(path, JSON.stringify({ v: 1, kind: "knows", ...fact }) + "\n");
   return "added";
 }
+/** Remove what a round's Got it kept, by its fingerprint or its file's path (`reelplanner align forget`): only the knows
+ *  lines that match; every review summary stays. → the lines removed */
+export function forgetKnows(match, path = youPath()) {
+  const keep = [], gone = [];
+  for (const l of read(path).split("\n").filter((x) => x.trim())) {
+    let f = null; try { f = JSON.parse(l); } catch {}
+    if (f?.kind === "knows" && (f.fingerprint === match || f.path === match || f.source === match)) gone.push(f); else keep.push(l);
+  }
+  if (gone.length) writeFileSync(path, keep.length ? `${keep.join("\n")}\n` : "");
+  return gone;
+}
 // one review's summary, whichever file holds it: the key appendYou dedups by
 const sameReview = (a, b) => a.repo === b.repo && a.plan === b.plan && a.review === b.review;
 /** Your memory: your file, plus the summaries still pending in a repo (`pending`, a file path) not yet
