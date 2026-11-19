@@ -369,7 +369,7 @@ Question 5 was added during the build: step 5 reached its fifth choice of the ag
    - **C · Only when you ask** — nothing changes unless you say "align me first"; the gaps you didn't think to ask about stay hidden.
    - Recommended: **B**. A round costs your time, so it should come only when it is likely to find something that matters; the plan says in one line when there was none.
 
-5. **How does a plan say whether a round ran before it? (step 5)**
+5. **Where is it kept whether a round ran first, or was skipped? (step 5)**
    - **A · A line in the plan's header** — `**Round:**` and the round's folder, `none, a likely, costly gap (<why>)`, or `none needed`, written by the agent as it writes the plan; readable, but only as true as the agent's line.
    - **B · A command that records the judgement** — `reelplanner align judged <plan> --likely <n> --costly <n>`, kept in a file of its own; harder to forget or get wrong, one more command each plan.
    - **C · Only the rounds themselves** — a plan with a round is one a round names; nothing kept for plans with none, so `reel status` can compare only with every plan without a round, the easy ones too.
