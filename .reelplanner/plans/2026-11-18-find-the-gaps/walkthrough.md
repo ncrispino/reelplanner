@@ -28,6 +28,8 @@
 | A19 | 3 | A recording is thrown away once whisper has written it down; only your words, which you can edit, are kept [hard-to-undo] | Keeping the recording in the inbox | Your words are the record and you check them before Check; a recording kept is a voice file on disk for nothing (D-249: never a transcript in git; D-305) | `scripts/lib/align-server.mjs` `transcribe` |
 | A20 | 1 | A round's repo is found from its own folder (the git top around `.reelplanner/align/`); `sources.json`'s `repo` path is read only for a round kept on this machine [close] | Always the path `sources.json` names, or no path at all | A committed round must work in every clone; a round kept in `~/.reelplanner/align/` has no repo around it but the one it names | `scripts/lib/align.mjs` `repoOfRound` |
 | D1 | 5 | Step 5's fifth choice (A18) was made and the step built before its biggest open choice became the plan's question 5 [deviation] | Stopping at the fifth choice, asking, and building the rest after the answer (D-110) | Noticed only when counting the step's rows; the question is now open, and the code follows its recommendation (A): an answer of B or C changes `roundLineOf` and `roundStats` only, nothing stored | `plan.md` question 5; `scripts/lib/align.mjs` `roundLineOf`, `roundStats` |
+| A21 | 4 | (asked: the plan's question 6) A card's diagram is a ```diagram block under the card, written by the agent in the diagram text plans already use, drawn as the guide draws one; Show me more opens it, and a point card's boxes are its options [close] | Drawn by the tool from the pinned lines, or no diagram | The diagram shows what the card is about (who waits, in what order), which the lines alone often don't; one drawing serves both | `scripts/lib/align.mjs` `parseCards`, `cardDiagram`, `checkRound` |
+| A22 | 4 | A frame that shows lines you know from a round is a warning in `check-terms`, and `reel prereqs` lists what you know on the plan's files [close] | Failing the build on it | A walkthrough may show the same lines changing, which is not explaining them again; a warning says it where the agent writes the video | `scripts/check-terms.mjs`, `scripts/reel.mjs` `prereqs`, `scripts/lib/align.mjs` `knownNow` |
 | A18 | 5 | Show me more on a quick check with no worked example marks it "asked to have it explained again" (`unclear`) [close] | A button that does nothing there | That is the existing explain-again path the revise already reads | `packages/player/reelplanner-player.js` `settleQuiz` |
 
 ## Implementation by step
@@ -42,7 +44,7 @@
 
 `reelplanner align "<your words>" <sources…> [--plan <plan-dir>]` makes `.reelplanner/align/<date>-<slug>/` (a repo not set up: `~/.reelplanner/align/<repo-key>/`, nothing written into the repo), with `align.md` (your words, the plan it is for, a `## Cards` section to write in) and `sources.json` (each source pinned at its commit and hash, as an explainer pins it: `pinAll` in `scripts/lib/explainer.mjs`). `--candidates` lists the four places a gap is likely: your words, your memory (quick checks missed on these files), what moved since you last watched, and cards due once more. `--check` holds the cards to the plan's rules: at most six; `likely_wrong` and `matters` on each; an assume card has no answer; a predict card has a source, an answer among its options, and a quote found word for word in its lines; nothing you know already at the same lines. `--prompt checker` writes `checker/brief.md` with each predict card's question, options and lines and never its answer or why, and prints the prompt for a fresh agent, which writes `checker/answers.md`; `--check` then fails on a predict card it read otherwise, or could not decide (`?`, A2). The first real round, on this repo's inbox (`.reelplanner/align/2026-11-18-review-reaches-agent/`), had its first checker catch a card whose answer was wrong (`checker/round-1/`); the rewritten cards pass.
 
-**Tests:** `scripts/test/align.spec.mjs` (53 checks: the folder in both kinds of repo, each rule of `--check`, the brief holding no answer, the checker's disagreement and `?`).
+**Tests:** `scripts/test/align.spec.mjs` (57 checks: the folder in both kinds of repo, each rule of `--check`, the brief holding no answer, the checker's disagreement and `?`).
 
 ```diagram
 flow: A round's cards, before you see them
@@ -101,11 +103,11 @@ Nothing writes the cards for the agent: `--candidates` points at where to look, 
 
 **You can now:** answer a round in the chat, or open it on the review page and answer it one card at a time with a key, and have every answer land in the same record.
 
-**Commits:** `35ab170` (the record and the chat's cards), `6cbef4a` (the page).
+**Commits:** `35ab170` (the record and the chat's cards), `6cbef4a` (the page), `054419b` (point cards).
 
-In the chat, `align <round> --cards` prints each card's front, then its back (the lines, the answer, why), assume cards first; the agent asks them one at a time (AskUserQuestion in Claude Code) and records them with `align record <round> <answers.json>`. On the page, `reelplanner review <round>` opens `/round/?r=<name>` on the review server, with no video to bundle (A9): `packages/player/align-page.html`, in the review page's look (paper, ink, the coral on what is yours; EB Garamond, Inter, JetBrains Mono). Its API is `scripts/lib/align-server.mjs`, behind the server's host and origin checks: the fronts with no answer, why or lines until you answer; each answer recorded as it comes through the same `recordAnswers` the chat uses (`via: "page"`); Send files the round as an inbox row of kind `align` for the waiting session, and never starts a headless run, even with one configured (A10); `review --wait` prints what came back (`roundNote` in `scripts/inbox.mjs`). In a video, a quick check settles the same way (step 5). Found while saving the runs: answering a card again with a different pick kept the old settlement; a new answer now clears it, so the card is settled again (`recordAnswers`, checked in `align-page.spec.mjs`).
+In the chat, `align <round> --cards` prints each card's front, then its back (the lines, the answer, why), assume cards first; the agent asks them one at a time (AskUserQuestion in Claude Code) and records them with `align record <round> <answers.json>`. On the page, `reelplanner review <round>` opens `/round/?r=<name>` on the review server, with no video to bundle (A9): `packages/player/align-page.html`, in the review page's look (paper, ink, the coral on what is yours; EB Garamond, Inter, JetBrains Mono). Its API is `scripts/lib/align-server.mjs`, behind the server's host and origin checks: the fronts with no answer, why or lines until you answer; each answer recorded as it comes through the same `recordAnswers` the chat uses (`via: "page"`); Send files the round as an inbox row of kind `align` for the waiting session, and never starts a headless run, even with one configured (A10); `review --wait` prints what came back (`roundNote` in `scripts/inbox.mjs`). In a video, a quick check settles the same way (step 5). Found while saving the runs: answering a card again with a different pick kept the old settlement; a new answer now clears it, so the card is settled again (`recordAnswers`, checked in `align-page.spec.mjs`). A point card (`- point: yes`, with a ```diagram block under it, A21) is drawn on the page as the guide draws a diagram, and you answer by clicking a box; the chat asks the same card by its boxes' names.
 
-**Tests:** `scripts/test/align-page.spec.mjs` (37 checks: the page and its fonts, the fronts with nothing given away, a wrong pick turning over to the lines, Got it landing once, Not sure's two ways, the say card's route, Send into the inbox and never a headless run, another site refused; in Chromium, a key answering a card, 1 settling it, a right pick moving on, Send).
+**Tests:** `scripts/test/align-page.spec.mjs` (51 checks: the page and its fonts, the fronts with nothing given away, a wrong pick turning over to the lines, Got it landing once, Not sure's two ways, the say card's route, Send into the inbox and never a headless run, another site refused; in Chromium, a key answering a card, 1 settling it, a right pick moving on, Send; a point card answered by clicking a box of its diagram, the back marking your box and the answer's).
 
 ```diagram
 flow: One record, three ways in
@@ -147,7 +149,7 @@ A second review server for the same repo on another port: the page talks to the 
 
 #### Limits
 
-Point cards are tiles of their options, not boxes of a diagram you click (the plan's **inbox** example): no diagram is drawn on the card yet. The page has been driven in headless Chromium, not yet by you.
+A point card needs its diagram written with it (A21). The page has been driven in headless Chromium, not yet by you.
 
 #### Files and commands
 
@@ -157,11 +159,11 @@ Point cards are tiles of their options, not boxes of a diagram you click (the pl
 
 **You can now:** hold Space on a say card and talk (or type), and get back each thing you said marked as matching the code, differing from it, or a want rather than what is.
 
-**Commits:** `6cbef4a` (the page and its routes), `35ab170` (`align answer`).
+**Commits:** `6cbef4a` (the page and its routes), `35ab170` (`align answer`), `054419b` (live words, the checker on claims, the microphone run end to end).
 
-On a say card, holding Space or the microphone records with `MediaRecorder`; `POST /api/round/transcribe` writes it down with the local whisper (`transcribe` in `align-server.mjs`: ffmpeg to 16 kHz, `whisper-cli` with `ggml-small.en.bin`), and nothing leaves the machine (A12). The words stay editable. Check sends them as an inbox question of kind `say` for the waiting session (A11), whose words say what to do: split them into claims, check each against the pinned sources, run the fresh checker on each marked claim, and record them with `reelplanner align answer <round> <card> <claims.json>`. The page polls and shows each claim: ✓ a match, ✗ a gap, ? an open want (an assume card next), or not settled where the session and the checker read it differently.
+On a say card, holding Space or the microphone records with `MediaRecorder`; `POST /api/round/transcribe` writes it down with the local whisper (`transcribe` in `align-server.mjs`: ffmpeg to 16 kHz, `whisper-cli` with `ggml-small.en.bin`), and nothing leaves the machine (A12). The words stay editable. Check sends them as an inbox question of kind `say` for the waiting session (A11), whose words say what to do: split them into claims, check each against the pinned sources, run the fresh checker on each marked claim, and record them with `reelplanner align answer <round> <card> <claims.json>`. The page polls and shows each claim: ✓ a match, ✗ a gap, ? an open want (an assume card next), or not settled where the session and the checker read it differently. A switch, off on every visit until you turn it on, gives live words instead: the browser's own recognition, which in some browsers sends the audio to its maker's servers, as the switch says. With no whisper here the card says to type and how to install it (`reelplanner setup --local-voice`); with no session waiting it says your words wait in the inbox for the next. The session's marks reach you only after the fresh checker: `align <round> --prompt claims --card <card>` writes its brief (each marked claim and its lines, never the mark), and `align <round> --claims <card>` applies its reading; a claim it reads otherwise, or cannot decide, is shown as not settled.
 
-**Tests:** `align.spec.mjs` (claims ✓ ✗ ?, a differs claim must name its lines, an open claim asks for an assume card not counted in the six); `align-page.spec.mjs` (the say question and its command, the claims coming back, transcribe refusing anything but audio and saying "type your words instead" with no whisper).
+**Tests:** `align.spec.mjs` (claims ✓ ✗ ?, a differs claim must name its lines, an open claim asks for an assume card not counted in the six); `align-page.spec.mjs` (the say question and its command, the claims coming back, transcribe refusing anything but audio and saying "type your words instead" with no whisper; the claims not shown until the fresh checker's reading is applied, its brief holding no mark, a claim it reads otherwise not settled; the say card with no whisper saying how to install it, the live switch off and saying where the audio may go; the microphone end to end, a spoken clip as Chromium's microphone written down by whisper here).
 
 ```diagram
 flow: Your words, checked
@@ -196,7 +198,7 @@ No session waiting: the words wait in the inbox as a question, and the page says
 
 #### Limits
 
-The fresh checker's read of each marked claim is asked of the session in the question's words; the tool accepts a `not settled` claim but does not itself prove the checker ran. Speaking needs whisper and its model installed (`reelplanner setup --local-voice`).
+Live words need a browser whose speech recognition runs; headless Chromium has the switch but cannot hear, so they have not been seen working. Speaking without them needs whisper and its model installed (`reelplanner setup --local-voice`), which the card says.
 
 #### Files and commands
 
@@ -206,11 +208,11 @@ The fresh checker's read of each marked claim is asked of the session in the que
 
 **You can now:** settle a gap with one of four ways and see it land where it belongs: your memory, the plan's You told me first, a fix, or one short explainer.
 
-**Commits:** `35ab170`.
+**Commits:** `35ab170`, `054419b` (Show me more's diagram, what you know in a later video).
 
-`recordAnswers` sends each newly settled gap once: **Got it** into your memory (`~/.reelplanner/you.jsonl`, a line of `kind: "knows"` at the lines' fingerprint, A1), due once more on a new case three days on (`ONCE_MORE_DAYS`; D-316); the second Got it is known for good (A5). **Change the plan** and an assume card's **Not quite** go into the plan's `## You told me first`, before its first step (A6); with no plan, into `align.md`. **The code is wrong** becomes a step of the plan, or `issue.md` for you to file. **Show me more** is listed for one short explainer of every such gap (`align --explain-gaps` prints its `reelplanner explain` command, A8). Skipped cards are "Assumed, not checked". `align due` lists what is due; `reel memory --you` says how many things you know from rounds. A card on lines you know, not yet due, fails `--check`; due, it warns until the card says `- once_more:`; once the lines change, it is not known any more. Nothing goes into the decision log.
+`recordAnswers` sends each newly settled gap once: **Got it** into your memory (`~/.reelplanner/you.jsonl`, a line of `kind: "knows"` at the lines' fingerprint, A1), due once more on a new case three days on (`ONCE_MORE_DAYS`; D-316); the second Got it is known for good (A5). **Change the plan** and an assume card's **Not quite** go into the plan's `## You told me first`, before its first step (A6); with no plan, into `align.md`. **The code is wrong** becomes a step of the plan, or `issue.md` for you to file. **Show me more** is listed for one short explainer of every such gap (`align --explain-gaps` prints its `reelplanner explain` command, A8). Skipped cards are "Assumed, not checked". `align due` lists what is due; `reel memory --you` says how many things you know from rounds. A card on lines you know, not yet due, fails `--check`; due, it warns until the card says `- once_more:`; once the lines change, it is not known any more. Nothing goes into the decision log. Show me more opens the card's `- more:` and its diagram at once (A21). A later video drops what you know: `reel prereqs` lists the Got it things still true on the plan's files, found by their lines' text wherever it has moved (`knownNow`), and `check-terms` warns on a frame that shows those lines again (A22).
 
-**Tests:** `align.spec.mjs` (each way's destination, nothing routed twice, the three days, known for good, a changed line, the decision log untouched); `memory.spec.mjs` (81 checks, as before: the knows lines are not counted as reviews).
+**Tests:** `align.spec.mjs` (each way's destination, nothing routed twice, the three days, known for good, a changed line, the decision log untouched); `memory.spec.mjs` (81 checks, as before: the knows lines are not counted as reviews); `align.spec.mjs` again (what you know found where its lines moved, `check-terms` warning on a frame that shows them, `reel prereqs` listing them, not known once they change); `align-page.spec.mjs` (Show me more opening the card's text and diagram).
 
 ```diagram
 flow: Where a settled gap goes
@@ -245,7 +247,7 @@ Editing `answers.json` by hand past `routed`: a settlement already routed is not
 
 #### Limits
 
-Show me more on the page does not open a detail over the card (D-195's way); it is listed for the one explainer the agent builds after the round.
+Show me more opens its text and diagram on the card itself, not as a detail over it (D-195's way); the one explainer is built by the agent after the round. A card's diagram is only as right as the agent drew it: `--check` holds that it reads, and that a point card's options are its boxes, not that it matches the code.
 
 #### Files and commands
 
@@ -393,13 +395,12 @@ The fresh checker's findings are in `code-check/findings.md` (2 of 5 steps ✓, 
 
 ## Not done
 
-- **Point cards on a diagram:** a card's options can be tiles (`- point: yes`), but no diagram is drawn on the card to click a box of.
-- **The fresh checker on spoken claims** is asked of the waiting session in the question's words and the skill; the tool does not prove it ran.
 - **Not yet used for real:** no round before a real plan, and the one real round in this repo (`.reelplanner/align/2026-11-18-review-reaches-agent/`) is checked but not answered by you.
 - **The plan's question 5** (how a plan says whether a round ran) is open; it is built as recommended (D1).
-- **Live recognition in the browser**, off by default behind a switch that says where the audio goes: only recording and the local whisper are built.
-- **A diagram on Show me more**: the card's `- more:` text opens at once; no diagram is drawn.
-- **A later video dropping what you know from rounds**: what you know is kept and asked once more, but no build reads it to drop an explanation yet.
+- **The plan's question 6** (who draws a card's diagram) is open; it is built as recommended (A21).
+- **Live words, in a real browser:** the switch and its wiring are built and checked in headless Chromium, whose speech recognition cannot run there; words appearing as you speak have not been seen in a browser that can.
+- **A hosted round page:** there is none; a round is answered on this machine's review server or in the chat.
+
 
 ## Categories of change
 

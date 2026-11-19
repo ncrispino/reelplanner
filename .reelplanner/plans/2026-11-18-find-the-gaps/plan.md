@@ -343,6 +343,8 @@ the plan -> its video: skips what you knew
 
 Question 5 was added during the build: step 5 reached its fifth choice of the agent's own (walkthrough A14–A18), so its biggest open choice is yours. It is built as recommended until you answer.
 
+Question 6 was added while building what the walkthrough first listed as not done: step 4 reached its fifth choice (A21, A22), so its biggest open choice is yours. It is built as recommended until you answer.
+
 1. **Where do the cards show up first? (step 2)**
    - **A · On the review page** — pointing, your voice, the code's lines on the card, and Send; it needs the browser open.
    - **B · In the chat** — the agent asks each card as a question in the conversation; quickest to build, but no pointing, no voice, and the code's lines as plain text.
@@ -374,6 +376,12 @@ Question 5 was added during the build: step 5 reached its fifth choice of the ag
    - **B · A command that records the judgement** — `reelplanner align judged <plan> --likely <n> --costly <n>`, kept in a file of its own; harder to forget or get wrong, one more command each plan.
    - **C · Only the rounds themselves** — a plan with a round is one a round names; nothing kept for plans with none, so `reel status` can compare only with every plan without a round, the easy ones too.
    - Recommended: **A**. The comparison needs the plans where a likely gap had no round, which only the agent knows as it writes the plan, and one header line costs nothing to write or read.
+
+6. **Who draws the diagram a card opens? (step 4)**
+   - **A · The agent, with the card** — a ```diagram block under the card, in the diagram text plans already use, checked with the card; the agent can draw what the lines mean (the hand-off order), and a point card's boxes are its options.
+   - **B · The tool, from the pinned lines** — drawn by itself (the calls and branches in the lines); never out of step with the code, but only as good as what the lines show, and no point cards.
+   - **C · No diagram** — Show me more opens the longer text only; a point card stays tiles.
+   - Recommended: **A**. The diagram is there to show the picture the card is about, which the lines alone often don't (who waits, in what order), and the same drawing is what a point card's boxes need.
 
 
 ## Decisions in force
