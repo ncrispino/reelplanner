@@ -341,6 +341,8 @@ the plan -> its video: skips what you knew
 
 **All four are answered** (your review of 18 Nov): question 1 in your own words, D-314, one backend and three ways in (step 2 now says how); question 2 A, D-315; question 3 B, D-316 (step 4 now says how); question 4 B, D-317. The options below are kept as you reviewed them; none is reopened.
 
+Question 5 was added during the build: step 5 reached its fifth choice of the agent's own (walkthrough A14–A18), so its biggest open choice is yours. It is built as recommended until you answer.
+
 1. **Where do the cards show up first? (step 2)**
    - **A · On the review page** — pointing, your voice, the code's lines on the card, and Send; it needs the browser open.
    - **B · In the chat** — the agent asks each card as a question in the conversation; quickest to build, but no pointing, no voice, and the code's lines as plain text.
@@ -366,6 +368,12 @@ the plan -> its video: skips what you knew
    - **B · When it finds a gap that is likely and costly** — no round when nothing is worth asking; it can miss a gap it didn't see coming.
    - **C · Only when you ask** — nothing changes unless you say "align me first"; the gaps you didn't think to ask about stay hidden.
    - Recommended: **B**. A round costs your time, so it should come only when it is likely to find something that matters; the plan says in one line when there was none.
+
+5. **How does a plan say whether a round ran before it? (step 5)**
+   - **A · A line in the plan's header** — `**Round:**` and the round's folder, `none, a likely, costly gap (<why>)`, or `none needed`, written by the agent as it writes the plan; readable, but only as true as the agent's line.
+   - **B · A command that records the judgement** — `reelplanner align judged <plan> --likely <n> --costly <n>`, kept in a file of its own; harder to forget or get wrong, one more command each plan.
+   - **C · Only the rounds themselves** — a plan with a round is one a round names; nothing kept for plans with none, so `reel status` can compare only with every plan without a round, the easy ones too.
+   - Recommended: **A**. The comparison needs the plans where a likely gap had no round, which only the agent knows as it writes the plan, and one header line costs nothing to write or read.
 
 
 ## Decisions in force

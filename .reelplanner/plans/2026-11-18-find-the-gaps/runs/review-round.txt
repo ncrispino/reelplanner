@@ -1,0 +1,29 @@
+$ reelplanner review .reelplanner/align/2026-11-18-send --no-open  [in a scratch repo]
+✓ review page: http://127.0.0.1:25224/round/?r=2026-11-18-send
+  (serving until stopped; Finish, then Send, files the review in .reelplanner/inbox/ — POST /api/review)
+(serving; stopped after the requests below)
+
+$ curl -s 'http://127.0.0.1:25224/api/round?r=2026-11-18-send'  [in a scratch repo]
+{"ok":true,"name":"2026-11-18-send","title":"How a review is handed on","words":"how a review is handed on","cards":[{"id":"c1","kind":"assume","question":"I'm assuming \"the agent\" in your words is the session you have open.","options":[],"point":false,"answered":{"card":"c1","answer":"right","via":"chat","at":"2026-11-18T23:59:47.438Z"},"back":{"gap":"same"}},{"id":"c2","kind":"predict","question":"No session is waiting and a command is set. Where does the review go?","options":[{"id":"a","label":"The inbox, to wait"},{"id":"b","label":"A headless run"},{"id":"c","label":"Nowhere"}],"point":false,"answered":{"card":"c2","answer":"a","settled":"got-it","via":"chat","at":"2026-11-18T23:59:47.438Z"},"back":{"gap":"gap","answer":"b","label":"A headless run","source":"src/send.mjs:3-5","lines":"  if (waiting) return \"the waiting session\";\n  if (command) return \"a headless run\";\n  return \"the inbox\";","why":"A waiting session takes it first; then a set command starts a run; only then the inbox.","settles":["got-it","change-plan","code-wrong","show-more"]}},{"id":"c3","kind":"say","question":"Say how you think a review is handed on.","options":[],"point":false,"answered":null}],"skipped":["c3"],"sessionWaiting":false}
+exit 0
+
+$ curl -s -X POST -H 'content-type: application/json' -d '{"r":"2026-11-18-send","card":"c2","answer":"c"}' http://127.0.0.1:25224/api/round/answer  [in a scratch repo]
+{"ok":true,"back":{"gap":"gap","answer":"b","label":"A headless run","source":"src/send.mjs:3-5","lines":"  if (waiting) return \"the waiting session\";\n  if (command) return \"a headless run\";\n  return \"the inbox\";","why":"A waiting session takes it first; then a set command starts a run; only then the inbox.","settles":["got-it","change-plan","code-wrong","show-more"]},"routed":[]}
+exit 0
+
+$ curl -s -X POST -H 'content-type: application/json' -H 'origin: http://evil.example' -d '{"r":"2026-11-18-send","card":"c2","answer":"c"}' http://127.0.0.1:25224/api/round/answer  [in a scratch repo]
+{"ok":false,"error":"cross-origin"}
+exit 0
+
+$ curl -s -X POST -H 'content-type: application/json' -d '{"r":"2026-11-18-send","skipped":[]}' http://127.0.0.1:25224/api/round/send  [in a scratch repo]
+{"ok":true,"id":"round-2026-11-18-send-20261118T235948Z","summary":"2 of 3 answered, 1 gap: c2 not settled","handledBy":"inbox","message":"saved; waiting for a session to take it (a round never starts a headless run)"}
+exit 0
+
+$ reelplanner inbox --wait --timeout 5  [in a scratch repo]
+… waiting for a review in .reelplanner/inbox/ (Ctrl-C to stop)
+🃏 the round .reelplanner/align/2026-11-18-send, sent from its page: 2 of 3 answered, 1 gap: c2 not settled
+Read what each gap settled to: reelplanner align list, and .reelplanner/align/2026-11-18-send/answers.json. A Show me more is one explainer: reelplanner align .reelplanner/align/2026-11-18-send --explain-gaps prints its command.
+A skipped card is "Assumed, not checked" in the plan. Then: reelplanner inbox done round-2026-11-18-send-20261118T235948Z, and go on with the plan. Nothing goes into the decision log.
+/tmp/rp-walk-12UG/app/.reelplanner/inbox/round-2026-11-18-send-20261118T235948Z.json
+exit 0
+

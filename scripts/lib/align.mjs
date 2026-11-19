@@ -249,7 +249,8 @@ export function recordAnswers(dir, input, { repo = repoOfRound(dir), knowsPath =
   if (errors.length) return { record: null, routed: [], errors };
   const path = join(dir, "answers.json"), record = readJson(path) || { round: basename(dir), cards: {}, skipped: [], routed: {} };
   record.routed ||= {};
-  for (const a of answers) record.cards[a.card] = { ...(record.cards[a.card] || {}), ...a };
+  // a card answered again keeps what it settled only when the answer is the same: a new answer is a new card to settle
+  for (const a of answers) { const prev = record.cards[a.card]; record.cards[a.card] = prev && prev.answer === a.answer ? { ...prev, ...a } : { ...a }; }
   record.skipped = [...new Set([...(record.skipped || []), ...skipped])].filter((id) => !record.cards[id]);
   const routed = [], plan = planDirOf(dir, repo), told = [], fixes = [], notChecked = [];
   for (const c of cards) {

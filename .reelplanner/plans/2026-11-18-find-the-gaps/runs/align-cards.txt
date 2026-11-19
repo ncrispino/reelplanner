@@ -1,0 +1,18 @@
+$ reelplanner align .reelplanner/align/2026-11-18-send --cards  [in a scratch repo]
+c1 · assume: I'm assuming "the agent" in your words is the session you have open.
+   · Right
+   · Not quite (say what)
+   · Doesn't matter
+c2 · predict: No session is waiting and a command is set. Where does the review go?
+   A The inbox, to wait
+   B A headless run
+   C Nowhere
+   · Not sure
+   back: B · A headless run · src/send.mjs:3-5
+     |   if (waiting) return "the waiting session";
+     |   if (command) return "a headless run";
+     |   return "the inbox";
+   A waiting session takes it first; then a set command starts a run; only then the inbox.
+c3 · say: Say how you think a review is handed on.
+exit 0
+

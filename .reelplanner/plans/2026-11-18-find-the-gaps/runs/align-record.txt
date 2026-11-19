@@ -1,0 +1,28 @@
+$ reelplanner align record .reelplanner/align/2026-11-18-send /tmp/rp-walk-12UG/answers.json  [in a scratch repo]
+✓ .reelplanner/align/2026-11-18-send/answers.json: the round's one record
+  c1 → You told me first, in a line
+  c2 → your memory, asked once more on a new case from 2026-11-21
+  c3 → Assumed, not checked
+exit 0
+
+$ sed -n '/## You told me first/,/### Step 1/p' .reelplanner/plans/2026-11-18-send/plan.md  [in a scratch repo]
+## You told me first
+
+- **c1** "I'm assuming "the agent" in your words is the session you have open." Right.
+
+## Assumed, not checked
+
+- **c3** "Say how you think a review is handed on."
+
+### Step 1 — Hand it on
+exit 0
+
+$ reelplanner reel memory --you  [in a scratch repo]
+What reviews show (your memory across repos, from /tmp/rp-walk-12UG/home/.reelplanner/you.jsonl):
+  nothing yet: no review is recorded
+
+Known from rounds: 1 (app: `src/send.mjs:3-5`). Due once more, on a new case: none.
+
+`reel memory <id> --you` prints the evidence behind a line.
+exit 0
+

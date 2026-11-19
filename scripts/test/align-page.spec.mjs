@@ -74,6 +74,9 @@ try {
   r = await post("api/round/answer", { r: name, card: "c2", answer: "a", settled: "got-it" });
   const knows = read(join(RH, "you.jsonl")).split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((f) => f.kind === "knows");
   ok("Got it, sent twice, lands once in your file", knows.length === 1 && knows[0].path === "src/send.mjs", read(join(RH, "you.jsonl")));
+  r = await post("api/round/answer", { r: name, card: "c2", answer: "c" });
+  ok("a card answered again with another pick is settled again, not by the old way", r.ok && r.back.gap === "gap" && !JSON.parse(read(join(dir, "answers.json"))).cards.c2.settled, JSON.stringify(JSON.parse(read(join(dir, "answers.json"))).cards.c2));
+  r = await post("api/round/answer", { r: name, card: "c2", answer: "a", settled: "got-it" });
   r = await post("api/round/answer", { r: name, card: "c3", answer: "not-sure" });
   ok("Not sure settles only Got it or Show me more", r.ok && r.back.gap === "not-sure" && r.back.settles.join(",") === "got-it,show-more", JSON.stringify(r));
   r = await post("api/round/answer", { r: name, card: "c3", answer: "not-sure", settled: "change-plan" });

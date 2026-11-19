@@ -1,0 +1,5 @@
+$ reelplanner align .reelplanner/align/2026-11-18-send --check --no-checker  [in a scratch repo]
+✗ c2 (line 17): its quote is not in src/send.mjs:3-5 word for word
+✗ 2026-11-18-send: 3 cards (1 assume, 1 predict, 1 say), 1 failure(s), 0 warning(s)
+exit 1
+

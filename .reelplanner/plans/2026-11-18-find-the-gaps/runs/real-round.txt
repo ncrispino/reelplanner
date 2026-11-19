@@ -1,0 +1,9 @@
+$ node bin/reelplanner.mjs align .reelplanner/align/2026-11-18-review-reaches-agent --check
+✓ 2026-11-18-review-reaches-agent: 5 cards (1 assume, 3 predict, 1 say), 0 failure(s), 0 warning(s)
+exit 0
+
+$ cat .reelplanner/align/2026-11-18-review-reaches-agent/checker/round-1/answers.md
+- c2: ? · the lines start a headless run only `if (!question && !isMachineInbox(rp))` and only report it `if (result.started)`; what `start()` returns when this repo has no headless command configured, what `isMachineInbox(rp)` is here, and what follows when `result.started` is false are not in the lines. The message begins `saved;`, which suggests the review is not lost (against C), but A vs B is not decided
+- c3: a · `if (!existsSync(cp) && !liveWaiters(rp).length) await deliverInbox(...)`: after `recheckMs` it re-runs delivery only if the review was not claimed and no waiter is live, so with the session still waiting nothing more happens. (That `recheckMs` is 15 seconds is not in the lines; if the waiter has gone by then, delivery runs again, which is B rather than C)
+- c4: ? · `if (!question && !isMachineInbox(rp))` shows only that a question does not take the headless-start branch (against A); where the question goes after that, waiting (B) or dropped (C), is not in the line
+exit 0
