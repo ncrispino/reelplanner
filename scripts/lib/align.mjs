@@ -317,6 +317,14 @@ export function recordAnswers(dir, input, { repo = repoOfRound(dir), knowsPath =
     if (record.routed[c.id] === key) continue;
     if (c.kind === "assume" && a.answer === "not-quite") { told.push(`- **${c.id}** "${c.question}" Not quite: "${a.own}"`); routed.push(`${c.id} → You told me first`); }
     else if (c.kind === "assume" && a.answer === "right") { told.push(`- **${c.id}** "${c.question}" Right.`); routed.push(`${c.id} → You told me first, in a line`); }
+    // a card asked once more (D-316), answered right on its new case: known for good, and never due again
+    else if (c.kind === "predict" && c.onceMore && gap === "same") {
+      const { text } = linesOf(dir, c, { repo }), ref = refOf(c.source), was = knowsFor(repo, { path: knowsPath }).find((k) => k.fingerprint === c.onceMore);
+      appendKnows({ repo: repoName(repo) || basename(resolve(repo)), round: basename(dir), card: c.id, claim: was?.claim || `${c.question} ${c.options.find((o) => o.id === c.answer)?.label || ""}`,
+        source: was?.source || c.source, path: was?.path || ref.path, fingerprint: c.onceMore, at: now.toISOString(), dueAt: null, asked: 2 }, knowsPath);
+      if (text && fingerprint(text) !== c.onceMore) appendKnows({ repo: repoName(repo) || basename(resolve(repo)), round: basename(dir), card: c.id, claim: `${c.question} ${c.options.find((o) => o.id === c.answer)?.label || ""}`, source: c.source, path: ref.path, fingerprint: fingerprint(text), at: now.toISOString(), dueAt: null, asked: 2 }, knowsPath);
+      routed.push(`${c.id} → your memory, known for good (asked once more, and right)`);
+    }
     else if (gap && gap !== "same" && gap !== "said" && a.settled) {
       const label = c.options.find((o) => o.id === c.answer)?.label;
       if (a.settled === "got-it" && c.source) {

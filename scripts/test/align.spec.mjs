@@ -186,6 +186,21 @@ try {
   ok("reel memory --you --forget takes a thing you know out of your memory, and only that", /forgotten/.test(r) && !knows().some((k) => k.fingerprint === fp) && read(join(RH, "you.jsonl")).split("\n").filter(Boolean).length === before - matching, r);
   ok("…and says so when nothing matches", /nothing you know from a round matches/.test(reel(set.repo, "memory", "--you", "--forget", "nope")));
 
+  // ── asked once more and answered right: known for good, never due again (D-316) ────────────────────────
+  {
+    const { fingerprint, knowsFor } = await import("../lib/align.mjs");
+    const { appendKnows } = await import("../lib/memory.mjs");
+    const text = read(join(set.repo, "src/send.mjs")).split("\n").slice(2, 4).join("\n"), fp = fingerprint(text);
+    appendKnows({ repo: "set", round: "r0", card: "c1", claim: "A rule you got", source: "src/send.mjs:3-4", path: "src/send.mjs", fingerprint: fp, at: new Date(Date.now() - 4 * 864e5).toISOString(), dueAt: new Date(Date.now() - 864e5).toISOString(), asked: 1 }, join(RH, "you.jsonl"));
+    ok("a thing due once more is due", knowsFor(set.repo).some((k) => k.fingerprint === fp && k.due));
+    run(set.repo, "once more", "src/send.mjs", "--slug", "oncemore");
+    const od = join(set.repo, ".reelplanner/align", readdirSync(join(set.repo, ".reelplanner/align")).find((n) => n.includes("oncemore")));
+    setCards(od, [predict("c1", { quote: "if (command) return \"a run\";", extra: `- once_more: ${fp}\n` }).replace("src/send.mjs:3-4", "src/send.mjs:3-5")]);
+    write(join(od, "checker", "answers.md"), "- c1: b\n");
+    r = run(set.repo, "record", od, ans([{ card: "c1", answer: "b", via: "chat" }]));
+    ok("answered right on its new case: known for good", r.code === 0 && /known for good \(asked once more, and right\)/.test(r.out) && !knowsFor(set.repo).some((k) => k.fingerprint === fp && k.due), r.out);
+  }
+
   // ── a later video drops what you know (step 4) ─────────────────────────────────────────────────────────
   {
     const { knownNow, fingerprint } = await import("../lib/align.mjs");

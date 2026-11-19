@@ -158,7 +158,7 @@ reelplanner align "how a review reaches the agent" scripts/lib/inbox.mjs --plan 
   Show me more (one short explainer of all such gaps: `align <round> --explain-gaps`). Not sure is a gap of its own,
   settled Got it or Show me more. A skipped card is "Assumed, not checked" in the plan. Nothing goes into the decision log.
 - **A quick check in a video** you answer wrong settles the same way, under the answer: Got it, Change the plan, Show me
-  more, and in a walkthrough, an explainer or the system video, The code is wrong. It never blocks Approve.
+  more, and in a walkthrough or the system video, The code is wrong. It never blocks Approve.
 - **Measured:** `reel status` lists rounds, their gaps and how each was settled, and later surprises (your own words,
   Expected something else, flagged calls, late fixes) on plans with a round and on plans with a likely gap and no
   round. It says "too few plans to compare" until there are five of each.

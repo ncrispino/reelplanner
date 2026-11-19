@@ -5762,10 +5762,10 @@ ${clip(gloss || "(none)", 9000)}`;
   // A wrong quick check settles like a round's card (find-the-gaps step 5): Got it (you had it wrong: into your memory),
   // Change the plan and The code is wrong (each with your words in the box below, which reach the agent as a comment
   // does), Show me more (Walk me through it). The code is wrong only where the video is about code that exists (a
-  // walkthrough, the system video, an explainer). Left unsettled it is recorded as before; it never blocks Approve.
+  // walkthrough, the system video). Left unsettled it is recorded as before; it never blocks Approve.
   syncSettle(r) {
     const box = this.$(".decision"), dis = box?.querySelector(".disagree"); if (!dis) return;
-    const code = this.isWalkthrough || this.isSystem || this.isExplainer;
+    const code = this.isWalkthrough || this.isSystem;   // step 5: a walkthrough's and the system video's checks are about code that exists
     for (const b of dis.querySelectorAll(".settle button")) { if (b.dataset.settle === "code-wrong") b.hidden = !code; b.setAttribute("aria-pressed", String(!!r && r.settled === b.dataset.settle)); }
     const lab = dis.querySelector("label");
     lab.textContent = r?.settled === "change-plan" ? "Change the plan: how should it work?" : r?.settled === "code-wrong" ? "The code is wrong: how should it work?" : "Expected something else?";

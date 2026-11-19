@@ -37,6 +37,11 @@ a decision id, or a backticked path.
 ## Commits (95a5bdb..HEAD)
 
 ```
+cd67782 Find the gaps: the walkthrough and plan say what was built since
+054419b Find the gaps: the parts the walkthrough listed as not done
+8a3993d Find the gaps: the walkthrough video after fresh eyes
+a090f20 Find the gaps: the walkthrough video, built
+929ecb9 Find the gaps: the code check's findings answered
 037d06b Find the gaps: question 5 worded apart from earlier decisions
 01c7372 Find the gaps: the walkthrough, its runs, and a re-answered card settled again
 76cc466 Find the gaps, step 5: into the loop, and measured
@@ -156,7 +161,7 @@ Read `.reelplanner/plans/2026-11-18-find-the-gaps/plan.md` in full. Its title is
 | A3 | 1 | `align --check` fails while any predict card has no checker answer; `--no-checker` checks the rest first [visible] | Making the checker a warning, or a separate command | A card reaches you only when the agent and the checker agree (step 1); `--no-checker` lets the brief be written from cards that already pass | `scripts/align.mjs`, `checkRound({ checker })` |
 | A4 | 1 | A card's `- source:` is one `path:from-to` range, read as pinned [close] | Several ranges a card | One range a card keeps the back of the card one block of code, and the checker's brief one block to read; a card that needs two files is two cards | `scripts/lib/align.mjs` `refOf`, `linesOf` |
 | A5 | 4 | A due card comes back as one more card in the first round three days on: `--check` warns on a due card and asks for `- once_more: <fingerprint>`; Got it on it is "known for good" (`asked: 2`) [close] | A second card the tool adds by itself | The agent writes the new case (other names, the same rule); the tool can only say which thing is due | `scripts/lib/align.mjs` `knowsFor`, `checkRound`, `recordAnswers` |
-| A6 | 4 | You told me first is a `## You told me first` section put before the plan's first `### Step`, made when absent [visible] | At the end of plan.md | It is what the plan is written on, so it reads before the steps | `scripts/lib/align.mjs` `appendSection` |
+| A6 | 4 | You told me first is a `## You told me first` section put before the plan's first `### Step`, made when absent; The code is wrong lands there too, as a line marked "A step of this plan." with the card's lines, for the agent to make into a step [visible] | At the end of plan.md; `record` writing a `### Step` itself | It is what the plan is written on, so it reads before the steps; a step needs its cases and interface, which the agent writes, and `record` adding steps to a reviewed plan would change what was approved | `scripts/lib/align.mjs` `appendSection`, `recordAnswers` |
 | A7 | 2 | The record merges answers by card, and each card's settlement is routed once (`routed` in answers.json) [close] | Routing every time `record` runs | The page sends answers as they come and Send sends them all again; a Got it must not land twice in your file | `scripts/lib/align.mjs` `recordAnswers` |
 | A8 | 4 | Show me more's one video is a command the agent runs, `align --explain-gaps` printing `reelplanner explain "<the gaps, from what you expected>" <their files> --depth low` [visible] | Building the explainer from inside `align record` | An explainer is built like any video (narration, frames, fresh eyes); the record stays seconds | `scripts/lib/align.mjs` `explainGaps` |
 | A9 | 2 | The round page is `/round/?r=<name>` on the review server, `reelplanner review <round>` opening it with no video bundled; any round of the repo is served by name [visible] | A row in the video library | A round is no video: it has no frames or narration to bundle, and one server per repo serves both | `scripts/review.mjs` (`rounds`, `roundOnly`), `scripts/lib/align-server.mjs` `roundAsset`, `roundByName` |
@@ -168,6 +173,11 @@ Read `.reelplanner/plans/2026-11-18-find-the-gaps/plan.md` in full. Its title is
 | A15 | 5 | A late fix counts against the plan whose call was changed later (`plan` added to each miss); a step reworked after a walkthrough check counts once, as its Expected something else [close] | Counting a reworked step as both | The four kinds of surprise should not count one thing twice | `scripts/lib/memory.mjs` `findMisses`, `scripts/lib/align.mjs` `roundStats` |
 | A16 | 5 | The quick check's settle row sits inside its "Expected something else?" box, and pressing Change the plan or The code is wrong relabels that box and focuses it; words typed with no way chosen are Change the plan's [visible] | A row of its own on the frame | The box is already placed on the frame by the layout; the plan says its words become Change the plan's | `packages/player/reelplanner-player.js` `syncSettle`, `settleQuiz`, `saveDisagree` |
 | A17 | 5 | A quick check settled Got it with no words sends no rewrite of its step; The code is wrong or Change the plan with no words asks the agent to ask how [close] | Sending every missed check as "explain this step so the answer is obvious", as before | Got it says the reviewer had it wrong, not that the step was unclear; left unsettled, it is sent as before | `scripts/lib/review-scope.mjs` `reviseScope` |
+| A19 | 3 | A recording is thrown away once whisper has written it down; only your words, which you can edit, are kept [hard-to-undo] | Keeping the recording in the inbox | Your words are the record and you check them before Check; a recording kept is a voice file on disk for nothing (D-249: never a transcript in git; D-305) | `scripts/lib/align-server.mjs` `transcribe` |
+| A20 | 1 | A round's repo is found from its own folder (the git top around `.reelplanner/align/`); `sources.json`'s `repo` path is read only for a round kept on this machine [close] | Always the path `sources.json` names, or no path at all | A committed round must work in every clone; a round kept in `~/.reelplanner/align/` has no repo around it but the one it names | `scripts/lib/align.mjs` `repoOfRound` |
+| D1 | 5 | Step 5's fifth choice (A18) was made and the step built before its biggest open choice became the plan's question 5 [deviation] | Stopping at the fifth choice, asking, and building the rest after the answer (D-110) | Noticed only when counting the step's rows; the question is now open, and the code follows its recommendation (A): an answer of B or C changes `roundLineOf` and `roundStats` only, nothing stored | `plan.md` question 5; `scripts/lib/align.mjs` `roundLineOf`, `roundStats` |
+| A21 | 4 | (asked: the plan's question 6) A card's diagram is a ```diagram block under the card, written by the agent in the diagram text plans already use, drawn as the guide draws one; Show me more opens it, and a point card's boxes are its options [close] | Drawn by the tool from the pinned lines, or no diagram | The diagram shows what the card is about (who waits, in what order), which the lines alone often don't; one drawing serves both | `scripts/lib/align.mjs` `parseCards`, `cardDiagram`, `checkRound` |
+| A22 | 4 | A frame that shows lines you know from a round is a warning in `check-terms`, and `reel prereqs` lists what you know on the plan's files [close] | Failing the build on it | A walkthrough may show the same lines changing, which is not explaining them again; a warning says it where the agent writes the video | `scripts/check-terms.mjs`, `scripts/reel.mjs` `prereqs`, `scripts/lib/align.mjs` `knownNow` |
 | A18 | 5 | Show me more on a quick check with no worked example marks it "asked to have it explained again" (`unclear`) [close] | A button that does nothing there | That is the existing explain-again path the revise already reads | `packages/player/reelplanner-player.js` `settleQuiz` |
 
 ## The diff
@@ -177,40 +187,81 @@ Read it yourself: `git diff 95a5bdb..HEAD` (from the repository root). The files
 ```
 .../align/2026-11-18-review-reaches-agent/align.md |  57 +++
  .../checker/answers.md                             |   3 +
- .../checker/brief.md                               |  69 ++++
+ .../checker/brief.md                               |  69 +++
  .../checker/round-1/answers.md                     |   3 +
- .../checker/round-1/brief.md                       |  55 +++
- .../2026-11-18-review-reaches-agent/sources.json   |  51 +++
- .../plans/2026-11-18-find-the-gaps/plan.md         |   8 +
+ .../checker/round-1/brief.md                       |  55 ++
+ .../2026-11-18-review-reaches-agent/sources.json   |  51 ++
+ .../2026-11-18-find-the-gaps/code-check/brief.md   | 216 ++++++++
+ .../code-check/findings.md                         |  76 +++
+ .../plans/2026-11-18-find-the-gaps/plan.md         |  26 +-
  .../2026-11-18-find-the-gaps/runs/align-cards.txt  |  18 +
  .../runs/align-check-quote.txt                     |   5 +
- .../runs/align-checker.txt                         |  27 ++
+ .../runs/align-checker.txt                         |  27 +
  .../2026-11-18-find-the-gaps/runs/align-due.txt    |   8 +
- .../2026-11-18-find-the-gaps/runs/align-record.txt |  28 ++
+ .../2026-11-18-find-the-gaps/runs/align-record.txt |  28 +
  .../2026-11-18-find-the-gaps/runs/align-start.txt  |   5 +
+ .../2026-11-18-find-the-gaps/runs/npm-test.txt     | 125 +++++
  .../2026-11-18-find-the-gaps/runs/real-round.txt   |   9 +
  .../runs/reel-status-rounds.txt                    |  15 +
- .../2026-11-18-find-the-gaps/runs/review-round.txt |  29 ++
- .../plans/2026-11-18-find-the-gaps/walkthrough.md  | 330 +++++++++++++++
+ .../2026-11-18-find-the-gaps/runs/review-round.txt |  30 ++
+ .../.hyperframes/caption-skin.html                 | 224 ++++++++
+ .../.hyperframes/frames-built.json                 |  15 +
+ .../.hyperframes/frames-timed.json                 |   1 +
+ .../walkthrough-video/.hyperframes/frames.mjs      | 261 ++++++++++
+ .../walkthrough-video/.hyperframes/narration.json  |  74 +++
+ .../walkthrough-video/.hyperframes/sb.py           | 126 +++++
+ .../.hyperframes/stage-snippet.html                |  71 +++
+ .../walkthrough-video/AGENTS.md                    | 103 ++++
+ .../walkthrough-video/BRIEF.md                     |  51 ++
+ .../walkthrough-video/CLAUDE.md                    | 103 ++++
+ .../walkthrough-video/SCRIPT.md                    |  73 +++
+ .../walkthrough-video/STORYBOARD.md                | 238 +++++++++
+ .../walkthrough-video/audio_request.json           |   6 +
+ .../walkthrough-video/caption-overrides.json       |   1 +
+ .../compositions/frames/01-what-landed.html        | 109 ++++
+ ...2-quick-check-the-checker-reads-it-otherwi.html |  91 ++++
+ .../frames/03-step-1-cards-checked-twice.html      | 122 +++++
+ .../frames/04-step-2-the-round-on-the-page.html    | 100 ++++
+ .../frames/05-step-3-your-own-words.html           | 101 ++++
+ .../frames/06-quick-check-a-card-you-skipped.html  |  91 ++++
+ .../frames/07-step-4-where-each-gap-goes.html      | 131 +++++
+ .../08-step-5-quick-checks-and-the-count.html      | 112 ++++
+ .../frames/09-off-the-plan-step-5-went-on.html     |  85 +++
+ .../frames/10-what-ran-and-what-is-not-done.html   |  86 ++++
+ .../compositions/frames/11-the-ending.html         |  83 +++
+ .../walkthrough-video/frame.md                     | 326 ++++++++++++
+ .../walkthrough-video/fresh-eyes/newcomer-brief.md | 278 ++++++++++
+ .../walkthrough-video/fresh-eyes/newcomer.md       | 103 ++++
+ .../fresh-eyes/script/newcomer-brief.md            | 224 ++++++++
+ .../fresh-eyes/script/newcomer.md                  |  50 ++
+ .../walkthrough-video/fresh-eyes/script/stamp.json |   5 +
+ .../walkthrough-video/fresh-eyes/stamp.json        |  66 +++
+ .../walkthrough-video/hyperframes.json             |  13 +
+ .../walkthrough-video/index.html                   | 343 +++++++++++++
+ .../walkthrough-video/meta.json                    |   5 +
+ .../walkthrough-video/package.json                 |  11 +
+ .../plans/2026-11-18-find-the-gaps/walkthrough.md  | 416 +++++++++++++++
  .reelplanner/system.json                           |   2 +-
+ .reelplanner/terms-index.json                      | 228 +++++++++
  docs/project-dir.md                                |   3 +
  docs/reference.md                                  |  29 ++
  docs/status.md                                     |   1 +
  package.json                                       |   1 +
- packages/player/align-page.html                    | 193 +++++++++
+ packages/player/align-page.html                    | 245 +++++++++
  packages/player/reelplanner-player.js              |  39 +-
- packages/player/test/quiz.spec.mjs                 |  24 ++
- scripts/align.mjs                                  | 137 +++++++
- scripts/inbox.mjs                                  |  12 +
- scripts/lib/align-server.mjs                       | 133 ++++++
- scripts/lib/align.mjs                              | 454 +++++++++++++++++++++
- scripts/lib/memory.mjs                             |  24 +-
+ packages/player/test/quiz.spec.mjs                 |  24 +
+ scripts/align.mjs                                  | 155 ++++++
+ scripts/check-terms.mjs                            |  17 +-
+ scripts/inbox.mjs                                  |  15 +
+ scripts/lib/align-server.mjs                       | 148 ++++++
+ scripts/lib/align.mjs                              | 570 +++++++++++++++++++++
+ scripts/lib/memory.mjs                             |  35 +-
  scripts/lib/review-scope.mjs                       |   6 +-
- scripts/reel.mjs                                   |  14 +-
+ scripts/reel.mjs                                   |  31 +-
  scripts/review.mjs                                 |  35 +-
- scripts/test/align-page.spec.mjs                   | 150 +++++++
- scripts/test/align.spec.mjs                        | 193 +++++++++
+ scripts/test/align-page.spec.mjs                   | 218 ++++++++
+ scripts/test/align.spec.mjs                        | 233 +++++++++
  scripts/test/run.mjs                               |   2 +-
- skills/plan-to-video/SKILL.md                      |  53 ++-
- 37 files changed, 2201 insertions(+), 24 deletions(-)
+ skills/plan-to-video/SKILL.md                      |  64 ++-
+ 78 files changed, 7194 insertions(+), 31 deletions(-)
 ```

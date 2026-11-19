@@ -10,7 +10,7 @@
 
 **Delivery:** Plain.
 
-    Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards; once answered, each turns over to show the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
+    A plan could rest on a wrong picture of the code. Now you first answer a few cards; each turns over to the code's lines, and you settle each gap. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
 
 ## Line 2 — Quick check · The checker reads it otherwise (Frame 2)
 
@@ -22,19 +22,19 @@
 
 **Delivery:** Plain.
 
-    In a scratch repo, a card quotes a line one word off: stopped. The checker reads c2 as A: stopped, rewrite it once, else drop it. It reads B: it passes. My choices, each a card at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder, in any clone.
+    A quote one word off is stopped. The checker reads c2 as A: stopped, rewrite it once. It reads B: it passes. My choices, each a card at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder.
 
 ## Line 4 — Step 2 · The round on the page (Frame 4)
 
 **Delivery:** Plain.
 
-    On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on.
+    On the review page: no session waiting, a command set, where does it go? Pick A, the inbox; it turns over to B, a headless run, with its line: a gap. A point card: click a box of its diagram. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on.
 
 ## Line 5 — Step 3 · Your own words (Frame 5)
 
 **Delivery:** Plain.
 
-    On a say card, hold Space and talk. Whisper writes it down here, and the session that opened the page checks each claim: a match, a gap, or a want, asked back as an assume card. My choices: your words reach it as a question. Speech stays on this machine. The recording is thrown away once written down.
+    On a say card, hold Space and talk: whisper writes it down here, or, with the switch on, your browser shows live words. A fresh checker reads the session's marks before you do: a match, a gap, or a want. My choices: your words reach the session as a question. Speech stays on this machine. The recording is thrown away once written down.
 
 ## Line 6 — Quick check · A card you skipped (Frame 6)
 
@@ -46,27 +46,33 @@
 
 **Delivery:** Plain.
 
-    Record it: c1, an assume card you called right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command.
+    Record it: c1, called right, into the plan's You told me first; c2, Got it, into your memory; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer. The agent draws a card's diagram. A later video is warned where it shows what you know.
 
 ## Line 8 — Step 5 · Quick checks, and the count (Frame 8)
 
 **Delivery:** Plain.
 
-    Every video changes too: a wrong quick check settles the same way, and Change the plan's box takes your words. Reel status counts rounds, and compares late fixes with and without one, from five plans each. My choices: a header line records a round, the question next. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
+    A wrong quick check in any video settles the same way, and Change the plan's box takes your words. Reel status counts rounds. My choices: a header line records a round, question five. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
 
 ## Line 9 — Off the plan · Step 5 went on (Frame 9)
 
 **Delivery:** Plain.
 
-    One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, and asked after: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone. Answer it in the plan.
+    One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, and asked after: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone.
 
-## Line 10 — What ran, and what is not done (Frame 10)
+## Line 10 — Off the plan · Step 4 went on (Frame 10)
 
 **Delivery:** Plain.
 
-    What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: words shown live as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan.
+    And the same on step four: its fifth choice, who writes what Show me more opens, was built before you answered. That is question six: A, the agent, as built; B, the tool, from the lines; C, no diagram.
 
-## Line 11 — The ending (Frame 11)
+## Line 11 — What ran, and what is not done (Frame 11)
+
+**Delivery:** Plain.
+
+    What ran: the fast suite, two new specs, the microphone end to end, a code check. Not done: live words in a real browser, a hosted round page, a round before a real plan.
+
+## Line 12 — The ending (Frame 12)
 
 **Delivery:** Plain.
 

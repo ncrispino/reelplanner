@@ -58,6 +58,7 @@
   .progress span { flex: 1; height: 4px; border-radius: 2px; background: rgba(var(--ink-rgb),.15); }
   .progress span.done { background: var(--ink); }
   .progress span.now { background: var(--coral); }
+  .hint { margin: 0 0 10px; font-size: 16px; line-height: 1.45; color: var(--ink-2); max-width: 70ch; }
   .live { display: block; margin: 0 0 10px; font-size: 15px; color: var(--ink-2); } .live input { margin-right: 8px; }
   .planned { display: inline-block; font: 500 12px/1 var(--mono); border: 1px dashed rgba(var(--ink-rgb),.5); border-radius: 5px; padding: 4px 7px; color: var(--ink-3); }
   /* a card's diagram, drawn as the guide draws one (templates/guide/guide.css, on this page's tokens) */
@@ -175,7 +176,7 @@ function drawSay(c, s, head) {
   // how your voice is written down: by this machine's whisper when you let go (the default), or, once you turn it on,
   // by the browser's own recognition as you speak, which some browsers do on their maker's servers (step 3)
   const can = !!SR, voice = live ? "live" : round.whisper ? "whisper" : null;
-  el.innerHTML = `${head}<p class="lab">${voice === "live" ? "Hold Space, or the microphone, and talk: your words appear as you speak." : voice ? "Hold Space, or the microphone, and talk; or type. Your words are written down on this machine when you let go." : "Type your words. To talk instead: whisper is not installed here (reelplanner setup --local-voice installs it)" + (can ? ", or turn on live words below." : ".")} Nothing is checked until you press Check.${round.sessionWaiting ? "" : " No session is waiting on this page: your words wait in its inbox for the next one."}</p>
+  el.innerHTML = `${head}<p class="hint">${voice === "live" ? "Hold Space, or the microphone, and talk: your words appear as you speak." : voice ? "Hold Space, or the microphone, and talk; or type. Your words are written down on this machine when you let go." : "Type your words. To talk instead: whisper is not installed here (reelplanner setup --local-voice installs it)" + (can ? ", or turn on live words below." : ".")} Nothing is checked until you press Check.${round.sessionWaiting ? "" : " No session is waiting on this page: your words wait in its inbox for the next one."}</p>
     ${can ? `<label class="live"><input type="checkbox" id="live" ${live ? "checked" : ""}> Live words as you talk: your browser's own recognition, which in some browsers sends the audio to its maker's servers. Off until you turn it on.</label>` : ""}
     <textarea id="said" placeholder="How you think it works, in your own words">${esc(s.own || "")}</textarea>
     <div class="row"><button class="btn" id="mic" ${voice ? "" : "disabled"}>🎙 Hold to talk <kbd>Space</kbd></button><button class="btn ink" id="check">Check</button><button class="btn quiet" id="skip">Skip the rest <kbd>S</kbd></button></div>

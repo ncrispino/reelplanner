@@ -329,12 +329,15 @@ folder (`.reelplanner/align/<date>-<slug>/`; a repo not set up keeps it on this 
 checks missed on these parts), what moved since they last watched, and cards due once more. A candidate is **likely**
 when one of the four points at it, and **costly** when a step of the plan depends on it or it is hard to undo (stored
 data and formats, permissions, what other people's code relies on). Run a round only when one is both; otherwise say
-in a line that you found none worth asking and go on. A new project has no code to predict: only assume and say cards.
+in a line that you found none worth asking and go on. When cards are due once more and no round is needed, ask the due
+ones alone, in the chat, a minute at most: a round of just them. A new project has no code to predict: only assume and say cards.
 
 **The cards** go in `align.md` under `## Cards`, one `### c<N> · assume|predict|say` each, with `- question:`,
 `- likely_wrong:` (why they might picture it otherwise) and `- matters:` (what depends on it). A predict card adds
 `- option_a:`…, `- answer:`, `- source: <path>:<from>-<to>` (one range, pinned), `- quote:` (word for word from those
-lines), `- why:` and `- more:` (the longer explanation Show me more opens at once). Ask what the code does, never what the code is called. A card on something they said Got it to
+lines), `- why:` and `- more:` (the longer explanation Show me more opens at once), and, where a picture says it better,
+a ` ```diagram ` block under the card (the format plans use), which Show me more opens beside it. A **point card**
+(`- point: yes`) is answered by clicking a box of its diagram: its options are the boxes' names. Ask what the code does, never what the code is called. A card on something they said Got it to
 before, due once more, asks it on a new case and carries `- once_more: <fingerprint>`.
 
 **Check, then the fresh checker.** `$RP align <round> --check --no-checker` until it passes; then

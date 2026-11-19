@@ -343,7 +343,7 @@ the plan -> its video: skips what you knew
 
 Question 5 was added during the build: step 5 reached its fifth choice of the agent's own (walkthrough A14–A18), so its biggest open choice is yours. It is built as recommended until you answer.
 
-Question 6 was added while building what the walkthrough first listed as not done: step 4 reached its fifth choice (A21, A22), so its biggest open choice is yours. It is built as recommended until you answer.
+Question 6 was added while building what the walkthrough first listed as not done: step 4 reached its fifth choice (A21, A22, D2), so its biggest open choice is yours. It is built as recommended until you answer.
 
 1. **Where do the cards show up first? (step 2)**
    - **A · On the review page** — pointing, your voice, the code's lines on the card, and Send; it needs the browser open.
@@ -377,9 +377,9 @@ Question 6 was added while building what the walkthrough first listed as not don
    - **C · Only the rounds themselves** — a plan with a round is one a round names; nothing kept for plans with none, so `reel status` can compare only with every plan without a round, the easy ones too.
    - Recommended: **A**. The comparison needs the plans where a likely gap had no round, which only the agent knows as it writes the plan, and one header line costs nothing to write or read.
 
-6. **Who draws the diagram a card opens? (step 4)**
-   - **A · The agent, with the card** — a ```diagram block under the card, in the diagram text plans already use, checked with the card; the agent can draw what the lines mean (the hand-off order), and a point card's boxes are its options.
-   - **B · The tool, from the pinned lines** — drawn by itself (the calls and branches in the lines); never out of step with the code, but only as good as what the lines show, and no point cards.
+6. **Who writes what a card opens on Show me more, its longer text and its diagram? (step 4)**
+   - **A · The agent, with the card** — a `- more:` line and a `diagram` block under the card, in the diagram text plans already use, checked with the card; the agent can say and draw what the lines mean (the hand-off order), and a point card's boxes are its options.
+   - **B · The tool, from the pinned lines** — made by itself (the calls and branches in the lines); never out of step with the code, but only as good as what the lines show, and no point cards.
    - **C · No diagram** — Show me more opens the longer text only; a point card stays tiles.
    - Recommended: **A**. The diagram is there to show the picture the card is about, which the lines alone often don't (who waits, in what order), and the same drawing is what a point card's boxes need.
 

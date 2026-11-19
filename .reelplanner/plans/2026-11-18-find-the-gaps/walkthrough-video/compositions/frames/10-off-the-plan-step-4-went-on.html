@@ -60,24 +60,23 @@
   .f10-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="10-what-ran-and-what-is-not-done" data-band="bottom" data-duration="14.943" data-width="1920" data-height="1080">
-  <div class="clip f10-bg" id="f10-bg" data-start="0" data-duration="16.406" data-track-index="0"></div>
-  <div class="clip f10-scene" id="f10-scene" data-start="0" data-duration="16.406" data-track-index="1">
-  <div class="f10-h" id="f10-h" style="left:160px; top:90px; width:1600px;">What ran, and what is not done</div>
-  <div id="f10-a" style="position:absolute; left:160px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-la" style="left:0px; top:0px;">ran</div><div class="f10-t" style="left:0; top:56px"><code>npm test</code>, the fast suite</div><div class="f10-t" style="left:0; top:128px">new: align.spec · 53 checks</div><div class="f10-t" style="left:0; top:200px">new: align-page.spec · 37 checks</div><div class="f10-t" style="left:0; top:272px">extended: quiz.spec · 54 checks</div><div class="f10-t" style="left:0; top:344px">the code check, every ✗ answered</div></div>
-  <div id="f10-b" style="position:absolute; left:1000px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-lb" style="left:0px; top:0px;">not done</div><div class="f10-t" style="left:0; top:56px">words shown live as you talk</div><div class="f10-t" style="left:0; top:128px">a diagram on Show me more</div><div class="f10-t" style="left:0; top:200px">a later video dropping what you know</div><div class="f10-t" style="left:0; top:272px">no round yet before a real plan</div></div>
+<div id="root" data-composition-id="10-off-the-plan-step-4-went-on" data-band="bottom" data-duration="12.383" data-width="1920" data-height="1080">
+  <div class="clip f10-bg" id="f10-bg" data-start="0" data-duration="13.181" data-track-index="0"></div>
+  <div class="clip f10-scene" id="f10-scene" data-start="0" data-duration="13.181" data-track-index="1">
+  <div class="f10-call" id="f10-cd2" data-call="d2" style="left:160px; top:200px; width:760px; height:300px;"><span class="i">off the plan D2 · it pauses</span><span class="t">Step 4 went on past its fifth choice before asking (decision D-110)</span></div>
+  <div class="f10-paper" id="f10-qq" style="left:1000px; top:200px; width:760px; height:560px;"><div class="f10-lab" style="left:30px; top:28px">the plan's question 6 · step 4</div><div class="f10-big" style="left:30px; top:80px; width:700px; font-size:40px">Who writes what a card opens on Show me more?</div><div class="f10-s" style="left:30px; top:230px; width:700px">its longer text, and its diagram</div><div class="f10-s" style="left:30px; top:300px; width:700px">A · the agent, with the card<br>B · the tool, from the pinned lines<br>C · no diagram, the text only</div><div class="f10-s" style="left:30px; top:470px; color:var(--rp-coral-deep)">built as A until you answer</div></div>
   </div>
 </div>
 
 <script>
 (function () {
-  var FID = "10-what-ran-and-what-is-not-done";
-  var DUR = 16.406;
+  var FID = "10-off-the-plan-step-4-went-on";
+  var DUR = 13.181;
   var tl = gsap.timeline({ paused: true });
-  gsap.set("#f10-a", { opacity: 0, y: 26 });
-  tl.to("#f10-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.400);
-  gsap.set("#f10-b", { opacity: 0, y: 26 });
-  tl.to("#f10-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.490);
+  gsap.set("#f10-qq", { opacity: 0, y: 26 });
+  tl.to("#f10-qq", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 6.300);
+  gsap.set("#f10-cd2", { opacity: 0, x: -24 });
+  tl.to("#f10-cd2", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 1.740);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
