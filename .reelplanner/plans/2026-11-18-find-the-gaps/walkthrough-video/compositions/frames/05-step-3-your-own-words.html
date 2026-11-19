@@ -60,11 +60,11 @@
   .f05-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="05-step-3-your-own-words" data-band="bottom" data-duration="18.624" data-width="1920" data-height="1080">
-  <div class="clip f05-bg" id="f05-bg" data-start="0" data-duration="18.624" data-track-index="0"></div>
-  <div class="clip f05-scene" id="f05-scene" data-start="0" data-duration="18.624" data-track-index="1">
+<div id="root" data-composition-id="05-step-3-your-own-words" data-band="bottom" data-duration="18.347" data-width="1920" data-height="1080">
+  <div class="clip f05-bg" id="f05-bg" data-start="0" data-duration="18.347" data-track-index="0"></div>
+  <div class="clip f05-scene" id="f05-scene" data-start="0" data-duration="18.347" data-track-index="1">
   <div class="f05-shot" id="f05-say" style="left:160px; top:110px; width:1000px; height:440px;" data-artifact="the say card on the round page, your words typed in" data-detail="step-3"><img src="assets/shots/round-say.png" alt="" style="left:-40px; top:0px; width:1120px; height:700px"></div>
-  <div class="f05-ring" id="f05-sw" style="left:252px; top:302px; width:900px; height:64px;"></div>
+  <div class="f05-ring" id="f05-sw" style="left:270px; top:380px; width:812px; height:52px;"></div>
   <div class="f05-lab" id="f05-cl" style="left:160px; top:610px;">its claims, once a fresh checker has read them</div>
   <div id="f05-k0" style="position:absolute; left:160px; top:656px; width:1000px; height:70px;"><div class="f05-t" style="left:0; top:6px">✓ “It goes to my session”</div><div class="f05-s" style="left:560px; top:8px; width:440px">a match</div></div>
 <div id="f05-k1" style="position:absolute; left:160px; top:732px; width:1000px; height:70px;"><div class="f05-t" style="left:0; top:6px">✗ “it waits in the inbox for me”</div><div class="f05-s" style="left:560px; top:8px; width:440px">a gap: a set command starts a run</div></div>
@@ -78,24 +78,24 @@
 <script>
 (function () {
   var FID = "05-step-3-your-own-words";
-  var DUR = 20.923;
+  var DUR = 18.347;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f05-say", { opacity: 0 });
-  tl.to("#f05-say", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.300);
+  tl.to("#f05-say", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.296);
   gsap.set("#f05-sw", { opacity: 0 });
-  tl.to("#f05-sw", { opacity: 1, duration: 0.4, ease: "power2.out" }, 4.110);
+  tl.to("#f05-sw", { opacity: 1, duration: 0.4, ease: "power2.out" }, 4.049);
   gsap.set("#f05-k0", { opacity: 0, y: 26 });
-  tl.to("#f05-k0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.350);
+  tl.to("#f05-k0", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.211);
   gsap.set("#f05-k1", { opacity: 0, y: 26 });
-  tl.to("#f05-k1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.960);
+  tl.to("#f05-k1", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 9.812);
   gsap.set("#f05-k2", { opacity: 0, y: 26 });
-  tl.to("#f05-k2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.560);
+  tl.to("#f05-k2", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 10.403);
   gsap.set("#f05-ca11", { opacity: 0, x: -24 });
-  tl.to("#f05-ca11", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 13.720);
+  tl.to("#f05-ca11", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 13.516);
   gsap.set("#f05-ca12", { opacity: 0, x: -24 });
-  tl.to("#f05-ca12", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 14.460);
+  tl.to("#f05-ca12", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 14.245);
   gsap.set("#f05-ca19", { opacity: 0, x: -24 });
-  tl.to("#f05-ca19", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 17.060);
+  tl.to("#f05-ca19", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 16.806);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

@@ -197,19 +197,22 @@ function startLive() {
   heard.onend = () => { heard = null; status("Check it, fix a word if one is wrong, then press Check."); };
   heard.start(); status("Listening, live… let go to stop.");
 }
-let rec = null, chunks = [];
+let rec = null, chunks = [], holding = false;   // holding: Space or the button is down (let go before the microphone opens: nothing is recorded)
 async function startRec() {
   if (live && SR) return startLive();
   if (!round.whisper) { status("whisper is not installed here: type your words instead (reelplanner setup --local-voice installs it)"); return; }
   if (rec) return; if (!navigator.mediaDevices?.getUserMedia) { status("No microphone here: type your words instead."); return; }
-  try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); chunks = []; rec = new MediaRecorder(stream); rec.ondataavailable = (e) => chunks.push(e.data);
+  holding = true;
+  try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (!holding) { stream.getTracks().forEach((t) => t.stop()); status("Let go before the microphone opened: hold until it says Listening."); return; }
+    chunks = []; rec = new MediaRecorder(stream); rec.ondataavailable = (e) => chunks.push(e.data);
     rec.onstop = async () => { stream.getTracks().forEach((t) => t.stop()); const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" }); rec = null; status("Writing it down on this machine…");
       const r = await fetch("/api/round/transcribe", { method: "POST", headers: { "content-type": blob.type || "audio/webm" }, body: blob }).then((x) => x.json());
       if (!r.ok) { status(r.error); return; } const t = $("said"); t.value = `${t.value ? `${t.value} ` : ""}${r.text}`; status("Check it, fix a word if one is wrong, then press Check."); };
     rec.start(); status("Listening… let go to stop."); }
   catch { status("The microphone was not allowed: type your words instead."); }
 }
-function stopRec() { if (heard) heard.stop(); if (rec && rec.state === "recording") rec.stop(); }
+function stopRec() { holding = false; if (heard) heard.stop(); if (rec && rec.state === "recording") rec.stop(); }
 async function checkSay(c) {
   const words = $("said").value.trim(); if (!words) { status("Say or type your words first."); return; }
   state[c.id] = { ...(state[c.id] || {}), own: words };

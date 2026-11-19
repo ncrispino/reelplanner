@@ -205,10 +205,18 @@ try {
         const ctx = await b2.newContext(); await ctx.grantPermissions(["microphone"], { origin: base2.replace(/\/$/, "") });
         const q = await ctx.newPage(); await q.goto(`${base2}round/?r=2026-11-18-say`); await q.waitForSelector("#said");
         ok("whisper here: the microphone is ready, and the card says your words are written down on this machine", !(await q.$eval("#mic", (b) => b.disabled)) && /written down on this machine when you let go/.test(await q.textContent("main")));
-        await q.dispatchEvent("#mic", "pointerdown"); await q.waitForTimeout(5200); await q.dispatchEvent("#mic", "pointerup");
-        await q.waitForFunction(() => /inbox/i.test(document.getElementById("said").value), null, { timeout: 90000 }).catch(() => {});
-        const heard = await q.$eval("#said", (t) => t.value);
-        ok("…held and let go: the recording is written down by whisper, into the box to fix before Check", /goes to my session/i.test(heard) && /waits in the inbox/i.test(heard), heard);
+        // held until the page says it is listening (the microphone opens when the browser is ready), then the clip's length
+        await q.dispatchEvent("#mic", "pointerdown");
+        await q.waitForFunction(() => /Listening/.test(document.getElementById("status").textContent), null, { timeout: 60000 }).catch(() => {});
+        await q.waitForTimeout(5200); await q.dispatchEvent("#mic", "pointerup");
+        // whisper takes seconds, longer on a loaded machine: wait for the page to say it is done, either way
+        await q.waitForFunction(() => /Check it|type your words|could not/i.test(document.getElementById("status").textContent), null, { timeout: 240000 }).catch(() => {});
+        const heard = await q.$eval("#said", (t) => t.value), said = await q.textContent("#status");
+        ok("…held and let go: the recording is written down by whisper, into the box to fix before Check", /goes to my session/i.test(heard) && /waits in the inbox/i.test(heard), `box: "${heard}" · status: "${said}"`);
+        // let go before the microphone opens: nothing goes on recording
+        await q.fill("#said", ""); await q.dispatchEvent("#mic", "pointerdown"); await q.dispatchEvent("#mic", "pointerup");
+        await q.waitForTimeout(3000);
+        ok("…let go before the microphone opened: nothing goes on recording, and it says to hold", /Let go before the microphone opened/.test(await q.textContent("#status")), await q.textContent("#status"));
         await b2.close();
       } else console.log("· skipped the microphone end to end: whisper or its model is not installed here");
     } else console.log("· skipped the in-browser checks: no Chromium here");

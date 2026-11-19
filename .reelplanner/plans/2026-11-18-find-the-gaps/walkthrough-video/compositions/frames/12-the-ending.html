@@ -60,10 +60,10 @@
   .f12-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="12-the-ending" data-band="bottom" data-duration="3.435" data-width="1920" data-height="1080">
-  <div class="clip f12-bg" id="f12-bg" data-start="0" data-duration="3.435" data-track-index="0"></div>
-  <div class="clip f12-scene" id="f12-scene" data-start="0" data-duration="3.435" data-track-index="1">
-  <div class="f12-shot" id="f12-card" style="left:160px; top:220px; width:700px; height:437px;" data-artifact="the round's card, turned over"><img src="assets/shots/round-back.png" alt="" style="left:0px; top:0px; width:700px; height:438px"></div>
+<div id="root" data-composition-id="12-the-ending" data-band="bottom" data-duration="1.749" data-width="1920" data-height="1080">
+  <div class="clip f12-bg" id="f12-bg" data-start="0" data-duration="1.749" data-track-index="0"></div>
+  <div class="clip f12-scene" id="f12-scene" data-start="0" data-duration="1.749" data-track-index="1">
+  <div class="f12-shot" id="f12-card" style="left:160px; top:220px; width:700px; height:403px;" data-artifact="a round's card: a point card, its diagram"><img src="assets/shots/round-point.png" alt="" style="left:-107px; top:-77px; width:913px; height:571px"></div>
   <div class="f12-big" id="f12-e" style="left:960px; top:380px; width:800px;">Seeing it run, anything you'd change?</div>
   </div>
 </div>
@@ -71,10 +71,10 @@
 <script>
 (function () {
   var FID = "12-the-ending";
-  var DUR = 5;
+  var DUR = 1.749;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f12-e", { opacity: 0 });
-  tl.to("#f12-e", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.400);
+  tl.to("#f12-e", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.204);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

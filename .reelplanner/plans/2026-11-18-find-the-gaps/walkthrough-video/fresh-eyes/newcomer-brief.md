@@ -1,6 +1,6 @@
 # Fresh eyes: the newcomer's brief · Find the gaps: what was built
 
-You are a newcomer to this project. You are about to watch "Find the gaps: what was built", a narrated video of 11 scenes,
+You are a newcomer to this project. You are about to watch "Find the gaps: what was built", a narrated video of 12 scenes,
 the way a viewer would: the narration of each scene as it is said, and a picture of the scene at its last moment
 as the review page shows it (the player's buttons, tabs and captions included). You also have what a viewer can
 open on the page: the glossary, the meanings this video gives its own words, and a line on each earlier video this
@@ -12,16 +12,24 @@ plain phrase with no meaning (made of ordinary words, like "the saved review fil
 unexplained when the video never says what it is or where it comes from. Be specific: say the scene, the words,
 and what you would need to follow.
 
+**This is a rebuild: look only at what it changed.** Scenes 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 of the 12 are new or changed since
+the last build, and those are what you look at. The
+other scenes are not here: they have not changed since their own look. A finding on a scene not marked "look at
+this one" is out of scope and is not counted.
+
+A scene not here may have explained a phrase before the scene you look at: flag the phrase if that scene leaves you
+unable to follow it, and the author will say where it is explained.
+
 ## The shape of newcomer.md (keep it exactly)
 
 ```
-# Fresh eyes: newcomer · round 1 · stamp 805593b19164
+# Fresh eyes: newcomer · round 1 · stamp fe793e67de58
 
 - N1 · scene 4 · "the phrase or thing": what you could not explain, and what you guessed; why it matters
 - N2 · scene 7 · …
 ```
 
-One finding a line, numbered N1, N2 … in scene order, each starting with its scene. Put the phrase or
+One finding a line, numbered N1, N2 … in scene order, each starting with its scene (only scenes 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12). Put the phrase or
 the thing on screen in double quotes. Write "- none" if you have nothing.
 
 Mark a finding `[plan]` right after its number (`- N3 [plan] · scene 9 · …`) when it is about the plan, not the
@@ -111,6 +119,7 @@ they asked, "Explain this more", checks they missed). Watch for the same kind of
 - **The code is wrong**: settling a gap as a bug: it becomes a fix
 - **Show me more**: settling a gap by asking for more: a longer explanation now, and one short video of the round's gaps
 - **whisper**: the speech-to-text program the narration already uses, run on this machine
+- **live words**: your words written as you speak, by the browser's own speech recognition, which some browsers do on their maker's servers
 - **scratch repo**: a new git repo made just for these runs, so nothing in this one changed
 - **inbox**: the folder where a review waits for the agent session that takes it
 - **headless run**: the agent started on its own, with nobody watching, to work on a review
@@ -211,68 +220,74 @@ they asked, "Explain this more", checks they missed). Watch for the same kind of
 
 ## The video, scene by scene
 
-### Scene 1 · part: What landed
+### Scene 1 · part: What landed · look at this one
 
 Picture: `shots/scene-01.png`
 
-> Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards, each turned over to the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: rewrite the card once, or drop it.
+> A plan could rest on a wrong picture of the code. Now you first answer a few cards; each turns over to the code's lines, and you settle each gap. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
 
-### Scene 2
+### Scene 2 · look at this one
 
 Picture: `shots/scene-02.png`
 
 > Quick check. The fresh checker reads card c2's lines as A. The card says B. What does the check do?
 
-### Scene 3 · part: Step 1: a round's cards
+### Scene 3 · part: Step 1: a round's cards · look at this one
 
 Picture: `shots/scene-03.png`
 
-> In a scratch repo, a card quotes a line one word off: stopped. The checker reads c2 as A: stopped, rewrite it once, else drop it. It reads B: it passes. My choices, each a card at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder, in any clone.
+> A quote one word off is stopped. The checker reads c2 as A: stopped, rewrite it once. It reads B: it passes. My choices, each a card at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder.
 
-### Scene 4 · part: Step 2: one record, three ways in
+### Scene 4 · part: Step 2: on the review page · look at this one
 
 Picture: `shots/scene-04.png`
 
-> On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. Send never starts a headless run. A settled card moves on.
+> On the review page: no session waiting, a command set, where does it go? Pick A, the inbox; it turns over to B, a headless run, with its line: a gap. A point card: click a box of its diagram. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on.
 
-### Scene 5 · part: Step 3: in your own words
+### Scene 5 · part: Step 3: in your own words · look at this one
 
 Picture: `shots/scene-05.png`
 
-> On a say card, hold Space and talk. Whisper writes it down here, and the session that opened the page checks each claim: a match, a gap, or a want, asked back as an assume card. My choices: your words reach it as a question. Speech stays on this machine. The recording is thrown away once written down.
+> On a say card, hold Space and talk: whisper writes it down here, or, with the switch on, your browser shows live words. A fresh checker reads the session's marks before you do: a match, a gap, or a want. My choices: your words reach the session as a question. Speech stays on this machine. The recording is thrown away once written down.
 
-### Scene 6
+### Scene 6 · look at this one
 
 Picture: `shots/scene-06.png`
 
 > Quick check. You settle c2 with Got it, and skip c3. Where does c3 go?
 
-### Scene 7 · part: Step 4: settle each gap
+### Scene 7 · part: Step 4: settle each gap · look at this one
 
 Picture: `shots/scene-07.png`
 
-> Record it: c1, Right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command.
+> Record it: c1, called right, into the plan's You told me first; c2, Got it, into your memory; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer. The agent draws a card's diagram. A later video is warned where it shows what you know.
 
-### Scene 8 · part: Step 5: into the loop
+### Scene 8 · part: Step 5: into the loop · look at this one
 
 Picture: `shots/scene-08.png`
 
-> Every video changes too: a wrong quick check settles the same way, and Change the plan's box takes your words. Reel status counts rounds, and compares late fixes with and without one, from five plans each. My choices: a header line records a round, the question next. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
+> A wrong quick check in any video settles the same way, and Change the plan's box takes your words. Reel status counts rounds. My choices: a header line records a round, question five. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
 
-### Scene 9
+### Scene 9 · look at this one
 
 Picture: `shots/scene-09.png`
 
-> One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, and asked after: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone. Answer it in the plan.
+> One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, and asked after: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone.
 
-### Scene 10 · part: What ran
+### Scene 10 · look at this one
 
 Picture: `shots/scene-10.png`
 
-> What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: speech written as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan.
+> And the same on step four: its fifth choice, who writes what Show me more opens, was built before you answered. That is question six: A, the agent, as built; B, the tool, from the lines; C, no diagram.
 
-### Scene 11
+### Scene 11 · part: What ran · look at this one
 
 Picture: `shots/scene-11.png`
+
+> What ran: the fast suite, two new specs, the microphone end to end, a code check. Not done: live words in a real browser, a hosted round page, a round before a real plan.
+
+### Scene 12 · look at this one
+
+Picture: `shots/scene-12.png`
 
 > That's find the gaps, running. Seeing it run, anything you'd change?

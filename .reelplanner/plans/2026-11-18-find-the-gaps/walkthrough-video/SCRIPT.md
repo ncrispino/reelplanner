@@ -10,7 +10,7 @@
 
 **Delivery:** Plain.
 
-    A plan could rest on a wrong picture of the code. Now you first answer a few cards; each turns over to the code's lines, and you settle each gap. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
+    A plan could rest on a wrong picture of the code, so before one, when a gap is likely and costly, or when you ask, you answer a few cards; each turns over to the code's lines, and you settle each gap. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
 
 ## Line 2 — Quick check · The checker reads it otherwise (Frame 2)
 
@@ -22,19 +22,19 @@
 
 **Delivery:** Plain.
 
-    A quote one word off is stopped. The checker reads c2 as A: stopped, rewrite it once. It reads B: it passes. My choices, each a card at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder.
+    A quote one word off is stopped. The checker reads c2 as A: stopped, rewrite it once. It reads B: it passes. My choices, each boxed at the right: the checker's question mark stops a card too. No checker answer, no round. One range of lines a card. A round finds its repo from its own folder.
 
 ## Line 4 — Step 2 · The round on the page (Frame 4)
 
 **Delivery:** Plain.
 
-    On the review page: no session waiting, a command set, where does it go? Pick A, the inbox; it turns over to B, a headless run, with its line: a gap. A point card: click a box of its diagram. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on.
+    On the page: no session waiting, a command set, where does it go? Pick A, the inbox; it turns over to B, a headless run, with its line: a gap. A point card: click a box of its diagram. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. Sending a round never starts a headless run. A settled card moves on.
 
 ## Line 5 — Step 3 · Your own words (Frame 5)
 
 **Delivery:** Plain.
 
-    On a say card, hold Space and talk: whisper writes it down here, or, with the switch on, your browser shows live words. A fresh checker reads the session's marks before you do: a match, a gap, or a want. My choices: your words reach the session as a question. Speech stays on this machine. The recording is thrown away once written down.
+    On a say card, hold Space and talk: whisper writes it down here, or, with the switch on, your browser shows live words. A fresh checker reads the session's marks first: a match, a gap, or a want. My choices: your words reach the session as a question. Speech stays on this machine. The recording is thrown away once written down.
 
 ## Line 6 — Quick check · A card you skipped (Frame 6)
 
@@ -52,13 +52,13 @@
 
 **Delivery:** Plain.
 
-    A wrong quick check in any video settles the same way, and Change the plan's box takes your words. Reel status counts rounds. My choices: a header line records a round, question five. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
+    A wrong quick check in any video settles the same way, and Change the plan's box takes your words. Reel status counts rounds. My choices: a header line records a round, asked in the plan. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again.
 
 ## Line 9 — Off the plan · Step 5 went on (Frame 9)
 
 **Delivery:** Plain.
 
-    One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, and asked after: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone.
+    One thing went off the plan: a step's fifth choice should stop and ask. Step five went on, then asked: where is it kept whether a round ran? A, a header line, as built; B, a command; C, the rounds alone.
 
 ## Line 10 — Off the plan · Step 4 went on (Frame 10)
 
@@ -70,10 +70,10 @@
 
 **Delivery:** Plain.
 
-    What ran: the fast suite, two new specs, the microphone end to end, a code check. Not done: live words in a real browser, a hosted round page, a round before a real plan.
+    What ran: the fast suite, two new specs, the microphone end to end. Not done: live words in a real browser, and a round before a real plan.
 
 ## Line 12 — The ending (Frame 12)
 
 **Delivery:** Plain.
 
-    That's find the gaps, running. Seeing it run, anything you'd change?
+    Seeing it run, anything you'd change?

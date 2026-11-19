@@ -170,25 +170,25 @@ B[4] = () => {
   return `${fr.html}
   ${bk.html}
   ${pt.html}
-  ${calls([["a7", "Each card is routed once, however often sent", "routed"], ["a9", "The page has its own address on the review server", "address"], ["a10", "A round's Send goes to the inbox, never a headless run", "Send"], ["a13", "A settled card moves on by itself", "settled"]])}`;
+  ${calls([["a7", "Each card is routed once, however often sent", "routed"], ["a9", "The page has its own address on the review server", "address"], ["a10", "Sending a round's answers never starts a headless run", "Sending"], ["a13", "A settled card moves on by itself", "settled"]])}`;
 };
 B[5] = () => {
   anim(`#${id("say")}`, "fade", 0.3);
   const cl = [["✓ “It goes to my session”", "a match", "match"], ["✗ “it waits in the inbox for me”", "a gap: a set command starts a run", "gap"], ["? “for me”", "a want: asked back as an assume card", "want"]];
   return `${shot("say", 160, 110, 1000, 440, "assets/shots/round-say.png", 2560, 1600, "the say card on the round page, your words typed in", { sy: 0, scale: 1000 / 2560 * 1.12, sx: 40, detail: "step-3" })}
-  ${ring("sw", 252, 302, 900, 64, "switch")}
+  ${ring("sw", 270, 380, 812, 52, "switch")}
   ${label("cl", 160, 610, "its claims, once a fresh checker has read them")}
   ${cl.map(([a, b, w], i) => { anim(`#${id("k" + i)}`, "up", cue(F, w)); return `<div id="${id("k" + i)}" style="position:absolute; ${pos(160, 656 + i * 76, 1000, 70)}"><div class="${P}-t" style="left:0; top:6px">${esc(a)}</div><div class="${P}-s" style="left:560px; top:8px; width:440px">${esc(b)}</div></div>`; }).join("\n")}
   ${calls([["a11", "Your words reach the session as a question", "question"], ["a12", "Speech is written down on this machine", "Speech"], ["a19", "The recording is thrown away once written down", "thrown"]])}`;
 };
 B[6] = check({ ctx: "quick check · step 4", cs: "c2 · Got it · c3 · skipped", q: "You settle card c2 with Got it, and skip c3. Where does c3 go?", opts: ["Into your memory, as known", "Into the plan, as Assumed, not checked", "Nowhere"] });
-B[7] = () => { const mo = crop("more", 140, 460, 1040, "assets/shots/round-more.png", 2560, 1600, [365, 256, 2195, 1158], "Show me more on a card: the longer answer, under the card's diagram");
+B[7] = () => { const mo = crop("more", 140, 452, 850, "assets/shots/round-more.png", 2560, 1600, [365, 256, 2195, 1158], "Show me more on a card: the longer answer, under the card's diagram");
   anim(`#${id("more")}`, "up", cue(F, "explainer"));
   return `${term("t", 140, 110, 1040, 320, "a scratch repo · align record", [
     ["$ reelplanner align record <round> answers.json", "p"], ["  c1 → You told me first, in a line", "", "c1"], ["  c2 → your memory, asked once more", "", "c2"], ["       on a new case from 2026-11-21", ""], ["  c3 → Assumed, not checked", "", "c3"]],
     "a real run in a scratch repo: align record routing three answers (runs/align-record.txt)", "step-4")}
   ${mo.html}
-  ${calls([["a1", "What you know: a marked line in ~/.reelplanner/you.jsonl", "marked"], ["a5", "A due thing comes back as a new card the agent writes", "due"], ["a6", "You told me first sits before the plan's steps", "sits"], ["a8", "Show me more's video is one explainer command", "explainer"], ["a21", "The agent draws a card's diagram (question 6)", "draws"], ["a22", "A later video is warned where it shows what you know", "warned"]], { h: 118 })}`; };
+  ${calls([["a1", "What you know: a marked line in ~/.reelplanner/you.jsonl", "marked"], ["a5", "A due thing comes back as a new card the agent writes", "due"], ["a6", "You told me first sits before the plan's steps", "sits"], ["a8", "Show me more's video is one explainer command", "explainer"], ["a21", "The agent writes what Show me more opens (asked in the plan)", "draws"], ["a22", "A later video is warned where it shows what you know", "warned"]], { h: 118 })}`; };
 B[8] = () => {
   anim(`#${id("q")}`, "fade", 0.3);
   const q = crop("q", 140, 110, 1040, "assets/shots/quick-check-change.png", 2800, 1800, [360, 660, 2440, 1300], "the player: a quick check answered wrong, Change the plan pressed, its words in the box", "step-5");
@@ -198,7 +198,7 @@ B[8] = () => {
   ${term("st", 140, 110 + q.h + 30, 1040, 200, "a scratch repo · reel status", [["rounds: 1, gaps: 1 (Got it 1)", "", "counts"], ["too few plans to compare", "x", "compares"], ["(1 with a round, 0 with a likely gap and none; 5 of each)", ""]], "a real run in a scratch repo: reel status's Alignment rounds (runs/reel-status-rounds.txt)")}
   ${label("note", 140, 110 + q.h + 260, "a test video's check · a plan video builds nothing yet,")}
   ${label("note2", 140, 110 + q.h + 300, "so The code is wrong is only for code that exists")}
-  ${calls([["a14", "A plan's header says whether a round ran", "header"], ["a15", "A late fix counts once", "late"], ["a16", "The buttons sit in the check's own box", "buttons"], ["a17", "Got it sends no rewrite of the step", "rewrite"], ["a18", "Show me more with no example asks again", "example"]], { h: 140 })}`;
+  ${calls([["a14", "A plan's header says whether a round ran (asked in the plan)", "header"], ["a15", "A late fix counts once", "late"], ["a16", "The buttons sit in the check's own box", "buttons"], ["a17", "Got it sends no rewrite of the step", "rewrite"], ["a18", "Show me more with no example asks again", "example"]], { h: 140 })}`;
 };
 B[9] = () => {
   anim(`#${id("qq")}`, "up", cue(F, "question"));
@@ -220,7 +220,7 @@ B[11] = () => {
 };
 B[12] = () => {
   anim(`#${id("e")}`, "fade", 0.4);
-  return `${shot("card", 160, 220, 700, 437, "assets/shots/round-back.png", 2560, 1600, "the round's card, turned over")}
+  return `${crop("card", 160, 220, 700, "assets/shots/round-point.png", 2560, 1600, [300, 215, 2262, 1345], "a round's card: a point card, its diagram").html}
   ${el("big", "e", 960, 380, 800, null, "Seeing it run, anything you'd change?")}`;
 };
 const JS = (P, dur) => A.map((a) => {

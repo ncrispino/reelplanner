@@ -60,9 +60,9 @@
   .f11-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="11-what-ran-and-what-is-not-done" data-band="bottom" data-duration="10.783" data-width="1920" data-height="1080">
-  <div class="clip f11-bg" id="f11-bg" data-start="0" data-duration="11.568" data-track-index="0"></div>
-  <div class="clip f11-scene" id="f11-scene" data-start="0" data-duration="11.568" data-track-index="1">
+<div id="root" data-composition-id="11-what-ran-and-what-is-not-done" data-band="bottom" data-duration="8.863" data-width="1920" data-height="1080">
+  <div class="clip f11-bg" id="f11-bg" data-start="0" data-duration="9.632" data-track-index="0"></div>
+  <div class="clip f11-scene" id="f11-scene" data-start="0" data-duration="9.632" data-track-index="1">
   <div class="f11-h" id="f11-h" style="left:160px; top:90px; width:1600px;">What ran, and what is not done</div>
   <div id="f11-a" style="position:absolute; left:160px; top:240px; width:760px; height:600px;"><div class="f11-lab" id="f11-la" style="left:0px; top:0px;">ran</div><div class="f11-t" style="left:0; top:56px"><code>npm test</code>, the fast suite</div><div class="f11-t" style="left:0; top:128px">new: align.spec · 57 checks</div><div class="f11-t" style="left:0; top:200px">new: align-page.spec · 51 checks</div><div class="f11-t" style="left:0; top:272px">the microphone, end to end</div><div class="f11-t" style="left:0; top:344px">extended: quiz.spec · 54 checks</div><div class="f11-t" style="left:0; top:416px">a fresh code check</div></div>
   <div id="f11-b" style="position:absolute; left:1000px; top:240px; width:760px; height:600px;"><div class="f11-lab" id="f11-lb" style="left:0px; top:0px;">not done</div><div class="f11-t" style="left:0; top:56px">live words seen in a real browser</div><div class="f11-t" style="left:0; top:128px">a hosted round page</div><div class="f11-t" style="left:0; top:200px">a round before a real plan</div><div class="f11-t" style="left:0; top:272px">questions 5 and 6: yours</div></div>
@@ -72,12 +72,12 @@
 <script>
 (function () {
   var FID = "11-what-ran-and-what-is-not-done";
-  var DUR = 11.568;
+  var DUR = 8.363;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f11-a", { opacity: 0, y: 26 });
-  tl.to("#f11-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.400);
+  tl.to("#f11-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.325);
   gsap.set("#f11-b", { opacity: 0, y: 26 });
-  tl.to("#f11-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.050);
+  tl.to("#f11-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 4.107);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;
