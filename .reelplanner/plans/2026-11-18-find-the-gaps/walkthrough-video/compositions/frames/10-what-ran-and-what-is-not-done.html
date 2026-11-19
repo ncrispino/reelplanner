@@ -60,24 +60,24 @@
   .f10-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="10-what-ran-and-what-is-not-done" data-band="bottom" data-duration="14.58" data-width="1920" data-height="1080">
-  <div class="clip f10-bg" id="f10-bg" data-start="0" data-duration="16.084" data-track-index="0"></div>
-  <div class="clip f10-scene" id="f10-scene" data-start="0" data-duration="16.084" data-track-index="1">
+<div id="root" data-composition-id="10-what-ran-and-what-is-not-done" data-band="bottom" data-duration="14.943" data-width="1920" data-height="1080">
+  <div class="clip f10-bg" id="f10-bg" data-start="0" data-duration="16.406" data-track-index="0"></div>
+  <div class="clip f10-scene" id="f10-scene" data-start="0" data-duration="16.406" data-track-index="1">
   <div class="f10-h" id="f10-h" style="left:160px; top:90px; width:1600px;">What ran, and what is not done</div>
-  <div id="f10-a" style="position:absolute; left:160px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-la" style="left:0px; top:0px;">ran</div><div class="f10-t" style="left:0; top:56px"><code>npm test</code>, the fast suite</div><div class="f10-t" style="left:0; top:128px">align.spec · 53 checks</div><div class="f10-t" style="left:0; top:200px">align-page.spec · 37 checks</div><div class="f10-t" style="left:0; top:272px">quiz.spec, extended · 54 checks</div><div class="f10-t" style="left:0; top:344px">the code check, every ✗ answered</div></div>
-  <div id="f10-b" style="position:absolute; left:1000px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-lb" style="left:0px; top:0px;">not done</div><div class="f10-t" style="left:0; top:56px">live recognition in the browser</div><div class="f10-t" style="left:0; top:128px">a diagram on Show me more</div><div class="f10-t" style="left:0; top:200px">a later video dropping what you know</div><div class="f10-t" style="left:0; top:272px">no round yet before a real plan</div></div>
+  <div id="f10-a" style="position:absolute; left:160px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-la" style="left:0px; top:0px;">ran</div><div class="f10-t" style="left:0; top:56px"><code>npm test</code>, the fast suite</div><div class="f10-t" style="left:0; top:128px">new: align.spec · 53 checks</div><div class="f10-t" style="left:0; top:200px">new: align-page.spec · 37 checks</div><div class="f10-t" style="left:0; top:272px">extended: quiz.spec · 54 checks</div><div class="f10-t" style="left:0; top:344px">the code check, every ✗ answered</div></div>
+  <div id="f10-b" style="position:absolute; left:1000px; top:240px; width:760px; height:600px;"><div class="f10-lab" id="f10-lb" style="left:0px; top:0px;">not done</div><div class="f10-t" style="left:0; top:56px">words shown live as you talk</div><div class="f10-t" style="left:0; top:128px">a diagram on Show me more</div><div class="f10-t" style="left:0; top:200px">a later video dropping what you know</div><div class="f10-t" style="left:0; top:272px">no round yet before a real plan</div></div>
   </div>
 </div>
 
 <script>
 (function () {
   var FID = "10-what-ran-and-what-is-not-done";
-  var DUR = 16.084;
+  var DUR = 16.406;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f10-a", { opacity: 0, y: 26 });
   tl.to("#f10-a", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.400);
   gsap.set("#f10-b", { opacity: 0, y: 26 });
-  tl.to("#f10-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.250);
+  tl.to("#f10-b", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.490);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

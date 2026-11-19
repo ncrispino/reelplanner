@@ -10,7 +10,7 @@
 
 **Delivery:** Plain.
 
-    Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards, each turned over to the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: rewrite the card once, or drop it.
+    Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards; once answered, each turns over to show the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it.
 
 ## Line 2 — Quick check · The checker reads it otherwise (Frame 2)
 
@@ -28,7 +28,7 @@
 
 **Delivery:** Plain.
 
-    On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. Send never starts a headless run. A settled card moves on.
+    On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on.
 
 ## Line 5 — Step 3 · Your own words (Frame 5)
 
@@ -46,7 +46,7 @@
 
 **Delivery:** Plain.
 
-    Record it: c1, Right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command.
+    Record it: c1, an assume card you called right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command.
 
 ## Line 8 — Step 5 · Quick checks, and the count (Frame 8)
 
@@ -64,7 +64,7 @@
 
 **Delivery:** Plain.
 
-    What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: speech written as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan.
+    What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: words shown live as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan.
 
 ## Line 11 — The ending (Frame 11)
 

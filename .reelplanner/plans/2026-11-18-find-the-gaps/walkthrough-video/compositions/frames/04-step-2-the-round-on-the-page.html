@@ -60,22 +60,22 @@
   .f04-term .x { color:var(--rp-syn-num); }
 </style>
 
-<div id="root" data-composition-id="04-step-2-the-round-on-the-page" data-band="bottom" data-duration="20.212" data-width="1920" data-height="1080">
-  <div class="clip f04-bg" id="f04-bg" data-start="0" data-duration="22.535" data-track-index="0"></div>
-  <div class="clip f04-scene" id="f04-scene" data-start="0" data-duration="22.535" data-track-index="1">
+<div id="root" data-composition-id="04-step-2-the-round-on-the-page" data-band="bottom" data-duration="20.639" data-width="1920" data-height="1080">
+  <div class="clip f04-bg" id="f04-bg" data-start="0" data-duration="23.181" data-track-index="0"></div>
+  <div class="clip f04-scene" id="f04-scene" data-start="0" data-duration="23.181" data-track-index="1">
   <div class="f04-shot" id="f04-front" style="left:140px; top:110px; width:1040px; height:599px;" data-artifact="the round page from a scratch repo: a card's front"><img src="assets/shots/round-front.png" alt="" style="left:-159px; top:-114px; width:1357px; height:848px"></div>
   <div class="f04-shot" id="f04-back" style="left:140px; top:110px; width:1040px; height:599px;" data-artifact="the same card turned over: your pick, the answer, the code's lines, why, and the four ways to settle it" data-detail="step-2"><img src="assets/shots/round-back.png" alt="" style="left:-159px; top:-114px; width:1357px; height:848px"></div>
-  <div class="f04-call" id="f04-ca7" data-call="a7" style="left:1200px; top:110px; width:560px; height:184px;"><span class="i">choice A7 · it pauses here</span><span class="t">Each card is routed once, however often sent</span></div>
-<div class="f04-call" id="f04-ca9" data-call="a9" style="left:1200px; top:308px; width:560px; height:184px;"><span class="i">choice A9 · it pauses here</span><span class="t">The page has its own address on the review server</span></div>
-<div class="f04-call" id="f04-ca10" data-call="a10" style="left:1200px; top:506px; width:560px; height:184px;"><span class="i">choice A10 · it pauses here</span><span class="t">Send goes to the inbox, never a headless run</span></div>
-<div class="f04-call" id="f04-ca13" data-call="a13" style="left:1200px; top:704px; width:560px; height:184px;"><span class="i">choice A13 · it pauses here</span><span class="t">A settled card moves on by itself</span></div>
+  <div class="f04-call" id="f04-ca7" data-call="a7" style="left:1200px; top:110px; width:560px; height:184px;"><span class="i">choice A7 · close, like a recent late fix</span><span class="t">Each card is routed once, however often sent</span></div>
+<div class="f04-call" id="f04-ca9" data-call="a9" style="left:1200px; top:308px; width:560px; height:184px;"><span class="i">choice A9 · visible</span><span class="t">The page has its own address on the review server</span></div>
+<div class="f04-call" id="f04-ca10" data-call="a10" style="left:1200px; top:506px; width:560px; height:184px;"><span class="i">choice A10 · hard-to-undo</span><span class="t">A round's Send goes to the inbox, never a headless run</span></div>
+<div class="f04-call" id="f04-ca13" data-call="a13" style="left:1200px; top:704px; width:560px; height:184px;"><span class="i">choice A13 · close, like a recent late fix</span><span class="t">A settled card moves on by itself</span></div>
   </div>
 </div>
 
 <script>
 (function () {
   var FID = "04-step-2-the-round-on-the-page";
-  var DUR = 22.535;
+  var DUR = 23.181;
   var tl = gsap.timeline({ paused: true });
   gsap.set("#f04-front", { opacity: 0 });
   tl.to("#f04-front", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.300);
@@ -85,13 +85,13 @@
   tl.set("#f04-back", { opacity: 1 }, 5.700);
   tl.to("#f04-back", { scaleX: 1, duration: 0.35, ease: "power2.out" }, 5.700);
   gsap.set("#f04-ca7", { opacity: 0, x: -24 });
-  tl.to("#f04-ca7", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 13.380);
+  tl.to("#f04-ca7", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 13.360);
   gsap.set("#f04-ca9", { opacity: 0, x: -24 });
-  tl.to("#f04-ca9", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 15.500);
+  tl.to("#f04-ca9", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 15.470);
   gsap.set("#f04-ca10", { opacity: 0, x: -24 });
-  tl.to("#f04-ca10", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 16.250);
+  tl.to("#f04-ca10", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 16.550);
   gsap.set("#f04-ca13", { opacity: 0, x: -24 });
-  tl.to("#f04-ca13", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 18.250);
+  tl.to("#f04-ca13", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 18.650);
   tl.to({}, { duration: 0.001 }, DUR - 0.001);
   window.__timelines = window.__timelines || {};
   window.__timelines[FID] = tl;

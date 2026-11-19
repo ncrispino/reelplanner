@@ -114,10 +114,11 @@ const CCSS = (P) => `
   .${P}-term .p { color:rgba(var(--rp-slab-ink-rgb),0.6); }
   .${P}-term .x { color:var(--rp-syn-num); }
 `;
+const TAGS = {"a1": "hard-to-undo", "a3": "visible", "a6": "visible", "a8": "visible", "a9": "visible", "a10": "hard-to-undo", "a12": "visible", "a14": "hard-to-undo", "a16": "visible", "a19": "hard-to-undo"};
 /** the choice cards of a stop beat, down the right: [[id, words, cueWord]] */
 function calls(list, { x = 1200, y = 110, w = 560, h = null, gap = 14 } = {}) {
   const ch = h || Math.min(190, Math.floor((780 - gap * (list.length - 1)) / list.length));
-  return list.map(([k, t, word], i) => { anim(`#${id("c" + k)}`, "left", cue(F, word)); return `<div class="${P}-call" id="${id("c" + k)}" data-call="${k}" style="${pos(x, y + i * (ch + gap), w, ch)}"><span class="i">${k.startsWith("d") ? "off the plan" : "choice"} ${k.toUpperCase()} · it pauses here</span><span class="t">${esc(t)}</span></div>`; }).join("\n");
+  return list.map(([k, t, word], i) => { anim(`#${id("c" + k)}`, "left", cue(F, word)); return `<div class="${P}-call" id="${id("c" + k)}" data-call="${k}" style="${pos(x, y + i * (ch + gap), w, ch)}"><span class="i">${k.startsWith("d") ? "off the plan" : "choice"} ${k.toUpperCase()} · ${k.startsWith("d") ? "it pauses" : (TAGS[k] || "close, like a recent late fix")}</span><span class="t">${esc(t)}</span></div>`; }).join("\n");
 }
 /** a terminal run in the theme's slab: lines of [text, cls?] */
 function term(key, x, y, w, h, title, lines, artifact, detail = "") {
@@ -166,12 +167,12 @@ B[4] = () => {
   const bk = crop("back", 140, 110, 1040, "assets/shots/round-back.png", 2560, 1600, [300, 215, 2262, 1345], "the same card turned over: your pick, the answer, the code's lines, why, and the four ways to settle it", "step-2");
   return `${fr.html}
   ${bk.html}
-  ${calls([["a7", "Each card is routed once, however often sent", "routed"], ["a9", "The page has its own address on the review server", "address"], ["a10", "Send goes to the inbox, never a headless run", "Send"], ["a13", "A settled card moves on by itself", "settled"]])}`;
+  ${calls([["a7", "Each card is routed once, however often sent", "routed"], ["a9", "The page has its own address on the review server", "address"], ["a10", "A round's Send goes to the inbox, never a headless run", "Send"], ["a13", "A settled card moves on by itself", "settled"]])}`;
 };
 B[5] = () => {
   anim(`#${id("say")}`, "fade", 0.3);
   const cl = [["✓ “It goes to my session”", "a match", "match"], ["✗ “it waits in the inbox for me”", "a gap: a set command starts a run", "gap"], ["? “for me”", "a want: asked back as an assume card", "want"]];
-  return `${shot("say", 160, 110, 1000, 470, "assets/shots/round-say.png", 2560, 1600, "the say card on the round page, your words typed in", { sy: 0, scale: 1000 / 2560 * 1.12, sx: 40, detail: "step-3" })}
+  return `${shot("say", 160, 110, 1000, 440, "assets/shots/round-say.png", 2560, 1600, "the say card on the round page, your words typed in", { sy: 0, scale: 1000 / 2560 * 1.12, sx: 40, detail: "step-3" })}
   ${label("cl", 160, 610, "its claims, once the waiting session has checked them")}
   ${cl.map(([a, b, w], i) => { anim(`#${id("k" + i)}`, "up", cue(F, w)); return `<div id="${id("k" + i)}" style="position:absolute; ${pos(160, 656 + i * 76, 1000, 70)}"><div class="${P}-t" style="left:0; top:6px">${esc(a)}</div><div class="${P}-s" style="left:560px; top:8px; width:440px">${esc(b)}</div></div>`; }).join("\n")}
   ${calls([["a11", "Your words reach the session as a question", "question"], ["a12", "Speech is written down on this machine", "Speech"], ["a19", "The recording is thrown away once written down", "thrown"]])}`;
@@ -189,6 +190,8 @@ B[8] = () => {
   return `${q.html}
   ${ring("rg", rx, ry, rx2 - rx, ry2 - ry, "Change")}
   ${term("st", 140, 110 + q.h + 30, 1040, 200, "a scratch repo · reel status", [["rounds: 1, gaps: 1 (Got it 1)", "", "counts"], ["too few plans to compare", "x", "compares"], ["(1 with a round, 0 with a likely gap and none; 5 of each)", ""]], "a real run in a scratch repo: reel status's Alignment rounds (runs/reel-status-rounds.txt)")}
+  ${label("note", 140, 110 + q.h + 260, "a test video's check · a plan video builds nothing yet,")}
+  ${label("note2", 140, 110 + q.h + 300, "so The code is wrong is only for code that exists")}
   ${calls([["a14", "A plan's header says whether a round ran", "header"], ["a15", "A late fix counts once", "late"], ["a16", "The buttons sit in the check's own box", "buttons"], ["a17", "Got it sends no rewrite of the step", "rewrite"], ["a18", "Show me more with no example asks again", "example"]], { h: 140 })}`;
 };
 B[9] = () => {
@@ -197,8 +200,8 @@ B[9] = () => {
   ${el("paper", "qq", 1000, 200, 760, 520, `<div class="${P}-lab" style="left:30px; top:28px">the plan's question 5 · step 5</div><div class="${P}-big" style="left:30px; top:80px; width:700px; font-size:40px">Where is it kept whether a round ran first, or was skipped?</div><div class="${P}-s" style="left:30px; top:260px; width:700px">A · a line in the plan's header<br>B · a command that records it<br>C · only the rounds themselves</div><div class="${P}-s" style="left:30px; top:430px; color:var(--rp-coral-deep)">built as A until you answer</div>`)}`;
 };
 B[10] = () => {
-  const ran = ["npm test, the fast suite", "align.spec · 53 checks", "align-page.spec · 37 checks", "quiz.spec, extended · 54 checks", "the code check, every ✗ answered"];
-  const nd = ["live recognition in the browser", "a diagram on Show me more", "a later video dropping what you know", "no round yet before a real plan"];
+  const ran = ["npm test, the fast suite", "new: align.spec · 53 checks", "new: align-page.spec · 37 checks", "extended: quiz.spec · 54 checks", "the code check, every ✗ answered"];
+  const nd = ["words shown live as you talk", "a diagram on Show me more", "a later video dropping what you know", "no round yet before a real plan"];
   anim(`#${id("a")}`, "up", cue(F, "ran")); anim(`#${id("b")}`, "up", cue(F, "Not"));
   return `${el("h", "h", 160, 90, 1600, null, "What ran, and what is not done")}
   <div id="${id("a")}" style="position:absolute; ${pos(160, 240, 760, 600)}">${label("la", 0, 0, "ran")}${ran.map((t, i) => `<div class="${P}-t" style="left:0; top:${56 + i * 72}px">${esc(t).replace(/^npm test/, "<code>npm test</code>")}</div>`).join("")}</div>

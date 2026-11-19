@@ -49,8 +49,8 @@ recap: 2026-09-23-deep-dives | Deep dives: the video opens into HTML where a vid
 - guide: what-changed
 - defines: agent, round, card, gap, fresh checker
 - scene: THE MAP (the real change, git diff 95a5bdb..HEAD, one row a file): scripts/align.mjs · the command; scripts/lib/align.mjs · cards, checks, the record; scripts/lib/align-server.mjs · the round on the review server; packages/player/align-page.html · the round's page; scripts/review.mjs · opens a round; packages/player/reelplanner-player.js · a quick check settles; scripts/lib/review-scope.mjs · what a settled check asks; skills/plan-to-video/SKILL.md · when a round runs
-- voiceover: "Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards, each turned over to the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: rewrite the card once, or drop it."
-- duration: 19.243s
+- voiceover: "Find the gaps, built. A plan could rest on a wrong picture of the code. Now you first answer a few cards; once answered, each turns over to show the code's lines, and settle each gap, where your picture and the code disagree. A fresh checker, a new agent with only those lines, must read each predict card as it does, or the check stops: the agent rewrites the card once, or drops it."
+- duration: 21.205s
 - transition_in: cut
 - status: outline
 - src: compositions/frames/01-what-landed.html
@@ -103,14 +103,14 @@ recap: 2026-09-23-deep-dives | Deep dives: the video opens into HTML where a vid
 
 ## Frame 4 — Step 2 · The round on the page
 
-- chapter_start: Step 2: one record, three ways in
+- chapter_start: Step 2: on the review page
 - plan_step: 2
 - guide: step-2
 - defines: review, review server, inbox, headless run
 - autonomy: a7, a9, a10, a13
 - scene: REAL SCREEN, the round page from a scratch repo's review server: the card's front ('No session is waiting and a command is set. Where does the review go?', A B C), then the same card turned over (your pick A dashed in coral, the answer B in ink, src/send.mjs lines 2 to 6 on the navy slab, the why, 'A gap. Settle it:' and its four buttons), each ringed as said. At the right, the choice cards A7, A9, A10, A13 (data-call)
-- voiceover: "On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. Send never starts a headless run. A settled card moves on."
-- duration: 19.712s
+- voiceover: "On the review page: no session waiting, a command set, where does the review go? Pick A, the inbox; it turns over to B, a headless run, with its line. A gap. What you skip is listed in the plan as assumed, not checked. My choices: each answer is routed once. The page has its own address. A round's Send never starts a headless run. A settled card moves on."
+- duration: 20.139s
 - transition_in: push-slide LEFT
 - status: outline
 - src: compositions/frames/04-step-2-the-round-on-the-page.html
@@ -169,8 +169,8 @@ recap: 2026-09-23-deep-dives | Deep dives: the video opens into HTML where a vid
 - defines: You told me first, fingerprint, Got it, explainer
 - autonomy: a1, a5, a6, a8
 - scene: A REAL RUN (runs/align-record.txt), a terminal: `reelplanner align record <round> answers.json` with 'c1 → You told me first, in a line', 'c2 → your memory, asked once more on a new case from 2026-11-21', 'c3 → Assumed, not checked'; then the plan's first lines with '## You told me first' and '## Assumed, not checked' before '### Step 1', each ringed as said. At the right, the choice cards A1, A5, A6, A8 (data-call)
-- voiceover: "Record it: c1, Right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command."
-- duration: 18.667s
+- voiceover: "Record it: c1, an assume card you called right, into the plan's You told me first; c2, Got it, into your memory, asked again three days on; c3, skipped, assumed, not checked. My choices: what you know is a marked line in your memory file. A due thing comes back as a new card. You told me first sits before the steps. Show me more's video is one explainer command."
+- duration: 20.117s
 - transition_in: push-slide LEFT
 - status: outline
 - src: compositions/frames/07-step-4-where-each-gap-goes.html
@@ -183,7 +183,7 @@ recap: 2026-09-23-deep-dives | Deep dives: the video opens into HTML where a vid
 - chapter_start: Step 5: into the loop
 - plan_step: 5
 - guide: step-5
-- defines: Change the plan, Show me more, miss
+- defines: Change the plan, Show me more, miss, plan video
 - autonomy: a14, a15, a16, a17, a18
 - scene: REAL SCREEN, the player on a quick check answered wrong: 'Not quite, it is B.', then Got it, Change the plan (pressed, coral), Show me more, and the box relabelled 'Change the plan: how should it work?' holding 'retries should stop after three', ringed as said; below it a real run (runs/reel-status-rounds.txt): 'rounds: 1, gaps: 1 (Got it 1)' and 'too few plans to compare (1 with a round, 0 with a likely gap and none; 5 of each)'. At the right, the choice cards A14 to A18 (data-call)
 - voiceover: "Every video changes too: a wrong quick check settles the same way, and Change the plan's box takes your words. Reel status counts rounds, and compares late fixes with and without one, from five plans each. My choices: a header line records a round, the question next. A late fix counts once. The buttons sit in the check's box. Got it sends no rewrite. Show me more with no example asks again."
@@ -215,8 +215,8 @@ recap: 2026-09-23-deep-dives | Deep dives: the video opens into HTML where a vid
 - chapter_start: What ran
 - defines: code check
 - scene: TWO COLUMNS: 'ran' with npm test, align.spec 53 checks, align-page.spec 37, quiz.spec 54, and the code check's findings answered; 'not done' with the four items, each a line
-- voiceover: "What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: speech written as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan."
-- duration: 14.08s
+- voiceover: "What ran: the fast suite, two new specs, and a code check, its findings fixed or listed. Not done, all from the approved plan: words shown live as you talk, a diagram on Show me more, later videos skipping what you know, and a round before a real plan."
+- duration: 14.443s
 - transition_in: push-slide LEFT
 - status: outline
 - src: compositions/frames/10-what-ran-and-what-is-not-done.html
