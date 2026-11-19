@@ -1,0 +1,110 @@
+<template>
+<style>
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f08-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f08-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f08-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .f08-h { position:absolute; font:400 64px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f08-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f08-big { position:absolute; font:400 46px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .f08-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .f08-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .f08-m { position:absolute; font:400 28px/1.4 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f08-t code, .f08-s code, .f08-big code, .f08-q code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .f08-card { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f08-paper { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f08-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 28px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; }
+  .f08-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .f08-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .f08-pin.hot { background:var(--rp-coral); }
+  .f08-pin em { font-style:normal; }
+  .f08-planned { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.75); border:2px dashed rgba(var(--rp-ink-rgb),0.5); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .f08-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .f08-bar { position:absolute; left:0; top:0; right:0; height:44px; background:var(--rp-slab-bar); }
+  .f08-bt { position:absolute; left:22px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .f08-code { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f08-code .n { color:rgba(var(--rp-slab-ink-rgb),0.5); }
+  .f08-code .k { color:var(--rp-syn-num); }
+  .f08-code .hl { background:rgba(var(--rp-slab-ink-rgb),0.10); }
+  .f08-line { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.45); transform-origin:0 50%; }
+  .f08-line.hot { background:var(--rp-coral); height:4px; }
+  .f08-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; transform-origin:0 50%; }
+  .f08-strike { position:absolute; height:4px; background:var(--rp-ink); border-radius:2px; transform-origin:0 50%; }
+  .f08-ring { position:absolute; box-sizing:border-box; border-radius:16px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .f08-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f08-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f08-opt .l { position:absolute; left:30px; top:76px; right:26px; font:400 46px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f08-opt .c { position:absolute; left:30px; right:26px; bottom:30px; font:400 27px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.78); }
+  .f08-opt .r { position:absolute; right:24px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f08-node { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); font:500 34px/1 "Inter"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; }
+  .f08-node.navy { background:var(--rp-slab); color:var(--rp-slab-ink); border-color:rgba(var(--rp-slab-ink-rgb),0.14); }
+  .f08-btn { position:absolute; height:64px; box-sizing:border-box; padding:0 22px; font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:10px; white-space:nowrap; text-align:center; }
+  .f08-btn.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .f08-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f08-dim { opacity:0.55; }
+  .f08-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f08-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
+  .f08-ok { color:var(--rp-ink); }
+  .f08-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f08-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f08-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f08-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+
+  .f08-call { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); }
+  .f08-call .i { position:absolute; left:22px; top:16px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f08-call .t { position:absolute; left:22px; top:54px; right:20px; font:400 28px/1.25 "Inter"; color:var(--rp-ink); }
+  .f08-shot { position:absolute; box-sizing:border-box; border-radius:12px; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.24); background:var(--rp-paper); }
+  .f08-shot img { position:absolute; display:block; }
+  .f08-term { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f08-term .p { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f08-term .x { color:var(--rp-syn-num); }
+</style>
+
+<div id="root" data-composition-id="08-step-5-quick-checks-and-the-count" data-band="bottom" data-duration="22.367" data-width="1920" data-height="1080">
+  <div class="clip f08-bg" id="f08-bg" data-start="0" data-duration="23.826" data-track-index="0"></div>
+  <div class="clip f08-scene" id="f08-scene" data-start="0" data-duration="23.826" data-track-index="1">
+  <div class="f08-shot" id="f08-q" style="left:140px; top:110px; width:1040px; height:320px;" data-artifact="the player: a quick check answered wrong, Change the plan pressed, its words in the box" data-detail="step-5"><img src="assets/shots/quick-check-change.png" alt="" style="left:-180px; top:-330px; width:1400px; height:900px"></div>
+  <div class="f08-ring" id="f08-rg" style="left:155px; top:295px; width:695px; height:80px;"></div>
+  <div class="f08-slab" id="f08-st" style="left:140px; top:460px; width:1040px; height:200px;" data-artifact="a real run in a scratch repo: reel status's Alignment rounds (runs/reel-status-rounds.txt)"><div class="f08-bar"></div><div class="f08-bt">a scratch repo · reel status</div>
+    <div class="f08-term" id="f08-st-l0" style="left:22px; top:60px">rounds: 1, gaps: 1 (Got it 1)</div>
+<div class="f08-term x" id="f08-st-l1" style="left:22px; top:100px">too few plans to compare</div>
+<div class="f08-term" id="f08-st-l2" style="left:22px; top:140px">(1 with a round, 0 with a likely gap and none; 5 of each)</div></div>
+  <div class="f08-call" id="f08-ca14" data-call="a14" style="left:1200px; top:110px; width:560px; height:140px;"><span class="i">choice A14 · it pauses here</span><span class="t">A plan's header says whether a round ran</span></div>
+<div class="f08-call" id="f08-ca15" data-call="a15" style="left:1200px; top:264px; width:560px; height:140px;"><span class="i">choice A15 · it pauses here</span><span class="t">A late fix counts once</span></div>
+<div class="f08-call" id="f08-ca16" data-call="a16" style="left:1200px; top:418px; width:560px; height:140px;"><span class="i">choice A16 · it pauses here</span><span class="t">The buttons sit in the check's own box</span></div>
+<div class="f08-call" id="f08-ca17" data-call="a17" style="left:1200px; top:572px; width:560px; height:140px;"><span class="i">choice A17 · it pauses here</span><span class="t">Got it sends no rewrite of the step</span></div>
+<div class="f08-call" id="f08-ca18" data-call="a18" style="left:1200px; top:726px; width:560px; height:140px;"><span class="i">choice A18 · it pauses here</span><span class="t">Show me more with no example asks again</span></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "08-step-5-quick-checks-and-the-count";
+  var DUR = 23.826;
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#f08-q", { opacity: 0 });
+  tl.to("#f08-q", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.300);
+  gsap.set("#f08-rg", { opacity: 0 });
+  tl.to("#f08-rg", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.780);
+  gsap.set("#f08-st-l0", { opacity: 0 });
+  tl.to("#f08-st-l0", { opacity: 1, duration: 0.4, ease: "power2.out" }, 6.620);
+  gsap.set("#f08-st-l1", { opacity: 0 });
+  tl.to("#f08-st-l1", { opacity: 1, duration: 0.4, ease: "power2.out" }, 7.580);
+  gsap.set("#f08-st-l2", { opacity: 0 });
+  tl.to("#f08-st-l2", { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.800);
+  gsap.set("#f08-ca14", { opacity: 0, x: -24 });
+  tl.to("#f08-ca14", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 12.160);
+  gsap.set("#f08-ca15", { opacity: 0, x: -24 });
+  tl.to("#f08-ca15", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 8.000);
+  gsap.set("#f08-ca16", { opacity: 0, x: -24 });
+  tl.to("#f08-ca16", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 16.530);
+  gsap.set("#f08-ca17", { opacity: 0, x: -24 });
+  tl.to("#f08-ca17", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 18.920);
+  gsap.set("#f08-ca18", { opacity: 0, x: -24 });
+  tl.to("#f08-ca18", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 20.680);
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

@@ -1,0 +1,125 @@
+$ npm test
+
+> reelplanner@0.4.0 test
+> node scripts/test/run.mjs
+
+fast run: 64 specs, 4 at a time (npm run test:full for everything)
+
+✓ scripts/test/rebuild.spec.mjs                     8.2 s  38 checks
+✓ packages/player/test/answer-on-frame.spec.mjs    51.8 s  107 checks
+✓ packages/player/test/band.spec.mjs               44.6 s  43 checks
+✓ packages/player/test/stall.spec.mjs              55.6 s  10 checks
+✓ packages/player/test/size.spec.mjs               56.7 s  55 checks
+✓ scripts/test/details.spec.mjs                    44.2 s  51 checks
+✓ packages/player/test/controls.spec.mjs           13.3 s  46 checks
+✓ packages/player/test/quiz.spec.mjs               65.9 s  54 checks
+✓ packages/player/test/decisions.spec.mjs           7.5 s  13 checks
+✓ packages/player/test/player.spec.mjs              3.4 s  10 checks
+✓ packages/player/test/guide-notes.spec.mjs        81.7 s  51 checks
+✓ scripts/test/loop.spec.mjs                       22.6 s  107 checks
+✓ packages/player/test/access.spec.mjs             86.5 s  91 checks
+✓ packages/player/test/ask.spec.mjs                18.6 s  21 checks
+✓ scripts/test/version.spec.mjs                     0.6 s  10 checks
+✓ scripts/test/package.spec.mjs                     1.5 s  9 checks
+✓ scripts/test/case-study.spec.mjs                  8.0 s  70 checks
+✓ scripts/test/numerals.spec.mjs                    0.1 s  1 check
+✓ scripts/test/hyperframes-skills.spec.mjs          0.1 s  5 checks
+✓ scripts/test/lifecycle.spec.mjs                   8.9 s  64 checks
+✓ scripts/test/system-review.spec.mjs               3.0 s  28 checks
+✓ packages/player/test/record-reach.spec.mjs       44.8 s  54 checks
+✓ scripts/test/narrate.spec.mjs                    10.2 s  49 checks
+✓ packages/player/test/frame-room.spec.mjs         53.7 s  16 checks
+✓ scripts/test/narration-check.spec.mjs             4.3 s  35 checks
+✓ scripts/test/retime.spec.mjs                      0.6 s  13 checks
+✓ scripts/test/build.spec.mjs                      12.0 s  36 checks
+✓ scripts/test/local-speed.spec.mjs                19.3 s  40 checks
+✓ scripts/test/terms.spec.mjs                       5.0 s  66 checks
+✓ scripts/test/narrate-api.spec.mjs                22.8 s  59 checks
+✓ scripts/test/names.spec.mjs                       1.7 s  46 checks
+✓ scripts/test/review-data.spec.mjs                 2.4 s  19 checks
+✓ scripts/test/bundle-shared.spec.mjs               3.2 s  21 checks
+✓ scripts/test/stage-presence.spec.mjs              0.2 s  11 checks
+✓ scripts/test/visuals.spec.mjs                     5.1 s  85 checks
+✓ scripts/test/reviews.spec.mjs                    11.5 s  59 checks
+✓ scripts/test/memory.spec.mjs                     13.9 s  81 checks
+✓ scripts/test/depth.spec.mjs                       0.4 s  22 checks
+✓ scripts/test/fresh-eyes.spec.mjs                 12.3 s  99 checks
+✓ scripts/test/contributing.spec.mjs               17.2 s  67 checks
+✓ scripts/test/thumbs.spec.mjs                      1.5 s  15 checks
+✓ scripts/test/media-seek.spec.mjs                  9.4 s  28 checks
+✓ scripts/test/align.spec.mjs                       7.0 s  53 checks
+✓ scripts/test/explainer.spec.mjs                  11.9 s  67 checks
+✓ scripts/test/align-page.spec.mjs                  6.8 s  37 checks
+✓ packages/player/test/guide-under.spec.mjs       118.3 s  46 checks
+✓ scripts/test/static-server.spec.mjs               0.3 s  7 checks
+✓ scripts/test/supersedes.spec.mjs                  0.6 s  14 checks
+✓ scripts/test/ledger.spec.mjs                      4.4 s  32 checks
+✓ scripts/test/init.spec.mjs                        5.1 s  46 checks
+✓ scripts/test/guide-revised.spec.mjs              22.6 s  27 checks
+✓ scripts/test/review-status.spec.mjs              11.7 s  51 checks
+✓ scripts/test/make-public.spec.mjs                 2.0 s  20 checks
+✓ scripts/test/codex-install.spec.mjs               0.7 s  5 checks
+✓ scripts/test/old-names.spec.mjs                   3.2 s  27 checks
+✗ scripts/test/session-export.spec.mjs              9.8 s  44 checks — exit 1
+✓ scripts/test/harnesses.spec.mjs                   1.3 s  11 checks
+✓ scripts/test/presentation.spec.mjs                1.2 s  32 checks
+✓ scripts/test/delivery.spec.mjs                   16.2 s  22 checks
+✓ scripts/test/review-setup.spec.mjs               11.1 s  15 checks
+✓ scripts/test/review-hook.spec.mjs                 1.9 s  9 checks
+✓ scripts/test/review-projects.spec.mjs            10.9 s  8 checks
+✓ scripts/test/frame-tools.spec.mjs               113.2 s  19 checks
+✓ scripts/test/guide.spec.mjs                     117.4 s  144 checks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ scripts/test/session-export.spec.mjs — exit 1  (its temp folder is kept: /tmp/rp-test-session-export-a25AZR)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ active identity beats newer main, checker and other repo; custom CODEX_HOME
+✓ canonical repo symlinks match exact metadata
+✓ no active ID selects current paginated main; excludes newer checker and other repo across pages
+✓ unsupported store with no active identity preserves newest eligible legacy main fallback
+✓ newer eligible legacy main beats available older API main; discovery reads metadata only
+✓ newer API main beats older legacy main using the same seconds scale
+✓ equal valid timestamps retain API preference, including the Unix epoch
+✓ missing or invalid competing API time requires explicit ID without silent legacy fallback
+✓ a sole API identity or the same identity in both stores needs no relative timestamp
+✓ newer child/checker/other-repo records in either store cannot displace an eligible legacy main
+✓ API-only, legacy-only, unavailable API and neither-source cases retain explicit outcomes
+✓ explicit legacy/API IDs dominate newer competing sources and never fall back to another ID
+✓ implicitly selected API metadata must still be main and match the canonical repo
+✓ no-ID export uses the globally newest identity; unavailable winner never becomes an older source
+✓ requested absent thread never substitutes another saved main
+✗ unreadable active rollout and failed export never use another readable main: Missing expected exception.
+✓ identity-only or migrated rollout triggers same-thread automatic export
+✓ current metadata wrong-id is a clear error without transcript contents
+✓ current metadata wrong-repo is a clear error without transcript contents
+✓ current metadata missing-id is a clear error without transcript contents
+✓ current metadata missing-repo is a clear error without transcript contents
+✓ current metadata malformed is a clear error without transcript contents
+✓ current metadata exit is a clear error without transcript contents
+✓ legacy owner copy verifies active ID and real repo; generic path stays generic
+✓ unreadable owner path errors with requested identity; path symlink pins external real file
+✓ automatic paginated export preserves all visible history, omits private reasoning, and uses only read calls
+✓ pagination unsupported never exports a partial or unrelated transcript
+✓ pagination page-failure never exports a partial or unrelated transcript
+✓ pagination repeat-cursor never exports a partial or unrelated transcript
+✓ pagination summary never exports a partial or unrelated transcript
+✓ legacy API without pagination uses documented full read and never resumes
+✓ output inside repo or a symlink to repo rejected; existing output preserved
+✓ CLI prints only external export path and respects selected identity
+✓ documented codex:id and --out aliases select the same verified conversation
+✓ running Unix endpoint uses an actual HTTP Upgrade and read-only WebSocket RPC
+✓ explicit live notification target can use a linked worktree without widening history access
+✓ endpoint endpoint-unloaded cannot claim a live recipient
+✓ endpoint endpoint-checker cannot claim a live recipient
+✓ endpoint wrong-id cannot claim a live recipient
+✓ endpoint wrong-repo cannot claim a live recipient
+✓ endpoint missing-repo cannot claim a live recipient
+✓ endpoint malformed cannot claim a live recipient
+✓ endpoint missing cannot claim a live recipient
+✓ daemon discovery uses running socket and exact live thread; never starts daemon or model
+✓ endpoint credentials and URL fragments never reach a transport or leak into errors
+kept: /tmp/rp-test-session-export-a25AZR/reel-session-spec-6wNHNk
+✗ 1 failed
+
+✗ 1 of 64 failed: scripts/test/session-export.spec.mjs in 365.7 s (the slowest, packages/player/test/guide-under.spec.mjs, 118.3 s)
+exit 1

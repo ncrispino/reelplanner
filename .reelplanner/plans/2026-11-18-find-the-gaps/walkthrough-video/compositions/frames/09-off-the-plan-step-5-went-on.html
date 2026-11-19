@@ -1,0 +1,85 @@
+<template>
+<style>
+  #root { position:relative; width:100%; height:100%; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .f09-bg { position:absolute; left:0; top:0; width:1920px; height:1080px; background:var(--rp-paper); }
+  .f09-scene { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .f09-lab { position:absolute; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.06em; color:rgba(var(--rp-ink-rgb),0.66); white-space:nowrap; }
+  .f09-h { position:absolute; font:400 64px/1.08 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f09-q { position:absolute; font:400 54px/1.12 "EB Garamond"; letter-spacing:-0.015em; color:var(--rp-ink); }
+  .f09-big { position:absolute; font:400 46px/1.15 "EB Garamond"; color:var(--rp-ink); }
+  .f09-t { position:absolute; font:400 32px/1.35 "Inter"; color:var(--rp-ink); }
+  .f09-s { position:absolute; font:400 28px/1.35 "Inter"; color:rgba(var(--rp-ink-rgb),0.76); }
+  .f09-m { position:absolute; font:400 28px/1.4 "JetBrains Mono"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-t code, .f09-s code, .f09-big code, .f09-q code { font-family:"JetBrains Mono"; font-size:0.82em; }
+  .f09-card { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); }
+  .f09-paper { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.24); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); }
+  .f09-chip { position:absolute; height:52px; padding:0 22px; box-sizing:border-box; font:400 28px/48px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.5); border-radius:26px; white-space:nowrap; }
+  .f09-chip.hot { border-color:var(--rp-coral); color:var(--rp-coral-deep); }
+  .f09-pin { position:absolute; height:44px; padding:0 14px; box-sizing:border-box; font:500 26px/44px "Inter"; color:var(--rp-on-ink); background:var(--rp-ink); border-radius:6px; white-space:nowrap; }
+  .f09-pin.hot { background:var(--rp-coral); }
+  .f09-pin em { font-style:normal; }
+  .f09-planned { position:absolute; height:40px; padding:0 14px; box-sizing:border-box; font:500 26px/36px "JetBrains Mono"; letter-spacing:0.04em; color:rgba(var(--rp-ink-rgb),0.75); border:2px dashed rgba(var(--rp-ink-rgb),0.5); border-radius:6px; white-space:nowrap; background:var(--rp-paper); }
+  .f09-slab { position:absolute; box-sizing:border-box; border-radius:10px; background:var(--rp-slab); border:1px solid rgba(var(--rp-slab-ink-rgb),0.14); overflow:hidden; }
+  .f09-bar { position:absolute; left:0; top:0; right:0; height:44px; background:var(--rp-slab-bar); }
+  .f09-bt { position:absolute; left:22px; top:11px; font:500 26px/1 "JetBrains Mono"; color:rgba(var(--rp-slab-ink-rgb),0.72); white-space:nowrap; }
+  .f09-code { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f09-code .n { color:rgba(var(--rp-slab-ink-rgb),0.5); }
+  .f09-code .k { color:var(--rp-syn-num); }
+  .f09-code .hl { background:rgba(var(--rp-slab-ink-rgb),0.10); }
+  .f09-line { position:absolute; height:3px; background:rgba(var(--rp-ink-rgb),0.45); transform-origin:0 50%; }
+  .f09-line.hot { background:var(--rp-coral); height:4px; }
+  .f09-u { position:absolute; height:5px; background:var(--rp-coral); border-radius:2px; transform-origin:0 50%; }
+  .f09-strike { position:absolute; height:4px; background:var(--rp-ink); border-radius:2px; transform-origin:0 50%; }
+  .f09-ring { position:absolute; box-sizing:border-box; border-radius:16px; border:4px solid var(--rp-coral); pointer-events:none; }
+  .f09-opt { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08),0 4px 16px rgba(var(--rp-shadow-rgb),0.04); overflow:hidden; }
+  .f09-opt .k { position:absolute; left:30px; top:28px; font:500 30px/1 "JetBrains Mono"; letter-spacing:0.16em; color:rgba(var(--rp-ink-rgb),0.66); }
+  .f09-opt .l { position:absolute; left:30px; top:76px; right:26px; font:400 46px/1.08 "EB Garamond"; letter-spacing:-0.012em; color:var(--rp-ink); }
+  .f09-opt .c { position:absolute; left:30px; right:26px; bottom:30px; font:400 27px/1.3 "Inter"; color:rgba(var(--rp-ink-rgb),0.78); }
+  .f09-opt .r { position:absolute; right:24px; top:26px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+  .f09-node { position:absolute; box-sizing:border-box; border-radius:14px; background:var(--rp-tile); border:1px solid rgba(var(--rp-ink-rgb),0.16); font:500 34px/1 "Inter"; color:var(--rp-ink); display:flex; align-items:center; justify-content:center; }
+  .f09-node.navy { background:var(--rp-slab); color:var(--rp-slab-ink); border-color:rgba(var(--rp-slab-ink-rgb),0.14); }
+  .f09-btn { position:absolute; height:64px; box-sizing:border-box; padding:0 22px; font:500 28px/60px "Inter"; color:var(--rp-ink); background:var(--rp-paper); border:2px solid rgba(var(--rp-ink-rgb),0.55); border-radius:10px; white-space:nowrap; text-align:center; }
+  .f09-btn.ink { background:var(--rp-ink); color:var(--rp-on-ink); border-color:var(--rp-ink); }
+  .f09-row { position:absolute; box-sizing:border-box; border-top:1px solid rgba(var(--rp-ink-rgb),0.2); }
+  .f09-dim { opacity:0.55; }
+  .f09-mark { text-decoration:underline; text-decoration-color:var(--rp-coral); text-decoration-thickness:5px; text-underline-offset:10px; }
+  .f09-ink { text-decoration:underline; text-decoration-color:rgba(var(--rp-ink-rgb),0.5); text-decoration-thickness:2px; text-underline-offset:8px; }
+  .f09-ok { color:var(--rp-ink); }
+  .f09-slot { position:absolute; left:0; width:960px; height:104px; box-sizing:border-box; border-radius:12px; border:1px solid rgba(var(--rp-ink-rgb),0.14); background:var(--rp-tile); }
+  .f09-slot .n { position:absolute; left:26px; top:34px; font:500 28px/1 "JetBrains Mono"; color:var(--rp-ink); }
+  .f09-slot .t { position:absolute; left:80px; top:18px; font:500 32px/1.2 "Inter"; color:var(--rp-ink); white-space:nowrap; }
+  .f09-slot .d { position:absolute; left:80px; top:68px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); }
+
+  .f09-call { position:absolute; box-sizing:border-box; border-radius:12px; background:var(--rp-paper); border:1px solid rgba(var(--rp-ink-rgb),0.26); box-shadow:0 1px 3px rgba(var(--rp-shadow-rgb),0.08); }
+  .f09-call .i { position:absolute; left:22px; top:16px; font:500 26px/1 "JetBrains Mono"; letter-spacing:0.04em; color:var(--rp-coral-deep); white-space:nowrap; }
+  .f09-call .t { position:absolute; left:22px; top:54px; right:20px; font:400 28px/1.25 "Inter"; color:var(--rp-ink); }
+  .f09-shot { position:absolute; box-sizing:border-box; border-radius:12px; overflow:hidden; border:1px solid rgba(var(--rp-ink-rgb),0.24); background:var(--rp-paper); }
+  .f09-shot img { position:absolute; display:block; }
+  .f09-term { position:absolute; font:400 26px/1.5 "JetBrains Mono"; color:var(--rp-slab-ink); white-space:pre; font-variant-ligatures:none; }
+  .f09-term .p { color:rgba(var(--rp-slab-ink-rgb),0.6); }
+  .f09-term .x { color:var(--rp-syn-num); }
+</style>
+
+<div id="root" data-composition-id="09-off-the-plan-step-5-went-on" data-band="bottom" data-duration="13.492" data-width="1920" data-height="1080">
+  <div class="clip f09-bg" id="f09-bg" data-start="0" data-duration="15.761" data-track-index="0"></div>
+  <div class="clip f09-scene" id="f09-scene" data-start="0" data-duration="15.761" data-track-index="1">
+  <div class="f09-call" id="f09-cd1" data-call="d1" style="left:160px; top:200px; width:760px; height:300px;"><span class="i">off the plan D1 · it pauses here</span><span class="t">Step 5 went on past its fifth choice before asking (decision D-110)</span></div>
+  <div class="f09-paper" id="f09-qq" style="left:1000px; top:200px; width:760px; height:520px;"><div class="f09-lab" style="left:30px; top:28px">the plan's question 5 · step 5</div><div class="f09-big" style="left:30px; top:80px; width:700px; font-size:40px">Where is it kept whether a round ran first, or was skipped?</div><div class="f09-s" style="left:30px; top:260px; width:700px">A · a line in the plan's header<br>B · a command that records it<br>C · only the rounds themselves</div><div class="f09-s" style="left:30px; top:430px; color:var(--rp-coral-deep)">built as A until you answer</div></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "09-off-the-plan-step-5-went-on";
+  var DUR = 15.761;
+  var tl = gsap.timeline({ paused: true });
+  gsap.set("#f09-qq", { opacity: 0, y: 26 });
+  tl.to("#f09-qq", { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.300);
+  gsap.set("#f09-cd1", { opacity: 0, x: -24 });
+  tl.to("#f09-cd1", { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 1.830);
+  tl.to({}, { duration: 0.001 }, DUR - 0.001);
+  window.__timelines = window.__timelines || {};
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>

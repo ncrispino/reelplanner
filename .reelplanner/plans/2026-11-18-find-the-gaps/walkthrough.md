@@ -389,7 +389,7 @@ The fresh checker's findings are in `code-check/findings.md` (2 of 5 steps ✓, 
 
 ## Tests run
 
-`npm test` (the fast suite) — see `runs/npm-test.txt`. Full runs of the specs touched: `align`, `align-page`, `memory`, `reviews`, `review-data`, `contributing`, `package`, and the player's `quiz`, `answer-on-frame`, `frame-room`, `revisit`, `band`.
+`npm test` (the fast suite): 63 of 64 specs pass (`runs/npm-test.txt`). The one that fails, `session-export`, makes a file unreadable with `chmod 000` and expects reading it to fail; this container runs as root, which reads it anyway. Nothing in this change touches that code (`git diff 95a5bdb -- scripts/lib/codex-session.mjs` is empty). Full runs of the specs touched: `align`, `align-page`, `memory`, `reviews`, `review-data`, `contributing`, `package`, and the player's `quiz`, `answer-on-frame`, `frame-room`, `revisit`, `band`.
 
 ## Not done
 
