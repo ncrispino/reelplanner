@@ -118,11 +118,11 @@ is under 280 characters (a link counts as 23). Attach `docs/media/system-video.g
 
    ```bash
    npm view reelplanner version                  # 0.4.0
-   npx -y reelplanner@0.4.0 --version            # 0.4.0
-   npx -y reelplanner@0.4.0 --help               # the command list
-   npx -y reelplanner@0.4.0 reel status <a repo with .reelplanner/>
-   npx -y reelplanner@0.4.0 setup --dry-run      # finds the pinned HyperFrames
-   npx skills add ncrispino/reelplanner --skill plan-to-video -g   # the installed SKILL.md says reelplanner@0.4.0
+   npx -y reelplanner@0.5.0 --version            # 0.4.0
+   npx -y reelplanner@0.5.0 --help               # the command list
+   npx -y reelplanner@0.5.0 reel status <a repo with .reelplanner/>
+   npx -y reelplanner@0.5.0 setup --dry-run      # finds the pinned HyperFrames
+   npx skills add ncrispino/reelplanner --skill plan-to-video -g   # the installed SKILL.md says reelplanner@0.5.0
    ```
 
    The npm page (npmjs.com/package/reelplanner) should show the README, the Apache-2.0 license and the repository link.
