@@ -140,6 +140,11 @@ try {
   assert.equal(await waitForReview(rp, { questionsOnly: true, owner: "fake:main", timeoutMs: 50, pollMs: 10 }), null);
   answerQuestion(rp, forMain.id, "It removes abandoned uploads.", "the plan, step 5", { owner: "fake:main" });
   console.log("✓ a question handed to a session doesn't end its next --wait (a review still reaches it) until its lease runs out; one queued for a connected session is adopted at once");
+  // the server's re-check, 15 s after a question asked with a session waiting, finds its claim gone once it is answered
+  queued = [];
+  assert.equal((await deliverInbox(rp, forMain.id, { question: true, adapter, start: async () => { starts++; } })).message, "already answered");
+  assert.deepEqual(queued, []); assert.equal(connectionOf(rp).session, "fake:main"); assert.equal(starts, 0);
+  console.log("✓ an answered question is never delivered again, so the server's re-check leaves the connected session alone");
 
   // --wait prints the question itself, so a session that can't read the inbox (outside the repo before `reel init`)
   // can still answer it; stdout stays the path. `inbox` lists each open question's words.

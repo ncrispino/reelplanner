@@ -21,7 +21,7 @@
 # yourself, and setup exits 1 so an agent calling it knows the machine is not ready.
 #
 # Steps: node ≥ 22.20 · ffmpeg · WebP · unzip (Linux) · Chrome headless (hyperframes browser ensure; on Linux, the
-#        libraries it needs, and that it starts) · Kokoro TTS (pip) ·
+#        libraries it needs, and that it starts) · Kokoro TTS (pip; a venv of its own where python3 cannot have it) ·
 #        whisper.cpp (brew, or built into HyperFrames' own cache, no root) · HyperFrames' skills
 #        · and which narration engine `narrate` will use (local, or hosted: ~/.reelplanner/.env for this machine,
 #        or the repo's .reelplanner/), and, when it is local, whether it is fast enough here (one sentence, timed)
@@ -191,16 +191,38 @@ if [ "$DRY" = 0 ] && have curl && { [ "$NEED_KOKORO" = 1 ] || [ "$NEED_WHISPER" 
   step "downloading the voice's models (about 840 MB) while the rest installs"
 fi
 
-# ---- Kokoro: local text-to-speech. HyperFrames runs it with python3, or with $HYPERFRAMES_PYTHON.
+# ---- Kokoro: local text-to-speech. HyperFrames runs it with $HYPERFRAMES_PYTHON, or else python3. Where pip cannot
+# install it for python3 (kokoro-onnx needs onnxruntime, which had no build for Python 3.15 in November 2026), the voice
+# gets a venv of its own with an older Python here (scripts/lib/voice-python.mjs), and every reelplanner command then
+# runs HyperFrames with it (bin/reelplanner.mjs, which sets HYPERFRAMES_PYTHON for this script too once it is there).
+# A HYPERFRAMES_PYTHON of yours is kept: setup says what it lacks, and makes no venv.
 PY="${HYPERFRAMES_PYTHON:-python3}"
+VOICE_PY="$(node "$ROOT/scripts/lib/env.mjs" voice-python 2>/dev/null)"
+VOICE_AT="$(node "$ROOT/scripts/lib/env.mjs" home 2>/dev/null || echo '~/.reelplanner')/voice"
+YOURS=0; [ -n "${HYPERFRAMES_PYTHON:-}" ] && [ "$HYPERFRAMES_PYTHON" != "$VOICE_PY" ] && YOURS=1
 kokoro() { "$PY" -c "import kokoro_onnx, soundfile" >/dev/null 2>&1; }
 pip_ok() { "$PY" -m pip --version >/dev/null 2>&1; }
+pyver() { "$1" -c 'import platform; print(platform.python_version())' 2>/dev/null; }
+# the voice's own venv ($1: why python3 will not do): made now, and what the rest of setup runs (the speed check)
+own_voice() {
+  local p
+  echo "  ($1: the voice gets a venv of its own, $VOICE_AT, with an older Python here)"
+  if p="$(node "$ROOT/scripts/lib/voice-python.mjs" install)"; then
+    PY="$p"; export HYPERFRAMES_PYTHON="$p"
+    ok "Kokoro TTS (kokoro-onnx in $VOICE_AT, with Python $(pyver "$p"); reelplanner's commands narrate with it)"
+  else miss "Kokoro TTS: no Python here can have kokoro-onnx ($1)" \
+    "install an older Python 3 (3.10 or newer) with its venv module (on a Mac: brew install python@3.14), then setup again"
+  fi
+}
 if [ "$NEED_KOKORO" != 1 ]; then :
-elif ! have "$PY"; then miss "Kokoro TTS: $PY not found" "install Python 3.10+, then: pip install kokoro-onnx soundfile"
 elif kokoro; then ok "Kokoro TTS (kokoro-onnx in $PY)"
+elif ! have "$PY" && [ "$YOURS" = 1 ]; then miss "Kokoro TTS: $PY not found" "install Python 3.10+, then: pip install kokoro-onnx soundfile"
+elif ! have "$PY" && [ "$DRY" = 1 ]; then todo "make the voice a venv of its own, $VOICE_AT, with a Python 3.10 or newer here ($PY not found)"
+elif ! have "$PY"; then own_voice "$PY not found"
 elif [ "$DRY" = 1 ]; then
   pip_ok || { [ "$PY" = python3 ] && have apt-get && todo "run: sudo apt-get install -y python3-pip   ($PY has no pip)"; }
   todo "run: $PY -m pip install --user kokoro-onnx soundfile"
+  [ "$YOURS" = 0 ] && todo "make the voice a venv of its own, $VOICE_AT, with an older Python here, if pip cannot install it for $PY"
 else
   # a stock Ubuntu's python3 has no pip: apt's python3-pip, as ffmpeg above
   if ! pip_ok && [ "$PY" = python3 ] && have apt-get && [ "$SUDO" != none ]; then
@@ -215,8 +237,10 @@ else
     "$PY" -m pip install -q "${pipargs[@]}" kokoro-onnx soundfile \
       || { echo "  (retrying with --break-system-packages: this Python is marked externally managed)";
            "$PY" -m pip install -q "${pipargs[@]}" --break-system-packages kokoro-onnx soundfile; }
-    kokoro && ok "Kokoro TTS" || miss "Kokoro TTS: pip could not install kokoro-onnx" \
+    if kokoro; then ok "Kokoro TTS"
+    elif [ "$YOURS" = 1 ]; then miss "Kokoro TTS: pip could not install kokoro-onnx" \
       "run: pip install kokoro-onnx soundfile — or make a venv with them and export HYPERFRAMES_PYTHON=<venv>/bin/python"
+    else own_voice "pip could not install kokoro-onnx for $PY, Python $(pyver "$PY")"; fi
   fi
 fi
 
