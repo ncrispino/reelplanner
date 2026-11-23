@@ -1,0 +1,15 @@
+# Sources only: world.json, scenes/, the storyboard, script and brief. Everything else is made again by
+# `reelplanner diagram` and `reelplanner build` (docs/diagram-kit.md), so nothing built, voiced or rendered is kept.
+/compositions/
+/assets/
+/index.html
+/audio_*.json
+/caption_groups.json
+/caption-overrides.json
+/plan-map.json
+/meta.json
+/snapshots/
+/renders/
+/player/
+/guide/
+/.hyperframes/

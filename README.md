@@ -230,6 +230,8 @@ reelplanner is an agent skill plus two commands: `reelplanner` (setup and videos
 `.reelplanner/` record). Each scene is a web page rendered with [HyperFrames](https://github.com/heygen-com/hyperframes),
 pinned to one exact version so a change upstream cannot break a build ([why](./docs/reference.md#hyperframes-pinned));
 everything is kept as text, so any video can be rebuilt.
+For a short diagram explainer (actors, what each can reach, two ways to finish), the [diagram kit](./docs/diagram-kit.md)
+draws the world and its moves for you.
 
 This repo is planned with reelplanner: its own plans are in [`.reelplanner/plans/`](./.reelplanner/plans/).
 More: [how it fits together](./docs/lifecycle.md) · [the `.reelplanner/` folder](./docs/project-dir.md) ·

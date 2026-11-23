@@ -1,0 +1,19 @@
+<!-- start: {"layout": "row"} -->
+<!-- tail: 1.0 -->
+<div class="dk-head" data-head="h2" data-label>Three couriers, one hallway</div>
+<div class="dk-head" data-head="h3" data-label>Who can open which locker</div>
+<script>
+  K.head("h2", 0.1);
+  K.actor("ana", @@Ana@@); K.actor("ben", @@Ben@@); K.actor("cleo", @@Cleo@@);
+  K.write("ana", @@each carry@@); K.write("ben", @@each carry+0.2@@); K.write("cleo", @@each carry+0.4@@);
+  K.show(".dk-enclosure, .dk-shared", @@in the hallway@@ - 0.2);
+  K.slot("ana", @@in the hallway@@); K.slot("ben", @@in the hallway+0.15@@); K.slot("cleo", @@in the hallway+0.3@@);
+  K.lock("ana", @@no courier’s key@@); K.lock("ben", @@no courier’s key+0.2@@); K.lock("cleo", @@no courier’s key+0.4@@);
+  K.bounce("ana", @@their own locker@@); K.bounce("ben", @@their own locker+0.25@@); K.bounce("cleo", @@their own locker+0.5@@);
+  var ring = K.after(@@Only a@@ - 0.2, @@their own locker@@ + 0.5 + 1.3);
+  K.unhead("h2", ring); K.head("h3", ring + 0.3);
+  K.move("ring", ring, 1.4);
+  K.arrow("ben", "ana", K.after(@@Ben’s opens@@, ring + 1.4)); K.words("ben", "ana", K.after(@@Ben’s opens@@, ring + 1.4) + 0.6);
+  K.arrow("cleo", "ben", @@Cleo’s opens@@); K.words("cleo", "ben", @@Cleo’s opens+0.6@@);
+  K.arrow("ana", "cleo", @@Ana’s opens@@); K.words("ana", "cleo", @@Ana’s opens+0.6@@);
+</script>
