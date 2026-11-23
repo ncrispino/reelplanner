@@ -13,7 +13,7 @@
 
 **Delivery:** Plain; a small stress on "no courier's key".
 
-    Ana, Ben and Cleo each carry a parcel to a locker in the hallway. But no courier's key opens their own locker. Only a neighbour's does: Ben's opens locker one, Cleo's opens locker two, and Ana's opens locker three.
+    Ana, Ben and Cleo each carry a parcel to a locker in the hallway. But no courier's key opens their own locker. Only a neighbour's does: Ben's opens Ana's, Cleo's opens Ben's, and Ana's opens Cleo's.
 
 ## Line 3 — Two ways to finish (Frame 3)
 
@@ -25,4 +25,4 @@
 
 **Delivery:** Plain, settling at the end.
 
-    Each night a check looks in every locker, and a parcel there counts as delivered. So each courier finishes only through a neighbour, or the master key.
+    Each night a check looks in every locker. So each courier finishes only through a neighbour, or the master key.

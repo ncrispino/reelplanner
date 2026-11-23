@@ -9,6 +9,7 @@ mode: autonomous
 before: none
 music: none
 voice_direction: A calm narrator setting up a small puzzle. Plain, unhurried, one idea a sentence.
+terms: round = a courier's walk of deliveries; finish = get one's own parcel into one's own locker
 ---
 
 ## Video direction
@@ -32,6 +33,7 @@ invisible; a scene that plays something out takes it back before it ends.
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/01-title.html
+- defines: round
 - type: hook
 - voiceover: "The locker ring: a puzzle about who can open what."
 
@@ -43,7 +45,7 @@ invisible; a scene that plays something out takes it back before it ends.
 - status: storyboard
 - src: compositions/frames/02-ring.html
 - type: step
-- voiceover: "Ana, Ben and Cleo each carry a parcel to a locker in the hallway. But no courier's key opens their own locker. Only a neighbour's does: Ben's opens locker one, Cleo's opens locker two, and Ana's opens locker three."
+- voiceover: "Ana, Ben and Cleo each carry a parcel to a locker in the hallway. But no courier's key opens their own locker. Only a neighbour's does: Ben's opens Ana's, Cleo's opens Ben's, and Ana's opens Cleo's."
 
 ## Frame 3 — Two ways to finish
 
@@ -52,6 +54,7 @@ invisible; a scene that plays something out takes it back before it ends.
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/03-ways.html
+- defines: finish
 - type: step
 - voiceover: "There are two ways to finish. A neighbour delivers it, or the manager's master key opens any locker."
 
@@ -63,4 +66,4 @@ invisible; a scene that plays something out takes it back before it ends.
 - status: storyboard
 - src: compositions/frames/04-check.html
 - type: resolved
-- voiceover: "Each night a check looks in every locker, and a parcel there counts as delivered. So each courier finishes only through a neighbour, or the master key."
+- voiceover: "Each night a check looks in every locker. So each courier finishes only through a neighbour, or the master key."

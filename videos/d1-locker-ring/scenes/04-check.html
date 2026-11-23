@@ -1,5 +1,5 @@
 <!-- start: {"layout": "ring", "areas": true, "names": true, "items": "held", "slots": true, "locks": true, "arrows": true, "head": "h4"} -->
-<!-- tail: 2.0 -->
+<!-- tail: 1.6 -->
 <div class="dk-head" data-head="h4" data-label>Two ways to finish</div>
 <div class="dk-head" data-head="h5" data-label>The nightly check</div>
 <div class="dk-at dk-clock" data-k="clock" style="left:160px;top:730px">
@@ -17,7 +17,7 @@
   K.show('[data-k="clock"]', @@Each night@@ - 0.3);
   K.carry("ben", "ana", @@Each night@@, 1.6);
   K.clock(@@Each night@@, @@every locker@@ - @@Each night@@ + 0.2, 12);
-  K.state("ana", "passed", @@counts as delivered@@); K.pulse('[data-slot="ana"]', @@counts as delivered+0.2@@, 1);
+  K.state("ana", "passed", @@every locker+0.5@@); K.pulse('[data-slot="ana"]', @@every locker+0.7@@, 1);
   K.show('[data-k="recap"]', @@So each courier@@ - 0.2);
   K.show('[data-k="l1"]', @@So each courier@@); K.ring(@@finishes only@@, 0.5);
   K.show('[data-k="l2"]', @@or the master key@@); K.pulse('.dk-lock', @@or the master key+0.3@@, 1);
