@@ -88,10 +88,23 @@ The public repo (D-310) is built, never pushed, by `node scripts/release/make-pu
 
 ```bash
 reelplanner verify videos/l1-upload-resume             # lint → check → snapshot contact sheet
-reelplanner verify videos/l1-upload-resume --render    # …then render renders/video.mp4
+reelplanner verify videos/l1-upload-resume --render    # …then render renders/video.mp4, and measure its stillness
 ```
 
 `check` runs HyperFrames' lint, a headless runtime validation (JS errors, missing assets, contrast), and a layout inspection across the timeline. `snapshot` writes `snapshots/contact-sheet.jpg`, one tile per frame midpoint, which is what you look at before rendering. To watch a video in the browser without rendering: `cd videos/<project> && reelplanner hyperframes preview`.
+
+### How still is the render?
+
+After `--render`, verify measures the MP4 (`reelplanner stillness <video-dir>` on its own, and `build --render` prints the line): the share of the video in which the picture above the caption band does not change, the longest such stretch, and any jolt.
+
+```text
+✓ stillness  13% still (13.5 s of 102.2 s), longest 2.6 s at 70.7–73.3 s (the bar: under 25%, none over 3 s)
+```
+
+- **Still** means no sample differs from the first by more than `--noise` (0.002, ffmpeg's `freezedetect`) for at least `--min` seconds (1.5: a shorter pause reads as a beat between two moves). The picture is sampled 10 times a second at 480 px wide, with the bottom sixth cropped off (`--band`), where the captions change on every phrase.
+- **The bar** is under 25% still and no stretch over 3 s. A diagram explainer a reviewer called "most things not changing" measured 97% still with a 10.6 s stretch; redesigned so each spoken phrase had a move that shows it, 13% and 2.6 s.
+- **A jolt** is one frame where the whole picture jumps, with quiet frames either side: on a continuous stage, usually a transform that resets at a scene cut, or an element that starts somewhere other than where the last scene left it. Jolts are listed, not judged, since a deliberate hard cut is one too.
+- It is a report: past the bar it says △ and the build goes on (`--strict` exits 1, `--json` prints the numbers). `motion-static` asks the same question of the timeline source before anything is rendered; this one sees the picture a viewer sees. Neither says whether the motion means anything: a still stretch is usually a line the picture does not act out, and the fix is a move for that phrase, not decoration.
 
 ## Fresh eyes before you watch
 

@@ -21,7 +21,8 @@
 //   retime-frames       cues moved onto their words, in the frames whose lines changed; skipped when none did
 //   finish-project      captions, index, transitions, theme, plan map, plan diff, details, check
 //   verify              lint, check, details, fresh eyes, snapshot (and --render); what it read of fresh eyes
-//                       is a line of its own (a finding with no answer stops it, D-225)
+//                       is a line of its own (a finding with no answer stops it, D-225), and so, after --render, is
+//                       the render's stillness (stillness.mjs: a △ past the bar, never a stop)
 //   guide               the video's guide built again with the new pictures, and checked (guide.mjs --check); a
 //                       scene whose picture is missing is a △ (skipped for a video with no plan or sources beside it)
 //
@@ -219,6 +220,8 @@ for (const [name, fn] of STAGES) {
   // what verify read of fresh eyes (videos-that-make-sense step 2, D-225), its own line: a finding with no answer
   // stopped verify above; no run yet, or scenes changed since the agents looked, is a △ here
   if (name === "verify" && !VERBOSE) for (const l of (r.out || "").split("\n").filter((x) => /^[✓△] fresh eyes/.test(x.trim()))) console.log(`${l.trim()[0]} ${"fresh-eyes".padEnd(w)}  ${"".padStart(7)}  ${l.trim().replace(/^[✓△]\s*fresh eyes[,:]?\s*/, "").slice(0, 150)}`);
+  // the render's stillness (after --render), its own line the same way: how much of the picture sits still, said, never a stop
+  if (name === "verify" && !VERBOSE) for (const l of (r.out || "").split("\n").filter((x) => /^[✓△] stillness/.test(x.trim()))) console.log(`${l.trim()[0]} ${"stillness".padEnd(w)}  ${"".padStart(7)}  ${l.trim().replace(/^[✓△]\s*stillness\s*/, "").slice(0, 150)}`);
 }
 recordFrames(dir);   // what the frames were when this build passed: the next one's frames stage compares against it
 console.log(`✓ built ${relative(process.cwd(), dir) || "."} in ${secs(Date.now() - t0)}`);

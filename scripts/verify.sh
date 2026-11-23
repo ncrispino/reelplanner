@@ -8,7 +8,9 @@
 #                no answer stops here; no run yet, or scenes changed since they looked, is a △ line
 #   snapshot → contact sheet at frame midpoints (visual proof), and plan-map.json's thumbnails set from it
 #              (snapshot.sh: plan-map ran in finish-project, before these pictures were taken)
-#   render (optional, --render) → MP4 via headless Chrome + ffmpeg
+#   render (optional, --render) → MP4 via headless Chrome + ffmpeg, then its stillness (stillness.mjs: the share of
+#              the time the picture above the captions does not change, the longest still stretch, any jolt): a
+#              report, △ past the bar, never a stop
 #
 # usage: reelplanner verify <project-dir> [--render]
 set -euo pipefail
@@ -45,6 +47,7 @@ if [ "$RENDER" = 1 ]; then
   echo "── 6/6 render"
   $HF render --skill=faceless-explainer --quality high --output renders/video.mp4
   ffprobe -v error -show_entries format=duration -of default=nw=1 renders/video.mp4
+  node "$ROOT/scripts/stillness.mjs" renders/video.mp4 || echo "△ stillness not measured (above); the render stands"
 else
   echo "── 6/6 render skipped (pass --render)"
 fi
