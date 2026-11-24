@@ -1,0 +1,24 @@
+{
+  "actors": [
+    { "id": "ana", "name": "Ana", "color": "hsl(212 72% 46%)", "item": "Ana’s parcel", "slot": "locker 1", "area": "Ana’s round" },
+    { "id": "ben", "name": "Ben", "color": "hsl(152 60% 34%)", "item": "Ben’s parcel", "slot": "locker 2", "area": "Ben’s round" },
+    { "id": "cleo", "name": "Cleo", "color": "hsl(28 85% 44%)", "item": "Cleo’s parcel", "slot": "locker 3", "area": "Cleo’s round" }
+  ],
+  "enclosure": "one building",
+  "shared": "the hallway: three lockers",
+  "slotSuffix": "’s locker",
+  "locked": ", closed to {name}’s key",
+  "arrows": [
+    { "from": "ben", "to": "ana", "words": "Ben’s key opens locker 1" },
+    { "from": "cleo", "to": "ben", "words": "Cleo’s key opens locker 2" },
+    { "from": "ana", "to": "cleo", "words": "Ana’s key opens locker 3" }
+  ],
+  "states": [
+    { "key": "empty", "text": "empty" },
+    { "key": "handed", "text": "delivered by {from}", "tone": "good" },
+    { "key": "master", "text": "opened with the master key", "tone": "warn" },
+    { "key": "passed", "text": "here at the check: delivered", "tone": "good" }
+  ],
+  "clock": { "unit": "hour", "length": 12 },
+  "strings": { "title": "The locker ring", "subtitle": "three couriers, three lockers", "tagline": "a small puzzle, drawn as a diagram" }
+}

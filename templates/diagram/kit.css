@@ -1,0 +1,93 @@
+/* The diagram kit's look (`reelplanner diagram` inlines this into every frame). One type system: Space Grotesk for
+   what a scene is about, Inter for everything said in words, JetBrains Mono for exact strings (a path, a code, a
+   label read out as it is). The captions use the same faces (caption-skin.html). Sizes are a scale and nothing is
+   under 26 px. The colours are tokens on #root, which `reelplanner diagram` writes from world.json, each actor's
+   colour darkened until it reads at 4.5:1 on the paper and the card. */
+#root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif; font-size: 30px; line-height: 1.3; -webkit-font-smoothing: antialiased; }
+#root .dk-world { position: absolute; inset: 0; transform-origin: 960px 470px; }
+#root .dk-mono { font-family: "JetBrains Mono", Menlo, monospace; font-variant-ligatures: none; letter-spacing: -0.01em; }
+#root .dk-at { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+
+/* the head of a scene: a few words in the corner, and a smaller line under them */
+#root .dk-head { position: absolute; left: 70px; top: 40px; font: 600 42px/1.05 "Space Grotesk", "Inter", sans-serif; letter-spacing: -0.015em; color: var(--ink); opacity: 0; }
+#root .dk-head small { display: block; font: 500 28px/1.3 "Inter", sans-serif; letter-spacing: 0; color: var(--ink-2); margin-top: 10px; }
+
+/* an actor's area and the actor in it */
+#root .dk-area { width: 580px; height: 300px; border-radius: 26px; border: 3px dashed color-mix(in srgb, var(--c) 55%, var(--rule-2)); background: color-mix(in srgb, var(--c) 5%, var(--paper)); opacity: 0; }
+#root .dk-arealab { position: absolute; right: 22px; bottom: 14px; font: 500 26px/1 "Inter", sans-serif; color: var(--ink-2); }
+#root .dk-name { display: flex; align-items: center; gap: 14px; font: 600 40px/1 "Space Grotesk", "Inter", sans-serif; color: var(--c); opacity: 0; white-space: nowrap; }
+#root .dk-name i { width: 22px; height: 22px; border-radius: 50%; background: var(--c); display: block; }
+#root .dk-cursor { font: 500 28px/1 "JetBrains Mono", Menlo, monospace; color: var(--ink-2); opacity: 0; white-space: nowrap; }
+#root .dk-cursor b { display: inline-block; width: 15px; height: 28px; background: var(--ink-2); vertical-align: -4px; margin-left: 6px; }
+
+/* the actor's item: a small sheet with lines, its name in words */
+#root .dk-item { z-index: 3; display: flex; align-items: center; gap: 14px; opacity: 0; white-space: nowrap; }
+#root .dk-sheet { width: 58px; height: 74px; border-radius: 6px 18px 6px 6px; background: var(--card); border: 3px solid var(--c); position: relative; box-sizing: border-box; }
+#root .dk-sheet i { position: absolute; left: 9px; right: 9px; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--c) 60%, var(--paper)); transform-origin: 0 50%; }
+#root .dk-itemlab { font: 500 28px/1.2 "Inter", sans-serif; color: var(--ink); }
+
+/* the shared area and the slots on it */
+#root .dk-shared { width: 1780px; height: 250px; border-radius: 28px; background: var(--chrome); border: 2px solid var(--rule-2); opacity: 0; }
+#root .dk-sharedlab { position: absolute; left: 28px; top: 18px; font: 600 30px/1 "Space Grotesk", "Inter", sans-serif; color: var(--ink-2); }
+#root .dk-slot { z-index: 1; width: 540px; height: 150px; border-radius: 18px; background: var(--paper); border: 3px solid var(--c); box-sizing: border-box; padding: 16px 20px; opacity: 0; }
+#root .dk-scap { font: 500 26px/1.15 "Inter", sans-serif; color: var(--ink-2); white-space: nowrap; }
+#root .dk-scap b { color: var(--c); font-weight: 600; }
+#root .dk-sline { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+#root .dk-slotname { font: 500 30px/1 "JetBrains Mono", Menlo, monospace; color: var(--ink); white-space: nowrap; }
+#root .dk-lock { width: 30px; height: 36px; opacity: 0; flex: none; }
+#root .dk-lock .sh { transform-origin: 21px 16px; }
+#root .dk-state { position: absolute; left: 20px; bottom: 14px; font: 600 26px/1 "Inter", sans-serif; color: var(--ink-2); white-space: nowrap; opacity: 0; }
+#root .dk-state.good { color: var(--good); } #root .dk-state.warn { color: var(--warn); }
+#root .dk-locked { opacity: 0; font-weight: 500; color: var(--ink-2); }
+
+/* who can deliver to whom: an arrow from the actor that can to the slot it can reach, dots along it while something travels */
+#root .dk-svg { position: absolute; left: 0; top: 0; overflow: visible; }
+#root .dk-arrow path.l { fill: none; stroke: var(--c); stroke-width: 5; stroke-linecap: round; }
+#root .dk-arrow polygon { fill: var(--c); }
+#root .dk-arrow circle { fill: var(--c); opacity: 0; }
+#root .dk-words { font: 600 26px/1.2 "Inter", sans-serif; color: var(--c); white-space: nowrap; opacity: 0; background: var(--paper); padding: 4px 10px; border-radius: 8px; }
+
+/* a scene's own words: a chip (a term, a label), a card (a sentence), a panel (exact words) */
+#root .dk-chip { font: 600 30px/1 "Inter", sans-serif; padding: 14px 22px; border-radius: 999px; border: 3px solid var(--k, var(--ink-2)); color: var(--k, var(--ink)); background: var(--paper); white-space: nowrap; opacity: 0; }
+#root .dk-chip.good { --k: var(--good); } #root .dk-chip.warn { --k: var(--warn); }
+#root .dk-chip em { font-style: normal; font-weight: 500; color: var(--ink-2); margin-left: 10px; }
+#root .dk-card { font: 500 34px/1.35 "Inter", sans-serif; color: var(--ink); background: var(--paper); border: 2px solid var(--rule-2); border-radius: 20px; padding: 22px 30px; opacity: 0; box-shadow: 0 10px 30px -18px hsl(0 0% 0% / .35); }
+#root .dk-card b { font-weight: 600; }
+#root .dk-panel { font: 500 30px/1.45 "JetBrains Mono", Menlo, monospace; color: var(--ink); background: var(--chrome); border: 2px solid var(--rule-2); border-left: 8px solid var(--c, var(--ink-2)); border-radius: 14px; padding: 20px 26px; opacity: 0; }
+#root .dk-panel .who { font: 600 26px/1.2 "Inter", sans-serif; color: var(--ink-2); margin-bottom: 10px; }
+#root .dk-big { font: 600 64px/1 "Space Grotesk", sans-serif; color: var(--ink-2); opacity: 0; }
+
+/* work going on: lines appear in a dark pane, a few at a time; a reply; a count */
+#root .dk-term { width: 760px; height: 300px; border-radius: 18px; background: hsl(30 8% 14%); padding: 26px 30px; box-sizing: border-box; overflow: hidden; opacity: 0; }
+#root .dk-term.sm { width: 560px; height: 260px; padding: 22px 26px; }
+#root .dk-term i { display: block; height: 14px; border-radius: 7px; background: hsl(40 10% 70%); margin: 0 0 18px; opacity: 0; transform-origin: 0 50%; }
+#root .dk-reply { font: 500 30px/1.3 "Inter", sans-serif; background: var(--paper); border: 3px solid var(--ink-2); border-radius: 22px 22px 22px 6px; padding: 16px 24px; opacity: 0; white-space: nowrap; }
+#root .dk-count { font: 600 34px/1 "Space Grotesk", sans-serif; color: var(--ink-2); opacity: 0; white-space: nowrap; }
+
+/* time passing: a bar fills, a tick each unit, a ping at each slot when a check comes round */
+#root .dk-clock { width: 1600px; height: 120px; opacity: 0; }
+#root .dk-clock .bar { position: absolute; left: 0; top: 54px; width: 1600px; height: 10px; border-radius: 5px; background: var(--rule); }
+#root .dk-clock .fill { position: absolute; left: 0; top: 54px; width: 1600px; height: 10px; border-radius: 5px; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+#root .dk-clock .tick { position: absolute; top: 46px; width: 3px; height: 26px; background: var(--rule-2); }
+#root .dk-clock .lab { position: absolute; top: 86px; white-space: nowrap; font: 500 26px/1 "JetBrains Mono", monospace; color: var(--ink-2); transform: translateX(-50%); }
+#root .dk-clock .now { position: absolute; top: 0; font: 600 34px/1 "Space Grotesk", sans-serif; color: var(--ink); white-space: nowrap; }
+#root .dk-ping { width: 26px; height: 26px; border-radius: 50%; border: 4px solid var(--c); opacity: 0; box-sizing: border-box; }
+
+/* something outside every area (a third party, a tool), and a dashed wire of a scene's own drawing */
+#root .dk-outside { min-width: 320px; height: 120px; padding: 0 30px; box-sizing: border-box; border-radius: 20px; border: 3px solid var(--ink); background: var(--chrome); font: 600 32px/114px "Space Grotesk", sans-serif; text-align: center; white-space: nowrap; opacity: 0; }
+#root .dk-wire { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 14 12; }
+
+/* the enclosure around the areas and the shared area while they are side by side */
+#root .dk-enclosure { position: absolute; left: 40px; top: 100px; width: 1840px; height: 690px; border: 3px solid var(--rule-2); border-radius: 34px; opacity: 0; }
+#root .dk-enclosure span { position: absolute; right: 30px; bottom: 16px; font: 600 30px/1 "Space Grotesk", "Inter", sans-serif; color: var(--ink-2); }
+#root .dk-nowrap { white-space: nowrap; }
+
+/* the title card: the subject's name, large, a line under it, and the actors as dots */
+#root .dk-title { position: absolute; left: 0; width: 1920px; top: 300px; text-align: center; font: 600 104px/1 "Space Grotesk", "Inter", sans-serif; letter-spacing: -0.03em; color: var(--ink); opacity: 0; }
+#root .dk-subtitle { position: absolute; left: 0; width: 1920px; top: 430px; text-align: center; font: 500 52px/1 "Space Grotesk", "Inter", sans-serif; color: var(--ink-2); opacity: 0; }
+#root .dk-tagline { position: absolute; left: 0; width: 1920px; top: 530px; text-align: center; font: 400 36px/1.3 "Inter", sans-serif; color: var(--ink-2); opacity: 0; }
+#root .dk-dot { position: absolute; width: 34px; height: 34px; border-radius: 50%; background: var(--c); opacity: 0; }
+/* the recap at the end: a few lines, large, beside the picture */
+#root .dk-recap { font: 500 38px/1.45 "Inter", sans-serif; color: var(--ink); background: var(--paper); border: 2px solid var(--rule-2); border-radius: 24px; padding: 28px 40px; opacity: 0; box-shadow: 0 16px 40px -22px hsl(0 0% 0% / .4); }
+#root .dk-recap b { font-weight: 600; }
