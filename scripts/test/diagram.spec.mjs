@@ -29,7 +29,7 @@ ok(frames().join() === "01-title.html,02-ring.html,03-ways.html,04-check.html", 
 ok(frames().every((f) => !/@@|\{\{/.test(frame(f))), "no anchor or placeholder left in any frame");
 ok(existsSync(join(V, "assets/diagram/kit.js")) && existsSync(join(V, "assets/vendor/gsap.min.js")), "the kit's moves and gsap copied beside the frames");
 ok(readFileSync(join(V, ".hyperframes/caption-skin.html"), "utf8").includes("caption-pill"), "the kit's caption skin copied in");
-ok(/data-label>Ben’s key opens locker 1</.test(frame("02-ring.html")) && /data-state="ana:peer" data-label>delivered by Ben</.test(frame("02-ring.html")), "the world's words are static markup with data-label ({from} filled)");
+ok(/data-label>Ben’s key opens locker 1</.test(frame("02-ring.html")) && /data-state="ana:handed" data-label>delivered by Ben</.test(frame("02-ring.html")), "the world's words are static markup with data-label ({from} filled)");
 writeFileSync(join(V, ".hyperframes/caption-skin.html"), "<!-- mine -->");
 run("diagram", V, "--silent");
 ok(readFileSync(join(V, ".hyperframes/caption-skin.html"), "utf8") === "<!-- mine -->", "a video's own caption skin is kept");

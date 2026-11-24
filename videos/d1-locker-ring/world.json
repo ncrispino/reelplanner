@@ -15,7 +15,7 @@
   ],
   "states": [
     { "key": "empty", "text": "empty" },
-    { "key": "peer", "text": "delivered by {from}", "tone": "good" },
+    { "key": "handed", "text": "delivered by {from}", "tone": "good" },
     { "key": "master", "text": "opened with the master key", "tone": "warn" },
     { "key": "passed", "text": "here at the check: delivered", "tone": "good" }
   ],

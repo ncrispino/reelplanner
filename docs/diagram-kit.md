@@ -45,7 +45,7 @@ leaves every move on the old voice's seconds. The storyboard's frames name the s
   "slotSuffix": "’s locker",
   "locked": ", closed to {name}’s key",
   "arrows": [{ "from": "ben", "to": "ana", "words": "Ben’s key opens locker 1" }],
-  "states": [{ "key": "empty", "text": "empty" }, { "key": "peer", "text": "delivered by {from}", "tone": "good" }],
+  "states": [{ "key": "empty", "text": "empty" }, { "key": "handed", "text": "delivered by {from}", "tone": "good" }],
   "clock": { "unit": "hour", "length": 12 },
   "strings": { "title": "The locker ring" }
 }
@@ -73,7 +73,7 @@ leaves every move on the old voice's seconds. The storyboard's frames name the s
 <script>
   K.unhead("h3", 0.05); K.head("h4", 0.3);
   K.show('[data-k="c1"]', @@delivers it@@, { pop: true });
-  K.carry("ben", "ana", @@delivers it+0.2@@, 2.0); K.state("ana", "peer", @@delivers it+2.2@@);
+  K.carry("ben", "ana", @@delivers it+0.2@@, 2.0); K.state("ana", "handed", @@delivers it+2.2@@);
 </script>
 ```
 
