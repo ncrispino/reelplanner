@@ -48,7 +48,8 @@ ok(t1.includes(`K.draw('[data-k="r2"]', ${(at(0, "a") + 0.4).toFixed(2)}, 0.5)`)
 const f3 = frame("03-ways.html");
 ok(f3.includes(`K.hide('[data-k]', ${(voices[2].duration_s + 0.6).toFixed(2)}, 0.4)`), "@@END+0.6@@ is 0.6 s after the line ends");
 const holds = JSON.parse(readFileSync(join(V, ".hyperframes/holds.json"), "utf8"));
-ok(Math.abs(holds["3"] - (voices[2].duration_s + 1.6)) < 0.011 && f3.includes(`data-duration="${holds["3"].toFixed(2)}"`), `frame 3 holds its line plus its tail (${holds["3"]} s), in holds.json and on its root`);
+const tail3 = +/<!-- tail: ([\d.]+) -->/.exec(readFileSync(join(V, "scenes/03-ways.html"), "utf8"))[1];
+ok(Math.abs(holds["3"] - (voices[2].duration_s + tail3)) < 0.011 && f3.includes(`data-duration="${holds["3"].toFixed(2)}"`), `frame 3 holds its line plus its tail (${holds["3"]} s), in holds.json and on its root`);
 
 // 3. a phrase the line does not say
 writeFileSync(join(V, "scenes/03-ways.html"), readFileSync(join(V, "scenes/03-ways.html"), "utf8").replace("@@the manager’s@@", "@@the janitor@@"));
