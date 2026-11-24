@@ -85,8 +85,12 @@ const edges = arrows.map((e) => {
   const tip = [en[0] + vx * 4, en[1] + vy * 4], head = [tip, [tip[0] - vx * 26 - vy * 13, tip[1] - vy * 26 + vx * 13], [tip[0] - vx * 26 + vy * 13, tip[1] - vy * 26 - vx * 13]];
   let len = 0; for (let k = 1; k < pts.length; k++) len += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
   // the arrow's words beside it, never on it: out to the side of a steep arrow, above or below a flat one
-  const mid = pts[12], w = String(e.words || "").length * 13.6 + 20;
-  const lab = Math.abs(nx) > Math.abs(ny) ? [Math.round(mid[0] + Math.sign(nx) * (w / 2 + 26)), Math.round(mid[1])] : [Math.round(mid[0]), Math.round(mid[1] + Math.sign(ny) * 40)];
+  // (of three places on the outer side, the one whose box crosses the fewest points of the arrow and no actor's area)
+  const mid = pts[12], w = String(e.words || "").length * 13.6 + 20, hh = 22, out = 30 + Math.abs(nx) * w / 2 + Math.abs(ny) * hh;
+  const tries = [[mid[0] + Math.sign(nx || 1) * (w / 2 + 30), mid[1]], [mid[0], mid[1] + Math.sign(ny || 1) * (hh + 30)], [mid[0] + nx * out, mid[1] + ny * out]];
+  const cost = ([x, y]) => pts.filter(([px, py]) => Math.abs(px - x) < w / 2 + 10 && Math.abs(py - y) < hh + 10).length
+    + 100 * RING.filter(([cx, cy]) => Math.abs(cx - x) < HW + w / 2 && Math.abs(cy - y) < HH + hh).length;
+  const lab = tries.reduce((b, t) => (cost(t) < cost(b) ? t : b)).map(Math.round);
   return { ...e, pts, d: `M${s[0].toFixed(1)} ${s[1].toFixed(1)} Q${c[0].toFixed(1)} ${c[1].toFixed(1)} ${(en[0] - vx * 18).toFixed(1)} ${(en[1] - vy * 18).toFixed(1)}`, head, len: Math.ceil(len), lab };
 });
 const LOCK = (a) => `<svg class="dk-lock" data-lock="${a}" viewBox="0 0 30 36"><path class="sh" d="M8 16V11a7 7 0 0 1 14 0v5" style="fill:none;stroke:var(--ink-2);stroke-width:3.4"/><rect x="3" y="16" width="24" height="18" rx="4" style="fill:var(--ink-2)"/></svg>`;

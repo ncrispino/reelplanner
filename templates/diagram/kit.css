@@ -22,7 +22,7 @@
 #root .dk-cursor b { display: inline-block; width: 15px; height: 28px; background: var(--ink-2); vertical-align: -4px; margin-left: 6px; }
 
 /* the actor's item: a small sheet with lines, its name in words */
-#root .dk-item { display: flex; align-items: center; gap: 14px; opacity: 0; white-space: nowrap; }
+#root .dk-item { z-index: 3; display: flex; align-items: center; gap: 14px; opacity: 0; white-space: nowrap; }
 #root .dk-sheet { width: 58px; height: 74px; border-radius: 6px 18px 6px 6px; background: var(--card); border: 3px solid var(--c); position: relative; box-sizing: border-box; }
 #root .dk-sheet i { position: absolute; left: 9px; right: 9px; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--c) 60%, var(--paper)); transform-origin: 0 50%; }
 #root .dk-itemlab { font: 500 28px/1.2 "Inter", sans-serif; color: var(--ink); }
@@ -30,7 +30,7 @@
 /* the shared area and the slots on it */
 #root .dk-shared { width: 1780px; height: 250px; border-radius: 28px; background: var(--chrome); border: 2px solid var(--rule-2); opacity: 0; }
 #root .dk-sharedlab { position: absolute; left: 28px; top: 18px; font: 600 30px/1 "Space Grotesk", "Inter", sans-serif; color: var(--ink-2); }
-#root .dk-slot { width: 540px; height: 150px; border-radius: 18px; background: var(--paper); border: 3px solid var(--c); box-sizing: border-box; padding: 16px 20px; opacity: 0; }
+#root .dk-slot { z-index: 1; width: 540px; height: 150px; border-radius: 18px; background: var(--paper); border: 3px solid var(--c); box-sizing: border-box; padding: 16px 20px; opacity: 0; }
 #root .dk-scap { font: 500 26px/1.15 "Inter", sans-serif; color: var(--ink-2); white-space: nowrap; }
 #root .dk-scap b { color: var(--c); font-weight: 600; }
 #root .dk-sline { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
