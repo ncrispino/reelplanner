@@ -1,7 +1,6 @@
 ---
 title: "The locker ring"
 format: 1920x1080
-kind: explainer
 message: "Three couriers each need a parcel in a locker that only a neighbour's key opens; a neighbour can deliver it, or the manager's master key opens any locker, and a nightly check counts what is there."
 arc: title → three couriers and the lockers → the locks and the ring → two ways to finish → the check, and the one line to keep
 audience: anyone, with no background
@@ -29,7 +28,7 @@ invisible; a scene that plays something out takes it back before it ends.
 ## Frame 1 — The locker ring
 
 - scene: The title, and three dots joined into a ring
-- duration: 3.5s
+- duration: 3.43s
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/01-title.html
@@ -40,7 +39,7 @@ invisible; a scene that plays something out takes it back before it ends.
 ## Frame 2 — Who can open which locker
 
 - scene: The three couriers' rounds and their parcels, the hallway with three lockers; the locks close, each parcel bounces off its own locker, the rounds turn into a ring and its arrows draw
-- duration: 13s
+- duration: 14.58s
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/02-ring.html
@@ -50,7 +49,7 @@ invisible; a scene that plays something out takes it back before it ends.
 ## Frame 3 — Two ways to finish
 
 - scene: A copy of Ana's parcel runs along Ben's arrow into locker 1; the building manager's master key opens locker 3 and Cleo drops her own parcel in; both taken back
-- duration: 8s
+- duration: 7.04s
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/03-ways.html
@@ -61,7 +60,7 @@ invisible; a scene that plays something out takes it back before it ends.
 ## Frame 4 — The nightly check
 
 - scene: The ring steps back; a day's bar fills to the check, every locker pings, a delivered parcel counts; the recap, each arrow lit in turn
-- duration: 10s
+- duration: 7.17s
 - transition_in: cut
 - status: storyboard
 - src: compositions/frames/04-check.html

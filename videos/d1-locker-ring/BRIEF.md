@@ -13,7 +13,6 @@ angle: explainer
 narration: yes
 style_preset: reelplanner's diagram kit (templates/diagram/, docs/diagram-kit.md)
 music: none
-kind: explainer
 ---
 
 ## Intent
