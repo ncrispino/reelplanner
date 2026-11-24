@@ -4,9 +4,9 @@
 // usage: reelplanner shoot <video-dir> <frame-id> <second|end> [<second> …] [--out <dir>]
 //
 // Loads compositions/frames/<frame-id>.html alone on a blank 1920 × 1080 page, with its own <script src> libraries
-// (the vendored gsap, the diagram kit's moves) and the faces the render uses (Inter, JetBrains Mono, Space Grotesk:
-// with a fallback face the words are narrower and an overflow the render shows is not seen), seeks its timeline to
-// each second and saves <out>/<frame-id>@<second>.png (out: <video>/snapshots/shoot/). Captions and transitions are
+// (the vendored gsap, the diagram kit's moves) and the faces the render uses: Inter and JetBrains Mono from Google
+// Fonts, as the render fetches them, and any face the frame declares itself (with a fallback face the words are
+// narrower, and an overflow the render shows is not seen). It seeks the frame's timeline to each second and saves <out>/<frame-id>@<second>.png (out: <video>/snapshots/shoot/). Captions and transitions are
 // not in the picture. A page error fails it, since the same frame would throw in the render.
 import { readFileSync, writeFileSync, rmSync, mkdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -27,7 +27,7 @@ const out = resolve(outArg || join(dir, "snapshots", "shoot"));
 mkdirSync(out, { recursive: true });
 const html = `<!doctype html><html><head><meta charset="utf-8"><base href="${pathToFileURL(dir + "/")}">
 <style>html,body{margin:0;width:1920px;height:1080px;overflow:hidden}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=block">
 ${srcs.map((x) => `<script src="${x}"></script>`).join("")}</head><body>${inner}</body></html>`;
 const tmp = join(out, `.${id}.html`); writeFileSync(tmp, html);
 const browser = await chromium.launch(launchOpts({ args: ["--no-sandbox", "--allow-file-access-from-files", "--hide-scrollbars"] }));

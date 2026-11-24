@@ -14,6 +14,7 @@
 //      <video>/audio_meta.json        the narration's word times (`reelplanner narrate`); not read with --silent
 // Out: <video>/compositions/frames/NN-slug.html   the frame its storyboard's `- src:` names
 //      <video>/assets/diagram/kit.js, assets/vendor/gsap.min.js   the moves and gsap, copied
+//      <video>/assets/diagram/fonts/SpaceGrotesk.woff2   the heads' face (the render supplies Inter and JetBrains Mono)
 //      <video>/.hyperframes/caption-skin.html     captions in the frames' type, when the video has no skin of its own
 //      <video>/.hyperframes/holds.json            each scene's tail or hold, read by `build`
 //
@@ -158,6 +159,9 @@ mkdirSync(join(dir, ".hyperframes"), { recursive: true });
 const holds = existsSync(holdsPath) ? JSON.parse(readFileSync(holdsPath, "utf8")) : {};
 for (const d of ["compositions/frames", "assets/diagram", "assets/vendor"]) mkdirSync(join(dir, d), { recursive: true });
 copyFileSync(join(KIT, "kit.js"), join(dir, "assets/diagram/kit.js"));
+// the heads' face: the render supplies Inter and JetBrains Mono itself, not Space Grotesk
+mkdirSync(join(dir, "assets/diagram/fonts"), { recursive: true });
+copyFileSync(join(KIT, "fonts", "SpaceGrotesk.woff2"), join(dir, "assets/diagram/fonts/SpaceGrotesk.woff2"));
 try { copyFileSync(depFile(...GSAP), join(dir, "assets/vendor/gsap.min.js")); } catch (e) { die(e.message); }
 // captions in the frames' type (Inter on a dark pill), not HyperFrames' default Roboto pill; a video's own skin is kept
 const skin = join(dir, ".hyperframes", "caption-skin.html");
@@ -190,6 +194,7 @@ for (const f of files) {
   const html = `<template>
 <!-- Written by \`reelplanner diagram\` from scenes/${f}: edit the scene, not this file. -->
 <style>
+@font-face { font-family: "Space Grotesk"; font-weight: 500 700; font-style: normal; src: url("assets/diagram/fonts/SpaceGrotesk.woff2") format("woff2"); }
 #root{${TOK}}
 ${CSS}
 </style>

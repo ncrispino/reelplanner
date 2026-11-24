@@ -12,9 +12,9 @@
   <path data-k="r3" d="M974 684 Q1020 700 1027 778" style="fill:none;stroke:{{color:ana}};stroke-width:5;stroke-linecap:round;opacity:0"/>
 </svg>
 <script>
-  K.show('[data-k="title"]', 0.15); K.show('[data-k="sub"]', 0.55); K.show('[data-k="tag"]', 1.0);
-  K.show('[data-k="d1"], [data-k="d2"], [data-k="d3"]', 0.5, { pop: true, stagger: 0.2 });
+  K.show('[data-k="title"]', 0.15); K.show('[data-k="sub"]', @@a puzzle@@); K.show('[data-k="tag"]', @@who can open@@);
+  K.show('[data-k="d1"], [data-k="d2"], [data-k="d3"]', 0.6, { pop: true, stagger: 0.25 });
   K.draw('[data-k="r1"]', @@a puzzle@@, 0.5); K.draw('[data-k="r2"]', @@a puzzle+0.4@@, 0.5); K.draw('[data-k="r3"]', @@a puzzle+0.8@@, 0.5);
-  K.pulse('[data-k="d1"], [data-k="d2"], [data-k="d3"]', @@open what@@, 1);
+  K.pulse('[data-k="d1"], [data-k="d2"], [data-k="d3"]', @@open what@@, 1); K.pulse('[data-k="title"]', @@open what+0.3@@, 1);
   K.hide('[data-k]', DUR - 0.45, 0.4);
 </script>

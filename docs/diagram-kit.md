@@ -13,6 +13,7 @@ a locker only a neighbour's key opens, about 30 seconds in four scenes.
 |---|---|
 | `templates/diagram/kit.css` | the look: Space Grotesk for heads, Inter for words, JetBrains Mono for exact strings; nothing under 26 px |
 | `templates/diagram/kit.js` | the moves (`DiagramKit(root, tl, G, DUR)`, below) |
+| `templates/diagram/fonts/` | Space Grotesk (OFL), which the render does not supply on its own; `diagram` copies it beside the frames |
 | `templates/diagram/caption-skin.html` | captions in the frames' Inter on a dark pill, instead of HyperFrames' default Roboto pill |
 | `scripts/diagram.mjs` | `reelplanner diagram <video>`: writes the frames from `world.json` and `scenes/` |
 | `scripts/shoot.mjs` | `reelplanner shoot <video> <frame> 2 5 end`: pictures of one frame at given seconds, before any build |
@@ -99,7 +100,7 @@ leaves every move on the old voice's seconds. The storyboard's frames name the s
 | `K.write(a, t)`, `K.slot(a, t)` | the item drawn line by line; a slot with its first state |
 | `K.lock(a, t)`, `K.unlock`, `K.relock` | the lock snaps shut (and the slot says who it is closed to); opens; closes |
 | `K.bounce(a, t)` | the item drops toward its own slot and the lock stops it (1.25 s) |
-| `K.arrow(f, to, t)`, `K.words(f, to, t, out)` | an arrow of who can deliver to whom draws; its words |
+| `K.arrow(f, to, t)`, `K.words(f, to, t, out)` | an arrow of who can deliver to whom draws, and the slot it reaches pulses; its words |
 | `K.carry(f, to, t, d)`, `K.uncarry(to, t)` | a copy of `to`'s item runs along `f`'s arrow into `to`'s slot, dots along the arrow while it travels |
 | `K.drop(a, t)`, `K.undrop` | the actor's own item goes into its own slot; back out |
 | `K.state(a, key, t)` | the slot's words change |
@@ -128,10 +129,12 @@ line saying what it shows, not into one scene.
 | "Text is hidden beneath an opaque element" | the world faded to a few percent under a panel still counts | fade it to 0 (`K.fade(t, 0)`), or put the panel where nothing is |
 | Contrast fails on one cut and not another | an accent colour at 3.7:1, and a check that samples moments | `reelplanner diagram` darkens each colour until it reads |
 | Captions in another typeface | HyperFrames' default caption pill | the kit's caption skin, copied in when the video has none |
+| Heads rendered in Inter, not Space Grotesk | the render supplies Inter and JetBrains Mono itself, but not Space Grotesk (lint: `font_family_without_font_face`) | the kit ships its woff2 (`templates/diagram/fonts/`, OFL) and every frame declares it |
 | A label on top of its arrow | the label at the arrow's middle | beside it: out to the side of a steep arrow, above or below a flat one |
 | Words like "emptylocker" in a terms check | adjacent spans with no space between | a space between pieces of markup (the world has them) |
 | A still stretch while the voice finishes a sentence | the phrase has no move | a move that means the phrase: a chip pulses on "counts", each arrow lit on "only through a neighbour" |
 | Decorative motion | dots running along every arrow all the time | dots only while something travels an arrow (`K.carry`) |
+| A scene measured still while thin lines draw | a 5 px stroke changes too few pixels to count as motion (and to catch the eye) | a move that also moves something with area: `K.arrow` pulses the slot it reaches |
 
 ## Look, then two fresh reviewers
 

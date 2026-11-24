@@ -119,6 +119,7 @@
     K.arrow = function (f, to, t) {
       var e = arrow(f, to); tl.to(e.querySelector("path.l"), { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, t);
       tl.to(e.querySelector("polygon"), { opacity: 1, duration: 0.2 }, t + 0.8);
+      K.pulse('[data-slot="' + to + '"]', t + 0.8, 1);   /* the slot it reaches answers: a thin line alone barely changes the picture */
     };
     K.words = function (f, to, t, out) { var w = q('[data-words="' + f + ">" + to + '"]'); tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.4, immediateRender: false }, t); if (out != null) tl.to(w, { opacity: 0, duration: 0.4 }, out); };
     K.glow = function (f, to, t) { var l = arrow(f, to).querySelector("path.l"); tl.to(l, { strokeWidth: 10, duration: 0.35, ease: "power2.out" }, t).to(l, { strokeWidth: 5, duration: 0.6, ease: "power2.inOut" }, t + 0.6); };
